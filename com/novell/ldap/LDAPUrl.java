@@ -1,8 +1,8 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPUrl.java,v 1.16 2000/10/31 23:52:26 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPUrl.java,v 1.17 2000/11/03 23:47:07 vtag Exp $
 *
 * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
-* 
+*
 * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
 * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
 * TO VERSION 2.0.1 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
@@ -10,7 +10,7 @@
 * IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
 * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.1 OF THE OPENLDAP
 * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
-* THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY. 
+* THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
 ***************************************************************************/
 
 package com.novell.ldap;
@@ -57,9 +57,9 @@ public class LDAPUrl {
 
 
     /**
-    * Constructs a URL object with the specified host, port, and DN. 
+    * Constructs a URL object with the specified host, port, and DN.
     *
-    * <p>This form is used to create URL references to a particular object 
+    * <p>This form is used to create URL references to a particular object
     * in the directory.</p>
     *
     *  @param host     The host name of LDAP server, or null for "nearest
@@ -95,7 +95,7 @@ public class LDAPUrl {
     *  attrNames       The names of attributes to retrieve (use null for all
     *                  attributes).
     *<br><br>
-    *  @param scope    The depth of search. Use one of the following 
+    *  @param scope    The depth of search. Use one of the following
     *                  from LDAPConnection: SCOPE_BASE, SCOPE_ONE, SCOPE_SUB.
     *<br><br>
     *  @param filter   The search filter specifying the search criteria.
@@ -130,7 +130,7 @@ public class LDAPUrl {
     *  attrNames       The names of attributes to retrieve (use null for all
     *                  attributes).
     *<br><br>
-    *  @param scope    The depth of search. Use one of the following 
+    *  @param scope    The depth of search. Use one of the following
     *                  from LDAPConnection: SCOPE_BASE, SCOPE_ONE, SCOPE_SUB.
     *<br><br>
     *  @param filter   The search filter specifying the search criteria.
@@ -149,11 +149,11 @@ public class LDAPUrl {
         throw new RuntimeException("LDAPUrl: secure constructor not implemented");
     }
     /**
-    * Decodes a URL-encoded string. 
+    * Decodes a URL-encoded string.
     *
-    * <p>Any occurences of %HH are decoded to the hex value represented. 
+    * <p>Any occurences of %HH are decoded to the hex value represented.
     * However, this method does NOT decode "+" into " ".
-    * 
+    *
     *  @param URLEncoded     String to decode.
     *
     *  @return The decoded string.
@@ -169,7 +169,7 @@ public class LDAPUrl {
 		int searchStart = 0;
 		int fieldStart;
 
-        fieldStart = URLEncoded.indexOf("%", searchStart);                
+        fieldStart = URLEncoded.indexOf("%", searchStart);
 		// Return now if no encoded data
 		if( fieldStart < 0 ) {
 			return URLEncoded;
@@ -207,7 +207,7 @@ public class LDAPUrl {
 			searchStart = fieldEnd;
 			if( searchStart == dataLen )
 				break;
-	        fieldStart = URLEncoded.indexOf("%", searchStart);                
+	        fieldStart = URLEncoded.indexOf("%", searchStart);
 		}
 
         if( Debug.LDAP_DEBUG)
@@ -216,18 +216,46 @@ public class LDAPUrl {
     }
 
     /**
-    * Encodes an arbitrary string using the URL encoding rules. 
+    * Encodes an arbitrary string using the URL encoding rules.
     *
-    * <p> Any illegal characters are encoded as %HH.  
+    * <p> Any illegal characters are encoded as %HH.
     * However, this method does NOT encode " " into "+".</p>
     *
     *
-    *  @param toEncode     The string to encode.
+    * @param toEncode     The string to encode.
     *
     * @return The URL-encoded string.
+    *
+    * Comment: An illegal character consists of any non graphical US-ASCII character, Unsafe, or reserved characters.
     */
     public static String encode(String toEncode) {
-        throw new RuntimeException("LDAPUrl: encode() not implemented");
+      StringBuffer buffer = new StringBuffer(toEncode.length()); //empty but initial capicity of 'length'
+
+      char currChar;
+      for(int i = 0; i < toEncode.length(); i++){
+         currChar = toEncode.charAt(i);
+         if //all chars with no corresponding graphic US-ASCII
+            (((int)currChar < 0x1F) || ((int)currChar == 0x7F) ||
+             ((int)currChar > 0x80 && (int)currChar <0xFF)){
+               buffer.append("%"+Integer.toHexString((int)currChar));
+         }
+         if (//Unsafe chars
+            ((currChar == '<') || (currChar == '>') || (currChar == '\"') ||
+             (currChar == '#') || (currChar == '%') || (currChar == '{') ||
+             (currChar == '}') || (currChar == '|') || (currChar == '\\') ||
+             (currChar == '^') || (currChar == '~') || (currChar == '[') ||
+             (currChar == '\'')) ||
+              //Reserved chars
+            ((currChar == ';') || (currChar == '/') || (currChar == '?') ||
+             (currChar == ':') || (currChar == '@') || (currChar == '=') ||
+             (currChar == '&'))) {
+               buffer.append("%"+Integer.toHexString((int)currChar));
+         }
+         else
+            buffer.append(currChar);
+      }
+
+
     }
 
     /**
@@ -258,7 +286,7 @@ public class LDAPUrl {
     }
 
     /**
-    * Returns the search filter or the default filter 
+    * Returns the search filter or the default filter
     * (objectclass=*) if none was specified.
     *
     * @return The search filter.
@@ -335,7 +363,7 @@ public class LDAPUrl {
 			}
 		}
 
-		if( (scope == DEFAULT_SCOPE) && 
+		if( (scope == DEFAULT_SCOPE) &&
 				(filter == null) && (extensions == null) ) {
 			return url.toString();
 		}
@@ -349,7 +377,7 @@ public class LDAPUrl {
 				url.append( "sub" );
 			}
 		}
-		
+
 		if( (filter == null) && (extensions == null) ) {
 			return url.toString();
 		}
@@ -397,7 +425,7 @@ public class LDAPUrl {
         while( itemStart > 0 ) {
             // itemStart == 0 if no delimiter found
             itemCount += 1;
-            itemEnd = listStr.indexOf(delimiter, itemStart);                
+            itemEnd = listStr.indexOf(delimiter, itemStart);
             if( (itemEnd > 0) && (itemEnd < listEnd) ) {
                 itemStart = itemEnd + 1;
             } else {
@@ -409,7 +437,7 @@ public class LDAPUrl {
         list = new String[itemCount];
         itemCount = 0;
         while( itemStart > 0 ) {
-            itemEnd = listStr.indexOf(delimiter, itemStart);                
+            itemEnd = listStr.indexOf(delimiter, itemStart);
             if( itemStart <= listEnd ) {
                 if (itemEnd < 0 )
                     itemEnd = listEnd;
@@ -448,7 +476,7 @@ public class LDAPUrl {
 
         // Determine the URL scheme and set appropriate default port
         if( url.substring(scanStart, scanStart + 4).equalsIgnoreCase( "URL:")) {
-            scanStart += 4;        
+            scanStart += 4;
         }
         if( url.substring(scanStart, scanStart + 7).equalsIgnoreCase( "ldap://")) {
             scanStart += 7;
@@ -534,7 +562,7 @@ public class LDAPUrl {
             return;
 
         // Parse out the base dn
-        scanStart = dnStart + 1;                    
+        scanStart = dnStart + 1;
 
         int attrsStart = url.indexOf('?', scanStart);
         if( attrsStart < 0 ) {
@@ -545,7 +573,7 @@ public class LDAPUrl {
 
         if( Debug.LDAP_DEBUG)
             Debug.trace(  Debug.urlParse, "parseURL: dn " + dn);
-        scanStart = attrsStart + 1;                    
+        scanStart = attrsStart + 1;
 		// Wierd novell syntax can have nothing beyond the dn
         if( (scanStart >= scanEnd) || (attrsStart < 0) || novell )
             return;
@@ -566,7 +594,7 @@ public class LDAPUrl {
             }
         }
 
-        scanStart = scopeStart + 1;                    
+        scanStart = scopeStart + 1;
         if( scanStart >= scanEnd)
             return;
 
@@ -603,7 +631,7 @@ public class LDAPUrl {
             return;
 
         // Parse out the filter
-        scanStart = filterStart + 1;                    
+        scanStart = filterStart + 1;
 
         String filterStr;
         int extStart = url.indexOf('?', scanStart);
@@ -620,10 +648,10 @@ public class LDAPUrl {
             Debug.trace(  Debug.urlParse, "parseURL: filter " + getFilter() );
 
 
-        scanStart = extStart + 1;                    
+        scanStart = extStart + 1;
         if( (scanStart >= scanEnd) || (extStart < 0) )
             return;
-        
+
         // Parse out the extensions
         int end = url.indexOf('?', scanStart);
         if( end > 0)
