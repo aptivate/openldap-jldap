@@ -112,7 +112,7 @@
     <!--       Note: The doc directory is left intact                        -->
     <!--             ant doc will rebuild it                                 -->
     <!-- =================================================================== -->
-    <target name="cleanpkg" depends="init">
+    <target name="cleanpkg" depends="init, cleanpkgwars">
         <delete dir="${pkg.lib}"/>
         <delete dir="${pkg.lib.debug}"/>
     </target>
