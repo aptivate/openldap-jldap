@@ -1,4 +1,4 @@
-// $Novell: /ldap/src/jldap/com/novell/ldap/client/Debug.template,v 1.3 2000/09/25 16:14:53 vtag Exp $
+// $Novell: /ldap/src/jldap/com/novell/ldap/client/Debug.template,v 1.4 2000/09/27 21:12:04 vtag Exp $
 // **
 // ** NOTICE: Do NOT edit file Debug.java, the real file is Debug.template
 // **
@@ -51,7 +51,7 @@ import java.util.StringTokenizer;
  * </ul>
  *
  * @author Steven F. Sonntag
- * @version $Id: Debug.template,v 1.3 2000/09/25 16:14:53 vtag Exp $
+ * @version $Id: Debug.template,v 1.4 2000/09/27 21:12:04 vtag Exp $
  */
 
 public abstract class Debug {
@@ -65,68 +65,72 @@ public abstract class Debug {
     /**
      * The string value used to enable all debug tracing.
      */
-	public static final String all = "TraceAll";
+    public static final String all = "TraceAll";
     /**
      * The string value used to enable debug tracing of raw input.
      */
-	public static final String rawInput = "RawInput";
+    public static final String rawInput = "RawInput";
     /**
      * The string value used to enable debug tracing of Raw Output.
      */
-	public static final String rawOutput = "RawOutput";
+    public static final String rawOutput = "RawOutput";
     /**
      * The string value used to enable debug tracing of referral processing.
      */
-	public static final String referrals = "Referrals";
+    public static final String referrals = "Referrals";
+    /**
+     * The string value used to enable debug tracing of referral processing.
+     */
+    public static final String messages = "Messages";
     /**
      * The string value used to enable debug tracing of BER Encoding.
      */
-	public static final String encoding = "Encoding";
+    public static final String encoding = "Encoding";
     /**
      * The string value used to enable debug tracing of Ber Decoding.
      */
-	public static final String decoding = "Decoding";
+    public static final String decoding = "Decoding";
     /**
      * The string value used to enable debug tracing of LDAP Connections.
      */
-	public static final String connections = "Connections";
+    public static final String connections = "Connections";
     /**
      * The string value used to enable debug tracing of URL parsing.
      */
-	public static final String urlParse = "UrlParse";
+    public static final String urlParse = "UrlParse";
     /**
      * The string value used to enable debug display of buffer dumps.
      */
-	public static final String buffer = "DumpBuffer";
+    public static final String buffer = "DumpBuffer";
     /**
      * The string value used to enable debug display of object dumps.
-	 * Displays hierarchy, constructors, fields, and methods.
+     * Displays hierarchy, constructors, fields, and methods.
      */
-	public static final String objects = "DumpObject";
+    public static final String objects = "DumpObject";
     /**
      * The string value used to enable debug display of object hierarchy dumps.
      */
-	public static final String objectHierarchy = "DumpObjectHierarchy";
+    public static final String objectHierarchy = "DumpObjectHierarchy";
     /**
      * The string value used to enable debug display of object constructor dumps.
      */
-	public static final String objectConstructors = "DumpObjectConstructors";
+    public static final String objectConstructors = "DumpObjectConstructors";
     /**
      * The string value used to enable debug display of object field dumps.
      */
-	public static final String objectFields = "DumpObjectFields";
+    public static final String objectFields = "DumpObjectFields";
     /**
      * The string value used to enable debug display of object methods dumps.
      */
-	public static final String objectMethods = "DumpObjectMethods";
+    public static final String objectMethods = "DumpObjectMethods";
     /**
      * The string value used to enable VM instruction trace.
      */
-	public static final String traceInstructions = "VMTraceInstructions";
+    public static final String traceInstructions = "VMTraceInstructions";
     /**
      * The string value used to enable display VM method calls.
      */
-	public static final String traceMethodCalls = "VMTraceMethodCalls";
+    public static final String traceMethodCalls = "VMTraceMethodCalls";
 
     private static boolean dumpBuffer = false;
     private static boolean dumpObject = false;
@@ -142,6 +146,7 @@ public abstract class Debug {
     private static boolean traceEncoding = false;
     private static boolean traceDecoding = false;
     private static boolean traceReferrals = false;
+    private static boolean traceMessages = false;
     private static boolean traceUrlParse = false;
     private static boolean traceConnections = false;
     private static Properties objprop = new Properties();
@@ -214,6 +219,7 @@ public abstract class Debug {
                     traceRawInput = true;                
                     traceRawOutput = true;                
                     traceReferrals = true;                
+                    traceMessages = true;                
                     traceUrlParse = true;                
                     traceEncoding = true;                
                     traceDecoding = true;                
@@ -224,6 +230,8 @@ public abstract class Debug {
                     traceRawOutput = toggle( traceRawOutput);                
                 } else if( tn.equalsIgnoreCase(referrals)) {
                     traceReferrals = toggle( traceReferrals);                
+                } else if( tn.equalsIgnoreCase(messages)) {
+                    traceMessages = toggle( traceMessages);                
                 } else if( tn.equalsIgnoreCase(urlParse)) {
                     traceUrlParse = toggle( traceUrlParse);                
                 } else if( tn.equalsIgnoreCase(encoding)) {
@@ -245,9 +253,10 @@ public abstract class Debug {
     {
         if( LDAP_DEBUG) {
             if( type.equalsIgnoreCase(all)) {
-                return (    traceRawInput ||
+                return (    traceRawInput  ||
                             traceRawOutput ||
                             traceReferrals ||
+                            traceMessages  ||
                             traceUrlParse  ||
                             traceEncoding  ||
                             traceDecoding  ||
@@ -258,6 +267,8 @@ public abstract class Debug {
                 return(traceRawOutput);
             } else if( type.equalsIgnoreCase(referrals)) {
                 return(traceReferrals);
+            } else if( type.equalsIgnoreCase(messages)) {
+                return(traceMessages);
             } else if( type.equalsIgnoreCase(urlParse)) {
                 return(traceUrlParse);
             } else if( type.equalsIgnoreCase(encoding)) {
@@ -284,6 +295,7 @@ public abstract class Debug {
                 traceRawInput  = val;
                 traceRawOutput = val;
                 traceReferrals = val;
+                traceMessages = val;
                 traceUrlParse  = val;
                 traceEncoding  = val;
                 traceDecoding  = val;
@@ -294,6 +306,8 @@ public abstract class Debug {
                 traceRawOutput = val;
             } else if( type.equalsIgnoreCase(referrals)) {
                 traceReferrals = val;
+            } else if( type.equalsIgnoreCase(messages)) {
+                traceMessages = val;
             } else if( type.equalsIgnoreCase(urlParse)) {
                 traceUrlParse = val;
             } else if( type.equalsIgnoreCase(encoding)) {
@@ -320,6 +334,7 @@ public abstract class Debug {
                 printit =   traceRawInput  ||
                             traceRawOutput ||
                             traceReferrals ||
+                            traceMessages  ||
                             traceUrlParse  ||
                             traceEncoding  ||
                             traceDecoding  ||
@@ -330,6 +345,8 @@ public abstract class Debug {
                 printit = traceRawOutput;
             } else if( type.equalsIgnoreCase(referrals)) {
                 printit = traceReferrals;
+            } else if( type.equalsIgnoreCase(messages)) {
+                printit = traceMessages;
             } else if( type.equalsIgnoreCase(urlParse)) {
                 printit = traceUrlParse;
             } else if( type.equalsIgnoreCase(encoding)) {
