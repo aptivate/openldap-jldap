@@ -347,7 +347,7 @@ public class MessageAgent
                        indexLastRead = next++;
                        rfcMsg = info.getReply();
                        // Check this request is complete
-                       if( ! info.acceptsReplies() & ! info.hasReplies()) {
+                       if( ! info.acceptsReplies() && ! info.hasReplies()) {
                           // Message complete & no more replies, remove from id list
                           if( Debug.LDAP_DEBUG) {
                              Debug.trace( Debug.messages, name +

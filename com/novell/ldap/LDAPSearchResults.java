@@ -482,7 +482,8 @@ public class LDAPSearchResults implements Enumeration
     {
         LDAPMessage msg;
 
-        for(int i=0; i<batchSize; ) {
+        // <=batchSize so that we can pick up the result-done message
+        for(int i=0; i<=batchSize; ) {
             try {
                 if((msg = listener.getResponse()) != null) {
                     // Only save controls if there are some
