@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: SharedConnection.java,v 1.1 2003/01/14 21:36:24 $
+ * $Novell: SharedConnection.java,v 1.2 2003/01/14 21:43:25 $
  *
  * Copyright (C) 2003 Novell, Inc. All Rights Reserved.
  *
@@ -12,7 +12,7 @@
  * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
  * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
  ******************************************************************************/
-package com.novell.services.dsml;
+package connectionpool;
 import java.util.ArrayList;
 import java.util.Arrays;
 
