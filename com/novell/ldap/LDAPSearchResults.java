@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResults.java,v 1.42 2001/04/23 21:16:05 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResults.java,v 1.43 2001/04/30 22:24:57 dsteck Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -469,6 +469,8 @@ public class LDAPSearchResults implements Enumeration
      * result count) All search result entries will be placed in the Vector.
      * If a null is returned from getResponse(), it is likely that the search
      * was abandoned.
+     *
+     * @return true if all search results have been placed in the vector.
      */
     private boolean getBatchOfResults()
     {
