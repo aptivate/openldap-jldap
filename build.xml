@@ -18,7 +18,7 @@
 <!--               level it compiles java files for release and debug.       -->
 <!--     install - Copies build results from all directories and creates the -->
 <!--               pkg directory.  Only available in top makefile            -->
-<!--     pkt     - Synonym for pkg                                           -->
+<!--     pkg     - Synonym for install                                       -->
 
 <property name="pkg" value="pkg"/>
 <property name="pkg.lib" value="pkg/lib"/>
