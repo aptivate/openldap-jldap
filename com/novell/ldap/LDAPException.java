@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPException.java,v 1.21 2001/02/26 19:58:23 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPException.java,v 1.22 2001/03/01 00:29:50 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -115,6 +115,7 @@ public class LDAPException extends Exception
    private Object[] arguments = null;
    private String matchedDN = null;
    private Throwable rootException = null;
+   private String serverMessage = null;
 
   /**
    *Indicates the requested client operation completed successfully.
@@ -1095,6 +1096,17 @@ public class LDAPException extends Exception
       ResourceBundle res =
        ResourceBundle.getBundle("com.novell.ldap.LDAPExceptionErrorCodeResource", locale);
       return res.getString(Integer.toString(code));
+   }
+
+   /**
+    * Sets the server error message, if this message is available (that is, if
+    * this message was returned by the server).
+    */
+   /*package*/
+   void setLDAPErrorMessage( String serverMessage)
+   {
+      this.serverMessage = serverMessage;
+      return;
    }
 
    /**
