@@ -1,4 +1,4 @@
-<!-- $Novell: /ldap/src/jldap/build.xml,v 1.25 2000/11/22 22:17:37 vtag Exp $ -->
+<!-- $Novell: /ldap/src/jldap/build.xml,v 1.26 2001/01/04 22:44:02 vtag Exp $ -->
 <!-- ======================================================================= -->
 <!-- TOP level build file                                                -->
 <!-- ======================================================================= -->
@@ -160,7 +160,7 @@
 		<mkdir dir="${pkg.doc}/${ldap}"/>
 		<mkdir dir="${pkg.samples}"/>
 		<mkdir dir="${pkg.samples}/extensions"/>
-		<mkdir dir="${pkg.samples}/controls"/>
+		<!-- mkdir dir="${pkg.samples}/controls"/ -->
 
 		<copydir src="${src}/${lib}"         dest="${pkg.lib}"/>
 
@@ -168,7 +168,8 @@
 
 		<copydir src="${src}/samples"  dest="${pkg.samples}"/>
 		<copydir src="${src}/samples/extensions"  dest="${pkg.samples}/extensions"/>
-		<copydir src="${src}/samples/controls"  dest="${pkg.samples}/controls"/>
+		<!-- copydir src="${src}/samples/controls"  dest="${pkg.samples}/controls"/ -->
+        <deltree dir="${pkg.samples}/controls"/>
         <copyfile src="README.txt" dest="${pkg}/README.txt" />
 	</target>
 
