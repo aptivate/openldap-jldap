@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPResponse.java,v 1.16 2000/10/02 17:19:49 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPResponse.java,v 1.17 2000/10/31 23:52:24 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -35,7 +35,7 @@ public class LDAPResponse extends LDAPMessage
      *
      *  @param message  The LDAPMessage from a server.
      */
-    public LDAPResponse(com.novell.ldap.protocol.LDAPMessage message)
+    /*package*/ LDAPResponse(com.novell.ldap.protocol.LDAPMessage message)
     {
         super(message);
     }

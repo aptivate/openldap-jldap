@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchConstraints.java,v 1.10 2000/10/31 00:45:08 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchConstraints.java,v 1.11 2000/10/31 23:52:25 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -128,6 +128,8 @@ public class LDAPSearchConstraints extends LDAPConstraints {
      *                  LDAPConnection needs to authenticate, typically
      *                  on following a referral. Null may be specified to
      *                  indicate default authentication processing.
+	 *                  The object implements either an LDAPBind or
+	 *                  an LDAPRebind interface.
      *                  On asynchronous operations, this constraint is ignored.
      *<br><br>
      *  @param hop_limit  The maximum number of referrals to follow in a
@@ -141,77 +143,10 @@ public class LDAPSearchConstraints extends LDAPConstraints {
                                  int maxResults,
                                  boolean doReferrals,
                                  int batchSize,
-                                 LDAPBind binder,
+                                 LDAPReferralHandler binder,
                                  int hop_limit)
     {
         super(msLimit, doReferrals, binder, hop_limit);
-        this.serverTimeLimit = serverTimeLimit;
-        this.dereference = dereference;
-        this.maxResults = maxResults;
-        this.batchSize = batchSize;
-    }
-
-    /**
-     * Constructs a new LDAPSearchConstraints object and allows specifying
-     * the operational constraints in that object, including an LDAPRebind object.
-     *
-     *  @param msLimit  The maximum time in milliseconds to wait for results.
-     *                  The default value is 0, which means that there is no
-     *                  maximum time limit. This is an interface-imposed
-     *                  limit.
-     *<br><br>
-     *  @param serverTimeLimit The maximum time in seconds that the server should
-     *                         spend returning results. This is a server-imposed
-     *                         limit.
-     *<br><br>
-     *  @param dereference     Specifies when aliases should be dereferenced.
-     *                         Must be either DEREF_NEVER,
-     *                         DEREF_FINDING, DEREF_SEARCHING, or
-     *                         DEREF_ALWAYS from this class.
-     *                         Default: LDAPConnection.DEREF_NEVER
-     *<br><br>
-     *  @param maxResults      The maximum number of search results to return.
-     *                         Default: 1000
-     *<br><br>
-     *  @param doReferrals     Specifies whether to follow referrals automatically.
-     *                         Set to true to follow referrals automatically or 
-     *                         false to throw an LDAPReferralException error if the  
-     *                         server sends back a referral. Default: false 
-     *<br><br>
-     *  @param batchSize       Specifies the number of results to return in a batch.
-     *                         Specifying 0 means to block until all results are in.
-     *                         Specifying 1 means to return results one at a time.
-     *                         Default: 1
-     *<br><br>
-     * @param reauth    Specifies an object of the class that implements
-     *                  the LDAPRebind interface. The object will be used
-     *                  when the client follows referrals automatically.
-     *                  The object provides a method for getting the
-     *                  distinguished name and password used to
-     *                  authenticate to another LDAP server during a
-     *                  referral. Specifying null indicates the default
-     *                  LDAPRebind will be used if one has been assigned
-     *                  with the LDAPConnection.setOption method, or anonymous
-     *                  authentication otherwise. On asynchronous operations, 
-     *                  this constraint is ignored.
-     *<br><br>
-     *  @param hop_limit  The maximum number of referrals to follow in a
-     *                    sequence when attempting to resolve a request,
-     *                    when doing automatic referral following. On asynchronous  
-     *                    operations, this constraint is ignored.
-     *
-     *
-     */
-    public LDAPSearchConstraints(int msLimit,
-                                 int serverTimeLimit,
-                                 int dereference,
-                                 int maxResults,
-                                 boolean doReferrals,
-                                 int batchSize,
-                                 LDAPRebind reauth,
-                                 int hop_limit)
-    {
-        super(msLimit, doReferrals, reauth, hop_limit);
         this.serverTimeLimit = serverTimeLimit;
         this.dereference = dereference;
         this.maxResults = maxResults;
@@ -332,6 +267,4 @@ public class LDAPSearchConstraints extends LDAPConstraints {
     {
         this.serverTimeLimit = seconds;
     }
-
 }
-
