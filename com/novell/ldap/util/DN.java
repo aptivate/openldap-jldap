@@ -14,6 +14,7 @@
  ******************************************************************************/
 package com.novell.ldap.util;
 import com.novell.ldap.util.RDN;
+import com.novell.ldap.client.ArrayList;
 import java.util.Vector;
 
 /**
@@ -49,7 +50,7 @@ public class DN extends Object
     private static final int HEX_RDN_VALUE          = 6;
     private static final int UNQUOTED_RDN_VALUE     = 7;
 
-    private Vector rdnList = new Vector();
+    private ArrayList rdnList = new ArrayList();
 
     public DN (){}
     /**
@@ -234,7 +235,7 @@ public class DN extends Object
                 //added by cameron
                 currRDN.add(attrType, attrValue, rawValue);
                 if (currChar != '+'){
-                    rdnList.addElement(currRDN);
+                    rdnList.add(currRDN);
                     currRDN = new RDN();
                 }
 
@@ -271,7 +272,7 @@ public class DN extends Object
 
                     currRDN.add(attrType, attrValue, rawValue);
                     if (currChar != '+'){
-                        rdnList.addElement(currRDN);
+                        rdnList.add(currRDN);
                         currRDN = new RDN();
                     }
                     trailingSpaceCount = 0;
@@ -329,7 +330,7 @@ public class DN extends Object
                         //added by cameron
                         currRDN.add(attrType, attrValue, rawValue);
                         if (currChar != '+'){
-                            rdnList.addElement(currRDN);
+                            rdnList.add(currRDN);
                             currRDN = new RDN();
                         }
                         tokenIndex = 0;
@@ -359,7 +360,7 @@ public class DN extends Object
             rawValue =
                 dnString.substring(valueStart, currIndex - trailingSpaceCount);
             currRDN.add(attrType,attrValue,rawValue);
-            rdnList.addElement(currRDN);
+            rdnList.add(currRDN);
         }
         else if (state != LOOK_FOR_RDN_ATTR_TYPE)
         {
@@ -551,7 +552,12 @@ public class DN extends Object
      * @return list of RDNs
      */
     public Vector getRDNs(){
-        return (Vector)rdnList.clone();
+        int size = rdnList.size();
+        Vector v = new Vector( size);
+        for( int i = 0; i < size; i++) {
+            v.addElement( rdnList.get(i));
+        }
+        return v;
     }
 
     /** Determines if this DN is <I>contained</I> by the DN passed in.  For
@@ -568,8 +574,8 @@ public class DN extends Object
         int j = this.rdnList.size() -1;              //index to an RDN of the ContainedDN
         //Search from the end of the DN for an RDN that matches the end RDN of
         //containerDN.
-        while ( !((RDN)this.rdnList.elementAt(j--)).equals(
-                (RDN)containerDN.rdnList.elementAt(i))){
+        while ( !((RDN)this.rdnList.get(j--)).equals(
+                (RDN)containerDN.rdnList.get(i))){
             if (j <= 0)
                 return false;
                 //if the end RDN of containerDN does not have any equal
@@ -579,8 +585,8 @@ public class DN extends Object
         j--;
         //step backwards to verify that all RDNs in containerDN exist in this DN
         for (/* i, j */ ; i>=0 && j >=0; i--, j--){
-            if (!((RDN)this.rdnList.elementAt(j)).equals(
-                (RDN)containerDN.rdnList.elementAt(i)))
+            if (!((RDN)this.rdnList.get(j)).equals(
+                (RDN)containerDN.rdnList.get(i)))
                 return false;
         }
         if (j == 0 && i == 0) //the DNs are identical and thus not contained
@@ -595,7 +601,7 @@ public class DN extends Object
      */
     public DN getParent(){
        DN parent = new DN();
-       parent.rdnList = (Vector)this.rdnList.clone();
+       parent.rdnList = (ArrayList)this.rdnList.clone();
        if (parent.rdnList.size() >= 1)
            parent.rdnList.remove(0);  //remove first object
        return parent;
@@ -606,7 +612,7 @@ public class DN extends Object
      * @param an RDN to be added
      */
     public void addRDN(RDN rdn){
-       rdnList.insertElementAt(rdn, 0);
+       rdnList.add(0, rdn);
     }
 
     /**
@@ -614,7 +620,7 @@ public class DN extends Object
      * @param an RDN to be added
      */
     public void addRDNToFront(RDN rdn){
-       rdnList.insertElementAt(rdn, 0);
+       rdnList.add(0, rdn);
     }
 
     /**
@@ -622,6 +628,6 @@ public class DN extends Object
      * @param an RDN to be added
      */
     public void addRDNToBack(RDN rdn){
-        rdnList.addElement(rdn);
+        rdnList.add(rdn);
     }
 } //end class DN

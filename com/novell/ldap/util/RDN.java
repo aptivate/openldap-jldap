@@ -14,6 +14,7 @@
  ******************************************************************************/
 
 package com.novell.ldap.util;
+import com.novell.ldap.client.ArrayList;
 import java.util.Vector;
 
 /**
@@ -35,9 +36,9 @@ import java.util.Vector;
 
 public class RDN extends Object
 {
-    private Vector types;       //list of Type strings
-    private Vector values;      //list of Value strings
-    private String rawValue;    //the unnormalized value
+    private ArrayList types;       //list of Type strings
+    private ArrayList values;      //list of Value strings
+    private String rawValue;       //the unnormalized value
 
     /**
      * Creates an RDN object from the DN component specified in the string RDN
@@ -56,12 +57,14 @@ public class RDN extends Object
         this.types    = thisRDN.types;
         this.values   = thisRDN.values;
         this.rawValue = thisRDN.rawValue;
+        return;    
     }
 
     public RDN(){
-        types    = new Vector();
-        values   = new Vector();
+        types    = new ArrayList();
+        values   = new ArrayList();
         rawValue = "";
+        return;    
     }
 
     /**
@@ -69,6 +72,9 @@ public class RDN extends Object
      * mulivalues in one RDN they must all be present in the other.
      *
      * @param the RDN to compare to
+     *
+     * @throws IllegalArgumentException if the application compares a name
+     * with an OID.
      */
     public boolean equals(RDN rdn){
         if (this.values.size() != rdn.values.size()){
@@ -80,10 +86,10 @@ public class RDN extends Object
             j=0;
             //May need a more intellegent compare
             while ( j<values.size() && (
-                    !((String)this.values.elementAt(i)).equalsIgnoreCase(
-                      (String) rdn.values.elementAt(j)) ||
-                    !equalAttrType((String)this.types.elementAt(i),
-                                   (String) rdn.types.elementAt(j)))){
+                    !((String)this.values.get(i)).equalsIgnoreCase(
+                      (String) rdn.values.get(j)) ||
+                    !equalAttrType((String)this.types.get(i),
+                                   (String) rdn.types.get(j)))){
                 j++;
             }
             if (j >= rdn.values.size()) //couldn't find first value
@@ -107,8 +113,8 @@ public class RDN extends Object
         if (java.lang.Character.isDigit(attr1.charAt(0))  ^ //XOR
             java.lang.Character.isDigit(attr2.charAt(0)) )
             //isDigit tests if it is an OID
-            throw new UnsupportedOperationException("OID numbers are not " +
-                "currently compared to attribute types");
+            throw new IllegalArgumentException("OID numbers are not " +
+                "currently compared to attribute names");
 
         return attr1.equalsIgnoreCase(attr2);
     }
@@ -131,8 +137,8 @@ public class RDN extends Object
      * @param rawValue or text before normalization, can be Null
      */
     public void add(String attrType, String attrValue, String rawValue){
-        types.addElement(attrType);
-        values.addElement(attrValue);
+        types.add(attrType);
+        values.add(attrValue);
         this.rawValue += rawValue;
     }
 
@@ -201,7 +207,7 @@ public class RDN extends Object
      * @return Type of attribute
      */
     public String getType(){
-        return (String)types.elementAt(0);
+        return (String)types.get(0);
     }
 
     /**
@@ -211,7 +217,7 @@ public class RDN extends Object
      public String[] getTypes(){
         String[] toReturn = new String[types.size()];
         for(int i=0; i<types.size(); i++)
-            toReturn[i] = (String)types.elementAt(i);
+            toReturn[i] = (String)types.get(i);
         return toReturn;
      }
 
@@ -222,7 +228,7 @@ public class RDN extends Object
      * @return Type of attribute
      */
     public String getValue(){
-        return (String)values.elementAt(0);
+        return (String)values.get(0);
     }
 
     /**
@@ -232,7 +238,7 @@ public class RDN extends Object
      public String[] getValues(){
         String[] toReturn = new String[values.size()];
         for(int i=0; i<values.size(); i++)
-            toReturn[i] = (String)values.elementAt(i);
+            toReturn[i] = (String)values.get(i);
         return toReturn;
      }
 

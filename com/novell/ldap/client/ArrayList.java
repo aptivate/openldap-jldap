@@ -25,7 +25,7 @@ import java.lang.reflect.Array;
  * <strong>Note that this implementation is not synchronized.</strong>
  */
 
-public class ArrayList
+public class ArrayList implements Cloneable
 {
     /**
      * The array buffer which holds ArrayList items.  Its capacity
@@ -86,6 +86,18 @@ public class ArrayList
 	    return size == 0;
     }
 
+    /**
+     * Returns a shallow copy of this object.
+     * It does not make copies of the elements in the ArrayList.
+     *
+     * @return  a clone of this object.
+     */
+    public Object clone() {
+	    ArrayList newAList = new ArrayList(size);
+	    System.arraycopy(this.items, 0, newAList.items, 0, size);
+	    return newAList;
+    }
+    
     /**
      * Increases the size of this <tt>ArrayList</tt>, if necessary,
      * to be sure it can hold the number of items specified by
