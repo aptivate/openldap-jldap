@@ -13,9 +13,13 @@
  ******************************************************************************
 -->
 <!-- ======================================================================= -->
-<!-- COM.NOVELL.LDAP.PROTOCOL build file                                                -->
+<!-- com.novell.ldap.rfc2251 build file                                      -->
+<!--                              											 -->
+<!-- Note: This makefile works only if other packages are already built.     -->
+<!--       It only does a debug build of files in com.novell.ldap.rfc2251    -->
+<!--       It is typically used when checking for compile errors or debugging-->
 <!-- ======================================================================= -->
-<project name="LDAP.PROTOCOL" default="compile" basedir=".">
+<project name="LDAP.RFC2251" default="compile" basedir=".">
 	<!-- Targets                                                             -->
 	<!--     clean   - Cleans all generated class files                      -->
 	<!--     compile - Builds debug classes and jar files                    -->
@@ -23,6 +27,7 @@
 
 	<property name="top" value="../../../.."/>
     <property name="build" value="classes_debug"/>
+    <property name="lib" value="lib_debug"/>
 	<property name="optimize" value="off"/>
 	<property name="debug" value="on"/>
 
@@ -36,10 +41,12 @@
 
 
     <!-- =================================================================== -->
-    <!-- clean class files                                                  -->
+    <!-- clean class files                                                   -->
     <!-- =================================================================== -->
     <target name="clean" depends="init">
-		<delete dir="${top}/${build}/com/novell/ldap/rfc2251" includes="*.class"/>
+		<delete>
+			<fileset dir="${top}/${build}/com/novell/ldap/rfc2251" includes="*.class"/>
+		</delete>
 	</target>
 
     <!-- =================================================================== -->
@@ -47,12 +54,17 @@
     <!-- =================================================================== -->
     <target name="compile" depends="init">
 		<mkdir dir="${top}/${build}"/>
+		<filter token="COMPILE_DEBUG" value="true"/>
         <javac srcdir="${top}"
 				includes="com/novell/ldap/rfc2251/*.java"
                 destdir="${top}/${build}"
                 deprecation="off"
                 debug="${debug}"
                 optimize="${optimize}">
+				<classpath>
+					<pathelement location="${top}/${build}"/>
+					<pathelement location="${top}/external/ssl/domestic/nssl1.1_dom.jar"/>
+				</classpath>
         </javac>
     </target>
 

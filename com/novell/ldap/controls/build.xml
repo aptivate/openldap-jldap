@@ -13,13 +13,13 @@
  ******************************************************************************
 -->
 <!-- ======================================================================= -->
-<!-- COM.NOVELL.LDAP.EXTENSIONS build file                                       -->
+<!-- COM.NOVELL.LDAP.controls build file                                     -->
 <!--                              											 -->
 <!-- Note: This makefile works only if other packages are already built.     -->
-<!--       It only does a debug build of files in com.novell.ldap.extensions -->
+<!--       It only does a debug build of files in com.novell.ldap.controls   -->
 <!--       It is typically used when checking for compile errors or debugging-->
 <!-- ======================================================================= -->
-<project name="LDAP.EXTENSIONS" default="compile" basedir=".">
+<project name="LDAP.CONTROLS" default="compile" basedir=".">
 	<!-- Targets                                                             -->
 	<!--     clean   - Cleans all generated class files                      -->
 	<!--     compile - Builds debug classes and jar files                    -->
@@ -45,7 +45,7 @@
     <!-- =================================================================== -->
     <target name="clean" depends="init">
 		<delete>
-			<fileset dir="${top}/${build}/com/novell/ldap/extensions" includes="*.class"/>
+			<fileset dir="${top}/${build}/com/novell/ldap/controls" includes="*.class"/>
 		</delete>
 	</target>
 
@@ -56,7 +56,7 @@
 		<mkdir dir="${top}/${build}"/>
 		<filter token="COMPILE_DEBUG" value="true"/>
         <javac srcdir="${top}"
-				includes="com/novell/ldap/extensions/*.java"
+				includes="com/novell/ldap/controls/*.java"
                 destdir="${top}/${build}"
                 deprecation="off"
                 debug="${debug}"

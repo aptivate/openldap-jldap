@@ -16,7 +16,7 @@
 <!-- com.novell.ldap.asn1 build file                                         -->
 <!--                              											 -->
 <!-- Note: This makefile works only if other packages are already built.     -->
-<!--       It only does a debug build of files in the com.novell.ldap package-->
+<!--       It only does a debug build of files in com.novell.ldap.asn1.      -->
 <!--       It is typically used when checking for compile errors or debugging-->
 <!-- ======================================================================= -->
 <project name="LDAP.ASN1" default="compile" basedir=".">
