@@ -15,8 +15,6 @@
 
 package org.ietf.ldap;
 
-import com.novell.ldap.rfc2251.RfcControl;
-
 /**
  *  Encapsulates additional optional parameters for an
  *  LDAP operation, either on the server or on the client.
@@ -26,7 +24,7 @@ import com.novell.ldap.rfc2251.RfcControl;
  */
 public class LDAPControl
                 extends com.novell.ldap.LDAPControl
-                implements Cloneable 
+                implements Cloneable
 {
     /**
      * Constructs a control from a com.novell.ldap.LDAPControl object
@@ -48,6 +46,19 @@ public class LDAPControl
     {
         super( id, critical, vals);
         return;
+    }
+
+    /**
+     * Returns a clone of this object.
+     *
+     * @return a clone of this object
+     *
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPControl.html
+            #clone()">com.novell.ldap.LDAPControl.clone()</a>
+     */
+    public Object clone()
+    {
+        return super.clone();
     }
 
     /**

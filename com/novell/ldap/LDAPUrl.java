@@ -1,6 +1,6 @@
 /* **************************************************************************
-* $OpenLDAP$
-*
+ * $OpenLDAP$
+ *
  * Copyright (C) 1999 - 2002 Novell, Inc. All Rights Reserved.
  *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
@@ -32,10 +32,10 @@ import com.novell.ldap.client.ArrayEnumeration;
  *
  * @see LDAPConnection#search
  */
-public class LDAPUrl implements java.lang.Cloneable {
+public class LDAPUrl implements java.lang.Cloneable
+{
+    static private final int    DEFAULT_SCOPE  = LDAPConnection.SCOPE_BASE;
 
-     static private final String DEFAULT_FILTER = "(objectClass=*)";
-     static private final int    DEFAULT_SCOPE  = LDAPConnection.SCOPE_BASE;
     // Broken out parts of the URL
     private boolean    secure = false;               // URL scheme ldap/ldaps
     private boolean    ipV6 = false;                 // TCP/IP V6
@@ -117,7 +117,7 @@ public class LDAPUrl implements java.lang.Cloneable {
     *                     functionality of LDAP URLs. Currently no
     *                     LDAP URL extensions are defined. Each extension
     *                     specification is a type=value expression, and  may
-    *                     be <tt>null</tt> or empty.  The =value part may be
+    *                     be <code>null</code> or empty.  The =value part may be
     *                     omitted. The expression may be prefixed with '!' if it
     *                     is mandatory for the evaluation of the URL.
     */
@@ -172,7 +172,7 @@ public class LDAPUrl implements java.lang.Cloneable {
     *                     functionality of LDAP URLs. Currently no
     *                     LDAP URL extensions are defined. Each extension
     *                     specification is a type=value expression, and  may
-    *                     be <tt>null</tt> or empty.  The =value part may be
+    *                     be <code>null</code> or empty.  The =value part may be
     *                     omitted. The expression may be prefixed with '!' if it
     *                     is mandatory for the evaluation of the URL.
     *<br><br>
@@ -204,10 +204,13 @@ public class LDAPUrl implements java.lang.Cloneable {
      *
      * @return clone of this URL object.
      */
-    public Object clone(){
-        return new LDAPUrl(this.host, this.port, this.dn, this.attrs,
-                           this.scope, this.filter, this.extensions,
-                           this.secure);
+    public Object clone()
+    {
+        try {
+            return super.clone();
+        } catch( CloneNotSupportedException ce) {
+            throw new RuntimeException("Internal error, cannot create clone");
+        }
     }
 
     /**
@@ -367,7 +370,7 @@ public class LDAPUrl implements java.lang.Cloneable {
     }
 
     /**
-    * Returns the search filter or <TT>null</tt> if none was specified.
+    * Returns the search filter or <code>null</code> if none was specified.
     *
     * @return The search filter.
     */
@@ -438,19 +441,19 @@ public class LDAPUrl implements java.lang.Cloneable {
           } else {
               url.append( host);
           }
-          
+
           // Port not specified
           if( port != 0) {
              url.append( ":" + port);
           }
-          
+
           if( (dn == null) && (attrs == null) && (scope == DEFAULT_SCOPE) &&
                     (filter == null) && (extensions == null) ) {
                return url.toString();
           }
-          
+
           url.append( "/" );
-          
+
           if( dn != null) {
              url.append( dn );
           }

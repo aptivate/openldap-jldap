@@ -22,7 +22,7 @@ package org.ietf.ldap;
  * @see <a href="../../../../doc/com/novell/ldap/LDAPExtendedOperation.html">
             com.novell.ldap.LDAPExtendedOperation</a>
  */
-public class LDAPExtendedOperation
+public class LDAPExtendedOperation implements Cloneable
 {
 	private ExOp exop;
 
@@ -50,6 +50,25 @@ public class LDAPExtendedOperation
     }
 
     /**
+     * Creates a clone of this object
+     *
+     * @return a clone of this object
+     *
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPExtendedOperation.html
+            #clone()">com.novell.ldap.LDAPExtendedOperation.clone()</a>
+     */
+    public Object clone()
+    {
+        try {
+            LDAPExtendedOperation newOp = (LDAPExtendedOperation)super.clone();
+            newOp.exop = new ExOp( exop.getID(), exop.getValue());
+            return newOp;
+        } catch( CloneNotSupportedException ce) {
+            throw new RuntimeException("Internal error, cannot create clone");
+        }
+    }
+
+    /**
      * Returns the unique identifier of the operation.
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPExtendedOperation.html
@@ -59,7 +78,7 @@ public class LDAPExtendedOperation
     public String getID() {
         return exop.getID();
     }
- 
+
     /**
      * Returns a reference to the operation-specific data.
      *
@@ -70,7 +89,7 @@ public class LDAPExtendedOperation
     public byte[] getValue() {
         return exop.getValue();
     }
- 
+
     /**
      *  Sets the value for the operation-specific data.
      *

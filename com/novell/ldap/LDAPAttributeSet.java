@@ -17,20 +17,18 @@ package com.novell.ldap;
 
 import java.util.Iterator;
 import java.util.HashMap;
-import com.novell.ldap.client.EnumeratedIterator;
-
 
 /**
  *
  * A set of {@link LDAPAttribute} objects.
  *
- * <p>An <tt>LDAPAttributeSet</tt> is a collection of <tt>LDAPAttribute</tt>
- * classes as returned from an <tt>LDAPEntry</tt> on a search or read
- * operation. <tt>LDAPAttributeSet</tt> may be also used to contruct an entry
- * to be added to a directory.  If the <tt>add()</tt> or <tt>addAll()</tt>
+ * <p>An <code>LDAPAttributeSet</code> is a collection of <code>LDAPAttribute</code>
+ * classes as returned from an <code>LDAPEntry</code> on a search or read
+ * operation. <code>LDAPAttributeSet</code> may be also used to contruct an entry
+ * to be added to a directory.  If the <code>add()</code> or <code>addAll()</code>
  * methods are called and one or more of the objects to be added is not
- * an <tt>LDAPAttribute, ClassCastException</tt> is thrown (as discussed in the
- * documentation for <tt>java.util.Collection</tt>).
+ * an <code>LDAPAttribute, ClassCastException</code> is thrown (as discussed in the
+ * documentation for <code>java.util.Collection</code>).
  *
  * <p>Sample Code: <a href="http://developer.novell.com/ndk/doc/samplecode/jldap_sample/jldap_sample/AddEntry.java.html">AddEntry.java</p>
  *
@@ -39,7 +37,8 @@ import com.novell.ldap.client.EnumeratedIterator;
  */
 public class LDAPAttributeSet
         extends java.util.AbstractSet
-        implements Cloneable, java.util.Set {
+        implements Cloneable, java.util.Set
+{
 
     /**
      * This is the underlying data structure for this set.
@@ -65,13 +64,18 @@ public class LDAPAttributeSet
      *
      * @return A deep copy of this attribute set.
      */
-    public Object clone() {
-        LDAPAttributeSet newAttrs = new LDAPAttributeSet();
-        Iterator i = this.iterator();
-        while (i.hasNext()){
-            newAttrs.add( ((LDAPAttribute)i.next()).clone() );
+    public Object clone()
+    {
+        try {
+            LDAPAttributeSet newAttrs = (LDAPAttributeSet)super.clone();
+            Iterator i = this.iterator();
+            while (i.hasNext()){
+                newAttrs.add( ((LDAPAttribute)i.next()).clone());
+            }
+            return newAttrs;
+        } catch( CloneNotSupportedException ce) {
+            throw new RuntimeException("Internal error, cannot create clone");
         }
-        return newAttrs;
     }
 
     /**
@@ -79,11 +83,11 @@ public class LDAPAttributeSet
      *
      * <p>For example:</p>
      * <ul>
-     * <li><tt>getAttribute("cn")</tt>      returns only the "cn" attribute</li>
-     * <li><tt>getAttribute("cn;lang-en")</tt> returns only the "cn;lang-en"
+     * <li><code>getAttribute("cn")</code>      returns only the "cn" attribute</li>
+     * <li><code>getAttribute("cn;lang-en")</code> returns only the "cn;lang-en"
      *                                 attribute.</li>
      * </ul>
-     * <p>In both cases, <tt>null</tt> is returned if there is no exact match to
+     * <p>In both cases, <code>null</code> is returned if there is no exact match to
      * the specified attrName.</p>
      *
      * <p>Note: Novell eDirectory does not currently support language subtypes.
@@ -93,7 +97,7 @@ public class LDAPAttributeSet
      * subtype specifications. For example, "cn", "cn;phonetic", and
      * "cn;binary" are valid attribute names.
      *
-     * @return The attribute matching the specified attrName, or <tt>null</tt>
+     * @return The attribute matching the specified attrName, or <code>null</code>
      * if there is no exact match.
      */
     public LDAPAttribute getAttribute(String attrName) {
@@ -101,7 +105,7 @@ public class LDAPAttributeSet
     }
 
     /**
-     * Returns a single best-match attribute, or <tt>null</tt> if no match is
+     * Returns a single best-match attribute, or <code>null</code> if no match is
      * available in the entry.
      *
      * <p>LDAP version 3 allows adding a subtype specification to an attribute
@@ -112,15 +116,15 @@ public class LDAPAttributeSet
      * among localizations, only the base attribute may be stored, whereas
      * for others there may be varying degrees of specialization.</p>
      *
-     * <p>For example, <tt>getAttribute(attrName,lang)</tt> returns the
-     * <tt>LDAPAttribute</tt> that exactly matches attrName and that
+     * <p>For example, <code>getAttribute(attrName,lang)</code> returns the
+     * <code>LDAPAttribute</code> that exactly matches attrName and that
      * best matches lang.</p>
      *
      * <p>If there are subtypes other than "lang" subtypes included
      * in attrName, for example, "cn;binary", only attributes with all of
-     * those subtypes are returned. If lang is <tt>null</tt> or empty, the
+     * those subtypes are returned. If lang is <code>null</code> or empty, the
      * method behaves as getAttribute(attrName). If there are no matching
-     * attributes, <tt>null</tt> is returned. </p>
+     * attributes, <code>null</code> is returned. </p>
      *
      *
      * <p>Assume the entry contains only the following attributes:</p>
@@ -133,15 +137,15 @@ public class LDAPAttributeSet
      *
      *  <p>Examples:</p>
      *  <ul>
-     *  <li><tt>getAttribute( "cn" )</tt>       returns <tt>null</tt>.</li>
-     *  <li><tt>getAttribute( "sn" )</tt>       returns the "sn" attribute.</li>
-     *  <li><tt>getAttribute( "cn", "lang-en-us" )</tt>
+     *  <li><code>getAttribute( "cn" )</code>       returns <code>null</code>.</li>
+     *  <li><code>getAttribute( "sn" )</code>       returns the "sn" attribute.</li>
+     *  <li><code>getAttribute( "cn", "lang-en-us" )</code>
      *                              returns the "cn;lang-en" attribute.</li>
-     *   <li><tt>getAttribute( "cn", "lang-en" )</tt>
+     *   <li><code>getAttribute( "cn", "lang-en" )</code>
      *                              returns the "cn;lang-en" attribute.</li>
-     *   <li><tt>getAttribute( "cn", "lang-ja" )</tt>
-     *                              returns <tt>null</tt>.</li>
-     *   <li><tt>getAttribute( "sn", "lang-en" )</tt>
+     *   <li><code>getAttribute( "cn", "lang-ja" )</code>
+     *                              returns <code>null</code>.</li>
+     *   <li><code>getAttribute( "sn", "lang-en" )</code>
      *                              returns the "sn" attribute.</li>
      *  </ul>
      *
@@ -156,7 +160,7 @@ public class LDAPAttributeSet
      * appended using "-" as separator. For example, "lang-en", "lang-en-us",
      * "lang-ja", and "lang-ja-JP-kanji" are valid language specification.
      *
-     * @return A single best-match <tt>LDAPAttribute</tt>, or <tt>null</tt>
+     * @return A single best-match <code>LDAPAttribute</code>, or <code>null</code>
      * if no match is found in the entry.
      *
      */
@@ -179,7 +183,7 @@ public class LDAPAttributeSet
      * <li>    sn;lang-us</li>
      * </ul>
      *
-     * <p>Calling the <tt>getSubset</tt> method and passing lang-ja as the
+     * <p>Calling the <code>getSubset</code> method and passing lang-ja as the
      * argument, the method returns an attribute set containing the following
      * attributes:</p>
      *
@@ -243,24 +247,24 @@ public class LDAPAttributeSet
     }
 
     /**
-     * Returns <tt>true</tt> if this set contains no elements
+     * Returns <code>true</code> if this set contains no elements
      *
-     * @return <tt>true</tt> if this set contains no elements
+     * @return <code>true</code> if this set contains no elements
      */
     public boolean isEmpty() {
         return this.map.isEmpty();
     }
 
     /**
-     * Returns <tt>true</tt> if this set contains an attribute of the same name
+     * Returns <code>true</code> if this set contains an attribute of the same name
      * as the specified attribute.
      *
-     * @param attr   Object of type <tt>LDAPAttribute</tt>
+     * @param attr   Object of type <code>LDAPAttribute</code>
      *
-     * @return <tt>true</tt> if this set contains the specified attribute
+     * @return true if this set contains the specified attribute
      *
-     * @throws <tt>ClassCastException</tt> occurs the specified Object
-     * is not of type <tt>LDAPAttribute</tt>.
+     * @throws ClassCastException occurs the specified Object
+     * is not of type LDAPAttribute.
      */
     public boolean contains(Object attr) {
         LDAPAttribute attribute = (LDAPAttribute) attr;
@@ -272,12 +276,12 @@ public class LDAPAttributeSet
      * <p>If an attribute with the same name already exists in the set then the
      * specified attribute will not be added.</p>
      *
-     * @param attr   Object of type <tt>LDAPAttribute</tt>
+     * @param attr   Object of type <code>LDAPAttribute</code>
      *
-     * @return <tt>true</tt> if the attribute was added.
+     * @return true if the attribute was added.
      *
-     * @throws <tt>ClassCastException</tt> occurs the specified Object
-     * is not of type <tt>LDAPAttribute</tt>.
+     * @throws ClassCastException occurs the specified Object
+     * is not of type <code>LDAPAttribute</code>.
      */
     public boolean add(Object attr) {
         //We must enforce that attr is an LDAPAttribute
@@ -289,18 +293,18 @@ public class LDAPAttributeSet
     /**
      * Removes the specified object from this set if it is present.
      *
-     * <p>If the specified object is of type <tt>LDAPAttribute</tt>, the
+     * <p>If the specified object is of type <code>LDAPAttribute</code>, the
      * specified attribute will be removed.  If the specified object is of type
-     * <tt>String</tt>, the attribute with a name that matches the string will
+     * <code>String</code>, the attribute with a name that matches the string will
      * be removed.</p>
      *
-     * @param <tt>LDAPAttribute</tt> to be removed or <tt>String</tt> naming
+     * @param object LDAPAttribute to be removed or <code>String</code> naming
      * the attribute to be removed.
      *
-     * @return <tt>true</tt> if the object was removed.
+     * @return true if the object was removed.
      *
-     * @throws <tt>ClassCastException</tt> occurs the specified Object
-     * is not of type <tt>LDAPAttribute</tt> or of type <tt>String</tt>.
+     * @throws ClassCastException occurs the specified Object
+     * is not of type <code>LDAPAttribute</code> or of type <code>String</code>.
      */
     public boolean remove(Object object) {
         String attributeName; //the name is the key to object in the HashMap
@@ -324,15 +328,15 @@ public class LDAPAttributeSet
     }
 
     /**
-     * Adds all <tt>LDAPAttribute</tt> objects in the specified collection to
+     * Adds all <code>LDAPAttribute</code> objects in the specified collection to
      * this collection.
      *
-     * @param c  Collection of <tt>LDAPAttribute</tt> objects.
+     * @param c  Collection of <code>LDAPAttribute</code> objects.
      *
-     * @throws <tt>ClassCastException</tt> occurs when an element in the
-     * collection is not of type <tt>LDAPAttribute</tt>.
+     * @throws ClassCastException occurs when an element in the
+     * collection is not of type <code>LDAPAttribute</code>.
      *
-     * @return <tt>true</tt> if this set changed as a result of the call.
+     * @return true if this set changed as a result of the call.
      */
     public boolean addAll(java.util.Collection c){
         boolean setChanged = false;
@@ -388,7 +392,7 @@ public class LDAPAttributeSet
      * Returns a string representation of this LDAPAttributeSet
      *
      * @return a string representation of this LDAPAttributeSet
-     */ 
+     */
     public String toString()
     {
         StringBuffer retValue = new StringBuffer("LDAPAttributeSet: ");
@@ -401,7 +405,7 @@ public class LDAPAttributeSet
             first = false;
             LDAPAttribute attr = (LDAPAttribute)attrs.next();
             retValue.append(attr.toString());
-        }    
+        }
         return retValue.toString();
     }
 }

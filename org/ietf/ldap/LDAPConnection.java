@@ -239,8 +239,15 @@ public class LDAPConnection implements Cloneable
             com.novell.ldap.LDAPConnection.clone()</a>
      */
     public Object clone()
+            throws CloneNotSupportedException
     {
-        return new LDAPConnection((com.novell.ldap.LDAPConnection)conn.clone());
+        try {
+            LDAPConnection cconn = (LDAPConnection)super.clone();
+            cconn.conn = (com.novell.ldap.LDAPConnection)conn.clone();
+            return cconn;
+        } catch( CloneNotSupportedException ce) {
+            throw new RuntimeException("Internal error, cannot create clone");
+        }
     }
 
     /**

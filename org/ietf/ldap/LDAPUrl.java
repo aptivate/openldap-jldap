@@ -1,6 +1,6 @@
 /* **************************************************************************
-* $OpenLDAP$
-*
+ * $OpenLDAP$
+ *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
@@ -87,8 +87,15 @@ public class LDAPUrl implements Cloneable {
      * @see <a href="../../../../doc/com/novell/ldap/LDAPUrl.html
             #clone()">com.novell.ldap.LDAPUrl.clone()</a>
      */
-    public Object clone(){
-        return new LDAPUrl((com.novell.ldap.LDAPUrl)this.url);
+    public Object clone()
+    {
+        try {
+            LDAPUrl newUrl = (LDAPUrl)super.clone();
+            newUrl.url = (com.novell.ldap.LDAPUrl)this.url.clone();
+            return newUrl;
+        } catch( CloneNotSupportedException ce) {
+            throw new RuntimeException("Internal error, cannot create clone");
+        }
     }
 
     /**

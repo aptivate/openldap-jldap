@@ -409,14 +409,8 @@ public class LDAPConstraints implements Cloneable {
                 lc.properties = (Hashtable)properties.clone();
             }
             return lc;
-        }
-        catch(CloneNotSupportedException e) {
-            /*
-             * This cannot happen; we support clone as does arrays.
-             * Since this method throws no exceptions, we must
-             * throw a RuntimeException
-             */
-            throw new RuntimeException(e.toString());
+        } catch( CloneNotSupportedException ce) {
+            throw new RuntimeException("Internal error, cannot create clone");
         }
     }
 

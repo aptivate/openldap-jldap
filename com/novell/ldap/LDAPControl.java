@@ -81,6 +81,12 @@ public class LDAPControl implements Cloneable {
      */
     public Object clone()
     {
+        LDAPControl cont;
+        try {
+            cont = (LDAPControl)super.clone();
+        } catch( CloneNotSupportedException ce) {
+            throw new RuntimeException("Internal error, cannot create clone");
+        }
        byte[] vals = this.getValue();
        byte[] twin = null;
        if( vals != null) {
@@ -92,8 +98,11 @@ public class LDAPControl implements Cloneable {
            for(int i = 0; i < vals.length; i++){
              twin[i]=vals[i];
            }
+           cont.control = new RfcControl( new RfcLDAPOID(getID()),
+                                          new ASN1Boolean(isCritical()),
+                                          new ASN1OctetString(twin));
        }
-       return new LDAPControl(this.getID(), this.isCritical(), twin);
+       return cont;
     }
 
     /**
@@ -168,7 +177,7 @@ public class LDAPControl implements Cloneable {
     {
         return registeredControls;
     }
-    
+
     /**
      * Returns the RFC 2251 Control object.
      *

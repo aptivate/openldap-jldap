@@ -21,7 +21,7 @@ package org.ietf.ldap;
  * @see <a href="../../../../doc/com/novell/ldap/LDAPConstraints.html">
             com.novell.ldap.Constraints</a>
  */
-public class LDAPConstraints
+public class LDAPConstraints implements Cloneable
 {
     private com.novell.ldap.LDAPConstraints cons;
     private com.novell.ldap.LDAPReferralHandler refHandler = null;
@@ -66,6 +66,24 @@ public class LDAPConstraints
     }
 
     /**
+     * Creates a clone of this object
+     *
+     * @return a clone of this object
+     *
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPConstraints.html
+            #clone()">com.novell.ldap.LDAPConstraints.clone()</a>
+     */
+    public Object clone()
+    {
+        try {
+            LDAPConstraints newCons = (LDAPConstraints)super.clone();
+            newCons.cons = (com.novell.ldap.LDAPConstraints)this.cons.clone();
+            return newCons;
+        } catch( CloneNotSupportedException ce) {
+            throw new RuntimeException("Internal error, cannot create clone");
+        }
+    }
+    /**
      * Constructs an LDAPConstraints object, using the default
      * option values.
      *
@@ -87,9 +105,9 @@ public class LDAPConstraints
      * @see com.novell.ldap.LDAPConstraints#LDAPConstraints(
                 int,boolean,LDAPReferralHandler,int)
      * @see <a href="../../../../doc/com/novell/ldap/LDAPConstraints.html
-            #LDAPConstraints(int, boolean, 
+            #LDAPConstraints(int, boolean,
             com.novell.ldap.LDAPReferralHandler, int)">
-            com.novell.ldap.LDAPConstraints.LDAPConstraints(int, boolean, 
+            com.novell.ldap.LDAPConstraints.LDAPConstraints(int, boolean,
             LDAPReferralHandler, int)</a>
      */
     public LDAPConstraints(int msLimit,
@@ -127,7 +145,7 @@ public class LDAPConstraints
             LDAPConnection newconn;
             try {
                 newconn = ref.bind( ldapurl, new LDAPConnection(conn));
-                
+
                 if( newconn == null) {
                     return (com.novell.ldap.LDAPConnection)null;
                 }
@@ -278,7 +296,7 @@ public class LDAPConstraints
     {
         return refHandler;
     }
-    
+
     /**
      * Specifies whether referrals are followed automatically or whether
      * referrals throw an LDAPReferralException.

@@ -16,7 +16,7 @@
 package org.ietf.ldap;
 
 import java.util.Enumeration;
-import java.io.UnsupportedEncodingException;
+
 /**
  * Represents the name and values of one attribute of a directory entry.
  *
@@ -350,6 +350,12 @@ public class LDAPAttribute implements java.lang.Cloneable,
      */
     public Object clone()
     {
-        return new LDAPAttribute(this);
+        try {
+            LDAPAttribute newAttr = (LDAPAttribute)super.clone();
+            newAttr.attr = (com.novell.ldap.LDAPAttribute)this.attr.clone();
+            return attr;
+        } catch( CloneNotSupportedException ce) {
+            throw new RuntimeException("Internal error, cannot create clone");
+        }
     }
 }

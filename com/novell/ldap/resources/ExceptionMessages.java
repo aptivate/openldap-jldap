@@ -33,6 +33,7 @@ public class ExceptionMessages extends java.util.ListResourceBundle {
   public final static String FAILED_REFERRAL      = "FAILED_REFERRAL";
   public final static String REFERRAL_ITEM        = "REFERRAL_ITEM";
   public final static String CONNECTION_ERROR     = "CONNECTION_ERROR";
+  public final static String CONNECTION_IMPOSSIBLE= "CONNECTION_IMPOSSIBLE";
   public final static String CONNECTION_WAIT      = "CONNECTION_WAIT";
   public final static String CONNECTION_FINALIZED = "CONNECTION_FINALIZED";
   public final static String CONNECTION_CLOSED    = "CONNECTION_CLOSED";
@@ -98,6 +99,7 @@ public class ExceptionMessages extends java.util.ListResourceBundle {
       {"FAILED_REFERRAL", "{0}: Failed Referral: {1}"},
       {"REFERRAL_ITEM", "{0}: Referral: {1}"},
       {"CONNECTION_ERROR", "Unable to connect to server {0}:{1}"},
+      {"CONNECTION_IMPOSSIBLE", "Unable to reconnect to server, application has never called connect()"},
       {"CONNECTION_WAIT", "Connection lost waiting for results from {0}:{1}"},
       {"CONNECTION_FINALIZED", "Connection closed by the application finalizing the object"},
       {"CONNECTION_CLOSED", "Connection closed by the application disconnecting"},

@@ -15,7 +15,6 @@
 
 package org.ietf.ldap;
 
-import java.util.Locale;
 /**
  *  Represents an LDAP exception that is not a result of a server response.
  *
@@ -49,7 +48,7 @@ public class LDAPLocalException extends LDAPException
     }
 
     /**
-     * Constructs an exception with a detailed message 
+     * Constructs an exception with a detailed message
      * String and the result code.
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPLocalException.html
@@ -59,7 +58,7 @@ public class LDAPLocalException extends LDAPException
     public LDAPLocalException( String message,
                                int resultCode)
     {
-        super(message, resultCode, (String)null);
+        super(message, resultCode, null);
         return;
     }
 
@@ -76,7 +75,7 @@ public class LDAPLocalException extends LDAPException
                                int resultCode,
                                Throwable rootException)
     {
-        super(message, resultCode, (String)null, rootException);
+        super(message, resultCode, null, rootException);
         return;
     }
 }

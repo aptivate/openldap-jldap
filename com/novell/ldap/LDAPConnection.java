@@ -277,8 +277,13 @@ public class LDAPConnection implements Cloneable
      */
     public Object clone()
     {
-        LDAPConnection newClone = new LDAPConnection();
-        newClone.conn = conn;   // same connection
+        LDAPConnection newClone;
+        try {
+            newClone = (LDAPConnection)super.clone();
+        } catch( CloneNotSupportedException ce) {
+            throw new RuntimeException("Internal error, cannot create clone");
+        }
+        newClone.conn = conn;   // same underlying connection
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.apiRequests, name +
             "clone()");
@@ -1440,6 +1445,16 @@ public class LDAPConnection implements Cloneable
         msgId = msg.getMessageID();
         bindProps = new BindProperties(version, dn.trim(),"simple", null, null);
 
+        // For bind requests, if not connected, attempt to reconnect
+        if( ! conn.isConnected()) {
+            if( conn.getHost() != null) {
+                conn.connect( conn.getHost(), conn.getPort());
+            } else {
+                throw new LDAPException( ExceptionMessages.CONNECTION_IMPOSSIBLE,
+                    LDAPException.CONNECT_ERROR, (String)null);
+            }
+        }
+
         // The semaphore is released when the bind response is queued.
         conn.acquireWriteSemaphore( msgId);
 
@@ -1724,7 +1739,7 @@ public class LDAPConnection implements Cloneable
             "compare(" + dn + ") if value");
         }
         LDAPResponseQueue queue = compare(dn, attr, null, cons);
-        
+
         LDAPResponse res = (LDAPResponse)queue.getResponse();
 
         // Set local copy of responseControls synchronously - if there were any
@@ -1816,17 +1831,14 @@ public class LDAPConnection implements Cloneable
             throw new IllegalArgumentException("compare: Exactly one value " +
                     "must be present in the LDAPAttribute");
         }
-        
+
         if(dn == null ) {
             // Invalid parameter
             throw new IllegalArgumentException("compare: DN cannot be null");
         }
-        
+
         if(cons == null)
             cons = defSearchCons;
-
-        String name = attr.getName();
-        byte[] value = attr.getByteValueArray()[0]; // get first value
 
         LDAPMessage msg = new LDAPCompareRequest( dn,
                                                   attr.getName(),
@@ -1900,7 +1912,10 @@ public class LDAPConnection implements Cloneable
                                 LDAPException.PARAM_ERROR);
                     }
                 }
-                conn = conn.destroyClone( true, address, specifiedPort);
+                // This may return a different conn object
+                // Disassociate this clone with the underlying connection.
+                conn = conn.destroyClone( true);
+                conn.connect( address, specifiedPort);
                 break;
             }catch (LDAPException LE){
                 if (!hostList.hasMoreTokens())
@@ -2732,13 +2747,13 @@ public class LDAPConnection implements Cloneable
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.apiRequests, "read(" + toGet.toString() + ")");
         }
-        LDAPConnection conn = new LDAPConnection();
-        conn.connect(toGet.getHost(),toGet.getPort());
-        LDAPEntry toReturn = conn.read(toGet.getDN(),toGet.getAttributeArray());
+        LDAPConnection lconn = new LDAPConnection();
+        lconn.connect(toGet.getHost(),toGet.getPort());
+        LDAPEntry toReturn = lconn.read(toGet.getDN(),toGet.getAttributeArray());
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.apiRequests, "read: disconnect()");
         }
-        conn.disconnect();
+        lconn.disconnect();
         return toReturn;
     }
 
@@ -2771,14 +2786,14 @@ public class LDAPConnection implements Cloneable
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.apiRequests, "read(" + toGet.toString() + ")");
         }
-        LDAPConnection conn = new LDAPConnection();
-        conn.connect(toGet.getHost(),toGet.getPort());
-        LDAPEntry toReturn = conn.read(toGet.getDN(),
+        LDAPConnection lconn = new LDAPConnection();
+        lconn.connect(toGet.getHost(),toGet.getPort());
+        LDAPEntry toReturn = lconn.read(toGet.getDN(),
                                     toGet.getAttributeArray(), cons);
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.apiRequests, "read: disconnect()");
         }
-        conn.disconnect();
+        lconn.disconnect();
         return toReturn;
     }
 
@@ -3331,28 +3346,28 @@ public class LDAPConnection implements Cloneable
             Debug.trace( Debug.apiRequests,
                     "LDAPConnection.search(" + toGet.toString() + ")");
         }
-        LDAPConnection conn = new LDAPConnection();
-        conn.connect(toGet.getHost(),toGet.getPort());
+        LDAPConnection lconn = new LDAPConnection();
+        lconn.connect(toGet.getHost(),toGet.getPort());
         if( cons == null) {
             // This is a clone, so we already have our own copy
-            cons = conn.getSearchConstraints();
+            cons = lconn.getSearchConstraints();
         } else {
             // get our own copy of user's constraints because we modify it
             cons = (LDAPSearchConstraints)cons.clone();
         }
         cons.setBatchSize(0); // Must wait until all results arrive
-        LDAPSearchResults toReturn = conn.search(toGet.getDN(),
+        LDAPSearchResults toReturn = lconn.search(toGet.getDN(),
                 toGet.getScope(), toGet.getFilter(), toGet.getAttributeArray(),
                 false, cons);
-        conn.disconnect();
+        lconn.disconnect();
         return toReturn;
     }
-    
+
     /**
      * Sends an LDAP request to a directory server.
      *
      * <p>The specified the LDAP request is sent to the directory server
-     * associated with this connection. An LDAP request object is an 
+     * associated with this connection. An LDAP request object is an
      * {@link LDAPMessage} with the operation type set to one of the request
      * types. You can build a request by using the request classes found in the
      * {@link com.novell.ldap.message } package</p>
@@ -3378,11 +3393,11 @@ public class LDAPConnection implements Cloneable
             Debug.trace( Debug.apiRequests, name +
             "sendRequest(" + request.toString() + ")");
         }
-        
+
         if( ! request.isRequest() ) {
             throw new RuntimeException( "Object is not a request message");
         }
-        
+
         if(cons == null) {
             cons = defSearchCons;
         }
@@ -3404,7 +3419,7 @@ public class LDAPConnection implements Cloneable
                 agent = ((LDAPResponseQueue)queue).getMessageAgent();
             }
         }
-        
+
         try {
             agent.sendMessage( conn, request, cons.getTimeLimit(), myqueue, null);
         } catch(LDAPException lex) {
@@ -3647,7 +3662,7 @@ public class LDAPConnection implements Cloneable
         // to be used to follow the referral.
         return refInfo;
     }
-    
+
     /**
      * Check the result code and throw an exception if needed.
      *
@@ -3663,14 +3678,14 @@ public class LDAPConnection implements Cloneable
     private void chkResultCode( LDAPMessageQueue queue,
                                 LDAPConstraints cons,
                                 LDAPResponse response)
-                throws LDAPException                         
+                throws LDAPException
      {
         if( (response.getResultCode() == LDAPException.REFERRAL) &&
                                     cons.getReferralFollowing()) {
             // Perform referral following and return
             ArrayList refConn = null;
             try {
-                chaseReferral( queue, cons, response, 
+                chaseReferral( queue, cons, response,
                         response.getReferrals(), 0, false, null );
             } finally {
                 releaseReferralConnections( refConn);
@@ -3691,7 +3706,7 @@ public class LDAPConnection implements Cloneable
      * going to follow a referral.
      *
      * This functions recursively follows a referral until a result
-     * is returned or until the hop limit is reached.  
+     * is returned or until the hop limit is reached.
      *
      * @param queue The LDAPResponseQueue for this request
      * <br><br>

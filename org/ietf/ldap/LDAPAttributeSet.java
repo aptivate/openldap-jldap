@@ -20,9 +20,9 @@ import java.util.Collection;
 import java.util.Iterator;
 
 /**
- * <p>An <tt>LDAPAttributeSet</tt> is a collection of <tt>LDAPAttribute</tt>
- * classes as returned from an <tt>LDAPEntry</tt> on a search or read
- * operation. <tt>LDAPAttributeSet</tt> may be also used to contruct an entry
+ * <p>An <code>LDAPAttributeSet</code> is a collection of <code>LDAPAttribute</code>
+ * classes as returned from an <code>LDAPEntry</code> on a search or read
+ * operation. <code>LDAPAttributeSet</code> may be also used to contruct an entry
  * to be added to a directory.
  *
  * @see <a href="../../../../doc/com/novell/ldap/LDAPAttributeSet.html">
@@ -73,9 +73,15 @@ public class LDAPAttributeSet implements java.lang.Cloneable,
             com.novell.ldap.LDAPAttributeSet.clone()</a>
      */
     public Object clone()
+            throws CloneNotSupportedException
     {
-        return new LDAPAttributeSet(
-                (com.novell.ldap.LDAPAttributeSet)attrSet.clone());
+        try {
+            LDAPAttributeSet set = (LDAPAttributeSet)super.clone();
+            set.attrSet = (com.novell.ldap.LDAPAttributeSet)attrSet.clone();
+            return set;
+        } catch( CloneNotSupportedException ce) {
+            throw new RuntimeException("Internal error, cannot create clone");
+        }
     }
 
     /**
@@ -154,7 +160,7 @@ public class LDAPAttributeSet implements java.lang.Cloneable,
         }
         return c;
     }
-    
+
     /**
      * Adds all the specified attributes to this attribute set.
      *
@@ -179,7 +185,7 @@ public class LDAPAttributeSet implements java.lang.Cloneable,
         attrSet.clear();
         return;
     }
-    
+
     /**
      * Returns true if this AttributeSet contains the specified Attribute.
      *
@@ -193,7 +199,7 @@ public class LDAPAttributeSet implements java.lang.Cloneable,
         a = ((org.ietf.ldap.LDAPAttribute)attr).getWrappedObject();
         return attrSet.contains( a);
     }
-    
+
     /**
      * Returns true if this Attribute set contains all the attributes
      * in the specified collection.
@@ -212,7 +218,7 @@ public class LDAPAttributeSet implements java.lang.Cloneable,
                     ((LDAPAttributeSet)set).getWrappedObject();
         return attrSet.equals( aset);
     }
-    
+
     /**
      * Returns the hash code value for this set.
      */
@@ -220,7 +226,7 @@ public class LDAPAttributeSet implements java.lang.Cloneable,
     {
         return attrSet.hashCode( );
     }
-    
+
     /**
      * Returns true if there are no elements in this set.
      *
@@ -232,7 +238,7 @@ public class LDAPAttributeSet implements java.lang.Cloneable,
     {
         return attrSet.isEmpty( );
     }
-    
+
     /**
      * Returns an iterator over the elements of this set.
      *
@@ -244,7 +250,7 @@ public class LDAPAttributeSet implements java.lang.Cloneable,
     {
         return attrSet.iterator( );
     }
-    
+
     /**
      * Removes the specified LDAPAttribute object from the set.
      *
@@ -298,7 +304,7 @@ public class LDAPAttributeSet implements java.lang.Cloneable,
         LDAPAttribute[] attrs = new LDAPAttribute[attrSet.size()];
         return toArray(attrs);
     }
-    
+
     /**
      * Returns an array containing all the elements in this set.
      *
@@ -309,13 +315,13 @@ public class LDAPAttributeSet implements java.lang.Cloneable,
     {
         // Throw ClassCastException if wrong type
         LDAPAttribute[] newAttrs = (LDAPAttribute[])a;
-        
+
         com.novell.ldap.LDAPAttribute[] oldAttrs;
         oldAttrs = (com.novell.ldap.LDAPAttribute[])attrSet.toArray(
                 new com.novell.ldap.LDAPAttribute[attrSet.size()]);
-                    
+
         int length = oldAttrs.length;
-        
+
         if( newAttrs.length < length) {
             newAttrs = (LDAPAttribute[])java.lang.reflect.Array.newInstance(
                                 a.getClass().getComponentType(), length);
@@ -324,8 +330,8 @@ public class LDAPAttributeSet implements java.lang.Cloneable,
         int i = 0;
         for( i = 0; i < length; i++) {
             newAttrs[i] = new LDAPAttribute(oldAttrs[i]);
-        } 
-        
+        }
+
         if( newAttrs.length > length) {
             newAttrs[i] = null;
         }

@@ -22,59 +22,77 @@ package com.novell.ldap;
  *
  * @see LDAPConnection#extendedOperation
  */
-public class LDAPExtendedOperation {
+public class LDAPExtendedOperation implements Cloneable
+{
 
-   private String oid;
-   private byte[] vals;
+    private String oid;
+    private byte[] vals;
 
-   /**
-    * Constructs a new object with the specified object ID and data.
-    *
-    *  @param oid     The unique identifier of the operation.
-    *
-    *  @param vals    The operation-specific data of the operation.
-    */
-   public LDAPExtendedOperation(String oid, byte[] vals) {
-      this.oid = oid;
-      this.vals = vals;
-   }
+    /**
+     * Constructs a new object with the specified object ID and data.
+     *
+     *  @param oid     The unique identifier of the operation.
+     *
+     *  @param vals    The operation-specific data of the operation.
+     */
+    public LDAPExtendedOperation(String oid, byte[] vals) {
+       this.oid = oid;
+       this.vals = vals;
+    }
 
-   /**
-    * Returns the unique identifier of the operation.
-    *
-    * @return The OID (object ID) of the operation.
-    */
-   public String getID() {
-      return oid;
-   }
+    /**
+     * Returns a clone of this object.
+     *
+     * @return clone of this object.
+     */
+    public Object clone()
+    {
+        try {
+            LDAPExtendedOperation newOp = (LDAPExtendedOperation)super.clone();
+            System.arraycopy( this.vals, 0, newOp.vals, 0, this.vals.length);
+            return newOp;
+        } catch( CloneNotSupportedException ce) {
+            throw new RuntimeException("Internal error, cannot create clone");
+        }
+    }
 
-   /**
-    * Returns a reference to the operation-specific data.
-    *
-    * @return The operation-specific data.
-    */
-   public byte[] getValue() {
-      return vals;
-   }
+    /**
+     * Returns the unique identifier of the operation.
+     *
+     * @return The OID (object ID) of the operation.
+     */
+    public String getID() {
+       return oid;
+    }
 
-   /**
-    *  Sets the value for the operation-specific data.
-    *
-    *  @param newVals  The byte array of operation-specific data.
-    */
-   protected void setValue(byte[] newVals) {
-        this.vals = newVals;
-   }
+    /**
+     * Returns a reference to the operation-specific data.
+     *
+     * @return The operation-specific data.
+     */
+    public byte[] getValue() {
+       return vals;
+    }
 
-   /**
-    *  Resets the OID for the operation to a new value
-    *
-    *  @deprecated For internal use only
-    *
-    *  @param newoid  The new OID for the operation
-    */
-   protected void setID(String newoid) {
-        this.oid = newoid;
-   }
+    /**
+     *  Sets the value for the operation-specific data.
+     *
+     *  @param newVals  The byte array of operation-specific data.
+     */
+    protected void setValue(byte[] newVals) {
+         this.vals = newVals;
+         return;
+    }
 
+    /**
+     *  Resets the OID for the operation to a new value
+     *
+     *  @deprecated For internal use only
+     *
+     *  @param newoid  The new OID for the operation
+     */
+    protected void setID(String newoid) {
+         this.oid = newoid;
+         return;
+    }
 }

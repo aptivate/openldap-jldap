@@ -18,7 +18,6 @@ package com.novell.ldap.client;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.BufferedInputStream;
 import java.net.Socket;
 
 import com.novell.ldap.*;
@@ -155,6 +154,27 @@ public final class Connection implements Runnable
             Debug.trace( Debug.messages, name + "Created");
         }
         return;
+    }
+
+    /**
+     * Copy this Connection object.
+     *
+     * <p>This is not a true clone, but creates a new object encapsulating
+     * part of the connection information from the original object.
+     * The new object will have the same default socket factory,
+     * designated socket factory, host, port, and protocol version
+     * as the original object.
+     * The new object is NOT be connected to the host.</p>
+     *
+     * @return a shallow copy of this object
+     */
+    public Object copy()
+    {
+        Connection c = new Connection(this.mySocketFactory);
+        c.host = this.host;
+        c.port = this.port;
+        c.protocol = this.protocol;
+        return c;
     }
 
     /**
@@ -305,7 +325,7 @@ public final class Connection implements Runnable
                     // Reader thread terminated
                     throw new LDAPException(
                         ExceptionMessages.CONNECTION_READER,
-                        LDAPException.CONNECT_ERROR, lex);
+                        LDAPException.CONNECT_ERROR, null, lex);
                 }
                 synchronized( this) {
                     this.wait(5);
@@ -316,6 +336,20 @@ public final class Connection implements Runnable
         }
         deadReaderException = null;
         deadReader = null;
+        return;
+    }
+
+    /**
+    * Constructs a TCP/IP connection to a server specified in host and port.
+    *
+    * @param host The host to connect to.
+    *<br><br>
+    * @param host The port on the host to connect to.
+    */
+    public void connect(String host, int port)
+      throws LDAPException
+    {
+        connect( host, port, 0);
         return;
     }
 
@@ -381,7 +415,7 @@ public final class Connection implements Runnable
             throw new LDAPException(
                   ExceptionMessages.CONNECTION_ERROR,
                   new Object[] { host, new Integer(port) },
-                  LDAPException.CONNECT_ERROR, ioe);
+                  LDAPException.CONNECT_ERROR, null, ioe);
         }
         // Set host and port
         this.host = host;
@@ -421,38 +455,40 @@ public final class Connection implements Runnable
     }
 
     /**
-     *  Destroys a clone.  If the object is a clone,
-     *  the connection is left untouched and a new
-     *  Connection object is returned.  If not a clone,
-     *  the current connnection is destroyed and the
-     *  existing object is returned.
+     * Destroys a clone of <code>LDAPConnection</code>.
      *
-     * @return a Connection object.
+     * <p>This method first determines if only one <code>LDAPConnection</code>
+     * object is associated with this connection, i.e. if no clone exists.</p>
+     *
+     * <p>If no clone exists, the socket is closed, and the current
+     * <code>Connection</code> object is returned.</p>
+     *
+     * <p>If multiple <code>LDAPConnection</code> objects are associated
+     * with this connection, i.e. clones exist, a {@link #copy} of the
+     * this object is made, but is not connected to any host. This
+     * disassociates that clone from the original connection.  The new
+     * <code>Connection</code> object is returned.
+     *
+     * <p>Only one destroyClone instance is allowed to run at any one time.</p>
+     *
+     * <p>If the connection is closed, any threads waiting for operations
+     * on that connection will wake with an LDAPException indicating
+     * the connection is closed.</p>
+     *
+     * @param apiCall <code>true</code> indicates the application is closing the
+     *            connection or or creating a new one by calling either the
+     *            <code>connect</code> or <code>disconnect</code> methods
+     *            of <code>LDAPConnection</code>.  <code>false</code>
+     *            indicates that <code>LDAPConnection</code> is being finalized.
+     *
+     * @return a Connection object or null if finalizing.
      */
-    public final Connection destroyClone(boolean how)
-        throws LDAPException
-    {
-        return destroyClone(how, null,0);
-    }
-
-    /**
-     *  Destroys a clone.  If the object is a clone,
-     *  the connection is left untouched and a new
-     *  Connection object is returned.  If not a clone,
-     *  the current connnection is destroyed and the
-     *  existing object is returned.
-     *
-     *  Only one clone/destroyClone is allowed to run at any one time
-     *
-     * @return a Connection object.
-     */
-    synchronized public final Connection
-        destroyClone( boolean how, String host, int port)
-                    throws LDAPException
+    synchronized public final
+    Connection destroyClone( boolean apiCall)
     {
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.messages, name +
-                "destroyClone(" + how + "," + host + "," + port + ")");
+                "destroyClone(" + apiCall + ")");
         }
         Connection conn = this;
 
@@ -463,7 +499,11 @@ public final class Connection implements Runnable
                 Debug.trace( Debug.messages, name +
                     "destroyClone(" + cloneCount + ") create new connection");
             }
-            conn = new Connection( null );
+            if( apiCall) {
+                conn = (Connection)this.copy();
+            } else {
+                conn = null;
+            }
         } else {
             if( in != null) {
                 // Not a clone and connected
@@ -481,18 +521,12 @@ public final class Connection implements Runnable
                  * from an API call or from the object being finalized.
                  */
                 LocalException notify = new LocalException(
-                    (how ? ExceptionMessages.CONNECTION_CLOSED :
-                           ExceptionMessages.CONNECTION_FINALIZED),
-                           new Object[] { host, new Integer(port)},
-                           LDAPException.CONNECT_ERROR, null, null);
-
+                    (apiCall ? ExceptionMessages.CONNECTION_CLOSED :
+                               ExceptionMessages.CONNECTION_FINALIZED),
+                               null, LDAPException.CONNECT_ERROR, null, null);
                 // Destroy old connection
                 shutdown("destroy clone", 0, notify);
-            } else {
             }
-        }
-        if( host != null) {
-            conn.connect( host, port, 0);
         }
         return conn;
     }
@@ -604,15 +638,15 @@ public final class Connection implements Runnable
                 if (serverShutdownNotification) {
                     throw new LDAPException( ExceptionMessages.SERVER_SHUTDOWN_REQ,
                         new Object[] { host, new Integer(port)},
-                        LDAPException.CONNECT_ERROR,
+                        LDAPException.CONNECT_ERROR, null,
                         ioe);
                 }
 
                 // Other I/O Exception on host:port get reported as is
                 throw new LDAPException(ExceptionMessages.IO_EXCEPTION,
                     new Object[] {host, new Integer(port)},
-                LDAPException.CONNECT_ERROR, ioe);
-            }        
+                LDAPException.CONNECT_ERROR, null, ioe);
+            }
         } finally {
             freeWriteSemaphore(id);
         }
@@ -875,12 +909,12 @@ public final class Connection implements Runnable
     {
         if (this.mySocketFactory == null){
             throw new LDAPException( ExceptionMessages.NO_TLS_FACTORY,
-                                     LDAPException.TLS_NOT_SUPPORTED  );
+                                     LDAPException.TLS_NOT_SUPPORTED, (String)null);
         }
         else
         if ( !(this.mySocketFactory instanceof LDAPTLSSocketFactory )) {
             throw new LDAPException( ExceptionMessages.WRONG_FACTORY,
-                                     LDAPException.TLS_NOT_SUPPORTED  );
+                                     LDAPException.TLS_NOT_SUPPORTED, (String)null);
         }
 
         try {
@@ -906,12 +940,12 @@ public final class Connection implements Runnable
         catch( java.net.UnknownHostException uhe) {
             this.nonTLSBackup = null;
             throw new LDAPException("The host is unknown",
-                LDAPException.CONNECT_ERROR, uhe);
+                LDAPException.CONNECT_ERROR, null, uhe);
         }
         catch( IOException ioe ) {
             this.nonTLSBackup = null;
             throw new LDAPException("Could not negotiate a secure connection",
-                LDAPException.CONNECT_ERROR, ioe);
+                LDAPException.CONNECT_ERROR, null, ioe);
         }
         return;
     }
@@ -955,7 +989,7 @@ public final class Connection implements Runnable
             this.stopReaderMessageID = this.CONTINUE_READING;
         }catch (IOException ioe){
             throw new LDAPException(ExceptionMessages.STOPTLS_ERROR,
-                        LDAPException.CONNECT_ERROR, ioe);
+                        LDAPException.CONNECT_ERROR, null, ioe);
         }finally {
             this.nonTLSBackup = null;
             startReader();

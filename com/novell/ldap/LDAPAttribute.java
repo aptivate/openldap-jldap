@@ -19,7 +19,6 @@ package com.novell.ldap;
 import com.novell.ldap.client.ArrayEnumeration;
 import com.novell.ldap.util.Base64;
 
-import java.io.FileReader;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -177,8 +176,18 @@ public class LDAPAttribute implements java.lang.Cloneable,
      *
      * @return clone of this LDAPAttribute.
      */
-    public Object clone(){
-        return new LDAPAttribute(this);
+    public Object clone()
+    {
+        LDAPAttribute newAttr;
+        try {
+            newAttr = (LDAPAttribute)super.clone();
+            if( values != null) {
+                System.arraycopy( this.values, 0, newAttr.values, 0, this.values.length);
+            }
+        } catch( CloneNotSupportedException ce) {
+            throw new RuntimeException("Internal error, cannot create clone");
+        }
+        return newAttr;
     }
 
     /**
@@ -233,7 +242,7 @@ public class LDAPAttribute implements java.lang.Cloneable,
         if( attrString == null) {
             throw new IllegalArgumentException("Attribute value cannot be null");
         }
-        
+
         this.add( Base64.decode(attrString));
         return;
     }
@@ -254,9 +263,9 @@ public class LDAPAttribute implements java.lang.Cloneable,
         if( attrString == null) {
             throw new IllegalArgumentException("Attribute value cannot be null");
         }
-        
+
         this.add( Base64.decode(attrString, start, end));
-        
+
         return;
     }
 
@@ -275,7 +284,7 @@ public class LDAPAttribute implements java.lang.Cloneable,
         if( attrChars == null) {
             throw new IllegalArgumentException("Attribute value cannot be null");
         }
-        
+
         this.add( Base64.decode(attrChars));
         return;
     }
@@ -295,9 +304,9 @@ public class LDAPAttribute implements java.lang.Cloneable,
             throw new IllegalArgumentException("Attribute URL cannot be null");
         }
         addURLValue( new URL( url));
-        return;    
+        return;
     }
-    
+
     /**
      * Adds a URL, indicating a file or other resource that contains
      * the value of the attribute.
@@ -345,12 +354,12 @@ public class LDAPAttribute implements java.lang.Cloneable,
                 totalLength += len;
             }
             /*
-             * Now that the length is known, allocate an array to hold all 
+             * Now that the length is known, allocate an array to hold all
              * the bytes of data and copy the data to that array, store
              * it in this LDAPAttribute
              */
             byte[] data = new byte[totalLength];
-            int offset = 0; // 
+            int offset = 0; //
             for( int i=0; i < bufs.size(); i++) {
                 URLData b = (URLData)bufs.get(i);
                 len = b.getLength();
@@ -779,7 +788,7 @@ public class LDAPAttribute implements java.lang.Cloneable,
         }
         return;
     }
-    
+
     /**
      * Replaces all values with the specified value. This protected method is
      * used by sub-classes of LDAPSchemaElement because the value cannot be set
@@ -867,33 +876,5 @@ public class LDAPAttribute implements java.lang.Cloneable,
             throw new RuntimeException(e.toString());
         }
         return result.toString();
-    }
-
-    private class URLAttribute
-    {
-        private URL url;
-        private FileReader reader;
-
-        private URLAttribute( URL url, FileReader reader)
-        {
-            this.url = url;
-            this.reader = reader;
-            return;
-        }
-
-        private URL getURL()
-        {
-            return url;
-        }
-        private FileReader getReader()
-        {
-            return reader;
-        }
-
-        private void setReader(FileReader reader)
-        {
-            this.reader = reader;
-            return;
-        }
     }
 }
