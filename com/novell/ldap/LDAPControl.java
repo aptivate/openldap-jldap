@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPControl.java,v 1.8 2000/09/11 21:05:49 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPControl.java,v 1.9 2000/09/27 22:04:59 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -12,9 +12,9 @@
  * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
  * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY. 
  ***************************************************************************/
- 
+
 package com.novell.ldap;
- 
+
 import com.novell.ldap.asn1.*;
 import com.novell.ldap.protocol.*;
 
@@ -29,102 +29,109 @@ import com.novell.ldap.protocol.*;
  */
 public class LDAPControl implements Cloneable {
 
-	private Control control; // An RFC 2251 Control
+    private Control control; // An RFC 2251 Control
 
-   /**
-    * Constructs a new LDAPControl object using the specified values.
-    *
-    *  @param id     The ID of the control, as a dotted string.
-    *<br><br> 
-    *  @param critical   True if the LDAP operation should be discarded if
-    *                    the control is not supported. False if 
-    *                    the operation can be processed without the control.
-    *<br><br> 
-    *  @param vals     The control-specific data.
-    */
-   public LDAPControl(String id, boolean critical, byte vals[]) {
-		control = new Control(new LDAPOID(id), new ASN1Boolean(critical),
-		                      new ASN1OctetString(vals));
-   }
-
-	/**
-	 * Create an LDAPControl from an existing control. 
-	 */
-	public LDAPControl(Control control)
-	{
-		this.control = control;
-	}
-
-   /**
-    * Returns a copy of the current LDAPControl object.
-    *
-    * @return A copy of the current LDAPControl object.
-    */
-   public Object clone() {
-      return null;
-   }
-
-   /**
-    * Returns the identifier of the control.
-    *
-    * @return The object ID of the control.
-    */
-   public String getID() {
-		return new String(control.getControlType().getContent());
-   }
-
-   /**
-    * Returns the control-specific data of the object.
-    *
-    * @return The control-specific data of the object as a byte array.
-    */
-   public byte[] getValue() {
-		return control.getControlValue().getContent();
-   }
-
-   /**
-    * Returns whether the control is critical for the operation.
-    *
-    * @return Returns true if the control must be supported for an associated
-    * operation to be executed, and false if the control is not required for 
-    * the operation.
-    */
-   public boolean isCritical() {
-		return control.getCriticality().getContent();
-   }
-
-   /**
-    * Instantiates a control, given the raw data representing it in an LDAP
-    * message.
-    *
-    * @param data An array of data bytes for the control.
-    */
-   public static LDAPControl newInstance(byte[] data) {
-      return null;
-   }
-
-   /**
-    * Registers a class to be instantiated on receipt of a control with the
-    * given OID. 
-    *
-    * <p>Any previous registration for the OID is overridden. The
-    * controlClass must be an extension of LDAPControl.</p>
-    *
-    *  @param oid            The object identifier of the control.
-    *<br><br>
-    *  @param controlClass   A class which can instantiate an LDAPControl.
-    */
-   public static void register(String oid, Class controlClass) {
-   }
-
-	/**
-	 * Returns the object identifier of the control.
+    /**
+     * Constructs a new LDAPControl object using the specified values.
      *
-     * @return The OID for the control.
-	 */
-	public Control getASN1Object()
-	{
-		return control;
-	}
+     *  @param id     The ID of the control, as a dotted string.
+     *<br><br> 
+     *  @param critical   True if the LDAP operation should be discarded if
+     *                    the control is not supported. False if 
+     *                    the operation can be processed without the control.
+     *<br><br> 
+     *  @param vals     The control-specific data.
+     */
+    public LDAPControl(String id, boolean critical, byte vals[])
+    {
+        control = new Control(new LDAPOID(id), new ASN1Boolean(critical),
+                              new ASN1OctetString(vals));
+    }
+
+    /**
+     * Create an LDAPControl from an existing control. 
+     */
+    public LDAPControl(Control control)
+    {
+        this.control = control;
+    }
+
+    /**
+     * Returns a copy of the current LDAPControl object.
+     *
+     * @return A copy of the current LDAPControl object.
+     */
+    public Object clone()
+    {
+        return null;
+    }
+
+    /**
+     * Returns the identifier of the control.
+     *
+     * @return The object ID of the control.
+     */
+    public String getID()
+    {
+        return new String(control.getControlType().getContent());
+    }
+
+    /**
+     * Returns the control-specific data of the object.
+     *
+     * @return The control-specific data of the object as a byte array.
+     */
+    public byte[] getValue()
+    {
+        return control.getControlValue().getContent();
+    }
+
+    /**
+     * Returns whether the control is critical for the operation.
+     *
+     * @return Returns true if the control must be supported for an associated
+     * operation to be executed, and false if the control is not required for 
+     * the operation.
+     */
+    public boolean isCritical()
+    {
+        return control.getCriticality().getContent();
+    }
+
+    /**
+     * Instantiates a control, given the raw data representing it in an LDAP
+     * message.
+     *
+     * @param data An array of data bytes for the control.
+     */
+    public static LDAPControl newInstance(byte[] data)
+    {
+        return null;
+    }
+
+    /**
+     * Registers a class to be instantiated on receipt of a control with the
+     * given OID. 
+     *
+     * <p>Any previous registration for the OID is overridden. The
+     * controlClass must be an extension of LDAPControl.</p>
+     *
+     *  @param oid            The object identifier of the control.
+     *<br><br>
+     *  @param controlClass   A class which can instantiate an LDAPControl.
+     */
+    public static void register(String oid, Class controlClass)
+    {
+    }
+
+    /**
+     * Returns the RFC 2251 Control object.
+     *
+     * @return An ASN.1 RFC 2251 Control.
+     */
+    public Control getASN1Object()
+    {
+        return control;
+    }
 }
 
