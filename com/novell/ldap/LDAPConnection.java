@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id$
+ * $Id: LDAPConnection.java,v 1.6 2000/03/14 18:17:26 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -603,7 +603,9 @@ public class LDAPConnection implements
    }
 
    /**
-    * Adds an entry to the directory. (this method not in internet draft)
+	 * add (LDAPv2)
+	 *
+    * Adds an entry to the directory.
     *
     * Parameters are:
     *
@@ -617,7 +619,7 @@ public class LDAPConnection implements
    }
 
    /**
-    * 4.28.2 add (LDAPv2)
+    * add (LDAPv2)
     *
     * Adds an entry to the directory.
     *
@@ -638,7 +640,7 @@ public class LDAPConnection implements
    }
 
    /**
-    * 4.28.3 bind (LDAPv2)
+    * bind (LDAPv2)
     *
     * Authenticates to the LDAP server (that the object is currently
     * connected to) using the specified name and password.  If the object
@@ -660,12 +662,13 @@ public class LDAPConnection implements
     */
    public void bind(String dn,
                     String passwd)
-   throws LDAPException {
+		throws LDAPException
+	{
       bind(LDAP_V2, dn, passwd); // call LDAPv3 bind()
    }
 
    /**
-    * 4.28.4 compare (LDAPv2)
+    * compare (LDAPv2)
     *
     * Checks to see if an entry contains an attribute with a specified
     * value.  Returns true if the entry has the value, and false if the
@@ -683,11 +686,14 @@ public class LDAPConnection implements
     */
    public boolean compare(String dn,
                           LDAPAttribute attr)
-   throws LDAPException {
+		throws LDAPException
+	{
       return compare(dn, attr, defSearchCons);
    }
 
    /**
+    * compare (LDAPv2)
+	 *
     * Checks to see if an entry contains an attribute with a specified
     * value.  Returns true if the entry has the value, and false if the
     * entry does not have the value or the attribute.
@@ -707,7 +713,8 @@ public class LDAPConnection implements
    public boolean compare(String dn,
                           LDAPAttribute attr,
                           LDAPConstraints cons)
-   throws LDAPException {
+		throws LDAPException
+	{
       boolean ret = false;
 
 		LDAPResponseListener listener =
@@ -731,7 +738,8 @@ public class LDAPConnection implements
     * LDAPv2
     */
    public void connect(String host, int port)
-   throws LDAPException {
+		throws LDAPException
+	{
       connect(host, port, null, null);
    }
 
@@ -739,7 +747,8 @@ public class LDAPConnection implements
     * LDAPv2
     */
    public void connect(String host, int port, String dn, String passwd)
-   throws LDAPException {
+		throws LDAPException
+	{
       // call LDAPv3 method
       connect(LDAP_V2, host, port, dn, passwd);
    }
@@ -754,7 +763,9 @@ public class LDAPConnection implements
     *
     *  dn             Distinguished name of the entry to modify.
     */
-   public void delete(String dn) throws LDAPException {
+   public void delete(String dn)
+		throws LDAPException
+	{
       delete(dn, defSearchCons);
    }
 
@@ -788,7 +799,8 @@ public class LDAPConnection implements
 	 * server, and then close the socket.
     */
    public void disconnect()
-	throws LDAPException {
+		throws LDAPException
+	{
 		if(conn != null) {
 			conn.cleanup((LDAPControl[])null);
 			conn = null;
@@ -853,7 +865,8 @@ public class LDAPConnection implements
     *  mod            A single change to be made to the entry.
     */
    public void modify(String dn, LDAPModification mod)
-   throws LDAPException {
+		throws LDAPException
+	{
       modify(dn, mod, defSearchCons);
    }
 
@@ -878,8 +891,8 @@ public class LDAPConnection implements
    public void modify(String dn,
                       LDAPModification mod,
                       LDAPConstraints cons)
-   throws LDAPException {
-
+		throws LDAPException
+	{
 		LDAPModificationSet mods = new LDAPModificationSet();
 		mods.add(mod);
 		modify(dn, mods, cons);
@@ -899,13 +912,12 @@ public class LDAPConnection implements
     *  mods           A set of changes to be made to the entry.
     */
    public void modify(String dn, LDAPModificationSet mods)
-   throws LDAPException {
+		throws LDAPException
+	{
       modify(dn, mods, defSearchCons);
    }
 
    /**
-	 * 4.28.9 modify
-	 *
     * Makes a set of changes to an existing entry in the directory (for
     * example, changes attribute values, adds new attribute values, or
     * removes existing attribute values).
@@ -928,36 +940,79 @@ public class LDAPConnection implements
 		listener.getResponse().chkResultCode();
    }
 
+   /**
+	 * read (LDAPv2)
+	 *
+    * Reads the entry for the specified distiguished name (DN) and
+    * retrieves all attributes for the entry.
+    *
+    * Parameters are:
+    *
+    *  dn             Distinguished name of the entry to retrieve.
+    */
    public LDAPEntry read(String dn)
-	throws LDAPException {
+		throws LDAPException
+	{
       return read(dn, defSearchCons);
    }
 
+   /**
+	 * read (LDAPv2)
+	 *
+    * Reads the entry for the specified distiguished name (DN) and
+    * retrieves all attributes for the entry.
+    *
+    * Parameters are:
+    *
+    *  dn             Distinguished name of the entry to retrieve.
+    *
+    *  cons           Constraints specific to the operation.
+    */
    public LDAPEntry read(String dn,
                          LDAPSearchConstraints cons)
-   throws LDAPException {
-      if(cons == null) {
-         cons = defSearchCons;
-      }
+		throws LDAPException
+	{
       return null;
    }
 
+   /**
+	 * read (LDAPv2)
+	 *
+    * Reads the entry for the specified distinguished name (DN) and
+    * retrieves only the specified attributes from the entry.
+    *
+    * Parameters are:
+    *
+    *  dn             Distinguished name of the entry to retrieve.
+    *
+    *  attrs          Names of attributes to retrieve.
+    */
    public LDAPEntry read(String dn,
                          String attrs[])
-   throws LDAPException {
-      return read(dn, attrs, null);
+		throws LDAPException
+	{
+      return read(dn, attrs, defSearchCons);
    }
 
    /**
-    * this is not in the draft, but should be
+	 * read (LDAPv2)
+	 *
+    * Reads the entry for the specified distinguished name (DN) and
+    * retrieves only the specified attributes from the entry.
+    *
+    * Parameters are:
+    *
+    *  dn             Distinguished name of the entry to retrieve.
+    *
+    *  attrs          Names of attributes to retrieve.
+	 *
+	 *  cons           Constraints specific to the operation.
     */
    public LDAPEntry read(String dn,
                          String attrs[],
                          LDAPSearchConstraints cons)
-   throws LDAPException {
-      if(cons == null) {
-         cons = defSearchCons;
-      }
+		throws LDAPException
+	{
       return null;
    }
 
@@ -978,7 +1033,8 @@ public class LDAPConnection implements
    public void rename(String dn,
                       String newRdn,
                       boolean deleteOldRdn)
-   throws LDAPException {
+		throws LDAPException
+	{
 		rename(dn, newRdn, deleteOldRdn, defSearchCons);
    }
 
@@ -1002,7 +1058,8 @@ public class LDAPConnection implements
                       String newRdn,
                       boolean deleteOldRdn,
                       LDAPConstraints cons)
-   throws LDAPException {
+		throws LDAPException
+	{
 		// null for newParentdn means that this is originating as an LDAPv2 call
 		rename(dn, newRdn, null, deleteOldRdn, cons);
    }

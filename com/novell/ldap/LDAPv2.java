@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id$
+ * $Id: LDAPv2.java,v 1.2 2000/03/14 18:17:30 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -16,7 +16,7 @@
 package com.novell.ldap; 
  
 /**
- * 4.28 public interface LDAPv2
+ * public interface LDAPv2
  *
  *  As a mechanism to support planned and future LDAP protocol
  *  extensions, functionality is defined in an interface - LDAPv2,
@@ -40,10 +40,6 @@ public interface LDAPv2 {
    public int LDAP_DEREF_FINDING    = 2;
    public int LDAP_DEREF_ALWAYS     = 3;
 
-   /*
-    * 4.28.1 abandon
-    */
-
    /**
     * Notifies the server to not send additional results associated with
     * this LDAPSearchResults object, and discards any results already
@@ -55,9 +51,15 @@ public interface LDAPv2 {
     */
    public void abandon(LDAPSearchResults results) throws LDAPException;
 
-   /*
-    * 4.28.2 add
+   /**
+    * Adds an entry to the directory.
+    *
+    * Parameters are:
+    *
+    *  entry          LDAPEntry object specifying the distinguished
+    *                  name and attributes of the new entry.
     */
+   public void add(LDAPEntry entry) throws LDAPException;
 
    /**
     * Adds an entry to the directory.
@@ -72,10 +74,6 @@ public interface LDAPv2 {
    public void add(LDAPEntry entry,
                    LDAPConstraints cons)
                    throws LDAPException;
-
-   /*
-    * 4.28.3 bind
-    */
 
    /**
     * Authenticates to the LDAP server (that the object is currently
@@ -99,10 +97,6 @@ public interface LDAPv2 {
    public void bind(String dn,
                     String passwd)
                     throws LDAPException;
-
-   /*
-    * 4.28.4 compare
-    */
 
    /**
     * Checks to see if an entry contains an attribute with a specified
@@ -145,10 +139,6 @@ public interface LDAPv2 {
                           LDAPConstraints cons)
                           throws LDAPException;
 
-   /*
-    * 4.28.5 connect
-    */
-
    /**
     * Connects to the specified host and port. If this LDAPConnection
     * object represents an open connection, the connection is closed first
@@ -159,7 +149,6 @@ public interface LDAPv2 {
    public void connect(String host,
                        int port)
                        throws LDAPException;
-
 
    /**
     * Connects to the specified host and port and uses the specified DN and
@@ -205,13 +194,8 @@ public interface LDAPv2 {
                        String passwd)
                        throws LDAPException;
 
-   /*
-    * 4.28.6 delete
-    */
-
    /**
     * Deletes the entry for the specified DN from the directory.
-    *
     *
     * Parameters are:
     *
@@ -221,7 +205,6 @@ public interface LDAPv2 {
 
    /**
     * Deletes the entry for the specified DN from the directory.
-    *
     *
     * Parameters are:
     *
@@ -233,34 +216,21 @@ public interface LDAPv2 {
                       LDAPConstraints cons)
                       throws LDAPException;
 
-   /*
-    * 4.28.7 disconnect
-    */
-
    /**
     * Disconnects from the LDAP server. Before the object can perform LDAP
     * operations again, it must reconnect to the server by calling connect.
     */
    public void disconnect() throws LDAPException;
 
-   /*
-    * 4.28.8 getOption
-    */
-
    /**
     * Returns the value of the specified option for this object.
     *
     * Parameters are:
     *
-    *
     *  option         See LDAPConnection.setOption for a description of
     *                  valid options.
     */
    public Object getOption(int option) throws LDAPException;
-
-   /*
-    * 4.28.9 modify
-    */
 
    /**
     * Makes a single change to an existing entry in the directory (for
@@ -334,10 +304,6 @@ public interface LDAPv2 {
                       LDAPConstraints cons)
                       throws LDAPException;
 
-   /*
-    * 4.28.10 read
-    */
-
    /**
     * Reads the entry for the specified distiguished name (DN) and
     * retrieves all attributes for the entry.
@@ -347,7 +313,6 @@ public interface LDAPv2 {
     *  dn             Distinguished name of the entry to retrieve.
     */
    public LDAPEntry read(String dn) throws LDAPException;
-
 
    /**
     * Reads the entry for the specified distiguished name (DN) and
@@ -363,7 +328,6 @@ public interface LDAPv2 {
                          LDAPSearchConstraints cons)
                          throws LDAPException;
 
-
    /**
     * Reads the entry for the specified distinguished name (DN) and
     * retrieves only the specified attributes from the entry.
@@ -378,9 +342,22 @@ public interface LDAPv2 {
                          String attrs[])
                          throws LDAPException;
 
-   /*
-    * 4.28.11 rename
+   /**
+    * Reads the entry for the specified distinguished name (DN) and
+    * retrieves only the specified attributes from the entry.
+    *
+    * Parameters are:
+    *
+    *  dn             Distinguished name of the entry to retrieve.
+    *
+    *  attrs          Names of attributes to retrieve.
+	 *
+	 *  cons           Constraints specific to the operation.
     */
+   public LDAPEntry read(String dn,
+                         String attrs[],
+		                   LDAPSearchConstraints cons)
+                         throws LDAPException;
 
    /**
     * Renames an existing entry in the directory.
@@ -418,10 +395,6 @@ public interface LDAPv2 {
                       boolean deleteOldRdn,
                       LDAPConstraints cons)
                       throws LDAPException;
-
-   /*
-    * 4.28.12 search
-    */
 
    /**
     * Performs the search specified by the parameters.
@@ -537,10 +510,6 @@ public interface LDAPv2 {
                                           LDAPSearchConstraints cons)
                                           throws LDAPException;
    */
-
-   /*
-    * 4.28.13 setOption
-    */
 
    /**
     * Sets the value of the specified option for this object.
