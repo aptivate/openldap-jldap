@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/com/novell/asn1/ldap/Filter.java,v 1.6 2000/08/23 04:17:18 smerrill Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/com/novell/asn1/ldap/Filter.java,v 1.7 2000/08/24 00:16:05 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  ***************************************************************************/
@@ -130,17 +130,19 @@ public class Filter extends ASN1Choice {
    private ASN1Tagged parseFilter()
       throws LDAPException
    {
-      if(!st.nextToken().equals("(")) {
-         throw new LDAPException("Missing opening paren",
-                                 LDAPException.FILTER_ERROR);
-      }
+		if(!st.nextToken().equals("(")) {
+			throw new LDAPException("Missing opening paren",
+											LDAPException.FILTER_ERROR);
+		}
 
       ASN1Tagged filter = parseFilterComp();
-
-      if(!st.nextToken().equals(")")) {
-         throw new LDAPException("Missing closing paren",
-                                 LDAPException.FILTER_ERROR);
-      }
+		
+		if(st.countTokens() > 0) {
+			if(!st.nextToken().equals(")")) {
+				throw new LDAPException("Missing closing paren",
+												LDAPException.FILTER_ERROR);
+			}
+		}
 
       return filter;
    }
@@ -151,7 +153,7 @@ public class Filter extends ASN1Choice {
    private ASN1Tagged parseFilterComp()
       throws LDAPException
    {
-      String tok = st.nextToken().trim(); // get operator or attr name
+      String tok = st.nextToken("&|!=~><:()").trim(); // get operator or attr name
 
       if(tok.equals("&")) {
          return new ASN1Tagged(
@@ -173,7 +175,7 @@ public class Filter extends ASN1Choice {
       }
       else {
          // get item (may be: simple / present / substring / extensible)
-         String filtertype = st.nextToken("><~=()").trim(); // get rel op
+         String filtertype = st.nextToken().trim(); // get rel op
 
          if(filtertype.equals(">")) {
             if(!st.nextToken().equals("=")) {
@@ -313,9 +315,10 @@ public class Filter extends ASN1Choice {
    {
       ASN1SetOf set = new ASN1SetOf();
 
-      while(st.nextToken().trim().equals("("))
+      while(st.nextToken("()").trim().equals("("))
       {
          set.add(parseFilterComp());
+			st.nextToken(")");
       }
 
       return set;
