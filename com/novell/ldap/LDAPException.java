@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPException.java,v 1.6 2000/09/06 22:36:32 judy Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPException.java,v 1.7 2000/09/07 17:37:46 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -372,9 +372,9 @@ public class LDAPException extends Exception {
    /**
    *
    *
-   * <p>PARTIAL_RESULTS = 9</p>
+   * <p>LDAP_PARTIAL_RESULTS = 9</p>
    */
-   public final static int PARTIAL_RESULTS = 9;
+   public final static int LDAP_PARTIAL_RESULTS = 9;
    
   /**
    * Does not indicate an error condition. In LDAPv3, indicates that the server
