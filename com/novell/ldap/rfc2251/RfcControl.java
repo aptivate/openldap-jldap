@@ -171,5 +171,11 @@ public class RfcControl extends ASN1Sequence {
                 return;
             }
         }
+		else if (size() ==1 )
+		{ // in case iscritical is false 
+						// add a new one at the end
+						add(controlValue);
+						return;
+		}
     }
 }
