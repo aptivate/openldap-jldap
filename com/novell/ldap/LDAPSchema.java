@@ -50,7 +50,7 @@ public class LDAPSchema {
 
     /** The nameTable will hash on the names (if available). To insure
      *  case-insensibility, the Keys for this table will be a String cast to
-     *  Uppercase. 
+     *  Uppercase.
      */
     private Hashtable nameTable[] = new Hashtable[8];
 
@@ -168,7 +168,16 @@ public class LDAPSchema {
                 LDAPObjectClassSchema classSchema;
                 while(enumString.hasMoreElements()) {
                     value = (String) enumString.nextElement();
-                    classSchema = new LDAPObjectClassSchema( value );
+                    try {
+                        classSchema = new LDAPObjectClassSchema( value );
+                    }
+                    catch (Exception e){
+                        if( Debug.LDAP_DEBUG) {
+                            Debug.trace( Debug.apiRequests, "fetchSchema could not "+
+                                "parse the schema definition:" + value);
+                        }
+                        continue; //Error parsing: do not add this definition
+                    }
                     addElement( OBJECT_CLASS, classSchema );
                 }
             }
@@ -176,7 +185,16 @@ public class LDAPSchema {
                 LDAPAttributeSchema attrSchema;
                 while(enumString.hasMoreElements()) {
                     value = (String) enumString.nextElement();
-                    attrSchema = new LDAPAttributeSchema( value );
+                    try {
+                        attrSchema = new LDAPAttributeSchema( value );
+                    }
+                    catch (Exception e){
+                        if( Debug.LDAP_DEBUG) {
+                            Debug.trace( Debug.all, "fetchSchema could not "+
+                                "parse the schema definition:" + value);
+                        }
+                        continue; //Error parsing: do not add this definition
+                    }
                     addElement( ATTRIBUTE, attrSchema );
                 }
             }
@@ -455,7 +473,7 @@ public class LDAPSchema {
         Integer IDKey = new Integer(ID);
         return (LDAPDITStructureRuleSchema) idTable[DITSTRUCTURE].get(IDKey);
     }
-    
+
     /**
      * Returns a particular matching rule definition, or null if not found.
      *
@@ -544,7 +562,7 @@ public class LDAPSchema {
     {
         return idTable[DITCONTENT].elements();
     }
-    
+
     /**
      * Returns an enumeration of DIT structure rule definitions.
      *
@@ -668,7 +686,7 @@ public class LDAPSchema {
     {
         return nameTable[NAME_FORM].keys();
     }
-    
+
     /**
      * Returns an enumeration of object class names.
      *
@@ -860,7 +878,7 @@ public class LDAPSchema {
     {
         return this.getAttributeSchemas();
     }
-    
+
     /**
      *  @deprecated replaced by {@link #getDITContentRuleSchema}.  This method
      *  has been renamed to getDITContentRuleSchema in IETF draft 17 of the Java
@@ -882,7 +900,7 @@ public class LDAPSchema {
     {
         return this.getDITContentRuleSchemas();
     }
-    
+
     /**
      *  @deprecated replaced by {@link #getDITStructureRuleSchema}.  This method
      *  has been renamed to getDITStructureRuleSchema in IETF draft 17 of the
@@ -893,7 +911,7 @@ public class LDAPSchema {
     {
         return this.getDITStructureRuleSchema(id);
     }
-    
+
     /**
      *  @deprecated replaced by {@link #getDITStructureRuleSchemas}. This method
      *  has been renamed to getDITStructureRuleSchemas in IETF draft 17 of the
@@ -904,7 +922,7 @@ public class LDAPSchema {
     {
         return this.getDITStructureRuleSchemas();
     }
-    
+
     /**
      *  @deprecated replaced by {@link #getMatchingRuleSchema}.  This method
      *  has been renamed to getMatchingRuleSchema in IETF draft 17 of the Java
@@ -915,7 +933,7 @@ public class LDAPSchema {
     {
         return this.getMatchingRuleSchema(name);
     }
-    
+
     /**
      *  @deprecated replaced by {@link #getMatchingRuleSchemas}.  This method
      *  has been renamed to getMatchingRuleSchemas in IETF draft 17 of the Java
@@ -936,7 +954,7 @@ public class LDAPSchema {
     {
         return this.getMatchingRuleUseSchema(name);
     }
-    
+
     /**
      *  @deprecated replaced by {@link #getMatchingRuleUseSchemas}.  This method
      *  has been renamed to getMatchingRuleUseSchemas in IETF draft 17 of the
@@ -947,7 +965,7 @@ public class LDAPSchema {
     {
         return this.getMatchingRuleUseSchemas();
     }
-    
+
     /**
      *  @deprecated replaced by {@link #getNameFormSchema}.  This method
      *  has been renamed to getNameFormSchema in IETF draft 17 of the Java
@@ -958,7 +976,7 @@ public class LDAPSchema {
     {
         return this.getNameFormSchema(name);
     }
-    
+
     /**
      *  @deprecated replaced by {@link #getNameFormSchemas}.  This method
      *  has been renamed to getNameFormSchemas in IETF draft 17 of the Java
@@ -969,7 +987,7 @@ public class LDAPSchema {
     {
         return this.getNameFormSchemas();
     }
-    
+
     /**
      *  @deprecated replaced by {@link #getObjectClassSchema}.  This method
      *  has been renamed to getObjectClassSchema in IETF draft 17 of the Java
@@ -980,7 +998,7 @@ public class LDAPSchema {
     {
         return this.getObjectClassSchema(name);
     }
-    
+
     /**
      *  @deprecated replaced by {@link #getObjectClassSchemas}.  This method
      *  has been renamed to getObjectClassSchemas in IETF draft 17 of the Java
@@ -991,7 +1009,7 @@ public class LDAPSchema {
     {
         return this.getObjectClassSchemas();
     }
-    
+
     /**
      *  @deprecated replaced by {@link #getSyntaxSchema}.  This method
      *  has been renamed to getSyntaxSchema in IETF draft 17 of the Java
