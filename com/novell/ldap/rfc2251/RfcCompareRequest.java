@@ -40,6 +40,10 @@ public class RfcCompareRequest extends ASN1Sequence implements RfcRequest {
         super(2);
         add(entry);
         add(ava);
+        if( ava.getAssertionValue() == null) {
+            throw new IllegalArgumentException(
+                            "compare: Attribute must have an assertion value");
+        }
         return;
     }
 

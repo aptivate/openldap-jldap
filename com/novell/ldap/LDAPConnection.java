@@ -1070,11 +1070,13 @@ public class LDAPConnection implements Cloneable
             cons = defSearchCons;
 
         // error check the parameters
-        if(entry == null || entry.getDN() == null) {
-            // Invalid Entry parameter
-            throw new LDAPLocalException(
-                    ExceptionMessages.ENTRY_PARAM_ERROR,
-                    LDAPException.PARAM_ERROR);
+        if(entry == null ) {
+            throw new IllegalArgumentException("The LDAPEntry parameter" +
+                        " cannot be null");
+        }
+        if( entry.getDN() == null) {
+            throw new IllegalArgumentException("The DN value must be present" +
+                        " in the LDAPEntry object");
         }
 
         LDAPMessage msg = new LDAPAddRequest( entry, cons.getControls());
@@ -1721,12 +1723,8 @@ public class LDAPConnection implements Cloneable
             Debug.trace( Debug.apiRequests, name +
             "compare(" + dn + ") if value");
         }
-        if( attr.size() > 1) {
-            throw new IllegalArgumentException("Only one value allowed " +
-                    "in the LDAPAttribute for a compare operation");
-        }
-        LDAPResponseQueue queue =
-            compare(dn, attr, null, cons);
+        LDAPResponseQueue queue = compare(dn, attr, null, cons);
+        
         LDAPResponse res = (LDAPResponse)queue.getResponse();
 
         // Set local copy of responseControls synchronously - if there were any
@@ -1813,23 +1811,25 @@ public class LDAPConnection implements Cloneable
             Debug.trace( Debug.apiRequests, name +
             "compare(" + dn + ") compare value");
         }
-        if( attr.size() > 1) {
-            throw new IllegalArgumentException("Only one value allowed " +
-                    "in the LDAPAttribute for a compare operation");
+
+        if( attr.size() != 1) {
+            throw new IllegalArgumentException("compare: Exactly one value " +
+                    "must be present in the LDAPAttribute");
         }
+        
+        if(dn == null ) {
+            // Invalid parameter
+            throw new IllegalArgumentException("compare: DN cannot be null");
+        }
+        
         if(cons == null)
             cons = defSearchCons;
 
         String name = attr.getName();
         byte[] value = attr.getByteValueArray()[0]; // get first value
 
-        if(dn == null || value == null) {
-            // Invalid parameter
-            throw new LDAPLocalException(ExceptionMessages.PARAM_ERROR,
-                                    LDAPException.PARAM_ERROR);
-        }
-
-        LDAPMessage msg = new LDAPCompareRequest( dn, attr.getName(),
+        LDAPMessage msg = new LDAPCompareRequest( dn,
+                                                  attr.getName(),
                                                   attr.getByteValue(),
                                                   cons.getControls());
 
