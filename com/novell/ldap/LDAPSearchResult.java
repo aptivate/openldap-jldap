@@ -47,8 +47,10 @@ public class LDAPSearchResult extends LDAPMessage
      * Constructs an LDAPSearchResult object from an LDAPEntry.
      *
      * @param entry the LDAPEntry represented by this search result.
+     * <br><br>
+     * @param cont controls associated with the search result
      */
-    public LDAPSearchResult(LDAPEntry entry)
+    public LDAPSearchResult(LDAPEntry entry, LDAPControl[] cont)
     {
         super();
         if( entry == null) {
