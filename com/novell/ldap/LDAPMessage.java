@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPMessage.java,v 1.18 2001/01/04 20:14:47 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPMessage.java,v 1.19 2001/01/25 20:29:58 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -135,6 +135,8 @@ public class LDAPMessage {
      *
      * @param op The operation type of message.
      *
+     * @deprecated For internal use only
+     *
      * @see #getType
 	 */
 	public LDAPMessage(RfcRequest op)
@@ -144,6 +146,8 @@ public class LDAPMessage {
 
     /**
      * Dummy constuctor
+     *
+     * @deprecated For internal use only
      */
     /* protected */ 
     LDAPMessage()
@@ -158,6 +162,8 @@ public class LDAPMessage {
      * @param op The operation type of message.
      *<br><br>
      * @param controls The controls to use with the operation.
+     *
+     * @deprecated For internal use only
      *
      * @see #getType
 	 */
@@ -182,6 +188,8 @@ public class LDAPMessage {
 	 * from a command.
      *
      * @param message A response message.
+     *
+     * @deprecated For internal use only
 	 */
 	public LDAPMessage(RfcLDAPMessage message)
 	{
@@ -282,6 +290,8 @@ public class LDAPMessage {
 
 	/**
 	 * Returns the RFC 2251 LDAPMessage composed in this object.
+     *
+     * @deprecated For internal use only
 	 */
 	public RfcLDAPMessage getASN1Object()
 	{
@@ -289,4 +299,3 @@ public class LDAPMessage {
 	}
 
 }
-
