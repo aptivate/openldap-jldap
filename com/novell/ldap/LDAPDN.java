@@ -26,8 +26,8 @@ import com.novell.ldap.util.RDN;
  */
 public class LDAPDN {
    
-   // Don't allow any instances of this class
-   private LDAPDN()
+   // Don't allow instances of this class
+   protected LDAPDN()
    {
        return;
    }
