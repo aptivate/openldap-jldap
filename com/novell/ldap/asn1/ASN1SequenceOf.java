@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1SequenceOf.java,v 1.7 2001/04/16 17:47:15 javed Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1SequenceOf.java,v 1.8 2001/04/16 18:24:09 javed Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -20,7 +20,7 @@ import com.novell.ldap.client.ArrayList;
 import java.util.Enumeration;
 
 /**
- * The ASN1SequenceOf class is used to hold an ordered collection 
+ * The ASN1SequenceOf class is used to hold an ordered collection
  * of components with identical type.  This class inherits
  * from the ASN1Structured class which already provides
  * functionality to hold multiple ASN1 components.
@@ -31,6 +31,13 @@ public class ASN1SequenceOf extends ASN1Structured {
     * ASN.1 SEQUENCE OF tag definition.
     */
    public static final int TAG = 0x10;
+
+   /**
+    * ID is added for Optimization. id needs only be one Value for every instance
+    * Thus we create it only once.
+    */
+    public static final ASN1Identifier ID =
+        new ASN1Identifier(ASN1Identifier.UNIVERSAL, true, TAG);
 
    /* Constructors for ASN1SequenceOf
     */
@@ -55,7 +62,7 @@ public class ASN1SequenceOf extends ASN1Structured {
     */
    public ASN1SequenceOf(int size)
    {
-      id = new ASN1Identifier(ASN1Identifier.UNIVERSAL, true, TAG);
+      id = ID;
       content = new ArrayList(size);
       return;
    }
@@ -73,7 +80,7 @@ public class ASN1SequenceOf extends ASN1Structured {
     */
    public ASN1SequenceOf(ASN1Sequence sequence)
    {
-      id = new ASN1Identifier(ASN1Identifier.UNIVERSAL, true, TAG);
+      id = ID;
       content = new ArrayList(sequence.size());
       Enumeration e = sequence.elements();
       while(e.hasMoreElements()) {
@@ -84,7 +91,7 @@ public class ASN1SequenceOf extends ASN1Structured {
 
 
    /**
-    * Constructs an ASN1SequenceOf object by decoding data from an 
+    * Constructs an ASN1SequenceOf object by decoding data from an
     * input stream.
     *
     * @param dec The decoder object to use when decoding the
@@ -97,7 +104,7 @@ public class ASN1SequenceOf extends ASN1Structured {
    public ASN1SequenceOf(ASN1Decoder dec, InputStream in, int len)
       throws IOException
    {
-      id = new ASN1Identifier(ASN1Identifier.UNIVERSAL, true, TAG);
+      id = ID;
       decodeStructured(dec, in, len);
       return;
    }

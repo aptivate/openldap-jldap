@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1SetOf.java,v 1.6 2001/03/01 00:30:02 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1SetOf.java,v 1.7 2001/04/16 18:24:09 javed Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -21,7 +21,7 @@ import java.util.Enumeration;
 
 /**
  * The ASN1Set class can hold an unordered collection of components with
- * identical type. This class inherits from the ASN1Structured class 
+ * identical type. This class inherits from the ASN1Structured class
  * which already provides functionality to hold multiple ASN1 components.
  */
 public class ASN1SetOf extends ASN1Structured {
@@ -31,6 +31,12 @@ public class ASN1SetOf extends ASN1Structured {
     */
    public static final int TAG = 0x11;
 
+   /**
+    * ID is added for Optimization. id needs only be one Value for every instance
+    * Thus we create it only once.
+    */
+    public static final ASN1Identifier ID =
+        new ASN1Identifier(ASN1Identifier.UNIVERSAL, true, TAG);
    /* Constructors for ASN1SetOf
     */
 
@@ -44,7 +50,7 @@ public class ASN1SetOf extends ASN1Structured {
       return;
    }
 
- 
+
   /**
     * Constructs an ASN1SetOf object with the specified
     * number of placeholders for ASN1Objects. However there
@@ -54,12 +60,12 @@ public class ASN1SetOf extends ASN1Structured {
     */
    public ASN1SetOf(int size)
    {
-      id = new ASN1Identifier(ASN1Identifier.UNIVERSAL, true, TAG);
+      id = ID;
       content = new ArrayList(size);
       return;
    }
 
-   
+
    /**
     * A copy constructor which creates an ASN1SetOf from an
     * instance of ASN1Set.
@@ -72,7 +78,7 @@ public class ASN1SetOf extends ASN1Structured {
     */
    public ASN1SetOf(ASN1Set set)
    {
-      id = new ASN1Identifier(ASN1Identifier.UNIVERSAL, true, TAG);
+      id = ID;
       content = new ArrayList(set.size());
       Enumeration e = set.elements();
       while(e.hasMoreElements()) {

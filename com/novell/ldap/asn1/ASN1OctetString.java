@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1OctetString.java,v 1.10 2001/04/12 17:28:45 javed Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1OctetString.java,v 1.11 2001/04/16 18:24:08 javed Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -29,35 +29,41 @@ public class ASN1OctetString extends ASN1Simple {
     */
    public static final int TAG = 0x04;
 
+   /**
+    * ID is added for Optimization. id needs only be one Value for every instance
+    * Thus we create it only once.
+    */
+   protected static final ASN1Identifier ID =
+         new ASN1Identifier(ASN1Identifier.UNIVERSAL, false, TAG);
    /* Constructors for ASN1OctetString
     */
 
    /**
-    * Call this constructor to construct an ASN1OctetString 
+    * Call this constructor to construct an ASN1OctetString
     * object from a byte array.
     *
-    * @param content A byte array representing the string that 
+    * @param content A byte array representing the string that
     * will be contained in the this ASN1OctetString object
     */
    public ASN1OctetString(byte[] content)
    {
-      id = new ASN1Identifier(ASN1Identifier.UNIVERSAL, false, TAG);
+      id = ID;
       this.content = content;
    }
 
-   
+
    /**
-    * Call this constructor to construct an ASN1OctetString 
+    * Call this constructor to construct an ASN1OctetString
     * object from a String object.
     *
-    * @param content A string value that will be contained 
+    * @param content A string value that will be contained
     * in the this ASN1OctetString object
     */
    public ASN1OctetString(String content)
    {
       //this(content.getBytes());
       //content must be converted to utf8 data
-      id = new ASN1Identifier(ASN1Identifier.UNIVERSAL, false, TAG);
+      id = ID;
       try {
         this.content = content.getBytes("UTF8");
       }
@@ -65,9 +71,9 @@ public class ASN1OctetString extends ASN1Simple {
       }
    }
 
-  
+
    /**
-    * Constructs an ASN1OctetString object by decoding data from an 
+    * Constructs an ASN1OctetString object by decoding data from an
     * input stream.
     *
     * @param dec The decoder object to use when decoding the
@@ -80,23 +86,22 @@ public class ASN1OctetString extends ASN1Simple {
    public ASN1OctetString(ASN1Decoder dec, InputStream in, int len)
       throws IOException
    {
-      id = new ASN1Identifier(ASN1Identifier.UNIVERSAL, false, TAG);
-
+      id = ID;
       content = (len>0) ? (byte[])dec.decodeOctetString(in, len)
                         : new byte[0];
    }
 
-   
+
    /* ASN1Object implementation
     */
 
    /**
-    * Call this method to encode the current instance into the 
+    * Call this method to encode the current instance into the
     * specified output stream using the specified encoder object.
     *
     * @param enc Encoder object to use when encoding self.<br>
     *
-    * @param out The output stream onto which the encoded byte 
+    * @param out The output stream onto which the encoded byte
     * stream is written.
     */
    public void encode(ASN1Encoder enc, OutputStream out)
@@ -105,7 +110,7 @@ public class ASN1OctetString extends ASN1Simple {
       enc.encode(this, out);
    }
 
-   
+
    /*ASN1OctetString specific methods
     */
 
@@ -117,7 +122,7 @@ public class ASN1OctetString extends ASN1Simple {
       return content;
    }
 
-   
+
    /**
     * Returns the content of this ASN1OctetString as a String.
     */

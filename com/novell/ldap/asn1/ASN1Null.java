@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Null.java,v 1.5 2001/03/01 00:30:00 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Null.java,v 1.6 2001/04/11 22:17:21 javed Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -27,29 +27,35 @@ public class ASN1Null extends ASN1Simple {
     */
    public static final int TAG = 0x05;
 
+   /**
+    * ID is added for Optimization. id needs only be one Value for every instance
+    * Thus we create it only once.
+    */
+    public static final ASN1Identifier ID =
+        new ASN1Identifier(ASN1Identifier.UNIVERSAL, false, TAG);
    /* Constructor for ASN1Null
     */
 
    /**
-    * Call this constructor to construct a new ASN1Null 
+    * Call this constructor to construct a new ASN1Null
     * object.
     *
     */
    public ASN1Null()
    {
-      id = new ASN1Identifier(ASN1Identifier.UNIVERSAL, false, TAG);
+        id = ID;
    }
 
    /* ASN1Object implementation
     */
 
    /**
-    * Call this method to encode the current instance into the 
+    * Call this method to encode the current instance into the
     * specified output stream using the specified encoder object.
     *
     * @param enc Encoder object to use when encoding self.<br>
     *
-    * @param out The output stream onto which the encoded byte 
+    * @param out The output stream onto which the encoded byte
     * stream is written.
     */
    public void encode(ASN1Encoder enc, OutputStream out)

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Sequence.java,v 1.6 2001/03/01 00:30:02 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Sequence.java,v 1.7 2001/04/16 17:47:14 javed Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -20,7 +20,7 @@ import com.novell.ldap.client.ArrayList;
 
 /**
  * The ASN1Sequence class can hold an ordered collection of components with
- * distinct type. This class inherits from the ASN1Structured class which 
+ * distinct type. This class inherits from the ASN1Structured class which
  * provides functionality to hold multiple ASN1 components.
  */
 public class ASN1Sequence extends ASN1Structured
@@ -31,6 +31,12 @@ public class ASN1Sequence extends ASN1Structured
     */
    public static final int TAG = 0x10;
 
+   /**
+    * ID is added for Optimization. id needs only be one Value for every instance
+    * Thus we create it only once.
+    */
+   private static final ASN1Identifier ID =
+        new ASN1Identifier(ASN1Identifier.UNIVERSAL, true, TAG);
    /* Constructors for ASN1Sequence
     */
 
@@ -53,13 +59,13 @@ public class ASN1Sequence extends ASN1Structured
     */
    public ASN1Sequence(int size)
    {
-      id = new ASN1Identifier(ASN1Identifier.UNIVERSAL, true, TAG);
+      id = ID;
       content = new ArrayList(size);
       return;
    }
 
     /**
-    * Constructs an ASN1Sequence object by decoding data from an 
+    * Constructs an ASN1Sequence object by decoding data from an
     * input stream.
     *
     * @param dec The decoder object to use when decoding the
@@ -72,7 +78,7 @@ public class ASN1Sequence extends ASN1Structured
    public ASN1Sequence(ASN1Decoder dec, InputStream in, int len)
       throws IOException
    {
-      id = new ASN1Identifier(ASN1Identifier.UNIVERSAL, true, TAG);
+      id = ID;
       decodeStructured(dec, in, len);
       return;
    }
