@@ -2,7 +2,210 @@
 
 package com.novell.ldap.ldif_dsml;
 
+import com.novell.ldap.*;
+
+import java.io.*;
+import java.util.Iterator;
+
 public class DSMLWriter implements LDAPWriter {
-    
+
     public final static LDAPRequest currentChange = null;
+    private OutputStreamWriter out = null;
+    private int state = NEW_BATCH;
+    private static final int NEW_BATCH = 0;
+    private static final int REQUEST_BATCH = 1;
+    private static final int RESPONSE_BATCH = 2;
+    private static final int SEARCH_TAG = 3;
+
+    private static final String BATCH_REQUEST_START =
+            "<batchRequest xmlns=\"urn:oases:names:tc:DSML:2.0:core\">";
+    private static final String BATCH_RESPONSE_START =
+            "<batchResponse xmlns=\"urn:oases:names:tc:DSML:2.0:core\">";
+
+    public DSMLWriter(String file) throws FileNotFoundException {
+        this( new FileOutputStream(file, true));
+    }
+
+    public DSMLWriter(OutputStream stream){
+        out = new OutputStreamWriter(stream);
+    }
+
+    public void writeOperation(PrintStream ps) {
+        this.out = new OutputStreamWriter(ps);
+    }
+
+    public void finish() throws IOException {
+        if (state == REQUEST_BATCH){
+            out.write("</batchRequest>");
+        } else if (state == RESPONSE_BATCH){
+            out.write("</batchResponse>");
+        }
+        out.flush();
+        out.close();
+    }
+
+    public void writeOperation(LDAPMessage messageToWrite) throws IOException,
+            LDAPLocalException {
+        //check state and write batch tags if neccessary
+        if ((messageToWrite instanceof LDAPResponse) ||
+            (messageToWrite instanceof LDAPSearchResult) ||
+            (messageToWrite instanceof LDAPSearchResultReference)){
+            checkState(true);
+        } else {//must be a request
+            checkState(false);
+        }
+
+        //write the message tags
+        switch (messageToWrite.getType()) {
+            case LDAPMessage.BIND_REQUEST:
+            case LDAPMessage.BIND_RESPONSE:
+            case LDAPMessage.UNBIND_REQUEST:
+            case LDAPMessage.SEARCH_REQUEST:
+            case LDAPMessage.SEARCH_RESPONSE:
+                if (state != SEARCH_TAG){
+                    out.write("<searchResponse>");
+                    state = SEARCH_TAG;
+                }
+                writeSearchResponse(messageToWrite);
+                break;
+            case LDAPMessage.SEARCH_RESULT:  //final search done message (or standard referral)
+                if (state != SEARCH_TAG){
+                    out.write("<searchResponse>");
+                }
+                writeResult((LDAPResponse)messageToWrite);
+                out.write("</searchResponse>");
+                break;
+            case LDAPMessage.MODIFY_REQUEST:
+            case LDAPMessage.MODIFY_RESPONSE:
+            case LDAPMessage.ADD_REQUEST:
+            case LDAPMessage.ADD_RESPONSE:
+            case LDAPMessage.DEL_REQUEST:
+            case LDAPMessage.DEL_RESPONSE:
+            case LDAPMessage.MODIFY_RDN_REQUEST:
+            case LDAPMessage.MODIFY_RDN_RESPONSE:
+            case LDAPMessage.COMPARE_REQUEST:
+            case LDAPMessage.COMPARE_RESPONSE:
+            case LDAPMessage.ABANDON_REQUEST:
+            case LDAPMessage.SEARCH_RESULT_REFERENCE:
+            case LDAPMessage.EXTENDED_REQUEST:
+            case LDAPMessage.EXTENDED_RESPONSE:
+        }
+    }
+
+    private void writeResult(LDAPResponse result) throws IOException {
+        /* controls: */
+        //LDAPControl[] controls = result.getControls();
+
+        /* referal: */
+
+        /* result code: */
+        out.write("<resultCode code=\"");
+        out.write(new Integer(result.getResultCode()).toString());
+        out.write("\" descr=\"");
+        out.write(LDAPException.resultCodeToString(result.getResultCode()));
+        out.write( "\"/>");
+
+        /* Server Message: */
+        String temp = result.getErrorMessage();
+        if (temp != null && temp.length() > 0){
+            out.write("<errorMessage>");
+            out.write(temp);
+            out.write("</errorMessage>");
+        }
+
+        /* MatchedDN*/
+        temp = result.getMatchedDN();
+        if (temp != null && temp.length() > 0){
+            out.write("<matchedDN>");
+            out.write(temp);
+            out.write("</matchedDN>");
+        }
+    }
+
+    private void writeSearchResponse(LDAPMessage messageToWrite)
+            throws IOException
+    {
+        /* LDAPMessage must be either a LDAPSearchResult or a
+        LDAPSearchResultReference */
+        if (messageToWrite instanceof LDAPSearchResultReference){
+            LDAPSearchResultReference ref = (LDAPSearchResultReference)
+                    messageToWrite;
+            String[] refs = ref.getReferrals();
+            out.write("<searchResultReference>");
+            for(int i=0; i< refs.length; i++){
+                out.write("<ref>");
+                out.write(refs[i]);
+                out.write("</ref>");
+            }
+            out.write("</searchResultReference>");
+        } else if (messageToWrite instanceof LDAPSearchResult){
+            LDAPSearchResult result = (LDAPSearchResult) messageToWrite;
+            LDAPEntry entry = result.getEntry();
+            out.write("<searchResultEntry dn=\"");
+            out.write(entry.getDN());
+            out.write("\">");
+            LDAPAttributeSet set = entry.getAttributeSet();
+            Iterator i = set.iterator();
+            while (i.hasNext()){
+                writeAttribute( (LDAPAttribute) i.next());
+            }
+            out.write("</searchResultEntry>");
+            state = RESPONSE_BATCH;
+        }
+        return;
+    }
+
+    private void writeAttribute(LDAPAttribute attr) throws IOException {
+        out.write("<attr name=\"");
+        out.write(attr.getName());
+        out.write("\">");
+        String values[] = attr.getStringValueArray();
+        for(int i=0; i<values.length; i++){
+            out.write("<value>");
+            out.write(values[i]);
+            out.write("</value>");
+        }
+        out.write("</attr>");
+    }
+
+    /**
+     * Tests the current state with a new message that is either a response or
+     * request.  If the state is NEW_BATCH, check_state will print an
+     * appropriate batch tag.
+     *
+     * @param isResponse    Indicates if the message to be written is a response
+     *                      or not.
+     * @throws IOException
+     * @throws LDAPLocalException
+     */
+    private void checkState(boolean isResponse)
+            throws IOException, LDAPLocalException
+    {
+        if (state == NEW_BATCH) {
+            if (isResponse)
+                out.write(BATCH_RESPONSE_START);
+            else
+                out.write(BATCH_REQUEST_START);
+        }
+        else if ((state == REQUEST_BATCH) && (isResponse)) {
+            throw new LDAPLocalException(
+                "Attempted insertion of a response message in a request batch",
+                LDAPException.ENCODING_ERROR);
+        } else if (state == RESPONSE_BATCH && (!isResponse)) {
+                throw new LDAPLocalException(
+                "Attempted insertion of a request message in a response batch",
+                LDAPException.ENCODING_ERROR);
+        }
+    }
+
+
+
+    /*
+    private void writeRequest(LDAPMessage request) throws IOException
+    {
+
+
+    } */
+
+
 }

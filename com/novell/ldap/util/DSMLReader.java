@@ -82,7 +82,12 @@ public class DSMLReader implements LDAPReader {
                     LDAPResponse response = (LDAPResponse)message;
                     int status = response.getResultCode();
                     // the return code is LDAP success
+                    int type = response.getType();
+                    if (type==LDAPMessage.SEARCH_RESULT){
+                        System.out.print("Search ");
+                    }
                     if ( status == LDAPException.SUCCESS ) {
+
                         System.out.println("Operation succeeded.");
                     }
                     // the reutrn code is referral exception
