@@ -1,4 +1,4 @@
-<!-- $Novell: /ldap/src/jldap/build.xml,v 1.24 2000/11/10 16:50:01 vtag Exp $ -->
+<!-- $Novell: /ldap/src/jldap/build.xml,v 1.25 2000/11/22 22:17:37 vtag Exp $ -->
 <!-- ======================================================================= -->
 <!-- TOP level build file                                                -->
 <!-- ======================================================================= -->
@@ -160,6 +160,7 @@
 		<mkdir dir="${pkg.doc}/${ldap}"/>
 		<mkdir dir="${pkg.samples}"/>
 		<mkdir dir="${pkg.samples}/extensions"/>
+		<mkdir dir="${pkg.samples}/controls"/>
 
 		<copydir src="${src}/${lib}"         dest="${pkg.lib}"/>
 
@@ -167,6 +168,7 @@
 
 		<copydir src="${src}/samples"  dest="${pkg.samples}"/>
 		<copydir src="${src}/samples/extensions"  dest="${pkg.samples}/extensions"/>
+		<copydir src="${src}/samples/controls"  dest="${pkg.samples}/controls"/>
         <copyfile src="README.txt" dest="${pkg}/README.txt" />
 	</target>
 
@@ -213,6 +215,14 @@
 			<property name="debug" value="on"/>
 			<property name="optimize" value="off"/>
 		</ant>
+
+        <echo message="DEBUG compile samples/controls" />
+		<ant dir="${basedir}/samples/controls/" target="all">
+			<property name="build" value="${build.samples}/controls"/>
+			<property name="lib" value="${lib.debug}"/>
+			<property name="debug" value="on"/>
+			<property name="optimize" value="off"/>
+		</ant>
 	</target>
 
     <!-- =================================================================== -->
@@ -224,7 +234,7 @@
         <mkdir dir="${pkg.doc}"/>
         <javadoc sourcepath="${docsrc}"
                         destdir="${pkg.doc}"
-                        classpath="${lib.debug}/${ldap}.jar;external/ssl/domestic/nssl1.2_dom.jar"
+                        classpath="${lib.debug}/${ldap}.jar;externl/ssl/domestic/nssl1.2_dom.jar"
                         packagenames="com.novell.ldap,com.novell.ldap.extensions,com.novell.ldap.asn1"
                         overview="overview.html"
                         Windowtitle="LDAP Classes"
