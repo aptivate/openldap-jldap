@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/org/ietf/ldap/LDAPSearchListener.java,v 1.5 2000/08/03 22:06:18 smerrill Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/org/ietf/ldap/LDAPSearchListener.java,v 1.6 2000/08/10 17:53:02 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -18,6 +18,8 @@ package org.ietf.ldap;
 import com.novell.ldap.client.*;
 import java.util.Vector;
 
+import org.ietf.asn1.ldap.*;
+
 /**
  * 4.6 public class LDAPSearchListener
  *
@@ -26,16 +28,16 @@ import java.util.Vector;
  */
 public class LDAPSearchListener extends LDAPListener {
  
-	/**
-	 * Constructor
-	 */
-	public LDAPSearchListener(Connection conn)
-	{
-		this.conn = conn;
-		this.queue = new LDAPMessageQueue();
-		this.exceptions = new Vector(5);
-		conn.addLDAPListener(this);
-	}
+   /**
+    * Constructor
+    */
+   public LDAPSearchListener(Connection conn)
+   {
+      this.conn = conn;
+      this.queue = new LDAPMessageQueue();
+      this.exceptions = new Vector(5);
+      conn.addLDAPListener(this);
+   }
 
    /*
     * 4.6.2 getResponse
@@ -47,32 +49,39 @@ public class LDAPSearchListener extends LDAPListener {
     * returns the response. The response may be a search result, a search
     * reference, a search response, or null (if there are no more
     * outstanding requests). LDAPException is thrown on network errors.
-	 *
-	 * The only time this method should return a null is if there is no
-	 * response in the message queue and there are no message ids pending.
+    *
+    * The only time this method should return a null is if there is no
+    * response in the message queue and there are no message ids pending.
     */
    public LDAPMessage getResponse()
-		throws LDAPException
-	{
-		org.ietf.asn1.ldap.LDAPMessage msg = queue.getLDAPMessage(); // blocks
+      throws LDAPException
+   {
+      LDAPMessage message;
+      org.ietf.asn1.ldap.LDAPMessage msg = queue.getLDAPMessage(); // blocks
 
-		if(msg == null)
-			return null;
+      if(msg == null)
+         return null;
 
-		LDAPMessage message = new LDAPMessage(msg);
+      if(msg.getProtocolOp() instanceof SearchResultEntry) {
+         message = new LDAPSearchResult(msg);
+         queue.removeMessageID(message.getMessageID());
+      }
+      else if(msg.getProtocolOp() instanceof SearchResultReference) {
+         message = new LDAPSearchResultReference(msg);
+      }
+      else {
+         message = new LDAPResponse(msg);
+      }
 
-		if(message.getType() == LDAPMessage.SEARCH_RESULT) {
-			queue.removeMessageID(message.getMessageID());
-		}
+      // network error exceptions... (LDAP_TIMEOUT for example)
+      if(!exceptions.isEmpty()) {
+         LDAPException e = (LDAPException)exceptions.firstElement();
+         exceptions.removeElementAt(0);
+         throw e;
+      }
 
-		// network error exceptions... (LDAP_TIMEOUT for example)
-		if(!exceptions.isEmpty()) {
-			LDAPException e = (LDAPException)exceptions.firstElement();
-			exceptions.removeElementAt(0);
-			throw e;
-		}
-
-		return message;
+      return message;
    }
 
 }
+

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/org/ietf/ldap/LDAPSearchResults.java,v 1.5 2000/08/03 22:06:18 smerrill Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/org/ietf/ldap/LDAPSearchResults.java,v 1.6 2000/08/10 17:53:03 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -28,22 +28,22 @@ import java.io.*;
  */
 public class LDAPSearchResults implements Enumeration {
 
-	private Vector entries;
-	private Enumeration elements;
-	private int batchSize;
-	private boolean completed = false;
-	private int count = 0;
-	private LDAPControl[] controls;
-	private LDAPSearchListener listener;
+   private Vector entries;
+   private Enumeration elements;
+   private int batchSize;
+   private boolean completed = false;
+   private int count = 0;
+   private LDAPControl[] controls;
+   private LDAPSearchListener listener;
 
-	public LDAPSearchResults(int batchSize, LDAPSearchListener listener)
-	{
-		this.listener = listener;
-		entries = new Vector((batchSize == 0) ? 64 : batchSize);
-		this.batchSize = (batchSize == 0) ? Integer.MAX_VALUE : batchSize;
-		completed = getBatchOfResults(); // initialize the enumeration
-		elements = entries.elements();
-	}
+   public LDAPSearchResults(int batchSize, LDAPSearchListener listener)
+   {
+      this.listener = listener;
+      entries = new Vector((batchSize == 0) ? 64 : batchSize);
+      this.batchSize = (batchSize == 0) ? Integer.MAX_VALUE : batchSize;
+      completed = getBatchOfResults(); // initialize the enumeration
+      elements = entries.elements();
+   }
 
    /*
     * 4.24.1 getCount
@@ -55,8 +55,8 @@ public class LDAPSearchResults implements Enumeration {
     * received so far.
     */
    public int getCount() {
-		// when referrals are chased, they need to be added here!!!
-		return count;
+      // when referrals are chased, they need to be added here!!!
+      return count;
    }
 
    /*
@@ -69,7 +69,7 @@ public class LDAPSearchResults implements Enumeration {
     * if no Server Controls were returned.
     */
    public LDAPControl[] getResponseControls() {
-		return controls;
+      return controls;
    }
 
    /*
@@ -81,15 +81,15 @@ public class LDAPSearchResults implements Enumeration {
     * enumeration. If true, there are more search results.
     */
    public boolean hasMoreElements() {
-		if(elements.hasMoreElements() == true)
-			return true;
-		if(completed == false) { // reload the enumeration
-			entries.setSize(0);
-			completed = getBatchOfResults();
-			elements = entries.elements();
-			return elements.hasMoreElements();
-		}
-		return false;
+      if(elements.hasMoreElements() == true)
+         return true;
+      if(completed == false) { // reload the enumeration
+         entries.setSize(0);
+         completed = getBatchOfResults();
+         elements = entries.elements();
+         return elements.hasMoreElements();
+      }
+      return false;
    }
 
    /*
@@ -104,10 +104,10 @@ public class LDAPSearchResults implements Enumeration {
     * results have been returned.
     */
    public LDAPEntry next() throws LDAPException {
-		Object element = elements.nextElement();
-		if(element instanceof LDAPResponse) {
-			((LDAPResponse)element).chkResultCode(); // will throw an exception
-		}
+      Object element = elements.nextElement();
+      if(element instanceof LDAPResponse) {
+         ((LDAPResponse)element).chkResultCode(); // will throw an exception
+      }
       return (LDAPEntry)element;
    }
 
@@ -156,69 +156,71 @@ public class LDAPSearchResults implements Enumeration {
    public void sort(LDAPEntryComparator comp) {
    }
 
-	/**
-	 *	@internal
-	 *
-	 * Will collect batchSize elements from an LDAPSearchListener message
-	 * queue and place them in a Vector. If the last message from the server,
-	 * the result message, contains an error, it will be stored in the Vector
-	 * for nextElement to process. (although it does not increment the search
-	 * result count) All search result entries will be placed in the Vector.
-	 * If a null is returned from getResponse(), it is likely that the search
-	 * was abandoned.
-	 */
-	private boolean getBatchOfResults() {
-		LDAPMessage msg;
-		for(int i=0; i<batchSize;) {
-			try {
-				if((msg = listener.getResponse()) != null) {
-					controls = ((LDAPMessage)msg).getControls();
-					if(msg instanceof LDAPSearchResult) {
-						entries.addElement(((LDAPSearchResult)msg).getEntry());
-						count++;
-						i++;
-					}
-					else if(msg instanceof LDAPSearchResultReference) {
-						// chase referrals???
-					}
-					else {
-						LDAPResponse response = (LDAPResponse)msg;
-						int resultCode = response.getResultCode();
-						if(resultCode != LDAPException.SUCCESS) {
-							entries.addElement((LDAPResponse)msg);
-						}
-						return true; // search completed
-					}
-				}
-				else {
-					// how can we arrive here?
-					// we would have to have no responses, no message IDs and no
-					// exceptions
+   /**
+    * @internal
+    *
+    * Will collect batchSize elements from an LDAPSearchListener message
+    * queue and place them in a Vector. If the last message from the server,
+    * the result message, contains an error, it will be stored in the Vector
+    * for nextElement to process. (although it does not increment the search
+    * result count) All search result entries will be placed in the Vector.
+    * If a null is returned from getResponse(), it is likely that the search
+    * was abandoned.
+    */
+   private boolean getBatchOfResults() {
+      LDAPMessage msg;
+      for(int i=0; i<batchSize;) {
+         try {
+            if((msg = listener.getResponse()) != null) {
+               controls = msg.getControls();
+               if(msg instanceof LDAPSearchResult) {
+                  entries.addElement(((LDAPSearchResult)msg).getEntry()); // can we optimize this?
+                  count++;
+                  i++;
+               }
+               else if(msg instanceof LDAPSearchResultReference) {
+                  // can use narrowing conversion for LDAPSearchResultReference
+                  // since it doesn't add any behavior to LDAPMessage.
+                  // chase referrals???
+               }
+               else { // SearchResultDone
+                  int resultCode = ((LDAPResponse)msg).getResultCode();
+                  if(resultCode != LDAPException.SUCCESS) {
+                     entries.addElement(msg);
+                  }
+                  return true; // search completed
+               }
+            }
+            else {
+               // how can we arrive here?
+               // we would have to have no responses, no message IDs and no
+               // exceptions
 
-					return true;
-				}
-			}
-			catch(LDAPException e) { // network error
-				// could be a client timeout result
-//				LDAPResponse response = new LDAPResponse(e.getLDAPResultCode());
-//				entries.addElement(response);
-				return true; // search has been interrupted with an error
-			}
-		}
-		return false; // search not completed
-	}
+               return true;
+            }
+         }
+         catch(LDAPException e) { // network error
+            // could be a client timeout result
+//          LDAPResponse response = new LDAPResponse(e.getLDAPResultCode());
+//          entries.addElement(response);
+            return true; // search has been interrupted with an error
+         }
+      }
+      return false; // search not completed
+   }
 
-	/**
-	 *
-	 */
-	public void abandon() {
-		// first, remove message ID and timer and any responses in the queue
-		listener.abandonAll();
+   /**
+    *
+    */
+   public void abandon() {
+      // first, remove message ID and timer and any responses in the queue
+      listener.abandonAll();
 
-		// next, clear out enumeration
-		entries.setSize(0);
-		elements = entries.elements();
-		completed = true;
-	}
+      // next, clear out enumeration
+      entries.setSize(0);
+      elements = entries.elements();
+      completed = true;
+   }
 
 }
+

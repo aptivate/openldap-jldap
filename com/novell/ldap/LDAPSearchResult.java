@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/org/ietf/ldap/LDAPSearchResult.java,v 1.5 2000/08/10 17:53:03 smerrill Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/org/ietf/ldap/LDAPSearchResult.java,v 1.6 2000/08/10 18:09:24 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -18,18 +18,15 @@ package org.ietf.ldap;
 import java.io.IOException;
 import java.util.*;
 
-//import com.novell.ldap.client.protocol.lber.*;
+import org.ietf.asn1.*;
+import org.ietf.asn1.ldap.*;
 
 /**
- * 4.7 public class LDAPSearchResult extends LDAPMessage
- *
  *  An LDAPSearchResult object encapsulates a single search result.
  */
-public class LDAPSearchResult extends LDAPMessage { // should extend LDAPResponse to pick up parseControls()
+public class LDAPSearchResult extends LDAPMessage {
 
-//	private LberDecoder lber;
-	private boolean isLdapv3;
-	private LDAPEntry entry;
+   private boolean isLdapv3;
 
    // Default list of binary attributes
 /*
@@ -58,46 +55,46 @@ public class LDAPSearchResult extends LDAPMessage { // should extend LDAPRespons
       //0.9.2342.19200300.100.1.53
       defaultBinaryAttrs.put("x500uniqueidentifier", Boolean.TRUE); //2.5.4.45
    }
-*/	
+*/ 
 
-	/**
-	 */
-	public LDAPSearchResult(org.ietf.asn1.ldap.LDAPMessage message)
-	{
-		super(message);
-	}
+   /**
+    */
+   public LDAPSearchResult(org.ietf.asn1.ldap.LDAPMessage message)
+   {
+      super(message);
+   }
 
 /*
-	public LDAPSearchResult(int messageID, LberDecoder lber, boolean isLdapv3)
-		throws IOException
-	{
-		super(messageID, SEARCH_RESPONSE);
-		this.lber = lber;
-		this.isLdapv3 = isLdapv3;
+   public LDAPSearchResult(int messageID, LberDecoder lber, boolean isLdapv3)
+      throws IOException
+   {
+      super(messageID, SEARCH_RESPONSE);
+      this.lber = lber;
+      this.isLdapv3 = isLdapv3;
 
-		LDAPAttributeSet lattrs = new LDAPAttributeSet();
-		String DN = lber.parseString(isLdapv3);
-		entry = new LDAPEntry(DN, lattrs);
-		int[] seqlen = new int[1];
+      LDAPAttributeSet lattrs = new LDAPAttributeSet();
+      String DN = lber.parseString(isLdapv3);
+      entry = new LDAPEntry(DN, lattrs);
+      int[] seqlen = new int[1];
 
-		lber.parseSeq(seqlen);
-		int endseq = lber.getParsePosition() + seqlen[0];
-		while((lber.getParsePosition() < endseq) &&
-				(lber.bytesLeft() > 0)) {
-			LDAPAttribute la = parseAttribute();
-			lattrs.add(la);
-		}
+      lber.parseSeq(seqlen);
+      int endseq = lber.getParsePosition() + seqlen[0];
+      while((lber.getParsePosition() < endseq) &&
+            (lber.bytesLeft() > 0)) {
+         LDAPAttribute la = parseAttribute();
+         lattrs.add(la);
+      }
 
-		// parse any optional controls
-		if(isLdapv3) parseControls();
-	}
+      // parse any optional controls
+      if(isLdapv3) parseControls();
+   }
 
    private void parseControls()
-		throws IOException
-	{
+      throws IOException
+   {
       // handle LDAPv3 controls (if present)
       if((lber.bytesLeft() > 0) &&
-			(lber.peekByte() == LDAP_CONTROLS)) {
+         (lber.peekByte() == LDAP_CONTROLS)) {
          controls = new Vector(4);
          String controlOID;
          boolean criticality = false; // default
@@ -123,7 +120,7 @@ public class LDAPSearchResult extends LDAPMessage { // should extend LDAPRespons
             }
             if(controlOID != null) {
                controls.addElement(
-						new LDAPControl(controlOID, criticality, controlValue));
+                  new LDAPControl(controlOID, criticality, controlValue));
             }
          }
       }
@@ -131,7 +128,7 @@ public class LDAPSearchResult extends LDAPMessage { // should extend LDAPRespons
 
    private LDAPAttribute parseAttribute()
       throws IOException
-	{
+   {
       int len[] = new int[1];
       int seq = lber.parseSeq(null);
       LDAPAttribute la = new LDAPAttribute(lber.parseString(isLdapv3)); // use type
@@ -155,15 +152,15 @@ public class LDAPSearchResult extends LDAPMessage { // should extend LDAPRespons
       }
       return la;
    }
-*/	
+*/ 
 
-	/**
+   /**
     * returns number of bytes that were parsed. Adds the values to attr
-	 */
+    */
 /*
    private int parseAttributeValue(LDAPAttribute la)
       throws IOException
-	{
+   {
 
       int len[] = new int[1];
 
@@ -177,24 +174,47 @@ public class LDAPSearchResult extends LDAPMessage { // should extend LDAPRespons
    }
 
    private boolean isBinary(LDAPAttribute la)
-	{
+   {
       String id = la.getName().toLowerCase();
 
       return((id.indexOf(";binary") != -1) ||
              // defaultBinaryAttrs.containsKey(id) ||
              ((defaultBinaryAttrs != null) && (defaultBinaryAttrs.containsKey(id))));
    }
-*/	
+*/ 
 
    /*
-    * 4.7.1 getEntry
+    * getEntry
     */
 
    /**
     * Returns the entry of a server search response.
     */
    public LDAPEntry getEntry() {
-		return entry;
+      LDAPAttributeSet attrs = new LDAPAttributeSet();
+
+      PartialAttributeList attrList =
+         ((SearchResultEntry)message.getProtocolOp()).getAttributes();
+
+      Enumeration seqEnum = attrList.elements();
+      while(seqEnum.hasMoreElements()) {
+         ASN1Sequence seq = (ASN1Sequence)seqEnum.nextElement();
+         LDAPAttribute attr =
+            new LDAPAttribute(((AttributeDescription)seq.get(0)).getString());
+
+         ASN1Set set = (ASN1Set)seq.get(1);
+         Enumeration setEnum = set.elements();
+         while(setEnum.hasMoreElements()) {
+            attr.addValue(((ASN1OctetString)setEnum.nextElement()).getContent());
+         }
+
+         attrs.add(attr);
+      }
+      
+      return new LDAPEntry(
+         ((SearchResultEntry)message.getProtocolOp()).getObjectName().getString(),
+         attrs);
    }
 
 }
+
