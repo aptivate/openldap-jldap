@@ -353,7 +353,7 @@ final class Connection
     *
     * @param host The host to connect to.
     *<br><br>
-    * @param host The port on the host to connect to.
+    * @param port The port on the host to connect to.
     */
     /* package */
     void connect(String host, int port)
@@ -369,7 +369,7 @@ final class Connection
     *
     * @param host The host to connect to.
     *<br><br>
-    * @param host The port on the host to connect to.
+    * @param port The port on the host to connect to.
     *<br><br>
     * @param semaphoreId The write semaphore ID to use for the connect
     */
@@ -633,7 +633,7 @@ final class Connection
     /**
      * Writes an LDAPMessage to the LDAP server over a socket.
      *
-     * @param msg the Message containing the message to write.
+     * @param info the Message containing the message to write.
      */
     /* package */
     void writeMessage(Message info)

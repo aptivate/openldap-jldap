@@ -41,7 +41,7 @@ class MessageAgent
     /**
      * empty and return all messages owned by this agent
      *
-     * @param all messages owned by this agent
+     * 
      */
     /* package */
     Object[] getMessageArray()

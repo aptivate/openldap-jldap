@@ -36,7 +36,7 @@ public class LDAPCompareRequest extends LDAPMessage
      *<br><br>
      *  @param name    The name of the attribute to compare.
      *<br><br>
-     *  @param name    The value of the attribute to compare.
+     *  @param value    The value of the attribute to compare.
      *
      *<br><br>
      * @param cont Any controls that apply to the compare request,
