@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.83 2001/03/01 22:23:51 javed Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.84 2001/03/02 23:10:27 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -1288,6 +1288,12 @@ public class LDAPConnection implements Cloneable
         }
         LDAPResponse res = (LDAPResponse)listener.getResponse();
         if( res != null) {
+            
+            // Set local copy of responseControls synchronously if there were any
+		    synchronized (responseCtlSemaphore) {
+			    responseCtls = res.getControls();
+		    }
+    		
             res.chkResultCode();
         }
         return;
