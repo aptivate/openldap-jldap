@@ -26,8 +26,11 @@ import com.novell.ldap.rfc2251.*;
  *
  * @see LDAPConnection#search
  */
-public class LDAPSearchResult extends LDAPMessage {
+public class LDAPSearchResult extends LDAPMessage
+{
 
+    private LDAPEntry entry = null;
+    
     /**
      * Constructs an LDAPSearchResult object.
      *
@@ -37,6 +40,22 @@ public class LDAPSearchResult extends LDAPMessage {
     LDAPSearchResult(RfcLDAPMessage message)
     {
         super(message);
+        return;
+    }
+
+    /**
+     * Constructs an LDAPSearchResult object from an LDAPEntry.
+     *
+     * @param entry the LDAPEntry represented by this search result.
+     */
+    public LDAPSearchResult(LDAPEntry entry)
+    {
+        super();
+        if( entry == null) {
+            throw new IllegalArgumentException("Argument \"entry\" cannot be null");
+        }    
+        this.entry = entry;
+        return;
     }
 
     /**
@@ -44,28 +63,32 @@ public class LDAPSearchResult extends LDAPMessage {
      *
      * @return The LDAPEntry associated with this LDAPSearchResult
      */
-    public LDAPEntry getEntry() {
-        LDAPAttributeSet attrs = new LDAPAttributeSet();
+    public LDAPEntry getEntry()
+    {
+        if( entry == null) {
+            LDAPAttributeSet attrs = new LDAPAttributeSet();
 
-        ASN1Sequence attrList =
-            ((RfcSearchResultEntry)message.getResponse()).getAttributes();
+            ASN1Sequence attrList =
+                ((RfcSearchResultEntry)message.getResponse()).getAttributes();
 
-        ASN1Object[] seqArray = attrList.toArray();
-        for(int i = 0; i < seqArray.length; i++) {
-            ASN1Sequence seq = (ASN1Sequence)seqArray[i];
-            LDAPAttribute attr =
-                new LDAPAttribute(((ASN1OctetString)seq.get(0)).stringValue());
+            ASN1Object[] seqArray = attrList.toArray();
+            for(int i = 0; i < seqArray.length; i++) {
+                ASN1Sequence seq = (ASN1Sequence)seqArray[i];
+                LDAPAttribute attr =
+                    new LDAPAttribute(((ASN1OctetString)seq.get(0)).stringValue());
 
-            ASN1Set set = (ASN1Set)seq.get(1);
-            Object[] setArray = set.toArray();
-            for(int j = 0; j < setArray.length; j++) {
-                attr.addValue(((ASN1OctetString)setArray[j]).byteValue());
+                ASN1Set set = (ASN1Set)seq.get(1);
+                Object[] setArray = set.toArray();
+                for(int j = 0; j < setArray.length; j++) {
+                    attr.addValue(((ASN1OctetString)setArray[j]).byteValue());
+                }
+                attrs.add(attr);
             }
-            attrs.add(attr);
-        }
 
-        return new LDAPEntry(
-            ((RfcSearchResultEntry)message.getResponse()).getObjectName().stringValue(),
-            attrs);
+            entry = new LDAPEntry(
+                ((RfcSearchResultEntry)message.getResponse()).getObjectName().stringValue(),
+                attrs);
+        }            
+        return entry;
     }
 }
