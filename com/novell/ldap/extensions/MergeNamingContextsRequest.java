@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: CreateNamingContextRequest.java,v 1.2 2000/07/26 21:33:18 javed Exp $
+ * $Id: MergeNamingContextsRequest.java,v 1.2 2000/07/26 21:33:18 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -19,17 +19,18 @@ import com.novell.ldap.client.protocol.lber.*;
 import java.io.IOException;
  
 /**
- * public class CreateNamingContextRequest
+ * 4.11 public class MergeNamingContextsRequest
  *  requestValue ::=
  *          flags   INTEGER
  *          dn      LDAPDN
+ *
  */
-public class CreateNamingContextRequest extends LDAPExtendedOperation {
+public class MergeNamingContextsRequest extends LDAPExtendedOperation {
    
-    private static final String requestOID  = "2.16.840.1.113719.1.27.100.3";
-    private static final String respOID  = "2.16.840.1.113719.1.27.100.4";
+    private static final String requestOID  = "2.16.840.1.113719.1.27.100.5";
+    private static final String respOID  = "2.16.840.1.113719.1.27.100.6";
     
-    public CreateNamingContextRequest(String dn, int flags) 
+    public MergeNamingContextsRequest(String dn, int flags) 
                 throws LDAPException {
         
         super(requestOID, null);
