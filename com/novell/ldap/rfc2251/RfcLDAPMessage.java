@@ -231,13 +231,16 @@ public class RfcLDAPMessage extends ASN1Sequence
 
     /**
      * Returns the request associated with this RfcLDAPMessage.
-     * Can be one of RfcLDAPResult, RfcBindResponse, RfcExtendedResponse
-     * all which extend RfcResponse. It can also be
-     * RfcSearchResultEntry, or RfcSearchResultReference
+     * Throws a class cast exception if the RfcLDAPMessage is not a request.
      */
     public final RfcRequest getRequest()
     {
         return (RfcRequest)get(1);
+    }
+    
+    public boolean isRequest()
+    {
+        return get(1) instanceof RfcRequest;
     }
 
     /**
