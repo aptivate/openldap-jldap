@@ -4,39 +4,514 @@ package com.novell.ldap.ldif_dsml;
 
 import java.io.IOException;
 import java.io.InputStream;
-import com.novell.ldap.LDAPEntry;
 import java.io.OutputStream;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.io.BufferedReader;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import com.novell.ldap.LDAPControl;
+import com.novell.ldap.LDAPEntry;
+import com.novell.ldap.LDAPException;
+import com.novell.ldap.LDAPAttribute;
+import com.novell.ldap.LDAPAttributeSet;
+import com.novell.ldap.LDAPModification;
+import com.novell.ldap.ldif_dsml.LDAPAdd;
+import com.novell.ldap.ldif_dsml.LDAPDelete;
+import com.novell.ldap.ldif_dsml.LDAPModDN;
+import com.novell.ldap.ldif_dsml.LDAPModify;
+
 
 public class LDIFReader extends LDIF implements LDAPImport {
-    public LDIFReader(InputStream in) {
+
+    private int                 version;
+    private String              line;
+    private BufferedReader      bufReader;
+    private ArrayList lines = new ArrayList();
+    String    dn;
+    String[]  recordLines;
+    private String[]  recordFields;
+    private LDAPEntry currentEntry;
+    public LDAPOperation currentChange = null;
+    private LDAPAttributeSet attrSet;
+    private String[] content;
+    private String[] attrs;
+    private int recordType;
+    private String    changeField;
+    private String[] controlFields;
+    private LDAPControl[] controls = null;
+    private String    changeOperation;
+    private int       changeType;
+
+    public LDIFReader(InputStream in) throws IOException, LDAPException {
         super();
         super.setVersion( LDIF.LDIF_VERSION_1 );
-        return;
+        InputStreamReader isr = new InputStreamReader(in, "UTF8");
+        bufReader = new BufferedReader(isr);
+
+        // skip the leading empty and comment lines before version line,
+        // and read the version line
+        while( (((line = bufReader.readLine())!= null) && (line.length() == 0))
+               || ( line != null && line.startsWith("#"))) {
+        }
+
+        // if this is the version line, check the version
+        if (line.startsWith("version:")) {
+            version = Integer.parseInt(
+                line.substring("version:".length()).trim() );
+            if ( version != 1 ) {
+                throw( new IOException( "Should be 'version: 1'" ) );
+            }
+        }
+
+        // skip any empty and comment lines between the version line and
+        // the first line fo the dn field in the first record of the LDIF
+        // file, read the first line of the dn field of the first record
+        while ((((line=bufReader.readLine())!= null) && (line.length()== 0))
+               || line.startsWith("#")) {
+            // mark the first dn line, so we can later go back
+            bufReader.mark(8192);
+        }
+
+        lines.add(line);
+
+        // read the rest lines of the record except comment lines
+        while (((line=bufReader.readLine())!= null)&&(line.length()!=0)) {
+            if ( !line.startsWith("#") )
+                lines.add(line);
+        }
+
+        // we have red the lines of the first record, convert them to
+        // the record field
+        toRecordFields(lines);
+
+        // if this is not a content LDIF file
+        if (   ((this.recordFields[1]).startsWith("changetype:"))
+            || ((this.recordFields[1]).startsWith("control:"))) {
+            setContent(false);
+        }
+
+        // go back to the dn field of the first record of the LDIF file
+        bufReader.reset();
     }
 
-    public LDAPOperation readChange() throws IOException  {
+
+
+    public LDAPOperation readChange() throws UnsupportedEncodingException, LDAPException,IOException  {
+
+        int i;
+
         if( isContent()) {
             throw new RuntimeException("Cannot read changes from LDIF content file");
         }
+
+        if ( (i = readRecordLines()) ==0) {
+            return null;
+        }
+
+        // convert the record lines to the record fields
+        toRecordFields(lines);
+        //
+        setLDAPOperationContent();
+        // get entry dn
+        this.dn = (recordFields[0]).substring((recordFields[0]).indexOf((int)':')+1).trim();
+
+        switch( changeType ) {
+                    // construct a specific change record object and let the
+                    // super class object reference it
+                    case LDAPOperation.LDAP_ADD :
+                        currentEntry = toLDAPEntry();
+                        if (controls == null)
+                            currentChange = new LDAPAdd(currentEntry);
+                        else
+                            currentChange = new LDAPAdd(currentEntry, controls);
+                        break;
+
+                    case LDAPOperation.LDAP_DELETE :
+                        if (controls == null)
+                            currentChange = new LDAPDelete(this.dn);
+                        else
+                            currentChange = new LDAPDelete(this.dn, controls);
+                        break;
+
+                    case LDAPOperation.LDAP_MODRDN :
+                        ModInfo modInfo = toModInfo();
+                        String sup = modInfo.getNewSuperior();
+                        if (controls == null) {
+                            if((sup.length())==0 ) {
+                                currentChange = new LDAPModDN(this.dn,
+                                                               modInfo.getNewRDN(),
+                                                               modInfo.getDeleteOldRDN());
+                            }
+                            else {
+                                currentChange = new LDAPModDN(this.dn,
+                                                               modInfo.getNewRDN(),
+                                                               modInfo.getDeleteOldRDN(),
+                                                               modInfo.getNewSuperior());
+                            }
+                        }
+                        else {
+                            if((sup.length())==0 ) {
+                                currentChange = new LDAPModDN(this.dn,
+                                                               modInfo.getNewRDN(),
+                                                               modInfo.getDeleteOldRDN(),
+                                                               controls);
+                            }
+                            else {
+                                currentChange = new LDAPModDN(this.dn,
+                                                               modInfo.getNewRDN(),
+                                                               modInfo.getDeleteOldRDN(),
+                                                               modInfo.getNewSuperior(),
+                                                               controls);
+                            }
+
+                        }
+                        break;
+
+                    case LDAPOperation.LDAP_MODIFY :
+
+                        LDAPModification[] mods = toLDAPModifications();
+                        if (controls == null) {
+                            currentChange = new LDAPModify(this.dn, mods);
+                        }
+                        else {
+                            currentChange = new LDAPModify(this.dn, mods, controls);
+                        }
+                        break;
+
+                    default:
+                            // unknown change type
+                            throw new LDAPException("com.novell.ldap.util."
+                                        + "LDIFReader: Unknown change type", 0);
+                }
+
         return currentChange;
     }
 
-    public LDAPEntry readContent() {
+    public LDAPEntry readContent() throws UnsupportedEncodingException, LDAPException, IOException {
+
+        int i;
+
+        this.recordType = LDIF.CONTENT_RECORD;
+
         if( ! isContent()) {
             throw new RuntimeException("Cannot read content from LDIF change file");
         }
+
+        // read record lines
+        if ( (i = readRecordLines()) == 0) {
+            return null;
+        }
+
+        // convert record lines to the record fields
+        toRecordFields(lines);
+
+        // get entry dn
+        this.dn = (recordFields[0]).substring((recordFields[0]).indexOf((int)':')+1).trim();
+
+        currentEntry = toLDAPEntry();
+
         return currentEntry;
     }
 
-    /**
-     * @supplierCardinality 0..*
-     * @clientCardinality 1 
-     */
-    public final static LDAPOperation currentChange = null;
+    private void setRecordFields(String[] lines) {
+        int i, firstColon, len = lines.length;
+        String tempString;
+        ArrayList tempList = new ArrayList();
 
-    /**
-     * @clientCardinality 1
-     * @supplierCardinality 0..*
-     */
-    private LDAPEntry currentEntry = null;
+        // a record field may consist of one or multiple lines. concatenate
+        // the continuation lines to get the whole field.
+        for ( i=0; i<len; i++) {
+            tempString = lines[i];
+
+            // The last line of a record has no continuation line.
+            while( (i<len-1) && (lines[i+1]).startsWith(" ")) {
+                tempString += (lines[i+1]).substring(1);
+                i++;
+            }
+
+            tempList.add(tempString);
+        }
+
+        // get all record fields
+        len = tempList.size();
+        this.recordFields = new String[len];
+        for (i=0;i<len;i++) {
+            this.recordFields[i] = (String)tempList.get(i);
+        }
+    }
+
+    private void decodeRecordFields(String[] fields)
+                            throws UnsupportedEncodingException, LDAPException {
+
+        int i, firstColon, len = fields.length;;
+        String tempString;
+        Base64Decoder base64Decoder = new Base64Decoder();
+
+        // decode record fields if there is one that is base64 encoded
+        for (i=0; i<len; i++) {
+            firstColon = (fields[i]).indexOf((int)':');
+            // is there a Base64 encoded field?
+            if ((fields[i]).charAt(firstColon+1)==(int)':') {
+                // yes, get the spec of this field
+                tempString = ((fields[i]).substring(firstColon+2)).trim();
+                // decode the spec, and
+                tempString = base64Decoder.decoder(tempString);
+                // put it back to the field
+                recordFields[i] = (fields[i]).substring(0,firstColon+1)
+                                                           + tempString;
+            }
+        }
+    }
+
+    private LDAPEntry toLDAPEntry() {
+        int i, j, index, len;
+        ArrayList tl  = new ArrayList();;
+        String name, value;
+        String[] values = null;
+        LDAPAttribute attr;
+
+        len = recordFields.length;
+        attrs = new String[len-1];
+        for (i=0; i<len-1; i++ ) {
+            attrs[i] = recordFields[i+1];
+        }
+
+        len = attrs.length;
+
+        attrSet = new LDAPAttributeSet();
+
+        for ( i=0; i<len; i++ ) {
+            index = (attrs[i]).indexOf((int)':');
+            name  = (attrs[i]).substring(0, index);
+            value = (attrs[i]).substring(index + 1);
+            tl.add(value);
+
+            for (j=i+1;j<len; j++) {
+                index = (attrs[j]).indexOf((int)':');
+                if (name.equalsIgnoreCase((attrs[j]).substring( 0,index ))) {
+                    tl.add((attrs[j]).substring( index + 1 ));
+                    i = j;
+                }
+            }
+
+            // multi-valued attribute
+            if ( tl.size()>1 ) {
+                values = new String[tl.size()];
+
+                for ( j=0; j< tl.size(); j++ ) {
+                    values[j] = (String)tl.get(j);
+                }
+                attr = new LDAPAttribute(name, values);
+            }
+            // single-valued attribute
+            else {
+                attr = new LDAPAttribute(name, value);
+            }
+
+            tl.clear();
+            attrSet.add(attr);
+        }
+
+        return new LDAPEntry(this.dn, attrSet);
+    }
+
+    public int readRecordLines() throws IOException {
+        lines = new ArrayList();
+
+        // skip empty and comment lines and read the the first dn
+        // line of the record
+        while( (((line = bufReader.readLine())!= null) && (line.length() == 0))
+                || ( line != null && line.startsWith("#"))) {
+        }
+
+        if (line == null) {
+            return 0;
+        }
+
+        // check if the first dn line starts with 'dn:'
+        if ( !line.startsWith("dn:") ) {
+            throw new IOException("Any record should start with 'dn:'");
+        }
+
+        lines.add(line);
+
+        // read the rest lines of the record except comment lines
+        while (((line=bufReader.readLine())!= null)&&(line.length()!=0)) {
+            if ( !line.startsWith("#") )
+                lines.add(line);
+        }
+        return 1;
+    }
+
+    public void toRecordFields(ArrayList lines) throws UnsupportedEncodingException, LDAPException {
+
+        // populate recordLines with the lines just red
+        recordLines = new String[lines.size()];
+        for (int i=0; i<lines.size(); i++) {
+            recordLines[i] = (String)lines.get(i);
+        }
+        setRecordFields(recordLines);
+        decodeRecordFields(this.recordFields);
+    }
+
+    private void setLDAPOperationContent() throws LDAPException {
+
+        int i, len = this.recordFields.length;
+
+        // this is a change record
+        this.recordType = LDIF.CHANGE_RECORD;
+
+        // set attribute value dn field
+        this.dn = this.recordFields[0];
+
+        if ( (this.recordFields[1]).startsWith("control:") ) {
+            // a change record with one or more controls
+            ArrayList controlList = new ArrayList();
+            i = 1;
+            while ((this.recordFields[i]).startsWith("control:")) {
+                controlList.add(this.recordFields[i]);
+                i++;
+            }
+
+            // now i reference the change field
+            int changeIndex = i;
+            this.changeField = this.recordFields[changeIndex];
+
+            // all other fields
+            int contentLen = len - changeIndex;
+            this.content = new String[contentLen];
+            for (i=0; i<contentLen; i++ ) {
+                this.content[i] = this.recordFields[i+changeIndex];
+            }
+
+            // get string array of control list
+            int controlNumber = controlList.size();
+            controlFields = new String[controlNumber];
+            for( i=0; i<controlNumber; i++) {
+                controls[i] = (LDAPControl)controlList.get(i);
+            }
+        }
+        else {
+            // a change record with no controls
+            this.changeField = this.recordFields[1];
+
+            // all other fields
+            this.content = new String[len-2];
+
+            for (i=0; i<len-2; i++ ) {
+                this.content[i] = this.recordFields[i+2];
+            }
+        }
+        setChangeIdentity(this.changeField);
+    }
+
+    private void setChangeIdentity(String cf) throws LDAPException {
+        // change operation
+        int index = (cf).indexOf((int)':');
+        this.changeOperation = cf.substring(index+1).trim();
+
+        // set change type
+        if ( changeOperation.equalsIgnoreCase("add") ) {
+            this.changeType = LDAPOperation.LDAP_ADD;
+        }
+        else if ( changeOperation.equalsIgnoreCase("delete") ) {
+            this.changeType = LDAPOperation.LDAP_DELETE;
+        }
+        else if ( changeOperation.equalsIgnoreCase("modrdn") ) {
+            this.changeType = LDAPOperation.LDAP_MODRDN;
+        }
+        else if ( changeOperation.equalsIgnoreCase("moddn") ) {
+            this.changeType = LDAPOperation.LDAP_MODRDN;
+        }
+        else if ( changeOperation.equalsIgnoreCase("modify") ) {
+            this.changeType = LDAPOperation.LDAP_MODIFY;
+        }
+        else
+            throw new LDAPException("not supported change operation", 0);
+    }
+
+    public ModInfo toModInfo() {
+
+        ModInfo mi = null;
+
+        //modDNInfo = new String[content.length];
+        // for ( int i=0; i<content.length; i++) {
+        //     modDNInfo[i] = content[i];
+        // }
+        String integer = ((content[1]).substring(content[1].indexOf((int)':')+ 1)).trim();
+        if(this.content.length == 2) {
+            //this.ldapmodrdn = new LDAPModRDN(content[0], Integer.parseInt(integer), new String(""));
+            mi = new ModInfo(content[0], Integer.parseInt(integer), new String(""));
+        }
+        else {
+           //this.ldapmodrdn = new LDAPModRDN(content[0], Integer.parseInt(integer), content[2]);
+            mi = new ModInfo(content[0], Integer.parseInt(integer), content[2]);
+        }
+
+        return mi;
+    }
+
+    public LDAPModification[] toLDAPModifications () throws LDAPException {
+
+        int        i, j, k, changeNumber = 0, modType, len = content.length;
+        String     temp, attrName, attrValue, modOp;
+        ArrayList[] changeGroups;
+        LDAPAttribute attr = null;
+        LDAPModification mod = null;
+        LDAPModification[] mods;
+
+        for (i=0; i<len; i++) {
+            if ( (content[i]).startsWith("-") ) {
+                changeNumber++;
+            }
+        }
+        mods = new LDAPModification[changeNumber];
+
+        changeGroups = new ArrayList[changeNumber];
+
+        for ( i=0, j=0; i<changeNumber; i++, j++) {
+            changeGroups[i] = new ArrayList();
+            while ( !content[j].startsWith("-") ) {
+                (changeGroups[i]).add(content[j]);
+                j++;
+            }
+        }
+
+        for ( i=0, j=1; i<changeNumber; i++, j=1 ) {
+            // first line consists of 'modifyOperation: attrDescription'
+            temp = (String)(changeGroups[i]).get(0);
+            modOp = temp.substring(0, temp.indexOf((int)':'));
+
+            while( j<(changeGroups[i]).size() ) {
+                temp = (String)(changeGroups[i]).get(j);
+                attrName  = temp.substring(0, temp.indexOf((int)':'));
+                attrValue = temp.substring( temp.lastIndexOf((int)':') + 1 );
+                attr = new LDAPAttribute(attrName, attrValue);
+
+                if ( modOp.equalsIgnoreCase("add") ) {
+                    modType = LDAPOperation.MODIFY_ADD;
+                    mod = new LDAPModification(LDAPModification.ADD, attr);
+                    //modSet.add(LDAPModification.ADD, attr);
+                }
+                else if ( modOp.equalsIgnoreCase("delete") ) {
+                    modType = LDAPOperation.MODIFY_DELETE;
+                    //modSet.add(LDAPModification.DELETE, attr);
+                }
+                else if ( modOp.equalsIgnoreCase("replace") ) {
+                    modType = LDAPOperation.MODIFY_REPLACE;
+                    //modSet.add(LDAPModification.REPLACE, attr);
+                }
+                else {
+                    throw new LDAPException("Not supported modify operation", 0);
+                }
+                mods[i] = mod;
+
+                j++;
+            }
+
+        }
+
+        return mods;
+    }
 }
