@@ -45,6 +45,26 @@ import java.io.ByteArrayOutputStream;
  */
  public class GetEffectivePrivilegesRequest extends LDAPExtendedOperation {
 
+    static
+    {
+		/*
+         * Register the extendedresponse class which is returned by the
+		 * server in response to a GetEffectivePrivilegesRequest
+		 */
+        try {
+            LDAPExtendedResponse.register(
+                  ReplicationConstants.GET_EFFECTIVE_PRIVILEGES_RES,
+                  Class.forName(
+                  "com.novell.ldap.extensions.GetEffectivePrivilegesResponse"));
+        }catch (ClassNotFoundException e) {
+            System.err.println("Could not register Extended Response -" +
+                               " Class not found");
+        }catch(Exception e){
+           e.printStackTrace();
+        }
+        
+    }
+
     /**
     * Constructs an extended operation object for checking effective rights.
     *

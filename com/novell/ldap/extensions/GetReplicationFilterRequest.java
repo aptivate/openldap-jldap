@@ -41,6 +41,27 @@ import java.io.ByteArrayOutputStream;
  */
 public class GetReplicationFilterRequest extends LDAPExtendedOperation {
 
+
+    static
+    {
+		/*
+         * Register the extendedresponse class which is returned by the
+		 * server in response to a GetReplicationFilterRequest
+		 */
+        try {
+            LDAPExtendedResponse.register(
+                  ReplicationConstants.GET_REPLICATION_FILTER_RES,
+                  Class.forName(
+                  "com.novell.ldap.extensions.GetReplicationFilterResponse"));
+        }catch (ClassNotFoundException e) {
+            System.err.println("Could not register Extended Response -" +
+                               " Class not found");
+        }catch(Exception e){
+           e.printStackTrace();
+        }
+        
+    }
+
 /**
  *
  * Constructs an extended operations object which contains the ber encoded

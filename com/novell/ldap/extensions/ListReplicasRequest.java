@@ -19,7 +19,7 @@ import com.novell.ldap.asn1.*;
 import com.novell.ldap.resources.*;
 import java.io.IOException;
 import java.io.ByteArrayOutputStream;
-
+import com.novell.ldap.client.Debug;
 /**
  *
  *  Lists all the replicas that reside on the the specified directory server.
@@ -38,6 +38,27 @@ import java.io.ByteArrayOutputStream;
  */
 public class ListReplicasRequest extends LDAPExtendedOperation {
 
+
+
+    static
+    {
+		/*
+         * Register the extendedresponse class which is returned by the
+		 * server in response to a ListReplicasRequest
+		 */
+        try {
+            LDAPExtendedResponse.register(
+                ReplicationConstants.LIST_REPLICAS_RES,
+                Class.forName(
+                "com.novell.ldap.extensions.ListReplicasResponse"));
+        }catch (ClassNotFoundException e) {
+            System.err.println("Could not register Extended Response -" +
+                               " Class not found");
+        }catch(Exception e){
+           e.printStackTrace();
+        }
+        
+    }
 /**
  *  Constructs an extended operation object for listing replicas.
  *

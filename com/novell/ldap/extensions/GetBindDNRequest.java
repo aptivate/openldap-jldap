@@ -16,7 +16,7 @@ package com.novell.ldap.extensions;
 
 import com.novell.ldap.LDAPExtendedOperation;
 import com.novell.ldap.LDAPException;
-
+import com.novell.ldap.LDAPExtendedResponse;
 /**
  *  Returns the distingusihed name of the object your are logged in as.
  *
@@ -37,6 +37,26 @@ import com.novell.ldap.LDAPException;
  */
  public class GetBindDNRequest extends LDAPExtendedOperation {
 
+    static
+    {
+		/*
+         * Register the extendedresponse class which is returned by the
+		 * server in response to a GetBindDNRequest
+		 */
+        try {
+            LDAPExtendedResponse.register(
+                  ReplicationConstants.GET_IDENTITY_NAME_RES,
+                  Class.forName(
+                  "com.novell.ldap.extensions.GetBindDNResponse"));
+        }catch (ClassNotFoundException e) {
+            System.err.println("Could not register Extended Response -" +
+                               " Class not found");
+        }catch(Exception e){
+           e.printStackTrace();
+        }
+        
+    }
+    
     /**
     *   Constructs an extended operation object for retrieving the bind dn.
     *

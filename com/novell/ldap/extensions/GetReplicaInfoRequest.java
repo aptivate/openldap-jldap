@@ -43,6 +43,27 @@ import java.io.ByteArrayOutputStream;
  */
 public class GetReplicaInfoRequest extends LDAPExtendedOperation {
 
+
+    static
+    {
+		/*
+         * Register the extendedresponse class which is returned by the
+		 * server in response to a GetReplicaInfoRequest
+		 */
+        try {
+            LDAPExtendedResponse.register(
+                  ReplicationConstants.GET_REPLICA_INFO_RES,
+                  Class.forName(
+                  "com.novell.ldap.extensions.GetReplicaInfoResponse"));
+        }catch (ClassNotFoundException e) {
+            System.err.println("Could not register Extended Response -" +
+                               " Class not found");
+        }catch(Exception e){
+           e.printStackTrace();
+        }
+        
+    }
+
 /**
  *
  * Constructs an extended operations object for reading replica information.
