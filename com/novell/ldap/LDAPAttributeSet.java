@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttributeSet.java,v 1.19 2001/03/01 00:29:46 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttributeSet.java,v 1.20 2001/03/28 22:33:01 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -100,7 +100,7 @@ public class LDAPAttributeSet implements Cloneable {
       Object[] arrayAttr = attrs.toArray();
       for( int i=0; i < arrayAttr.length; i++) {
           attrib = (LDAPAttribute)arrayAttr[i];
-          if(attrib.getName().equals(attrName)){
+          if(attrib.getName().equalsIgnoreCase(attrName)){
             return attrib;
           }
       }
