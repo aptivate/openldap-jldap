@@ -1,6 +1,18 @@
-/**
+/* **************************************************************************
+ * $Id
  *
- */
+ * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
+ * 
+ * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
+ * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
+ * TO VERSION 2.0.1 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
+ * AVAILABLE AT HTTP://WWW.OPENLDAP.ORG/LICENSE.HTML OR IN THE FILE "LICENSE"
+ * IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
+ * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.1 OF THE OPENLDAP
+ * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
+ * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY. 
+ ***************************************************************************/
+ 
 package com.novell.ldap.client;
 
 import java.io.BufferedInputStream;
@@ -12,6 +24,8 @@ import java.net.Socket;
 import java.util.Vector;
 
 import com.novell.ldap.*;
+import com.novell.ldap.client.protocol.UnbindRequest;
+import com.novell.ldap.client.protocol.lber.*;
 
 /**
   * A thread that creates a connection to an LDAP server.
@@ -20,7 +34,7 @@ import com.novell.ldap.*;
   */
 public final class Connection implements Runnable {
 
-	// The worker thread will multiplex response messages received from the
+	// The producer thread will multiplex response messages received from the
 	// server to one of many queues. Each LDAPListener which registers with
 	// this class will have its own message queue. That message queue may be
 	// dedicated to a single LDAP operation, or may be shared among many LDAP
@@ -30,7 +44,7 @@ public final class Connection implements Runnable {
 	// to the server using this class. The application thread will then query
 	// the LDAPListener for a response.
 	//
-	// The worker thread reads data directly from the server, and writes
+	// The producer thread reads data directly from the server, and writes
 	// it to a message queue associated with either an LDAPResponseListener,
 	// or an LDAPSearchListener. It uses the message ID from the response to
 	// determine which listener is expecting the result. It does this by
@@ -38,20 +52,20 @@ public final class Connection implements Runnable {
 	// message ID from the message just received and adding the message to
 	// that listeners queue.
 	//
-   private Thread worker; // New thread that reads data from the server.
+	// Note: the producer thread must not be a "selfish" thread, since some
+	// operating systems do not time slice.
+	//
+   private Thread producer; // New thread that reads data from the server.
    private boolean v3 = true;
 
-   String host;   // used by LDAPClient for generating exception messages
-   int port;      // used by LDAPClient for generating exception messages
+   private String host;
+   private int port;
 
    private boolean bound = false;
 
-   public InputStream inStream;
-   public OutputStream outStream;
-   public Socket socket;
-
-   // For processing "disconnect" unsolicited notification
-   private LDAPClient parent = null; 
+   private InputStream inStream;
+   private OutputStream outStream;
+   private Socket socket;
 
    private int msgId = 0;
 
@@ -66,7 +80,7 @@ public final class Connection implements Runnable {
 
    // A BIND request has been successfully made on this connection
    // When cleaning up, remember to do an UNBIND
-   void setBound() {
+   public void setBound() {
       bound = true;
    }
 
@@ -91,17 +105,16 @@ public final class Connection implements Runnable {
    }
 
    /**
-    * for jldap
+    * Constructs a TCP/IP connection to a server specified in host and port.
+	 * The socketFactory parameter produces SSL sockets.
     */
-   Connection(LDAPClient parent, String host, int port,
-		        LDAPSocketFactory socketFactory)
-      throws LDAPException {
-
+   public Connection(String host, int port, LDAPSocketFactory socketFactory)
+      throws LDAPException
+	{
       this.host = host;
       this.port = port;
-      this.parent = parent;
 
-      // Make connection to specified server
+      // Make socket connection to specified host and port
       try {
          if(socketFactory != null) {
             socket = socketFactory.makeSocket(host, port);
@@ -120,9 +133,9 @@ public final class Connection implements Runnable {
 
 		ldapListeners = new Vector(5);
 
-      worker = new Thread(this);
-      worker.setDaemon(true); // If this is the last thread running, exit.
-      worker.start();
+      producer = new Thread(this);
+      producer.setDaemon(true); // If this is the last thread running, exit.
+      producer.start();
    }
 
 
@@ -132,16 +145,18 @@ public final class Connection implements Runnable {
 	/**
 	 *	Returns a unique message id for this connection.
 	 */
-   synchronized int getMsgId() {
+   public synchronized int getMessageID() {
       return ++msgId;
    }
 
 	/**
-	 * Writes a ber encoded message to the LDAP server over a socket.
+	 * Writes an lber encoded message to the LDAP server over a socket.
 	 */
-   public void writeMessage(BerEncoder ber) throws IOException {
+   public void writeMessage(LberEncoder lber)
+		throws IOException
+	{
       synchronized(this) {
-         outStream.write(ber.getBuf(), 0, ber.getDataLen());
+         outStream.write(lber.getBuf(), 0, lber.getDataLen());
          outStream.flush();
       }
    }
@@ -179,32 +194,21 @@ public final class Connection implements Runnable {
 	// object is destroyed.
 
    private synchronized void ldapUnbind(LDAPControl[] reqCtls) {
-
-      BerEncoder ber = new BerEncoder(256);
-      int unbindMsgId = getMsgId();
-
-      // build the unbind request.
       try {
+			LDAPRequest req = new UnbindRequest(getMessageID(), reqCtls, v3);
 
-         ber.beginSeq(Ber.ASN_SEQUENCE | Ber.ASN_CONSTRUCTOR);
-         ber.encodeInt(unbindMsgId);
-         // IMPLICIT TAGS
-         ber.encodeByte(LDAPClient.LDAP_REQ_UNBIND);
-         ber.encodeByte(0);
-
-         if(v3) {
-            LDAPClient.encodeControls(ber, reqCtls);
-         }
-         ber.endSeq();
-
-         outStream.write(ber.getBuf(), 0, ber.getDataLen());
+         outStream.write(req.getLber().getBuf(), 0,
+				             req.getLber().getDataLen());
          outStream.flush();
       }
+		catch(LDAPException e) {
+			// encoding errors
+		}
       catch(IOException ex) {
-         //System.err.println("ldap.unbind: " + ex);
+			// communication errors
       }
 
-      // Dont expect any response for the unbind request.
+      // An UnbindRequest will not return anything...
    }
 
 	/**
@@ -217,7 +221,7 @@ public final class Connection implements Runnable {
 	/**
 	 *
 	 */
-   synchronized void cleanup(LDAPControl[] reqCtls) {
+   public synchronized void cleanup(LDAPControl[] reqCtls) {
 
       if(socket != null) {
          try {
@@ -245,8 +249,8 @@ public final class Connection implements Runnable {
 
 
 	//------------------------------------------------------------------------
-   // The LDAP Binding thread. It does the demultiplexing of multiple
-	// requests on the same TCP connection.
+   // The LDAPMessage producer thread. It does the demultiplexing of multiple
+	// requests on the same TCP/IP connection.
 
    public void run() {
       byte inbuf[];
@@ -265,7 +269,7 @@ public final class Connection implements Runnable {
             bytesread = inStream.read(inbuf, offset, 1);
             if(bytesread < 0)
                break;
-            if(inbuf[offset++] != (Ber.ASN_SEQUENCE | Ber.ASN_CONSTRUCTOR))
+            if(inbuf[offset++] != (Lber.ASN_SEQUENCE | Lber.ASN_CONSTRUCTOR))
                continue; // loop until we get the start byte
 
             // get length of sequence
@@ -324,16 +328,11 @@ public final class Connection implements Runnable {
             }
 
             try {
-               BerDecoder retBer = new BerDecoder(inbuf, 0, offset);
-					LDAPMessage message = messageFactory.createLDAPMessage(retBer);
-
-					// get the msgId
-               //retBer.parseSeq(null);
-               //curMsgId = retBer.parseInt();
-               //retBer.reset();   // reset offset
+               LberDecoder lber = new LberDecoder(inbuf, 0, offset);
+					LDAPMessage message = messageFactory.createLDAPMessage(lber);
 
                if(message.getMessageID() == 0) {
-                  // Unsolicited Notification
+                  // Process Unsolicited Notification
                }
                else {
 						// Find the message queue which requested this response.
@@ -353,7 +352,7 @@ public final class Connection implements Runnable {
 							}
                }
             }
-            catch(Ber.DecodeException e) {
+            catch(Lber.DecodeException e) {
                //System.err.println("Cannot parse Ber");
             }
          } // while(true)

@@ -1,24 +1,37 @@
+/* **************************************************************************
+ * $Id
+ *
+ * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
+ * 
+ * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
+ * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
+ * TO VERSION 2.0.1 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
+ * AVAILABLE AT HTTP://WWW.OPENLDAP.ORG/LICENSE.HTML OR IN THE FILE "LICENSE"
+ * IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
+ * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.1 OF THE OPENLDAP
+ * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
+ * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY. 
+ ***************************************************************************/
+ 
+package com.novell.ldap;
+
+import com.novell.ldap.client.*;
+import java.util.Vector;
+
 /**
  * 4.6 public class LDAPSearchListener
  *
  *  An LDAPSearchListener manages search results and references returned
  *  on one or more search requests.
  */
-package com.novell.ldap;
-
-import com.novell.ldap.client.*;
-import java.util.*;
-import java.io.*;
-
 public class LDAPSearchListener extends LDAPListener {
  
 	/**
 	 * Constructor
 	 */
-	public LDAPSearchListener(LDAPClient ldapClient) {
-		this.ldapClient = ldapClient;
-		this.conn = ldapClient.getConn();
-		this.isLdapv3 = ldapClient.isLdapv3();
+	public LDAPSearchListener(Connection conn)
+	{
+		this.conn = conn;
 		this.queue = new LDAPMessageQueue();
 		this.exceptions = new Vector(5);
 		conn.addLDAPListener(this);
@@ -39,11 +52,12 @@ public class LDAPSearchListener extends LDAPListener {
 	 * response in the message queue and there are no message ids pending.
     */
    public LDAPMessage getResponse()
-		throws LDAPException {
-
+		throws LDAPException
+	{
 		LDAPMessage message = queue.getLDAPMessage(); // blocks
 
-		if(message != null && message.getType() == LDAPClient.LDAP_REP_RESULT) {
+		if(message != null &&
+			message.getType() == LDAPMessage.SEARCH_RESULT) {
 			queue.removeMessageID(message.getMessageID());
 		}
 
@@ -57,4 +71,4 @@ public class LDAPSearchListener extends LDAPListener {
 		return message;
    }
 
-} /* LDAPSearchListener */
+}

@@ -1,25 +1,39 @@
+/* **************************************************************************
+ * $Id
+ *
+ * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
+ * 
+ * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
+ * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
+ * TO VERSION 2.0.1 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
+ * AVAILABLE AT HTTP://WWW.OPENLDAP.ORG/LICENSE.HTML OR IN THE FILE "LICENSE"
+ * IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
+ * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.1 OF THE OPENLDAP
+ * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
+ * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY. 
+ ***************************************************************************/
+
+package com.novell.ldap;
+
+import com.novell.ldap.client.*;
+import java.util.Vector;
+
 /**
  * 4.5 public class LDAPResponseListener
  *
  *  Represents the message queue associated with a particular LDAP
  *  operation or operations.
  */
-package com.novell.ldap;
-
-import com.novell.ldap.client.*;
-import java.util.*;
-import java.io.*;
-
 public class LDAPResponseListener extends LDAPListener {
 
 	/**
 	 * Constructor
 	 */
-	public LDAPResponseListener(LDAPClient ldapClient) {
-		this.ldapClient = ldapClient;
-		this.isLdapv3 = ldapClient.isLdapv3();
-		this.conn = ldapClient.getConn();
+	public LDAPResponseListener(Connection conn)
+	{
+		this.conn = conn;
 		this.queue = new LDAPMessageQueue();
+		this.exceptions = new Vector(5);
 		conn.addLDAPListener(this);
 	}
 
@@ -34,62 +48,11 @@ public class LDAPResponseListener extends LDAPListener {
 	 * process the responses returned from a listener.
     */
    public LDAPResponse getResponse()
-		throws LDAPException {
-
+		throws LDAPException
+	{
 		LDAPMessage message = queue.getLDAPMessage();
 		queue.removeMessageID(message.getMessageID());
 		return (LDAPResponse)message;
-
-/*
-		BerDecoder replyBer = getReplyBer();
-
-		LDAPResult result = new LDAPResult();
-		result.resultCode = LDAPException.OPERATIONS_ERROR; // pessimistic
-
-		try {
-			// parse the replyber into an LDAPResponse
-			replyBer.parseSeq(null);                 // init seq
-			result.messageID = replyBer.parseInt();  // msg id
-			result.type = replyBer.parseByte();      // response type
-
-			replyBer.parseLength();
-
-			// the following data items are defined in RFC2251 sec 4.1.10
-			result.resultCode = replyBer.parseEnumeration();
-			result.matchedDN = replyBer.parseString(isLdapv3);
-			result.errorMessage = replyBer.parseString(isLdapv3);
-
-			// handle LDAPv3 referrals (if present)
-			if(isLdapv3 &&
-				(replyBer.bytesLeft() > 0) &&
-				(replyBer.peekByte() == LDAPClient.LDAP_REP_REFERRAL)) {
-
-				Vector URLs = new Vector(4);
-				int[] seqlen = new int[1];
-
-				replyBer.parseSeq(seqlen);
-				int endseq = replyBer.getParsePosition() + seqlen[0];
-				while((replyBer.getParsePosition() < endseq) &&
-						(replyBer.bytesLeft() > 0)) {
-
-					URLs.addElement(replyBer.parseString(isLdapv3));
-				}
-
-				if(result.referrals == null) {
-					result.referrals = new Vector(4);
-				}
-				result.referrals.addElement(URLs);
-			}
-			result.controls = isLdapv3 ? parseControls(replyBer) : null;
-		}
-		catch(IOException ioe) {
-		}
-
-		// remove the id from messageIDs int array
-		removeMessageID(result.getMessageID());
-
-		return result;
-*/		
    }
 
-} /* LDAPResponseListener */
+}

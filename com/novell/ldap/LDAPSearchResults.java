@@ -1,3 +1,24 @@
+/* **************************************************************************
+ * $Id
+ *
+ * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
+ * 
+ * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
+ * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
+ * TO VERSION 2.0.1 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
+ * AVAILABLE AT HTTP://WWW.OPENLDAP.ORG/LICENSE.HTML OR IN THE FILE "LICENSE"
+ * IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
+ * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.1 OF THE OPENLDAP
+ * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
+ * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY. 
+ ***************************************************************************/
+ 
+package com.novell.ldap;
+
+import com.novell.ldap.client.*;
+import java.util.*;
+import java.io.*;
+
 /**
  * 4.24 public class LDAPSearchResults
  *
@@ -5,12 +26,6 @@
  *  implements Enumeration, thereby providing access to all entries
  *  retrieved during the operation.
  */
-package com.novell.ldap;
-
-import com.novell.ldap.client.*;
-import java.util.*;
-import java.io.*;
-
 public class LDAPSearchResults implements Enumeration {
 
 	private Vector entries;
@@ -22,7 +37,7 @@ public class LDAPSearchResults implements Enumeration {
 	private LDAPSearchListener listener;
 
 	public LDAPSearchResults(int batchSize, LDAPSearchListener listener)
-	throws IOException, LDAPException {
+	{
 		this.listener = listener;
 		entries = new Vector((batchSize == 0) ? 64 : batchSize);
 		this.batchSize = (batchSize == 0) ? Integer.MAX_VALUE : batchSize;
@@ -90,8 +105,8 @@ public class LDAPSearchResults implements Enumeration {
     */
    public LDAPEntry next() throws LDAPException {
 		Object element = elements.nextElement();
-		if(element instanceof LDAPResult) {
-			((LDAPResult)element).chkResultCode(); // will throw an exception
+		if(element instanceof LDAPResponse) {
+			((LDAPResponse)element).chkResultCode(); // will throw an exception
 		}
       return (LDAPEntry)element;
    }
@@ -167,10 +182,10 @@ public class LDAPSearchResults implements Enumeration {
 						// chase referrals???
 					}
 					else {
-						LDAPResult result = (LDAPResult)msg;
-						int resultCode = result.getResultCode();
+						LDAPResponse response = (LDAPResponse)msg;
+						int resultCode = response.getResultCode();
 						if(resultCode != LDAPException.SUCCESS) {
-							entries.addElement((LDAPResult)msg);
+							entries.addElement((LDAPResponse)msg);
 						}
 						return true; // search completed
 					}
@@ -185,9 +200,8 @@ public class LDAPSearchResults implements Enumeration {
 			}
 			catch(LDAPException e) { // network error
 				// could be a client timeout result
-				LDAPResult result = new LDAPResult();
-				result.resultCode = e.getLDAPResultCode();
-				entries.addElement(result);
+				LDAPResponse response = new LDAPResponse(e.getLDAPResultCode());
+				entries.addElement(response);
 				return true; // search has been interrupted with an error
 			}
 		}
@@ -207,4 +221,4 @@ public class LDAPSearchResults implements Enumeration {
 		completed = true;
 	}
 
-} /* LDAPSearchResults */
+}

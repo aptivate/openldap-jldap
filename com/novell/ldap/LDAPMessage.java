@@ -1,15 +1,32 @@
+/* **************************************************************************
+ * $Id
+ *
+ * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
+ * 
+ * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
+ * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
+ * TO VERSION 2.0.1 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
+ * AVAILABLE AT HTTP://WWW.OPENLDAP.ORG/LICENSE.HTML OR IN THE FILE "LICENSE"
+ * IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
+ * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.1 OF THE OPENLDAP
+ * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
+ * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY. 
+ ***************************************************************************/
+ 
+package com.novell.ldap;
+
+import java.util.Vector;
+
 /**
  * 4.3 public class LDAPMessage
  *
  *  Base class for LDAP request and response messages.
  */
-package com.novell.ldap;
-
 public class LDAPMessage {
 
-	public LDAPControl[] controls;
-	public int messageID;
-	public int type;
+	protected int messageID;
+	protected Vector controls;
+	protected int type;
 
    public final static int BIND_REQUEST            = 0;
    public final static int BIND_RESPONSE           = 1;
@@ -32,13 +49,25 @@ public class LDAPMessage {
    public final static int EXTENDED_REQUEST        = 23;
    public final static int EXTENDED_RESPONSE       = 24;
 
-	LDAPMessage() {
+	protected LDAPMessage()
+	{
 	}
 
-	LDAPMessage(int messageID, int type, LDAPControl[] controls) {
+	protected LDAPMessage(int messageID, int type)
+	{
+		this(messageID, null, type);
+	}
+
+	protected LDAPMessage(int messageID, LDAPControl[] controls, int type)
+	{
 		this.messageID = messageID;
+		if(controls != null && controls.length > 0) {
+			this.controls = new Vector(controls.length);
+			for(int i=0; i<controls.length; i++) {
+				this.controls.addElement(controls[i]);
+			}
+		}
 		this.type = type;
-		this.controls = controls;
 	}
 
    /*
@@ -49,7 +78,17 @@ public class LDAPMessage {
     * Returns any controls in the message.
     */
    public LDAPControl[] getControls() {
-      return controls;
+		LDAPControl[] ctrls = null;
+		if(controls != null) {
+			ctrls = new LDAPControl[controls.size()];
+			for(int i=0; i<controls.size(); i++) {
+				ctrls[i] = (LDAPControl)controls.elementAt(i);
+			}
+		}
+		else {
+			ctrls = null;
+		}
+      return ctrls;
    }
 
    /*
@@ -62,6 +101,13 @@ public class LDAPMessage {
    public int getMessageID() {
       return messageID;
    }
+
+   /**
+    * Sets the message ID.
+    */
+	public void setMessageID(int messageID) {
+		this.messageID = messageID;
+	}
 
    /*
     * 4.3.3 getType
@@ -95,5 +141,18 @@ public class LDAPMessage {
    public int getType() {
       return type;
    }
+
+	/**
+	 * Sets the type.
+	 */
+	public void setType(int type) {
+		this.type = type;
+	}
+
+   /**
+	 * LDAPv3 Controls
+	 */
+
+   public static final int LDAP_CONTROLS = 0xa0;      // ctx + constructed    (LDAPv3)
 
 }

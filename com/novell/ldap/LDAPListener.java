@@ -1,20 +1,35 @@
-/**
- * Not in the draft.
+/* **************************************************************************
+ * $Id
  *
- *  Represents the message queue associated with a particular LDAP
- *  operation or operations.
- */
+ * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
+ * 
+ * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
+ * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
+ * TO VERSION 2.0.1 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
+ * AVAILABLE AT HTTP://WWW.OPENLDAP.ORG/LICENSE.HTML OR IN THE FILE "LICENSE"
+ * IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
+ * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.1 OF THE OPENLDAP
+ * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
+ * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY. 
+ ***************************************************************************/
+ 
 package com.novell.ldap;
 
 import java.io.*;
 import java.util.Vector;
-import com.novell.ldap.client.*;
 
+import com.novell.ldap.client.*;
+import com.novell.ldap.client.protocol.AbandonRequest;
+
+/**
+ * Not in the draft.
+ *
+ * Represents the message queue associated with a particular LDAP
+ * operation or operations.
+ */
 public abstract class LDAPListener implements TimerListener {
 
 	protected Connection conn;
-	protected LDAPClient ldapClient;
-	protected boolean isLdapv3;
 	protected LDAPMessageQueue queue;
 	protected Vector exceptions;
 
@@ -65,29 +80,45 @@ public abstract class LDAPListener implements TimerListener {
    }
 
 	/**
-	 * @internal
+	 * Will write the message and start the timer (if any) for the client
+	 * side timeout.
 	 */
-	public void writeMessage(BerEncoder ber, int msgID, int msLimit)
+	public void writeMessage(LDAPRequest req, int msLimit)
 	throws IOException {
+		int messageID = req.getMessageID();
 		Timer timer = null;
 
 		if(msLimit > 0) {
-			timer = new Timer(msgID, msLimit, this);
+			timer = new Timer(messageID, msLimit, this);
 			timer.start();
 		}
 
-		queue.addMessageID(msgID, timer);
-		conn.writeMessage(ber);
+		queue.addMessageID(messageID, timer);
+		conn.writeMessage(req.getLber());
 	}
 
 	/**
 	 * @internal
+	 * Called by Timer when the timer for a given messageID has expired.
 	 */
 	public void timedOut(int msgId) {
 		exceptions.addElement(
 			new LDAPException("Client timeout", LDAPException.LDAP_TIMEOUT));
 		queue.removeTimer(msgId); // timer thread does not need to be stopped.
-		ldapClient.abandon(msgId, (LDAPControl[])null); // will remove id and notify
+		try {
+			conn.writeMessage(
+				new AbandonRequest(conn.getMessageID(), msgId,
+										 (LDAPControl[])null, true
+										).getLber());
+		}
+		catch(IOException ioe) {
+			// communication error
+		}
+		catch(LDAPException e) {
+			// since no controls are sent, it is unlikely an error will occur.
+		}
+		removeResponses(msgId);
+		removeMessageIDAndNotify(msgId);
 	}
 
 	/**
@@ -97,8 +128,19 @@ public abstract class LDAPListener implements TimerListener {
 	 */
 	public void abandonAll() {
 		int[] ids = queue.getMessageIDs();
-		for(int i=0; i<ids.length; i++) {
-			ldapClient.abandon(ids[i], (LDAPControl[])null);
+		try {
+			for(int i=0; i<ids.length; i++) {
+				conn.writeMessage(
+					new AbandonRequest(conn.getMessageID(), ids[i],
+											 (LDAPControl[])null, true
+											).getLber());
+			}
+		}
+		catch(IOException ioe) {
+			// communication error
+		}
+		catch(LDAPException e) {
+			// since no controls are sent, it is unlikely an error will occur.
 		}
 	}
 	
@@ -129,4 +171,4 @@ public abstract class LDAPListener implements TimerListener {
 		conn.removeLDAPListener(this);
 	}
 
-} /* LDAPListener */
+}
