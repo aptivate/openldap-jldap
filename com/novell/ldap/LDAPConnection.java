@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/org/ietf/ldap/LDAPConnection.java,v 1.20 2000/08/22 22:51:05 smerrill Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/org/ietf/ldap/LDAPConnection.java,v 1.21 2000/08/24 19:18:05 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -22,20 +22,24 @@ import com.novell.ldap.client.*;
 import com.novell.asn1.*;
 import com.novell.asn1.ldap.*;
 
-/**
+/*
  * 4.6 public class LDAPConnection
  *                implements LDAPv3, Cloneable
+ */
+ 
+
+/**
  *
- *  LDAPConnection is the central class that encapsulates the connection
- *  to a Directory Server through the LDAP protocol. It implements the
- *  LDAPv2 and LDAPv3 interfaces. An LDAPConnection object is not
- *  connected on construction, and may only be connected to one server at
- *  one port. Multiple threads may share this single connection, and an
+ *  Represents the central class that encapsulates the connection
+ *  to a directory server through the LDAP protocol. 
+ *
+ *  <p>The LDAPConnection class implements the LDAPv2 and LDAPv3
+ *  interfaces. An LDAPConnection object is not connected on 
+ *  construction and can only be connected to one server at one 
+ *  port. Multiple threads may share this single connection, and an
  *  application may have more than one LDAPConnection object, connected
- *  to the same or different Directory Servers.
+ *  to the same or different directory servers.</p>
  *
- *  Besides the methods described for LDAPv2 and LDAPv3, LDAPConnection
- *  provides the following methods.
  */
 public class LDAPConnection implements
    LDAPv3, LDAPAsynchronousConnection, Cloneable {
@@ -73,8 +77,8 @@ public class LDAPConnection implements
     * Constructs a new LDAPConnection object, which represents a connection
     * to an LDAP server.
     *
-    * Calling the constructor does not actually establish the connection.
-    * To connect to the LDAP server, use the connect method.
+    * <p>Calling the constructor does not actually establish the connection.
+    * To connect to the LDAP server, use the connect method. </p>
     */
    public LDAPConnection()
    {
@@ -83,9 +87,9 @@ public class LDAPConnection implements
    /**
     * Constructs a new LDAPConnection object, which will use the supplied
     * class factory to construct a socket connection during
-    * LDAPConnection.connect().
+    * LDAPConnection.connect method.
     *
-    *  factory         An object capable of producing a Socket.
+    *  @param factory     An object capable of producing a Socket.
     */
    public LDAPConnection(LDAPSocketFactory factory)
    {
@@ -94,19 +98,22 @@ public class LDAPConnection implements
 
    /**
     * Returns a copy of the object with a private context, but sharing the
-    * network connection if there is one. The network connection remains
-    * open until all clones have disconnected or gone out of scope. Any
-    * connection opened after cloning is private to the object making the
-    * connection.
+    * network connection if there is one. 
     *
-    * The clone can freely modify options and search constraints, and issue
-    * requests, without affecting the source object or other clones. If the
-    * clone disconnects or reconnects, it is completely dissociated from
-    * the source object and other clones. Reauthenticating in a clone,
+    * <p>The network connection remains open until all clones have 
+    * disconnected or gone out of scope. Any connection opened after
+    * cloning is private to the object making the connection.<\p>
+    * 
+    * <p>The clone can issue requests and freely modify options and search 
+    * constraints, and , without affecting the source object or other clones. 
+    * If the clone disconnects or reconnects, it is completely dissociated 
+    * from the source object and other clones. Reauthenticating in a clone,
     * however, is a global operation which will affect the source object
     * and all associated clones, because it applies to the single shared
     * physical connection. Any request by an associated object after one
-    * has reauthenticated will carry the new identity.
+    * has reauthenticated will carry the new identity.</p>
+    *
+    * @return A copy of the object.
     */
    public Object clone()
    {
@@ -118,8 +125,11 @@ public class LDAPConnection implements
     */
 
    /**
-    * Closes the connection if open and releases any other resources held
+    * Closes the connection, if open, and releases any other resources held
     * by the object.
+    *
+    * @exception LDAPException A general exception which includes an error
+    * message and an LDAP error code.
     */
    public void finalize()
       throws LDAPException
@@ -133,7 +143,10 @@ public class LDAPConnection implements
 
    /**
     * Returns the distinguished name (DN) used for authentication by this
-    * object. null is returned if no authentication has been performed.
+    * object. Null is returned if no authentication has been performed.
+    *
+    * @return The distinguished name if object is authenticated; otherwise,
+    * null.
     */
    public String getAuthenticationDN()
    {
@@ -148,12 +161,17 @@ public class LDAPConnection implements
     * Returns the method used to authenticate the connection. The return
     * value is one of the following:
     * 
-    *  "none"         If the connection is not authenticated
+    *  <ul>
+    *  <li>"none" indicates the connection is not authenticated.</li>
+
     *
-    *  "simple"       If simple authentication was used, also if a null
-    *                  or empty authentication DN was specified
+    *  <li>"simple" indicates simple authentication was used or that a null
+    *                 or empty authentication DN was specified.</li>
     *
-    *  "sasl"         If a SASL mechanism was used to authenticate
+    *  <li>"sasl" indicates that a SASL mechanism was used to authenticate</li>
+    *  </ul>
+    *
+    * @return The method used to authenticate the connection.
     */
    public String getAuthenticationMethod()
    {
@@ -167,7 +185,11 @@ public class LDAPConnection implements
 
    /**
     * Returns the password used for simple authentication by this object.
-    * null is returned if no authentication has been performed.
+    *
+    * <p> Null is returned if no authentication has been performed.</p>
+    *
+    * @return The password used for simple authentication or null if the 
+    * object is not authenticated.
     */
    public String getAuthenticationPassword()
    {
@@ -177,6 +199,9 @@ public class LDAPConnection implements
    /**
     * Returns the host name of the LDAP server to which the object is or
     * was last connected, in the format originally specified.
+    *
+    * @return The host name of the LDAP server to which the object last
+    * connected or null if the object has never connected.
     */
    public String getHost()
    {
@@ -186,6 +211,9 @@ public class LDAPConnection implements
    /**
     * Returns the stream used by the connection object for receiving data
     * from the LDAP server.
+    *
+    * @return The stream the connection object used for receiving data,
+    * or null if the object has never connected.
     */
    public InputStream getInputStream()
    {
@@ -195,6 +223,10 @@ public class LDAPConnection implements
    /**
     * Returns the stream used by the connection object to send data to the
     * LDAP server.
+    *
+    * @return The stream the connection object used for sending data,
+    * or null if the object has never connected.
+    
     */
    public OutputStream getOutputStream()
    {
@@ -204,6 +236,9 @@ public class LDAPConnection implements
    /**
     * Returns the port number of the LDAP server to which the object is or
     * was last connected.
+    *
+    * @return The port number of the LDAP server to which the object last
+    * connected or -1 if the object has never connected.
     */
    public int getPort()
    {
@@ -213,36 +248,32 @@ public class LDAPConnection implements
    /**
     * Gets a property of a connection object.
     *
-    * Parameters are:
     *
-    *  name            Name of the property to be returned.
+    *  @param name   Name of the property to be returned.
     *
-    *                  The following read-only properties are available
-    *                  for any given connection:
+    * <p>The following read-only properties are available
+    *  for any given connection:</p>
+    *  <ul>
+    *  <li>LDAP_PROPERTY_SDK returns the version of this SDK,
+    *                        as a Float data type.</li>
     *
-    *                  LDAP_PROPERTY_SDK            The version of this
-    *                                                SDK, as a Float
-    *                                                data type.
+    *  <li>LDAP_PROPERTY_PROTOCOL returns the highest supported version of 
+    *                          the LDAP protocol, as a Float data type.</li>
     *
-    *                  LDAP_PROPERTY_PROTOCOL       The highest
-    *                                                supported version
-    *                                                of the LDAP
-    *                                                protocol, as a
-    *                                                Float data type.
+    *  <li>LDAP_PROPERTY_SECURITY returns a comma-separated list of the
+    *                             types of authentication supported, as a
+    *                             string.                  
+    *  </ul>                                             
+    * 
+    *  <p>Other properties may be available in particular implementations
+    *  of the class, and used to modify operations such as search.</p>
     *
-    *                  LDAP_PROPERTY_SECURITY       A comma-separated
-    *                                                list of the types
-    *                                                of authentication
-    *                                                supported, as a
-    *                                                String.
+    *  <p>A deep copy of the property is provided where applicable; a
+    *  client does not need to clone the object received.</p>
     *
-    *  Other properties may be available in particular implementations
-    *  of the class, and used to modify operations such as search.
+    *  @return The requested property.
     *
-    *  A deep copy of the property is provided where applicable; a
-    *  client does not need to clone the object received.
-    *
-    *  An LDAPException is thrown if the requested property is not
+    *  @exception LDAPException Thrown if the requested property is not
     *  available.
     */
    public Object getProperty(String name)
@@ -256,8 +287,10 @@ public class LDAPConnection implements
     * through this connection (unless a different set of constraints is
     * specified when calling an operation method).
     *
-    * Note that the getOption method can be used to get individual
-    * constraints (rather than getting the entire set of constraints).
+    * <p> The getOption method can be used to get individual
+    * constraints (rather than getting the entire set of constraints). </p>
+    *
+    * @return The set of default contraints that apply to this connection.
     */
    public LDAPConstraints getConstraints()
    {
@@ -268,6 +301,9 @@ public class LDAPConnection implements
     * Returns the set of constraints that apply to search operations
     * performed through this connection (unless a different set of
     * constraints is specified when calling the search operation method).
+    *
+    * @return The set of default search contraints that apply to 
+    * this connection.
     */
    public LDAPSearchConstraints getSearchConstraints()
    {
@@ -277,6 +313,8 @@ public class LDAPConnection implements
    /**
     * Returns the LDAPSocketFactory used to establish a connection to a
     * server.
+    *
+    * @return The LDAPSocketFactory used to establish a connection.
     */
    public LDAPSocketFactory getSocketFactory()
    {
@@ -286,6 +324,9 @@ public class LDAPConnection implements
    /**
     * Indicates whether the object has authenticated to the connected LDAP
     * server.
+    *
+    * @return True if the object has authenticated; false if it has not
+    * authenticated.
     */
    public boolean isBound()
    {
@@ -295,6 +336,8 @@ public class LDAPConnection implements
    /**
     * Indicates whether the connection represented by this object is open
     * at this time.
+    *
+    * @return
     */
    public boolean isConnected()
    {
@@ -306,8 +349,10 @@ public class LDAPConnection implements
     * this connection (unless a different set of constraints is specified
     * when calling an operation method).
     *
-    * Note that the setOption method can be used to set individual
-    * constraints (rather than setting the entire set of constraints).
+    * <p> The setOption method can be used to set individual
+    * constraints (rather than setting the entire set of constraints).</p>
+    *
+    * @param cons  Contraints to set
     */
    public void setConstraints(LDAPConstraints cons)
    {
@@ -317,6 +362,8 @@ public class LDAPConnection implements
    /**
     * Sets the stream used by the connection object for receiving data from
     * the LDAP server.
+    *
+    * @param stream The input stream for receiving data.
     */
    public void setInputStream(InputStream stream)
    {
@@ -328,6 +375,9 @@ public class LDAPConnection implements
    /**
     * Sets the stream used by the connection object to send data to the
     * LDAP server.
+    *
+    * @param stream The output stream for sending data.
+    *
     */
    public void setOutputStream(OutputStream stream)
    {
@@ -339,16 +389,16 @@ public class LDAPConnection implements
    /**
     * Sets a property of a connection object.
     *
-    * No property names have been defined at this time, but the mechanism
+    * <p>No property names have been defined at this time, but the mechanism
     * is in place in order to support revisional as well as dynamic
-    * extensions to operation modifiers.
+    * extensions to operation modifiers. </p>
     * 
-    * Parameters are:
+    * 
+    * @param name    Name of the property to set.
     *
-    *  name           Name of the property to set.
+    * @param value   Value to assign to the property.
     *
-    *  value          Value to assign to the property.
-    *                 An LDAPException is thrown if the specified
+    * @exception LDAPException Thrown if the specified
     *                 property is not supported.
     */
    public void setProperty(String name, Object value)
@@ -361,9 +411,11 @@ public class LDAPConnection implements
     * through this connection (unless a different set of constraints is
     * specified when calling a search operation method).
     *
-    * Typically, the setSearchConstraints method is used to create a
+    * <p>Typically, the setSearchConstraints method is used to create a
     * slightly different set of search constraints to apply to a particular
-    * search.
+    * search. </p>
+    *
+    * @param cons The search constraints to set.
     */
    public void setSearchConstraints(LDAPSearchConstraints cons)
    {
@@ -374,31 +426,27 @@ public class LDAPConnection implements
     * Establishes the default LDAPSocketFactory used to establish a
     * connection to a server.
     *
-    * This method is implemented as once-only. It is useful to be able to
-    * change the run-time connection behavior of a whole application with a
-    * single instruction, but the results would be confusing, and the side-
-    * effects dangerous, if the global default factory could be changed at
-    * arbitrary times by different threads. It should be called before the
-    * first connect(). If called (for the first time) after connecting, the
-    * new factory will not be used until/unless a new connection is
-    * attempted with the object.
+    * <p>The setSocketFactory method is implemented as once-only. 
+    * It should be called before the first connect method. If called 
+    * (for the first time) after connecting, the new factory will not
+    * be used until or unless a new connection is attempted 
+    * with the object. </p>
     *
-    * A typical usage would be:
-    *
+    * <p>The following code snippet provides a typical usage example:
+    * <pre><code>
     *   if (usingTLS) {
     *       LDAPConnection.setSocketFactory(myTLSFactory);
     *   }
     *   ...
     *   LDAPConnection conn = new LDAPConnection();
     *   conn.connect(myHost, myPort);
+    * </code></pre></p>
     *
-    * In this example, connections are constructed with the default
+    * <p>In this example, connections are constructed with the default
     * LDAPSocketFactory.  At application start-up time, the default may be
-    * set to use a particular provided TLS socket factory.
+    * set to use a particular provided TLS socket factory.</p>
     *
-    * Parameters are:
-    *
-    *  factory        A factory object which can construct socket
+    * @param factory  A factory object which can construct socket
     *                 connections for an LDAPConnection.
     *
     */
@@ -416,41 +464,58 @@ public class LDAPConnection implements
 	//*************************************************************************
 
    /**
-    * abandon (LDAPv2)
+    * 
     *
-    * Notifies the server to not send additional results associated with
+    * Notifies the server not to send additional results associated with
     * this LDAPSearchResults object, and discards any results already
     * received.
     *
-    * Parameters are:
+    *  @param results   An object returned from a search.
     *
-    *  results        An object returned from a search.
+    *  @exception LDAPException A general exception which includes an error 
+    *  message and an LDAP error code.
     */
    public void abandon(LDAPSearchResults results)
       throws LDAPException
    {
       results.abandon();
    }
+   
+   /*
+   * 4.39.1 abandon
+   */
 
    /**
-    * 4.1.1 abandon
     *
     * Abandons one search operation for a listener.
     *
-    * Parameters are:
-    *
-    *  id             The ID of the operation to abandon. The ID may be
-    *                 obtained from the search listener for the
+    *  @param id      The ID of the asynchrous operation to abandon. The ID 
+    *                 can be obtained from the search listener for the
     *                 operation.
+    *
+    *  @exception LDAPException A general exception which includes an error 
+    *  message and an LDAP error code.
     */
    public void abandon(int id)
       throws LDAPException
    {
       abandon(id, defSearchCons);
    }
+   
+   /*
+   *(Not yet in the draft)
+   */
 
    /**
-    * abandon (Not yet in the draft)
+    * Abandons a search operation for a listener.
+    *
+    * @param id The ID of the asynchronous operation to abandon. The ID can 
+    *           be obtained from the search listern for the operation.
+    *
+    * @param cons The contraints specific to the operation 
+    *
+    *  @exception LDAPException A general exception which includes an error 
+    *  message and an LDAP error code.
     */
    public void abandon(int id, LDAPConstraints cons)
       throws LDAPException
@@ -475,11 +540,14 @@ public class LDAPConnection implements
    /**
     * Abandons all search operations for a listener.
     *
-    * Parameters are:
+    * <p>All operations in progress which are managed by the listener 
+    * are abandoned.</p>
     *
-    *  listener       Handler returned for messages returned on a
-    *                 search request. All operations in progress which
-    *                 are managed by the listener are abandoned.
+    *  @param listener  Handler returned for messages returned on a
+    *                   search request. 
+    *
+    *  @exception LDAPException A general exception which includes an error 
+    *  message and an LDAP error code.
     */
    public void abandon(LDAPSearchListener listener)
       throws LDAPException
@@ -487,9 +555,20 @@ public class LDAPConnection implements
       abandon(listener, defSearchCons);
    }
 
+   /*
+   * Not in the draft
+   */
+   
    /**
-    * abandon (Not in the draft)
-    * abandons all messages in progress hosted by the LDAPListener.
+    * Abandons all messages in progress hosted by the LDAPListener.
+    *
+    *  @param listener  Handler returned for messages returned on a
+    *                   search request.
+    *
+    *  @param cons The contraints specific to the request.  
+    *
+    *  @exception LDAPException A general exception which includes an error 
+    *  message and an LDAP error code.
     */
    public void abandon(LDAPSearchListener listener, LDAPConstraints cons)
       throws LDAPException
@@ -506,15 +585,18 @@ public class LDAPConnection implements
 	// add methods
 	//*************************************************************************
 
+   /*
+   * add (LDAPv2)
+   */
+   
    /**
-    * add (LDAPv2)
-    *
     * Adds an entry to the directory.
     *
-    * Parameters are:
-    *
-    *  entry          LDAPEntry object specifying the distinguished
+    * @param entry    LDAPEntry object specifying the distinguished
     *                 name and attributes of the new entry.
+    *
+    *  @exception LDAPException A general exception which includes an error 
+    *  message and an LDAP error code.
     */
    public void add(LDAPEntry entry)
       throws LDAPException
@@ -522,17 +604,21 @@ public class LDAPConnection implements
       add(entry, defSearchCons);
    }
 
+   /*
+   * add (LDAPv2)
+   */
+
    /**
-    * add (LDAPv2)
     *
     * Adds an entry to the directory.
     *
-    * Parameters are:
-    *
-    *  entry          LDAPEntry object specifying the distinguished
+    *  @param entry   LDAPEntry object specifying the distinguished
     *                 name and attributes of the new entry.
     *
-    *  cons           Constraints specific to the operation.
+    *  @param cons    Constraints specific to the operation.
+    *
+    *  @exception LDAPException A general exception which includes an error 
+    *  message and an LDAP error code.
     */
    public void add(LDAPEntry entry,
                    LDAPConstraints cons)
@@ -542,20 +628,24 @@ public class LDAPConnection implements
          add(entry, (LDAPResponseListener)null, cons);
       listener.getResponse().chkResultCode();
    }
+   
+   /*
+   * 4.39.2 add
+   */
 
    /**
-    * 4.1.2 add
     *
     * Adds an entry to the directory.
     *
-    * Parameters are:
-    *
-    *  entry          LDAPEntry object specifying the distinguished
+    *  @param entry   LDAPEntry object specifying the distinguished
     *                 name and attributes of the new entry.
     *
-    *  listener       Handler for messages returned from a server in
+    *  @param listener  Handler for messages returned from a server in
     *                 response to this request. If it is null, a
     *                 listener object is created internally.
+    *
+    *  @exception LDAPException A general exception which includes an error 
+    *  message and an LDAP error code.
     */
    public LDAPResponseListener add(LDAPEntry entry,
                                    LDAPResponseListener listener)
@@ -567,16 +657,17 @@ public class LDAPConnection implements
    /**
     * Adds an entry to the directory.
     *
-    * Parameters are:
-    *
-    *  entry          LDAPEntry object specifying the distinguished
+    *  @param entry   LDAPEntry object specifying the distinguished
     *                 name and attributes of the new entry.
     *
-    *  listener       Handler for messages returned from a server in
+    *  @param listener  Handler for messages returned from a server in
     *                 response to this request. If it is null, a
     *                 listener object is created internally.
     *
-    *  cons           Constraints specific to the operation.
+    *  @param cons   Constraints specific to the operation.
+    *
+    *  @exception LDAPException A general exception which includes an error 
+    *  message and an LDAP error code.
     */
    public LDAPResponseListener add(LDAPEntry entry,
                                    LDAPResponseListener listener,
@@ -645,26 +736,32 @@ public class LDAPConnection implements
 	// bind methods
 	//*************************************************************************
 
-   /**
+    /*
     * 4.39.3 bind, LDAPv2, synchronous
+    */
+
+   /**
     *
     * Authenticates to the LDAP server (that the object is currently
-    * connected to) using the specified name and password.  If the object
-    * has been disconnected from an LDAP server, this method attempts to
-    * reconnect to the server. If the object had already authenticated, the
-    * old authentication is discarded.
+    * connected to) using the specified name and password.  
     *
-    * Parameters are:
-    *
-    *  dn             If non-null and non-empty, specifies that the
+    * If the object has been disconnected from an LDAP server,
+    * this method attempts to reconnect to the server. If the object
+    * has already authenticated, the old authentication is discarded.
+    * 
+    *  @param dn      If non-null and non-empty, specifies that the
     *                 connection and all operations through it should
     *                 be authenticated with dn as the distinguished
     *                 name.
     *
-    *  passwd         If non-null and non-empty, specifies that the
+    *  @param passwd  If non-null and non-empty, specifies that the
     *                 connection and all operations through it should
     *                 be authenticated with dn as the distinguished
     *                 name and passwd as password.
+    *
+    *  @exception LDAPException A general exception which includes an error 
+    *  message and an LDAP error code.
+    *
     */
    public void bind(String dn,
                     String passwd)
@@ -674,9 +771,32 @@ public class LDAPConnection implements
    }
 
    /**
-	 * bind, LDAPv3, synchronous
-	 *
-	 * LDAPv3 bind() adds the version parameter.
+	*
+    * Authenticates to the LDAP server (that the object is currently
+    * connected to) using the specified name and password.  
+    *
+    * <p>If the object has been disconnected from an LDAP server,
+    * this method attempts to reconnect to the server. If the object
+    * has already authenticated, the old authentication is discarded.</p>
+    *
+	* The LDAPv3 bind method adds the version parameter.
+    *
+    *  @param version  The version of the LDAP protocol to use 
+    *                  in the bind. 
+    *
+    *  @param dn      If non-null and non-empty, specifies that the
+    *                 connection and all operations through it should
+    *                 be authenticated with dn as the distinguished
+    *                 name.
+    *
+    *  @param passwd  If non-null and non-empty, specifies that the
+    *                 connection and all operations through it should
+    *                 be authenticated with dn as the distinguished
+    *                 name and passwd as password.
+    *
+    *  @exception LDAPException A general exception which includes an error 
+    *  message and an LDAP error code.
+    *
     */
    public void bind(int version,
                     String dn,
@@ -687,7 +807,33 @@ public class LDAPConnection implements
    }
 
    /**
-	 * bind, LDAPv3, synchronous
+    *
+    * Authenticates to the LDAP server (that the object is currently
+    * connected to) using the specified name and password.  
+    *
+    * <p>If the object has been disconnected from an LDAP server,
+    * this method attempts to reconnect to the server. If the object
+    * has already authenticated, the old authentication is discarded.</p>
+    *
+    *
+    * The LDAPv3 bind method adds the version parameter.
+    *
+    *  @param version  The version of the LDAP protocol to use 
+    *                   in the bind. 
+    *  @param dn      If non-null and non-empty, specifies that the
+    *                 connection and all operations through it should
+    *                 be authenticated with dn as the distinguished
+    *                 name.
+    *
+    *  @param passwd  If non-null and non-empty, specifies that the
+    *                 connection and all operations through it should
+    *                 be authenticated with dn as the distinguished
+    *                 name and passwd as password.
+    *
+    *  @param cons    The constraints specific to the operation.
+    *
+    *  @exception LDAPException A general exception which includes an error 
+    *  message and an LDAP error code.
     */
    public void bind(int version,
                     String dn,
@@ -707,29 +853,35 @@ public class LDAPConnection implements
    }
 
    /**
-    * bind
     *
     * Authenticates to the LDAP server (that the object is currently
-    * connected to) using the specified name and password.  If the object
-    * has been disconnected from an LDAP server, this method attempts to
-    * reconnect to the server. If the object had already authenticated, the
-    * old authentication is discarded.
+    * connected to) using the specified name and password.  
     *
-    * Parameters are:
+    * <p>If the object has been disconnected from an LDAP server,
+    * this method attempts to reconnect to the server. If the object
+    * has already authenticated, the old authentication is discarded.</p>
     *
-    *  dn             If non-null and non-empty, specifies that the
+    * The LDAPv3 bind method adds the version parameter.
+    *
+    *  @param version  The version of the LDAP protocol to use 
+    *                  in the bind. 
+    *                  
+    *  @param dn      If non-null and non-empty, specifies that the
     *                 connection and all operations through it should
     *                 be authenticated with dn as the distinguished
     *                 name.
     *
-    *  passwd         If non-null and non-empty, specifies that the
+    *  @param passwd  If non-null and non-empty, specifies that the
     *                 connection and all operations through it should
     *                 be authenticated with dn as the distinguished
     *                 name and passwd as password.
     *
-    *  listener       Handler for messages returned from a server in
-    *                 response to this request. If it is null, a
-    *                 listener object is created internally.
+    *  @param listener  Handler for messages returned from a server in
+    *                   response to this request. If it is null, a
+    *                   listener object is created internally.
+    *
+    *  @exception LDAPException A general exception which includes an error 
+    *  message and an LDAP error code.
     */
    public LDAPResponseListener bind(int version,
                                     String dn,
@@ -747,23 +899,26 @@ public class LDAPConnection implements
     * reconnect to the server. If the object had already authenticated, the
     * old authentication is discarded.
     *
-    * Parameters are:
+    * The LDAPv3 bind method adds the version parameter.
     *
-    *  dn             If non-null and non-empty, specifies that the
+    *  @param version  The version of the LDAP protocol to use 
+    *                  in the bind. 
+    * 
+    *  @param dn      If non-null and non-empty, specifies that the
     *                 connection and all operations through it should
     *                 be authenticated with dn as the distinguished
     *                 name.
     *
-    *  passwd         If non-null and non-empty, specifies that the
+    *  @param passwd  If non-null and non-empty, specifies that the
     *                 connection and all operations through it should
     *                 be authenticated with dn as the distinguished
     *                 name and passwd as password.
     *
-    *  listener       Handler for messages returned from a server in
-    *                 response to this request. If it is null, a
-    *                 listener object is created internally.
+    *  @param listener  Handler for messages returned from a server in
+    *                   response to this request. If it is null, a
+    *                   listener object is created internally.
     *
-    *  cons           Constraints specific to the operation.
+    *  @param cons      Constraints specific to the operation.
     */
    public LDAPResponseListener bind(int version,
                                     String dn,
@@ -828,7 +983,7 @@ public class LDAPConnection implements
       return listener;
    }
 
-   /**
+   /*
     *
     */
 /*
@@ -839,7 +994,7 @@ public class LDAPConnection implements
    }
 */
 
-   /**
+   /*
     *
     */
 /*
