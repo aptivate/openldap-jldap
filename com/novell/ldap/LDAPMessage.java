@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPMessage.java,v 1.12 2000/10/23 18:49:06 judy Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPMessage.java,v 1.13 2000/10/31 23:52:22 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -16,6 +16,7 @@
 package com.novell.ldap;
 
 import com.novell.ldap.protocol.*;
+import com.novell.ldap.asn1.*;
 
 /**
  *  Represents the base class for LDAP request and response messages.
@@ -202,7 +203,7 @@ public class LDAPMessage {
 		if(asn1Ctrls != null) {
 			controls = new LDAPControl[asn1Ctrls.size()];
 			for(int i=0; i<asn1Ctrls.size(); i++) {
-				controls[i] = new LDAPControl((Control)asn1Ctrls.get(i));
+			    controls[i] = new LDAPControl((Control)asn1Ctrls.get(i));
 			}
 		}
 
