@@ -38,7 +38,7 @@ import com.novell.ldap.ldif_dsml.Base64Decoder;
 /**
  * The class to process the inputStream object to read an LDIF file.
  *
- * <p>This calss reads LDAP entries and LDAP operations form an LDIF file</p>
+ * <p>This calss reads LDAP entries and LDAP Requests form an LDIF file</p>
  *
  * <p>The constructors uses a default size value of 8,192 to create the
  *    buffering character-input stream and assume that the size is big
@@ -70,12 +70,12 @@ public class LDIFReader extends LDIF implements LDAPImport {
     private LDAPAttributeSet   attrSet = null;
     private LDAPEntry          currentEntry = null;
     private LDAPModification[] mods;
-    private LDAPRequest        currentRequest = null;
+    private LDAPRequest      currentChange = null;
     private Base64Decoder      base64Decoder = new Base64Decoder();
 
 
     /**
-     * Constructs an LDIFReader object by initializing LDIF_VERSION, isContent,
+     * Constructs an LDIFReader object by initializing LDIF_VERSION, isRequest,
      * InputStreamReader, and BufferedReader.
      *
      * @param in The   Inputstream object to be processed by LDIFReader
@@ -85,7 +85,7 @@ public class LDIFReader extends LDIF implements LDAPImport {
     }
 
     /**
-     * Constructs an LDIFReader object by initializing LDIF_VERSION, isContent,
+     * Constructs an LDIFReader object by initializing LDIF_VERSION, isRequest,
      * InputStreamReader, and BufferedReader.
      *
      * @param in The   Inputstream object to be processed by LDIFReader
@@ -95,7 +95,7 @@ public class LDIFReader extends LDIF implements LDAPImport {
         this(in, version, 8192 );
     }
     /**
-     * Constructs an LDIFReader object by initializing LDIF_VERSION, isContent,
+     * Constructs an LDIFReader object by initializing LDIF_VERSION, isRequest,
      * InputStreamReader, and BufferedReader.
      *
      * @param in The   Inputstream object to be processed by LDIFReader
@@ -250,11 +250,11 @@ public class LDIFReader extends LDIF implements LDAPImport {
 
 
     /**
-     * Read the LDAP operations from the LDIF change file.
+     * Read the LDAP Requests from the LDIF change file.
      *
-     * @see LDAPOperation
+     * @see LDAPRequest
      */
-    public LDAPRequest readOperation()
+    public LDAPRequest readRequest()
     throws UnsupportedEncodingException, IOException {
 
         if( !isRequest()) {
@@ -278,16 +278,16 @@ public class LDIFReader extends LDIF implements LDAPImport {
             // super class object reference it
             case LDAPRequest.LDAP_ADD :
                 if (this.controls == null)
-                    this.currentRequest = new LDAPAdd(currentEntry);
+                    this.currentChange = new LDAPAdd(currentEntry);
                 else
-                    this.currentRequest = new LDAPAdd(currentEntry, controls);
+                    this.currentChange = new LDAPAdd(currentEntry, controls);
                 break;
 
             case LDAPRequest.LDAP_DELETE :
                 if (this.controls == null)
-                    this.currentRequest = new LDAPDelete(this.deleteDN);
+                    this.currentChange = new LDAPDelete(this.deleteDN);
                 else
-                    this.currentRequest =
+                    this.currentChange =
                           new LDAPDelete(this.deleteDN, controls);
                 break;
 
@@ -305,13 +305,13 @@ public class LDIFReader extends LDIF implements LDAPImport {
                 String sup = modInfo[2];
                 if (this.controls == null) {
                     if( sup.length() == 0 ) {
-                        this.currentRequest = new LDAPModDN(
+                        this.currentChange = new LDAPModDN(
                                             this.entryDN,
                                             this.modInfo[0],
                                             delOldRdn);
                     }
                     else {
-                        this.currentRequest = new LDAPModDN(
+                        this.currentChange = new LDAPModDN(
                                             this.entryDN,
                                             this.modInfo[0],
                                             delOldRdn,
@@ -320,14 +320,14 @@ public class LDIFReader extends LDIF implements LDAPImport {
                 }
                 else {
                     if((sup.length())==0 ) {
-                        this.currentRequest = new LDAPModDN(
+                        this.currentChange = new LDAPModDN(
                                             this.entryDN,
                                             this.modInfo[0],
                                             delOldRdn,
                                             controls);
                     }
                     else {
-                        this.currentRequest = new LDAPModDN(this.entryDN,
+                        this.currentChange = new LDAPModDN(this.entryDN,
                                             this.modInfo[0],
                                             delOldRdn,
                                             modInfo[2],
@@ -342,10 +342,10 @@ public class LDIFReader extends LDIF implements LDAPImport {
                 toLDAPModifications();
 
                 if (this.controls == null) {
-                    this.currentRequest = new LDAPModify(this.entryDN, mods);
+                    this.currentChange = new LDAPModify(this.entryDN, mods);
                 }
                 else {
-                    this.currentRequest =
+                    this.currentChange =
                           new LDAPModify(this.entryDN, mods, controls);
                 }
                 break;
@@ -356,7 +356,7 @@ public class LDIFReader extends LDIF implements LDAPImport {
                                   + "LDIFReader: Unknown change type");
                 }
 
-        return this.currentRequest;
+        return this.currentChange;
     }
 
 
@@ -447,10 +447,8 @@ public class LDIFReader extends LDIF implements LDAPImport {
                 }
 
                 // j points to the first colon
-                if (((((StringBuffer)this.rFields.get(i)).
-                                                     charAt(j+1))==(int)':')
-                  ||((((StringBuffer)this.rFields.get(i)).
-                                                     charAt(j+1))==(int)'<')) {
+                if (((((StringBuffer)this.rFields.get(i)).charAt(j+1))==(int)':')
+                ||((((StringBuffer)this.rFields.get(i)).charAt(j+1))==(int)'<')){
                     // an base64 encoded or URL value;
                     // remove any spaces between '::' and base64
                     // encoded value or spaces between ':<' and URL
@@ -603,9 +601,9 @@ public class LDIFReader extends LDIF implements LDAPImport {
                                 }
                                 // get base64 encoded value
                                 this.byteValue = this.base64Decoder.decoder(
-                                  (StringBuffer)this.rFields.get(i),
-                                  j,
-                                  ((StringBuffer)this.rFields.get(i)).length());
+                                   (StringBuffer)this.rFields.get(i),
+                                   j,
+                                   ((StringBuffer)this.rFields.get(i)).length());
 
                                 this.controls[i-1] = new LDAPControl(
                                                             controlOID,
@@ -695,7 +693,7 @@ public class LDIFReader extends LDIF implements LDAPImport {
                 }
             }
 
-            setOperationType();
+            setRequestType();
 
             switch(this.operationType) {
 
@@ -714,7 +712,7 @@ public class LDIFReader extends LDIF implements LDAPImport {
                 default:
                     throw new RuntimeException(
                         "com.novell.ldap.ldif_dsml.LDIFReader: "
-                                 + "unsupported LDAP operation");
+                                 + "unsupported LDAP Request");
             }
         }
     }
@@ -723,7 +721,7 @@ public class LDIFReader extends LDIF implements LDAPImport {
     /**
      *
      */
-    private void setOperationType( ) {
+    private void setRequestType( ) {
 
         int i,index;
 
@@ -742,7 +740,7 @@ public class LDIFReader extends LDIF implements LDAPImport {
         this.changeOperation = ((StringBuffer)this.rFields.
                                    get(this.controlNumber+1)).substring(index);
 
-        // set operation type
+        // set Request type
         if ( this.changeOperation.equalsIgnoreCase("add") ) {
             this.operationType = LDAPRequest.LDAP_ADD;
         }
@@ -803,10 +801,8 @@ public class LDIFReader extends LDIF implements LDAPImport {
 
             attrName = ((StringBuffer)this.rFields.get(i)).substring(0, colon);
 
-            if (((((StringBuffer)this.rFields.get(i)).
-                                         charAt(colon+1)) != (int)':')
-              &&((((StringBuffer)this.rFields.get(i)).
-                                         charAt(colon+1))!=(int)'<')){
+            if (((((StringBuffer)this.rFields.get(i)).charAt(colon+1))!=(int)':')
+            &&((((StringBuffer)this.rFields.get(i)).charAt(colon+1))!=(int)'<')){
 
                 // common attribute value
                 attrValue = ((StringBuffer)this.rFields.get(i)).substring(
@@ -836,8 +832,7 @@ public class LDIFReader extends LDIF implements LDAPImport {
 
                 // this is a new attribute, add it to attribute set
                 if ( this.isBase64Encoded ) {
-                    this.attrSet.add(new LDAPAttribute(attrName, 
-                                                             this.byteValue));
+                    this.attrSet.add(new LDAPAttribute(attrName, this.byteValue));
                     this.isBase64Encoded = false;
                 }
                 else {
@@ -989,9 +984,9 @@ public class LDIFReader extends LDIF implements LDAPImport {
     public void toLDAPModifications () throws IOException {
 
         int        i, index;
-        int        j;                       // number of attrs for an operation
-        int        modNumber = 0;           // number of mod operations
-        int        startIndex;              // where to find mod operations
+        int        j;                       // number of attrs for an Request
+        int        modNumber = 0;           // number of mod Requests
+        int        startIndex;              // where to find mod Requests
         String     attrName, opName;
         LDAPAttribute attr = null;
         ArrayList modList = new ArrayList();
@@ -1002,7 +997,7 @@ public class LDIFReader extends LDIF implements LDAPImport {
         // an LDIF modify record may specify a number of LDAP modify
         // oprations. '-'s are used to separate the opetrations
         for (i=startIndex; i<this.fieldNumber; i++) {
-            // get the number of LDAP modify operations
+            // get the number of LDAP modify Requests
             if ( ((StringBuffer)this.rFields.get(i)).charAt(0) == (int)'-' ) {
                 modNumber++;
             }
@@ -1049,21 +1044,24 @@ public class LDIFReader extends LDIF implements LDAPImport {
                                                           .substring(index+1));
 
                     if ( opName.equalsIgnoreCase("add") ) {
+                        //modType = LDAPRequest.MODIFY_ADD;
                         modList.add( new LDAPModification(
                                                   LDAPModification.ADD, attr));
                     }
                     else if ( opName.equalsIgnoreCase("delete") ) {
+                        //modType = LDAPRequest.MODIFY_DELETE;
                         modList.add( new LDAPModification(
                                                LDAPModification.DELETE, attr));
                     }
-                    else if ( opName.equalsIgnoreCase("replace") ) {                       
+                    else if ( opName.equalsIgnoreCase("replace") ) {
+                        //modType = LDAPRequest.MODIFY_REPLACE;
                         modList.add( new LDAPModification(
                                               LDAPModification.REPLACE, attr));
                     }
                     else {
                         throw new IOException(
                             "com.novell.ldap.ldif_dsml.LDIFReader:"
-                                        + "Not supported modify operation");
+                                        + "Not supported modify Request");
                     }
 
                 }
@@ -1073,11 +1071,13 @@ public class LDIFReader extends LDIF implements LDAPImport {
                 // true for 'delete' and 'replace' modify operation
                 attr = new LDAPAttribute(attrName);
 
-                if ( opName.equalsIgnoreCase("delete") ) {                    
+                if ( opName.equalsIgnoreCase("delete") ) {
+                    //modType = LDAPRequest.MODIFY_DELETE;
                     modList.add( new LDAPModification(
                                                LDAPModification.DELETE, attr));
                 }
-                else if ( opName.equalsIgnoreCase("replace") ) {                    
+                else if ( opName.equalsIgnoreCase("replace") ) {
+                    //modType = LDAPRequest.MODIFY_REPLACE;
                     modList.add( new LDAPModification(
                                               LDAPModification.REPLACE, attr));
                 }
