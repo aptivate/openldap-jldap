@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPEntryChangeControl.java,v 1.7 2001/07/30 15:09:30 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPEntryChangeControl.java,v 1.8 2001/08/14 22:03:11 jhammons Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -26,8 +26,8 @@ import com.novell.ldap.client.Debug;
  *  contains additional information about a change such as what type of
  *  change occurred.
  *
- *  <p><a href="../../../overview-summary.html#sc">Sample Code:</a>
- *  controls\SearchPersist.java</p>
+ *  <p>Sample Code: <a href="http://developer.novell.com/ndk/doc/samplecode/
+ *jldap_sample/controls/SearchPersist.java.html">SearchPersist.java</p>
  */
 public class LDAPEntryChangeControl extends LDAPControl
 {

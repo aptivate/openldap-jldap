@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttributeSet.java,v 1.26 2001/07/20 19:49:37 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttributeSet.java,v 1.27 2001/08/14 22:03:06 jhammons Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -29,7 +29,8 @@ import java.util.Enumeration;
  * LDAPEntry objects when performing searches, allowing you to iterate
  * through all of an entry's attributes.
  *
- *  <p><a href="../../../overview-summary.html#sc">Sample Code</a>: AddEntry.java</p>
+ *  <p>Sample Code: <a href="http://developer.novell.com/ndk/doc/samplecode/
+ *jldap_sample/jldap_sample/AddEntry.java.html">AddEntry.java</p>
  *
  * @see LDAPAttribute
  * @see LDAPEntry

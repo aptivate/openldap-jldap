@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPPersistSearchControl.java,v 1.6 2001/07/27 18:47:03 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPPersistSearchControl.java,v 1.7 2001/08/14 22:03:11 jhammons Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -27,8 +27,8 @@ import com.novell.ldap.client.Debug;
  *  added to the result set, when an entry is deleted from the result set,
  *  when a DN has been changed or when and attribute value has been changed.
  *
- *  <p><a href="../../../overview-summary.html#sc">Sample Code:</a>
- *  controls\SearchPersist.java</p>
+ *  <p>Sample Code: <a href="http://developer.novell.com/ndk/doc/samplecode/
+ *jldap_sample/controls/SearchPersist.java.html">SearchPersist.java</p>
  */
 public class LDAPPersistSearchControl extends LDAPControl
 {

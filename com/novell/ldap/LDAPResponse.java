@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPResponse.java,v 1.32 2001/07/20 22:18:20 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPResponse.java,v 1.33 2001/08/14 22:03:08 jhammons Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -26,8 +26,8 @@ import com.novell.ldap.client.*;
  *  A message received from an LDAPServer
  *  in response to an asynchronous request.
  *
- *  <p><a href="../../../overview-summary.html#sc">Sample Code:</a>
- *  asynchronous\Searchas.java</p>
+ *  <p>Sample Code: <a href="http://developer.novell.com/ndk/doc/samplecode/
+ *jldap_sample/asynchronous/Searchas.java.html">Searchas.java</p>
  *
  * @see LDAPConnection#search
  */

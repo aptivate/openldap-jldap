@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPBind.java,v 1.10 2001/03/01 00:29:46 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPBind.java,v 1.11 2001/08/14 22:03:06 jhammons Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -29,8 +29,8 @@ package com.novell.ldap;
  *  or for all operations (through the LDAPContraints object
  *  associated with the connection).
  *
- *  <p><a href="../../../overview-summary.html#sc">Sample Code:</a>
- *  SearchUtil.java</p>
+ *  <p>Sample Code: <a href="http://developer.novell.com/ndk/doc/samplecode/
+ *jldap_sample/jldap_sample/SearchUtil.java.html">SearchUtil.java</p>
  *
  *  @see LDAPRebind
  *  @see LDAPConstraints#setReferralFollowing(boolean)

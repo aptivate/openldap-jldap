@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPMessage.java,v 1.24 2001/07/27 18:47:02 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPMessage.java,v 1.25 2001/08/14 22:03:08 jhammons Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -28,8 +28,8 @@ import java.lang.reflect.Constructor;
  *
  * <p>Subclassed by response messages used in asynchronous operations.
  *
- *  <p><a href="../../../overview-summary.html#sc">Sample Code:</a>
- *  asynchronous\Searchas.java</p>
+ *  <p>Sample Code: <a href="http://developer.novell.com/ndk/doc/samplecode/
+ *jldap_sample/asynchronous/Searchas.java.html">Searchas.java</p>
  */
 public class LDAPMessage {
 

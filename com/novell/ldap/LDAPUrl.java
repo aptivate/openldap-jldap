@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPUrl.java,v 1.31 2001/07/20 19:49:41 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPUrl.java,v 1.32 2001/08/14 22:03:10 jhammons Exp $
 *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -21,18 +21,18 @@ import java.net.MalformedURLException;
 import com.novell.ldap.client.Debug;
 import com.novell.ldap.client.ArrayEnumeration;
 
-/**
-*
-*  Encapsulates parameters of an LDAP URL query as defined in RFC2255.
-*
-*  An LDAPUrl object can be passed to LDAPConnection.search to retrieve
-*  search results.
-*
-*  <p><a href="../../../overview-summary.html#sc">Sample Code:</a>
-*  UrlSearch.java</p>
-*
-* @see LDAPConnection#search
-*/
+ /**
+ *
+ *  Encapsulates parameters of an LDAP URL query as defined in RFC2255.
+ *
+ *  An LDAPUrl object can be passed to LDAPConnection.search to retrieve
+ *  search results.
+ *
+ *  <p>Sample Code: <a href="http://developer.novell.com/ndk/doc/samplecode/
+ *jldap_sample/jldap_sample/UrlSearch.java.html">UrlSearch.java</p>
+ *
+ * @see LDAPConnection#search
+ */
 public class LDAPUrl {
 
 	static private final String DEFAULT_FILTER = "(objectClass=*)";

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.105 2001/07/20 22:18:18 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.106 2001/08/14 22:03:07 jhammons Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -47,8 +47,8 @@ import com.novell.ldap.resources.*;
  * application may have more than one LDAPConnection object, connected
  * to the same or different directory servers.</p>
  *
- * <p><a href="../../../overview-summary.html#sc">Sample Code</a>:
- * GraceLogin.java, Search.java</p>
+ *  <p>Sample Code: <a href="http://developer.novell.com/ndk/doc/samplecode/
+ *jldap_sample/jldap_sample/Search.java.html">Search.java</p>
  *
  */
 public class LDAPConnection implements Cloneable

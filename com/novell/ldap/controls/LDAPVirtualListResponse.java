@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPVirtualListResponse.java,v 1.5 2001/07/27 18:47:04 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPVirtualListResponse.java,v 1.6 2001/08/14 22:03:12 jhammons Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -32,8 +32,8 @@ import com.novell.ldap.asn1.*;
  * <li> an optional context field to be returned to the server with
  * subsequent VLV request.
  *
- *  <p><a href="../../../overview-summary.html#sc">Sample Code:</a>
- *  controls\VLVControl.java</p>
+ * <p>Sample Code: <a href="http://developer.novell.com/ndk/doc/samplecode/
+ *jldap_sample/controls/VLVControl.java.html">VLVControl.java</p>
  */
 public class LDAPVirtualListResponse extends LDAPControl
 {

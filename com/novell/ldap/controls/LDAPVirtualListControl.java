@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPVirtualListControl.java,v 1.7 2001/07/27 18:47:04 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPVirtualListControl.java,v 1.8 2001/08/14 22:03:11 jhammons Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -30,8 +30,8 @@ import com.novell.ldap.client.Debug;
  * by the client with a new requested position or length and sent to the
  * server to obtain a different segment of the virtual list.<br>
  *
- *  <p><a href="../../../overview-summary.html#sc">Sample Code:</a>
- *  controls\VLVControl.java</p>
+ * <p>Sample Code: <a href="http://developer.novell.com/ndk/doc/samplecode/
+ *jldap_sample/controls/VLVControl.java.html">VLVControl.java</p>
  */
 
  /* The following is the ASN.1 of the VLV Request packet:<br>

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchConstraints.java,v 1.17 2001/06/22 16:03:06 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchConstraints.java,v 1.18 2001/08/14 22:03:09 jhammons Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -26,8 +26,8 @@ import com.novell.ldap.client.Debug;
  *  or overridden by passing an LDAPConstraints object to the search operation. </p>
  *
  *
- *  <p><a href="../../../overview-summary.html#sc">Sample Code:</a>
- *  Search.java</p>
+ *  <p>Sample Code: <a href="http://developer.novell.com/ndk/doc/samplecode/
+ *jldap_sample/jldap_sample/Search.java.html">Search.java</p>
  *
  *  @see LDAPConstraints
  *  @see LDAPConnection#setConstraints(LDAPConstraints)

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPModification.java,v 1.10 2001/06/13 17:51:06 jhammons Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPModification.java,v 1.11 2001/08/14 22:03:08 jhammons Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -23,8 +23,8 @@ package com.novell.ldap;
  * being performed, the name of the attribute to be replaced and the new
  * value.
  *
- *  <p><a href="../../../overview-summary.html#sc">Sample Code:</a>
- *  ModifyPassword.java, ModifyAttrs.java</p>
+ *  <p>Sample Code: <a href="http://developer.novell.com/ndk/doc/samplecode/
+ *jldap_sample/jldap_sample/ModifyAttrs.java.html">ModifyAttrs.java</p>
  *
  * @see LDAPConnection#modify
  * @see LDAPModificationSet

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttribute.java,v 1.24 2001/07/20 19:49:37 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttribute.java,v 1.25 2001/08/14 22:03:05 jhammons Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -30,7 +30,8 @@ import java.io.UnsupportedEncodingException;
  * {@link LDAPAttributeSet} when retrieving or adding multiple
  * attributes to an entry.
  *
- *  <p><a href="../../../overview-summary.html#sc">Sample Code</a>: AddEntry.java</p>
+ *  <p>Sample Code: <a href="http://developer.novell.com/ndk/doc/samplecode/
+ *jldap_sample/jldap_sample/AddEntry.java.html">AddEntry.java</p>
  *
  * @see LDAPEntry
  * @see LDAPAttributeSet

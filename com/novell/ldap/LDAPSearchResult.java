@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResult.java,v 1.23 2001/06/28 15:11:23 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResult.java,v 1.24 2001/08/14 22:03:10 jhammons Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -24,8 +24,8 @@ import com.novell.ldap.rfc2251.*;
  *  Encapsulates a single search result that is in response to an asynchronous
  *  search operation.
  *
- *  <p><a href="../../../overview-summary.html#sc">Sample Code:</a>
- *  asynchronous\Searchas.java</p>
+ *  <p>Sample Code: <a href="http://developer.novell.com/ndk/doc/samplecode/
+ *jldap_sample/asynchronous/Searchas.java.html">Searchas.java</p>
  *
  * @see LDAPConnection#search
  */
