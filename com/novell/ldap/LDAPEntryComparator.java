@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPEntryComparator.java,v 1.5 2000/09/06 14:38:12 judy Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPEntryComparator.java,v 1.6 2000/10/02 19:46:52 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -21,7 +21,7 @@ package com.novell.ldap;
  
 /**
  *
- *  Used to implements an arbitrary sorting algorithm
+ *  Used to implement an arbitrary sorting algorithm
  *  for search results.
  */
 public interface LDAPEntryComparator {

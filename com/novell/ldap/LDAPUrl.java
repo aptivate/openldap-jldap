@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPUrl.java,v 1.12 2000/09/26 22:28:22 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPUrl.java,v 1.13 2000/09/27 16:26:39 vtag Exp $
 *
 * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
 * 
@@ -103,7 +103,7 @@ public class LDAPUrl {
     *  attrNames       The names of attributes to retrieve (use null for all
     *                  attributes).
     *<br><br>
-    *  @param scope    The depth of search and uses one of the following 
+    *  @param scope    The depth of search. Use one of the following 
     *                  from LDAPv2: SCOPE_BASE, SCOPE_ONE, SCOPE_SUB.
     *<br><br>
     *  @param filter   The search filter specifying the search criteria.
@@ -300,10 +300,10 @@ public class LDAPUrl {
     */
 
     /**
-    * Returns the depth of search (in the DN namespace) - one of
-	* SCOPE_BASE, SCOPE_ONE, SCOPE_SUB from LDAPv2.
+    * Returns the depth of search. It returns one of the following from LDAPv2:
+	* SCOPE_BASE, SCOPE_ONE, or SCOPE_SUB.
     *
-    * @return The search scope
+    * @return The search scope.
     */
     public int getScope()
     {

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPException.java,v 1.8 2000/09/08 20:52:18 smerrill Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPException.java,v 1.9 2000/09/21 23:27:34 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -71,7 +71,7 @@ public class LDAPException extends Exception {
     
    /**
     * Constructs an exception with an error code, a specified string,
-    * and the matched part of distinguished name of the entry from the 
+    * and the matched part of the distinguished name of the entry from the 
     * operation.
     *
     *  @param message        The additional error information.
@@ -96,7 +96,7 @@ public class LDAPException extends Exception {
     */
 
    /**
-    * Returns A string representing the internal error code, in the default
+    * Returns a string representing the internal error code, in the default
     * locale.
     *
     * @return The message for the result code in the LDAPException object.
@@ -448,7 +448,8 @@ public class LDAPException extends Exception {
   /**
    * Indicates that the attribute value specified in a modify, add, or 
    * modify DN operation violates constraints placed on the attribute. The
-   * constraint can be one of size or content (string only, no binary).
+   * constraint can be one of size or content (for example, string only, 
+   * no binary data).
    *
    * <p>CONSTRAINT_VIOLATION = 19</p>
    */
@@ -473,7 +474,7 @@ public class LDAPException extends Exception {
   /**
    * Indicates the target object cannot be found. 
    *
-   * <p>This code is not returned on following operations:</p>
+   * <p>This code is not returned on the following operations:</p>
    * <ul>
    * <li>Search operations that find the search base but cannot find any 
    *     entries that match the search filter.</li>
@@ -537,7 +538,7 @@ public class LDAPException extends Exception {
    public final static int INAPPROPRIATE_AUTHENTICATION = 48;
    
   /**
-   * Indicates that invalid information was passed during a bind operation
+   * Indicates that invalid information was passed during a bind operation.
    *
    * <p>One of the following occurred:
    *<ul>
@@ -559,7 +560,7 @@ public class LDAPException extends Exception {
    
   /**
    * Indicates that the LDAP server is too busy to process the client request 
-   * at this time but if the client waits and resubmits the request, the 
+   * at this time, but if the client waits and resubmits the request, the 
    * server may be able to process it then.
    *
    * <p>BUSY = 51</p>

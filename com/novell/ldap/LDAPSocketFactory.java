@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSocketFactory.java,v 1.4 2000/08/28 22:18:59 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSocketFactory.java,v 1.5 2000/09/12 22:50:14 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -38,9 +38,9 @@ public interface LDAPSocketFactory {
     * Returns a socket connected using the provided host name and port
     * number.
     *
-    *  @param host     The hostname or dotted string representing
-    *                  the IP address of a host running an LDAP server
-    *                  to connect to.
+    *  @param host     The host name or a dotted string representing
+    *                  the IP address of the LDAP server to which you want
+    *                  to connect.
     *<br><br>
     *  @param port     The TCP or UDP port number to connect to
     *                  or contact. The default LDAP port is 389.
