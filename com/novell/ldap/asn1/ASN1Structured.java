@@ -18,8 +18,6 @@ package com.novell.ldap.asn1;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Enumeration;
-import java.util.NoSuchElementException;
 
 import com.novell.ldap.client.Debug;
 
@@ -189,7 +187,7 @@ public abstract class ASN1Structured extends ASN1Object
      * Creates a String representation of this ASN1Structured.
      * object.
      *
-     * @type the Type to put in the String representing this structured object
+     * @param type the Type to put in the String representing this structured object
      *
      * @return the String representation of this object.
      */

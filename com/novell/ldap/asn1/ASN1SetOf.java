@@ -15,8 +15,6 @@
 
 package com.novell.ldap.asn1;
 
-import java.util.Enumeration;
-
 /**
  * The ASN1Set class can hold an unordered collection of components with
  * identical type. This class inherits from the ASN1Structured class

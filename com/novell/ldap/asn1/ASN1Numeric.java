@@ -51,7 +51,7 @@ public abstract class ASN1Numeric extends ASN1Object
      */
     public final int intValue()
     {
-        return (int)content.intValue();
+        return content.intValue();
     }
 
     /**

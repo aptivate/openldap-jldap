@@ -16,8 +16,6 @@
 package com.novell.ldap.client;
 
 import java.util.ArrayList;
-import java.util.NoSuchElementException;
-import java.util.StringTokenizer;
 import java.util.Enumeration;
 import java.io.StreamTokenizer;
 import java.io.StringReader;
@@ -223,7 +221,7 @@ public class SchemaParser{
                         st2.nextToken();
                         if(st2.ttype == '(' ){
                           st2.nextToken();
-                          for(int i = 0; st2.ttype != ')'; i++ ){
+                          while( st2.ttype != ')' ){
                             if(st2.ttype != '$'){
                             	values.add(st2.sval);
                              }
@@ -243,7 +241,7 @@ public class SchemaParser{
                         st2.nextToken();
                         if(st2.ttype == '(' ){
                           st2.nextToken();
-                          for(int i = 0; st2.ttype != ')'; i++ ){
+                          while( st2.ttype != ')' ){
                             if(st2.ttype != '$'){
                             	values.add(st2.sval);
                              }
@@ -263,7 +261,7 @@ public class SchemaParser{
                         st2.nextToken();
                         if(st2.ttype == '(' ){
                           st2.nextToken();
-                          for(int i = 0; st2.ttype != ')'; i++ ){
+                          while( st2.ttype != ')'){
                             if(st2.ttype != '$'){
                             	values.add(st2.sval);
                              }

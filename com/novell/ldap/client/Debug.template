@@ -186,7 +186,6 @@ public abstract class Debug {
     private static boolean dumpObjectMethods = false;
     private static boolean VMtraceInstructions = false;
     private static boolean VMtraceMethodCalls = false;
-    private static boolean traceAll = false;
     private static boolean traceControls = false;
     private static boolean traceRawInput = false;
     private static boolean traceRawOutput = false;

@@ -93,7 +93,7 @@ public interface ASN1Encoder extends Serializable {
    /**
     * Encode an ASN1OctetString directly to a stream.
     *
-    * @param n The ASN1OctetString object to encode<br>
+    * @param os The ASN1OctetString object to encode<br>
     *
     * @param out The output stream onto which the ASN.1 object is 
     * to be encoded<br>     
@@ -119,7 +119,7 @@ public interface ASN1Encoder extends Serializable {
    /**
     * Encode an ASN1Structured directly to a stream.
     *
-    * @param n The ASN1Structured object to encode<br>
+    * @param c The ASN1Structured object to encode<br>
     *
     * @param out The output stream onto which the ASN.1 object is 
     * to be encoded<br>  
@@ -130,7 +130,7 @@ public interface ASN1Encoder extends Serializable {
    /**
     * Encode an ASN1Tagged directly to a stream.
     *
-    * @param n The ASN1Tagged object to encode<br>
+    * @param t The ASN1Tagged object to encode<br>
     *
     * @param out The output stream onto which the ASN.1 object is 
     * to be encoded<br>      
@@ -147,7 +147,7 @@ public interface ASN1Encoder extends Serializable {
    /**
     * Encode an ASN1Identifier directly to a stream.
     *
-    * @param n The ASN1Identifier object to encode<br>
+    * @param id The ASN1Identifier object to encode<br>
     *
     * @param out The output stream onto which the ASN.1 object is 
     * to be encoded<br>      

@@ -17,7 +17,6 @@ package com.novell.ldap.asn1;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Enumeration;
 
 /**
  * The ASN1SequenceOf class is used to hold an ordered collection

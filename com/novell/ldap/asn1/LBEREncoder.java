@@ -252,7 +252,7 @@ public class LBEREncoder implements ASN1Encoder {
       throws IOException
    {
       if(length < 0x80) {
-         out.write((byte)length);
+         out.write(length);
       }
 
       else {

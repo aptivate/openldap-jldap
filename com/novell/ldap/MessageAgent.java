@@ -16,7 +16,6 @@
 package com.novell.ldap.client;
 
 import com.novell.ldap.client.*;
-import com.novell.ldap.rfc2251.*;
 import com.novell.ldap.*;
 
 public class MessageAgent
@@ -139,11 +138,9 @@ public class MessageAgent
     /**
      * Abandon the request associated with MsgId
      *
-     * @param msgid the message id to abandon
+     * @param msgId the message id to abandon
      *<br><br>
      * @param cons constraints associated with this request
-     *<br><br>
-     * @param informUser true if user must be informed of operation
      */
     public final void abandon(int msgId, LDAPConstraints cons) //, boolean informUser)
     {
@@ -176,7 +173,6 @@ public class MessageAgent
     public final void abandonAll()
     {
         int size = messages.size();
-        int[] ids = new int[size];
         Message info;
 
         for( int i = 0; i < size; i++ ) {
@@ -223,7 +219,7 @@ public class MessageAgent
 	public final boolean isComplete(int msgid)
 	{
         try {
-            Message info = (Message)messages.findMessageById( msgid);
+            Message info = messages.findMessageById( msgid);
             if( ! info.isComplete()) {
                 return false;
             }
@@ -236,12 +232,12 @@ public class MessageAgent
     /**
      * Returns the Message object for a given messageID
      *
-     * @param the message ID.
+     * @param msgid the message ID.
      */
     public final Message getMessage(int msgid)
             throws NoSuchFieldException
     {
-        return (Message)messages.findMessageById( msgid);
+        return messages.findMessageById( msgid);
     }
 
     /**
@@ -289,7 +285,7 @@ public class MessageAgent
         Object rfcMsg;
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.messages, name +
-                "getLDAPMessage(" + msgId + "), " + 
+                "getLDAPMessage(" + msgId + "), " +
                 messages.size() + " messages active");
         }
         // If no messages for this agent, just return null
@@ -300,7 +296,7 @@ public class MessageAgent
             // Request messages for a specific ID
             try {
                 // Get message for this ID
-                Message info = (Message)messages.findMessageById( msgId.intValue());
+                Message info = messages.findMessageById( msgId.intValue());
                 rfcMsg = info.waitForReply(); // blocks for a response
                 if( ! info.acceptsReplies() && ! info.hasReplies()) {
                     // Message complete and no more replies, remove from id list

@@ -28,7 +28,7 @@ public class ArrayEnumeration implements Enumeration
     /**
      * Constructor to create the Enumeration
      *
-     * @param array the array to use for the Enumeration
+     * @param eArray the array to use for the Enumeration
      */
     public ArrayEnumeration( Object[] eArray)
     {
