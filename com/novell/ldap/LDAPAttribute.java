@@ -479,7 +479,7 @@ public class LDAPAttribute {
     {
         if( null != attrBytes ) {
             for( int i = 0; i < this.values.length; i++ ) {
-                if( Arrays.equals( attrBytes, (byte[])this.values[ i ] ) ) {
+                if( equals( attrBytes, (byte[])this.values[ i ] ) ) {
                     if( 0 == i && 1 == this.values.length ) {
                             // Optimize if first element of a single valued attr
                             this.values = null;
@@ -524,7 +524,7 @@ public class LDAPAttribute {
         } else {
             // Duplicate attribute values not allowed
             for( int i = 0; i < this.values.length; i++ ) {
-                if( Arrays.equals( bytes, (byte[])this.values[i] ) ) {
+                if( equals( bytes, (byte[])this.values[i] ) ) {
                     return; // Duplicate
                 }
             }
