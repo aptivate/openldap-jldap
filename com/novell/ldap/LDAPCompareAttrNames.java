@@ -17,7 +17,6 @@ package com.novell.ldap;
 
 import java.util.Locale;
 import java.text.Collator;
-import java.lang.RuntimeException;
 import com.novell.ldap.*;
 import com.novell.ldap.resources.*;
 
@@ -163,9 +162,9 @@ public class LDAPCompareAttrNames
     * object will be compared.  Multi-valued attributes compare on the first
     * value only.  </p>
     *
-    * @param entry1         Target entry for comparison.
+    * @param object1         Target entry for comparison.
     *
-    * @param entry2         Entry to be compared to.
+    * @param object2         Entry to be compared to.
     *
     * @return     Negative value if the first entry is less than the second and
     * positive if the first is greater than the second.  Zero is returned if all

@@ -15,9 +15,6 @@
 
 package com.novell.ldap;
 
-import java.util.Iterator;
-import java.util.Enumeration;
-
 /**
  * Represents a single entry in a directory, consisting of
  * a distinguished name (DN) and zero or more attributes.

@@ -21,7 +21,6 @@ import com.novell.ldap.LDAPException;
 import com.novell.ldap.client.*;
 import com.novell.ldap.resources.*;
 import java.util.Vector;
-import java.util.Enumeration;
 import java.util.NoSuchElementException;
 
 /**
@@ -258,7 +257,7 @@ public class LDAPSearchResults
             if( element instanceof LDAPException) {
                 if( Debug.LDAP_DEBUG ) {
                     Debug.trace( Debug.messages, name +
-                        "next: LDAPException "+((LDAPException)element).toString());
+                        "next: LDAPException " + element.toString());
                 }
                 throw (LDAPException)element;
             }

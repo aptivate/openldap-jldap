@@ -17,7 +17,6 @@ package com.novell.ldap;
 
 import java.util.Iterator;
 import java.util.HashMap;
-import java.util.Map;
 import com.novell.ldap.client.EnumeratedIterator;
 
 
@@ -342,7 +341,7 @@ public class LDAPAttributeSet
         while (i.hasNext()){
             // we must enforce that everything in c is an LDAPAttribute
             // add will return true if the attribute was added
-            if (this.add( (LDAPAttribute) i.next() )){
+            if (this.add( i.next() )){
                 setChanged = true;
             }
         }

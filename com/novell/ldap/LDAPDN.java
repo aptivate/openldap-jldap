@@ -82,7 +82,6 @@ public class LDAPDN {
 
         //loop from second char to the second to last
       for ( ; i < escapedS.length(); i++){
-         char test = escapedS.charAt(i);
          if((escapedS.charAt(i) == ',') || (escapedS.charAt(i) == '+') ||
             (escapedS.charAt(i) == '"') || (escapedS.charAt(i) == '\\') ||
             (escapedS.charAt(i) == '<') || (escapedS.charAt(i) == '>') ||

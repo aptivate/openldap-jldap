@@ -15,7 +15,6 @@
 
 package com.novell.ldap;
 
-import com.novell.ldap.controls.*;
 import com.novell.ldap.client.*;
 import com.novell.ldap.asn1.*;
 import com.novell.ldap.rfc2251.*;
@@ -94,7 +93,7 @@ public class LDAPControl implements Cloneable {
              twin[i]=vals[i];
            }
        }
-       return (Object)( new LDAPControl(this.getID(), this.isCritical(), twin));
+       return new LDAPControl(this.getID(), this.isCritical(), twin);
     }
 
     /**
@@ -175,7 +174,7 @@ public class LDAPControl implements Cloneable {
      *
      * @return An ASN.1 RFC 2251 Control.
      */
-    /*package*/ RfcControl getASN1Object()
+    /*package*/ final RfcControl getASN1Object()
     {
         return control;
     }

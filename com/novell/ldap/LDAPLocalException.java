@@ -15,8 +15,6 @@
 
 package com.novell.ldap;
 
-import com.novell.ldap.resources.*;
-
 /**
  *  Represents an LDAP exception that is not a result of a server response.
  */
@@ -103,7 +101,7 @@ public class LDAPLocalException extends LDAPException
                                int resultCode,
                                Throwable rootException)
     {
-      super( messageOrKey, resultCode, (String)null, rootException);
+      super( messageOrKey, resultCode, null, rootException);
       return;
     }
 
@@ -138,7 +136,7 @@ public class LDAPLocalException extends LDAPException
                                int resultCode,
                                Throwable rootException)
     {
-        super(messageOrKey, arguments, resultCode, (String)null, rootException);
+        super(messageOrKey, arguments, resultCode, null, rootException);
         return;
     }
 

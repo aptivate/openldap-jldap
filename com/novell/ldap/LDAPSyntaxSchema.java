@@ -97,7 +97,6 @@ public class LDAPSyntaxSchema
     {
         StringBuffer valueBuffer = new StringBuffer("( ");
         String token;
-        String[] strArray;
 
         if( (token = getID()) != null){
             valueBuffer.append(token);

@@ -426,10 +426,10 @@ public class LDAPAttribute implements java.lang.Cloneable,
             throw new IllegalArgumentException("Attribute name cannot be null");
         }
         StringTokenizer st = new StringTokenizer(attrName, ";");
-        String baseName, subTypes[] = null;
+        String subTypes[] = null;
         int cnt = st.countTokens();
         if(cnt > 0) {
-            baseName = st.nextToken();
+            st.nextToken(); // skip over basename
             subTypes = new String[cnt - 1];
             int i=0;
             while(st.hasMoreTokens()) {

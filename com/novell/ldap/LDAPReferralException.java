@@ -80,7 +80,7 @@ public class LDAPReferralException extends LDAPException
     */
    public LDAPReferralException(String message,
                                 Throwable rootException) {
-      super( message, LDAPException.REFERRAL, (String)null, rootException);
+      super( message, LDAPException.REFERRAL,null, rootException);
       return;
    }
 
@@ -102,7 +102,7 @@ public class LDAPReferralException extends LDAPException
    public LDAPReferralException(String message,
                                 Object[] arguments,
                                 Throwable rootException) {
-      super( message, arguments, LDAPException.REFERRAL, (String)null, rootException);
+      super( message, arguments, LDAPException.REFERRAL, null, rootException);
       return;
    }
 

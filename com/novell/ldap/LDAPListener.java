@@ -15,8 +15,6 @@
 
 package com.novell.ldap;
 
-import com.novell.ldap.client.*;
-
 /**
  *  This interface
  *  has been renamed to LDAPMessageQueue in IETF draft 17 of the Java LDAP API

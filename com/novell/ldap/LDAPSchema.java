@@ -18,7 +18,6 @@ package com.novell.ldap;
 import com.novell.ldap.client.Debug;
 import java.util.Enumeration;
 import java.util.HashMap;
-import com.novell.ldap.resources.ExceptionMessages;
 import com.novell.ldap.client.EnumeratedIterator;
 
 /**
@@ -149,7 +148,7 @@ public class LDAPSchema extends LDAPEntry {
      *          "nameForms", "dITContentRules", "dITStructureRules",
      *          "matchingRules","matchingRuleUse"
      * </code></pre>
-     * @param entry          An LDAPEntry containing schema information.
+     * @param ent          An LDAPEntry containing schema information.
      */
     public LDAPSchema(LDAPEntry ent){
         super(ent.getDN(), ent.getAttributeSet());
@@ -360,7 +359,7 @@ public class LDAPSchema extends LDAPEntry {
     /**
      * Returns a particular DIT structure rule definition, or null if not found.
      *
-     *  @param name     The ID of the DIT structure rule use for which a
+     *  @param ID     The ID of the DIT structure rule use for which a
      *                   definition is to be returned.
      *
      *  @return The DIT structure rule definition, or null if not found.
@@ -426,7 +425,7 @@ public class LDAPSchema extends LDAPEntry {
     /**
      * Returns a particular syntax definition, or null if not found.
      *
-     *  @param name     The oid of the syntax for which a definition
+     *  @param oid     The oid of the syntax for which a definition
      *                  is to be returned.
      *
      *  @return The syntax definition, or null if not found.

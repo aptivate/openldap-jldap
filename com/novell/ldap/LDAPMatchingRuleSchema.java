@@ -15,8 +15,6 @@
 
 package com.novell.ldap;
 import com.novell.ldap.client.SchemaParser;
-import com.novell.ldap.resources.*;
-import java.util.Enumeration;
 import java.io.IOException;
 /**
  *  The schematic definition of a particular matching rule

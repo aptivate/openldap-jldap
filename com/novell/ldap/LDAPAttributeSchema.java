@@ -107,7 +107,7 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
     *<br><br>
     * @param isUserModifiable  False if this attribute is a read-only attribute
     *<br><br>
-    * @param useage        Describes what the attribute is used for. Must be
+    * @param usage        Describes what the attribute is used for. Must be
     *                one of the following: USER_APPLICATIONS,
     *                DIRECTORY_OPERATION, DISTRIBUTED_OPERATION or
     *                DSA_OPERATION.

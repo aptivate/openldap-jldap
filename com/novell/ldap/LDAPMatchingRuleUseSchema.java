@@ -16,9 +16,7 @@
 package com.novell.ldap;
 
 import java.io.IOException;
-import java.util.Enumeration;
 import com.novell.ldap.client.SchemaParser;
-import com.novell.ldap.resources.*;
 
 /**  Represents the definition of a specific matching rule use in the
  *  directory schema.

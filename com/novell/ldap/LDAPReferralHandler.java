@@ -17,11 +17,11 @@ package com.novell.ldap;
 
 /**
  *
- *  Shared ancestor to the two types of referral objects - LDAPBind and
- *  LDAPRebind.
+ *  Shared ancestor to the two types of referral objects - LDAPBindHandler and
+ *  LDAPAuthHandler.
  *
- * @see LDAPBind
- * @see LDAPRebind
+ * @see LDAPBindHandler
+ * @see LDAPAuthHandler
  *
  */
 public interface LDAPReferralHandler

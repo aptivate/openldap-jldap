@@ -191,7 +191,7 @@ public class LDAPUrl implements java.lang.Cloneable {
         this.host = host;
         this.port = port;
         this.dn = dn;
-        this.attrs = (String[])attrNames;
+        this.attrs = attrNames;
         this.scope = scope;
         this.filter = filter;
         this.extensions = (String[])extensions.clone();
@@ -239,7 +239,6 @@ public class LDAPUrl implements java.lang.Cloneable {
 
           // Decode the %HH value and copy to new string buffer
           int fieldEnd = 0;   // end of previous field
-          int value;
           int dataLen = URLEncoded.length();
 
           StringBuffer decoded = new StringBuffer( dataLen );
@@ -307,11 +306,11 @@ public class LDAPUrl implements java.lang.Cloneable {
             ((currChar == ';' ) || (currChar == '/' ) || (currChar == '?' ) ||
              (currChar == ':' ) || (currChar == '@' ) || (currChar == '=' ) ||
              (currChar == '&' ))){
-               temp = Integer.toHexString((int)currChar);
+               temp = Integer.toHexString(currChar);
                if (temp.length()==1)
                   buffer.append("%0"+temp);
                else //if(temp.length()==2) this can only be two or one digit long.
-                  buffer.append("%"+Integer.toHexString((int)currChar));
+                  buffer.append("%"+Integer.toHexString(currChar));
          }
          else
             buffer.append(currChar);

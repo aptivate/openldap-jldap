@@ -18,7 +18,6 @@ package com.novell.ldap;
 import java.util.Enumeration;
 import java.util.HashMap;
 import com.novell.ldap.client.AttributeQualifier;
-import com.novell.ldap.resources.*;
 import com.novell.ldap.client.EnumeratedIterator;
 
 /**

@@ -17,7 +17,6 @@ package com.novell.ldap;
 
 import java.util.Hashtable;
 import com.novell.ldap.client.Debug;
-import com.novell.ldap.resources.ExceptionMessages;
 
 /**
  * Defines options controlling LDAP operations on the directory.
