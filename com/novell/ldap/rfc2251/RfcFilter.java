@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/com/novell/asn1/ldap/Filter.java,v 1.5 2000/08/23 01:21:36 smerrill Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/com/novell/asn1/ldap/Filter.java,v 1.6 2000/08/23 04:17:18 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  ***************************************************************************/
@@ -181,7 +181,7 @@ public class Filter extends ASN1Choice {
                                        LDAPException.FILTER_ERROR);
             }
 
-            String value = st.nextToken().trim();
+            String value = st.nextToken(")").trim();
 
             return new ASN1Tagged(
                new ASN1Identifier(ASN1Identifier.CONTEXT, true,
@@ -198,7 +198,7 @@ public class Filter extends ASN1Choice {
                                        LDAPException.FILTER_ERROR);
             }
 
-            String value = st.nextToken().trim();
+            String value = st.nextToken(")").trim();
 
             return new ASN1Tagged(
                new ASN1Identifier(ASN1Identifier.CONTEXT, true,
@@ -215,7 +215,7 @@ public class Filter extends ASN1Choice {
                                        LDAPException.FILTER_ERROR);
             }
 
-            String value = st.nextToken().trim();
+            String value = st.nextToken(")").trim();
 
             return new ASN1Tagged(
                new ASN1Identifier(ASN1Identifier.CONTEXT, true,
@@ -228,7 +228,7 @@ public class Filter extends ASN1Choice {
 
          else if(filtertype.equals("=")) {
             // look for: simple / present / substring
-            String value = st.nextToken().trim();
+            String value = st.nextToken(")").trim();
 
             if(value.equals("*")) { // present
                return new ASN1Tagged(
