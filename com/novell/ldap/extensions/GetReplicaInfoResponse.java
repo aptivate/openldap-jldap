@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: GetReplicaInfoResponse.java,v 1.4 2000/08/08 21:28:51 javed Exp $
+ * $Id: GetReplicaInfoResponse.java,v 1.1 2000/08/15 21:40:43 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -65,8 +65,10 @@ public class GetReplicaInfoResponse implements ParsedExtendedResponse {
            
         // Parse the parameters in the order
         
+        ByteArrayInputStream currentPtr = new ByteArrayInputStream(returnedValue);
+        
         // Parse partitionID
-        ASN1Integer asn1_partitionID = (ASN1Integer)decoder.decode(returnedValue);        
+        ASN1Integer asn1_partitionID = (ASN1Integer)decoder.decode(currentPtr);
         if (asn1_partitionID == null)
             throw new IOException("Decoding error");     
             
@@ -74,35 +76,35 @@ public class GetReplicaInfoResponse implements ParsedExtendedResponse {
         
         
         // Parse replicaState
-        ASN1Integer asn1_replicaState = (ASN1Integer)decoder.decode(returnedValue);        
+        ASN1Integer asn1_replicaState = (ASN1Integer)decoder.decode(currentPtr);        
         if (asn1_replicaState == null)
             throw new IOException("Decoding error");     
             
         replicaState = asn1_replicaState.getInt(); 
         
         // Parse modificationTime
-        ASN1Integer asn1_modificationTime = (ASN1Integer)decoder.decode(returnedValue);        
+        ASN1Integer asn1_modificationTime = (ASN1Integer)decoder.decode(currentPtr);        
         if (asn1_modificationTime == null)
             throw new IOException("Decoding error");     
             
         modificationTime = asn1_modificationTime.getInt();        
         
         // Parse purgeTime
-        ASN1Integer asn1_purgeTime = (ASN1Integer)decoder.decode(returnedValue);        
+        ASN1Integer asn1_purgeTime = (ASN1Integer)decoder.decode(currentPtr);        
         if (asn1_purgeTime == null)
             throw new IOException("Decoding error");     
             
         purgeTime = asn1_purgeTime.getInt();
         
         // Parse localPartitionID
-        ASN1Integer asn1_localPartitionID = (ASN1Integer)decoder.decode(returnedValue);        
+        ASN1Integer asn1_localPartitionID = (ASN1Integer)decoder.decode(currentPtr);        
         if (asn1_localPartitionID == null)
             throw new IOException("Decoding error");     
             
         localPartitionID = asn1_localPartitionID.getInt();
         
         // Parse partitionDN        
-        ASN1OctetString asn1_partitionDN = (ASN1OctetString)decoder.decode(returnedValue);        
+        ASN1OctetString asn1_partitionDN = (ASN1OctetString)decoder.decode(currentPtr);        
         if (asn1_partitionDN == null)
             throw new IOException("Decoding error");
       
@@ -112,7 +114,7 @@ public class GetReplicaInfoResponse implements ParsedExtendedResponse {
             
             
         // Parse replicaType
-        ASN1Integer asn1_replicaType = (ASN1Integer)decoder.decode(returnedValue);        
+        ASN1Integer asn1_replicaType = (ASN1Integer)decoder.decode(currentPtr);        
         if (asn1_replicaType == null)
             throw new IOException("Decoding error");     
             
@@ -120,7 +122,7 @@ public class GetReplicaInfoResponse implements ParsedExtendedResponse {
         
         
         // Parse flags 
-        ASN1Integer asn1_flags = (ASN1Integer)decoder.decode(returnedValue);        
+        ASN1Integer asn1_flags = (ASN1Integer)decoder.decode(currentPtr);        
         if (asn1_flags == null)
             throw new IOException("Decoding error");     
             
