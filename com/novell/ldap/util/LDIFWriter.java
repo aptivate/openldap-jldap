@@ -164,7 +164,7 @@ public class LDIFWriter extends LDIF implements LDAPExport {
         }
 
         // to content record lines
-        this.rLines = toRecordLines(entry, ctrls);
+        toRecordLines(entry, ctrls);
 
         // write the content line into LDIF file
         writeRecordLines( this.rLines );
@@ -207,24 +207,24 @@ public class LDIFWriter extends LDIF implements LDAPExport {
         if ( change instanceof LDAPAdd) {
 
             this.currentEntry = ((LDAPAdd)change).getEntry();
-            this.rLines =toRecordLines(this.currentEntry, this.currentControls);
+            toRecordLines(this.currentEntry, this.currentControls);
 
         }
         else if ( change instanceof LDAPDelete ) {
 
-            rLines = toRecordLines( this.dn, this.currentControls );
+            toRecordLines( this.dn, this.currentControls );
 
         }
         else if ( change instanceof LDAPModDN ) {
 
             modInfo = ((LDAPModDN)change).getModInfo();
-            this.rLines = toRecordLines( dn, modInfo, this.currentControls );
+            toRecordLines( dn, modInfo, this.currentControls );
 
         }
         else if ( change instanceof LDAPModify) {
 
             mods = ((LDAPModify)change).getModifications();
-            this.rLines = toRecordLines( dn, mods, this.currentControls );
+            toRecordLines( dn, mods, this.currentControls );
 
         }
         else {
@@ -264,7 +264,7 @@ public class LDIFWriter extends LDIF implements LDAPExport {
      * @return String array which contains the LDIF content or LDIF
      * change/add record lines
      */
-    public String[] toRecordLines( LDAPEntry entry, LDAPControl[] ctrls )
+    public void toRecordLines( LDAPEntry entry, LDAPControl[] ctrls )
     throws UnsupportedEncodingException {
 
         int      i, len;
@@ -309,9 +309,10 @@ public class LDIFWriter extends LDIF implements LDAPExport {
            }
         }
 
-        this.rLines = toArray( this.rFields );
+        this.rLines = new String[this.rFields.size()];
+        this.rLines = (String[])this.rFields.toArray(this.rLines);
 
-        return toLines( this.rLines );
+        //return toLines( this.rLines );
     }
 
 
@@ -332,7 +333,7 @@ public class LDIFWriter extends LDIF implements LDAPExport {
      * @see LDAPModification
      * @see LDAPControl
      */
-    public String[] toRecordLines( String dn, LDAPModification[] mods,
+    public void toRecordLines( String dn, LDAPModification[] mods,
     LDAPControl[] ctrls ) throws UnsupportedEncodingException {
 
         int i, modOp, len = mods.length;
@@ -381,9 +382,10 @@ public class LDIFWriter extends LDIF implements LDAPExport {
             this.rFields.add(new String(""));
         }
 
-        this.rLines = toArray( this.rFields );
-
-        return toLines( this.rLines );
+        this.rLines = new String[this.rFields.size()];
+        this.rLines = (String[])this.rFields.toArray(this.rLines);
+        
+        //return toLines( this.rLines );
     }
 
     /**
@@ -400,7 +402,7 @@ public class LDIFWriter extends LDIF implements LDAPExport {
      *
      * @see ModInfo
      */
-    public String[] toRecordLines( String dn, ModInfo modInfo,
+    public void toRecordLines( String dn, ModInfo modInfo,
     LDAPControl[] ctrls ) throws UnsupportedEncodingException {
 
         // save entry dn
@@ -420,9 +422,10 @@ public class LDIFWriter extends LDIF implements LDAPExport {
             this.rFields.add(new String("newsuperior:" + modInfo.newSuperior));
         }
 
-        this.rLines = toArray( this.rFields);
+        this.rLines = new String[this.rFields.size()];
+        this.rLines = (String[])this.rFields.toArray(this.rLines);
 
-        return toLines( this.rLines );
+        //return toLines( this.rLines );
     }
 
     /**
@@ -439,7 +442,7 @@ public class LDIFWriter extends LDIF implements LDAPExport {
      *
      * @see LDAPControl
      */
-    public String[] toRecordLines( String dn, LDAPControl[] ctrls )
+    public void toRecordLines( String dn, LDAPControl[] ctrls )
     throws UnsupportedEncodingException {
 
         // save entry dn
@@ -453,9 +456,11 @@ public class LDIFWriter extends LDIF implements LDAPExport {
         // save change type
         this.rFields.add(new String("changetype: delete"));
 
-        this.rLines = toArray( this.rFields );
+        this.rLines = new String[this.rFields.size()];
+        this.rLines = (String[])this.rFields.toArray( this.rLines );
 
-        return toLines( this.rLines );
+
+        //return toLines( this.rLines );
     }
 
 
@@ -487,7 +492,7 @@ public class LDIFWriter extends LDIF implements LDAPExport {
             this.tempList.add( "# " + line);
         }
 
-        return toArray( this.tempList );
+        return (String[])this.tempList.toArray();
     }
 
     /**
@@ -498,7 +503,7 @@ public class LDIFWriter extends LDIF implements LDAPExport {
      *
      * @return String array object
      */
-    public String[] toLines( String[] ls ) {
+    public void toLines( String[] ls ) {
 
         this.tempList.clear();
 
@@ -523,7 +528,8 @@ public class LDIFWriter extends LDIF implements LDAPExport {
             }
         }
 
-        return toArray( tempList);
+        this.rLines = new String[tempList.size()];
+        this.rLines =  (String[])this.tempList.toArray(this.rLines);
     }
 
 
