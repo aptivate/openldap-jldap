@@ -3,3 +3,6 @@
 (3) JavaDoc extension classes
 (4) Seperate extension classes into a seperate jar
 (5) Replace ber functions with new ones when available
+(6) LDAPListReplicas
+(7) LDAPReplicaInfo
+(8) ReplicationFilter
