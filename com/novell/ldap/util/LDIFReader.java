@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $OpenLDAP$
+ * $Novell$
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -373,7 +373,7 @@ public class LDIFReader extends LDIF implements LDAPReader {
         }
         else {
             // base64 encoded
-            this.bytes = Base64.decoder((StringBuffer)this.rFields.get(0),
+            this.bytes = Base64.decode((StringBuffer)this.rFields.get(0),
                               4, ((StringBuffer)this.rFields.get(0)).length());
             this.entryDN = new String(this.bytes, "UTF-8");
         }
@@ -442,7 +442,7 @@ public class LDIFReader extends LDIF implements LDAPReader {
                         if ( ((StringBuffer)this.rFields.get(i)).
                                                  charAt(index+1) == ':') {
                             // base64 encoded
-                            this.bytes = Base64.decoder(
+                            this.bytes = Base64.decode(
                                 (StringBuffer)(this.rFields.get(i)), index+2,
                                   ((StringBuffer)this.rFields.get(i)).length());
                             // trim the control field
@@ -539,7 +539,7 @@ public class LDIFReader extends LDIF implements LDAPReader {
                 else {  // base64 encoded value
                     isEncoded = true;
                     // decode the value
-                    this.bytes = Base64.decoder((StringBuffer)this.rFields.
+                    this.bytes = Base64.decode((StringBuffer)this.rFields.
                                  get(i), index+2,
                                  ((StringBuffer)this.rFields.get(i)).length());
                 }
@@ -596,7 +596,7 @@ public class LDIFReader extends LDIF implements LDAPReader {
         }
         else {
             // decode newrdn
-            this.bytes = Base64.decoder(
+            this.bytes = Base64.decode(
                          (StringBuffer)this.rFields.get(fieldIndex),
                          index+2,
                          ((StringBuffer)this.rFields.get(fieldIndex)).length());
@@ -640,7 +640,7 @@ public class LDIFReader extends LDIF implements LDAPReader {
             }
             else {
                 // base64 encoded value
-                this.bytes = Base64.decoder(
+                this.bytes = Base64.decode(
                         (StringBuffer)this.rFields.get(fieldIndex),
                         index+2,
                         ((StringBuffer)this.rFields.get(fieldIndex)).length());

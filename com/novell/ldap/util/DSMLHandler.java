@@ -1,3 +1,17 @@
+/* **************************************************************************
+ * $Novell$
+ *
+ * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
+ *
+ * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
+ * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
+ * TO VERSION 2.0.1 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
+ * AVAILABLE AT HTTP://WWW.OPENLDAP.ORG/LICENSE.HTML OR IN THE FILE "LICENSE"
+ * IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
+ * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.1 OF THE OPENLDAP
+ * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
+ * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
+ */
 package com.novell.ldap.ldif_dsml;
 
 import com.novell.ldap.*;
@@ -633,7 +647,7 @@ class DSMLHandler implements ContentHandler, ErrorHandler
                     state = BATCH_REQUEST;
                     if (isBase64){
                         message = new LDAPCompareRequest(dn, attrName,
-                                Base64.decoder(value, 0, value.length()),
+                                Base64.decode(value, 0, value.length()),
                                 null);
                     }
                     message = new LDAPCompareRequest(dn, attrName,
@@ -648,7 +662,7 @@ class DSMLHandler implements ContentHandler, ErrorHandler
                     {
                         byte[] byteValue;
                         if (isBase64){
-                            byteValue = Base64.decoder(value, 0, value.length());
+                            byteValue = Base64.decode(value, 0, value.length());
                         } else {
                             byteValue = value.toString().getBytes("UTF8");
                         }
@@ -679,7 +693,7 @@ class DSMLHandler implements ContentHandler, ErrorHandler
                 case X_VALUE:
                     {
                         state = EXTENDED_REQUEST;
-                        requestValue = Base64.decoder(value, 0, value.length());
+                        requestValue = Base64.decode(value, 0, value.length());
                         break;
                     }
                 case FILTER:

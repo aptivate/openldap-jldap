@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $OpenLDAP$
+ * $Novell$
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -513,13 +513,13 @@ public class LDIFWriter extends LDIF implements LDAPWriter {
         writeLine("changetype: moddn");
 
         // save new RDN
-        if ( isSafe(modInfo[0]) ) {
+        if ( Base64.isLDIFSafe(modInfo[0]) ) {
             writeLine("newrdn:" + modInfo[0]);
         }
         else {
             // base64 encod newRDN
             // put newRDN into record fields with a trailing space
-            writeLine(new String("newrdn:" + Base64.getEncodedString() + " "));
+            writeLine(new String("newrdn:: " + Base64.encode(modInfo[0])));
         }
 
         // save deleteOldRDN
@@ -528,13 +528,13 @@ public class LDIFWriter extends LDIF implements LDAPWriter {
         // save newSuperior
         if ( ((modInfo[2]).length()) != 0) {
 
-            if ( isSafe(modInfo[2]) ) {
+            if ( Base64.isLDIFSafe(modInfo[2]) ) {
                 writeLine("newsuperior:" + modInfo[2]);
             }
             else {
                 // base64 encod newRDN
                 // put newSuperior into record fields with a trailing space
-                writeLine("newsuperior:" +  Base64.getEncodedString() + " ");
+                writeLine("newsuperior:: " +  Base64.encode(modInfo[2]));
             }
         }
     }
@@ -567,11 +567,11 @@ public class LDIFWriter extends LDIF implements LDAPWriter {
     public void writeDN(String dn)
     throws IOException, UnsupportedEncodingException {
 
-        if ( isSafe(dn) ) { // safe
+        if ( Base64.isLDIFSafe(dn) ) { // safe
             writeLine("dn: " + dn);
         }
         else { // not safe
-            writeLine("dn:: " + Base64.encoder(dn) + " ");
+            writeLine("dn:: " + Base64.encode(dn) + " ");
         }
     }
 
@@ -591,23 +591,23 @@ public class LDIFWriter extends LDIF implements LDAPWriter {
 
             if ( cVal != null && cVal.length > 0 ) {
                 // always encode control value(s) ?
-                cVal = Base64.encoder(cVal);
+                cVal = Base64.encode(cVal);
                 String controlValue = new String(cVal);
                 // a trailing space is add to the end
                 writeLine( "control: " + ctrls[i].getID() + " "
-                                     + ctrls[i].isCritical() + ":: "
-                                          + Base64.getEncodedString() + " " );
+                                       + ctrls[i].isCritical() + ":: "
+                                       + controlValue);
             }
             else {
                 writeLine("control: " + ctrls[i].getID() + " "
-                                                     + ctrls[i].isCritical());
+                                      + ctrls[i].isCritical());
             }
         }
     }
 
 
     /**
-     * Weite attribute name and value into outputStream.
+     * Write attribute name and value into outputStream.
      *
      * <p>Check if attrVal starts with NUL, LF, CR, ' ', ':', or '<'
      * or contains any NUL, LF, or CR and then write it out</p>
@@ -616,13 +616,13 @@ public class LDIFWriter extends LDIF implements LDAPWriter {
     throws IOException, UnsupportedEncodingException {
 
         if (attrVal != null) {
-            if ( isSafe(attrVal) ) {
+            if ( Base64.isLDIFSafe(attrVal) ) {
                 writeLine( attrName + ": " + attrVal );
             }
             else {
                 // IF attrVal contains NON-SAFE-INIT-CHAR or NON-SAFE-CHAR,
                 // it has to be base64 encoded
-                attrVal = Base64.encoder(attrVal);
+                attrVal = Base64.encode(attrVal);
                 // base64 encoded attribute spec ended with white spavce
                 writeLine(attrName + ":: " + attrVal + " " );
             }
@@ -631,7 +631,7 @@ public class LDIFWriter extends LDIF implements LDAPWriter {
 
 
     /**
-     * Weite attribute name and value into outputStream.
+     * Write attribute name and value into outputStream.
      *
      * <p>Check if attribute value contains NON-SAFE-INIT-CHAR or
      * NON-SAFE-CHAR. if it does, it needs to be base64 encoded and then
@@ -641,78 +641,15 @@ public class LDIFWriter extends LDIF implements LDAPWriter {
     throws IOException, UnsupportedEncodingException {
 
         if (attrVal != null) {
-            if ( isSafe(attrVal) && isPrintable(attrVal) ) {
+            if ( Base64.isLDIFSafe(attrVal) && isPrintable(attrVal) ) {
                 // safe to make a String value
                 writeLine( attrName + ": " + new String(attrVal, "UTF-8") );
             }
             else {
                 // not safe
-                attrVal = Base64.encoder(attrVal);
-                // base64 encoded attriVal ends with white space
-                writeLine(attrName + ":: " + Base64.getEncodedString()+ " ");
+                writeLine(attrName + ":: " + Base64.encode(attrVal));
             }
         }
-    }
-
-
-    /**
-     * Check if the input String object is a SAFE-STRING
-     *
-     * @param value boolean object to incidate that
-     * the string is safe or not safe
-     */
-    public boolean isSafe(String value) {
-        return isSafe(value.getBytes());
-    }
-
-    /**
-     * Check if the input byte array object is safe.
-     *
-     * <p>Check if the bytes starts with UL, LF, CR, ' ', ':', or '<',
-     * or contains any NUL, LF, or CR</p>
-     *
-     * @param bytes boolean object to incidate if the string is safe or not safe
-     */
-    public boolean isSafe(byte[] bytes) {
-
-        if (bytes == null) {
-            throw new RuntimeException(
-                    "com.novell.ldap.ldif_dsml.LDIFWriter: null pointer");
-        }
-        else if ( bytes.length > 0) {
-            if (bytes.length > 1){
-                // is there any NON-SAFE-INIT-CHAR
-                if (      (bytes[0] == 0x00)     // NUL
-                       || (bytes[0] == 0x0A)     // linefeeder
-                       || (bytes[0] == 0x0D)     // carrage return
-                       || (bytes[0] == 0x20)     // space(' ')
-                       || (bytes[0] == 0x3A)     // colon(':')
-                       || (bytes[0] == 0x3C)) {  // less-than('<')
-                    return false;
-                }
-                // is there any NON-SAFE-CHAR
-                for ( int i = 1; i < bytes.length; i++ ) {
-                    if (      (bytes[0] == 0x00)    // NUL
-                           || (bytes[0] == 0x0A)    // linefeeder
-                           || (bytes[0] == 0x0D)) { // carrage return
-                        return false;
-                    }
-                }
-            }
-            else {
-                // is there any NON-SAFE-INIT-CHAR
-                if (      (bytes[0] == 0x00)     // NUL
-                       || (bytes[0] == 0x0A)     // linefeeder
-                       || (bytes[0] == 0x0D)     // carrage return
-                       || (bytes[0] == 0x20)     // space(' ')
-                       || (bytes[0] == 0x3A)     // colon(':')
-                       || (bytes[0] == 0x3C)) {  // less-than('<')
-                    return false;
-                }
-            }
-        }
-
-        return true;
     }
 
     /**
