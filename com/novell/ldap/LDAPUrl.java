@@ -41,7 +41,7 @@ public class LDAPUrl implements java.lang.Cloneable {
     private boolean    ipV6 = false;                 // TCP/IP V6
     private String     host = null;                  // Host
     private int        port;                         // Port
-    private String     dn = "";                      // Base DN
+    private String     dn = null;                    // Base DN
     private String[]   attrs = null;                 // Attributes
     private String     filter = null;                // Filter
     private int        scope  = DEFAULT_SCOPE;       // Scope
@@ -340,7 +340,7 @@ public class LDAPUrl implements java.lang.Cloneable {
     /**
     * Returns the distinguished name encapsulated in the URL.
     *
-    * @return The base distinguished name specified in the URL.
+    * @return The base distinguished name specified in the URL, or null if none.
     */
     public String getDN() {
           return dn;
