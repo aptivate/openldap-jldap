@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: DSMLWriter.java,v 1.18 2002/11/12 17:37:29 $
+ * $Novell: DSMLWriter.java,v 1.19 2002/11/12 17:45:35 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -20,9 +20,17 @@ import com.novell.ldap.*;
 import java.io.*;
 import java.util.Iterator;
 
+/**
+ * Writes LDAPMessages into a Writer or outputStream as DSML batch requests and
+ * batch responses.
+ *
+ * @see DSMLReader
+ * @see DOMWriter
+ * @see LDAPMessage
+ */
 public class DSMLWriter implements LDAPWriter {
 
-    public static LDAPMessage currentChange = null;
+    private static LDAPMessage currentChange = null;
     private Writer out = null;
     private int state = NEW_BATCH;
     private static final int NEW_BATCH = 0;
@@ -38,20 +46,41 @@ public class DSMLWriter implements LDAPWriter {
     private static final String BATCH_RESPONSE_START =
             "<batchResponse xmlns=\"urn:oasis:names:tc:DSML:2:0:core\">";
 
-
+    /**
+     * Initializes this writer by opening the specified file to write DSML into.
+     * @param file  File to write DSML
+     * @throws FileNotFoundException occurs when the specified file could not
+     * be opened or is not found.
+     */
     public DSMLWriter(String file) throws FileNotFoundException {
         this( new FileOutputStream(file, true));
     }
 
+    /**
+     * Initializes this writer with the specified outputstream to write DSML
+     * into.
+     * @param stream  Output stream to write DSML
+     */
     public DSMLWriter(OutputStream stream){
         out = new OutputStreamWriter(stream);
     }
 
+    /**
+     * Initializes this writer with the specified writer to write DSML into.
+     * @param writer Writer to write DSML
+     */
     public DSMLWriter(Writer writer){
         out = writer;
     }
 
-    public void writeError(LDAPException e) throws IOException, LDAPLocalException {
+    /**
+     * Any LDAPException can be written in DSML with this method, via the
+     * <errorResponse> tag.
+     * @param e  LDAPException to be written in DSML.
+     */
+    public void writeError(LDAPException e)
+            throws IOException, LDAPLocalException
+    {
         //check if we are in a response, if not set the state and write DSML tag
         checkState(true);
         newLine(1);
@@ -79,6 +108,10 @@ public class DSMLWriter implements LDAPWriter {
         out.write("</errorResponse>");
     }
 
+    /**
+     * Writes closing tags for searchResponse, batchRequests, and batchResponse
+     * depending on the current state.
+     */
     public void finish() throws IOException {
         newLine(0);
         switch(state){
@@ -99,7 +132,11 @@ public class DSMLWriter implements LDAPWriter {
         out.flush();
     }
 
-    public void writeComments( String lines) throws IOException {
+    /**
+     * Writes the specified strings as XML comments.
+     * @param lines Comments to be written
+     */
+    public void writeComments(String lines) throws IOException {
         newLine(1);
         out.write("<!-- ");
         out.write(lines);
@@ -107,6 +144,13 @@ public class DSMLWriter implements LDAPWriter {
         return;
     }
 
+    /**
+     * Writes an LDAPMessage as DSML.
+     * @param messageToWrite Message to be written as DSML
+     *
+     * @throws LDAPLocalException Occurs when a message is written out of
+     * sequence, i.e. a response is written into a batchRequest.
+     */
     public void writeMessage(LDAPMessage messageToWrite)
                 throws IOException, LDAPLocalException
     {
@@ -232,10 +276,16 @@ public class DSMLWriter implements LDAPWriter {
         }
     }
 
+    /**
+     * Writes an XML tag with it's requestID and possibly a matchedDN.
+     * @param tag XML tag name to be written
+     * @param message LDAPMessage containing a requestID and possibly matchedDN
+     * values to be written with the tag
+     */
     private void writeTagWithID(String tag, LDAPMessage message)
             throws IOException
     {
-        out.write("<" + tag + " requestID=\""+ message.getMessageID() +"\"");
+        out.write("<" + tag + " requestID=\""+ DOMWriter.findRequestID(message) +"\"");
         if (message instanceof LDAPResponse){
             String matchedDN = ((LDAPResponse) message).getMatchedDN();
             if (matchedDN != null && !matchedDN.equals("")){
@@ -266,6 +316,12 @@ public class DSMLWriter implements LDAPWriter {
         return true;
     }
 
+    /**
+     * Writes all information associated with a result such as controls,
+     * referrals, result code with description, and any server message.
+     * @param result result to be written
+     * @param indent number of indentation this result should use for writing
+     */
     private void writeResult(LDAPResponse result, int indent) throws IOException {
         /* controls: */
         LDAPControl[] controls = result.getControls();
@@ -301,6 +357,12 @@ public class DSMLWriter implements LDAPWriter {
        return;
     }
 
+    /**
+     * Writes a control in DSML.
+     * <p>Used by writeResult and by the searchResponse case in writeMessage.
+     * @param controls Controls to be written
+     * @param indent  Size of indentation for writting.
+     */
     private void writeControls(LDAPControl[] controls, int indent) throws IOException {
         for(int i=0; i<controls.length; i++){
             newLine(indent);
@@ -323,6 +385,10 @@ public class DSMLWriter implements LDAPWriter {
         }
     }
 
+    /**
+     * Writes referrences that are returned from a search.
+     * @param ref search reference
+     */
     private void writeSearchResultReference(LDAPSearchResultReference ref)
             throws IOException
     {
@@ -340,6 +406,10 @@ public class DSMLWriter implements LDAPWriter {
         out.write("</searchResultReference>");
     }
 
+    /**
+     * Writes the entries returned within search responses.
+     * @param result a search result entry
+     */
     private void writeSearchResponse(LDAPSearchResult result)
             throws IOException
     {
@@ -348,7 +418,7 @@ public class DSMLWriter implements LDAPWriter {
         out.write("<searchResultEntry dn=\"");
         out.write(entry.getDN());
         out.write("\" requestID=\"");
-        out.write(""+result.getMessageID());
+        out.write(""+DOMWriter.findRequestID(result));
         out.write("\">");
         LDAPAttributeSet set = entry.getAttributeSet();
         Iterator i = set.iterator();
@@ -365,6 +435,10 @@ public class DSMLWriter implements LDAPWriter {
         return;
     }
 
+    /**
+     * Used to write an attribute and its values.
+     * @param attr Attribute to be written.
+     */
     private void writeAttribute(LDAPAttribute attr) throws IOException {
         newLine(3);
         out.write("<attr name=\"");
@@ -417,6 +491,16 @@ public class DSMLWriter implements LDAPWriter {
         return;
     }
 
+    /**
+     * Writes a new line and then the specified number of indentTabs to indent
+     * the next characters to be written.
+     *
+     * <p>Allows the writer to 'pretty-print' XML output according to the
+     * number of tabs.  The size of a tab is determined by tabString which is
+     * created by the method setIndent.  No pretty-printing will occur if indent
+     * is set to <tt>false</tt>.
+     * @param indentTabs number of tabs to indent.
+     */
     private void newLine(int indentTabs) throws IOException {
         if (!indent)
             return;
@@ -428,11 +512,29 @@ public class DSMLWriter implements LDAPWriter {
         return;
     }
 
+    /**
+     * Turns on or off 'pretty-printing' of XML with newlines and indentation to
+     * make output more readable.
+     *
+     * <p>For efficiency, useIndent is set to false by default.  The size of an
+     * indentation can be set using the method <tt>setIndent</tt>.
+     * @param useIndent Indicates whether indentation and newlines should be
+     * written to make the output DSML more readable.
+     * @see #setIndent
+     */
     public void useIndent( boolean useIndent ){
         this.indent = useIndent;
     }
 
-    public void setIndent( int spaces){
+    /**
+     * Sets the number of spaces for indentation of XML tags.
+     * <p>This setting is ignored by default unless indentation is turned on via
+     * the <tt>useIndent</tt> method. </p>
+     *
+     * @param spaces Number of spaces used in each indentation.
+     * @see #useIndent
+     */
+    public void setIndent(int spaces){
         StringBuffer temp = new StringBuffer();
         for (int i=0; i< spaces; i++){
             temp.append(' ');
