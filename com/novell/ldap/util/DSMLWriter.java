@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: DSMLWriter.java,v 1.10 2002/10/15 16:28:40 $
+ * $Novell: DSMLWriter.java,v 1.11 2002/10/22 22:15:47 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -33,9 +33,9 @@ public class DSMLWriter implements LDAPWriter {
     private String tabString = "    ";
 
     private static final String BATCH_REQUEST_START =
-            "<batchRequest xmlns=\"urn:oasis:names:tc:DSML:2.0:core\">";
+            "<batchRequest xmlns=\"urn:oasis:names:tc:DSML:2:0:core\">";
     private static final String BATCH_RESPONSE_START =
-            "<batchResponse xmlns=\"urn:oasis:names:tc:DSML:2.0:core\">";
+            "<batchResponse xmlns=\"urn:oasis:names:tc:DSML:2:0:core\">";
 
 
     public DSMLWriter(String file) throws FileNotFoundException {

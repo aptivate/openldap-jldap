@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: DSMLHandler.java,v 1.14 2002/10/16 19:41:59 $
+ * $Novell: DSMLHandler.java,v 1.15 2002/10/24 19:30:12 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -14,20 +14,11 @@
  */
 package com.novell.ldap.ldif_dsml;
 
-import com.novell.ldap.LDAPAttribute;
-import com.novell.ldap.LDAPAttributeSet;
-import com.novell.ldap.LDAPConnection;
-import com.novell.ldap.LDAPEntry;
-import com.novell.ldap.LDAPException;
-import com.novell.ldap.LDAPMessage;
-import com.novell.ldap.LDAPModification;
-import com.novell.ldap.LDAPSearchConstraints;
+import com.novell.ldap.*;
 import com.novell.ldap.rfc2251.*;
-import com.novell.ldap.asn1.*;
 import com.novell.ldap.message.*;
 import com.novell.ldap.util.Base64;
 import java.util.ArrayList;
-import java.util.Stack;
 import java.io.UnsupportedEncodingException;
 
 import org.xml.sax.*;
@@ -35,42 +26,39 @@ import org.xml.sax.*;
 /*package public*/
 class DSMLHandler implements ContentHandler, ErrorHandler
 {
+    /** Holds parsed LDAPMessages ready for use */
     public ArrayList queue = new ArrayList();
+
     /* variables used for message information */
     private LDAPMessage message = null;
     private LDAPEntry entry = null;
     private LDAPAttributeSet attrSet = null;
-    /* attribute list is used differently for different operations:
-        - for attribute values = (string) In multiple <value> attributes */
+    /* Multiple <value> contents will be stored in this list:*/
     private ArrayList attributeValues = new ArrayList();
     /* attributeNames is used for compare and search attribute names: */
     private ArrayList attributeNames = new ArrayList();
     /* modlist is used for modifications in the ModRequest operation */
     private ArrayList modlist = new ArrayList();
+    private LDAPSearchConstraints searchCons = null;
+    private String attrName = null, dn, newRDN, newSuperior;
 
-    /* individual variables used to build messages LDAP attributes */
+    /* extended request information */
     private String requestName;
     private byte[] requestValue;
-    private LDAPSearchConstraints searchCons = null;
-    private String attrName = null;
-    private String dn, newRDN, newSuperior;
-    private RfcFilter filter;
+    /* holds the content in a value tag */
     private StringBuffer value;
     private boolean typesOnly, deleteOldRDN, isBase64;
     private int scope, operation;
 
     /* filter variabls: */
-    private ASN1Tagged rootFilterNode;
-    private Stack filterStack = new Stack();
-    private boolean dnAttributes;
+    private RfcFilter filter;
+    private boolean isDNMatching;
     private String matchingRule;
-    private ASN1SequenceOf subStrings;
-    private boolean seenFinal;
 
-    /* The following values are valid states for the parser: tags are in
-    comments*/
+    /* The following values are valid states for the parser: the tags they
+        represent are in comments to the right */
     private static final int START=0;
-    private static final int BATCH_REQUEST=1;       //batchRequest
+    private static final int BATCH_REQUEST=1;       //<batchRequest>
 
     /* The following are possible states from the batchRequest state */
     private static final int AUTH_REQUEST=2;        //<authRequest>
@@ -85,40 +73,41 @@ class DSMLHandler implements ContentHandler, ErrorHandler
     /* The following are possible states from filter, compare and search */
     private static final int ASSERTION = 10;        //<assertion>
     private static final int VALUE = 11;            //<value>
-    private static final int VALUE_COMPLETE = 12;   //</value>
-    private static final int ATTRIBUTES = 13;       //<attributes>
-    private static final int ATTRIBUTE  = 14;       //<attribute>
-    private static final int FILTER = 15;           //<filter>
-    private static final int AND = 16;              //<and>
-    private static final int OR = 17;               //<or>
-    private static final int NOT = 18;              //<not>
-    private static final int EQUALITY_MATCH = 19;   //<equalityMatch>
-    private static final int SUBSTRINGS = 20;       //<substrings>
-    private static final int GREATER_OR_EQUAL = 21; //<greaterOrEqual>
-    private static final int LESS_OR_EQUAL = 22;    //<lessOrEqual>
-    private static final int PRESENT = 23;          //<present>
-    private static final int APPROXIMATE_MATCH = 24;//<approxMatch>
-    private static final int EXTENSIBLE_MATCH = 25; //<extensibleMatch>
-    private static final int INITIAL = 26;          //<initial>
-    private static final int ANY = 27;              //<any>
-    private static final int FINAL = 28;            //<final>
+    private static final int ATTRIBUTES = 12;       //<attributes>
+    private static final int ATTRIBUTE  = 13;       //<attribute>
+    private static final int FILTER = 14;           //<filter>
+    private static final int AND = 15;              //<and>
+    private static final int OR = 16;               //<or>
+    private static final int NOT = 17;              //<not>
+    private static final int EQUALITY_MATCH = 18;   //<equalityMatch>
+    private static final int SUBSTRINGS = 19;       //<substrings>
+    private static final int GREATER_OR_EQUAL = 20; //<greaterOrEqual>
+    private static final int LESS_OR_EQUAL = 21;    //<lessOrEqual>
+    private static final int PRESENT = 22;          //<present>
+    private static final int APPROXIMATE_MATCH = 23;//<approxMatch>
+    private static final int EXTENSIBLE_MATCH = 24; //<extensibleMatch>
+    private static final int INITIAL = 25;          //<initial>
+    private static final int ANY = 26;              //<any>
+    private static final int FINAL = 27;            //<final>
 
     /* miscelaneous tags :*/
-    private static final int ADD_ATTRIBUTE = 29;    //<attr>
-    private static final int MODIFICATION = 30;     //<modification>
-    private static final int X_NAME = 31;           //<requestName>
-    private static final int X_VALUE = 32;          //<requestValue>
+    private static final int ADD_ATTRIBUTE = 28;    //<attr>
+    private static final int MODIFICATION = 29;     //<modification>
+    private static final int X_NAME = 30;           //<requestName>
+    private static final int X_VALUE = 31;          //<requestValue>
 
-    private static final int BATCH_RESPONSE= 33;    //<batchResponse>
+    private static final int BATCH_RESPONSE= 32;    //<batchResponse>
     /* The folling are possible states from the BatchResponse state
-        .... SearchResponse ...*/
+        .... NOT Implemented ... SearchResponse ...*/
 
     /** state contains the internal parsing state **/
     private int state = START;
     private static final java.util.HashMap requestTags;
+    /* valueState indicates the state before an <value> is found */
+    private int valueState;
 
     static {  //Initialize requestTags
-        requestTags = new java.util.HashMap(34, (float)0.25);
+        requestTags = new java.util.HashMap(33, (float)0.25);
         //Load factor of 0.25 optimizes for speed rather than size.
 
         requestTags.put("batchRequest", new Integer(BATCH_REQUEST));
@@ -126,10 +115,10 @@ class DSMLHandler implements ContentHandler, ErrorHandler
         requestTags.put("modifyRequest",new Integer(MODIFY_REQUEST));
         requestTags.put("searchRequest",new Integer(SEARCH_REQUEST));
         requestTags.put("addRequest",   new Integer(ADD_REQUEST));
-        requestTags.put("delRequest",new Integer(DELETE_REQUEST));
-        requestTags.put("modDNRequest",  new Integer(MODIFY_DN_REQUEST));
-        requestTags.put("compareRequest",   new Integer(COMPARE_REQUEST));
-        requestTags.put("extendedRequest",  new Integer(EXTENDED_REQUEST));
+        requestTags.put("delRequest",   new Integer(DELETE_REQUEST));
+        requestTags.put("modDNRequest", new Integer(MODIFY_DN_REQUEST));
+        requestTags.put("compareRequest",  new Integer(COMPARE_REQUEST));
+        requestTags.put("extendedRequest", new Integer(EXTENDED_REQUEST));
         requestTags.put("batchResponse",new Integer(BATCH_RESPONSE));
         requestTags.put("assertion",    new Integer(ASSERTION));
         requestTags.put("value",        new Integer(VALUE));
@@ -151,10 +140,9 @@ class DSMLHandler implements ContentHandler, ErrorHandler
         requestTags.put("modification", new Integer(MODIFICATION));
         requestTags.put("requestName",  new Integer(X_NAME));
         requestTags.put("requestValue", new Integer(X_VALUE));
-        requestTags.put("initial",       new Integer(INITIAL));
+        requestTags.put("initial",      new Integer(INITIAL));
         requestTags.put("any",          new Integer(ANY));
         requestTags.put("final",        new Integer(FINAL));
-
     }
 
     // SAX calls this method when it encounters an element
@@ -177,7 +165,8 @@ class DSMLHandler implements ContentHandler, ErrorHandler
                 if (tag == BATCH_REQUEST || tag == BATCH_RESPONSE){
                     state = tag;
                 } else {
-                    throw new SAXException("Invalid beginning tag :" + strQName);
+                    throw new SAXException("Invalid beginning tag :" +
+                            strQName);
                 }
                 break;
             case BATCH_REQUEST:
@@ -188,22 +177,19 @@ class DSMLHandler implements ContentHandler, ErrorHandler
                 if (tag == MODIFY_REQUEST){
                     modlist.clear();
                 }
-                if (tag == SEARCH_REQUEST){
-                    filter = null;
-                    filterStack.removeAllElements();
-                }
                 parseTagAttributes( tag, attrs );
                 break;
             case SEARCH_REQUEST:
-                if (tag == ATTRIBUTES){
+                if (tag == ATTRIBUTES ){
                     this.attributeNames.clear();
                     this.attributeValues.clear();
                     state = tag;
                 } else if (tag == FILTER){
                     state = FILTER;
-                } else //I may not have to check for this if decide to validate
-                    throw new SAXException("invalid searchRequest tag: " + strSName);
-
+                    filter = new RfcFilter();
+                } else
+                    throw new SAXException("invalid searchRequest tag: " +
+                            strSName);
                 break;
             case AUTH_REQUEST:
             case MODIFY_REQUEST:
@@ -212,8 +198,9 @@ class DSMLHandler implements ContentHandler, ErrorHandler
                     attributeValues.clear();
                     parseTagAttributes( tag, attrs );
                 }
-                else //I may not have to check for this if decide to validate
-                    throw new SAXException("invalid modifyRequest tag: " + strSName);
+                else
+                    throw new SAXException("invalid modifyRequest tag: " +
+                            strSName);
                 break;
             case ADD_REQUEST:
                 if (tag == ADD_ATTRIBUTE){
@@ -222,8 +209,8 @@ class DSMLHandler implements ContentHandler, ErrorHandler
                     attrName = attrs.getValue("name");
                 }
                 else //I may not have to check for this if decide to validate
-                    throw new SAXException("invalid addRequest tag: " + strSName);
-
+                    throw new SAXException("invalid addRequest tag: " +
+                            strSName);
                 break;
             case DELETE_REQUEST:
                 break;
@@ -234,8 +221,9 @@ class DSMLHandler implements ContentHandler, ErrorHandler
                     attrName =  attrs.getValue("name") ;
                     state = tag;
                 }
-                else //I may not have to check for this if decide to validate
-                    throw new SAXException("invalid compareRequest tag: " + strSName);
+                else
+                    throw new SAXException("invalid compareRequest tag: " +
+                            strSName);
                 break;
             //Tags with multiple names but no value tags embedded
             case ATTRIBUTES:
@@ -244,16 +232,16 @@ class DSMLHandler implements ContentHandler, ErrorHandler
                     //add a search attributes name
                     attributeNames.add(attrs.getValue("name"));
                     state = tag;
-                } else {//I may not have to check for this if decide to validate
-                    throw new SAXException("invalid attributes tag: " + strSName);
+                } else {
+                    throw new SAXException("invalid attributes tag: " +
+                            strSName);
                 }
                 break;
-            //Substring can be in a filter tag and contains initial, any, or final tags
+            //Substring tag can contain initial, any, or final tags
             case SUBSTRINGS:
                 if ((tag == INITIAL) || (tag == ANY)  || (tag == FINAL)){
                     state = tag;
                     value = new StringBuffer();
-                    seenFinal = false;
                 }
                 else {
                     throw new SAXException("invalid substrings tag: " + strSName);
@@ -263,7 +251,6 @@ class DSMLHandler implements ContentHandler, ErrorHandler
             case AND:
             case OR:
             case NOT:
-                //Test for valid filter tags:
                 handleFilter(tag, attrs, strSName);
                 state = tag;
                 break;
@@ -273,7 +260,7 @@ class DSMLHandler implements ContentHandler, ErrorHandler
                     value = new StringBuffer();
                 }
                 break;
-            //Tags with <value> tags embedded:
+            //Tags with <value> tags expected:
             case MODIFICATION:
             case ADD_ATTRIBUTE:
             case ASSERTION:
@@ -285,6 +272,9 @@ class DSMLHandler implements ContentHandler, ErrorHandler
             case APPROXIMATE_MATCH:
             case EXTENSIBLE_MATCH:
                 if (tag == VALUE) {
+                    /* remember our current state so we can return to it after
+                        the value is parsed */
+                    valueState = state;
                     state = tag;
                     value = new StringBuffer();
                     String temp = attrs.getValue("type");
@@ -294,137 +284,67 @@ class DSMLHandler implements ContentHandler, ErrorHandler
                         isBase64 = false;
                     }
                 }
-                else //I may not have to check for this if decide to validate
+                else
                     throw new SAXException("invalid tag: " + strSName);
-                break;
-            case VALUE_COMPLETE:
-                if (tag == VALUE){
-                    value = new StringBuffer();
-                    state = tag;
-                }
                 break;
         }
         return;
     }
 
-    private void handleFilter(int tag, Attributes attrs, String strSName) throws SAXException {
-        ASN1Tagged current = null;
-        switch (tag){
-            case AND:
-                current = new ASN1Tagged(
-                        new ASN1Identifier(ASN1Identifier.CONTEXT, true, RfcFilter.AND),
-                        new ASN1Set(),  //content to be set later
-                        false);
-                break;
-            case OR:
-                current = new ASN1Tagged(
-                        new ASN1Identifier(ASN1Identifier.CONTEXT, true, RfcFilter.OR),
-                        new ASN1Set(),  //content to be set later
-                        false);
-                break;
-            case NOT:
-                current = new ASN1Tagged(
-                        new ASN1Identifier(ASN1Identifier.CONTEXT, true, RfcFilter.NOT),
-                        null,  //content to be set later
-                        true);
-                break;
-            case EQUALITY_MATCH:
-                current = new ASN1Tagged(
-                        new ASN1Identifier(ASN1Identifier.CONTEXT, true, RfcFilter.EQUALITY_MATCH),
-                        null,  //content to be set later
-                        false);
-                this.attrName = attrs.getValue("name");
-                if (this.attrName == null){
-                    throw new SAXException("The mandatory attribute 'name' "+
-                            "is missing from tag <equalityMatch>");
-                }
-                break;
-            case SUBSTRINGS:
-                current = new ASN1Tagged(
-                        new ASN1Identifier(ASN1Identifier.CONTEXT, true, RfcFilter.SUBSTRINGS),
-                        null,  //content to be set later
-                        false);
-                this.attrName = attrs.getValue("name");
-                if (this.attrName == null){
-                    throw new SAXException("The mandatory attribute 'name' "+
-                            "is missing from tag <substrings>");
-                }
-                subStrings = new ASN1SequenceOf(5);
-                break;
-            case GREATER_OR_EQUAL:
-                current = new ASN1Tagged(
-                        new ASN1Identifier(ASN1Identifier.CONTEXT, true, RfcFilter.GREATER_OR_EQUAL),
-                        null,  //content to be set later
-                        false);
-                this.attrName = attrs.getValue("name");
-                if (this.attrName == null){
-                    throw new SAXException("The mandatory attribute 'name' "+
-                            "is missing from tag <greaterOrEqual>");
-                }
-                break;
-            case LESS_OR_EQUAL:
-                current = new ASN1Tagged(
-                        new ASN1Identifier(ASN1Identifier.CONTEXT, true, RfcFilter.LESS_OR_EQUAL),
-                        null,  //content to be set later
-                        false);
-                this.attrName = attrs.getValue("name");
-                if (this.attrName == null){
-                    throw new SAXException("The mandatory attribute 'name' "+
-                            "is missing from tag <lessOrEqual>");
-                }
-                break;
-            case PRESENT:
-                current = new ASN1Tagged(
-                        new ASN1Identifier(ASN1Identifier.CONTEXT, false, RfcFilter.PRESENT),
-                        null,  //content to be set later
-                        false);
-                this.attrName = attrs.getValue("name");
-                if (this.attrName == null){
-                    throw new SAXException("The mandatory attribute 'name' "+
-                            "is missing from tag <present>");
-                }
-                break;
-            case APPROXIMATE_MATCH:
-                current = new ASN1Tagged(
-                        new ASN1Identifier(ASN1Identifier.CONTEXT, true, RfcFilter.APPROX_MATCH),
-                        null,  //content to be set later
-                        false);
-                this.attrName = attrs.getValue("name");
-                if (this.attrName == null){
-                    throw new SAXException("The mandatory attribute 'name' "+
-                            "is missing from tag <approxMatch>");
-                }
-                break;
-            case EXTENSIBLE_MATCH:
-                current = new ASN1Tagged(
-                        new ASN1Identifier(ASN1Identifier.CONTEXT, true, RfcFilter.EXTENSIBLE_MATCH),
-                        null,  //content to be set later
-                        false);
-                this.attrName = attrs.getValue("name");
-                if (attrs.getValue("dnAttributes").equalsIgnoreCase("true")) {
-                    this.dnAttributes = true;
-                } else {
-                    this.dnAttributes = false;
-                }
-                this.matchingRule = attrs.getValue("matchingRule");
-                break;
-            default:
-                throw new SAXException("invalid tag in filter: " + strSName);
-        }
-        if (rootFilterNode == null || filterStack == null) {
-            rootFilterNode = current;
-            filterStack.removeAllElements();
-        } else {
-            //if we have the root filter then this tag must go inside of top element on the stack
-            ASN1Tagged topOfStack = (ASN1Tagged)filterStack.peek();
-            ASN1Object value = topOfStack.taggedValue();
-            if (value == null)
-                topOfStack.setTaggedValue(current);
-            else if (value instanceof ASN1Set) {
-                ((ASN1Set)value).add( current );
+    private void handleFilter(int tag, Attributes attrs, String strSName)
+            throws SAXException
+    {
+        try {
+            switch (tag){
+                case AND:
+                    filter.startNestedFilter(RfcFilter.AND);
+                    break;
+                case OR:
+                    filter.startNestedFilter(RfcFilter.OR);
+                    break;
+                case NOT:
+                    filter.startNestedFilter(RfcFilter.NOT);
+                    break;
+                case SUBSTRINGS:
+                    this.attrName = attrs.getValue("name");
+                    if (this.attrName == null){
+                       throw new SAXException("The mandatory attribute 'name' "+
+                                "is missing from tag <" + strSName + ">");
+                    }
+                    filter.startSubstrings(attrName);
+                    break;
+                    //don't break, we need the attribute name.
+                case EQUALITY_MATCH:
+                case GREATER_OR_EQUAL:
+                case LESS_OR_EQUAL:
+                case PRESENT:
+                case APPROXIMATE_MATCH:
+                    this.attrName = attrs.getValue("name");
+                    if (this.attrName == null){
+                       throw new SAXException("The mandatory attribute 'name' "+
+                                "is missing from tag <" + strSName + ">");
+                    }
+                    break;
+                case EXTENSIBLE_MATCH:
+                    //name is not mandatory for extensible match
+                    this.attrName = attrs.getValue("name");
+                    String dnAttributes = attrs.getValue("dnAttributes");
+                    if (dnAttributes != null &&
+                        dnAttributes.equalsIgnoreCase("true"))
+                    {
+                        this.isDNMatching = true;
+                    } else { //false is default
+                        this.isDNMatching = false;
+                    }
+                    this.matchingRule = attrs.getValue("matchingRule");
+                    break;
+                default:
+                    throw new SAXException("invalid tag in filter: "+strSName);
             }
+        } catch (LDAPLocalException e) {
+            throw new SAXException("An error occured constructing a filter:" +
+                    e.toString());
         }
-        filterStack.add(current);
         return;
     }
 
@@ -733,165 +653,114 @@ class DSMLHandler implements ContentHandler, ErrorHandler
                     }
                 case FILTER:
                     state = SEARCH_REQUEST;
-                    filter = new RfcFilter(rootFilterNode);
                     break;
                 case NOT:
                 case AND:
                 case OR:
                     state = FILTER;
-                    filterStack.pop();
                     break;
                 case EQUALITY_MATCH:{
-                    //verify that Equality Match is on the stack
-                    ASN1Tagged topOfStack = (ASN1Tagged)filterStack.pop();
-                    if ((topOfStack == null) ||
-                        !verifyType(topOfStack, RfcFilter.EQUALITY_MATCH)) {
+                    //verify that Equality Match was the last value read
+                    if (state != EQUALITY_MATCH){
                         throw new SAXException("Unexpected tag: "+ strSName);
                     }
-                    topOfStack.setTaggedValue(
-                        new RfcAttributeValueAssertion(
-                            new RfcAttributeDescription(attrName),
-                            new RfcAssertionValue(
-                                    (value.toString().getBytes("UTF-8")))));
+                    filter.addAttributeValueAssertion(RfcFilter.EQUALITY_MATCH,
+                            attrName, value.toString().getBytes("UTF-8"));
                     state = FILTER;
-                    //The finish state could also represent an OR, AND, or NOT
+                    //The finish state could also indicate an OR, AND, or NOT
                     break;
                 }
                 case PRESENT:{
-                    //verify that Present is on the stack
-                    ASN1Tagged topOfStack = (ASN1Tagged)filterStack.pop();
-                    if ((topOfStack == null) ||
-                        !verifyType(topOfStack, RfcFilter.PRESENT)) {
+                    //verify that present was the last value read
+                    if (state != PRESENT){
                         throw new SAXException("Unexpected tag: "+ strSName);
                     }
-                    topOfStack.setTaggedValue( new RfcAttributeDescription(attrName));
+                    filter.addPresent(attrName);
                     state = FILTER;
-                    //The finish state could also represent an OR, AND, or NOT
+                    //The finish state could also indicate an OR, AND, or NOT
                     break;
                 }
                 case GREATER_OR_EQUAL: {
-                    //verify that the matching tag is on the stack
-                    ASN1Tagged topOfStack = (ASN1Tagged)filterStack.pop();
-                    if ((topOfStack == null) ||
-                        !verifyType(topOfStack, RfcFilter.GREATER_OR_EQUAL)) {
+                    //verify that '>=' was the last value read
+                    if (state != GREATER_OR_EQUAL){
                         throw new SAXException("Unexpected tag: "+ strSName);
                     }
-                    topOfStack.setTaggedValue(
-                            new RfcAttributeValueAssertion(
-                                new RfcAttributeDescription(attrName),
-                                new RfcAssertionValue(
-                                        value.toString().getBytes("UTF-8"))));
+                    filter.addAttributeValueAssertion(RfcFilter.GREATER_OR_EQUAL,
+                            attrName, value.toString().getBytes("UTF-8"));
                     state = FILTER;
+                    //The finish state could also indicate an OR, AND, or NOT
                     break;
                 }
                 case LESS_OR_EQUAL: {
-                    //verify that the matching tag is on the stack
-                    ASN1Tagged topOfStack = (ASN1Tagged)filterStack.pop();
-                    if ((topOfStack == null) ||
-                        !verifyType(topOfStack, RfcFilter.LESS_OR_EQUAL)) {
+                    //verify that '>=' was the last value read
+                    if (state != LESS_OR_EQUAL){
                         throw new SAXException("Unexpected tag: "+ strSName);
                     }
-                    topOfStack.setTaggedValue(
-                            new RfcAttributeValueAssertion(
-                                new RfcAttributeDescription(attrName),
-                                new RfcAssertionValue(
-                                        value.toString().getBytes("UTF-8"))));
+                    filter.addAttributeValueAssertion(RfcFilter.LESS_OR_EQUAL,
+                            attrName, value.toString().getBytes("UTF-8"));
                     state = FILTER;
+                    //The finish state could also indicate an OR, AND, or NOT
                     break;
                 }
                 case APPROXIMATE_MATCH: {
-                    //verify that the matching tag is on the stack
-                    ASN1Tagged topOfStack = (ASN1Tagged)filterStack.pop();
-                    if ((topOfStack == null) ||
-                        !verifyType(topOfStack, RfcFilter.APPROX_MATCH)) {
+                    //verify that Approximate match was the last value read
+                    if (state != APPROXIMATE_MATCH){
                         throw new SAXException("Unexpected tag: "+ strSName);
                     }
-                    topOfStack.setTaggedValue(
-                            new RfcAttributeValueAssertion(
-                                new RfcAttributeDescription(attrName),
-                                new RfcAssertionValue(
-                                        value.toString().getBytes("UTF-8"))));
+                    filter.addAttributeValueAssertion(RfcFilter.APPROX_MATCH,
+                            attrName, value.toString().getBytes("UTF-8"));
                     state = FILTER;
                     break;
                 }
                 case EXTENSIBLE_MATCH:{
-                    //verify that the matching tag is on the stack
-                    ASN1Tagged topOfStack = (ASN1Tagged)filterStack.pop();
-                    if ((topOfStack == null) ||
-                        !verifyType(topOfStack, RfcFilter.EXTENSIBLE_MATCH)) {
+                    //verify that Approximate match was the last value read
+                    if (state != EXTENSIBLE_MATCH){
                         throw new SAXException("Unexpected tag: "+ strSName);
                     }
-                    topOfStack.setTaggedValue(
-                        new RfcMatchingRuleAssertion(
-                            (matchingRule == null) ? null : new RfcMatchingRuleId(matchingRule),
-                            (attrName == null) ? null : new RfcAttributeDescription(attrName),
-                            new RfcAssertionValue(value.toString().getBytes("UTF-8")),
-                            (dnAttributes == false) ? null :
-                            new ASN1Boolean(true))
-                    );
+                    filter.addExtensibleMatch(
+                            this.matchingRule,
+                            attrName, value.toString().getBytes("UTF-8"),
+                            isDNMatching);
                     state = FILTER;
                     break;
                 }
-
                 //The following states are in a substring tag and should contain values
                 case INITIAL:
-                    if (subStrings.size() != 0){
-                        throw new SAXException("The initial tag can only be " +
-                                "the first tag of a substring match");
+                    //verify that Initial was the last value read:
+                    if (state != INITIAL){
+                        throw new SAXException("Unexpected tag: "+ strSName);
                     }
-                    subStrings.add(
-                        new ASN1Tagged(
-                            new ASN1Identifier(ASN1Identifier.CONTEXT, false, RfcFilter.INITIAL),
-                            new RfcLDAPString(value.toString().getBytes("UTF-8")),
-                            false)
-                    );
+                    filter.addSubstring(RfcFilter.INITIAL,
+                            value.toString().getBytes("UTF-8"));
                     state = SUBSTRINGS;
                     break;
                 case ANY:
-                    if (seenFinal){
-                        throw new SAXException("The any tag cannot follow a final tag in "+
-                                "a substring match");
+                    //verify that ANY was the last value read:
+                    if (state != ANY){
+                        throw new SAXException("Unexpected tag: "+ strSName);
                     }
-                    subStrings.add(
-                        new ASN1Tagged(
-                            new ASN1Identifier(ASN1Identifier.CONTEXT, false, RfcFilter.ANY),
-                            new RfcLDAPString(value.toString().getBytes("UTF-8")),
-                            false)
-                    );
+                    filter.addSubstring(RfcFilter.ANY,
+                            value.toString().getBytes("UTF-8"));
                     state = SUBSTRINGS;
                     break;
                 case FINAL:
-                    if (seenFinal){
-                        throw new SAXException("The final tag cannot follow a final tag in "+
-                                "a substring match");
+                    //verify that Initial was the last value read:
+                    if (state != FINAL){
+                        throw new SAXException("Unexpected tag: "+ strSName);
                     }
-                    seenFinal = true;
-                    subStrings.add(
-                        new ASN1Tagged(
-                            new ASN1Identifier(ASN1Identifier.CONTEXT, false, RfcFilter.FINAL),
-                            new RfcLDAPString(value.toString().getBytes("UTF-8")),
-                            false)
-                    );
-                    state = FINAL;  //this state indicates that the substrings should be complete
+                    filter.addSubstring(RfcFilter.FINAL,
+                            value.toString().getBytes("UTF-8"));
+                    state = SUBSTRINGS;
                     break;
                 case SUBSTRINGS:{
                     if (state != FINAL && state != SUBSTRINGS){
                         throw new SAXException("Unexpected closing substring tag");
                     }
-                    ASN1Tagged topOfStack = (ASN1Tagged)filterStack.pop();
-                    if ((topOfStack == null) ||
-                        !verifyType(topOfStack, RfcFilter.SUBSTRINGS)) {
-                        throw new SAXException("Unexpected tag: "+ strSName);
-                    }
-                    topOfStack.setTaggedValue(
-                            new RfcSubstringFilter(
-                                new RfcAttributeDescription(attrName), subStrings));
-                    subStrings = null;
-                    state = FILTER;
+                    filter.endSubstrings();
                     break;
                 }
                 case VALUE:
-                    state = VALUE_COMPLETE;
+                    state = valueState; //reset state to previous state
                     attributeValues.add(value.toString());
                     break;
             }
@@ -902,10 +771,6 @@ class DSMLHandler implements ContentHandler, ErrorHandler
                     "UTF8 encoding not supported:" + e );
         }
         return;
-    }
-
-    private boolean verifyType(ASN1Tagged tagged, int valueToVerify) {
-        return (tagged.getIdentifier().getTag() == valueToVerify);
     }
 
     public void warning(SAXParseException e) throws SAXException
