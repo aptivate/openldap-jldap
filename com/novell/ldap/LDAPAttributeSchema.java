@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttributeSchema.java,v 1.11 2000/10/21 19:33:07 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttributeSchema.java,v 1.12 2000/10/23 22:49:12 bgudmundson Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -308,7 +308,6 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
    /**
     * Returns a string in a format suitable for directly adding to a
     * directory, as a value of the particular schema element attribute.
-    * This method is specific to the Novell implementation.
     *
     * @return A string representation of the attribute's definition.
     */
