@@ -51,6 +51,7 @@ public class SchemaParser{
         boolean userMod = true;
         int usage = LDAPAttributeSchema.USER_APPLICATIONS;
         int type = -1;
+        int result;
         ArrayList qualifiers = new ArrayList();
 
 	public SchemaParser( String rawString ) throws IOException {
@@ -102,7 +103,10 @@ public class SchemaParser{
                         continue;
                       }
                       if(st2.sval.equalsIgnoreCase("SYNTAX")){
-                        if( st2.nextToken() == StreamTokenizer.TT_WORD ){
+                        result = st2.nextToken();
+                        if(( result == StreamTokenizer.TT_WORD ) ||
+                            (result == '\'')) //Test for non-standard schema
+                        {
                           syntax = st2.sval;
                         }
                         continue;
