@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPDN.java,v 1.12 2000/11/09 22:50:31 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPDN.java,v 1.13 2000/11/28 19:07:29 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -29,7 +29,10 @@ public class LDAPDN {
 
    /**
     * Normalizes the names (if appropriate) and then determines whether the
-    * two distinguished names are the same.
+    * two distinguished names are the same.<BR>
+    * Each Attribute name must be escaped.  An attribute type must be in the
+    * same form as the attribute type compared to.  An OID cannot be compared
+    * to the name representing it.
     *
     *  @param dn1            String form of the first DN to compare.
     *<br><br>
@@ -37,10 +40,6 @@ public class LDAPDN {
     *
     * @return Returns true if the two strings correspond to the same DN; false
     *         if the DNs are different.
-    *
-    * Comments:
-    * Each Attribute name must be escaped.  An attribute type must be in the same
-    * form as the attribute type compared to.  An OID cannot be compared to the name representing it.
     */
 
    public static boolean equals (String dn1, String dn2) {
@@ -66,19 +65,17 @@ public class LDAPDN {
     *
     * <p>For example, for the rdn "ôcn=Acme, Incö", the escapeRDN method
     * returns "ôcn=Acme\, Incö".</p>
-    *
-    *  @param rdn            The RDN to escape.
-    *
-    *@return The RDN with escaping characters.
-    *
-    * Comments:
     * RDN syntax: AttributeType = AttributeValue
     * escapeRDN Escapes the AttributeValue by inserting '\' before the following chars:
     * ',' '+' '"' '\' '<' '>' ';'
     * '#' if it comes at the beginning of the string
     * ' ' (space) if it comes at the beginning or the end of a string.
-    *
+    * <BR>
     * Note: Current grammer does not allow multivalued RDN's for this method.  See RFC 2253 2.4
+    *
+    *  @param rdn            The RDN to escape.
+    *
+    *@return The RDN with escaping characters.
     */
    public static String escapeRDN (String rdn) {
       //throw new RuntimeException("Method LDAPDN.escapeRDN not implemented");
@@ -116,18 +113,16 @@ public class LDAPDN {
     *
     * <p>For example, for the rdn "ôcn=Acme\, Incö", the unescapeRDN method
     * returns "ôcn=Acme, Incö".</p>
-    *
+    * <p>RDN syntax: AttributeType = AttributeValue
+    * unescapeRDN unescapes the AttributeValue by
+    * removing the '\' when the next character fits the following:<BR>
+    * ',' '+' '"' '\' '<' '>' ';'<BR>
+    * '#' if it comes at the beginning of the string (without the '\').<BR>
+    * ' ' (space) if it comes at the beginning or the end of a string (without the '\').
+    * </p>
     *  @param rdn            The RDN to unescape.
     *
     * @return The RDN with the escaping characters removed.
-    *
-    * Comments:
-    * RDN syntax: AttributeType = AttributeValue
-    * unescapeRDN unescapes the AttributeValue by
-    * removing the '\' when the next character fits the following:
-    * ',' '+' '"' '\' '<' '>' ';'
-    * '#' if it comes at the beginning of the string (without the '\').
-    * ' ' (space) if it comes at the beginning or the end of a string (without the '\').
     */
    public static String unescapeRDN (String rdn) {
       //throw new RuntimeException("Method LDAPDN.unescapeRDN not implemented");
@@ -202,13 +197,19 @@ public class LDAPDN {
    }
 
 
-   /* Returns the individual components of a LDAP name, normalized.  Used by explodeRDN and explodeDN
+   /** Returns the individual components of a LDAP name, normalized.
+    * This is a general form of explodeRDN and explodeDN and is called by
+    * explodeRDN and explodeDN.<BR>
+    * Parses through and normalizes ldapName.  It ignores the escaped
+    * escaped chars. To be compatibile with LDAP 2, this ignores whitespace to
+    * both sides of the Delimiter, equals and +. The results will not have the
+    * extra white space.
     * @param ldapName      Probably RDN or DN.
+    * <BR><BR>
     * @param delimiter     "," for DN and "+" for RDN
-    *
-    * Comments:  Parses through and normalizes ldapName.  It ignores the escaped escaped chars.
-    * To be compatibile with LDAP 2, This ignores whitespace to both sides of the Delimiter, equals and +.
-    * The results will not have the extra white space.
+    * <BR><BR>
+    * @return array of LDAP Names, either the RDN's of a DN,
+    * or the multivalued attributes of an RDN
     */
    private static String[] explodeLDAPName(String ldapName, String delimiter, boolean noTypes){
       StringTokenizer tok = new StringTokenizer(ldapName, "\\ ,+=" , true);
@@ -278,9 +279,15 @@ public class LDAPDN {
 
 
 
-   /*  This utility function is not defined in the API thus it is private.  'equals'
-    * (for Distinguished names) uses this.  It breaks up the RDN multivalued
+   /** Returns whether the two relative distingushed names are equal or not.
+    *  'equals', for Distinguished names, uses this.  It breaks up the RDN multivalued
     *  attributes and looks to see if every value in one is present in the other RDN.
+    *
+    * @param   rdn1, Relative Distinguished Name
+    * <BR><BR>
+    * @param   rdn2, Relative Distinguished Name to be compared to the first
+    * <BR><BR>
+    * @return  True if the two RDN's are equal and false if not.
     */
 
    private static boolean RDNequals(String rdn1, String rdn2){
