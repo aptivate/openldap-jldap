@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/client/RespControlVector.java,v 1.2 2001/01/26 18:56:52 javed Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/client/RespControlVector.java,v 1.3 2001/01/26 19:07:22 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -23,7 +23,7 @@ import com.novell.ldap.client.Debug;
  * existing Vector class so that it can be used to maintain a
  * list of currently registered control responses.  
  */
-public class RespControlVector extends java.util.Vector
+public class RespControlVector extends Vector2
 {
     public RespControlVector( int cap, int incr)
     {
