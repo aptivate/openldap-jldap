@@ -191,6 +191,9 @@ public class LDAPConnection implements Cloneable
 
     /**
      * A string that corresponds to the server shutdown notification OID.
+     * This notification may be used by the server to advise the client that
+     * the server is about to close the connection due to an error
+     * condition.
      *
      *<p>SERVER_SHUTDOWN_OID = "1.3.6.1.4.1.1466.20036"
      */
