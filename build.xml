@@ -1,4 +1,4 @@
-<!-- $Novell: /ldap/src/jldap/build.xml,v 1.20 2000/10/19 18:17:55 vtag Exp $ -->
+<!-- $Novell: /ldap/src/jldap/build.xml,v 1.21 2000/10/21 18:45:11 vtag Exp $ -->
 <!-- ======================================================================= -->
 <!-- TOP level build file                                                -->
 <!-- ======================================================================= -->
@@ -153,6 +153,7 @@
 
 		<copydir src="${src}/samples"  dest="${pkg.samples}"/>
 		<copydir src="${src}/samples/extensions"  dest="${pkg.samples}/extensions"/>
+        <copyfile src="README.txt" dest="${pkg}/README.txt" />
 	</target>
 
     <!-- =================================================================== -->
