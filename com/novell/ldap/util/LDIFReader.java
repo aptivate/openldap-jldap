@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: LDIFReader.java,v 1.35 2002/10/29 21:11:58 $
+ * $Novell: LDIFReader.java,v 1.36 2002/11/13 20:22:35 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -277,7 +277,7 @@ public class LDIFReader implements LDAPReader {
         toRecordProperties();         // set record properties
 
         if (!isRequest()) {
-            return new LDAPSearchResult(currentEntry);
+            return new LDAPSearchResult(currentEntry, null);
         }
 
         switch( this.reqType ) {
