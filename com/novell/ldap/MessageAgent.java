@@ -368,9 +368,6 @@ public class MessageAgent
                                  info.getMessageID() + ")");
                              debugDisplayMessages();
                           }
-                          /* the following two lines where added to clean up memory */
-                          messages.removeElement(info);
-                          info.abandon(null,null);
                           return rfcMsg;
                        } else {
                           // We found no reply here
