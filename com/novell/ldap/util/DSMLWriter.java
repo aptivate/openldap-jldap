@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: DSMLWriter.java,v 1.29 2002/12/02 15:28:33 $
+ * $Novell: DSMLWriter.java,v 1.30 2002/12/09 23:52:22 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -66,7 +66,8 @@ public class DSMLWriter implements LDAPWriter {
         try {
             out = new OutputStreamWriter(stream, "UTF-8");
         } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException (e);
+            throw new RuntimeException("UTF-8 encoding is not supported by JVM"+
+                    e.toString());
         }
     }
 
