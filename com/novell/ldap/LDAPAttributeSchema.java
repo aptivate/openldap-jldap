@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttributeSchema.java,v 1.23 2001/06/22 15:57:01 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttributeSchema.java,v 1.24 2001/06/29 21:52:13 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -254,6 +254,19 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
     */
 
    public boolean isUserModifiable() {
+      return userMod;
+   }
+
+   /**
+    * Returns false if the attribute is read-only.
+    *
+    * @return False if the attribute is read-only; true if the attribute
+    *         is read-write.
+    *
+    * @deprecated replaced by {@link #isUserModifiable}
+    */
+
+   public boolean isModifiable() {
       return userMod;
    }
 
