@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttribute.java,v 1.19 2001/03/01 00:29:45 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttribute.java,v 1.20 2001/03/28 22:33:00 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -352,9 +352,9 @@ public class LDAPAttribute {
      * @param attrString   Value of the attribute as a string.
      */
     public void removeValue(String attrString) {
-        Object[] a = values.toArray();
+        String[] a = (String [])values.toArray();
         for( int i=0; i < a.length; i++) {
-            if( attrString.equals(a[i])) {
+            if( attrString.equalsIgnoreCase(a[i])) {
                 values.remove(i);
                 break;
             }

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.93 2001/04/20 20:59:05 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.94 2001/04/23 21:06:37 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -487,11 +487,11 @@ public class LDAPConnection implements Cloneable
     public Object getProperty(String name)
         throws LDAPException
     {
-        if (name.equals(LDAP_PROPERTY_SDK))
+        if (name.equalsIgnoreCase(LDAP_PROPERTY_SDK))
             return conn.sdk;
-        else if (name.equals(LDAP_PROPERTY_PROTOCOL))
+        else if (name.equalsIgnoreCase(LDAP_PROPERTY_PROTOCOL))
             return conn.protocol;
-        else if (name.equals(LDAP_PROPERTY_SECURITY))
+        else if (name.equalsIgnoreCase(LDAP_PROPERTY_SECURITY))
             return conn.security;
         else {
             // Requested property not available.

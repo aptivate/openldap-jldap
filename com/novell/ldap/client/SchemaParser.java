@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: SchemaParser.java,v 1.7 2001/03/01 00:30:06 cmorris Exp $
+ * $Id: SchemaParser.java,v 1.8 2001/03/28 22:33:02 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -76,7 +76,7 @@ public class SchemaParser{
                   }
                   while(StreamTokenizer.TT_EOF !=  st2.nextToken()){
                     if(st2.ttype == StreamTokenizer.TT_WORD ){
-                      if(st2.sval.equals("NAME")){
+                      if(st2.sval.equalsIgnoreCase("NAME")){
                         if(st2.nextToken() == '\'' ){
                           name = st2.sval;
                         }
@@ -95,49 +95,49 @@ public class SchemaParser{
                         }
                         continue;
                       }
-                      if(st2.sval.equals("DESC")){
+                      if(st2.sval.equalsIgnoreCase("DESC")){
                         if( st2.nextToken() == '\'' ){
                           description = st2.sval;
                         }
                         continue;
                       }
-                      if(st2.sval.equals("SYNTAX")){
+                      if(st2.sval.equalsIgnoreCase("SYNTAX")){
                         if( st2.nextToken() == StreamTokenizer.TT_WORD ){
                           syntax = st2.sval;
                         }
                         continue;
                       }
-                      if(st2.sval.equals("EQUALITY")){
+                      if(st2.sval.equalsIgnoreCase("EQUALITY")){
                         if( st2.nextToken() == StreamTokenizer.TT_WORD ){
                           equality = st2.sval;
                         }
                         continue;
                       }
-                      if(st2.sval.equals("ORDERING")){
+                      if(st2.sval.equalsIgnoreCase("ORDERING")){
                         if( st2.nextToken() == StreamTokenizer.TT_WORD ){
                           ordering = st2.sval;
                         }
                         continue;
                       }
-                      if(st2.sval.equals("SUBSTR")){
+                      if(st2.sval.equalsIgnoreCase("SUBSTR")){
                         if( st2.nextToken() == StreamTokenizer.TT_WORD ){
                           substring = st2.sval;
                         }
                         continue;
                       }
-					  if(st2.sval.equals("FORM")){
+					  if(st2.sval.equalsIgnoreCase("FORM")){
 					    if( st2.nextToken() == StreamTokenizer.TT_WORD ){
                           nameForm = st2.sval;
                         }
                         continue;
                       }
-					  if(st2.sval.equals("OC")){
+					  if(st2.sval.equalsIgnoreCase("OC")){
 					    if( st2.nextToken() == StreamTokenizer.TT_WORD ){
                           objectClass = st2.sval;
                         }
                         continue;
                       }
-                      if(st2.sval.equals("SUP")){
+                      if(st2.sval.equalsIgnoreCase("SUP")){
                         ArrayList values = new ArrayList();
                         st2.nextToken();
                         if(st2.ttype == '(' ){
@@ -159,23 +159,23 @@ public class SchemaParser{
                           }
                         continue;
                       }
-                      if(st2.sval.equals("SINGLE-VALUE")){
+                      if(st2.sval.equalsIgnoreCase("SINGLE-VALUE")){
                         single = true;
                         continue;
                       }
-                      if(st2.sval.equals("OBSOLETE")){
+                      if(st2.sval.equalsIgnoreCase("OBSOLETE")){
                         obsolete = true;
                         continue;
                       }
-                      if(st2.sval.equals("COLLECTIVE")){
+                      if(st2.sval.equalsIgnoreCase("COLLECTIVE")){
                         collective = true;
                         continue;
                       }
-                      if(st2.sval.equals("NO-USER-MODIFICATION")){
+                      if(st2.sval.equalsIgnoreCase("NO-USER-MODIFICATION")){
                         userMod = false;
                         continue;
                       }
-                      if(st2.sval.equals("MUST")){
+                      if(st2.sval.equalsIgnoreCase("MUST")){
                         ArrayList values = new ArrayList();
                         st2.nextToken();
                         if(st2.ttype == '(' ){
@@ -195,7 +195,7 @@ public class SchemaParser{
                           }
                         continue;
                       }
-                      if(st2.sval.equals("MAY")){
+                      if(st2.sval.equalsIgnoreCase("MAY")){
                         ArrayList values = new ArrayList();
                         st2.nextToken();
                         if(st2.ttype == '(' ){
@@ -215,7 +215,7 @@ public class SchemaParser{
                           }
                         continue;
                       }
-					  if(st2.sval.equals("NOT")){
+					  if(st2.sval.equalsIgnoreCase("NOT")){
                         ArrayList values = new ArrayList();
                         st2.nextToken();
                         if(st2.ttype == '(' ){
@@ -235,7 +235,7 @@ public class SchemaParser{
                           }
                         continue;
                       }
-					  if(st2.sval.equals("AUX")){
+					  if(st2.sval.equalsIgnoreCase("AUX")){
                         ArrayList values = new ArrayList();
                         st2.nextToken();
                         if(st2.ttype == '(' ){
@@ -255,37 +255,37 @@ public class SchemaParser{
                           }
                         continue;
                       }
-                      if(st2.sval.equals("ABSTRACT")){
+                      if(st2.sval.equalsIgnoreCase("ABSTRACT")){
                         type = LDAPObjectClassSchema.ABSTRACT;
                         continue;
                       }
-                      if(st2.sval.equals("STRUCTURAL")){
+                      if(st2.sval.equalsIgnoreCase("STRUCTURAL")){
                         type = LDAPObjectClassSchema.STRUCTURAL;
                         continue;
                       }
-                      if(st2.sval.equals("AUXILIARY")){
+                      if(st2.sval.equalsIgnoreCase("AUXILIARY")){
                         type = LDAPObjectClassSchema.AUXILIARY;
                         continue;
                       }
-                      if(st2.sval.equals("USAGE")){
+                      if(st2.sval.equalsIgnoreCase("USAGE")){
                         if( st2.nextToken() == StreamTokenizer.TT_WORD ){
                           currName = st2.sval;
-                          if( currName.equals("directoryOperation")){
+                          if( currName.equalsIgnoreCase("directoryOperation")){
                               usage = LDAPAttributeSchema.DIRECTORY_OPERATION;
                           }
-                          else if( currName.equals("distributedOperation")){
+                          else if( currName.equalsIgnoreCase("distributedOperation")){
                               usage = LDAPAttributeSchema.DISTRIBUTED_OPERATION;
                           }
-                          else if( currName.equals("dSAOperation")){
+                          else if( currName.equalsIgnoreCase("dSAOperation")){
                               usage = LDAPAttributeSchema.DSA_OPERATION;
                           }
-                          else if( currName.equals("userApplications")){
+                          else if( currName.equalsIgnoreCase("userApplications")){
                               usage = LDAPAttributeSchema.USER_APPLICATIONS;
                           }
                         }
                         continue;
                       }
-                      if(st2.sval.equals("APPLIES")){
+                      if(st2.sval.equalsIgnoreCase("APPLIES")){
                         ArrayList values = new ArrayList();
                         st2.nextToken();
                         if(st2.ttype == '(' ){

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPMatchingRuleSchema.java,v 1.15 2001/02/13 18:36:49 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPMatchingRuleSchema.java,v 1.16 2001/03/01 00:29:51 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -237,7 +237,7 @@ public class LDAPMatchingRuleSchema extends LDAPSchemaElement {
 		                while(en.hasMoreElements()){
 		                    attr = (LDAPAttribute) en.nextElement();
                             attrName = attr.getName();
-		                    if(attrName.equals("matchingRules")){
+		                    if(attrName.equalsIgnoreCase("matchingRules")){
                                 // add the value to the matchingRules values
                                 LDAPAttribute newValue = new LDAPAttribute(
                                         "matchingRules",getValue());
@@ -298,7 +298,7 @@ public class LDAPMatchingRuleSchema extends LDAPSchemaElement {
 		                while(en.hasMoreElements()){
 		                attr = (LDAPAttribute) en.nextElement();
                         attrName = attr.getName();
-		                if(attrName.equals("matchingRules")){
+		                if(attrName.equalsIgnoreCase("matchingRules")){
                         // remove the value from the attributes values
                             LDAPAttribute newValue = new LDAPAttribute(
                                 "matchingRules",getValue());
@@ -364,7 +364,7 @@ public class LDAPMatchingRuleSchema extends LDAPSchemaElement {
 		                while(en.hasMoreElements()){
 		                    attr = (LDAPAttribute) en.nextElement();
                             attrName = attr.getName();
-		                    if(attrName.equals("matchingRules")){
+		                    if(attrName.equalsIgnoreCase("matchingRules")){
                             // modify the attribute
                             LDAPAttribute modValue = new LDAPAttribute(
                                         "matchingRules", newValue.getValue());

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell$
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSyntaxSchema.java,v 1.7 2001/03/01 00:29:57 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -171,7 +171,7 @@ public class LDAPSyntaxSchema
 		                while(en.hasMoreElements()){
 		                    attr = (LDAPAttribute) en.nextElement();
                             attrName = attr.getName();
-		                    if(attrName.equals("ldapSyntaxes")){
+		                    if(attrName.equalsIgnoreCase("ldapSyntaxes")){
                             // add the value to the syntax values
 							LDAPAttribute newValue = new LDAPAttribute(
                                         "ldapSyntaxes",getValue());
@@ -230,7 +230,7 @@ public class LDAPSyntaxSchema
 		                while(en.hasMoreElements()){
 		                    attr = (LDAPAttribute) en.nextElement();
                             attrName = attr.getName();
-		                    if(attrName.equals("ldapSyntaxes")){
+		                    if(attrName.equalsIgnoreCase("ldapSyntaxes")){
                                 // remove the value from the attributes values
                                 LDAPAttribute newValue = new LDAPAttribute(
                                 	"ldapSyntaxes",getValue());
@@ -288,7 +288,7 @@ public class LDAPSyntaxSchema
 		            while(en.hasMoreElements()){
 		                attr = (LDAPAttribute) en.nextElement();
                         attrName = attr.getName();
-		                if(attrName.equals("ldapSyntaxes")){
+		                if(attrName.equalsIgnoreCase("ldapSyntaxes")){
                         	// modify the attribute
                             LDAPAttribute modValue = new LDAPAttribute(
                                         "ldapSyntaxes", newValue.getValue());

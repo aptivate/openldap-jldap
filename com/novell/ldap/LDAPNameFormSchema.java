@@ -283,7 +283,7 @@ public class LDAPNameFormSchema
 		                while(en.hasMoreElements()){
 		                    attr = (LDAPAttribute) en.nextElement();
                             attrName = attr.getName();
-		                    if(attrName.equals("nameForms")){
+		                    if(attrName.equalsIgnoreCase("nameForms")){
                             // add the value to the object class values
 							LDAPAttribute newValue = new LDAPAttribute(
                                         "nameForms",getValue());
@@ -342,7 +342,7 @@ public class LDAPNameFormSchema
 		                while(en.hasMoreElements()){
 		                    attr = (LDAPAttribute) en.nextElement();
                             attrName = attr.getName();
-		                    if(attrName.equals("nameForms")){
+		                    if(attrName.equalsIgnoreCase("nameForms")){
                                 // remove the value from the attributes values
                                 LDAPAttribute newValue = new LDAPAttribute(
                                 	"nameForms",getValue());
@@ -400,7 +400,7 @@ public class LDAPNameFormSchema
 		            while(en.hasMoreElements()){
 		                attr = (LDAPAttribute) en.nextElement();
                         attrName = attr.getName();
-		                if(attrName.equals("nameForms")){
+		                if(attrName.equalsIgnoreCase("nameForms")){
                         	// modify the attribute
                             LDAPAttribute modValue = new LDAPAttribute(
                                         "nameForms", newValue.getValue());

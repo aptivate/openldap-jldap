@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell$
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPDITStructureRuleSchema.java,v 1.8 2001/03/01 00:29:49 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -281,7 +281,7 @@ public class LDAPDITStructureRuleSchema
 		                while(en.hasMoreElements()){
 		                    attr = (LDAPAttribute) en.nextElement();
                             attrName = attr.getName();
-		                    if(attrName.equals("dITStructureRules")){
+		                    if(attrName.equalsIgnoreCase("dITStructureRules")){
                             // add the value to the object class values
 							LDAPAttribute newValue = new LDAPAttribute(
                                         "dITStructureRules",getValue());
@@ -340,7 +340,7 @@ public class LDAPDITStructureRuleSchema
 		                while(en.hasMoreElements()){
 		                    attr = (LDAPAttribute) en.nextElement();
                             attrName = attr.getName();
-		                    if(attrName.equals("dITStructureRules")){
+		                    if(attrName.equalsIgnoreCase("dITStructureRules")){
                                 // remove the value from the attributes values
                                 LDAPAttribute newValue = new LDAPAttribute(
                                 	"dITStructureRules",getValue());
@@ -398,7 +398,7 @@ public class LDAPDITStructureRuleSchema
 		            while(en.hasMoreElements()){
 		                attr = (LDAPAttribute) en.nextElement();
                         attrName = attr.getName();
-		                if(attrName.equals("dITStructureRules")){
+		                if(attrName.equalsIgnoreCase("dITStructureRules")){
                         	// modify the attribute
                             LDAPAttribute modValue = new LDAPAttribute(
                                         "dITStructureRules", newValue.getValue());

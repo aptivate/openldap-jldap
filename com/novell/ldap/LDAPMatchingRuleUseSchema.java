@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell$
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPMatchingRuleUseSchema.java,v 1.10 2001/03/01 00:29:51 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -195,7 +195,7 @@ public class LDAPMatchingRuleUseSchema
 		                while(en.hasMoreElements()){
 		                    attr = (LDAPAttribute) en.nextElement();
                             attrName = attr.getName();
-		                    if(attrName.equals("matchingRuleUse")){
+		                    if(attrName.equalsIgnoreCase("matchingRuleUse")){
                                 // add the value to the matchingRuleUse values
                                 LDAPAttribute newValue = new LDAPAttribute(
                                         "matchingRuleUse",getValue());
@@ -256,7 +256,7 @@ public class LDAPMatchingRuleUseSchema
 		                while(en.hasMoreElements()){
 		                attr = (LDAPAttribute) en.nextElement();
                         attrName = attr.getName();
-		                if(attrName.equals("matchingRuleUse")){
+		                if(attrName.equalsIgnoreCase("matchingRuleUse")){
                         // remove the value from the matchingRuleUse values
                             LDAPAttribute newValue = new LDAPAttribute(
                                 "matchingRuleUse",getValue());
@@ -322,7 +322,7 @@ public class LDAPMatchingRuleUseSchema
 		                while(en.hasMoreElements()){
 		                    attr = (LDAPAttribute) en.nextElement();
                             attrName = attr.getName();
-		                    if(attrName.equals("matchingRuleUse")){
+		                    if(attrName.equalsIgnoreCase("matchingRuleUse")){
                             // modify the attribute
                             LDAPAttribute modValue = new LDAPAttribute(
                                         "matchingRuleUse", newValue.getValue());

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/rfc2251/RfcFilter.java,v 1.19 2001/02/13 18:36:54 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/rfc2251/RfcFilter.java,v 1.20 2001/03/01 00:30:17 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -270,7 +270,7 @@ public class RfcFilter extends ASN1Choice {
                      if(first && !s.equals(":")) {
                         type = s;
                      }
-                     else if(s.equals("dn")) {
+                     else if(s.equalsIgnoreCase("dn")) {
                         dnAttributes = true;
                      }
                      else if(!s.equals(":")) {

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttributeSchema.java,v 1.19 2001/02/13 18:36:47 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttributeSchema.java,v 1.20 2001/03/01 00:29:46 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -404,7 +404,7 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
 		                while(en.hasMoreElements()){
 		                    attr = (LDAPAttribute) en.nextElement();
                             attrName = attr.getName();
-		                    if(attrName.equals("attributeTypes")){
+		                    if(attrName.equalsIgnoreCase("attributeTypes")){
                                 // add the value to the attributes values
                                 LDAPAttribute newValue = new LDAPAttribute(
                                         "attributeTypes",getValue());
@@ -465,7 +465,7 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
 		                while(en.hasMoreElements()){
 		                attr = (LDAPAttribute) en.nextElement();
                         attrName = attr.getName();
-		                if(attrName.equals("attributeTypes")){
+		                if(attrName.equalsIgnoreCase("attributeTypes")){
                         // remove the value from the attributes values
                             LDAPAttribute newValue = new LDAPAttribute(
                                 "attributeTypes",getValue());
@@ -531,7 +531,7 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
 		                while(en.hasMoreElements()){
 		                    attr = (LDAPAttribute) en.nextElement();
                             attrName = attr.getName();
-		                    if(attrName.equals("attributeTypes")){
+		                    if(attrName.equalsIgnoreCase("attributeTypes")){
                             // modify the attribute
                             LDAPAttribute modValue = new LDAPAttribute(
                                         "attributeTypes", newValue.getValue());

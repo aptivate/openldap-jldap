@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSchema.java,v 1.20 2000/12/20 20:59:28 bgudmundson Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSchema.java,v 1.21 2001/03/01 00:29:55 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -151,7 +151,7 @@ public class LDAPSchema {
 								attr = (LDAPAttribute) en.nextElement();
 								attrName = attr.getName();
 
-								if(attrName.equals("objectClass")){
+								if(attrName.equalsIgnoreCase("objectClass")){
 									enumString = attr.getStringValues();
 									String value;
 									while(enumString.hasMoreElements())
@@ -159,7 +159,7 @@ public class LDAPSchema {
 										value = (String) enumString.nextElement();
 									}
 								}
-								else if(attrName.equals("objectClasses")){
+								else if(attrName.equalsIgnoreCase("objectClasses")){
 									enumString = attr.getStringValues();
 									String value;
          								LDAPObjectClassSchema classSchema;
@@ -170,7 +170,7 @@ public class LDAPSchema {
                    						objectClassHashtable.put(classSchema.getName(), classSchema);
 									}
 								}
-								else if(attrName.equals("attributeTypes")){
+								else if(attrName.equalsIgnoreCase("attributeTypes")){
 									enumString = attr.getStringValues();
 									String value;
 									LDAPAttributeSchema attrSchema;
@@ -181,7 +181,7 @@ public class LDAPSchema {
           								attributeHashtable.put(attrSchema.getName(), attrSchema );
 									}
 								}
-								else if(attrName.equals("matchingRules")){
+								else if(attrName.equalsIgnoreCase("matchingRules")){
 									enumString = attr.getStringValues();
 									String value;
 									LDAPMatchingRuleSchema matchingRuleSchema;
@@ -192,7 +192,7 @@ public class LDAPSchema {
           								matchingRuleHashtable.put(matchingRuleSchema.getName(), matchingRuleSchema );
 									}
 								}
-								else if(attrName.equals("matchingRuleUse")){
+								else if(attrName.equalsIgnoreCase("matchingRuleUse")){
 									enumString = attr.getStringValues();
 									String value;
 									LDAPMatchingRuleUseSchema matchingRuleUseSchema;
@@ -203,7 +203,7 @@ public class LDAPSchema {
           								matchingRuleUseHashtable.put(matchingRuleUseSchema.getName(), matchingRuleUseSchema );
 									}
 								}
-								else if(attrName.equals("ldapSyntaxes")){
+								else if(attrName.equalsIgnoreCase("ldapSyntaxes")){
 									enumString = attr.getStringValues();
 									String value;
 									LDAPSyntaxSchema syntaxSchema;
@@ -214,7 +214,7 @@ public class LDAPSchema {
           								syntaxHashtable.put(syntaxSchema.getID(), syntaxSchema );
 									}
 								}
-								else if(attrName.equals("dITContentRules")){
+								else if(attrName.equalsIgnoreCase("dITContentRules")){
 									enumString = attr.getStringValues();
 									String value;
 									LDAPDITContentRuleSchema dITContentRuleSchema;
@@ -225,7 +225,7 @@ public class LDAPSchema {
           								dITContentRuleHashtable.put(dITContentRuleSchema.getName(), dITContentRuleSchema );
 									}
 								}
-								else if(attrName.equals("dITStructureRules")){
+								else if(attrName.equalsIgnoreCase("dITStructureRules")){
 									enumString = attr.getStringValues();
 									String value;
 									LDAPDITStructureRuleSchema dITStructureRuleSchema;
@@ -237,7 +237,7 @@ public class LDAPSchema {
 										dITStructureRuleIDHashtable.put(dITStructureRuleSchema.getID(), dITStructureRuleSchema );
 									}
 								}
-								else if(attrName.equals("nameForms")){
+								else if(attrName.equalsIgnoreCase("nameForms")){
 									enumString = attr.getStringValues();
 									String value;
 									LDAPNameFormSchema nameFormSchema;

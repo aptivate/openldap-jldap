@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell$
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPDITContentRuleSchema.java,v 1.7 2001/03/01 00:29:48 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -334,7 +334,7 @@ public class LDAPDITContentRuleSchema
 		                while(en.hasMoreElements()){
 		                    attr = (LDAPAttribute) en.nextElement();
                             attrName = attr.getName();
-		                    if(attrName.equals("dITContentRules")){
+		                    if(attrName.equalsIgnoreCase("dITContentRules")){
                             // add the value to the object class values
 							LDAPAttribute newValue = new LDAPAttribute(
                                         "dITContentRules",getValue());
@@ -393,7 +393,7 @@ public class LDAPDITContentRuleSchema
 		                while(en.hasMoreElements()){
 		                    attr = (LDAPAttribute) en.nextElement();
                             attrName = attr.getName();
-		                    if(attrName.equals("dITContentRules")){
+		                    if(attrName.equalsIgnoreCase("dITContentRules")){
                                 // remove the value from the attributes values
                                 LDAPAttribute newValue = new LDAPAttribute(
                                 	"dITContentRules",getValue());
@@ -451,7 +451,7 @@ public class LDAPDITContentRuleSchema
 		            while(en.hasMoreElements()){
 		                attr = (LDAPAttribute) en.nextElement();
                         attrName = attr.getName();
-		                if(attrName.equals("dITContentRules")){
+		                if(attrName.equalsIgnoreCase("dITContentRules")){
                         	// modify the attribute
                             LDAPAttribute modValue = new LDAPAttribute(
                                         "dITContentRules", newValue.getValue());

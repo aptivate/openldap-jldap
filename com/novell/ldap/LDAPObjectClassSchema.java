@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPObjectClassSchema.java,v 1.19 2000/12/09 00:19:51 bgudmundson Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPObjectClassSchema.java,v 1.20 2001/03/01 00:29:53 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -358,7 +358,7 @@ public class LDAPObjectClassSchema extends LDAPSchemaElement{
 		                while(en.hasMoreElements()){
 		                    attr = (LDAPAttribute) en.nextElement();
                             attrName = attr.getName();
-		                    if(attrName.equals("objectClasses")){
+		                    if(attrName.equalsIgnoreCase("objectClasses")){
                             // add the value to the object class values
 							LDAPAttribute newValue = new LDAPAttribute(
                                         "objectClasses",getValue());
@@ -417,7 +417,7 @@ public class LDAPObjectClassSchema extends LDAPSchemaElement{
 		                while(en.hasMoreElements()){
 		                    attr = (LDAPAttribute) en.nextElement();
                             attrName = attr.getName();
-		                    if(attrName.equals("objectClasses")){
+		                    if(attrName.equalsIgnoreCase("objectClasses")){
                                 // remove the value from the attributes values
                                 LDAPAttribute newValue = new LDAPAttribute(
                                 	"objectClasses",getValue());
@@ -475,7 +475,7 @@ public class LDAPObjectClassSchema extends LDAPSchemaElement{
 		            while(en.hasMoreElements()){
 		                attr = (LDAPAttribute) en.nextElement();
                         attrName = attr.getName();
-		                if(attrName.equals("objectClasses")){
+		                if(attrName.equalsIgnoreCase("objectClasses")){
                         	// modify the attribute
                             LDAPAttribute modValue = new LDAPAttribute(
                                         "objectClasses", newValue.getValue());
