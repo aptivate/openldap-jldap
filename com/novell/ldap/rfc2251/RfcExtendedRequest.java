@@ -71,6 +71,7 @@ public class RfcExtendedRequest extends ASN1Sequence implements RfcRequest {
         return;                                     
     }
 
+
     /**
      * Constructs an extended request from an existing request.
      *
