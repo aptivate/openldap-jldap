@@ -24,7 +24,14 @@ import java.util.Enumeration;
 
 import com.novell.ldap.LDAPAttribute;
 import com.novell.ldap.LDAPAttributeSet;
+import com.novell.ldap.LDAPControl;
 import com.novell.ldap.LDAPEntry;
+import com.novell.ldap.LDAPException;
+import com.novell.ldap.LDAPModification;
+import com.novell.ldap.ldif_dsml.LDAPOperation;
+import com.novell.ldap.ldif_dsml.ModInfo;
+import com.novell.ldap.util.DN;
+
 
 public class LDIFWriter extends LDIF implements LDAPExport {
 
@@ -86,8 +93,11 @@ public class LDIFWriter extends LDIF implements LDAPExport {
      * @param line to be written to the OutputStream
      */
     public void writeLine ( String line ) throws IOException {
-        bufWriter.write( line, 0, line.length());
-        bufWriter.newLine();
+        
+        if ( line != null) {
+            bufWriter.write( line, 0, line.length());
+            bufWriter.newLine();
+        }
     }
 
     /**
@@ -96,13 +106,16 @@ public class LDIFWriter extends LDIF implements LDAPExport {
      * @param Lines to be written to the OutputStream
      */
     public void writeRecordLines ( String[] lines ) throws IOException {
-        for ( int i = 0; i < lines.length; i++ ) {
-            bufWriter.write( lines[i], 0, (lines[i]).length());
-            // start a new line
+        
+        if ( lines != null ) {
+            for ( int i = 0; i < lines.length; i++ ) {
+                bufWriter.write( lines[i], 0, (lines[i]).length());
+                // start a new line
+                bufWriter.newLine();
+            }
+            // write a new line to sepatator records
             bufWriter.newLine();
         }
-        // write a new line to sepatator records
-        bufWriter.newLine();
     }
 
     /**
@@ -121,6 +134,14 @@ public class LDIFWriter extends LDIF implements LDAPExport {
     }
 
     /**
+     * Flush the stream
+     */
+    public void flushStream() throws IOException {
+        // flush the stream
+        bufWriter.flush();
+    }
+    
+    /**
      * Flush and close the stream
      */
     public void closeStream() throws IOException {
@@ -129,6 +150,64 @@ public class LDIFWriter extends LDIF implements LDAPExport {
     }
 
     /**
+     * Used to generate LDIF change/add record lines. Turn LDAPEntry object and
+     * LDAPControl object into LDIF change/add record fields and then turn 
+     * record fields into record lines
+     *
+     * @param LDAPREntry object
+     * @param LDAPControl object
+     *
+     * @return String array that contains entry dn, control info, and 
+     * attribute name and value pairs
+     */
+    public String[] toRecordLines( LDAPEntry entry, LDAPControl[] ctrls ) {
+
+        String   attrName,  dn, temp, value;
+        String   changeType = new String("add");
+        String[] controlLines = null;
+        String[] entryLines = null;                      
+        ArrayList fields = new ArrayList();
+        LDAPAttribute attr;
+        LDAPAttributeSet attrSet;
+        Enumeration allAttrs, allValues;
+
+        // save entry dn field
+        dn = new String( entry.getDN() );
+        fields.add( new String("dn: " + dn ));
+
+        // save control fields
+        if ( ctrls != null ) {
+
+            for ( int i = 0; i < ctrls.length; i++) {
+                fields.add("control: " + ctrls[i].toString());
+            }
+        }
+        
+        fields.add("changetype: " + changeType);        
+
+        // save attribute fields
+        attrSet = entry.getAttributeSet();
+        allAttrs = attrSet.getAttributes();
+
+        while(allAttrs.hasMoreElements()) {
+           attr = (LDAPAttribute)allAttrs.nextElement();
+           attrName = attr.getName();
+           temp = new String ( attrName + ": ");
+
+           allValues = attr.getStringValues();
+
+           if( allValues != null) {
+               while(allValues.hasMoreElements()) {
+                   value = (String) allValues.nextElement();
+                   temp = temp + value;
+                   fields.add( temp );
+               }
+           }
+        }
+        return toLines( fields );
+    }
+    
+    /**
      * Turn LDAPEntry object into LDIF content record fields and then
      * turn record fields into record lines
      *
@@ -136,6 +215,8 @@ public class LDIFWriter extends LDIF implements LDAPExport {
      *
      * @return String array that contains entry dn and attribute name
      * and value pairs
+     *
+     * @see LDAPEntry
      */
     public String[] toRecordLines( LDAPEntry entry ) {
 
@@ -169,6 +250,154 @@ public class LDIFWriter extends LDIF implements LDAPExport {
                }
            }
         }
+        return toLines( fields );
+    }
+
+    /**
+     * Used to generate LDIF modify reocrd lines. Turn entry DN, 
+     * LDAPModification[], and change type into LDIF modify record 
+     * fields and then turn record fields into LDIF modify record lines
+     *
+     * @param String object representing entry DN
+     * @param LDAPModification[] object
+     * @param int Change type
+     *
+     * @return String array which contains the LDIF mosify record lines
+     *
+     * @see LDAPModification
+     */
+    public String[] toRecordLines( String dn, LDAPModification[] mods, LDAPControl[] ctrls ) {
+
+        int i, len, modOp;
+        String attrName, attrValue;
+        ArrayList fields = new ArrayList();
+        LDAPAttribute attr;
+        
+
+        // dave entry dn
+        fields.add( new String("dn: " + dn ));
+
+        // save control fields
+        if ( ctrls != null ) {
+
+            for ( i = 0; i < ctrls.length; i++) {
+                fields.add("control: " + ctrls[i].toString());
+            }
+        }
+
+        // save change type
+        fields.add(new String("changetype: modify"));
+
+        len = mods.length;
+
+        for ( i = 0; i < len; i++ ) {
+            
+            modOp = mods[i].getOp();
+            attr =  mods[i].getAttribute();
+            attrName = attr.getName();
+            attrValue = attr.getStringValue();
+            switch ( modOp )  {
+                case LDAPModification.ADD:                    
+                    fields.add(new String("add: "+ attrName));
+                    //fields.add(new String( attrName + ": " + attrValue));
+                    break;
+                case LDAPModification.DELETE:
+                    fields.add(new String("delete: "+ attrName));
+                    break;
+                case LDAPModification.REPLACE:
+                    fields.add(new String("replace: "+ attrName));
+                    break;
+                default:
+            }
+            fields.add(new String( attrName + ": " + attrValue));
+            // add separators between different modify operations
+            fields.add(new String("-"));
+            // add an empty line between different modify operations
+            fields.add(new String(""));
+        }
+
+        return toLines( fields );
+    }
+
+    /**
+     * Used to generate LDIF moddn reocrd lines. Turn entry DN, 
+     * ModInfo, and change type into LDIF modify record 
+     * fields and then turn record fields into LDIF moddn record lines
+     *
+     * @param String object representing entry DN
+     * @param ModInfo object
+     @ @param int Change type
+     *
+     * @return String array which contains the LDIF mosify record lines
+     *
+     * @see ModInfo
+     */
+    public String[] toRecordLines( String dn, ModInfo modInfo, LDAPControl[] ctrls ) {
+
+        int i, len, modOp;
+        String attrName, attrValue;
+        ArrayList fields = new ArrayList();
+        LDAPAttribute attr;
+        
+
+        // dave entry dn
+        fields.add( new String("dn: " + dn ));
+
+        // save control fields
+        if ( ctrls != null ) {
+
+            for ( i = 0; i < ctrls.length; i++) {
+                fields.add("control: " + ctrls[i].toString());
+            }
+        }
+
+        // save change type
+        fields.add(new String("changetype: moddn"));
+
+        // save moddn info
+        fields.add(new String("newrdn:" + modInfo.newRDN));
+        fields.add(new String("deleteoldrdn:" + modInfo.deleteOldRDN));
+        if ( ((modInfo.newSuperior).length()) != 0) {
+            fields.add(new String("newsuperior:" + modInfo.newSuperior));
+        }
+
+        return toLines( fields );
+    }
+
+    /**
+     * Used to generate LDIF change/delete reocrd lines. Turn entry DN, controls 
+     * and change type into LDIF change/delete record fields and then turn 
+     * record fields into LDIF moddn record lines
+     *
+     * @param dn object representing entry DN
+     * @param   LDAPControl array object
+     *
+     * @return String array which contains the LDIF change/delete record lines
+     *
+     * @see DN
+     */
+    public String[] toRecordLines( DN dn, LDAPControl[] ctrls ) {
+
+        int i, len, modOp;
+        String attrName, attrValue;
+        ArrayList fields = new ArrayList();
+        LDAPAttribute attr;
+        
+
+        // dave entry dn
+        fields.add( new String("dn: " + dn ));
+
+        // save control fields
+        if ( ctrls != null ) {
+
+            for ( i = 0; i < ctrls.length; i++) {
+                fields.add("control: " + ctrls[i].toString());
+            }
+        }
+
+        // save change type
+        fields.add(new String("changetype: delete"));       
+
         return toLines( fields );
     }
 
