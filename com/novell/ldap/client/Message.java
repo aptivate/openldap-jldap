@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/client/Message.java,v 1.16 2001/04/19 18:40:35 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/client/Message.java,v 1.17 2001/04/19 22:25:20 vtag Exp $
 *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -25,13 +25,14 @@ import java.io.*;
 /**
  * Encapsulates an LDAP message, its state, and its replies.
  */
-public class Message extends Thread
+public class Message
 {
     private LDAPMessage msg;             // msg request sent to server
     private Connection conn;             // Connection object where msg sent
     private MessageAgent agent;          // MessageAgent handling this request
     private LDAPListener listen;         // Application listener
     private int mslimit;                 // client time limit in milliseconds
+    private Thread timer = null;         // Timeout thread
     // Note: MessageVector is synchronized
     private MessageVector replies = new MessageVector(5,5); // place to store replies
     private int msgId;                   // message ID of this request
@@ -109,7 +110,11 @@ public class Message extends Thread
                     mslimit = 0;
                     break;
                 default:
-                    this.start();
+                    // start the reader thread
+                    timer = new Timeout( mslimit, this);
+                    timer.setDaemon(true); // If this is the last thread running, allow exit.
+                    timer.start();
+                    break;
             }
         }
         return;
@@ -163,8 +168,8 @@ public class Message extends Thread
     void stopTimer()
     {
         // If timer thread started, stop it
-        if( mslimit > 0) {
-            interrupt();
+        if( timer != null) {
+            timer.interrupt();
         }
         return;
     }
@@ -494,34 +499,6 @@ public class Message extends Thread
     }
 
     /**
-     * The timeout thread.  If it wakes from the sleep, future input
-     * is stopped and the request is timed out.
-    */
-    public void run()
-    {
-        try {
-            if( Debug.LDAP_DEBUG) {
-                Debug.trace( Debug.messages, name + "client timer started, " +
-                    mslimit + " milliseconds");
-            }
-            sleep(mslimit);
-            acceptReplies = false;
-            if( Debug.LDAP_DEBUG) {
-                Debug.trace( Debug.messages, name + "client timed out");
-            }
-            // Note: Abandon clears the bind semaphore after failed bind.
-            abandon( null, new LocalException("Client request timed out", null,
-                                LDAPException.LDAP_TIMEOUT, null, this));
-        } catch ( InterruptedException ie ) {
-            if( Debug.LDAP_DEBUG) {
-                Debug.trace( Debug.messages, name + "timer stopped");
-            }
-            // the timer was stopped, do nothing
-        }
-        return;
-    }
-
-    /**
      * Release reply messages
      */
     /* package */
@@ -582,5 +559,52 @@ public class Message extends Thread
 
         cleanup();
         return;
+    }
+
+    /**
+     * Timer class to provide timing for messages.  Only called
+     * if time to wait is non zero.
+     */
+    private class Timeout extends Thread
+    {
+        private int timeToWait = 0;
+        private Message message;
+
+        public Timeout( int interval, Message msg)
+        {
+            super();
+            timeToWait = interval;
+            message = msg;
+            return;
+        }
+                    
+        /**
+         * The timeout thread.  If it wakes from the sleep, future input
+         * is stopped and the request is timed out.
+        */
+        public void run()
+        {
+            try {
+                if( Debug.LDAP_DEBUG) {
+                    Debug.trace( Debug.messages, message.name +
+                       "client timer started, " + timeToWait + " milliseconds");
+                }
+                sleep(timeToWait);
+                message.acceptReplies = false;
+                if( Debug.LDAP_DEBUG) {
+                    Debug.trace( Debug.messages, message.name + "client timed out");
+                }
+                // Note: Abandon clears the bind semaphore after failed bind.
+                message.abandon( null,
+                            new LocalException("Client request timed out",
+                            null, LDAPException.LDAP_TIMEOUT, null, message));
+            } catch ( InterruptedException ie ) {
+                if( Debug.LDAP_DEBUG) {
+                    Debug.trace( Debug.messages, message.name + "timer stopped");
+                }
+                // the timer was stopped, do nothing
+            }
+            return;
+        }
     }
 }
