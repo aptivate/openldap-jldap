@@ -1,4 +1,4 @@
-/* **************************************************************************
+* **************************************************************************
  * $OpenLDAP$
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
@@ -52,19 +52,24 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
     private int usage = USER_APPLICATIONS;
 
     /**
-     * This attribute definition defines that the attribute usage is applications.
+     * Indicates that the attribute usage is for ordinary application
+     * or user data.
      */
     public final static int USER_APPLICATIONS = 0;
     /**
-     * This attribute definition defines the attribute usage is directory operations.
+     * Indicates that the attribute usage is for directory operations.
+     * Values are vendor specific.
      */
     public final static int DIRECTORY_OPERATION = 1;
     /**
-     * This attribute definition defines the attribute usage is shared dsa.
+     * Indicates that the attribute usage is for distributed operational
+     * attributes. These hold server (DSA) information that is shared among
+     * servers holding replicas of the entry.
      */
     public final static int DISTRIBUTED_OPERATION = 2;
     /**
-     * This class definition defines the attribute usage is local dsa.
+     * Indicates that the attribute usage is for local operational attributes.
+     * These hold server (DSA) information that is local to a server.
      */
     public final static int DSA_OPERATION = 3;
 
