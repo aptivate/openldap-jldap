@@ -61,6 +61,7 @@ public class ExceptionMessages extends java.util.ListResourceBundle {
   public final static String ENCODING_ERROR       = "ENCODING_ERROR";
   public final static String IO_EXCEPTION         = "IO_EXCEPTION";
   public final static String INVALID_ESCAPE       = "INVALID_ESCAPE";
+  public final static String INVALID_CHAR_IN_FILTER = "INVALID_CHAR_IN_FILTER";
   public final static String UNEXPECTED_END       = "UNEXPECTED_END";
   public final static String MISSING_LEFT_PAREN   = "MISSING_LEFT_PAREN";
   public final static String MISSING_RIGHT_PAREN  = "MISSING_RIGHT_PAREN";
@@ -91,7 +92,7 @@ public class ExceptionMessages extends java.util.ListResourceBundle {
 
   static final Object[][] contents = {
   // LOCALIZE THIS
-      {"TOSTRING", "{0}: ({1}) {2}"},
+      {"TOSTRING", "{0}: {1} ({2}) {3}"},
       {"SERVER_MSG", "{0}: Server Message: {1}"},
       {"MATCHED_DN", "{0}: Matched DN: {1}"},
       {"FAILED_REFERRAL", "{0}: Failed Referral: {1}"},
@@ -129,6 +130,7 @@ public class ExceptionMessages extends java.util.ListResourceBundle {
       {"MISSING_LEFT_PAREN", "Missing left paren"},
       {"MISSING_RIGHT_PAREN", "Missing right paren"},
       {"INVALID_FILTER", "Invalid filter type"},
+      {"INVALID_CHAR_IN_FILTER", "The invalid character, '{0}', needs to be escaped in a search filter"},
       {"NOT_AN_ATTRIBUTE", "Schema element is not an LDAPAttributeSchema object"},
       {"UNEQUAL_LENGTHS","Length of attribute Name array does not equal length of Flags array"},
       {"COMMUNICATE_ERROR","Communication error: {0}"},

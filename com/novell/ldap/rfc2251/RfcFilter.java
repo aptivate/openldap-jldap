@@ -186,7 +186,7 @@ public class RfcFilter extends ASN1Choice {
                                         filterType),
                      new RfcAttributeValueAssertion(
                         new RfcAttributeDescription(ft.getAttr()),
-                        new RfcAssertionValue(escaped2unicode(value))),
+                        new RfcAssertionValue(unescapeString(value))),
                      false);
                   break;
                case EQUALITY_MATCH: // may be PRESENT or SUBSTRINGS also
@@ -217,7 +217,7 @@ public class RfcFilter extends ASN1Choice {
                                  new ASN1Tagged(
                                     new ASN1Identifier(ASN1Identifier.CONTEXT,
                                                        false, INITIAL),
-                                    new RfcLDAPString(escaped2unicode(subTok)),
+                                    new RfcLDAPString(unescapeString(subTok)),
                                     false));
                            }
                            else if(cnt < tokCnt) { // any
@@ -225,7 +225,7 @@ public class RfcFilter extends ASN1Choice {
                                  new ASN1Tagged(
                                     new ASN1Identifier(ASN1Identifier.CONTEXT,
                                                        false, ANY),
-                                    new RfcLDAPString(escaped2unicode(subTok)),
+                                    new RfcLDAPString(unescapeString(subTok)),
                                     false));
                            }
                            else { // final
@@ -233,7 +233,7 @@ public class RfcFilter extends ASN1Choice {
                                  new ASN1Tagged(
                                     new ASN1Identifier(ASN1Identifier.CONTEXT,
                                                        false, FINAL),
-                                    new RfcLDAPString(escaped2unicode(subTok)),
+                                    new RfcLDAPString(unescapeString(subTok)),
                                     false));
                            }
                         }
@@ -253,7 +253,7 @@ public class RfcFilter extends ASN1Choice {
                                            EQUALITY_MATCH),
                         new RfcAttributeValueAssertion(
                            new RfcAttributeDescription(ft.getAttr()),
-                           new RfcAssertionValue(escaped2unicode(value))),
+                           new RfcAssertionValue(unescapeString(value))),
                         false);
                   }
                   break;
@@ -286,7 +286,7 @@ public class RfcFilter extends ASN1Choice {
                             new RfcMatchingRuleId(matchingRule),
                         (type == null) ? null :
                             new RfcAttributeDescription(type),
-                        new RfcAssertionValue(escaped2unicode(value)),
+                        new RfcAssertionValue(unescapeString(value)),
                         (dnAttributes == false) ? null :
                             new ASN1Boolean(true)),
                      false);
@@ -327,56 +327,92 @@ public class RfcFilter extends ASN1Choice {
    }
 
    /**
-    * Replace escaped hex digits with the equivalent unicode representation.
+    * Replace escaped hex digits with the equivalent binary representation.
     * Assume either V2 or V3 escape mechanisms:
     * V2: \*,  \(,  \),  \\.
     * V3: \2A, \28, \29, \5C, \00.
+    *
+    * @param string    A part of the input filter string to be converted.
+    *
+    * @return octet-string encoding of the specified string.
     */
-   private String escaped2unicode(String value)
+   private byte[] unescapeString(String string)
       throws LDAPException
    {
-      StringBuffer sb = new StringBuffer();
-      boolean escape = false, escStart = false;
-      int ival;
+      byte octets[] = new byte[string.length()];
+      // index for string and octets
+      int iString, iOctets;
+      // escape==true means we are in an escape sequence.
+      boolean escape = false;
+      // escStart==true means we are reading the first character of an escape.
+      boolean escStart = false;
+
+      int ival, length = string.length();
       char ch, temp = 0;
 
-      for(int i = 0; i < value.length(); i++) {
-         ch = value.charAt(i);
+      /* loop through each character of the string and copy them into octets
+         converting escaped sequences when needed */
+      for(iString = 0, iOctets = 0; iString < length; iString++) {
+         ch = string.charAt(iString);
          if(escape) {
-            // Try LDAP V3 escape (\\xx)
             if((ival = hex2int(ch)) < 0) {
+               // V2 escaped "*()" chars differently: \*, \(, \)
                if(escStart) {
-                  // V2 escaped "*()" chars differently: \*, \(, \)
-                  escape = false;
-                  sb.append(ch);
+
+                  escStart = escape = false;
+                  octets[iOctets++] = (byte) ch;
                }
-               else {
-                  throw new LDAPException(ExceptionMessages.INVALID_ESCAPE, //"Invalid escape value",
+               else { //"Invalid escape value",
+                  throw new LDAPException(ExceptionMessages.INVALID_ESCAPE,
                                           LDAPException.FILTER_ERROR);
                }
             }
             else {
+               //V3 escaped: \\**
                if(escStart) {
                   temp = (char)(ival<<4);
                   escStart = false;
                }
                else {
                   temp |= (char)(ival);
-                  sb.append(temp);
-                  escape = false;
+                  octets[iOctets++] = (byte) temp;
+                  escStart = escape = false;
                }
             }
          }
-         else if(ch != '\\') {
-            sb.append(ch);
-            escape = false;
+         else if(ch == '\\') {
+             escStart = escape = true;
          }
-         else {
-            escStart = escape = true;
+         else { //place the character into octets.
+             byte b = (byte) ch;
+             if (( b >= 0x01 && b <= 0x27 ) ||
+                 ( b >= 0x2B && b <= 0x5B ) ||
+                 ( b >= 0x5D && b <= 0x7F ))
+             {
+                 //found valid character = %x01-27 / %x2b-5b / %x5d-7f
+                 octets[iOctets++] = (byte)ch;
+                 escape = false;
+             }
+             else{
+                 //found invalid character
+                 throw new com.novell.ldap.LDAPLocalException(
+                         ExceptionMessages.INVALID_CHAR_IN_FILTER,
+                         LDAPException.FILTER_ERROR);
+             }
+
          }
       }
 
-      return sb.toString();
+      //Verify that any escape sequence completed
+      if (escStart || escape){
+          throw new LDAPException(ExceptionMessages.INVALID_ESCAPE,
+                                  LDAPException.FILTER_ERROR);
+      }
+
+      byte toReturn[] = new byte[iOctets];
+      System.arraycopy(octets, 0, toReturn, 0, iOctets);
+      octets = null;
+      return toReturn;
    }
 
 }

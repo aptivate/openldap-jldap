@@ -27,12 +27,4 @@ public class RfcAssertionValue extends ASN1OctetString {
 	public RfcAssertionValue(byte[] value) {
 		super(value);
 	}
-
-	/**
-	 *
-	 */
-	public RfcAssertionValue(String value) {
-		super(value);
-	}
-
 }

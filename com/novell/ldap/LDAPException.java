@@ -1151,6 +1151,7 @@ public class LDAPException extends Exception
         String msg = ResourcesHandler.getMessage("TOSTRING",
                                                  new Object[]
                                                  { exception,
+                                                   super.getMessage(),
                                                    new Integer(resultCode),
                                                    resultCodeToString()
                                                  });
