@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: DSMLWriter.java,v 1.32 2003/01/22 19:32:48 $
+ * $Novell: DSMLWriter.java,v 1.33 2003/01/22 22:30:27 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -44,6 +44,7 @@ public class DSMLWriter implements LDAPWriter {
             "<batchRequest xmlns=\"urn:oasis:names:tc:DSML:2:0:core\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">";
     private static final String BATCH_RESPONSE_START =
             "<batchResponse xmlns=\"urn:oasis:names:tc:DSML:2:0:core\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">";
+    private int MAX_DOC_WIDTH = 75;
 
     /**
      * Initializes this writer by opening the specified file to write DSML into.
@@ -549,6 +550,10 @@ public class DSMLWriter implements LDAPWriter {
 
     /**
      * Used to write an attribute and its values.
+     *
+     * <p>If the value to be written is over MAX_DOC_WIDTH characters AND
+     * newLines is set to true, then the value will be wrapped</p>
+     *
      * @param attr Attribute to be written.
      */
     private void writeAttribute(LDAPAttribute attr) throws IOException
@@ -561,21 +566,41 @@ public class DSMLWriter implements LDAPWriter {
         byte bytevalues[][] = attr.getByteValueArray();
         for(int i=0; i<values.length; i++){
             newLine(4);
+            String toWrite;
             if (Base64.isValidUTF8(bytevalues[i], false)){
                 out.write("<value>");
-                out.write(values[i]);
-                out.write("</value>");
+                newLine(0);
+                toWrite = values[i];
             } else {
+                // Base 64 encode this
                 out.write("<value xsi:type=\"xsd:base64Binary\">");
-                out.write(Base64.encode(bytevalues[i]));
-                out.write("</value>");
+                newLine(0);
+                toWrite = Base64.encode(bytevalues[i]);
             }
 
+            int lineLength = toWrite.length();
+            //test it the value should be wrapped
+            if ( (this.indent == false) ||
+                    (lineLength <= this.MAX_DOC_WIDTH) ) {
+                out.write(toWrite);
+            } else {
+                //Add new lines into each attribute value
+                int offset = 0;
+                while( (lineLength - offset) > this.MAX_DOC_WIDTH){
+                    out.write(toWrite, offset, this.MAX_DOC_WIDTH);
+                    newLine(0);
+                    offset += this.MAX_DOC_WIDTH;
+                }
+                out.write(toWrite, offset, lineLength - offset);
+                newLine(0);
+            }
+            out.write("</value>");
         }
         newLine(3);
         out.write("</attr>");
         return;
     }
+
 
     /**
      * Tests the current state with a new message that is either a response or
@@ -630,8 +655,6 @@ public class DSMLWriter implements LDAPWriter {
         for (int i=0; i< indentTabs; i++){
             out.write(tabString);
         }
-        //out.flush();
-
         return;
     }
 
@@ -640,7 +663,8 @@ public class DSMLWriter implements LDAPWriter {
      * make output more readable.
      *
      * <p>For efficiency, useIndent is set to false by default.  The size of an
-     * indentation can be set using the method <tt>setIndent</tt>.
+     * indentation can be set using the method <tt>setIndent</tt>.  This also
+     * will cause attributes over 76 characters to be continued on a new line.
      * @param useIndent Indicates whether indentation and newlines should be
      * written to make the output DSML more readable.
      * @see #setIndent
