@@ -26,7 +26,7 @@ import com.novell.ldap.protocol.*;
  *  Represents the central class that encapsulates the connection
  *  to a directory server through the LDAP protocol. 
  *
- *  <p>An LDAPConnection object is not connected on 
+ *  An LDAPConnection object is not connected on 
  *  construction and can only be connected to one server at one 
  *  port. Multiple threads may share this single connection, typically
  *  by cloning the connection object, one for each thread. An
@@ -573,6 +573,8 @@ public class LDAPConnection implements Cloneable
       this.defSearchCons.setDereference( cons.getDereference() );
       this.defSearchCons.setMaxResults( cons.getMaxResults() );
       this.defSearchCons.setServerTimeLimit( cons.getServerTimeLimit() );
+      this.defSearchCons.setServerControls( cons.getServerControls());
+      this.defSearchCons.setClientControls( cons.getClientControls());
       return;
    }
 
