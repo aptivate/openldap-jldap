@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPResponse.java,v 1.26 2001/03/01 00:29:54 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPResponse.java,v 1.27 2001/03/05 20:14:33 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -84,7 +84,7 @@ public class LDAPResponse extends LDAPMessage
     public String getErrorMessage()
     {
         if( exception != null) {
-            return( exception.getLDAPErrorMessage());
+            return exception.getLDAPErrorMessage();
         }
         return ((RfcResponse)message.getProtocolOp()).getErrorMessage().getString();
     }
