@@ -197,11 +197,10 @@ public abstract class ASN1Structured extends ASN1Object
 
         sb.append(type);
 
-        int len = content.length;
-        for(int i=0; i < len; i++)
+        for(int i=0; i < contentIndex; i++)
         {
             sb.append(content[i]);
-            if(i != len-1)
+            if(i != contentIndex-1)
                 sb.append(", ");
         }
         sb.append(/*{*/ " }");
