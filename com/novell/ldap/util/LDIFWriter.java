@@ -160,6 +160,7 @@ public class LDIFWriter implements LDAPWriter
     {
             requestFile = Boolean.FALSE; // This is a content file
             writeAddRequest(entry, controls);
+            bufWriter.newLine();
             return;
     }
 
