@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.52 2001/05/15 16:49:17 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.53 2001/05/18 16:54:19 javed Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -90,7 +90,7 @@ public final class Connection implements Runnable
     // The LDAPSocketFactory to be used as the default to create new connections
     static private LDAPSocketFactory socketFactory = null;
     // The LDAPSocketFactory used for this connection
-    private LDAPSocketFactory mySocketFactory = socketFactory;
+    private LDAPSocketFactory mySocketFactory;
     private String host = null;
     private int port = 0;
     // Number of clones in addition to original LDAPConnection using this connection.
@@ -118,7 +118,10 @@ public final class Connection implements Runnable
         if( factory != null) {
             // save socket factory
             mySocketFactory = factory;
+        } else {
+            mySocketFactory = socketFactory;
         }
+
         if( Debug.LDAP_DEBUG) {
             synchronized(nameLock) {
                 name = "Connection(" + ++connNum + "): ";
