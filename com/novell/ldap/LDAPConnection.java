@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.49 2000/11/03 17:54:13 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.50 2000/11/03 18:43:30 vtag Exp $
 *
 * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
 * 
@@ -2035,10 +2035,8 @@ public class LDAPConnection implements Cloneable
     * @see LDAPMessage#getControls()
     */
    public LDAPControl[] getResponseControls()
-    {
-      LDAPControl[] controls = null;
-
-      return controls;
+   {
+      throw new RuntimeException("Method LDAPConnection.getResponseControls() not implemented");
    }
 
     //*************************************************************************
