@@ -26,18 +26,21 @@ public class BindProperties
     private int version = 3;
     private String dn = null;
     private String method = null;
+    private boolean anonymous;
     private Hashtable bindProperties = null;
     private Object bindCallbackHandler = null;
 
     public BindProperties(   int version,
                              String dn,
                              String method,
+                             boolean anonymous,
                              Hashtable bindProperties,
                              Object bindCallbackHandler)
     {
         this.version = version;
         this.dn = dn;
         this.method = method;
+        this.anonymous = anonymous;
         this.bindProperties = bindProperties;
         this.bindCallbackHandler = bindCallbackHandler;
     }
@@ -88,5 +91,15 @@ public class BindProperties
     public final Object /* javax.security.auth.callback.CallbackHandler */ getSaslCallbackHandler()
     {
         return bindCallbackHandler;
+    }
+
+    /**
+     * Indicates whether or not the bind properties specify an anonymous bind
+     *
+     * @return true if the bind properties specify an anonymous bind
+     */
+    public final boolean isAnonymous()
+    {
+        return anonymous;
     }
 }

@@ -687,8 +687,8 @@ final class Connection
     final boolean isBound()
     {
         if( bindProperties != null) {
-            String dn = bindProperties.getAuthenticationDN();
-            return( (dn != null) && (dn.length() != 0));
+            // Bound if not anonymous
+            return( ! bindProperties.isAnonymous());
         }
         return false;
     }
@@ -778,7 +778,10 @@ final class Connection
 
         int semId = acquireWriteSemaphore( semaphoreId);
         // Now send unbind if socket not closed
-        if( (bindProperties != null) && (out != null)) {
+        if( (bindProperties != null) &&
+            (out != null) &&
+            (! bindProperties.isAnonymous()))
+        {
             try {
                 LDAPMessage msg = new LDAPUnbindRequest( null);
                 if( Debug.LDAP_DEBUG) {

@@ -1440,10 +1440,15 @@ public class LDAPConnection implements Cloneable
         if(passwd == null)
             passwd = new byte[] {};
 
+        boolean anonymous = false;
+        if( passwd.length == 0) {
+            anonymous = true; // anonymous, passwd length zero with simple bind
+        }
         LDAPMessage msg = new LDAPBindRequest( version, dn, passwd, cons.getControls());
 
         msgId = msg.getMessageID();
-        bindProps = new BindProperties(version, dn.trim(),"simple", null, null);
+        bindProps = new BindProperties( version, dn.trim(),"simple",
+                                        anonymous, null, null);
 
         // For bind requests, if not connected, attempt to reconnect
         if( ! conn.isConnected()) {
