@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPConnection.java,v 1.23 2000/08/28 22:18:55 vtag Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPConnection.java,v 1.24 2000/08/30 18:20:49 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -49,19 +49,159 @@ public class LDAPConnection implements
    private LDAPSearchConstraints defSearchCons = new LDAPSearchConstraints();
    private boolean ldapv3 = true;
 
+   /**
+   * An option flag that specifies that aliases are never dereferenced.
+   *
+   * <p> DEREF_NEVER = 0 </p>
+   *
+   * @see #DEREF
+   */
    public static final int DEREF_NEVER  = 0;
+   
+   /**
+   * A flag that specifies that aliases are dereferenced when
+   * searching the entries beneath the starting point but not when 
+   * searching for the starting entry.
+   *
+   * <p> DEREF_SEARCHING = 1 </p>
+   *
+   * @see #DEREF
+   */
    public static final int DEREF_SEARCHING = 1;
+   
+   /**
+   * A flag that specifies that aliases are dereferenced when
+   * searching for the starting entry but are not dereferenced when
+   * searching the entries beneath the starting point.
+   *
+   * <p> DEREF_FINDING = 2 </p>
+   *
+   * @see #DEREF
+   */
    public static final int DEREF_FINDING = 2;
+   
+  /**
+   * A flag that specifies that aliases are dereferenced always (when
+   * searching for the starting entry and when
+   * searching the entries beneath the starting point).
+   *
+   * <p> DEREF_ALWAYS = 3 </p>
+   *
+   * @see #DEREF
+   */
    public static final int DEREF_ALWAYS = 3;
 
+  /**
+   * An option that specifies whether aliases are dereferenced.
+   *
+   * <p>Can be set to the following values:</p>
+   *<ul>
+   *<li>DEREF_NEVER = 0</li>
+   *<li>DEREF_SEARCHING = 1</li>
+   *<li>DEREF_FINDING = 2</li>
+   *<li>DEREF_ALWAYS = 3</li>
+   *</ul>
+   * <p> Default value: DEREF = 1 </p>
+   *
+   * @see #DEREF_NEVER
+   * @see #DEREF_SEARCHING
+   * @see #DEREF_FINDING
+   * @see #DEREF_ALWAYS
+   */
    public static final int DEREF = 1;
+   
+  /**
+   * An option that specifies the maximum number of search results to
+   * return.
+   *
+   * <p>If this option is set to 0, there is no maximum limit.
+   *
+   * <p>Default value: 1000</p>
+   *
+   * @see #setOption(int, java.lang.Object)
+   * @see #getOption(int)
+   */
    public static final int SIZELIMIT = 2;
+   
+  /**
+   * An option that specifies the maximum number of seconds the server 
+   * is to wait when returning search results.
+   *
+   * <p>This option is only recoginzed on search operations.</p>
+   *
+   * <p>Default value: 0 
+   */
    public static final int SERVER_TIMELIMIT = 3;
+   
+  /**
+   * An option that specifies the maximum number of milliseconds the client
+   * waits for an operation to complete. 
+   *
+   * <p>If this option is set to 0, there is no maximum time limit.
+   *
+   * Default value: 0
+   */
    public static final int TIMELIMIT = 4;
+   
+  /**
+   * An option that specifies whether or not the client follows referrals
+   * automatically.
+   *
+   * <p> If false, an LDAPReferralException is raised when a referral is
+   * detected. If true, referrals are followed automatically. </p>
+   *
+   * <p> Referrals of any type other than to an LDAP server (for example, 
+   * a referral URL other than ldap://something) are ignored on automaic
+   * referral following.</p>
+   *
+   * <p>Default value: false</p>
+   */
    public static final int REFERRALS = 5;
+   
+  /**
+   * An option that specifies an object that implements the LDAPRebind
+   * interface.
+   *
+   * <p>A user of the class library must define the LDAPRebind class 
+   * and the getREbindAuthentication method that will be used to get
+   * the distinguished name and the password to use for authentication.</p>
+   *
+   * <p>If this value is null and REFERRALS is true, referrals are followed
+   * with an anonymous bind (no authentication).</p>
+   *
+   * <p>Default value: null</p>
+   */
    public static final int REFERRALS_REAUTHENTICATION = 6;
+   
+   /**
+   * An option that specifies an object that can process an authentication
+   * request, overriding the default authentication behavior.
+   *
+   * <p> The object is typically used for processing authentication when
+   * following referrals.</p>
+   */
    public static final int BIND = 7;
+   
+   /**
+   * An option that specifies the maximum number of referrals in a sequence
+   * that the client will follow.
+   *
+   * <p>For example, if REFERRALS_HOP_LIMIT is set to 5, the client follows
+   * no more than 5 referrals in a row when resolving a single LDAP 
+   * request. </p>
+   */
    public static final int REFERRALS_HOP_LIMIT = 8;
+   
+   /**
+   * An option that specifies the number of search results to return at a
+   * time.
+   *
+   * <p>For example, if BATCHSIZE is 1, enumerating an LDAPSearchResults
+   * blocks only until one entry is available. If it is set to 0, enumerating
+   * blocks until all entries have been retrieved from the server. </p>
+   *
+   * <p>Default value: 1 </p>
+   */
    public static final int BATCHSIZE = 9;
 
    public static final int LDAP_V2 = 2;
@@ -337,7 +477,7 @@ public class LDAPConnection implements
     * Indicates whether the connection represented by this object is open
     * at this time.
     *
-    * @return
+    * @return  True if connection is open; false if the connection is closed.
     */
    public boolean isConnected()
    {
@@ -487,7 +627,7 @@ public class LDAPConnection implements
 
    /**
     *
-    * Abandons one search operation for a listener.
+    *  Abandons one search operation for a listener.
     *
     *  @param id      The ID of the asynchrous operation to abandon. The ID 
     *                 can be obtained from the search listener for the
@@ -507,12 +647,13 @@ public class LDAPConnection implements
    */
 
    /**
-    * Abandons a search operation for a listener.
+    *  
+    Abandons a search operation for a listener.
     *
-    * @param id The ID of the asynchronous operation to abandon. The ID can 
-    *           be obtained from the search listern for the operation.
+    *  @param id The ID of the asynchronous operation to abandon. The ID can 
+    *            be obtained from the search listern for the operation.
     *
-    * @param cons The contraints specific to the operation 
+    *  @param cons The contraints specific to the operation 
     *
     *  @exception LDAPException A general exception which includes an error 
     *  message and an LDAP error code.
@@ -743,11 +884,12 @@ public class LDAPConnection implements
    /**
     *
     * Authenticates to the LDAP server (that the object is currently
-    * connected to) using the specified name and password.  
+    * connected to) as an LDAPv2 bind, using the specified name and 
+    * password.  
     *
-    * If the object has been disconnected from an LDAP server,
+    * <p>If the object has been disconnected from an LDAP server,
     * this method attempts to reconnect to the server. If the object
-    * has already authenticated, the old authentication is discarded.
+    * has already authenticated, the old authentication is discarded.</p>
     * 
     *  @param dn      If non-null and non-empty, specifies that the
     *                 connection and all operations through it should
@@ -770,19 +912,21 @@ public class LDAPConnection implements
       bind(LDAP_V2, dn, passwd); // call LDAPv3 bind()
    }
 
+   /*
+    * 4.40.1
+    */
+    
    /**
 	*
     * Authenticates to the LDAP server (that the object is currently
-    * connected to) using the specified name and password.  
+    * connected to) using the specified name, password, and LDAP version.  
     *
     * <p>If the object has been disconnected from an LDAP server,
     * this method attempts to reconnect to the server. If the object
     * has already authenticated, the old authentication is discarded.</p>
     *
-	* The LDAPv3 bind method adds the version parameter.
-    *
     *  @param version  The version of the LDAP protocol to use 
-    *                  in the bind. 
+    *                  in the bind, either LDAPv2 or LDAPv3. 
     *
     *  @param dn      If non-null and non-empty, specifies that the
     *                 connection and all operations through it should
@@ -809,21 +953,19 @@ public class LDAPConnection implements
    /**
     *
     * Authenticates to the LDAP server (that the object is currently
-    * connected to) using the specified name and password.  
+    * connected to) using the specified name, password, LDAP version, 
+    * and constraints.  
     *
     * <p>If the object has been disconnected from an LDAP server,
     * this method attempts to reconnect to the server. If the object
     * has already authenticated, the old authentication is discarded.</p>
     *
+    *  @param version  The LDAP protocol version, either 2 or 3. 
     *
-    * The LDAPv3 bind method adds the version parameter.
-    *
-    *  @param version  The version of the LDAP protocol to use 
-    *                   in the bind. 
-    *  @param dn      If non-null and non-empty, specifies that the
-    *                 connection and all operations through it should
-    *                 be authenticated with dn as the distinguished
-    *                 name.
+    *  @param dn       If non-null and non-empty, specifies that the
+    *                  connection and all operations through it should
+    *                  be authenticated with dn as the distinguished
+    *                  name.
     *
     *  @param passwd  If non-null and non-empty, specifies that the
     *                 connection and all operations through it should
@@ -855,16 +997,15 @@ public class LDAPConnection implements
    /**
     *
     * Authenticates to the LDAP server (that the object is currently
-    * connected to) using the specified name and password.  
+    * connected to) using the specified name, password, LDAP version,
+    * and listener.  
     *
     * <p>If the object has been disconnected from an LDAP server,
     * this method attempts to reconnect to the server. If the object
     * has already authenticated, the old authentication is discarded.</p>
     *
-    * The LDAPv3 bind method adds the version parameter.
     *
-    *  @param version  The version of the LDAP protocol to use 
-    *                  in the bind. 
+    *  @param version  The LDAP protocol version, either 2 or 3. 
     *                  
     *  @param dn      If non-null and non-empty, specifies that the
     *                 connection and all operations through it should
@@ -894,15 +1035,14 @@ public class LDAPConnection implements
 
    /**
     * Authenticates to the LDAP server (that the object is currently
-    * connected to) using the specified name and password.  If the object
-    * has been disconnected from an LDAP server, this method attempts to
-    * reconnect to the server. If the object had already authenticated, the
-    * old authentication is discarded.
+    * connected to) using the specified name, password, LDAP version
+    * listener, and constraints.  
     *
-    * The LDAPv3 bind method adds the version parameter.
+    * <p>If the object has been disconnected from an LDAP server,
+    * this method attempts to reconnect to the server. If the object
+    * had already authenticated, the old authentication is discarded. </p>
     *
-    *  @param version  The version of the LDAP protocol to use 
-    *                  in the bind. 
+    *  @param version  The LDAP protocol version, either 2 or 3.
     * 
     *  @param dn      If non-null and non-empty, specifies that the
     *                 connection and all operations through it should
@@ -919,6 +1059,9 @@ public class LDAPConnection implements
     *                   listener object is created internally.
     *
     *  @param cons      Constraints specific to the operation.
+    *
+    *  @exception LDAPException A general exception which includes an error 
+    *  message and an LDAP error code.
     */
    public LDAPResponseListener bind(int version,
                                     String dn,
@@ -1010,22 +1153,28 @@ public class LDAPConnection implements
 	// compare methods
 	//*************************************************************************
 
-   /**
+   /*
     * 4.39.4 compare, LDAPv2, synchronous
+    */
+    
+   /**
     *
-    * Checks to see if an entry contains an attribute with a specified
-    * value.  Returns true if the entry has the value, and false if the
-    * entry does not have the value or the attribute.
-    *
-    * Parameters are:
-    *
-    *  dn             The distinguished name of the entry to use in the
+    * Synchronously checks to see if an entry contains an attribute 
+    * with a specified value. 
+    * 
+    *  @param dn      The distinguished name of the entry to use in the
     *                 comparison.
     *
-    *  attr           The attribute to compare against the entry. The
+    *  @param attr    The attribute to compare against the entry. The
     *                 method checks to see if the entry has an
     *                 attribute with the same name and value as this
     *                 attribute.
+    *
+    *  @return True if the entry has the value, and false if the
+    *  entry does not have the value or the attribute.
+    *
+    *  @exception LDAPException A general exception which includes an error 
+    *  message and an LDAP error code.
     */
    public boolean compare(String dn,
                           LDAPAttribute attr)
@@ -1033,25 +1182,31 @@ public class LDAPConnection implements
    {
       return compare(dn, attr, defSearchCons);
    }
+   
+    /*
+     * compare (LDAPv2)
+     */
 
    /**
-    * compare (LDAPv2)
     *
     * Checks to see if an entry contains an attribute with a specified
-    * value.  Returns true if the entry has the value, and false if the
-    * entry does not have the value or the attribute.
+    * value. 
     *
-    * Parameters are:
-    *
-    *  dn             The distinguished name of the entry to use in the
+    *  @param dn      The distinguished name of the entry to use in the
     *                 comparison.
     *
-    *  attr           The attribute to compare against the entry. The
+    *  @param attr    The attribute to compare against the entry. The
     *                 method checks to see if the entry has an
     *                 attribute with the same name and value as this
     *                 attribute.
     *
-    *  cons           Constraints specific to the operation.
+    *  @param cons    Constraints specific to the operation.
+    *
+    *  @return  Returns true if the entry has the value, and false if the
+    *  entry does not have the value or the attribute.
+    *
+    *  @exception LDAPException A general exception which includes an error 
+    *  message and an LDAP error code.
     */
    public boolean compare(String dn,
                           LDAPAttribute attr,
@@ -1076,21 +1231,25 @@ public class LDAPConnection implements
       
       return ret;
    }
+   /*
+    * 4.1.4 compare
+    */
 
    /**
-    * 4.1.4 compare
     *
-    * Compare an attribute value with one in the directory.
+    * Compares an attribute value with one in the directory.
     *
-    * Parameters are:
-    *  dn             The distinguished name of the entry containing an
+    *  @param dn      The distinguished name of the entry containing an
     *                 attribute to compare.
     *
-    *  attr           An attribute to compare.
+    *  @param attr    An attribute to compare.
     *
-    *  listener       Handler for messages returned from a server in
-    *                 response to this request. If it is null, a
-    *                 listener object is created internally.
+    *  @param listener   Handler for messages returned from a server in
+    *                    response to this request. If it is null, a
+    *                    listener object is created internally.
+    *
+    *  @exception LDAPException A general exception which includes an error 
+    *  message and an LDAP error code.
     */
    public LDAPResponseListener compare(String dn,
                                        LDAPAttribute attr,
@@ -1101,19 +1260,21 @@ public class LDAPConnection implements
    }
 
    /**
-    * Compare an attribute value with one in the directory.
+    * Compares an attribute value with one in the directory.
     *
-    * Parameters are:
-    *  dn             The distinguished name of the entry containing an
+    *  @param dn      The distinguished name of the entry containing an
     *                 attribute to compare.
     *
-    *  attr           An attribute to compare.
+    *  @param attr    An attribute to compare.
     *
-    *  listener       Handler for messages returned from a server in
-    *                 response to this request. If it is null, a
-    *                 listener object is created internally.
+    *  @param listener  Handler for messages returned from a server in
+    *                   response to this request. If it is null, a
+    *                   listener object is created internally.
     *
-    *  cons           Constraints specific to the operation.
+    *  @param cons      Constraints specific to the operation.
+    *
+    *  @exception LDAPException A general exception which includes an error 
+    *  message and an LDAP error code.
     */
    public LDAPResponseListener compare(String dn,
                                        LDAPAttribute attr,
@@ -1162,18 +1323,84 @@ public class LDAPConnection implements
 	// connect methods
 	//*************************************************************************
 
-   /**
+   /*
     * LDAPv2
     */
+    
+  /**
+    *
+    *  Connects to the specified host and port as an LDAPv2 connection. 
+    *
+    *  <p>If this LDAPConnection object represents an open connection, the
+    *  connection is colosed first before the new connection is opened. 
+    *  At this point, there is no authentication, and any operations are
+    *  conducted as an anonymous client.</p>
+    *
+    *  <p> When more than one host name is specified, each host is contacted
+    *  in turn until a connection can be established.</p>
+    *
+    *  @param host A host name or a dotted string representing the IP address
+    *              of a host running an LDAP server to connect to. It may also
+    *              contain a list of host names, space-delimited. Each host 
+    *              name can include a trailing colon and port number.
+    *
+    *  @param port The TCP or UDP port number to connect to or contact. 
+    *              The default LDAP port is 389. The port parameter is 
+    *              ignored for any host hame which includes a colon and 
+    *              port number.
+    *
+    *  @exception LDAPException A general exception which includes an error 
+    *  message and an LDAP error code.
+    *
+    */
+    
    public void connect(String host, int port)
       throws LDAPException
    {
       connect(host, port, null, null);
    }
 
-   /**
+   /*
     * LDAPv2
     */
+    
+  /**
+    *
+    *  Connects to the specified host and port, using the specified name
+    *  and password, as an LDAPv2 connection. 
+    *
+    *  <p>If this LDAPConnection object represents an open connection, the
+    *  connection is colosed first before the new connection is opened. 
+    *  This is equivalent to connect (host, port) followed by bind (dn, 
+    *  passwd).</p>
+    *
+    *  <p> When more than one host name is specified, each host is contacted
+    *  in turn until a connection can be established.</p>
+    *
+    *  @param host A host name or a dotted string representing the IP address
+    *              of a host running an LDAP server to connect to. It may also
+    *              contain a list of host names, space-delimited. Each host 
+    *              name can include a trailing colon and port number.
+    *
+    *  @param port The TCP or UDP port number to connect to or contact. 
+    *              The default LDAP port is 389. The port parameter is 
+    *              ignored for any host hame which includes a colon and 
+    *              port number.
+    *
+    *  @param dn   If non-null and non-empty, specifies that the 
+    *              connection and all operations through it should be 
+    *              authenticated with the dn as the distinguished name.
+    *
+    *  @param passwd   If non-null and non-empty, specifies that the
+    *                  connection and all operations through it should 
+    *                  be authenticated with the DN as the distinguished 
+    *                  name and passwd as the password.
+    *
+    *  @exception LDAPException A general exception which includes an error 
+    *  message and an LDAP error code.
+    *
+    */
+
    public void connect(String host, int port, String dn, String passwd)
       throws LDAPException
    {
@@ -1181,9 +1408,52 @@ public class LDAPConnection implements
       connect(LDAP_V2, host, port, dn, passwd);
    }
 
-   /**
-    * LDAPv3
+   /*
+    * LDAPv3, 4.40.2
     */
+    
+    /**
+    *
+    *  Connects to the specified host and port, using the specified name,
+    *  password, and LDAP version. 
+    *
+    *  <p>If this LDAPConnection object represents an open connection, the
+    *  connection is colosed first before the new connection is opened. 
+    *  This is equivalent to connect (host, port) followed by bind (dn, 
+    *  passwd).</p>
+    *
+    *  <p>When more than one host name is specified, each host is contacted
+    *  in turn until a connection can be established.</p>
+    *
+    *  <p>If the server does not support the requested protocol version, 
+    *  an exception is thrown.</p> 
+    *
+    *  @param version  The LDAP protocol version, either 2 or 3.
+    *
+    *  @param host A host name or a dotted string representing the IP address
+    *              of a host running an LDAP server to connect to. It may also
+    *              contain a list of host names, space-delimited. Each host 
+    *              name can include a trailing colon and port number.
+    *
+    *  @param port The TCP or UDP port number to connect to or contact. 
+    *              The default LDAP port is 389. The port parameter is 
+    *              ignored for any host hame which includes a colon and 
+    *              port number.
+    *
+    *  @param dn   If non-null and non-empty, specifies that the 
+    *              connection and all operations through it should be 
+    *              authenticated with the DN as the distinguished name.
+    *
+    *  @param passwd   If non-null and non-empty, specifies that the
+    *                  connection and all operations through it should 
+    *                  be authenticated with the dn as the distinguished 
+    *                  name and passwd as the password.
+    *
+    *  @exception LDAPException A general exception which includes an error 
+    *  message and an LDAP error code.
+    *
+    */
+
    public void connect(int version, String host, int port, String dn,
                        String passwd)
       throws LDAPException
@@ -1202,33 +1472,42 @@ public class LDAPConnection implements
 	// delete methods
 	//*************************************************************************
 
-   /**
+   /*
     * 4.28.6 delete
-    *
-    * Deletes the entry for the specified DN from the directory.
-    *
-    *
-    * Parameters are:
-    *
-    *  dn             Distinguished name of the entry to modify.
     */
+   
+   
+   /**
+    *
+    * Deletes the entry with the specified DN from the directory.
+    *
+    *  @param dn      Distinguished name of the entry to delete.
+    *
+    *  @exception LDAPException A general exception which includes an error 
+    *  message and an LDAP error code.
+    */
+    
    public void delete(String dn)
       throws LDAPException
    {
       delete(dn, defSearchCons);
    }
+   
+   /*
+    * 4.28.6 delete
+    */
 
    /**
-    * 4.28.6 delete
     *
-    * Deletes the entry for the specified DN from the directory.
+    * Deletes the entry with the specified DN from the directory, using 
+    * the specified contraints.
     *
+    *  @param dn      Distinguished name of the entry to delete.
     *
-    * Parameters are:
+    *  @param cons    Constraints specific to the operation.
     *
-    *  dn             Distinguished name of the entry to modify.
-    *
-    *  cons           Constraints specific to the operation.
+    *  @exception LDAPException A general exception which includes an error 
+    *  message and an LDAP error code.
     */
    public void delete(String dn, LDAPConstraints cons)
       throws LDAPException
@@ -1237,20 +1516,25 @@ public class LDAPConnection implements
          delete(dn, (LDAPResponseListener)null, cons);
       listener.getResponse().chkResultCode();
    }
+   
+   /*
+    * 4.1.5 delete
+    */
 
    /**
-    * 4.1.5 delete
     *
-    * Deletes the entry for the specified DN from the directory.
+    * Deletes the entry with the specified DN from the directory and 
+    * returns the results to the specified listener.
     *
+    *  @param dn      Distinguished name of the entry to modify.
     *
-    * Parameters are:
+    *  @param listener  Handler for messages returned from a server in
+    *                   response to this request. If it is null, a
+    *                   listener object is created internally.
     *
-    *  dn             Distinguished name of the entry to modify.
+    *  @exception LDAPException A general exception which includes an error 
+    *  message and an LDAP error code.
     *
-    *  listener       Handler for messages returned from a server in
-    *                  response to this request. If it is null, a
-    *                  listener object is created internally.
     */
    public LDAPResponseListener delete(String dn,
                                       LDAPResponseListener listener)
@@ -1260,18 +1544,21 @@ public class LDAPConnection implements
    }
 
    /**
-    * Deletes the entry for the specified DN from the directory.
+    * Deletes the entry with the specified DN from the directory, using 
+    * the specified contraints and returning the results to the specified 
+    * listener.
     *
+    *  @param dn      Distinguished name of the entry to delete.
     *
-    * Parameters are:
+    *  @param listener   Handler for messages returned from a server in
+    *                    response to this request. If it is null, a
+    *                    listener object is created internally.
     *
-    *  dn             Distinguished name of the entry to modify.
+    *  @param cons    Constraints specific to the operation.
     *
-    *  listener       Handler for messages returned from a server in
-    *                  response to this request. If it is null, a
-    *                  listener object is created internally.
+    *  @exception LDAPException A general exception which includes an error 
+    *  message and an LDAP error code.
     *
-    *  cons           Constraints specific to the operation.
     */
    public LDAPResponseListener delete(String dn,
                                       LDAPResponseListener listener,
@@ -1311,17 +1598,23 @@ public class LDAPConnection implements
 	//*************************************************************************
 	// disconnect method
 	//*************************************************************************
+   /*
+    * 4.39.7 disconnect, LDAPv2, synchronous
+    */
 
    /**
-    * 4.39.7 disconnect, LDAPv2, synchronous
     *
-    * Disconnects from the LDAP server. Before the object can perform LDAP
-    * operations again, it must reconnect to the server by calling connect.
+    * Synchronously disconnects from the LDAP server. 
     *
-    * Will abandon any outstanding requests, issue an unbind request to the
-    * server, and then close the socket.
-	 *
-	 * @throws LDAPException
+    * <p>Before the object can perform LDAP operations again, it must </p>
+    * reconnect to the server by calling connect.
+    *
+    * The disconnect method abandons any outstanding requests, issues an 
+    * unbind request to the server, and then close the socket.
+	*
+	* @exception LDAPException A general exception which includes an error 
+    *  message and an LDAP error code.
+    *
     */
    public void disconnect()
       throws LDAPException
@@ -1340,18 +1633,56 @@ public class LDAPConnection implements
 	// extendedOperation methods
 	//*************************************************************************
 
-   /**
+   /*
     * 4.40.3 extendedOperation, LDAPv3, synchronous LDAP extended request 
     */
+    
+   /**
+    *
+    * Provides a synchronous means to access extended, non-mandatory  
+    * operations offered by a particular LDAPv3 compliant server.
+    *
+    * @param op  The object which contains (1) an identifier of an extended
+    *            operation which should be recognized by the particular LDAP 
+    *            server this client is connected to and (2)an operation-specific
+    *            sequence of octet strings or BER-encoded values. 
+    *
+    * @return An operation-specific object, containing an ID and an octet string
+    * or BER-encoded values.
+    *
+    * @exception LDAPException A general exception which includes an error 
+    *  message and an LDAP error code.
+    */
+    
    public LDAPExtendedResponse extendedOperation(LDAPExtendedOperation op)
       throws LDAPException
    {
       return extendedOperation(op, defSearchCons);
    }
 
-   /**
+   /*
     *  Synchronous LDAP extended request with SearchConstraints
     */
+    
+    /**
+    *
+    * Provides a synchronous means to access extended, non-mandatory  
+    * operations offered by a particular LDAPv3 compliant server.
+    *
+    * @param op  The object which contains (1) an identifier of an extended
+    *            operation which should be recognized by the particular LDAP
+    *            server this client is connected to and (2)an operation-specific 
+    *            sequence of octet strings or BER-encoded values. 
+    *
+    * @param cons Constraints specific to the operation.
+    *
+    * @return An operation-specific object, containing an ID and an octet string
+    * or BER-encoded values.
+    *
+    * @exception LDAPException A general exception which includes an error 
+    *  message and an LDAP error code.
+    */
+
    public LDAPExtendedResponse extendedOperation(LDAPExtendedOperation op,
                                                   LDAPSearchConstraints cons)
       throws LDAPException
@@ -1364,9 +1695,30 @@ public class LDAPConnection implements
    }
 
 
-   /**
+   /*
     * ASynchronous LDAP extended request 
     */
+    
+   /**
+    * Provides an asynchronous means to access extended, non-mandatory  
+    * operations offered by a particular LDAPv3 compliant server.
+    *
+    * @param op  The object which contains (1) an identifier of an extended
+    *            operation which should be recognized by the particular LDAP 
+    *            server this client is connected to and (2)an operation-specific 
+    *            sequence of octet strings or BER-encoded values. 
+    *
+    * @param listener  Handler for messages returned from a server in response 
+    *                  to this request. If it is null, a listener object is 
+    *                  created internally.
+    *
+    * @return An operation-specific object, containing an ID and an octet string
+    * or BER-encoded values.
+    *
+    * @exception LDAPException A general exception which includes an error 
+    *  message and an LDAP error code.
+    */
+
    public LDAPResponseListener extendedOperation(LDAPExtendedOperation op,
                                     LDAPResponseListener listener)
 		throws LDAPException
@@ -1375,9 +1727,32 @@ public class LDAPConnection implements
       return extendedOperation(op, listener, defSearchCons);
    }
 
-   /**
+   /*
     *  ASynchronous LDAP extended request with SearchConstraints
     */
+    
+   /**
+    * Provides an asynchronous means to access extended, non-mandatory  
+    * operations offered by a particular LDAPv3 compliant server.
+    *
+    * @param op  The object which contains (1) an identifier of an extended
+    *            operation which should be recognized by the particular LDAP 
+    *            server this client is connected to and (2)an operation-
+    *            specific sequence of octet strings or BER-encoded values. 
+    *
+    * @param listener  Handler for messages returned from a server in response 
+    *                  to this request. If it is null, a listener object is 
+    *                  created internally.
+    *
+    * @param cons      Constraints specific to this operation.
+    *
+    * @return An operation-specific object, containing an ID and an octet string
+    * or BER-encoded values.
+    *
+    * @exception LDAPException A general exception which includes an error 
+    *  message and an LDAP error code.
+    */
+
    public LDAPResponseListener extendedOperation(LDAPExtendedOperation op,
                                        LDAPResponseListener listener,
                                                   LDAPSearchConstraints cons)
@@ -1427,17 +1802,25 @@ public class LDAPConnection implements
 	// getOption method
 	//*************************************************************************
 
+   /*
+    *4.28.8 getOption
+    */
+    
    /**
-    * 4.28.8 getOption
-    *
+    * 
     * Returns the value of the specified option for this object.
     *
-    * Parameters are:
+    *  @param option   The option whose value is to be returned. See 
+    *                  LDAPConnection.setOption for a description of
+    *                  valid options.
+	*
+    * @return The value of the specified option.
     *
-    *  option         See LDAPConnection.setOption for a description of
-    *                 valid options.
-	 *
-	 * @throws LDAPException
+    * @exception LDAPException A general exception which includes an error 
+    *  message and an LDAP error code.
+    *
+    * @see #setOption(int, Object)
+	*
     */
    public Object getOption(int option)
    throws LDAPException {
@@ -1470,8 +1853,18 @@ public class LDAPConnection implements
 	// getResponseControls method
 	//*************************************************************************
 
-   /**
+   /*
     * 4.40.4 getResponseControls, LDAPv3, synchronous
+    */
+    
+    /**
+    *
+    *  Returns the latest server controls which an LDAP server returned with 
+    *  its latest response to an LDAP request from the current thread or null 
+    *  it the latest response contains no server controls.
+    *
+    *  @return The server controls from the latest response or null if the 
+    *  response contains no server controls.
     */
    public LDAPControl[] getResponseControls()
 	{
@@ -1484,21 +1877,26 @@ public class LDAPConnection implements
 	// modify methods
 	//*************************************************************************
 
-   /**
+   /*
     * 4.39.9 modify, LDAPv2, synchronous
+    */
+    
+   /**
+    * Synchronously makes a single change to an existing entry in the 
+    * directory.
     *
-    * Makes a single change to an existing entry in the directory (for
-    * example, changes the value of an attribute, adds a new attribute
-    * value, or removes an existing attribute value).
+    * <p>For example, changes the value of an attribute, adds 
+    * a new attribute value, or removes an existing attribute value. </p>
     *
-    * The LDAPModification object specifies both the change to be made and
-    * the LDAPAttribute value to be changed.
+    * <p>The LDAPModification object specifies both the change to be made and
+    * the LDAPAttribute value to be changed.</p>
     *
-    * Parameters are:
+    *  @param dn     Distinguished name of the entry to modify.
     *
-    *  dn             Distinguished name of the entry to modify.
+    *  @param mod    A single change to be made to the entry.
     *
-    *  mod            A single change to be made to the entry.
+    * @exception LDAPException A general exception which includes an error 
+    *  message and an LDAP error code.
     */
    public void modify(String dn, LDAPModification mod)
       throws LDAPException
@@ -1507,22 +1905,24 @@ public class LDAPConnection implements
    }
 
    /**
-    * modify
     *
-    * Makes a single change to an existing entry in the directory (for
-    * example, changes the value of an attribute, adds a new attribute
-    * value, or removes an existing attribute value).
+    * Synchronously makes a single change to an existing entry in the  
+    * directory, using the specified constraints.
     *
-    * The LDAPModification object specifies both the change to be made and
-    * the LDAPAttribute value to be changed.
+    * <p>For example, changes the value of an attribute, adds a new 
+    * attribute value, or removes an existing attribute value.</p>
     *
-    * Parameters are:
+    * <p>The LDAPModification object specifies both the change to be 
+    * made and the LDAPAttribute value to be changed.</p>
     *
-    *  dn             Distinguished name of the entry to modify.
+    *  @param dn       Distinguished name of the entry to modify.
     *
-    *  mod            A single change to be made to the entry.
+    *  @param mod      A single change to be made to the entry.
     *
-    *  cons           Constraints specific to the operation.
+    *  @param cons     Constraints specific to the operation.
+    *
+    * @exception LDAPException A general exception which includes an error 
+    *  message and an LDAP error code.
     */
    public void modify(String dn,
                       LDAPModification mod,
@@ -1535,17 +1935,18 @@ public class LDAPConnection implements
    }
 
    /**
-    * modify
     *
-    * Makes a set of changes to an existing entry in the directory (for
-    * example, changes attribute values, adds new attribute values, or
-    * removes existing attribute values).
+    * Makes a set of changes to an existing entry in the directory.
+    *
+    * <p>For example, changes attribute values, adds new attribute 
+    * values, or removes existing attribute values).</p>
     * 
-    * Parameters are:
+    *  @param dn     Distinguished name of the entry to modify.
     *
-    *  dn             Distinguished name of the entry to modify.
+    *  @param mods   A set of changes to be made to the entry.
     *
-    *  mods           A set of changes to be made to the entry.
+    * @exception LDAPException A general exception which includes an error 
+    *  message and an LDAP error code.
     */
    public void modify(String dn, LDAPModificationSet mods)
       throws LDAPException
@@ -1554,17 +1955,19 @@ public class LDAPConnection implements
    }
 
    /**
-    * Makes a set of changes to an existing entry in the directory (for
-    * example, changes attribute values, adds new attribute values, or
-    * removes existing attribute values).
+    * Makes a set of changes to an existing entry in the directory.
+    *
+    * <p>For example, changes attribute values, adds new attribute values, 
+    * or removes existing attribute values.</p>
     * 
-    * Parameters are:
+    *  @param dn      Distinguished name of the entry to modify.
     *
-    *  dn             Distinguished name of the entry to modify.
+    *  @param mods    A set of changes to be made to the entry.
     *
-    *  mods           A set of changes to be made to the entry.
+    *  @param cons    Constraints specific to the operation.
     *
-    *  cons           Constraints specific to the operation.
+    * @exception LDAPException A general exception which includes an 
+    * error message and an LDAP error code.
     */
    public void modify(String dn,
                       LDAPModificationSet mods,
@@ -1577,24 +1980,25 @@ public class LDAPConnection implements
    }
 
    /**
-    * modify
     *
-    * Makes a single change to an existing entry in the directory (for
-    * example, changes the value of an attribute, adds a new attribute
-    * value, or removes an existing attribute value).
+    * Makes a single change to an existing entry in the directory.
     *
-    * The LDAPModification object specifies both the change to be made and
-    * the LDAPAttribute value to be changed.
+    * <p>For example, changes the value of an attribute, adds a new attribute
+    * value, or removes an existing attribute value. </p>
     *
-    * Parameters are:
+    * <p>The LDAPModification object specifies both the change to be made and
+    * the LDAPAttribute value to be changed.</p>
     *
-    *  dn             Distinguished name of the entry to modify.
+    *  @param dn         Distinguished name of the entry to modify.
     *
-    *  mod            A single change to be made to the entry.
+    *  @param mod        A single change to be made to the entry.
     *
-    *  listener       Handler for messages returned from a server in
-    *                  response to this request. If it is null, a
-    *                  listener object is created internally.
+    *  @param listener   Handler for messages returned from a server in
+    *                    response to this request. If it is null, a
+    *                    listener object is created internally.
+    *
+    *  @exception LDAPException A general exception which includes an error
+    *  message and an LDAP error code.
     */
    public LDAPResponseListener modify(String dn,
                                       LDAPModification mod,
@@ -1605,24 +2009,27 @@ public class LDAPConnection implements
    }
 
    /**
-    * Makes a single change to an existing entry in the directory (for
-    * example, changes the value of an attribute, adds a new attribute
-    * value, or removes an existing attribute value).
+    * Makes a single change to an existing entry in the directory, using
+    * the specified constraints.
     *
-    * The LDAPModification object specifies both the change to be made and
-    * the LDAPAttribute value to be changed.
+    * <p>For example, changes the value of an attribute, adds a new 
+    * attribute value, or removes an existing attribute value.</p>
     *
-    * Parameters are:
+    * <p>The LDAPModification object specifies both the change to be made 
+    * and the LDAPAttribute value to be changed.</p>
     *
-    *  dn             Distinguished name of the entry to modify.
+    *  @param dn          Distinguished name of the entry to modify.
     *
-    *  mod            A single change to be made to the entry.
+    *  @param mod         A single change to be made to the entry.
     *
-    *  listener       Handler for messages returned from a server in
-    *                  response to this request. If it is null, a
-    *                  listener object is created internally.
+    *  @param listener    Handler for messages returned from a server in
+    *                     response to this request. If it is null, a
+    *                     listener object is created internally.
     *
-    *  cons           Constraints specific to the operation.
+    *  @param cons        Constraints specific to the operation.
+    *
+    * @exception LDAPException A general exception which includes an error
+    *  message and an LDAP error code.
     */
    public LDAPResponseListener modify(String dn,
                                       LDAPModification mod,
@@ -1636,19 +2043,21 @@ public class LDAPConnection implements
    }
 
    /**
-    * Makes a set of changes to an existing entry in the directory (for
-    * example, changes attribute values, adds new attribute values, or
-    * removes existing attribute values).
+    * Makes a set of changes to an existing entry in the directory.
     *
-    * Parameters are:
+    * <p>For example, changes attribute values, adds new attribute values, 
+    * or removes existing attribute values. </p>
     *
-    *  dn             Distinguished name of the entry to modify.
+    *  @param dn             Distinguished name of the entry to modify.
     *
-    *  mods           A set of changes to be made to the entry.
+    *  @param mods           A set of changes to be made to the entry.
     *
-    *  listener       Handler for messages returned from a server in
+    *  @param listener       Handler for messages returned from a server in
     *                  response to this request. If it is null, a
     *                  listener object is created internally.
+    *
+    * @exception LDAPException A general exception which includes an error
+    * message and an LDAP error code.
     */
    public LDAPResponseListener modify(String dn,
                                       LDAPModificationSet mods,
@@ -1659,21 +2068,24 @@ public class LDAPConnection implements
    }
 
    /**
-    * Makes a set of changes to an existing entry in the directory (for
-    * example, changes attribute values, adds new attribute values, or
-    * removes existing attribute values).
+    * Makes a set of changes to an existing entry in the directory, using
+    * the specified constraints.
     *
-    * Parameters are:
+    * <p>For example, changes attribute values, adds new attribute values, 
+    * or removes existing attribute values. </p>
     *
-    *  dn             Distinguished name of the entry to modify.
+    *  @param dn         Distinguished name of the entry to modify.
     *
-    *  mods           A set of changes to be made to the entry.
+    *  @param mods       A set of changes to be made to the entry.
     *
-    *  listener       Handler for messages returned from a server in
-    *                  response to this request. If it is null, a
-    *                  listener object is created internally.
+    *  @param listener   Handler for messages returned from a server in
+    *                    response to this request. If it is null, a
+    *                    listener object is created internally.
     *
-    *  cons           Constraints specific to the operation.
+    *  @param cons       Constraints specific to the operation.
+    *
+    *  @exception LDAPException A general exception which includes an error 
+    *  message and an LDAP error code.
     */
    public LDAPResponseListener modify(String dn,
                                       LDAPModificationSet mods,
@@ -1740,15 +2152,18 @@ public class LDAPConnection implements
 	// read methods
 	//*************************************************************************
 
-   /**
+   /*
     * read (LDAPv2)
-    *
+    */
+    
+   /**
     * Reads the entry for the specified distiguished name (DN) and
     * retrieves all attributes for the entry.
     *
-    * Parameters are:
+    *  @param dn        The distinguished name of the entry to retrieve.
     *
-    *  dn             Distinguished name of the entry to retrieve.
+    *  @exception LDAPException A general exception which includes an error 
+    *  message and an LDAP error code.
     */
    public LDAPEntry read(String dn)
       throws LDAPException
@@ -1756,17 +2171,21 @@ public class LDAPConnection implements
       return read(dn, defSearchCons);
    }
 
-   /**
+   /*
     * read (LDAPv2)
+    */
+    
+   /**
     *
-    * Reads the entry for the specified distiguished name (DN) and
-    * retrieves all attributes for the entry.
+    * Reads the entry for the specified distiguished name (DN), using the
+    * specified constraints, and retrieves all attributes for the entry.
     *
-    * Parameters are:
+    *  @param dn         The distinguished name of the entry to retrieve.
     *
-    *  dn             Distinguished name of the entry to retrieve.
+    *  @param cons       Constraints specific to the operation.
     *
-    *  cons           Constraints specific to the operation.
+    *  @exception LDAPException A general exception which includes an error
+    *  message and an LDAP error code.
     */
    public LDAPEntry read(String dn,
                          LDAPSearchConstraints cons)
@@ -1775,17 +2194,21 @@ public class LDAPConnection implements
       return read(dn, (String[]) null, cons);
    }
 
-   /**
+   /*
     * read (LDAPv2)
+    */
+    
+   /**
     *
     * Reads the entry for the specified distinguished name (DN) and
     * retrieves only the specified attributes from the entry.
     *
-    * Parameters are:
+    *  @param dn         The distinguished name of the entry to retrieve.
     *
-    *  dn             Distinguished name of the entry to retrieve.
+    *  @param attrs      The names of the attributes to retrieve.
     *
-    *  attrs          Names of attributes to retrieve.
+    *  @exception LDAPException A general exception which includes an error 
+    *  message and an LDAP error code.
     */
    public LDAPEntry read(String dn,
                          String attrs[])
@@ -1794,20 +2217,26 @@ public class LDAPConnection implements
       return read(dn, attrs, defSearchCons);
    }
 
-   /**
+   /*
     * read (LDAPv2)
-    *
-    * Reads the entry for the specified distinguished name (DN) and
-    * retrieves only the specified attributes from the entry.
-    *
-    * Parameters are:
-    *
-    *  dn             Distinguished name of the entry to retrieve.
-    *
-    *  attrs          Names of attributes to retrieve.
-    *
-    *  cons           Constraints specific to the operation.
     */
+    
+   /**
+    *
+    * Reads the entry for the specified distinguished name (DN), using the
+    * specified constraints, and retrieves only the specified attributes
+    * from the entry.
+    *
+    *  @param dn           The distinguished name of the entry to retrieve.
+    *
+    *  @param attrs        The names of the attributes to retrieve.
+    *
+    *  @param cons         Constraints specific to the operation.
+    *
+    *  @exception LDAPException A general exception which includes an error 
+    *  message and an LDAP error code.
+    */
+    
    public LDAPEntry read(String dn,
                          String attrs[],
                          LDAPSearchConstraints cons)
@@ -1823,21 +2252,22 @@ public class LDAPConnection implements
    /**
     * Reads the entry specified by the LDAP URL.
     *
-    * When this method is called, a new connection is created
+    * <p>When this read method is called, a new connection is created
     * automatically, using the host and port specified in the URL. After
     * finding the entry, the method closes the connection (in other words,
-    * it disconnects from the LDAP server).
+    * it disconnects from the LDAP server). </p>
     *
-    * If the URL specifies a filter and scope, these are not used. Of the
+    * <p>If the URL specifies a filter and scope, these are not used. Of the
     * information specified in the URL, this method only uses the LDAP host
     * name and port number, the base distinguished name (DN), and the list
-    * of attributes to return.
+    * of attributes to return. </p>
     *
-    * The method returns the entry specified by the base DN.
+    *  @param toGet           LDAP URL specifying the entry to read.
     *
-    * Parameters are:
+    *  @return The entry specified by the base DN.
     *
-    *  toGet           LDAP URL specifying the entry to read.
+    *  @exception LDAPException A general exception which includes an error 
+    *  message and an LDAP error code.
     */
    public static LDAPEntry read(LDAPUrl toGet)
       throws LDAPException
@@ -1847,25 +2277,27 @@ public class LDAPConnection implements
    }
 
    /**
-    * Reads the entry specified by the LDAP URL.
+    * Reads the entry specified by the LDAP URL, using the specified 
+    * constraints.
     *
-    * When this method is called, a new connection is created
+    * <p>When this method is called, a new connection is created
     * automatically, using the host and port specified in the URL. After
     * finding the entry, the method closes the connection (in other words,
-    * it disconnects from the LDAP server).
+    * it disconnects from the LDAP server).</p>
     *
-    * If the URL specifies a filter and scope, these are not used. Of the
+    * <p>If the URL specifies a filter and scope, these are not used. Of the
     * information specified in the URL, this method only uses the LDAP host
     * name and port number, the base distinguished name (DN), and the list
-    * of attributes to return.
+    * of attributes to return.</p>
     *
-    * The method returns the entry specified by the base DN.
+    * @return The entry specified by the base DN.
     *
-    * Parameters are:
+    * @param toGet       LDAP URL specifying the entry to read.
     *
-    *    toGet           LDAP URL specifying the entry to read.
+    * @param cons       Constraints specific to the operation.
     *
-    *    cons           Constraints specific to the operation.
+    * @exception LDAPException A general exception which includes an error 
+    * message and an LDAP error code.
     */
    public static LDAPEntry read(LDAPUrl toGet,
                                 LDAPSearchConstraints cons)
@@ -1878,19 +2310,24 @@ public class LDAPConnection implements
 	// rename methods
 	//*************************************************************************
 
-   /**
+   /*
     * 4.39.11 rename, LDAPv2, synchronous
+    */
+    
+   /**
     *
-    * Renames an existing entry in the directory.
+    * Synchronously renames an existing entry in the directory.
     *
-    * Parameters are:
+    *  @param dn             Current distinguished name of the entry.
     *
-    *  dn             Current distinguished name of the entry.
+    *  @param newRdn         New relative distinguished name for the entry.
     *
-    *  newRdn         New relative distinguished name for the entry.
+    *  @param deleteOldRdn   If true, the old name is not retained as an
+    *                        attribute value. If false, the old name is
+    *                        retained as an attribute value.
     *
-    *  deleteOldRdn   If true, the old name is not retained as an
-    *                  attribute value.
+    * @exception LDAPException A general exception which includes an error
+    *  message and an LDAP error code.
     */
    public void rename(String dn,
                       String newRdn,
@@ -1901,20 +2338,22 @@ public class LDAPConnection implements
    }
 
    /**
-    * rename
     *
-    * Renames an existing entry in the directory.
+    * Renames an existing entry in the directory, using the specified
+    * constraints.
     *
-    * Parameters are:
+    *  @param dn             Current distinguished name of the entry.
     *
-    *  dn             Current distinguished name of the entry.
+    *  @param newRdn         New relative distinguished name for the entry.
     *
-    *  newRdn         New relative distinguished name for the entry.
+    *  @param deleteOldRdn   If true, the old name is not retained as an
+    *                        attribute value. If false, the old name is 
+    *                        retained as an attribute value.
     *
-    *  deleteOldRdn   If true, the old name is not retained as an
-    *                  attribute value.
+    *  @param cons           Constraints specific to the operation.
     *
-    *  cons           Constraints specific to the operation.
+    * @exception LDAPException A general exception which includes an error 
+    * message and an LDAP error code.
     */
    public void rename(String dn,
                       String newRdn,
@@ -1927,22 +2366,22 @@ public class LDAPConnection implements
    }
 
    /**
-    * rename
-    *
     * Renames an existing entry in the directory, possibly repositioning it
     * in the directory tree.
     *
-    * Parameters are:
+    *  @param dn             Current distinguished name of the entry.
     *
-    *  dn             Current distinguished name of the entry.
+    *  @param newRdn         New relative distinguished name for the entry.
     *
-    *  newRdn         New relative distinguished name for the entry.
+    *  @param newParentdn    Distinguished name of an existing entry which is
+    *                        to be the new parent of the entry.
     *
-    *  newParentdn    Distinguished name of the existing entry which is
-    *                 to be the new parent of the entry.
+    *  @param deleteOldRdn   If true, the old name is not retained as an
+    *                        attribute value. If false, the old name is
+    *                        retained as an attribute value.
     *
-    *  deleteOldRdn   If true, the old name is not retained as an
-    *                 attribute value.
+    * @exception LDAPException A general exception which includes an error 
+    * message and an LDAP error code.
     */
    public void rename(String dn,
                       String newRdn,
@@ -1953,25 +2392,30 @@ public class LDAPConnection implements
       rename(dn, newRdn, newParentdn, deleteOldRdn, defSearchCons);
    }
 
-   /**
+   /*
     * 4.29.5 rename
+    */
+    
+   /**
     *
     * Renames an existing entry in the directory, possibly repositioning it
     * in the directory tree.
     *
-    * Parameters are:
+    *  @param dn             Current distinguished name of the entry.
     *
-    *  dn             Current distinguished name of the entry.
+    *  @param newRdn         New relative distinguished name for the entry.
     *
-    *  newRdn         New relative distinguished name for the entry.
+    *  @param newParentdn    Distinguished name of an existing entry which is
+    *                        to be the new parent of the entry.
     *
-    *  newParentdn    Distinguished name of the existing entry which is
-    *                 to be the new parent of the entry.
+    *  @param deleteOldRdn   If true, the old name is not retained as an
+    *                        attribute value. If false, the old name is
+    *                        retained as an attribute value.
     *
-    *  deleteOldRdn   If true, the old name is not retained as an
-    *                 attribute value.
+    *  @param cons           Constraints specific to the operation.
     *
-    *  cons           Constraints specific to the operation.
+    * @exception LDAPException A general exception which includes an error 
+    * message and an LDAP error code.
     */
    public void rename(String dn,
                       String newRdn,
@@ -1986,23 +2430,28 @@ public class LDAPConnection implements
       listener.getResponse().chkResultCode();
    }
 
-   /**
+   /*
     * 4.1.7 rename
+    */
+    
+   /**
     * 
     * Renames an existing entry in the directory.
     *
-    * Parameters are:
+    *  @param dn             Current distinguished name of the entry.
     *
-    *  dn             Current distinguished name of the entry.
+    *  @param newRdn         New relative distinguished name for the entry.
     *
-    *  newRdn         New relative distinguished name for the entry.
+    *  @param deleteOldRdn   If true, the old name is not retained as an
+    *                        attribute value. If false, the old name is
+    *                        retained as an attribute value.
     *
-    *  deleteOldRdn   If true, the old name is not retained as an
-    *                  attribute value.
+    *  @param listener       Handler for messages returned from a server in
+    *                        response to this request. If it is null, a
+    *                        listener object is created internally.
     *
-    *  listener       Handler for messages returned from a server in
-    *                  response to this request. If it is null, a
-    *                  listener object is created internally.
+    * @exception LDAPException A general exception which includes an error 
+    * message and an LDAP error code.
     */
    public LDAPResponseListener rename(String dn,
                                       String newRdn,
@@ -2012,24 +2461,30 @@ public class LDAPConnection implements
    {
       return rename(dn, newRdn, deleteOldRdn, listener, defSearchCons);
    }
+   
+   /* 
+    * 4.39.11
+    */
 
    /**
     * Renames an existing entry in the directory.
     *
-    * Parameters are:
+    *  @param dn             Current distinguished name of the entry.
     *
-    *  dn             Current distinguished name of the entry.
+    *  @param newRdn         New relative distinguished name for the entry.
     *
-    *  newRdn         New relative distinguished name for the entry.
+    *  @param deleteOldRdn   If true, the old name is not retained as an
+    *                        attribute value. If false, the old name is
+    *                        retained as an attribute value. 
     *
-    *  deleteOldRdn   If true, the old name is not retained as an
-    *                  attribute value.
+    *  @param listener       Handler for messages returned from a server in
+    *                        response to this request. If it is null, a
+    *                        listener object is created internally.
     *
-    *  listener       Handler for messages returned from a server in
-    *                  response to this request. If it is null, a
-    *                  listener object is created internally.
+    *  @param cons           Constraints specific to the operation.
     *
-    *  cons           Constraints specific to the operation.
+    * @exception LDAPException A general exception which includes an error 
+    * message and an LDAP error code.
     */
    public LDAPResponseListener rename(String dn,
                                       String newRdn,
@@ -2041,23 +2496,28 @@ public class LDAPConnection implements
       return rename(dn, newRdn, null, deleteOldRdn, listener, cons);
    }
 
+   /*
+    * LDAPv3 version, 4.39.11
+    */
+    
    /**
-    * LDAPv3 version Not in the draft yet.
     * 
     * Renames an existing entry in the directory.
     *
-    * Parameters are:
+    *  @param dn             Current distinguished name of the entry.
     *
-    *  dn             Current distinguished name of the entry.
+    *  @param newRdn         New relative distinguished name for the entry.
     *
-    *  newRdn         New relative distinguished name for the entry.
+    *  @param deleteOldRdn   If true, the old name is not retained as an
+    *                        attribute value. If false, the old name is
+    *                        retained as an attribute value.
     *
-    *  deleteOldRdn   If true, the old name is not retained as an
-    *                  attribute value.
+    *  @param listener       Handler for messages returned from a server in
+    *                        response to this request. If it is null, a
+    *                        listener object is created internally.
     *
-    *  listener       Handler for messages returned from a server in
-    *                  response to this request. If it is null, a
-    *                  listener object is created internally.
+    * @exception LDAPException A general exception which includes an error 
+    * message and an LDAP error code.
     */
    public LDAPResponseListener rename(String dn,
                                       String newRdn,
@@ -2070,23 +2530,29 @@ public class LDAPConnection implements
                     deleteOldRdn, listener, defSearchCons);
    }
 
+   /*
+    * LDAPv3 version, 4.39.11
+    */
+    
    /**
-    * LDAPv3 version Not in the draft yet.
+    * Renames an existing entry in the directory.
     *
-    * Parameters are:
+    *  @param dn             Current distinguished name of the entry.
     *
-    *  dn             Current distinguished name of the entry.
+    *  @param newRdn         New relative distinguished name for the entry.
     *
-    *  newRdn         New relative distinguished name for the entry.
+    *  @param deleteOldRdn   If true, the old name is not retained as an
+    *                        attribute value. If false, the old name is 
+    *                        retained as an attribute value.
     *
-    *  deleteOldRdn   If true, the old name is not retained as an
-    *                  attribute value.
+    *  @param listener       Handler for messages returned from a server in
+    *                        response to this request. If it is null, a
+    *                        listener object is created internally.
     *
-    *  listener       Handler for messages returned from a server in
-    *                  response to this request. If it is null, a
-    *                  listener object is created internally.
+    *  @param cons           Constraints specific to the operation.
     *
-    *  cons           Constraints specific to the operation.
+    * @exception LDAPException A general exception which includes an error 
+    * message and an LDAP error code.
     */
    public LDAPResponseListener rename(String dn,
                                       String newRdn,
@@ -2135,35 +2601,36 @@ public class LDAPConnection implements
 	// search methods
 	//*************************************************************************
 
+   /*
+    * 4.39.12 search
+    */
+    
    /**
-    * 4.28.12 search
     *
     * Performs the search specified by the parameters.
     *
-    * Parameters are:
+    *  @param base           The base distinguished name to search from.
     *
-    *  base           The base distinguished name to search from.
+    *  @param scope          The scope of the entries to search. The following
+    *                        are the valid options:
+    *<ul>
+    *   <li>LDAPv2.SCOPE_BASE - searches only the base DN
     *
-    *  scope          The scope of the entries to search. The following
-    *                  are the valid options:
+    *   <li>LDAPv2.SCOPE_ONE - searches only entries under the base DN
+    *                                  
+    *   <li>LDAPv2.SCOPE_SUB - searches the base DN and all entries
+    *                           within its subtree
+    *</ul>
+    *  @param filter         Search filter specifying the search criteria.
     *
-    *     LDAPv2.SCOPE_BASE            Search only the base DN
+    *  @param attrs          Names of attributes to retrieve.
     *
-    *     LDAPv2.SCOPE_ONE             Search only entries under the
-    *                                  base DN
+    *  @param typesOnly      If true, returns the names but not the values of
+    *                        the attributes found. If false, returns the
+    *                        names and values for attributes found.
     *
-    *     LDAPv2.SCOPE_SUB             Search the base DN and all
-    *                                  entries
-    *                                   within its subtree
-    *
-    *  filter         Search filter specifying the search criteria, as
-    *                  defined in [3].
-    *
-    *  attrs          Names of attributes to retrieve.
-    *
-    *  typesOnly      If true, returns the names but not the values of
-    *                  the attributes found.  If false, returns the
-    *                  names and values for attributes found.
+    * @exception LDAPException A general exception which includes an error 
+    * message and an LDAP error code.
     */
    public LDAPSearchResults search(String base,
                                    int scope,
@@ -2176,44 +2643,42 @@ public class LDAPConnection implements
    }
 
    /**
-    * 4.28.12 search
     *
     * Performs the search specified by the parameters, also allowing
     * specification of constraints for the search (such as the maximum
     * number of entries to find or the maximum time to wait for search
     * results).
     *
-    * As part of the search constraints, the function allows specifying
+    * <p>As part of the search constraints, the function allows specifying
     * whether or not the results are to be delivered all at once or in
     * smaller batches. If specified that the results are to be delivered in
     * smaller batches, each iteration blocks only until the next batch of
-    * results is returned.
+    * results is returned.</p>
     *
-    * Parameters are:
+    *  @param base           The base distinguished name to search from.
     *
-    *  base           The base distinguished name to search from.
+    *  @param scope          The scope of the entries to search. The following
+    *                        are the valid options:
+    *<ul>
+    *   <li>LDAPv2.SCOPE_BASE - searches only the base DN
     *
-    *  scope          The scope of the entries to search. The following
-    *                 are the valid options:
+    *   <li>LDAPv2.SCOPE_ONE - searches only entries under the base DN
+    *                                  
+    *   <li>LDAPv2.SCOPE_SUB - searches the base DN and all entries
+    *                           within its subtree
+    *</ul>
+    *  @param filter         Search filter specifying the search criteria.
     *
-    *     LDAPv2.SCOPE_BASE            Search only the base DN
+    *  @param attrs          Names of attributes to retrieve.
     *
-    *     LDAPv2.SCOPE_ONE             Search only entries under the
-    *                                  base DN
+    *  @param typesOnly      If true, returns the names but not the values of
+    *                        the attributes found.  If false, returns the
+    *                        names and values for attributes found.
     *
-    *     LDAPv2.SCOPE_SUB             Search the base DN and all
-    *                                  entries within its subtree
+    *  @param cons           Constraints specific to the search.
     *
-    *  filter         Search filter specifying the search criteria, as
-    *                 defined in [3].
-    *
-    *  attrs          Names of attributes to retrieve.
-    *
-    *  typesOnly      If true, returns the names but not the values of
-    *                 the attributes found.  If false, returns the
-    *                 names and values for attributes found.
-    *
-    *  cons           Constraints specific to the search.
+    * @exception LDAPException A general exception which includes an error 
+    * message and an LDAP error code.
     */
    public LDAPSearchResults search(String base,
                                    int scope,
@@ -2230,39 +2695,41 @@ public class LDAPConnection implements
       return new LDAPSearchResults(cons.getBatchSize(), listener);
    }
 
-   /**
+   /*
     * 4.1.8 search
+    */
+    
+   /**
     *
     * Performs the search specified by the parameters.
     *
-    * Parameters are:
+    *  @param base           The base distinguished name to search from.
     *
-    *  base           The base distinguished name to search from.
+    *  @param scope          The scope of the entries to search. The following
+    *                        are the valid options:
+    *<ul> 
+    *   <li>LDAPv2.SCOPE_BASE - searches only the base DN
     *
-    *  scope          The scope of the entries to search. The following
-    *                  are the valid options:
+    *   <li>LDAPv2.SCOPE_ONE - searches only entries under the base DN
+    *                                  
+    *   <li>LDAPv2.SCOPE_SUB - searches the base DN and all entries
+    *                          within its subtree
+    *</ul>
+    *  @param filter         Search filter specifying the search criteria, as
+    *                        defined in [FILTERS].
     *
-    *     LDAPv2.SCOPE_BASE            Search only the base DN
+    *  @param attrs          Names of attributes to retrieve.
     *
-    *     LDAPv2.SCOPE_ONE             Search only entries under the
-    *                                  base DN
+    *  @param typesOnly      If true, returns the names but not the values of
+    *                        the attributes found.  If false, returns the
+    *                        names and values for attributes found.
     *
-    *     LDAPv2.SCOPE_SUB             Search the base DN and all
-    *                                  entries
-    *                                   within its subtree
+    *  @param listener       Handler for messages returned from a server in
+    *                        response to this request. If it is null, a
+    *                        listener object is created internally.
     *
-    *  filter         Search filter specifying the search criteria, as
-    *                  defined in [FILTERS].
-    *
-    *  attrs          Names of attributes to retrieve.
-    *
-    *  typesOnly      If true, returns the names but not the values of
-    *                  the attributes found.  If false, returns the
-    *                  names and values for attributes found.
-    *
-    *  listener       Handler for messages returned from a server in
-    *                  response to this request. If it is null, a
-    *                  listener object is created internally.
+    * @exception LDAPException A general exception which includes an error 
+    * message and an LDAP error code.
     */
    public LDAPSearchListener search(String base,
                                     int scope,
@@ -2282,36 +2749,35 @@ public class LDAPConnection implements
     * number of entries to find or the maximum time to wait for search
     * results).
     *
-    * Parameters are:
+    *  @param base           The base distinguished name to search from.
     *
-    *  base           The base distinguished name to search from.
+    *  @param scope          The scope of the entries to search. The following
+    *                        are the valid options:
+    *<ul>
+    *   <li>LDAPv2.SCOPE_BASE - searches only the base DN
     *
-    *  scope          The scope of the entries to search. The following
-    *                  are the valid options:
+    *   <li>LDAPv2.SCOPE_ONE - searches only entries under the base DN
+    *                                  
+    *   <li>LDAPv2.SCOPE_SUB - searches the base DN and all entries
+    *                           within its subtree
+    *</ul>
+    *  @param filter         Search filter specifying the search criteria, as
+    *                        defined in [FILTERS].
     *
-    *     LDAPv2.SCOPE_BASE            Search only the base DN
+    *  @param attrs          Names of attributes to retrieve.
     *
-    *     LDAPv2.SCOPE_ONE             Search only entries under the
-    *                                  base DN
+    *  @param typesOnly      If true, returns the names but not the values of
+    *                        the attributes found.  If false, returns the
+    *                        names and values for attributes found.
+    * 
+    *  @param listener       Handler for messages returned from a server in
+    *                        response to this request. If it is null, a
+    *                        listener object is created internally.
     *
-    *     LDAPv2.SCOPE_SUB             Search the base DN and all
-    *                                  entries
-    *                                   within its subtree
+    *  @param cons           Constraints specific to the search.
     *
-    *  filter         Search filter specifying the search criteria, as
-    *                  defined in [FILTERS].
-    *
-    *  attrs          Names of attributes to retrieve.
-    *
-    *  typesOnly      If true, returns the names but not the values of
-    *                  the attributes found.  If false, returns the
-    *                  names and values for attributes found.
-    *
-    *  listener       Handler for messages returned from a server in
-    *                  response to this request. If it is null, a
-    *                  listener object is created internally.
-    *
-    *  cons           Constraints specific to the search.
+    * @exception LDAPException A general exception which includes an error 
+    * message and an LDAP error code.
     */
    public LDAPSearchListener search(String base,
                                     int scope,
@@ -2358,6 +2824,11 @@ public class LDAPConnection implements
    /**
     * Performs the search specified by the LDAP URL, returning an
     * enumerable LDAPSearchResults object.
+    *
+    * @param toGet LDAP URL specifying the entry to read.
+    *
+    * @exception LDAPException A general exception which includes an error 
+    * message and an LDAP error code.
     */
    public static LDAPSearchResults search(LDAPUrl toGet)
       throws LDAPException
@@ -2370,22 +2841,24 @@ public class LDAPConnection implements
     * specifying constraints for the search (such as the maximum number of
     * entries to find or the maximum time to wait for search results).
     *
-    * When this method is called, a new connection is created
+    * <p>When this method is called, a new connection is created
     * automatically, using the host and port specified in the URL. After
     * all search results have been received from the server, the method
     * closes the connection (in other words, it disconnects from the LDAP
-    * server).
+    * server). </p>
     *
-    * As part of the search constraints, a choice can be made as to whether
+    * <p>As part of the search constraints, a choice can be made as to whether
     * to have the results delivered all at once or in smaller batches. If
     * the results are to be delivered in smaller batches, each iteration
-    * blocks only until the next batch of results is returned.
+    * blocks only until the next batch of results is returned.</p>
     *
-    * Parameters are:
     *
-    *  toGet          LDAP URL specifying the entry to read.
+    *  @param toGet          LDAP URL specifying the entry to read.
     *
-    *  cons           Constraints specific to the search.
+    *  @param cons           Constraints specific to the search.
+    *
+    * @exception LDAPException A general exception which includes an error 
+    * message and an LDAP error code.
     */
    public static LDAPSearchResults search(LDAPUrl toGet,
                                           LDAPSearchConstraints cons)
@@ -2398,28 +2871,51 @@ public class LDAPConnection implements
 	// setOption methods
 	//*************************************************************************
 
-   /**
+   /*
     * 4.28.13 setOption
+    */
+    
+   /**
     *
     * Sets the value of the specified option for this object.
     *
-    * These options represent the default search constraints for the
+    * <p>These options represent the default search constraints for the
     * current connection. Some of these options are also propagated through
     * the LDAPConstraints, which can be obtained from the connection object
-    * with the getSearchConstraints method.
+    * with the getSearchConstraints method.</p>
     *
-    * The option that is set here applies to all subsequent searches
+    * <p>The option that is set here applies to all subsequent searches
     * performed through the current connection, unless it is overridden
-    * with an LDAPConstraints at the time of search.
+    * with an LDAPConstraints at the time of search.</p>
     *
-    * To set a constraint only for a particular search, create an
+    * <p>To set a constraint only for a particular search, create an
     * LDAPConstraints object with the new constraints and pass it to the
-    * LDAPConnection.search method.
-    *
-    * Parameters are:
+    * LDAPConnection.search method.</p>
     *
     *
-    *  option         One of the following options:
+    *  @param option         The name of the option to set (the See Also
+    *                        section lists their names).
+    *
+    *  @param value          The value to assign to the option. The value must
+    *                        be the java.lang object wrapper for the
+    *                        appropriate parameter (for example, boolean->Boolean,
+    *                        int->Integer).
+    *
+    * @exception LDAPException A general exception which includes an error 
+    * message and an LDAP error code.
+    *
+    * @see #DEREF
+    * @see #SIZELIMIT
+    * @see #SERVER_TIMELIMIT
+    * @see #TIMELIMIT
+    * @see #REFERRALS
+    * @see #REFERRALS_REAUTHENTICATION
+    * @see #BIND
+    * @see #REFERRALS_HOP_LIMIT
+    * @see #BATCHSIZE
+    */
+    
+   /*
     *
     *     Option                       Type       Description
     *
@@ -2606,10 +3102,6 @@ public class LDAPConnection implements
     *                                              this option is 1.
     *
     *
-    *  value          The value to assign to the option. The value must
-    *                 be the java.lang object wrapper for the
-    *                 appropriate parameter (e.g. boolean->Boolean,
-    *                 int->Integer).
     */
    public void setOption(int option, Object value)
       throws LDAPException
