@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: TriggerBackgroundProcessRequest.java,v 1.12 2000/10/10 19:17:31 judy Exp $
+ * $Id: TriggerBackgroundProcessRequest.java,v 1.1 2000/10/30 19:10:59 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -40,7 +40,7 @@ import java.io.*;
 
 public class TriggerBackgroundProcessRequest extends LDAPExtendedOperation {
 
-	/* ID's used to refer to different NDS backgground processes*/
+	/** ID's used to refer to different NDS backgground processes*/
 	public static final int LDAP_BK_PROCESS_BKLINKER	= 1;
 	public static final int LDAP_BK_PROCESS_JANITOR		= 2;
 	public static final int LDAP_BK_PROCESS_LIMBER		= 3;
@@ -50,8 +50,8 @@ public class TriggerBackgroundProcessRequest extends LDAPExtendedOperation {
 
 /**
  *
- * Constructs an extended operation object for receiving all updates from 
- * another directory server for a specific replica.
+ * Based on the process ID specified this constructer cosntructs an 
+ * LDAPExtendedOperation object with the apppropriate OID.
  *
  * @param processID   This id identifies the background process to be triggerd.
  *
