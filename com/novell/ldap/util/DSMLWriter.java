@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell$
+ * $Novell: DSMLWriter.java,v 1.10 2002/10/15 16:28:40 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -22,7 +22,7 @@ import java.util.Iterator;
 
 public class DSMLWriter implements LDAPWriter {
 
-    public final static LDAPRequest currentChange = null;
+    public static LDAPMessage currentChange = null;
     private Writer out = null;
     private int state = NEW_BATCH;
     private static final int NEW_BATCH = 0;
@@ -339,12 +339,4 @@ public class DSMLWriter implements LDAPWriter {
         }
         this.tabString = temp.toString();
     }
-    /*
-    private void writeRequest(LDAPMessage request) throws IOException
-    {
-
-
-    } */
-
-
 }

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: LDIFReader.java,v 1.29 2002/10/18 22:26:23 $
+ * $Novell: LDIFReader.java,v 1.30 2002/10/21 18:29:35 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -25,13 +25,16 @@ import com.novell.ldap.LDAPControl;
 import com.novell.ldap.LDAPEntry;
 import com.novell.ldap.LDAPAttribute;
 import com.novell.ldap.LDAPAttributeSet;
+import com.novell.ldap.LDAPConstraints;
+import com.novell.ldap.LDAPMessage;
 import com.novell.ldap.LDAPModification;
 import com.novell.ldap.LDAPException;
 import com.novell.ldap.LDAPLocalException;
-import com.novell.ldap.ldif_dsml.LDAPAdd;
-import com.novell.ldap.ldif_dsml.LDAPDelete;
-import com.novell.ldap.ldif_dsml.LDAPModDN;
-import com.novell.ldap.ldif_dsml.LDAPModify;
+import com.novell.ldap.message.LDAPAddRequest;
+import com.novell.ldap.message.LDAPDeleteRequest;
+import com.novell.ldap.message.LDAPModifyDNRequest;
+import com.novell.ldap.message.LDAPModifyRequest;
+import com.novell.ldap.util.Base64;
 
 /**
  * The class to process the inputStream object to read an LDIF file.
@@ -62,7 +65,7 @@ public class LDIFReader extends LDIF implements LDAPReader {
     private LDAPControl[]      controls = null;           // req controls
     private LDAPEntry          currentEntry = null;
     private LDAPModification[] mods;
-    private LDAPRequest        currentRequest = null;
+    private LDAPMessage        currentRequest = null;
 
     /**
      * Constructs an LDIFReader object by initializing LDIF_VERSION, isRequest,
@@ -235,10 +238,10 @@ public class LDIFReader extends LDIF implements LDAPReader {
     /**
      * Read the LDAP Requests from the LDIF change file.
      *
-     * @return LDAPRequest specified by the record
+     * @return LDAPMessage specified by the record
      */
-    public LDAPRequest readNextRequest()
-    throws UnsupportedEncodingException, IOException, LDAPLocalException {
+    public LDAPMessage readNextMessage()
+    throws UnsupportedEncodingException, IOException, LDAPException {
 
         if( !isRequest()) {
             throw new LDAPLocalException("Cannot read requests from LDIF"
@@ -251,35 +254,36 @@ public class LDIFReader extends LDIF implements LDAPReader {
         }
         toRecordProperties();  // set record properties
 
+        LDAPConstraints cons = new LDAPConstraints();
+        cons.setControls( controls);
+
         switch( this.reqType ) {
-            case LDAPRequest.LDAP_ADD :
-                this.currentRequest = new LDAPAdd(currentEntry, this.controls);
+            case LDAPMessage.ADD_REQUEST :
+                this.currentRequest = new LDAPAddRequest(currentEntry, cons);
                 break;
-            case LDAPRequest.LDAP_DELETE :
-                this.currentRequest=new LDAPDelete(this.entryDN, this.controls);
+            case LDAPMessage.DEL_REQUEST :
+                this.currentRequest = new LDAPDeleteRequest(this.entryDN, cons);
                 break;
-            case LDAPRequest.LDAP_MODDN :
+            case LDAPMessage.MODIFY_RDN_REQUEST :
                 boolean  delOldRdn;
 
                 if ( Integer.parseInt(this.modInfo[1]) == 1 ) {
                     delOldRdn = true;
-                }
-                else {
+                } else {
                     delOldRdn = false;
                 }
 
-               if((modInfo[2].length())==0 ) {
-                   this.currentRequest = new LDAPModDN( this.entryDN,
-                                    this.modInfo[0], delOldRdn, this.controls);
-                }
-                else {
-                    this.currentRequest = new LDAPModDN(this.entryDN,
-                        this.modInfo[0], delOldRdn, modInfo[2], this.controls);
+                if((modInfo[2].length())==0 ) {
+                    this.currentRequest = new LDAPModifyDNRequest( this.entryDN,
+                                     this.modInfo[0], null, delOldRdn, cons);
+                } else {
+                    this.currentRequest = new LDAPModifyDNRequest(this.entryDN,
+                         this.modInfo[0], modInfo[2], delOldRdn, cons);
                 }
                 break;
-            case LDAPRequest.LDAP_MODIFY :
-                this.currentRequest = new LDAPModify(this.entryDN, this.mods,
-                                                                this.controls);
+            case LDAPMessage.MODIFY_REQUEST :
+                this.currentRequest =
+                          new LDAPModifyRequest(this.entryDN, mods, cons);
                 break;
             default:
         }
@@ -368,7 +372,7 @@ public class LDIFReader extends LDIF implements LDAPReader {
      */
     private void toRecordProperties() throws IOException, LDAPLocalException {
 
-        int i, index;
+        int index;
         String req;
 
         // set entry DN
@@ -391,7 +395,7 @@ public class LDIFReader extends LDIF implements LDAPReader {
             // ctField - changetype field
             StringBuffer ctField = (StringBuffer)this.rFields.get(1);
 
-            if(!ctField.substring(0, index).equalsIgnoreCase("changetype")){
+            if(!ctField.substring(0, index).equalsIgnoreCase("changetype")) {
                 throw new LDAPLocalException("com.novell.ldap.ldif_dsml."
                     +"LDIFReader: malformed changetype field in record starting"
                         + " on line " + this.dnlNumber + " of the file).",
@@ -403,22 +407,22 @@ public class LDIFReader extends LDIF implements LDAPReader {
 
             // set request type
             if ( req.equalsIgnoreCase("add") ) {
-                this.reqType = LDAPRequest.LDAP_ADD;
+                this.reqType = LDAPMessage.ADD_REQUEST;
                 toLDAPEntry();
             }
             else if ( req.equalsIgnoreCase("delete") ) {
-                this.reqType = LDAPRequest.LDAP_DELETE;
+                this.reqType = LDAPMessage.DEL_REQUEST;
             }
             else if ( req.equalsIgnoreCase("modrdn") ) {
-                this.reqType = LDAPRequest.LDAP_MODDN;
+                this.reqType = LDAPMessage.MODIFY_RDN_REQUEST;
                 toModInfo();
             }
             else if ( req.equalsIgnoreCase("moddn") ) {
-                this.reqType = LDAPRequest.LDAP_MODDN;
+                this.reqType = LDAPMessage.MODIFY_RDN_REQUEST;
                 toModInfo();
             }
             else if ( req.equalsIgnoreCase("modify") ) {
-                this.reqType = LDAPRequest.LDAP_MODIFY;
+                this.reqType = LDAPMessage.MODIFY_REQUEST;
                 toLDAPModifications();
             }
             else {
@@ -444,7 +448,7 @@ public class LDIFReader extends LDIF implements LDAPReader {
 
         int i, index, fieldIndex;
         boolean isEncoded;
-        String attrName = null, attrValue = null;
+        String attrName = null;
         StringBuffer currentField;
         LDAPAttributeSet attrSet = new LDAPAttributeSet();
 
@@ -589,13 +593,12 @@ public class LDIFReader extends LDIF implements LDAPReader {
     public void toLDAPModifications () throws IOException, LDAPLocalException {
 
         int        i, index;
-        int        j;                 // number of attrs for an Request
         int        fieldIndex = 2;    // skip dn, control, and changetype field
         String     attrName, opName;
         LDAPAttribute attr = null;
         ArrayList modList = new ArrayList();
 
-        if (!((StringBuffer)this.rFields.get(this.fNumber-1)).toString().
+        if (!(this.rFields.get(this.fNumber-1)).toString().
                                                       equalsIgnoreCase("-") ) {
             throw new LDAPLocalException("com.novell.ldap.ldif_dsml."
                   + "LDIFReader: modify record not ends with '-' in the record"
@@ -726,29 +729,6 @@ public class LDIFReader extends LDIF implements LDAPReader {
 
         if (bl != null ) {
             for (int i=0;i<bl.length(); i++) {
-                if(bl.charAt(i) == ch) {
-                    return i;
-                }
-            }
-        }
-        return -1;
-    }
-
-    /**
-     * Returns the index within this StringBuffer object
-     * of the first occurence of the specified character,
-     * starting at tje specified index.
-     *
-     * @param bl  The StringBuffer object
-     * @param ch  The character to look for in the StringBuffer object
-     *
-     * @return The index of the first occurence of the character in the
-     * StringBuffer object, starting at the specified idex.
-     * -1 is returned if the character does not occur.
-     */
-    private int IndexOf(StringBuffer bl, int ch, int si) {
-        if (bl != null && si<bl.length()) {
-            for (int i=si;i<bl.length(); i++) {
                 if(bl.charAt(i) == ch) {
                     return i;
                 }

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell$
+ * $Novell: DSMLReader.java,v 1.10 2002/10/15 16:28:40 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -52,7 +52,7 @@ public class DSMLReader implements LDAPReader {
             conn.connect( "151.155.155.13", 389);
 
             LDAPSearchQueue queue =
-                    conn.applyToDIT( message, null, null);
+                    (LDAPSearchQueue)conn.applyToDIT( message, null, null);
 
             while (( message = queue.getResponse()) != null ) {
                 // the message is a search result reference
