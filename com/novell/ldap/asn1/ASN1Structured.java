@@ -38,7 +38,6 @@ public abstract class ASN1Structured extends ASN1Object {
 		while(len > 0) {
 			add(dec.decode(in, componentLen));
 			len -= componentLen[0];
-			componentLen[0] = 0;
 		}
 	}
 
