@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPMatchingRuleSchema.java,v 1.11 2000/10/31 23:52:22 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPMatchingRuleSchema.java,v 1.12 2000/12/04 22:59:51 bgudmundson Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -15,6 +15,7 @@
 
 package com.novell.ldap;
 import com.novell.ldap.client.SchemaParser;
+import java.util.Enumeration;
 import java.io.IOException;
 /**
  *
@@ -196,4 +197,194 @@ public class LDAPMatchingRuleSchema extends LDAPSchemaElement {
       valueBuffer.append(" )");
       return valueBuffer.toString();
    }
+	
+  public void add(LDAPConnection ld) throws LDAPException {
+    try{
+        add(ld,"");
+    }
+    catch(LDAPException e){
+        throw e;
+    }
+  }
+  public void add(LDAPConnection ld, String dn) throws LDAPException {
+    try{
+        String attrSubSchema[] = { "subschemaSubentry" };
+        LDAPSearchResults sr = ld.search( dn, LDAPConnection.SCOPE_BASE,
+					                    "objectclass=*", attrSubSchema,
+					                    false);
+	    if(sr != null && sr.hasMoreElements()){
+            String schemaDN;
+	        LDAPEntry ent = sr.next();
+	        LDAPAttributeSet attrSet = ent.getAttributeSet();
+	        Enumeration en = attrSet.getAttributes();
+	        LDAPAttribute attr;
+	        if(en.hasMoreElements()){
+	            attr = (LDAPAttribute) en.nextElement();
+	            Enumeration enumString = attr.getStringValues();
+	            if(enumString.hasMoreElements()){
+                    schemaDN = (String) enumString.nextElement();
+                    String[] attrSearchName= { "matchingRules" };
+	                sr = ld.search( schemaDN,
+	                        LDAPConnection.SCOPE_BASE,
+	                        "objectclass=*",
+			                attrSearchName,
+			                false);
+	                String attrName;
+	                if(sr != null && sr.hasMoreElements()){
+	                    ent = sr.next();
+		                attrSet = ent.getAttributeSet();
+		                en = attrSet.getAttributes();
+		                while(en.hasMoreElements()){
+		                    attr = (LDAPAttribute) en.nextElement();
+                            attrName = attr.getName();
+		                    if(attrName.equals("matchingRules")){
+                                // add the value to the matchingRules values
+                                LDAPAttribute newValue = new LDAPAttribute(
+                                        "matchingRules",getValue());
+                                LDAPModification lModify = new LDAPModification(
+                                    LDAPModification.ADD,newValue);
+                                ld.modify(schemaDN,lModify);
+		                    }
+		                    continue;
+                        }
+	                }
+                }
+            }
+        }
+    }
+
+    catch( LDAPException e){
+      throw e;
+    }
+  }
+
+  public void remove(LDAPConnection ld) throws LDAPException {
+    try{
+        remove(ld,"");
+    }
+    catch(LDAPException e){
+        throw e;
+    }
+  }
+
+  public void remove(LDAPConnection ld, String dn) throws LDAPException {
+    try{
+        String attrSubSchema[] = { "subschemaSubentry" };
+        LDAPSearchResults sr = ld.search( dn,
+	                                LDAPConnection.SCOPE_BASE, "objectclass=*",
+					                attrSubSchema, false);
+	    if(sr != null && sr.hasMoreElements()){
+            String schemaDN;
+	        LDAPEntry ent = sr.next();
+	        LDAPAttributeSet attrSet = ent.getAttributeSet();
+	        Enumeration en = attrSet.getAttributes();
+	        LDAPAttribute attr;
+	        if(en.hasMoreElements()){
+	            attr = (LDAPAttribute) en.nextElement();
+	            Enumeration enumString = attr.getStringValues();
+	            if(enumString.hasMoreElements()){
+                    schemaDN = (String) enumString.nextElement();
+                    String[] attrSearchName= { "matchingRules" };
+	                sr = ld.search( schemaDN,
+	                        LDAPConnection.SCOPE_BASE,
+	                        "objectclass=*",
+			                attrSearchName,
+			                false);
+	                String attrName;
+	                if(sr != null && sr.hasMoreElements()){
+	                    ent = sr.next();
+		                attrSet = ent.getAttributeSet();
+		                en = attrSet.getAttributes();
+		                while(en.hasMoreElements()){
+		                attr = (LDAPAttribute) en.nextElement();
+                        attrName = attr.getName();
+		                if(attrName.equals("matchingRules")){
+                        // remove the value from the attributes values
+                            LDAPAttribute newValue = new LDAPAttribute(
+                                "matchingRules",getValue());
+                            LDAPModification lModify = new LDAPModification(
+                                LDAPModification.DELETE,newValue);
+                            ld.modify(schemaDN,lModify);
+                        }
+		                continue;
+                    }
+	            }
+	        }
+        }
+	}
+  }
+
+    catch( LDAPException e){
+      throw e;
+    }
+  }
+
+  public void modify(LDAPConnection ld, LDAPSchemaElement newValue) throws LDAPException {
+    try{
+        modify(ld, newValue, "");
+    }
+    catch(LDAPException e){
+        throw e;
+    }
+  }
+
+  public void modify(LDAPConnection ld, LDAPSchemaElement newValue, String dn) throws LDAPException {
+    if( newValue instanceof LDAPMatchingRuleSchema != true ){
+        throw new LDAPException("Schema element is not an LDAPMatchingRuleSchema object",
+                LDAPException.INVALID_ATTRIBUTE_SYNTAX);
+    }
+
+    try{
+        String attrSubSchema[] = { "subschemaSubentry" };
+        LDAPSearchResults sr = ld.search( dn,
+	                                LDAPConnection.SCOPE_BASE, "objectclass=*",
+					                attrSubSchema, false);
+	    if(sr != null && sr.hasMoreElements()){
+            String schemaDN;
+	        LDAPEntry ent = sr.next();
+	        LDAPAttributeSet attrSet = ent.getAttributeSet();
+	        Enumeration en = attrSet.getAttributes();
+	        LDAPAttribute attr;
+	        if(en.hasMoreElements()){
+	            attr = (LDAPAttribute) en.nextElement();
+	            Enumeration enumString = attr.getStringValues();
+	            if(enumString.hasMoreElements()){
+                    schemaDN = (String) enumString.nextElement();
+                    String[] attrSearchName= { "matchingRules" };
+	                sr = ld.search( schemaDN,
+	                        LDAPConnection.SCOPE_BASE,
+	                        "objectclass=*",
+			                attrSearchName,
+			                false);
+	                String attrName;
+	                if(sr != null && sr.hasMoreElements()){
+	                    ent = sr.next();
+		                attrSet = ent.getAttributeSet();
+		                en = attrSet.getAttributes();
+		                while(en.hasMoreElements()){
+		                    attr = (LDAPAttribute) en.nextElement();
+                            attrName = attr.getName();
+		                    if(attrName.equals("matchingRules")){
+                            // modify the attribute
+                            LDAPAttribute modValue = new LDAPAttribute(
+                                        "matchingRules", newValue.getValue());
+                            LDAPModification lModify = new LDAPModification(
+                                LDAPModification.DELETE,modValue);
+                            ld.modify(schemaDN,lModify);
+                            lModify = new LDAPModification(
+                                LDAPModification.ADD, modValue);
+                            ld.modify(schemaDN,lModify);
+                        }
+		                continue;
+                  }
+	            }
+	        }
+          }
+	    }
+      }
+
+        catch( LDAPException e){
+            throw e;
+        }
+    }
 }
