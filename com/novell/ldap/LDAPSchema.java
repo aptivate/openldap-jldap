@@ -655,10 +655,12 @@ public class LDAPSchema extends LDAPEntry {
 // #######################################################################
 
     /**
-     *  @deprecated replaced by {@link #getAttributeSchemas}.  This method
+     * <p>This method
      *  has been renamed to getAttributeSchemas in IETF draft 17 of the Java
      *  LDAP API (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-     *  in fall of 2003.
+     *  from the API in the fall of 2003.</p>
+     *
+     *  @deprecated replaced by {@link #getAttributeSchemas}.
      */
     public Enumeration getAttributes()
     {
@@ -964,11 +966,34 @@ public class LDAPSchema extends LDAPEntry {
     }
 
     /**
+     *  Removes a schema element definition from the schema object.
+     *  <p>Use LDAPConnection.modify methods instead of this method.
+     *  For example, for code something like:
+     *  <pre><code>
+     *  LDAPSchema schema;
+     *  schema = new LDAPSchema();
+     *  schema.fetchSchema(lc);
+     *
+     *  schema.remove(newAuxClass);
+     *  schema.remove(newObjClass);
+     *  schema.saveSchema(lc);
+     *  </code>
+     *  change to
+     *  <code>
+     *  LDAPModification[] mods = new LDAPModification[2];
+     *  mods[0] = new LDAPModification(LDAPModification.DELETE, newAuxClass);
+     *  mods[1] = new LDAPModification(LDAPModification.DELETE, newObjClass);
+     *  lc.remove(mods);
+     *  </code></pre></p>
+     *
+     *  It is not necessary to fetch the schema to perform schema modifications.
+     *  The LDAPSchema class is read-only, and is used to examine the schema.
+     *
      *  @deprecated LDAPSchemaElement now extends LDAPAttribute and can be
-     *  used directly with {@link LDAPModification} This method
-     *  has been removed in IETF draft 18 of the Java LDAP API
+     *  used directly with {@link LDAPModification} This method has been
+     *  removed in IETF draft 18 of the Java LDAP API
      *  (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-     *  in fall of 2003.
+     *  from the API in the fall of 2003.
      */
     public void remove( LDAPSchemaElement element )
     {
