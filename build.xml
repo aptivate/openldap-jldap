@@ -46,8 +46,6 @@
 <property name="pkg.doc.framework" value="${pkg}/${doc}/framework"/>
 <property name="pkg.doc.ldap" value="${pkg}/${doc}/ldap"/>
 
-<property name="pkg.doc.novell" value="${doc}/novell"/>
-
 
     <!-- =================================================================== -->
     <!-- Initialization                                                      -->
@@ -99,7 +97,8 @@
     <!-- =================================================================== -->
     <!-- create javadoc                                                      --> 
     <!-- =================================================================== -->
-    <target name="doc" depends="docframework, docldap, docnovell"/>
+    <!-- target name="doc" depends="docframework, docldap, docnovell" -->
+    <target name="doc" depends="docldap, docnovell"/>
 
     <!-- =================================================================== -->
     <!-- build debug classes                                                 -->
@@ -204,13 +203,13 @@
     <!-- create javadoc for IETF ldap classes                                --> 
     <!-- =================================================================== -->
     <target name="docldap" depends="init">
-                <deltree dir="${pkg.doc.ldap}"/>
+                <deltree dir="${pkg.doc}"/>
         <echo message="Creating IETF ldap javadoc"/>
-        <mkdir dir="${pkg.doc.ldap}"/>
+        <mkdir dir="${pkg.doc}"/>
         <javadoc sourcepath="${docsrc}"
-                        destdir="${pkg.doc.ldap}"
+                        destdir="${pkg.doc}"
                         classpath="${lib.debug}/${ldap}.jar;external/ssl/domestic/nssl1.1_dom.jar"
-                        packagenames="com.novell.ldap,com.novell.ldap.extensions"
+                        packagenames="com.novell.ldap,com.novell.ldap.extensions,com.novell.ldap.asn1"
                         Windowtitle="LDAP Classes"
                         Splitindex="true"
                         Doctitle="Novell, Inc. LDAP IETF Classes and Novell, Inc. Extensions"
