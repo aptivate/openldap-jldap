@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell$
+ * $Novell: /ldap/src/jldap/com/novell/ldap/util/RDN.java,v 1.1 2001/03/09 23:15:49 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -14,104 +14,97 @@
  ******************************************************************************/
 
 package com.novell.ldap.util;
+import java.util.Vector;
 
 /**
- * <P>A RDN encapsulates an ldap relative distinguished name.
+ * <P>A RDN encapsulates a single object's name of a Distinguished Name(DN).
+ * For example of following DN, 'cn=admin,o=corporation',  cn=admin, and
+ * o=corporation are the only object names.</P>
  *
- * @see RDN
+ * <P>Multivalued attributes are encapsulated in this class.  For example the
+ * following could be represented by RDN: 'cn=robert + cn=bob + l=US' Because
+ * they all name one object</P>
+ *
+ * <P>Note: While a Relative Distinguished Name may be any name that doesn't
+ * include extend to the Root, This class represents only one object name.
+ * Likewise the DN class may contain multiple object name but does not
+ * necessarily extend to the Root.</P>
+ *
+ * @see DN
  */
+
 
 public class RDN extends Object
 {
-   private String    m_attributeType;
-   private String    m_attributeValue;
-   private String    m_rawValue; //the unnormalized value
+    private Vector types;       //list of Type strings
+    private Vector values;      //list of Value strings
+    private String rawValue;    //the unnormalized value
 
-/***************************************************************************/
     /**
-     * Constructs a new RDN with the specified attribute type and attribute
-     * value.
+     * Creates an RDN object from the DN component specified in the string RDN
      *
-     * @param  attrType the attribute type
-     * @param  attrValue the attribute value
-     * @param  rawValue the attribute value before it is normalized
+     * @param the DN component
      */
-/***************************************************************************/
-   protected RDN(
-      String   attrType,
-      String   attrValue,
-      String   rawValue)
-   {
-      m_attributeType = attrType;
-      m_attributeValue = attrValue;
-      m_rawValue = rawValue;
-   }
+    public RDN(String RDN){
+        throw new RuntimeException("RDN.equals not Implemented yet");
+        //rawValue = RDN;
+    }
 
-/***************************************************************************/
-    /**
-     * compare two RDN attribute types lexocographically
-     *
-     * @return the RDN's normalized attribute type
-     */
-/***************************************************************************/
-   protected int compareAttributeType(
-      RDN toRdn)
-   {
-      return m_attributeType.compareTo(toRdn.getAttributeType());
-   }
-/***************************************************************************/
-    /**
-     * Get the RDN's normalized attribute type
-     *
-     * @return the RDN's normalized attribute type
-     */
-/***************************************************************************/
-   protected String getAttributeType()
-   {
-      return m_attributeType;
-   }
+    public RDN(){
+        types    = new Vector();
+        values   = new Vector();
+        rawValue = "";
+    }
 
-/***************************************************************************/
     /**
-     * Get the RDN's normalized attribute value
+     * Compares the RDN to rdn passed in.
      *
-     * @return the RDN's normalized attribute value
+     * @param the RDN to compare to
      */
-/***************************************************************************/
-   protected String getAttributeValue()
-   {
-      return m_attributeValue;
-   }
-
-/***************************************************************************/
+    public boolean equals(RDN rdn){
+        throw new RuntimeException("RDN.equals not Implemented yet");
+    }
     /**
-     * Get the RDN's unnormalized attribute value
+     * Returns the actually Raw String before Normalization
      *
-     * @return the RDN's normalized attribute value
+     * @return The raw string
      */
-/***************************************************************************/
-   protected String getRawValue()
-   {
-      return m_rawValue;
-   }
+    protected String getRawValue()
+    {
+        return rawValue;
+    }
 
-/***************************************************************************/
     /**
-     * Compare this DN to the specified DN to see if they are equal.
-     *
-     * @param   toDN the DN to compare to
-     * @return  <code>true</code> if the DNs are equal; otherwise
-     *          <code>false</code>
+     * Adds another value to the RDN.  Only one attribute type is allowed for
+     * the RDN.
+     * @param Attribute type, could be an OID or String
+     * @param Attribute Value, must be normalized and escaped
+     * @param rawValue or text before normalization, can be Null
      */
-/***************************************************************************/
-   public boolean equals(
-      RDN toRDN)
-   {
-      if ((this.m_attributeType.equalsIgnoreCase(toRDN.m_attributeType)) &&
-          (this.m_attributeValue.equalsIgnoreCase(toRDN.m_attributeValue)))
-         return true;
-      else
-         return false;
-   }
+    public void add(String attrType, String attrValue, String rawValue){
+        types.addElement(attrType);
+        values.addElement(attrValue);
+        this.rawValue += rawValue;
+    }
 
+    public String toString(){
+        return toString(false);
+    }
+    public String toString(boolean noTypes){
+        int length=types.size();
+        String toReturn = "";
+        if (length < 1)
+            return null;
+        if (!noTypes)
+            toReturn = types.get(0) + "=";
+        toReturn += values.get(0);
+
+        for(int i=1; i<length; i++){
+            toReturn += "+";
+            if (!noTypes)
+                toReturn += types.get(i) + "=";
+            toReturn += values.get(i);
+        }
+        return toReturn;
+    }
 } //end class RDN

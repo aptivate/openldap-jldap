@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell$
+ * $Novell: /ldap/src/jldap/com/novell/ldap/util/DN.java,v 1.2 2001/03/09 23:18:56 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -13,10 +13,27 @@
  * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
  ******************************************************************************/
 package com.novell.ldap.util;
+import java.util.Vector;
 
 /**
- * <P>A DN encapsulates an ldap distinguished name. It provides methods to get
- * information about the DN and to manipulate the DN.
+ * <P>A DN encapsulates an ldap name with multiple object names(a Distinguished
+ * name. It provides methods to get information about the DN and to manipulate
+ * the DN.  Multivalued attributes are all considered to be one component and
+ * are represented in one RDN (see RDN)</P>
+ *
+ * <P> The following are examples of valid DN:
+ * <ul>
+ *     <li>cn=admin,ou=marketing,o=corporation</li>
+ *     <li>cn=admin,ou=marketing</li>
+ *     <li>oid.2.5.4.3=#616460696E,ou=marketing</li>
+ *     <!-- a=97=x61, d=100=x64, m=109=x60, i=105=x69, n=110=x6E -->
+ *     <li>2.5.4.3=admin,ou=marketing</li>
+ * </ul>
+ *
+ * <P>Note: While a DN generally means a name that extends to the Root, The
+ * Components encapsulated in this class do not neccesarily need to extend to
+ * to the Root. Likewise the RDN class only contains one single component
+ * </P>
  *
  * @see RDN
  */
@@ -24,37 +41,17 @@ package com.novell.ldap.util;
 public class DN extends Object
 {
 
-   /**
-    * <P>A helper class for managing a list of RDNs that make up the DN
-    */
-   class RDNRef
-   {
-      RDNRef   next;
-      RDN      rdn;
-      int      level;
+    //parser state identifiers.
+    private static final int LOOK_FOR_RDN_ATTR_TYPE = 1;
+    private static final int ALPHA_ATTR_TYPE        = 2;
+    private static final int OID_ATTR_TYPE          = 3;
+    private static final int LOOK_FOR_RDN_VALUE     = 4;
+    private static final int QUOTED_RDN_VALUE       = 5;
+    private static final int HEX_RDN_VALUE          = 6;
+    private static final int UNQUOTED_RDN_VALUE     = 7;
 
-      RDNRef()
-      {
-         next = null;
-         rdn = null;
-         level = -1;
-      }
-   }
+    private Vector rdnList = new Vector();
 
-
-   //parser state identifiers.
-   private static final int LOOK_FOR_RDN_ATTR_TYPE = 1;
-   private static final int ALPHA_ATTR_TYPE        = 2;
-   private static final int OID_ATTR_TYPE          = 3;
-   private static final int LOOK_FOR_RDN_VALUE     = 4;
-   private static final int QUOTED_RDN_VALUE       = 5;
-   private static final int HEX_RDN_VALUE          = 6;
-   private static final int UNQUOTED_RDN_VALUE     = 7;
-
-   private RDNRef m_rdnListHead;
-   private int    m_rdnCount;
-
-/***************************************************************************/
     /**
      * Constructs a new DN based on the specified string representation of a
      * distinguished name. The syntax of the DN must conform to that specified
@@ -65,10 +62,7 @@ public class DN extends Object
      *               parameter does not adhere to the syntax described in
      *               RFC 2253
      */
-/***************************************************************************/
-   public DN(
-      String   dnString)
-   {
+   public DN(String dnString){
       char     currChar;
       char     nextChar;
       int      currIndex;
@@ -79,13 +73,11 @@ public class DN extends Object
       boolean  escapedChar = false;
       int      state;
       int      trailingSpaceCount = 0;
-      int      levelID = 0;
       String   attrType = "";
       String   attrValue = "";
       String   rawValue = "";
       int      hexDigitCount = 0;
-
-      m_rdnListHead = new RDNRef();
+      RDN      currRDN = new RDN();
 
       tokenIndex = 0;
       currIndex = 0;
@@ -98,7 +90,7 @@ public class DN extends Object
          switch (state)
          {
          case LOOK_FOR_RDN_ATTR_TYPE: //parsing and RDName
-            if (isAlpha(currChar))
+            if (Character.isLetter(currChar))
             {
                if (dnString.startsWith("oid.", currIndex) ||
                    dnString.startsWith("OID.", currIndex))
@@ -107,7 +99,7 @@ public class DN extends Object
                   if (currIndex > lastIndex)
                      throw new IllegalArgumentException(dnString);
                   currChar = dnString.charAt(currIndex);
-                  if (isDigit(currChar))
+                  if (Character.isDigit(currChar))
                   {
                      tokenBuf[tokenIndex++] = currChar;
                      state = OID_ATTR_TYPE;
@@ -121,7 +113,7 @@ public class DN extends Object
                   state = ALPHA_ATTR_TYPE;
                }
             }
-            else if (isDigit(currChar))
+            else if (Character.isDigit(currChar))
             {
                tokenBuf[tokenIndex++] = currChar;
                state = OID_ATTR_TYPE;
@@ -131,7 +123,8 @@ public class DN extends Object
             break;
 
          case ALPHA_ATTR_TYPE:
-            if (isAlpha(currChar) || isDigit(currChar) || (currChar == '-'))
+            if (Character.isLetter(currChar) || Character.isDigit(currChar) ||
+                    (currChar == '-'))
                tokenBuf[tokenIndex++] = currChar;
             else
             {
@@ -150,7 +143,7 @@ public class DN extends Object
             break;
 
          case OID_ATTR_TYPE:
-            if (isDigit(currChar) || (currChar == '.'))
+            if (Character.isDigit(currChar) || (currChar == '.'))
                tokenBuf[tokenIndex++] = currChar;
             else
             {
@@ -238,9 +231,18 @@ public class DN extends Object
                 new String(tokenBuf, 0, tokenIndex - trailingSpaceCount);
                rawValue =
                 dnString.substring(valueStart, currIndex-trailingSpaceCount);
+
+               //added by cameron
+               currRDN.add(attrType, attrValue, rawValue);
+               if (currChar != '+'){
+                   rdnList.addElement(currRDN);
+                   currRDN = new RDN();
+               }
+
+               /*taken out by cameron
                addRDN(attrType, attrValue, rawValue, levelID);
                if (currChar != '+')
-                  levelID++;
+                  levelID++;*/
                trailingSpaceCount = 0;
                tokenIndex = 0;
                state = LOOK_FOR_RDN_ATTR_TYPE;
@@ -266,11 +268,18 @@ public class DN extends Object
                    (currChar == '+') ||
                    (currIndex == lastIndex))
                {
-                  attrValue =
-                   new String(tokenBuf, 0, tokenIndex);
-                  addRDN(attrType, attrValue, rawValue, levelID);
+                  attrValue = new String(tokenBuf, 0, tokenIndex);
+
+                   //added by cameron
+                   currRDN.add(attrType, attrValue, rawValue);
+                   if (currChar != '+'){
+                       rdnList.addElement(currRDN);
+                       currRDN = new RDN();
+                   }
+
+ /*                 addRDN(attrType, attrValue, rawValue, levelID);
                   if (currChar != '+')
-                     levelID++;
+                     levelID++;*/
                   trailingSpaceCount = 0;
                   tokenIndex = 0;
                   state = LOOK_FOR_RDN_ATTR_TYPE;
@@ -321,13 +330,21 @@ public class DN extends Object
                       (currChar == '+') ||
                       (currIndex == lastIndex))
                   {
-                     attrValue =
-                      new String(tokenBuf, 0, tokenIndex);
-                     addRDN(attrType, attrValue, rawValue, levelID);
-                     if (currChar != '+')
-                        levelID++;
-                     tokenIndex = 0;
-                     state = LOOK_FOR_RDN_ATTR_TYPE;
+                      attrValue = new String(tokenBuf, 0, tokenIndex);
+
+                      //added by cameron
+                      currRDN.add(attrType, attrValue, rawValue);
+                      if (currChar != '+'){
+                          rdnList.addElement(currRDN);
+                          currRDN = new RDN();
+                      }
+
+                      /*addRDN(attrType, attrValue, rawValue, levelID);
+                      if (currChar != '+')
+                          levelID++;*/
+
+                      tokenIndex = 0;
+                      state = LOOK_FOR_RDN_ATTR_TYPE;
                   }
                   else
                   {
@@ -353,56 +370,18 @@ public class DN extends Object
           new String(tokenBuf, 0, tokenIndex - trailingSpaceCount);
          rawValue =
           dnString.substring(valueStart, currIndex - trailingSpaceCount);
-         addRDN(attrType, attrValue, rawValue, levelID);
+         currRDN.add(attrType,attrValue,rawValue);
+         rdnList.addElement(currRDN);
+         //addRDN(attrType, attrValue, rawValue, levelID);
       }
       else if (state != LOOK_FOR_RDN_ATTR_TYPE)
       {
          throw new IllegalArgumentException(dnString);
       }
-
-      m_rdnCount = levelID + 1;
    }
 
-/***************************************************************************/
-    /**
-     * Checks a character to see if it is an ascii alphabetic character in
-     * ranges 65-90 or 97-122.
-     *
-     * @param   ch the character to be tested.
-     * @return  <code>true</code> if the character is an ascii alphabetic
-     *            character
-     */
-/***************************************************************************/
-   private boolean isAlpha(
-      char ch)
-   {
-      if (((ch < 91) && (ch > 64)) || //ASCII a-z
-          ((ch < 123) && (ch > 96)))  //ASCII A-Z
-         return true;
-      else
-         return false;
-   }
 
-/***************************************************************************/
-    /**
-     * Checks a character to see if it is an ascii digit (0-9) character in
-     * the ascii value range 48-57.
-     *
-     * @param   ch the character to be tested.
-     * @return  <code>true</code> if the character is an ascii alphabetic
-     *            character
-     */
-/***************************************************************************/
-   private boolean isDigit(
-      char ch)
-   {
-      if ((ch < 58) && (ch > 47)) //ASCII 0-9
-         return true;
-      else
-         return false;
-   }
 
-/***************************************************************************/
     /**
      * Checks a character to see if it is valid hex digit 0-9, a-f, or
      * A-F (ASCII value ranges 48-47, 65-70, 97-102).
@@ -410,10 +389,8 @@ public class DN extends Object
      * @param   ch the character to be tested.
      * @return  <code>true</code> if the character is a valid hex digit
      */
-/***************************************************************************/
-   public static boolean isHexDigit(
-      char ch)
-   {
+
+   public static boolean isHexDigit(char ch){
       if (((ch < 58) && (ch > 47)) || //ASCII 0-9
           ((ch < 71) && (ch > 64)) || //ASCII a-f
           ((ch < 103) && (ch > 96)))  //ASCII A-F
@@ -422,7 +399,6 @@ public class DN extends Object
          return false;
    }
 
-/***************************************************************************/
     /**
      * Checks a character to see if it ever needs to be escaped in the
      * string representation of a DN.
@@ -431,10 +407,7 @@ public class DN extends Object
      * @return  <code>true</code> if the character needs to be escaped in at
      *            least some instances.
      */
-/***************************************************************************/
-   private boolean needsEscape(
-      char ch)
-   {
+   private boolean needsEscape( char ch) {
       if ((ch == ' ') || //space (only needs escape at end of value
           (ch == ',') ||
           (ch == ';') ||
@@ -449,7 +422,6 @@ public class DN extends Object
          return false;
    }
 
-/***************************************************************************/
     /**
      * Converts two valid hex digit characters that form the string
      * representation of an ascii character value to the actual ascii
@@ -459,11 +431,9 @@ public class DN extends Object
      * @param   hex0 the hex digit for the low order byte.
      * @return  the character whose value is represented by the parameters.
      */
-/***************************************************************************/
-   public static char hexToChar(
-      char  hex1,
-      char  hex0) throws IllegalArgumentException
-   {
+
+    public static char hexToChar(char hex1, char hex0)
+        throws IllegalArgumentException {
       int result;
 
       if ((hex1 < 58) && (hex1 > 47)) //ASCII 0-9
@@ -487,54 +457,8 @@ public class DN extends Object
       return (char)result;
    }
 
-/***************************************************************************/
-    /**
-     * Creates an RDN object and adds it to the list of RDNs that make up
-     * this DN. The RDNs are place in ascending order by level and then
-     * attrType. The first RDN on the left is level 0
-     *
-     * @param   attrType the type of the RDN
-     * @param   attrValue the value of the RDN
-     * @param   rawValue the non-normalized attribute value
-     * @param   level the level of the RDN
-     */
-/***************************************************************************/
-   private void addRDN(
-      String   attrType,
-      String   attrValue,
-      String   rawValue,
-      int      level)
-   {
-      RDNRef newRdnRef;
-      RDNRef currRdnRef;
-      RDNRef prevRdnRef;
 
-      newRdnRef = new RDNRef();
-      newRdnRef.level = level;
-      newRdnRef.rdn = new RDN(attrType, attrValue, rawValue);
 
-      prevRdnRef = m_rdnListHead;
-      currRdnRef = m_rdnListHead.next;
-
-      while (currRdnRef != null)
-      {
-         if (newRdnRef.level < currRdnRef.level)
-            break;
-         else if (newRdnRef.level == currRdnRef.level)
-         {
-            if (newRdnRef.rdn.compareAttributeType(currRdnRef.rdn) <= 0)
-               break;
-         }
-         prevRdnRef = currRdnRef;
-         currRdnRef = currRdnRef.next;
-      }
-
-      prevRdnRef.next = newRdnRef;
-      newRdnRef.next = currRdnRef;
-
-   }
-
-/***************************************************************************/
     /**
      * Return a string representation of the DN
      *
@@ -542,57 +466,39 @@ public class DN extends Object
      * @param   attrValue the value of the RDN
      * @param   level the level of the RDN
      */
-/***************************************************************************/
-   public String toString()
-   {
-      String   dn = "";
-      RDNRef   rdnRef;
-      int      count = 0;
 
-      rdnRef = m_rdnListHead.next;
+    public String toString() {
+        int length=rdnList.size();
+        String dn = "";
+        if (length < 1)
+            return null;
+        dn = ((RDN)rdnList.get(0)).toString();
+        for (int i=1; i<length; i++)
+            dn += ", " + ((RDN)rdnList.get(i)).toString();
+        return dn;
+    }
 
 
-      while (rdnRef != null)
-      {
-         dn += "RDN" + count + "(" + rdnRef.level + "):" + rdnRef.rdn.getAttributeType() + "=" +
-               rdnRef.rdn.getAttributeValue() + "|";
-         count++;
-         rdnRef = rdnRef.next;
-      }
-
-      return dn;
-   }
-/***************************************************************************/
     /**
-     * Compare this DN to the specified DN to see if they are equal.
+     * Compares this DN to the specified DN to determine if they are equal.
      *
      * @param   toDN the DN to compare to
      * @return  <code>true</code> if the DNs are equal; otherwise
      *          <code>false</code>
      */
-/***************************************************************************/
-   public boolean equals(
-      DN toDN)
-   {
-      RDNRef   thisRdnRef = this.m_rdnListHead.next;
-      RDNRef   toRdnRef = toDN.m_rdnListHead.next;
+    public boolean equals( DN toDN ){
+        int length = toDN.rdnList.size();
 
-      while ((thisRdnRef != null) && (toRdnRef != null))
-      {
-         if ((thisRdnRef.level != toRdnRef.level) ||
-             (!thisRdnRef.rdn.equals(toRdnRef.rdn)))
+        if( this.rdnList.size() != length)
             return false;
-         thisRdnRef = thisRdnRef.next;
-         toRdnRef = toRdnRef.next;
-      }
 
-      if ((thisRdnRef == null) && (toRdnRef == null))
-         return true;
-      else
-         return false;
+        for(int i=0; i<length; i++){
+            if (!((RDN)rdnList.get(i)).equals( (RDN)toDN.rdnList.get(i) ))
+                return false;
+        }
+        return true;
    }
 
-/***************************************************************************/
     /**
      * return a string array of the individual RDNs contained in the DN
      *
@@ -605,100 +511,13 @@ public class DN extends Object
      *                 the leftmost rdn in the first element of the array
      *
      */
-/***************************************************************************/
 
-//Note: I think this is the same as explodeDN
-   public String[] explode(
-      boolean  noTypes)
-   {
-      String[] rdns;
-      String   currRdn;
-      RDNRef   currRdnRef;
-      int      currIndex;
-
-      rdns = new String[m_rdnCount];
-
-      currRdnRef = m_rdnListHead.next;
-      currIndex = 0;
-      currRdn = "";
-      while (currRdnRef != null)
-      {
-         if (currRdn.length() != 0)
-            currRdn += "+";
-
-         if (!noTypes)
-            currRdn +=
-             (currRdnRef.rdn.getAttributeType() + "=" + currRdnRef.rdn.getRawValue());
-         else
-            currRdn += currRdnRef.rdn.getRawValue();
-
-         if ((currRdnRef.next == null) ||
-             (currRdnRef.next.level != currRdnRef.level))
-         {
-            rdns[currIndex] = currRdn;
-            currIndex++;
-            currRdn = "";
-         }
-         currRdnRef = currRdnRef.next;
-      }
-
-      return rdns;
-   }
-/***************************************************************************/
-    /**
-     * return a string array of the individual components of the indicated
-     * rdn. The rdns are numbered from left to right beginning with 0.
-     *
-     * @param rdnID     the numerical ID of the RDN
-     * @param noTypes   If true, returns only the values of the
-     *                  components, and not the names, e.g. "Babs
-     *                  Jensen", "Accounting", "Acme", "us" - instead of
-     *                  "cn=Babs Jensen", "ou=Accounting", "o=Acme", and
-     *                  "c=us".
-     * @return  <code>String[]</code> containing the components of the rdns
-     *                 the leftmost rdn in the first element of the array
-     */
-/***************************************************************************/
-   public String[] explodeRDN(
-      int      rdnID,
-      boolean  noTypes)
-   {
-      String[] components;
-      RDNRef   currRdnRef;
-      RDNRef   startRdnRef = null;
-      int      currIndex;
-      int      compCount;
-
-      compCount = 0;
-      currRdnRef = m_rdnListHead.next;
-      while (currRdnRef != null)
-      {
-         if (currRdnRef.level == rdnID)
-         {
-            if (compCount == 0)
-              startRdnRef = currRdnRef;
-            compCount++;
-         }
-         else if (compCount > 0)  //quit if we have components and level is no
-            break;                //longer equal to rdnID
-         currRdnRef = currRdnRef.next;
-      }
-
-      components = new String[compCount];
-
-      currRdnRef = startRdnRef;
-      for (currIndex = 0; currIndex < compCount; currIndex++)
-      {
-         if (!noTypes)
-            components[currIndex] =
-            (currRdnRef.rdn.getAttributeType() + "=" +
-             currRdnRef.rdn.getRawValue());
-         else
-            components[currIndex] = currRdnRef.rdn.getRawValue();
-         currRdnRef = currRdnRef.next;
-      }
-
-      return components;
-   }
+    public String[] explode(boolean  noTypes) {
+        int length = rdnList.size();
+        String[] rdns = new String[length];
+        for(int i=0; i<length; i++)
+            rdns[i]=((RDN)rdnList.get(i)).toString(noTypes);
+        return rdns;
+    }
 
 } //end class DN

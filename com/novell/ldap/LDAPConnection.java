@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.87 2001/03/08 20:59:37 javed Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.88 2001/03/12 16:45:57 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -1804,9 +1804,29 @@ public class LDAPConnection implements Cloneable
 
         // Step through the space-delimited list
         StringTokenizer hostList = new StringTokenizer(host," ");
+        String address = null;
+//        String portString;
+        int specifiedPort;
+        int colonIndex; //after the colon is the port
         while (hostList.hasMoreTokens()) {
             try{
-                conn = conn.destroyClone( true, hostList.nextToken(), port);
+                specifiedPort=port;
+                address = hostList.nextToken();
+                colonIndex = address.indexOf((int)':');
+                if (colonIndex != -1 && colonIndex+1 != address.length()){
+                    //parse Port out of address
+                    try{
+                        specifiedPort = Integer.parseInt(
+                                    address.substring(colonIndex+1));
+                        address =   address.substring(0, colonIndex);
+                    }catch (Exception e){
+                        throw new LDAPException(
+                                LDAPExceptionMessageResource.INVALID_ADDRESS,
+                                new Object[] { address },
+                                LDAPException.PARAM_ERROR);
+                    }
+                }
+                conn = conn.destroyClone( true, address, specifiedPort);
                 break;
             }catch (LDAPException LE){
                 if (!hostList.hasMoreTokens())

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPExceptionMessageResource.java,v 1.10 2001/03/07 00:30:03 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPExceptionMessageResource.java,v 1.11 2001/03/09 17:55:37 javed Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -64,6 +64,8 @@ public class LDAPExceptionMessageResource extends java.util.ListResourceBundle {
   public final static String MISSING_EQUAL        = "MISSING_EQUAL";
   public final static String NO_MEMORY            = "NO_MEMORY";
   public final static String SERVER_SHUTDOWN_REQ  = "SERVER_SHUTDOWN_REQ";
+  public final static String INVALID_ADDRESS      = "INVALID_ADDRESS";
+
   //End constants
 
   static final Object[][] contents = {
@@ -80,7 +82,7 @@ public class LDAPExceptionMessageResource extends java.util.ListResourceBundle {
       {"REFERRAL_SEND", "Error sending request to referred server"},
       {"REFERRAL_NOFOLLOW", "Referral received, and referral following is off"},
       {"REFERENCE_NOFOLLOW", "Search result reference received, and referral following is off"},
-      {"REFERRAL_INTERNAL", "LDAPCOnnection: checkForReferral: internal error"},
+      {"REFERRAL_INTERNAL", "LDAPConnection: checkForReferral: internal error"},
       {"NO_DUP_REQUEST", "Cannot duplicate message to follow referral for {0} request, not allowed"},
       {"SERVER_CONNECT_ERROR","Error connecting to server {0} while attempting to follow a referral"},
       {"NO_PROPERTY","Requested property is not available."},
@@ -109,7 +111,8 @@ public class LDAPExceptionMessageResource extends java.util.ListResourceBundle {
       {"WRONG_MESSAGE_ID","Internal error, wrong messageID on bind"},
       {"MISSING_EQUAL","Attribute type and name must be separated by an equal symbol, '='"},
       {"NO_MEMORY","All results could not be stored in memory, sort failed"},
-	  {"SERVER_SHUTDOWN_REQ","Received unsolicited notification from server to shutdown"}
+	  {"SERVER_SHUTDOWN_REQ","Received unsolicited notification from server to shutdown"},
+      {"INVALID_ADDRESS","Invalid syntax for address with port; {0}"}
   // END OF MATERIAL TO LOCALIZE
   };
 }//End LDAPExceptionMessageResource
