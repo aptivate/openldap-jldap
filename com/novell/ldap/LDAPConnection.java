@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/org/ietf/ldap/LDAPConnection.java,v 1.16 2000/08/11 19:41:42 smerrill Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/org/ietf/ldap/LDAPConnection.java,v 1.17 2000/08/12 20:41:06 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -17,13 +17,10 @@ package org.ietf.ldap;
 
 import java.io.*;
 import java.util.*;
-import java.net.Socket;
 
 import com.novell.ldap.client.*;
-
 import org.ietf.asn1.*;
 import org.ietf.asn1.ldap.*;
-//import com.novell.ldap.client.protocol.*;
 
 /**
  * 4.6 public class LDAPConnection
@@ -303,99 +300,6 @@ public class LDAPConnection implements
    }
 
    /**
-    * Reads the entry specified by the LDAP URL.
-    *
-    * When this method is called, a new connection is created
-    * automatically, using the host and port specified in the URL. After
-    * finding the entry, the method closes the connection (in other words,
-    * it disconnects from the LDAP server).
-    *
-    * If the URL specifies a filter and scope, these are not used. Of the
-    * information specified in the URL, this method only uses the LDAP host
-    * name and port number, the base distinguished name (DN), and the list
-    * of attributes to return.
-    *
-    * The method returns the entry specified by the base DN.
-    *
-    * Parameters are:
-    *
-    *  toGet           LDAP URL specifying the entry to read.
-    */
-   public static LDAPEntry read(LDAPUrl toGet)
-      throws LDAPException
-   {
-      LDAPSearchConstraints defSearchCons = new LDAPSearchConstraints();
-         return read( toGet, defSearchCons);
-   }
-
-   /**
-    * Reads the entry specified by the LDAP URL.
-    *
-    * When this method is called, a new connection is created
-    * automatically, using the host and port specified in the URL. After
-    * finding the entry, the method closes the connection (in other words,
-    * it disconnects from the LDAP server).
-    *
-    * If the URL specifies a filter and scope, these are not used. Of the
-    * information specified in the URL, this method only uses the LDAP host
-    * name and port number, the base distinguished name (DN), and the list
-    * of attributes to return.
-    *
-    * The method returns the entry specified by the base DN.
-    *
-    * Parameters are:
-    *
-    *    toGet           LDAP URL specifying the entry to read.
-    *
-    *    cons           Constraints specific to the operation.
-    */
-   public static LDAPEntry read(LDAPUrl toGet,
-                                LDAPSearchConstraints cons)
-      throws LDAPException
-   {
-      return null;
-   }
-
-   /**
-    * Performs the search specified by the LDAP URL, returning an
-    * enumerable LDAPSearchResults object.
-    */
-   public static LDAPSearchResults search(LDAPUrl toGet)
-      throws LDAPException
-   {
-      return null;
-   }
-
-   /**
-    * Perfoms the search specified by the LDAP URL. This method also allows
-    * specifying constraints for the search (such as the maximum number of
-    * entries to find or the maximum time to wait for search results).
-    *
-    * When this method is called, a new connection is created
-    * automatically, using the host and port specified in the URL. After
-    * all search results have been received from the server, the method
-    * closes the connection (in other words, it disconnects from the LDAP
-    * server).
-    *
-    * As part of the search constraints, a choice can be made as to whether
-    * to have the results delivered all at once or in smaller batches. If
-    * the results are to be delivered in smaller batches, each iteration
-    * blocks only until the next batch of results is returned.
-    *
-    * Parameters are:
-    *
-    *  toGet          LDAP URL specifying the entry to read.
-    *
-    *  cons           Constraints specific to the search.
-    */
-   public static LDAPSearchResults search(LDAPUrl toGet,
-                                          LDAPSearchConstraints cons)
-      throws LDAPException
-   {
-      return null;
-   }
-
-   /**
     * Sets the constraints that apply to all operations performed through
     * this connection (unless a different set of constraints is specified
     * when calling an operation method).
@@ -501,10 +405,13 @@ public class LDAPConnection implements
       socketFactory = factory;
    }
 
-   /* =======================================================================
-    *      Implementation of the LDAPv2 interface
-    * =======================================================================
-    */
+	//*************************************************************************
+	// Below follows all of the LDAP protocol operation methods
+	//*************************************************************************
+
+	//*************************************************************************
+	// abandon methods
+	//*************************************************************************
 
    /**
     * abandon (LDAPv2)
@@ -520,10 +427,82 @@ public class LDAPConnection implements
    public void abandon(LDAPSearchResults results)
       throws LDAPException
    {
-/*
       results.abandon();
-*/ 
    }
+
+   /**
+    * 4.1.1 abandon
+    *
+    * Abandons one search operation for a listener.
+    *
+    * Parameters are:
+    *
+    *  id             The ID of the operation to abandon. The ID may be
+    *                 obtained from the search listener for the
+    *                 operation.
+    */
+   public void abandon(int id)
+      throws LDAPException
+   {
+      abandon(id, defSearchCons);
+   }
+
+   /**
+    * abandon (Not yet in the draft)
+    */
+   public void abandon(int id, LDAPConstraints cons)
+      throws LDAPException
+   {
+      validateConn();
+
+//    try {
+//       conn.writeMessage(new AbandonRequest(conn.getMessageID(), id,
+//                                            cons.getClientControls(), ldapv3
+//                                            ).getLber());
+//    }
+//    catch(IOException ioe) {
+//       throw new LDAPException("Communication error.",
+//                               LDAPException.OTHER);
+//    }
+
+      // We need to inform the LDAPListener which owns this messageID to
+      // remove it from the queue.
+      conn.abandon(id);
+   }
+
+   /**
+    * Abandons all search operations for a listener.
+    *
+    * Parameters are:
+    *
+    *  listener       Handler returned for messages returned on a
+    *                 search request. All operations in progress which
+    *                 are managed by the listener are abandoned.
+    */
+   public void abandon(LDAPSearchListener listener)
+      throws LDAPException
+   {
+      abandon(listener, defSearchCons);
+   }
+
+   /**
+    * abandon (Not in the draft)
+    * abandons all messages in progress hosted by the LDAPListener.
+    */
+   public void abandon(LDAPSearchListener listener, LDAPConstraints cons)
+      throws LDAPException
+   {
+      if(listener != null) {
+         int[] msgIds = listener.getMessageIDs();
+         for(int i=0; i<msgIds.length; i++) {
+            abandon(msgIds[i], cons);
+         }
+      }
+   }
+
+	//*************************************************************************
+	// add methods
+	//*************************************************************************
 
    /**
     * add (LDAPv2)
@@ -563,7 +542,109 @@ public class LDAPConnection implements
    }
 
    /**
-    * bind (LDAPv2)
+    * 4.1.2 add
+    *
+    * Adds an entry to the directory.
+    *
+    * Parameters are:
+    *
+    *  entry          LDAPEntry object specifying the distinguished
+    *                 name and attributes of the new entry.
+    *
+    *  listener       Handler for messages returned from a server in
+    *                 response to this request. If it is null, a
+    *                 listener object is created internally.
+    */
+   public LDAPResponseListener add(LDAPEntry entry,
+                                   LDAPResponseListener listener)
+      throws LDAPException
+   {
+      return add(entry, listener, defSearchCons);
+   }
+
+   /**
+    * Adds an entry to the directory.
+    *
+    * Parameters are:
+    *
+    *  entry          LDAPEntry object specifying the distinguished
+    *                 name and attributes of the new entry.
+    *
+    *  listener       Handler for messages returned from a server in
+    *                 response to this request. If it is null, a
+    *                 listener object is created internally.
+    *
+    *  cons           Constraints specific to the operation.
+    */
+   public LDAPResponseListener add(LDAPEntry entry,
+                                   LDAPResponseListener listener,
+                                   LDAPConstraints cons)
+      throws LDAPException
+   {
+      validateConn();
+
+      if(cons == null)
+         cons = defSearchCons;
+
+      // error check the parameters
+      if(entry == null || entry.getDN() == null)
+         throw new LDAPException("Invalid parameter",
+                                 LDAPException.PARAM_ERROR);
+
+      // should we make sure that entry has attributes that have values
+      // before trying to encode them?
+//    if(attr.size() == 0) {
+//       throw new LDAPException(attr.getName() + ": has no values.",
+//                               LDAPException.CONSTRAINT_VIOLATION);
+//    }
+
+//    LDAPRequest req = new AddRequest(entry, conn.getMessageID(),
+//                                     cons.getClientControls(), ldapv3);
+
+      // convert Java-API LDAPEntry to RFC2251 AttributeList
+      AttributeList attrList = new AttributeList();
+      LDAPAttributeSet attrSet = entry.getAttributeSet();
+      Enumeration enum = attrSet.getAttributes();
+      while(enum.hasMoreElements()) {
+         LDAPAttribute attr = (LDAPAttribute)enum.nextElement();
+         ASN1SetOf vals = new ASN1SetOf();
+         Enumeration attrEnum = attr.getByteValues();
+         while(attrEnum.hasMoreElements()) {
+            vals.add(new AttributeValue((byte[])attrEnum.nextElement()));
+         }
+         attrList.add(new AttributeTypeAndValues(
+            new AttributeDescription(attr.getName()), vals));
+      }
+
+      LDAPMessage msg =
+			new LDAPMessage(
+				new AddRequest(
+					new org.ietf.asn1.ldap.LDAPDN(entry.getDN()),
+					attrList),
+				cons.getServerControls());
+
+      if(listener == null)
+         listener = new LDAPResponseListener(conn);
+
+      try {
+         listener.writeMessage(msg, cons.getTimeLimit());
+      }
+      catch(IOException ioe) {
+         // do we need to remove message id here?
+
+         throw new LDAPException("Communication error.",
+                                 LDAPException.OTHER);
+      }
+
+      return listener;
+   }
+
+	//*************************************************************************
+	// bind methods
+	//*************************************************************************
+
+   /**
+    * 4.39.3 bind, LDAPv2, synchronous
     *
     * Authenticates to the LDAP server (that the object is currently
     * connected to) using the specified name and password.  If the object
@@ -591,7 +672,183 @@ public class LDAPConnection implements
    }
 
    /**
-    * compare (LDAPv2)
+	 * bind, LDAPv3, synchronous
+	 *
+	 * LDAPv3 bind() adds the version parameter.
+    */
+   public void bind(int version,
+                    String dn,
+                    String passwd)
+      throws LDAPException
+   {
+      bind(version, dn, passwd, defSearchCons);
+   }
+
+   /**
+	 * bind, LDAPv3, synchronous
+    */
+   public void bind(int version,
+                    String dn,
+                    String passwd,
+                    LDAPConstraints cons)
+      throws LDAPException
+   {
+      LDAPResponseListener listener =
+         bind(version, dn, passwd, (LDAPResponseListener)null, cons);
+      LDAPResponse res = listener.getResponse();
+
+      if(res.getResultCode() == LDAPException.SUCCESS) {
+         conn.setBound();
+      }
+
+      res.chkResultCode();
+   }
+
+   /**
+    * bind
+    *
+    * Authenticates to the LDAP server (that the object is currently
+    * connected to) using the specified name and password.  If the object
+    * has been disconnected from an LDAP server, this method attempts to
+    * reconnect to the server. If the object had already authenticated, the
+    * old authentication is discarded.
+    *
+    * Parameters are:
+    *
+    *  dn             If non-null and non-empty, specifies that the
+    *                 connection and all operations through it should
+    *                 be authenticated with dn as the distinguished
+    *                 name.
+    *
+    *  passwd         If non-null and non-empty, specifies that the
+    *                 connection and all operations through it should
+    *                 be authenticated with dn as the distinguished
+    *                 name and passwd as password.
+    *
+    *  listener       Handler for messages returned from a server in
+    *                 response to this request. If it is null, a
+    *                 listener object is created internally.
+    */
+   public LDAPResponseListener bind(int version,
+                                    String dn,
+                                    String passwd,
+                                    LDAPResponseListener listener)
+      throws LDAPException
+   {
+      return bind(version, dn, passwd, listener, defSearchCons);
+   }
+
+   /**
+    * Authenticates to the LDAP server (that the object is currently
+    * connected to) using the specified name and password.  If the object
+    * has been disconnected from an LDAP server, this method attempts to
+    * reconnect to the server. If the object had already authenticated, the
+    * old authentication is discarded.
+    *
+    * Parameters are:
+    *
+    *  dn             If non-null and non-empty, specifies that the
+    *                 connection and all operations through it should
+    *                 be authenticated with dn as the distinguished
+    *                 name.
+    *
+    *  passwd         If non-null and non-empty, specifies that the
+    *                 connection and all operations through it should
+    *                 be authenticated with dn as the distinguished
+    *                 name and passwd as password.
+    *
+    *  listener       Handler for messages returned from a server in
+    *                 response to this request. If it is null, a
+    *                 listener object is created internally.
+    *
+    *  cons           Constraints specific to the operation.
+    */
+   public LDAPResponseListener bind(int version,
+                                    String dn,
+                                    String passwd,
+                                    LDAPResponseListener listener,
+                                    LDAPConstraints cons)
+      throws LDAPException
+   {
+      validateConn();
+
+      if(cons == null)
+         cons = defSearchCons;
+
+      switch(version) {
+         case LDAP_V3:
+            ldapv3 = true;
+            break;
+         case LDAP_V2:
+            ldapv3 = false;
+            break;
+         default:
+            throw new LDAPException("Protocol version " + version +
+                                    " not supported",
+                                    LDAPException.PROTOCOL_ERROR);
+      }
+
+      LDAPMessage msg =
+			new LDAPMessage(
+				new BindRequest(
+					new ASN1Integer(version),
+					new org.ietf.asn1.ldap.LDAPDN(dn),
+					new AuthenticationChoice(
+						new ASN1Tagged(
+							new ASN1Identifier(ASN1Identifier.CONTEXT, false, 0),
+							new ASN1OctetString(passwd),
+							false))), // implicit tagging
+				cons.getServerControls());
+
+      if(listener == null)
+         listener = new LDAPResponseListener(conn);
+
+      try {
+         listener.writeMessage(msg, cons.getTimeLimit());
+      }
+      catch(IOException ioe) {
+         // do we need to remove message id here?
+
+         throw new LDAPException("Communication error.",
+                                 LDAPException.OTHER);
+      }
+
+//    if(passwd != null) {
+//       req.getLber().reset(); // clear copy of passwd
+//    }
+
+      return listener;
+   }
+
+   /**
+    *
+    */
+/*
+   public void bind(String dn,
+                    Properties props,
+                    javax.security.auth.callback.CallbackHandler cbh)
+                    throws LDAPException {
+   }
+*/
+
+   /**
+    *
+    */
+/*
+   public void bind(String dn,
+                    String[] mechanisms,
+                    Hashtable props,
+                    javax.security.auth.callback.CallbackHandler cbh)
+                    throws LDAPException {
+   }
+*/
+
+	//*************************************************************************
+	// compare methods
+	//*************************************************************************
+
+   /**
+    * 4.39.4 compare, LDAPv2, synchronous
     *
     * Checks to see if an entry contains an attribute with a specified
     * value.  Returns true if the entry has the value, and false if the
@@ -600,12 +857,12 @@ public class LDAPConnection implements
     * Parameters are:
     *
     *  dn             The distinguished name of the entry to use in the
-    *                  comparison.
+    *                 comparison.
     *
     *  attr           The attribute to compare against the entry. The
-    *                  method checks to see if the entry has an
-    *                  attribute with the same name and value as this
-    *                  attribute.
+    *                 method checks to see if the entry has an
+    *                 attribute with the same name and value as this
+    *                 attribute.
     */
    public boolean compare(String dn,
                           LDAPAttribute attr)
@@ -658,6 +915,91 @@ public class LDAPConnection implements
    }
 
    /**
+    * 4.1.4 compare
+    *
+    * Compare an attribute value with one in the directory.
+    *
+    * Parameters are:
+    *  dn             The distinguished name of the entry containing an
+    *                 attribute to compare.
+    *
+    *  attr           An attribute to compare.
+    *
+    *  listener       Handler for messages returned from a server in
+    *                 response to this request. If it is null, a
+    *                 listener object is created internally.
+    */
+   public LDAPResponseListener compare(String dn,
+                                       LDAPAttribute attr,
+                                       LDAPResponseListener listener)
+      throws LDAPException
+   {
+      return compare(dn, attr, listener, defSearchCons);
+   }
+
+   /**
+    * Compare an attribute value with one in the directory.
+    *
+    * Parameters are:
+    *  dn             The distinguished name of the entry containing an
+    *                 attribute to compare.
+    *
+    *  attr           An attribute to compare.
+    *
+    *  listener       Handler for messages returned from a server in
+    *                 response to this request. If it is null, a
+    *                 listener object is created internally.
+    *
+    *  cons           Constraints specific to the operation.
+    */
+   public LDAPResponseListener compare(String dn,
+                                       LDAPAttribute attr,
+                                       LDAPResponseListener listener,
+                                       LDAPConstraints cons)
+      throws LDAPException
+   {
+      validateConn();
+
+      if(cons == null)
+         cons = defSearchCons;
+
+      String type = attr.getName();
+      String value = attr.getStringValueArray()[0]; // get first value
+
+      if(dn == null || type == null || value == null)
+         throw new LDAPException("Invalid parameter.",
+                                 LDAPException.PARAM_ERROR);
+
+      LDAPMessage msg =
+			new LDAPMessage(
+				new CompareRequest(
+					new org.ietf.asn1.ldap.LDAPDN(dn),
+					new AttributeValueAssertion(
+						new AttributeDescription(type),
+						new AssertionValue(value))),
+				cons.getServerControls());
+
+      if(listener == null)
+         listener = new LDAPResponseListener(conn);
+
+		try {
+			listener.writeMessage(msg, cons.getTimeLimit());
+		}
+		catch(IOException ioe) {
+			  // do we need to remove message id here?
+
+			throw new LDAPException("Communication error.",
+											LDAPException.OTHER);
+		}
+
+      return listener;
+   }
+
+	//*************************************************************************
+	// connect methods
+	//*************************************************************************
+
+   /**
     * LDAPv2
     */
    public void connect(String host, int port)
@@ -675,6 +1017,27 @@ public class LDAPConnection implements
       // call LDAPv3 method
       connect(LDAP_V2, host, port, dn, passwd);
    }
+
+   /**
+    * LDAPv3
+    */
+   public void connect(int version, String host, int port, String dn,
+                       String passwd)
+      throws LDAPException
+   {
+      // if already connected, disconnect first
+      if(conn != null) {
+         disconnect();
+      }
+
+      conn = new Connection(host, port, socketFactory);
+
+      bind(version, dn, passwd);
+   }
+
+	//*************************************************************************
+	// delete methods
+	//*************************************************************************
 
    /**
     * 4.28.6 delete
@@ -713,19 +1076,95 @@ public class LDAPConnection implements
    }
 
    /**
-    * 4.28.7 disconnect
+    * 4.1.5 delete
+    *
+    * Deletes the entry for the specified DN from the directory.
+    *
+    *
+    * Parameters are:
+    *
+    *  dn             Distinguished name of the entry to modify.
+    *
+    *  listener       Handler for messages returned from a server in
+    *                  response to this request. If it is null, a
+    *                  listener object is created internally.
+    */
+   public LDAPResponseListener delete(String dn,
+                                      LDAPResponseListener listener)
+      throws LDAPException
+   {
+      return delete(dn, listener, defSearchCons);
+   }
+
+   /**
+    * Deletes the entry for the specified DN from the directory.
+    *
+    *
+    * Parameters are:
+    *
+    *  dn             Distinguished name of the entry to modify.
+    *
+    *  listener       Handler for messages returned from a server in
+    *                  response to this request. If it is null, a
+    *                  listener object is created internally.
+    *
+    *  cons           Constraints specific to the operation.
+    */
+   public LDAPResponseListener delete(String dn,
+                                      LDAPResponseListener listener,
+                                      LDAPConstraints cons)
+      throws LDAPException
+   {
+      validateConn();
+
+      if(dn == null)
+         throw new LDAPException("Invalid parameter.",
+                                 LDAPException.PARAM_ERROR);
+
+      if(cons == null)
+         cons = defSearchCons;
+
+      LDAPMessage msg =
+			new LDAPMessage(
+				new DelRequest(dn),
+				cons.getServerControls());
+
+      if(listener == null)
+         listener = new LDAPResponseListener(conn);
+
+      try {
+         listener.writeMessage(msg, cons.getTimeLimit());
+      }
+      catch(IOException ioe) {
+         // do we need to remove message id here?
+
+         throw new LDAPException("Communication error.",
+                                 LDAPException.OTHER);
+      }
+
+      return listener;
+   }
+
+	//*************************************************************************
+	// disconnect method
+	//*************************************************************************
+
+   /**
+    * 4.39.7 disconnect, LDAPv2, synchronous
     *
     * Disconnects from the LDAP server. Before the object can perform LDAP
     * operations again, it must reconnect to the server by calling connect.
     *
     * Will abandon any outstanding requests, issue an unbind request to the
     * server, and then close the socket.
+	 *
+	 * @throws LDAPException
     */
    public void disconnect()
       throws LDAPException
    {
       if(conn != null) {
-         conn.cleanup((LDAPControl[])null);
+         conn.shutdown((LDAPControl[])null);
          conn = null;
       }
       else {
@@ -733,6 +1172,97 @@ public class LDAPConnection implements
                                  LDAPException.CONNECT_ERROR);
       }
    }
+
+	//*************************************************************************
+	// extendedOperation methods
+	//*************************************************************************
+
+   /**
+    * 4.40.3 extendedOperation, LDAPv3, synchronous LDAP extended request 
+    */
+   public LDAPExtendedResponse extendedOperation(LDAPExtendedOperation op)
+      throws LDAPException
+   {
+      return extendedOperation(op, defSearchCons);
+   }
+
+   /**
+    *  Synchronous LDAP extended request with SearchConstraints
+    */
+   public LDAPExtendedResponse extendedOperation(LDAPExtendedOperation op,
+                                                  LDAPSearchConstraints cons)
+      throws LDAPException
+   {
+
+      // Call asynchronous API and get back handler to reponse listener
+      LDAPResponseListener listener = extendedOperation(op, (LDAPResponseListener)null, cons);
+      LDAPExtendedResponse response = (LDAPExtendedResponse) listener.getResponse();
+      return response;
+   }
+
+
+   /**
+    * ASynchronous LDAP extended request 
+    */
+   public LDAPResponseListener extendedOperation(LDAPExtendedOperation op,
+                                    LDAPResponseListener listener)
+		throws LDAPException
+	{
+
+      return extendedOperation(op, listener, defSearchCons);
+   }
+
+   /**
+    *  ASynchronous LDAP extended request with SearchConstraints
+    */
+   public LDAPResponseListener extendedOperation(LDAPExtendedOperation op,
+                                       LDAPResponseListener listener,
+                                                  LDAPSearchConstraints cons)
+		throws LDAPException
+	{
+
+      // Validate our connection structure
+      validateConn();
+
+      // Use default constraints if none-specified
+      if(cons == null)
+         cons = defSearchCons;
+
+      // error check the parameters
+      if (op.getID() == null)
+         throw new LDAPException("Invalid parameter",
+                                 LDAPException.PARAM_ERROR);
+   
+      // Ber encode the request
+//    LDAPRequest req = new ExtendedRequest(op, conn.getMessageID(),
+//                                     cons.getClientControls(), ldapv3);
+
+      ASN1OctetString value = 
+         (op.getValue() != null) ? new ASN1OctetString(op.getValue()) : null;
+
+      ExtendedRequest er = new ExtendedRequest(new LDAPOID(op.getID()),
+                                               value);
+
+      LDAPMessage msg = new LDAPMessage(er, cons.getServerControls());
+
+      // Create a listener if we do not have one already
+      if(listener == null)
+         listener = new LDAPResponseListener(conn);
+
+      try {
+         listener.writeMessage(msg, cons.getTimeLimit());
+      }
+      catch(IOException ioe) {
+         throw new LDAPException("Communication error.",
+                                 LDAPException.OTHER);
+      }
+
+      return listener;
+   }
+
+	//*************************************************************************
+	// getOption method
+	//*************************************************************************
 
    /**
     * 4.28.8 getOption
@@ -743,6 +1273,8 @@ public class LDAPConnection implements
     *
     *  option         See LDAPConnection.setOption for a description of
     *                 valid options.
+	 *
+	 * @throws LDAPException
     */
    public Object getOption(int option)
    throws LDAPException {
@@ -771,8 +1303,26 @@ public class LDAPConnection implements
       }
    }
 
+	//*************************************************************************
+	// getResponseControls method
+	//*************************************************************************
+
    /**
-    * 4.28.9 modify
+    * 4.40.4 getResponseControls, LDAPv3, synchronous
+    */
+   public LDAPControl[] getResponseControls()
+	{
+      LDAPControl[] controls = null;
+
+      return controls;
+   }
+
+	//*************************************************************************
+	// modify methods
+	//*************************************************************************
+
+   /**
+    * 4.39.9 modify, LDAPv2, synchronous
     *
     * Makes a single change to an existing entry in the directory (for
     * example, changes the value of an attribute, adds a new attribute
@@ -794,7 +1344,7 @@ public class LDAPConnection implements
    }
 
    /**
-    * 4.28.9 modify
+    * modify
     *
     * Makes a single change to an existing entry in the directory (for
     * example, changes the value of an attribute, adds a new attribute
@@ -822,7 +1372,7 @@ public class LDAPConnection implements
    }
 
    /**
-    * 4.28.9 modify
+    * modify
     *
     * Makes a set of changes to an existing entry in the directory (for
     * example, changes attribute values, adds new attribute values, or
@@ -862,6 +1412,170 @@ public class LDAPConnection implements
          modify(dn, mods, (LDAPResponseListener)null, cons);
       listener.getResponse().chkResultCode();
    }
+
+   /**
+    * modify
+    *
+    * Makes a single change to an existing entry in the directory (for
+    * example, changes the value of an attribute, adds a new attribute
+    * value, or removes an existing attribute value).
+    *
+    * The LDAPModification object specifies both the change to be made and
+    * the LDAPAttribute value to be changed.
+    *
+    * Parameters are:
+    *
+    *  dn             Distinguished name of the entry to modify.
+    *
+    *  mod            A single change to be made to the entry.
+    *
+    *  listener       Handler for messages returned from a server in
+    *                  response to this request. If it is null, a
+    *                  listener object is created internally.
+    */
+   public LDAPResponseListener modify(String dn,
+                                      LDAPModification mod,
+                                      LDAPResponseListener listener)
+      throws LDAPException
+   {
+      return modify(dn, mod, listener, defSearchCons);
+   }
+
+   /**
+    * Makes a single change to an existing entry in the directory (for
+    * example, changes the value of an attribute, adds a new attribute
+    * value, or removes an existing attribute value).
+    *
+    * The LDAPModification object specifies both the change to be made and
+    * the LDAPAttribute value to be changed.
+    *
+    * Parameters are:
+    *
+    *  dn             Distinguished name of the entry to modify.
+    *
+    *  mod            A single change to be made to the entry.
+    *
+    *  listener       Handler for messages returned from a server in
+    *                  response to this request. If it is null, a
+    *                  listener object is created internally.
+    *
+    *  cons           Constraints specific to the operation.
+    */
+   public LDAPResponseListener modify(String dn,
+                                      LDAPModification mod,
+                                      LDAPResponseListener listener,
+                                      LDAPConstraints cons)
+      throws LDAPException
+   {
+      LDAPModificationSet mods = new LDAPModificationSet();
+      mods.add(mod);
+      return modify(dn, mods, listener, cons);
+   }
+
+   /**
+    * Makes a set of changes to an existing entry in the directory (for
+    * example, changes attribute values, adds new attribute values, or
+    * removes existing attribute values).
+    *
+    * Parameters are:
+    *
+    *  dn             Distinguished name of the entry to modify.
+    *
+    *  mods           A set of changes to be made to the entry.
+    *
+    *  listener       Handler for messages returned from a server in
+    *                  response to this request. If it is null, a
+    *                  listener object is created internally.
+    */
+   public LDAPResponseListener modify(String dn,
+                                      LDAPModificationSet mods,
+                                      LDAPResponseListener listener)
+      throws LDAPException
+   {
+      return modify(dn, mods, listener, defSearchCons);
+   }
+
+   /**
+    * Makes a set of changes to an existing entry in the directory (for
+    * example, changes attribute values, adds new attribute values, or
+    * removes existing attribute values).
+    *
+    * Parameters are:
+    *
+    *  dn             Distinguished name of the entry to modify.
+    *
+    *  mods           A set of changes to be made to the entry.
+    *
+    *  listener       Handler for messages returned from a server in
+    *                  response to this request. If it is null, a
+    *                  listener object is created internally.
+    *
+    *  cons           Constraints specific to the operation.
+    */
+   public LDAPResponseListener modify(String dn,
+                                      LDAPModificationSet mods,
+                                      LDAPResponseListener listener,
+                                      LDAPConstraints cons)
+      throws LDAPException
+   {
+      validateConn();
+
+      if(dn == null)
+         throw new LDAPException("Invalid parameter.",
+                                 LDAPException.PARAM_ERROR);
+
+      if(cons == null)
+         cons = defSearchCons;
+
+		// Convert Java-API LDAPModificationSet to RFC2251 SEQUENCE OF SEQUENCE
+		ASN1SequenceOf rfcMods = new ASN1SequenceOf();
+		for(int i=0; i<mods.size(); i++) {
+			LDAPModification mod = mods.elementAt(i);
+			LDAPAttribute attr = mod.getAttribute();
+
+			// place modification attribute values in ASN1SetOf
+			ASN1SetOf vals = new ASN1SetOf();
+			Enumeration attrEnum = attr.getByteValues();
+			while(attrEnum.hasMoreElements()) {
+				vals.add(new AttributeValue((byte[])attrEnum.nextElement()));
+			}
+
+			// create SEQUENCE containing mod operation and attr type and vals
+			ASN1Sequence rfcMod = new ASN1Sequence();
+			rfcMod.add(new ASN1Enumerated(mod.getOp()));
+			rfcMod.add(new AttributeTypeAndValues(
+				new AttributeDescription(attr.getName()), vals));
+
+			// place SEQUENCE into SEQUENCE OF
+			rfcMods.add(rfcMod);
+		}
+
+      LDAPMessage msg =
+			new LDAPMessage(
+				new ModifyRequest(
+					new org.ietf.asn1.ldap.LDAPDN(dn),
+					rfcMods),
+				cons.getServerControls());
+
+      if(listener == null)
+         listener = new LDAPResponseListener(conn);
+
+		try {
+			listener.writeMessage(msg, cons.getTimeLimit());
+		}
+		catch(IOException ioe) {
+			  // do we need to remove message id here?
+
+			throw new LDAPException("Communication error.",
+											LDAPException.OTHER);
+		}
+
+      return listener;
+   }
+
+	//*************************************************************************
+	// read methods
+	//*************************************************************************
 
    /**
     * read (LDAPv2)
@@ -936,23 +1650,73 @@ public class LDAPConnection implements
                          LDAPSearchConstraints cons)
       throws LDAPException
    {
-      try{
-         LDAPSearchResults sr = search( dn, LDAPv2.SCOPE_BASE,
-                                    "objectclass=*",
-                                    attrs, false, cons);
-         if(sr.hasMoreElements())
-            return sr.next();
-      }
-      catch( LDAPException e){
-         throw(e);
-      }
+		LDAPSearchResults sr = search(dn, LDAPv2.SCOPE_BASE,
+											"objectclass=*",
+											attrs, false, cons);
 
-      return null;
-
+		return (sr.hasMoreElements()) ? sr.next() : null;
    }
 
    /**
-    * 4.28.11 rename
+    * Reads the entry specified by the LDAP URL.
+    *
+    * When this method is called, a new connection is created
+    * automatically, using the host and port specified in the URL. After
+    * finding the entry, the method closes the connection (in other words,
+    * it disconnects from the LDAP server).
+    *
+    * If the URL specifies a filter and scope, these are not used. Of the
+    * information specified in the URL, this method only uses the LDAP host
+    * name and port number, the base distinguished name (DN), and the list
+    * of attributes to return.
+    *
+    * The method returns the entry specified by the base DN.
+    *
+    * Parameters are:
+    *
+    *  toGet           LDAP URL specifying the entry to read.
+    */
+   public static LDAPEntry read(LDAPUrl toGet)
+      throws LDAPException
+   {
+      LDAPSearchConstraints defSearchCons = new LDAPSearchConstraints();
+         return read( toGet, defSearchCons);
+   }
+
+   /**
+    * Reads the entry specified by the LDAP URL.
+    *
+    * When this method is called, a new connection is created
+    * automatically, using the host and port specified in the URL. After
+    * finding the entry, the method closes the connection (in other words,
+    * it disconnects from the LDAP server).
+    *
+    * If the URL specifies a filter and scope, these are not used. Of the
+    * information specified in the URL, this method only uses the LDAP host
+    * name and port number, the base distinguished name (DN), and the list
+    * of attributes to return.
+    *
+    * The method returns the entry specified by the base DN.
+    *
+    * Parameters are:
+    *
+    *    toGet           LDAP URL specifying the entry to read.
+    *
+    *    cons           Constraints specific to the operation.
+    */
+   public static LDAPEntry read(LDAPUrl toGet,
+                                LDAPSearchConstraints cons)
+      throws LDAPException
+   {
+      return null;
+   }
+
+	//*************************************************************************
+	// rename methods
+	//*************************************************************************
+
+   /**
+    * 4.39.11 rename, LDAPv2, synchronous
     *
     * Renames an existing entry in the directory.
     *
@@ -974,7 +1738,7 @@ public class LDAPConnection implements
    }
 
    /**
-    * 4.28.11 rename
+    * rename
     *
     * Renames an existing entry in the directory.
     *
@@ -998,6 +1762,215 @@ public class LDAPConnection implements
       // null for newParentdn means that this is originating as an LDAPv2 call
       rename(dn, newRdn, null, deleteOldRdn, cons);
    }
+
+   /**
+    * rename
+    *
+    * Renames an existing entry in the directory, possibly repositioning it
+    * in the directory tree.
+    *
+    * Parameters are:
+    *
+    *  dn             Current distinguished name of the entry.
+    *
+    *  newRdn         New relative distinguished name for the entry.
+    *
+    *  newParentdn    Distinguished name of the existing entry which is
+    *                 to be the new parent of the entry.
+    *
+    *  deleteOldRdn   If true, the old name is not retained as an
+    *                 attribute value.
+    */
+   public void rename(String dn,
+                      String newRdn,
+                      String newParentdn,
+                      boolean deleteOldRdn)
+      throws LDAPException
+   {
+      rename(dn, newRdn, newParentdn, deleteOldRdn, defSearchCons);
+   }
+
+   /**
+    * 4.29.5 rename
+    *
+    * Renames an existing entry in the directory, possibly repositioning it
+    * in the directory tree.
+    *
+    * Parameters are:
+    *
+    *  dn             Current distinguished name of the entry.
+    *
+    *  newRdn         New relative distinguished name for the entry.
+    *
+    *  newParentdn    Distinguished name of the existing entry which is
+    *                 to be the new parent of the entry.
+    *
+    *  deleteOldRdn   If true, the old name is not retained as an
+    *                 attribute value.
+    *
+    *  cons           Constraints specific to the operation.
+    */
+   public void rename(String dn,
+                      String newRdn,
+                      String newParentdn,
+                      boolean deleteOldRdn,
+                      LDAPConstraints cons)
+      throws LDAPException
+   {
+      LDAPResponseListener listener = 
+         rename(dn, newRdn, newParentdn, deleteOldRdn,
+               (LDAPResponseListener)null, cons);
+      listener.getResponse().chkResultCode();
+   }
+
+   /**
+    * 4.1.7 rename
+    * 
+    * Renames an existing entry in the directory.
+    *
+    * Parameters are:
+    *
+    *  dn             Current distinguished name of the entry.
+    *
+    *  newRdn         New relative distinguished name for the entry.
+    *
+    *  deleteOldRdn   If true, the old name is not retained as an
+    *                  attribute value.
+    *
+    *  listener       Handler for messages returned from a server in
+    *                  response to this request. If it is null, a
+    *                  listener object is created internally.
+    */
+   public LDAPResponseListener rename(String dn,
+                                      String newRdn,
+                                      boolean deleteOldRdn,
+                                      LDAPResponseListener listener)
+      throws LDAPException
+   {
+      return rename(dn, newRdn, deleteOldRdn, listener, defSearchCons);
+   }
+
+   /**
+    * Renames an existing entry in the directory.
+    *
+    * Parameters are:
+    *
+    *  dn             Current distinguished name of the entry.
+    *
+    *  newRdn         New relative distinguished name for the entry.
+    *
+    *  deleteOldRdn   If true, the old name is not retained as an
+    *                  attribute value.
+    *
+    *  listener       Handler for messages returned from a server in
+    *                  response to this request. If it is null, a
+    *                  listener object is created internally.
+    *
+    *  cons           Constraints specific to the operation.
+    */
+   public LDAPResponseListener rename(String dn,
+                                      String newRdn,
+                                      boolean deleteOldRdn,
+                                      LDAPResponseListener listener,
+                                      LDAPConstraints cons)
+      throws LDAPException
+   {
+      return rename(dn, newRdn, null, deleteOldRdn, listener, cons);
+   }
+
+   /**
+    * LDAPv3 version Not in the draft yet.
+    * 
+    * Renames an existing entry in the directory.
+    *
+    * Parameters are:
+    *
+    *  dn             Current distinguished name of the entry.
+    *
+    *  newRdn         New relative distinguished name for the entry.
+    *
+    *  deleteOldRdn   If true, the old name is not retained as an
+    *                  attribute value.
+    *
+    *  listener       Handler for messages returned from a server in
+    *                  response to this request. If it is null, a
+    *                  listener object is created internally.
+    */
+   public LDAPResponseListener rename(String dn,
+                                      String newRdn,
+                                      String newParentdn,
+                                      boolean deleteOldRdn,
+                                      LDAPResponseListener listener)
+      throws LDAPException
+   {
+      return rename(dn, newRdn, newParentdn,
+                    deleteOldRdn, listener, defSearchCons);
+   }
+
+   /**
+    * LDAPv3 version Not in the draft yet.
+    *
+    * Parameters are:
+    *
+    *  dn             Current distinguished name of the entry.
+    *
+    *  newRdn         New relative distinguished name for the entry.
+    *
+    *  deleteOldRdn   If true, the old name is not retained as an
+    *                  attribute value.
+    *
+    *  listener       Handler for messages returned from a server in
+    *                  response to this request. If it is null, a
+    *                  listener object is created internally.
+    *
+    *  cons           Constraints specific to the operation.
+    */
+   public LDAPResponseListener rename(String dn,
+                                      String newRdn,
+                                      String newParentdn,
+                                      boolean deleteOldRdn,
+                                      LDAPResponseListener listener,
+                                      LDAPConstraints cons)
+      throws LDAPException
+   {
+      validateConn();
+
+      if(dn == null || newRdn == null)
+         throw new LDAPException("Invalid parameter.",
+                                 LDAPException.PARAM_ERROR);
+
+      if(cons == null)
+         cons = defSearchCons;
+
+      LDAPMessage msg =
+			new LDAPMessage(
+				new ModifyDNRequest(
+					new org.ietf.asn1.ldap.LDAPDN(dn),
+					new RelativeLDAPDN(newRdn),
+					new ASN1Boolean(deleteOldRdn),
+					(newParentdn != null) ?
+						new org.ietf.asn1.ldap.LDAPDN(newParentdn) : null),
+				cons.getServerControls());
+
+      if(listener == null)
+         listener = new LDAPResponseListener(conn);
+
+		try {
+			listener.writeMessage(msg, cons.getTimeLimit());
+		}
+		catch(IOException ioe) {
+			  // do we need to remove message id here?
+
+			throw new LDAPException("Communication error.",
+											LDAPException.OTHER);
+		}
+
+      return listener;
+   }
+
+	//*************************************************************************
+	// search methods
+	//*************************************************************************
 
    /**
     * 4.28.12 search
@@ -1093,6 +2066,174 @@ public class LDAPConnection implements
 
       return new LDAPSearchResults(cons.getBatchSize(), listener);
    }
+
+   /**
+    * 4.1.8 search
+    *
+    * Performs the search specified by the parameters.
+    *
+    * Parameters are:
+    *
+    *  base           The base distinguished name to search from.
+    *
+    *  scope          The scope of the entries to search. The following
+    *                  are the valid options:
+    *
+    *     LDAPv2.SCOPE_BASE            Search only the base DN
+    *
+    *     LDAPv2.SCOPE_ONE             Search only entries under the
+    *                                  base DN
+    *
+    *     LDAPv2.SCOPE_SUB             Search the base DN and all
+    *                                  entries
+    *                                   within its subtree
+    *
+    *  filter         Search filter specifying the search criteria, as
+    *                  defined in [FILTERS].
+    *
+    *  attrs          Names of attributes to retrieve.
+    *
+    *  typesOnly      If true, returns the names but not the values of
+    *                  the attributes found.  If false, returns the
+    *                  names and values for attributes found.
+    *
+    *  listener       Handler for messages returned from a server in
+    *                  response to this request. If it is null, a
+    *                  listener object is created internally.
+    */
+   public LDAPSearchListener search(String base,
+                                    int scope,
+                                    String filter,
+                                    String attrs[],
+                                    boolean typesOnly,
+                                    LDAPSearchListener listener)
+      throws LDAPException
+   {
+      return search(base, scope, filter, attrs, typesOnly,
+                   listener, defSearchCons);
+   }
+
+   /**
+    * Performs the search specified by the parameters, also allowing
+    * specification of constraints for the search (such as the maximum
+    * number of entries to find or the maximum time to wait for search
+    * results).
+    *
+    * Parameters are:
+    *
+    *  base           The base distinguished name to search from.
+    *
+    *  scope          The scope of the entries to search. The following
+    *                  are the valid options:
+    *
+    *     LDAPv2.SCOPE_BASE            Search only the base DN
+    *
+    *     LDAPv2.SCOPE_ONE             Search only entries under the
+    *                                  base DN
+    *
+    *     LDAPv2.SCOPE_SUB             Search the base DN and all
+    *                                  entries
+    *                                   within its subtree
+    *
+    *  filter         Search filter specifying the search criteria, as
+    *                  defined in [FILTERS].
+    *
+    *  attrs          Names of attributes to retrieve.
+    *
+    *  typesOnly      If true, returns the names but not the values of
+    *                  the attributes found.  If false, returns the
+    *                  names and values for attributes found.
+    *
+    *  listener       Handler for messages returned from a server in
+    *                  response to this request. If it is null, a
+    *                  listener object is created internally.
+    *
+    *  cons           Constraints specific to the search.
+    */
+   public LDAPSearchListener search(String base,
+                                    int scope,
+                                    String filter,
+                                    String attrs[],
+                                    boolean typesOnly,
+                                    LDAPSearchListener listener,
+                                    LDAPSearchConstraints cons)
+      throws LDAPException
+   {
+      validateConn();
+
+      if(cons == null)
+         cons = defSearchCons;
+
+      LDAPMessage msg = new LDAPMessage(
+         new SearchRequest(
+            new org.ietf.asn1.ldap.LDAPDN(base),
+            new ASN1Enumerated(scope),
+            new ASN1Enumerated(cons.getDereference()),
+            new ASN1Integer(cons.getMaxResults()),
+            new ASN1Integer(cons.getServerTimeLimit()),
+            new ASN1Boolean(typesOnly),
+            new Filter(filter),
+            new AttributeDescriptionList(attrs)),
+         cons.getServerControls());
+
+      if(listener == null)
+         listener = new LDAPSearchListener(conn);
+
+    try {
+       listener.writeMessage(msg, cons.getTimeLimit());
+    }
+    catch(IOException ioe) {
+         // do we need to remove message id here?
+
+       throw new LDAPException("Communication error.",
+                               LDAPException.OTHER);
+    }
+
+      return listener;
+   }
+
+   /**
+    * Performs the search specified by the LDAP URL, returning an
+    * enumerable LDAPSearchResults object.
+    */
+   public static LDAPSearchResults search(LDAPUrl toGet)
+      throws LDAPException
+   {
+      return null;
+   }
+
+   /**
+    * Perfoms the search specified by the LDAP URL. This method also allows
+    * specifying constraints for the search (such as the maximum number of
+    * entries to find or the maximum time to wait for search results).
+    *
+    * When this method is called, a new connection is created
+    * automatically, using the host and port specified in the URL. After
+    * all search results have been received from the server, the method
+    * closes the connection (in other words, it disconnects from the LDAP
+    * server).
+    *
+    * As part of the search constraints, a choice can be made as to whether
+    * to have the results delivered all at once or in smaller batches. If
+    * the results are to be delivered in smaller batches, each iteration
+    * blocks only until the next batch of results is returned.
+    *
+    * Parameters are:
+    *
+    *  toGet          LDAP URL specifying the entry to read.
+    *
+    *  cons           Constraints specific to the search.
+    */
+   public static LDAPSearchResults search(LDAPUrl toGet,
+                                          LDAPSearchConstraints cons)
+      throws LDAPException
+   {
+      return null;
+   }
+
+	//*************************************************************************
+	// setOption methods
+	//*************************************************************************
 
    /**
     * 4.28.13 setOption
@@ -1355,1094 +2496,13 @@ public class LDAPConnection implements
       }
    }
 
-
-   /* =======================================================================
-    * Implementation of LDAPv3 interface
-    * =======================================================================
-    */
-
-   /**
-    * Synchronous version of bind().
-    */
-   public void bind(int version,
-                    String dn,
-                    String passwd)
-      throws LDAPException
-   {
-      bind(version, dn, passwd, defSearchCons);
-   }
-
-   /**
-    * Synchronous version of bind().
-    */
-   public void bind(int version,
-                    String dn,
-                    String passwd,
-                    LDAPConstraints cons)
-      throws LDAPException
-   {
-      LDAPResponseListener listener =
-         bind(version, dn, passwd, (LDAPResponseListener)null, cons);
-      LDAPResponse res = listener.getResponse();
-
-      if(res.getResultCode() == LDAPException.SUCCESS) {
-         conn.setBound();
-      }
-
-      res.chkResultCode();
-   }
-
-   /**
-    *
-    */
-/*
-   public void bind(String dn,
-                    Properties props,
-                    javax.security.auth.callback.CallbackHandler cbh)
-                    throws LDAPException {
-   }
-*/
-
-   /**
-    *
-    */
-/*
-   public void bind(String dn,
-                    String[] mechanisms,
-                    Hashtable props,
-                    javax.security.auth.callback.CallbackHandler cbh)
-                    throws LDAPException {
-   }
-*/
-
-   /**
-    * LDAPv3
-    */
-   public void connect(int version, String host, int port, String dn,
-                       String passwd)
-      throws LDAPException
-   {
-      // if already connected, disconnect first
-      if(conn != null) {
-         disconnect();
-      }
-
-      conn = new Connection(host, port, socketFactory);
-
-      bind(version, dn, passwd);
-   }
-
-   /**
-    * Synchronous LDAP extended request 
-    */
-   public LDAPExtendedResponse extendedOperation(LDAPExtendedOperation op)
-      throws LDAPException
-   {
-      return extendedOperation(op, defSearchCons);
-   }
-
-   /**
-    *  Synchronous LDAP extended request with SearchConstraints
-    */
-   public LDAPExtendedResponse extendedOperation(LDAPExtendedOperation op,
-                                                  LDAPSearchConstraints cons)
-      throws LDAPException
-   {
-
-      // Call asynchronous API and get back handler to reponse listener
-      LDAPResponseListener listener = extendedOperation(op, (LDAPResponseListener)null, cons);
-      LDAPExtendedResponse response = (LDAPExtendedResponse) listener.getResponse();
-      return response;
-   }
-
-
-   /**
-    * ASynchronous LDAP extended request 
-    */
-   public LDAPResponseListener extendedOperation(LDAPExtendedOperation op,
-                                    LDAPResponseListener listener)
-   throws LDAPException {
-
-      return extendedOperation(op, listener, defSearchCons);
-   }
-
-   /**
-    *  ASynchronous LDAP extended request with SearchConstraints
-    */
-   public LDAPResponseListener extendedOperation(LDAPExtendedOperation op,
-                                       LDAPResponseListener listener,
-                                                  LDAPSearchConstraints cons)
-   throws LDAPException {
-
-      // Validate our connection structure
-      validateConn();
-
-      // Use default constraints if none-specified
-      if(cons == null)
-         cons = defSearchCons;
-
-      // error check the parameters
-      if (op.getID() == null)
-         throw new LDAPException("Invalid parameter",
-                                 LDAPException.PARAM_ERROR);
-   
-      // Ber encode the request
-//    LDAPRequest req = new ExtendedRequest(op, conn.getMessageID(),
-//                                     cons.getClientControls(), ldapv3);
-
-      ASN1OctetString value = 
-         (op.getValue() != null) ? new ASN1OctetString(op.getValue()) : null;
-
-      ExtendedRequest er = new ExtendedRequest(new LDAPOID(op.getID()),
-                                               value);
-
-      LDAPMessage msg = new LDAPMessage(er, cons.getServerControls());
-
-      // Create a listener if we do not have one already
-      if(listener == null)
-         listener = new LDAPResponseListener(conn);
-
-      try {
-         // Start timer for message if needed, add messageID to messageID queue,
-         // and then send the message to the server.
-         listener.writeMessage(msg, cons.getTimeLimit());
-      }
-      catch(IOException ioe) {
-
-         throw new LDAPException("Communication error.",
-                                 LDAPException.OTHER);
-      }
-
-      return listener;
-   }
-
-   /**
-    *
-    */
-   public LDAPControl[] getResponseControls() {
-      LDAPControl[] controls = null;
-
-      return controls;
-   }
-
-   /**
-    * 4.29.5 rename
-    *
-    * Renames an existing entry in the directory, possibly repositioning it
-    * in the directory tree.
-    *
-    * Parameters are:
-    *
-    *  dn             Current distinguished name of the entry.
-    *
-    *  newRdn         New relative distinguished name for the entry.
-    *
-    *  newParentdn    Distinguished name of the existing entry which is
-    *                 to be the new parent of the entry.
-    *
-    *  deleteOldRdn   If true, the old name is not retained as an
-    *                 attribute value.
-    */
-   public void rename(String dn,
-                      String newRdn,
-                      String newParentdn,
-                      boolean deleteOldRdn)
-      throws LDAPException
-   {
-      rename(dn, newRdn, newParentdn, deleteOldRdn, defSearchCons);
-   }
-
-   /**
-    * 4.29.5 rename
-    *
-    * Renames an existing entry in the directory, possibly repositioning it
-    * in the directory tree.
-    *
-    * Parameters are:
-    *
-    *  dn             Current distinguished name of the entry.
-    *
-    *  newRdn         New relative distinguished name for the entry.
-    *
-    *  newParentdn    Distinguished name of the existing entry which is
-    *                 to be the new parent of the entry.
-    *
-    *  deleteOldRdn   If true, the old name is not retained as an
-    *                 attribute value.
-    *
-    *  cons           Constraints specific to the operation.
-    */
-   public void rename(String dn,
-                      String newRdn,
-                      String newParentdn,
-                      boolean deleteOldRdn,
-                      LDAPConstraints cons)
-      throws LDAPException
-   {
-      LDAPResponseListener listener = 
-         rename(dn, newRdn, newParentdn, deleteOldRdn,
-               (LDAPResponseListener)null, cons);
-      listener.getResponse().chkResultCode();
-   }
-
-
-   /* =======================================================================
-    *       Implementation of LDAPAsynchronousConnection interface
-    * =======================================================================
-    */
-
-   /**
-    * 4.1.1 abandon
-    *
-    * Abandons one search operation for a listener.
-    *
-    * Parameters are:
-    *
-    *  id             The ID of the operation to abandon. The ID may be
-    *                 obtained from the search listener for the
-    *                 operation.
-    */
-   public void abandon(int id)
-      throws LDAPException
-   {
-      abandon(id, defSearchCons);
-   }
-
-   /**
-    * abandon (Not yet in the draft)
-    */
-   public void abandon(int id, LDAPConstraints cons)
-      throws LDAPException
-   {
-      validateConn();
-
-//    try {
-//       conn.writeMessage(new AbandonRequest(conn.getMessageID(), id,
-//                                            cons.getClientControls(), ldapv3
-//                                            ).getLber());
-//    }
-//    catch(IOException ioe) {
-//       throw new LDAPException("Communication error.",
-//                               LDAPException.OTHER);
-//    }
-
-      // We need to inform the LDAPListener which owns this messageID to
-      // remove it from the queue.
-      conn.abandon(id);
-   }
-
-   /**
-    * Abandons all search operations for a listener.
-    *
-    * Parameters are:
-    *
-    *  listener       Handler returned for messages returned on a
-    *                 search request. All operations in progress which
-    *                 are managed by the listener are abandoned.
-    */
-   public void abandon(LDAPSearchListener listener)
-      throws LDAPException
-   {
-      abandon(listener, defSearchCons);
-   }
-
-   /**
-    * abandon (Not in the draft)
-    * abandons all messages in progress hosted by the LDAPListener.
-    */
-   public void abandon(LDAPSearchListener listener, LDAPConstraints cons)
-      throws LDAPException
-   {
-      if(listener != null) {
-         int[] msgIds = listener.getMessageIDs();
-         for(int i=0; i<msgIds.length; i++) {
-            abandon(msgIds[i], cons);
-         }
-      }
-   }
-
-   /**
-    * 4.1.2 add
-    *
-    * Adds an entry to the directory.
-    *
-    * Parameters are:
-    *
-    *  entry          LDAPEntry object specifying the distinguished
-    *                 name and attributes of the new entry.
-    *
-    *  listener       Handler for messages returned from a server in
-    *                 response to this request. If it is null, a
-    *                 listener object is created internally.
-    */
-   public LDAPResponseListener add(LDAPEntry entry,
-                                   LDAPResponseListener listener)
-      throws LDAPException
-   {
-      return add(entry, listener, defSearchCons);
-   }
-
-   /**
-    * Adds an entry to the directory.
-    *
-    * Parameters are:
-    *
-    *  entry          LDAPEntry object specifying the distinguished
-    *                 name and attributes of the new entry.
-    *
-    *  listener       Handler for messages returned from a server in
-    *                 response to this request. If it is null, a
-    *                 listener object is created internally.
-    *
-    *  cons           Constraints specific to the operation.
-    */
-   public LDAPResponseListener add(LDAPEntry entry,
-                                   LDAPResponseListener listener,
-                                   LDAPConstraints cons)
-      throws LDAPException
-   {
-      validateConn();
-
-      if(cons == null)
-         cons = defSearchCons;
-
-      // error check the parameters
-      if(entry == null || entry.getDN() == null)
-         throw new LDAPException("Invalid parameter",
-                                 LDAPException.PARAM_ERROR);
-
-      // should we make sure that entry has attributes that have values
-      // before trying to encode them?
-//    if(attr.size() == 0) {
-//       throw new LDAPException(attr.getName() + ": has no values.",
-//                               LDAPException.CONSTRAINT_VIOLATION);
-//    }
-
-//    LDAPRequest req = new AddRequest(entry, conn.getMessageID(),
-//                                     cons.getClientControls(), ldapv3);
-
-      // convert from Java-api to RFC2251
-      AttributeList al = new AttributeList();
-      LDAPAttributeSet attrSet = entry.getAttributeSet();
-      Enumeration enum = attrSet.getAttributes();
-      while(enum.hasMoreElements()) {
-         LDAPAttribute attr = (LDAPAttribute)enum.nextElement();
-         ASN1SetOf vals = new ASN1SetOf();
-         Enumeration attrEnum = attr.getByteValues();
-         while(attrEnum.hasMoreElements()) {
-            vals.add(new AttributeValue((byte[])attrEnum.nextElement()));
-         }
-         al.add(new AttributeTypeAndValues(
-            new AttributeDescription(attr.getName()), vals));
-      }
-
-      AddRequest ar = new AddRequest(
-         new org.ietf.asn1.ldap.LDAPDN(entry.getDN()), al);
-
-      LDAPMessage msg = new LDAPMessage(ar, cons.getServerControls());
-
-      if(listener == null)
-         listener = new LDAPResponseListener(conn);
-
-      try {
-         // Start timer for message if needed, add messageID to messageID queue,
-         // and then send the message to the server.
-         listener.writeMessage(msg, cons.getTimeLimit());
-      }
-      catch(IOException ioe) {
-         // do we need to remove message id here?
-
-         throw new LDAPException("Communication error.",
-                                 LDAPException.OTHER);
-      }
-
-      return listener;
-   }
-
-   /**
-    * 4.1.3 bind
-    *
-    * Authenticates to the LDAP server (that the object is currently
-    * connected to) using the specified name and password.  If the object
-    * has been disconnected from an LDAP server, this method attempts to
-    * reconnect to the server. If the object had already authenticated, the
-    * old authentication is discarded.
-    *
-    * Parameters are:
-    *
-    *  dn             If non-null and non-empty, specifies that the
-    *                 connection and all operations through it should
-    *                 be authenticated with dn as the distinguished
-    *                 name.
-    *
-    *  passwd         If non-null and non-empty, specifies that the
-    *                 connection and all operations through it should
-    *                 be authenticated with dn as the distinguished
-    *                 name and passwd as password.
-    *
-    *  listener       Handler for messages returned from a server in
-    *                 response to this request. If it is null, a
-    *                 listener object is created internally.
-    */
-   public LDAPResponseListener bind(int version,
-                                    String dn,
-                                    String passwd,
-                                    LDAPResponseListener listener)
-      throws LDAPException
-   {
-      return bind(version, dn, passwd, listener, defSearchCons);
-   }
-
-   /**
-    * Authenticates to the LDAP server (that the object is currently
-    * connected to) using the specified name and password.  If the object
-    * has been disconnected from an LDAP server, this method attempts to
-    * reconnect to the server. If the object had already authenticated, the
-    * old authentication is discarded.
-    *
-    * Parameters are:
-    *
-    *  dn             If non-null and non-empty, specifies that the
-    *                 connection and all operations through it should
-    *                 be authenticated with dn as the distinguished
-    *                 name.
-    *
-    *  passwd         If non-null and non-empty, specifies that the
-    *                 connection and all operations through it should
-    *                 be authenticated with dn as the distinguished
-    *                 name and passwd as password.
-    *
-    *  listener       Handler for messages returned from a server in
-    *                 response to this request. If it is null, a
-    *                 listener object is created internally.
-    *
-    *  cons           Constraints specific to the operation.
-    */
-   public LDAPResponseListener bind(int version,
-                                    String dn,
-                                    String passwd,
-                                    LDAPResponseListener listener,
-                                    LDAPConstraints cons)
-      throws LDAPException
-   {
-      validateConn();
-
-      if(cons == null)
-         cons = defSearchCons;
-
-      switch(version) {
-         case LDAP_V3:
-            ldapv3 = true;
-            break;
-         case LDAP_V2:
-            ldapv3 = false;
-            break;
-         default:
-            throw new LDAPException("Protocol version " + version +
-                                    " not supported",
-                                    LDAPException.PROTOCOL_ERROR);
-      }
-
-//    LDAPRequest req = new BindRequest(version, dn, passwd,
-//                                      conn.getMessageID(),
-//                                      cons.getClientControls(), ldapv3);
-
-      ASN1Tagged simple = new ASN1Tagged(
-            new ASN1Identifier(ASN1Identifier.CONTEXT, false, 0),
-            new ASN1OctetString(passwd),
-            false); // implicit tagging
-      
-      AuthenticationChoice ac = new AuthenticationChoice(simple);
-
-      BindRequest br = new BindRequest(new ASN1Integer(version),
-                                       new org.ietf.asn1.ldap.LDAPDN(dn),
-                                       ac);
-
-      LDAPMessage msg = new LDAPMessage(br, cons.getServerControls());
-
-      if(listener == null)
-         listener = new LDAPResponseListener(conn);
-
-      try {
-         // Start timer for message if needed, add messageID to the 
-         // messageID queue, and then send the message to the server.
-         listener.writeMessage(msg, cons.getTimeLimit());
-      }
-      catch(IOException ioe) {
-         // do we need to remove message id here?
-
-         throw new LDAPException("Communication error.",
-                                 LDAPException.OTHER);
-      }
-
-//    if(passwd != null) {
-//       req.getLber().reset(); // clear copy of passwd
-//    }
-
-      return listener;
-   }
-
-   /**
-    * 4.1.4 compare
-    *
-    * Compare an attribute value with one in the directory.
-    *
-    * Parameters are:
-    *  dn             The distinguished name of the entry containing an
-    *                  attribute to compare.
-    *
-    *  attr           An attribute to compare.
-    *
-    *  listener       Handler for messages returned from a server in
-    *                  response to this request. If it is null, a
-    *                  listener object is created internally.
-    */
-   public LDAPResponseListener compare(String dn,
-                                       LDAPAttribute attr,
-                                       LDAPResponseListener listener)
-      throws LDAPException
-   {
-      return compare(dn, attr, listener, defSearchCons);
-   }
-
-   /**
-    * Compare an attribute value with one in the directory.
-    *
-    * Parameters are:
-    *  dn             The distinguished name of the entry containing an
-    *                  attribute to compare.
-    *
-    *  attr           An attribute to compare.
-    *
-    *  listener       Handler for messages returned from a server in
-    *                  response to this request. If it is null, a
-    *                  listener object is created internally.
-    *
-    *  cons           Constraints specific to the operation.
-    */
-   public LDAPResponseListener compare(String dn,
-                                       LDAPAttribute attr,
-                                       LDAPResponseListener listener,
-                                       LDAPConstraints cons)
-      throws LDAPException
-   {
-      validateConn();
-
-      if(cons == null)
-         cons = defSearchCons;
-
-      String type = attr.getName();
-      String value = attr.getStringValueArray()[0]; // get first value
-
-      if(dn == null || type == null || value == null)
-         throw new LDAPException("Invalid parameter.",
-                                 LDAPException.PARAM_ERROR);
-
-//    LDAPRequest req = new CompareRequest(dn, type, value,
-//                                         conn.getMessageID(),
-//                                         cons.getClientControls(), ldapv3);
-
-      if(listener == null)
-         listener = new LDAPResponseListener(conn);
-
-//    try {
-         // Start timer for message if needed, add messageID to messageID queue,
-         // and then send the message to the server.
-//       listener.writeMessage(req, cons.getTimeLimit());
-//    }
-//    catch(IOException ioe) {
-         // do we need to remove message id here?
-
-//       throw new LDAPException("Communication error.",
-//                               LDAPException.OTHER);
-//    }
-
-      return listener;
-   }
-
-   /**
-    * 4.1.5 delete
-    *
-    * Deletes the entry for the specified DN from the directory.
-    *
-    *
-    * Parameters are:
-    *
-    *  dn             Distinguished name of the entry to modify.
-    *
-    *  listener       Handler for messages returned from a server in
-    *                  response to this request. If it is null, a
-    *                  listener object is created internally.
-    */
-   public LDAPResponseListener delete(String dn,
-                                      LDAPResponseListener listener)
-      throws LDAPException
-   {
-      return delete(dn, listener, defSearchCons);
-   }
-
-   /**
-    * Deletes the entry for the specified DN from the directory.
-    *
-    *
-    * Parameters are:
-    *
-    *  dn             Distinguished name of the entry to modify.
-    *
-    *  listener       Handler for messages returned from a server in
-    *                  response to this request. If it is null, a
-    *                  listener object is created internally.
-    *
-    *  cons           Constraints specific to the operation.
-    */
-   public LDAPResponseListener delete(String dn,
-                                      LDAPResponseListener listener,
-                                      LDAPConstraints cons)
-      throws LDAPException
-   {
-      validateConn();
-
-      if(dn == null)
-         throw new LDAPException("Invalid parameter.",
-                                 LDAPException.PARAM_ERROR);
-
-      if(cons == null)
-         cons = defSearchCons;
-
-//    LDAPRequest req = new DelRequest(dn, conn.getMessageID(),
-//                                     cons.getClientControls(), ldapv3);
-
-      LDAPMessage msg = new LDAPMessage(new DelRequest(dn),
-                                        cons.getServerControls());
-
-      if(listener == null)
-         listener = new LDAPResponseListener(conn);
-
-      try {
-         // Start timer for message if needed, add messageID to messageID queue,
-         // and then send the message to the server.
-         listener.writeMessage(msg, cons.getTimeLimit());
-      }
-      catch(IOException ioe) {
-         // do we need to remove message id here?
-
-         throw new LDAPException("Communication error.",
-                                 LDAPException.OTHER);
-      }
-
-      return listener;
-   }
-
-   /**
-    * 4.1.6 modify
-    *
-    * Makes a single change to an existing entry in the directory (for
-    * example, changes the value of an attribute, adds a new attribute
-    * value, or removes an existing attribute value).
-    *
-    * The LDAPModification object specifies both the change to be made and
-    * the LDAPAttribute value to be changed.
-    *
-    * Parameters are:
-    *
-    *  dn             Distinguished name of the entry to modify.
-    *
-    *  mod            A single change to be made to the entry.
-    *
-    *  listener       Handler for messages returned from a server in
-    *                  response to this request. If it is null, a
-    *                  listener object is created internally.
-    */
-   public LDAPResponseListener modify(String dn,
-                                      LDAPModification mod,
-                                      LDAPResponseListener listener)
-      throws LDAPException
-   {
-      return modify(dn, mod, listener, defSearchCons);
-   }
-
-   /**
-    * Makes a single change to an existing entry in the directory (for
-    * example, changes the value of an attribute, adds a new attribute
-    * value, or removes an existing attribute value).
-    *
-    * The LDAPModification object specifies both the change to be made and
-    * the LDAPAttribute value to be changed.
-    *
-    * Parameters are:
-    *
-    *  dn             Distinguished name of the entry to modify.
-    *
-    *  mod            A single change to be made to the entry.
-    *
-    *  listener       Handler for messages returned from a server in
-    *                  response to this request. If it is null, a
-    *                  listener object is created internally.
-    *
-    *  cons           Constraints specific to the operation.
-    */
-   public LDAPResponseListener modify(String dn,
-                                      LDAPModification mod,
-                                      LDAPResponseListener listener,
-                                      LDAPConstraints cons)
-      throws LDAPException
-   {
-      LDAPModificationSet mods = new LDAPModificationSet();
-      mods.add(mod);
-      return modify(dn, mods, listener, cons);
-   }
-
-   /**
-    * Makes a set of changes to an existing entry in the directory (for
-    * example, changes attribute values, adds new attribute values, or
-    * removes existing attribute values).
-    *
-    * Parameters are:
-    *
-    *  dn             Distinguished name of the entry to modify.
-    *
-    *  mods           A set of changes to be made to the entry.
-    *
-    *  listener       Handler for messages returned from a server in
-    *                  response to this request. If it is null, a
-    *                  listener object is created internally.
-    */
-   public LDAPResponseListener modify(String dn,
-                                      LDAPModificationSet mods,
-                                      LDAPResponseListener listener)
-      throws LDAPException
-   {
-      return modify(dn, mods, listener, defSearchCons);
-   }
-
-   /**
-    * Makes a set of changes to an existing entry in the directory (for
-    * example, changes attribute values, adds new attribute values, or
-    * removes existing attribute values).
-    *
-    * Parameters are:
-    *
-    *  dn             Distinguished name of the entry to modify.
-    *
-    *  mods           A set of changes to be made to the entry.
-    *
-    *  listener       Handler for messages returned from a server in
-    *                  response to this request. If it is null, a
-    *                  listener object is created internally.
-    *
-    *  cons           Constraints specific to the operation.
-    */
-   public LDAPResponseListener modify(String dn,
-                                      LDAPModificationSet mods,
-                                      LDAPResponseListener listener,
-                                      LDAPConstraints cons)
-      throws LDAPException
-   {
-      validateConn();
-
-      if(dn == null)
-         throw new LDAPException("Invalid parameter.",
-                                 LDAPException.PARAM_ERROR);
-
-      if(cons == null)
-         cons = defSearchCons;
-
-//    LDAPRequest req = new ModifyRequest(dn, mods, conn.getMessageID(),
-//                                        cons.getClientControls(), ldapv3);
-
-      if(listener == null)
-         listener = new LDAPResponseListener(conn);
-
-//    try {
-         // Start timer for message if needed, add messageID to messageID queue,
-         // and then send the message to the server.
-//       listener.writeMessage(req, cons.getTimeLimit());
-//    }
-//    catch(IOException ioe) {
-         // do we need to remove message id here?
-
-//       throw new LDAPException("Communication error.",
-//                               LDAPException.OTHER);
-//    }
-
-      return listener;
-   }
-
-   /**
-    * 4.1.7 rename
-    * 
-    * Renames an existing entry in the directory.
-    *
-    * Parameters are:
-    *
-    *  dn             Current distinguished name of the entry.
-    *
-    *  newRdn         New relative distinguished name for the entry.
-    *
-    *  deleteOldRdn   If true, the old name is not retained as an
-    *                  attribute value.
-    *
-    *  listener       Handler for messages returned from a server in
-    *                  response to this request. If it is null, a
-    *                  listener object is created internally.
-    */
-   public LDAPResponseListener rename(String dn,
-                                      String newRdn,
-                                      boolean deleteOldRdn,
-                                      LDAPResponseListener listener)
-      throws LDAPException
-   {
-      return rename(dn, newRdn, deleteOldRdn, listener, defSearchCons);
-   }
-
-   /**
-    * Renames an existing entry in the directory.
-    *
-    * Parameters are:
-    *
-    *  dn             Current distinguished name of the entry.
-    *
-    *  newRdn         New relative distinguished name for the entry.
-    *
-    *  deleteOldRdn   If true, the old name is not retained as an
-    *                  attribute value.
-    *
-    *  listener       Handler for messages returned from a server in
-    *                  response to this request. If it is null, a
-    *                  listener object is created internally.
-    *
-    *  cons           Constraints specific to the operation.
-    */
-   public LDAPResponseListener rename(String dn,
-                                      String newRdn,
-                                      boolean deleteOldRdn,
-                                      LDAPResponseListener listener,
-                                      LDAPConstraints cons)
-      throws LDAPException
-   {
-      return rename(dn, newRdn, null, deleteOldRdn, listener, cons);
-   }
-
-   /**
-    * LDAPv3 version Not in the draft yet.
-    * 
-    * Renames an existing entry in the directory.
-    *
-    * Parameters are:
-    *
-    *  dn             Current distinguished name of the entry.
-    *
-    *  newRdn         New relative distinguished name for the entry.
-    *
-    *  deleteOldRdn   If true, the old name is not retained as an
-    *                  attribute value.
-    *
-    *  listener       Handler for messages returned from a server in
-    *                  response to this request. If it is null, a
-    *                  listener object is created internally.
-    */
-   public LDAPResponseListener rename(String dn,
-                                      String newRdn,
-                                      String newParentdn,
-                                      boolean deleteOldRdn,
-                                      LDAPResponseListener listener)
-      throws LDAPException
-   {
-      return rename(dn, newRdn, newParentdn,
-                    deleteOldRdn, listener, defSearchCons);
-   }
-
-   /**
-    * LDAPv3 version Not in the draft yet.
-    *
-    * Parameters are:
-    *
-    *  dn             Current distinguished name of the entry.
-    *
-    *  newRdn         New relative distinguished name for the entry.
-    *
-    *  deleteOldRdn   If true, the old name is not retained as an
-    *                  attribute value.
-    *
-    *  listener       Handler for messages returned from a server in
-    *                  response to this request. If it is null, a
-    *                  listener object is created internally.
-    *
-    *  cons           Constraints specific to the operation.
-    */
-   public LDAPResponseListener rename(String dn,
-                                      String newRdn,
-                                      String newParentdn,
-                                      boolean deleteOldRdn,
-                                      LDAPResponseListener listener,
-                                      LDAPConstraints cons)
-      throws LDAPException
-   {
-      validateConn();
-
-      if(dn == null || newRdn == null)
-         throw new LDAPException("Invalid parameter.",
-                                 LDAPException.PARAM_ERROR);
-
-      if(cons == null)
-         cons = defSearchCons;
-
-//    LDAPRequest req = new ModifyDNRequest(dn, newRdn, newParentdn,
-//                                          deleteOldRdn,
-//                                          conn.getMessageID(),
-//                                          cons.getClientControls(),
-//                                          ldapv3);
-
-      if(listener == null)
-         listener = new LDAPResponseListener(conn);
-
-//    try {
-         // Start timer for message if needed, add messageID to messageID queue,
-         // and then send the message to the server.
-//       listener.writeMessage(req, cons.getTimeLimit());
-//    }
-//    catch(IOException ioe) {
-         // do we need to remove message id here?
-
-//       throw new LDAPException("Communication error.",
-//                               LDAPException.OTHER);
-//    }
-
-      return listener;
-   }
-
-   /**
-    * 4.1.8 search
-    *
-    * Performs the search specified by the parameters.
-    *
-    * Parameters are:
-    *
-    *  base           The base distinguished name to search from.
-    *
-    *  scope          The scope of the entries to search. The following
-    *                  are the valid options:
-    *
-    *     LDAPv2.SCOPE_BASE            Search only the base DN
-    *
-    *     LDAPv2.SCOPE_ONE             Search only entries under the
-    *                                  base DN
-    *
-    *     LDAPv2.SCOPE_SUB             Search the base DN and all
-    *                                  entries
-    *                                   within its subtree
-    *
-    *  filter         Search filter specifying the search criteria, as
-    *                  defined in [FILTERS].
-    *
-    *  attrs          Names of attributes to retrieve.
-    *
-    *  typesOnly      If true, returns the names but not the values of
-    *                  the attributes found.  If false, returns the
-    *                  names and values for attributes found.
-    *
-    *  listener       Handler for messages returned from a server in
-    *                  response to this request. If it is null, a
-    *                  listener object is created internally.
-    */
-   public LDAPSearchListener search(String base,
-                                    int scope,
-                                    String filter,
-                                    String attrs[],
-                                    boolean typesOnly,
-                                    LDAPSearchListener listener)
-      throws LDAPException
-   {
-      return search(base, scope, filter, attrs, typesOnly,
-                   listener, defSearchCons);
-   }
-
-   /**
-    * Performs the search specified by the parameters, also allowing
-    * specification of constraints for the search (such as the maximum
-    * number of entries to find or the maximum time to wait for search
-    * results).
-    *
-    * Parameters are:
-    *
-    *  base           The base distinguished name to search from.
-    *
-    *  scope          The scope of the entries to search. The following
-    *                  are the valid options:
-    *
-    *     LDAPv2.SCOPE_BASE            Search only the base DN
-    *
-    *     LDAPv2.SCOPE_ONE             Search only entries under the
-    *                                  base DN
-    *
-    *     LDAPv2.SCOPE_SUB             Search the base DN and all
-    *                                  entries
-    *                                   within its subtree
-    *
-    *  filter         Search filter specifying the search criteria, as
-    *                  defined in [FILTERS].
-    *
-    *  attrs          Names of attributes to retrieve.
-    *
-    *  typesOnly      If true, returns the names but not the values of
-    *                  the attributes found.  If false, returns the
-    *                  names and values for attributes found.
-    *
-    *  listener       Handler for messages returned from a server in
-    *                  response to this request. If it is null, a
-    *                  listener object is created internally.
-    *
-    *  cons           Constraints specific to the search.
-    */
-   public LDAPSearchListener search(String base,
-                                    int scope,
-                                    String filter,
-                                    String attrs[],
-                                    boolean typesOnly,
-                                    LDAPSearchListener listener,
-                                    LDAPSearchConstraints cons)
-      throws LDAPException
-   {
-      validateConn();
-
-      if(cons == null)
-         cons = defSearchCons;
-
-//    LDAPRequest req = new SearchRequest(base, scope, filter, attrs,
-//                                        typesOnly, cons,
-//                                        conn.getMessageID(),
-//                                        cons.getClientControls(), ldapv3);
-
-      LDAPMessage msg = new LDAPMessage(
-         new SearchRequest(
-            new org.ietf.asn1.ldap.LDAPDN(base),
-            new ASN1Enumerated(scope),
-            new ASN1Enumerated(cons.getDereference()),
-            new ASN1Integer(cons.getMaxResults()),
-            new ASN1Integer(cons.getServerTimeLimit()),
-            new ASN1Boolean(typesOnly),
-            new Filter(filter),
-            new AttributeDescriptionList(attrs)),
-         cons.getServerControls());
-
-      if(listener == null)
-         listener = new LDAPSearchListener(conn);
-
-    try {
-         // Start timer for message if needed, add messageID to messageID queue,
-         // and then send the message to the server.
-       listener.writeMessage(msg, cons.getTimeLimit());
-    }
-    catch(IOException ioe) {
-         // do we need to remove message id here?
-
-       throw new LDAPException("Communication error.",
-                               LDAPException.OTHER);
-    }
-
-      return listener;
-   }
-
+	//*************************************************************************
+	// helper methods
+	//*************************************************************************
+
+	/**
+	 *
+	 */
    private void validateConn()
       throws LDAPException
    {

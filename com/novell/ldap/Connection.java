@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/client/Connection.java,v 1.7 2000/08/11 19:41:42 smerrill Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/client/Connection.java,v 1.8 2000/08/16 23:29:26 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -195,14 +195,14 @@ public final class Connection implements Runnable {
 	 *
 	 */
    protected void finalize() {
-      cleanup(null);
+      shutdown(null);
    }
 
 	/**
 	 * This method may be called by finalize() for the connection, or it may
 	 * be called by LDAPConnection.disconnect().
 	 */
-   public synchronized void cleanup(LDAPControl[] reqCtls) {
+   public synchronized void shutdown(LDAPControl[] reqCtls) {
 
       if(socket != null) {
          try {
@@ -284,7 +284,7 @@ public final class Connection implements Runnable {
 //			ioe.printStackTrace();
       }
       finally {
-         cleanup(null);
+         shutdown(null);
       }
    }
 

@@ -43,8 +43,8 @@ public class ProtocolOp extends ASN1Choice {
    public final static int ADD_RESPONSE            = 9;
    public final static int DEL_REQUEST             = 10;
    public final static int DEL_RESPONSE            = 11;
-   public final static int MODIFY_RDN_REQUEST      = 12;
-   public final static int MODIFY_RDN_RESPONSE     = 13;
+   public final static int MODIFY_DN_REQUEST       = 12;
+   public final static int MODIFY_DN_RESPONSE      = 13;
    public final static int COMPARE_REQUEST         = 14;
    public final static int COMPARE_RESPONSE        = 15;
    public final static int ABANDON_REQUEST         = 16;
@@ -71,12 +71,5 @@ public class ProtocolOp extends ASN1Choice {
       super(choice);
    }
 
-   //*************************************************************************
-   // Mutators
-   //*************************************************************************
-
-   //*************************************************************************
-   // Accessors
-   //*************************************************************************
 }
 
