@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPSortControl.java,v 1.3 2000/11/09 23:50:41 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPSortControl.java,v 1.4 2000/11/10 16:50:05 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -97,29 +97,6 @@ public class LDAPSortControl extends LDAPControl {
 
 		setValue (sortKeyList.getEncoding(new LBEREncoder()));
 		
-    }
-
-    // 3.3.2 getFailedAttribute
-
-    /**
-     *  If not null, this returns the attribute that caused the sort
-     *  operation to fail.
-     */
-    public String getFailedAttribute()
-    {
-        return null;
-    }
-
-
-    // 3.3.3 getResultCode
-
-    /**
-     * Returns the result code from the sort, as defined in [1], section
-     * 4.1.10.
-     */
-    public int getResultCode()
-    {
-        return -1;
     }
 
 }
