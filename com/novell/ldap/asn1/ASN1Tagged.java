@@ -62,7 +62,7 @@ public class ASN1Tagged extends ASN1Object {
         this.content = object;
         this.explicit = explicit;
 
-        if(!explicit) {
+        if(!explicit  && content != null) {
             // replace object's id with new tag.
             content.setIdentifier(identifier);
         }
@@ -122,6 +122,17 @@ public class ASN1Tagged extends ASN1Object {
     public final ASN1Object taggedValue()
     {
         return content;
+    }
+
+    /**
+     * Sets the ASN1Object tagged value
+     */
+    public final void setTaggedValue(ASN1Object content){
+        this.content = content;
+        if(!explicit && content != null) {
+            // replace object's id with new tag.
+            content.setIdentifier(this.getIdentifier());
+        }
     }
 
     /**

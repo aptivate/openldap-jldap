@@ -19,6 +19,7 @@ import java.util.StringTokenizer;
 
 import com.novell.ldap.asn1.*;
 import com.novell.ldap.LDAPException;
+import com.novell.ldap.LDAPLocalException;
 import com.novell.ldap.resources.*;
 
 /**
@@ -117,6 +118,16 @@ public class RfcFilter extends ASN1Choice
        super(null);
        setChoiceValue(parse(filter));
        return;
+    }
+
+    /**
+     * Constructs a Filter object accepting an already parsed filter
+     * as an ASN1Tagged object.
+     */
+    public RfcFilter(ASN1Tagged rootFilterTag) {
+        super(null);
+        setChoiceValue(rootFilterTag);
+        return;
     }
 
     //*************************************************************************
@@ -392,13 +403,13 @@ public class RfcFilter extends ASN1Choice
                 if (( b >= 0x01 && b <= 0x27 ) ||
                     ( b >= 0x2B && b <= 0x5B ) ||
                     ( b >= 0x5D && b <= 0x7F )) {
-                    
+
                     // found valid character = %x01-27 / %x2b-5b / %x5d-7f
                     octets[iOctets++] = (byte)ch;
                     escape = false;
                 } else {
                     // found invalid character
-                    throw new com.novell.ldap.LDAPLocalException(
+                    throw new LDAPLocalException(
                             ExceptionMessages.INVALID_CHAR_IN_FILTER,
                             new Object[] { new Character(ch) },
                             LDAPException.FILTER_ERROR);
@@ -417,6 +428,8 @@ public class RfcFilter extends ASN1Choice
         octets = null;
         return toReturn;
     }
+
+
 
 }
 
@@ -469,7 +482,7 @@ class FilterTokenizer
             //"Missing left paren",
             throw new LDAPException(ExceptionMessages.MISSING_LEFT_PAREN,
                                     LDAPException.FILTER_ERROR);
-        }                                
+        }
         return;
     }
 
@@ -489,7 +502,7 @@ class FilterTokenizer
             //"Missing right paren",
             throw new LDAPException(ExceptionMessages.MISSING_RIGHT_PAREN,
                                     LDAPException.FILTER_ERROR);
-        }                                
+        }
         return;
     }
 
@@ -536,7 +549,7 @@ class FilterTokenizer
 
             attr = sb.toString().trim();
             ret = -1;
-        }    
+        }
         return ret;
     }
 

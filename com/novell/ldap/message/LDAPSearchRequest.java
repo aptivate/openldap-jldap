@@ -6,7 +6,7 @@ import com.novell.ldap.*;
 import com.novell.ldap.asn1.*;
 import com.novell.ldap.rfc2251.*;
 
-/* 
+/*
  *       SearchRequest ::= [APPLICATION 3] SEQUENCE {
  *               baseObject      LDAPDN,
  *               scope           ENUMERATED {
@@ -24,8 +24,9 @@ import com.novell.ldap.rfc2251.*;
  *               filter          Filter,
  *               attributes      AttributeDescriptionList }
  */
-public class LDAPSearchRequest extends LDAPMessage {    
+public class LDAPSearchRequest extends LDAPMessage {
     /**
+     * Created a SearchRequest from search parameters
      * @param base
      * @param scope
      * @param attrs
@@ -51,6 +52,36 @@ public class LDAPSearchRequest extends LDAPMessage {
                     new RfcFilter(filter),
                     new RfcAttributeDescriptionList(attrs)),
                (cons != null) ? cons.getControls() : null);
+        return;
+    }
+
+    /**
+     * Created a SearchRequest with an already constructed filter
+     * @param base
+     * @param scope
+     * @param filter
+     * @param attrs
+     * @param typesOnly
+     * @param cons
+     */
+    public LDAPSearchRequest(String base,
+                             int scope,
+                             RfcFilter filter,
+                             String[] attrs,
+                             boolean typesOnly,
+                             LDAPSearchConstraints cons)
+    {
+        super(  LDAPMessage.SEARCH_REQUEST,
+            new RfcSearchRequest (
+                new RfcLDAPDN(base),
+                new ASN1Enumerated(scope),
+                new ASN1Enumerated(cons.getDereference()),
+                new ASN1Integer(cons.getMaxResults()),
+                new ASN1Integer(cons.getServerTimeLimit()),
+                new ASN1Boolean(typesOnly),
+                filter,
+                new RfcAttributeDescriptionList(attrs)),
+                (cons != null) ? cons.getControls() : null);
         return;
     }
 }
