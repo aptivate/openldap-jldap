@@ -14,20 +14,18 @@
  ******************************************************************************/
 package com.novell.ldap.extensions;
 
-import com.novell.ldap.*;
-import com.novell.ldap.asn1.*;
+import com.novell.ldap.LDAPExtendedOperation;
+import com.novell.ldap.LDAPException;
 
 /**
- *
- *  Returns the distingusihed name of the object your are
- *  logged in as.
+ *  Returns the distingusihed name of the object your are logged in as.
  *
  *  <p>To use this class, you must create an instance of the
  *  class and then call the extendedOperation method with this
  *  object as the required LDAPExtendedOperation parameter.</p>
  *
  *  <p>The returned LDAPExtendedResponse object can then be converted to
- *  a GetContextIdentityNameResponse object with the ExtendedREsponseFactory
+ *  a GetBindDNResponse object with the ExtendedREsponseFactory
  *  class. This object contains  methods for retrieving the distinguished
  *  name.</p>
  *
@@ -40,8 +38,7 @@ import com.novell.ldap.asn1.*;
  public class GetBindDNRequest extends LDAPExtendedOperation {
 
     /**
-    *   Constructs an extended operation object for retrieving the context's
-    *   identity.
+    *   Constructs an extended operation object for retrieving the bind dn.
     *
     *  @exception LDAPException A general exception which includes an error 
     *             message and an LDAP error code.    
