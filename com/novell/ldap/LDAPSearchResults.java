@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResults.java,v 1.16 2000/09/29 17:47:59 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResults.java,v 1.17 2000/09/29 22:47:18 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -363,14 +363,13 @@ public class LDAPSearchResults implements Enumeration
                         Debug.trace( Debug.messages, "got references size " + refs.length);
                         references.addElement( refs );
                         referenceCount++;
-                        i++;
                         if( Debug.LDAP_DEBUG ) {
                             Debug.trace( Debug.messages,
                                 name + ".read LDAPSearchResultReference@" +
                                 Integer.toHexString(msg.hashCode()) );
-                            for( i=0; i < refs.length; i++ )
+                            for( int k=0; k < refs.length; k++ )
                             Debug.trace( Debug.messages,
-                                name + ".read \t" + refs[i]);
+                                name + ".read \t" + refs[k]);
                                 
                         }
                     } else { // LDAPResponse
