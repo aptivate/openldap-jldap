@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPUrl.java,v 1.4 2000/08/28 22:18:59 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPUrl.java,v 1.5 2000/09/12 22:50:14 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -95,7 +95,7 @@ public class LDAPUrl {
    }
 
    /*
-    * 4.27.2 decode
+    * 4.38.2 decode
     */
 
    /**
@@ -116,7 +116,7 @@ public class LDAPUrl {
    }
 
    /*
-    * 4.27.3 encode
+    * 4.38.3 encode
     */
 
    /**
@@ -135,7 +135,7 @@ public class LDAPUrl {
    }
 
    /*
-    * 4.27.4 getAttributeArray
+    * 4.38.4 getAttributeArray
     */
 
    /**
@@ -148,7 +148,7 @@ public class LDAPUrl {
    }
 
    /*
-    * 4.27.5 getAttributes
+    * 4.38.5 getAttributes
     */
 
    /**
@@ -161,7 +161,7 @@ public class LDAPUrl {
    }
 
    /*
-    * 4.27.6 getDN
+    * 4.38.6 getDN
     */
 
    /**
@@ -174,7 +174,7 @@ public class LDAPUrl {
    }
 
    /*
-    * 4.27.7 getFilter
+    * 4.38.8 getFilter
     */
 
    /**
@@ -188,11 +188,11 @@ public class LDAPUrl {
    }
 
    /*
-    * 4.27.8 getHost
+    * 4.38.9 getHost
     */
 
    /**
-    * Returns the host name of the LDAP server in the URL.
+    * Returns the name of the LDAP server in the URL.
     *
     * @return The host name specified in the URL.
     */
@@ -201,22 +201,26 @@ public class LDAPUrl {
    }
 
    /*
-    * 4.27.9 getPort
+    * 4.38.10 getPort
     */
 
    /**
-    * Returns the port number of the LDAP server to connect to.
+    * Returns the port number of the LDAP server in the URL.
+    *
+    * @return The port number in the URL.
     */
    public int getPort() {
       return 0;
    }
 
    /*
-    * 4.27.10 getUrl
+    * 4.38.12 getUrl
     */
 
    /**
     * Returns a valid string representation of this LDAP URL.
+    *
+    * @return The string representation of the LDAP URL.
     */
    public String getUrl() {
       return null;
