@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: NamingContextConstants.java,v 1.8 2000/07/31 16:51:42 javed Exp $
+ * $Id: NamingContextConstants.java,v 1.9 2000/07/31 19:54:20 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -56,16 +56,25 @@ public class NamingContextConstants {
 	public static final String SCHEMA_SYNC_RES	    	    = "2.16.840.1.113719.1.27.100.28";
     public static final String ABORT_NAMING_CONTEXT_OP_REQ  = "2.16.840.1.113719.1.27.100.29";
 	public static final String ABORT_NAMING_CONTEXT_OP_RES	= "2.16.840.1.113719.1.27.100.30";
-	public static final String GET_IDENTITY_NAME__REQ       = "2.16.840.1.113719.1.27.100.31";
-    public static final String GET_IDENTITY_NAME__RES		= "2.16.840.1.113719.1.27.100.32";
+	public static final String GET_IDENTITY_NAME_REQ        = "2.16.840.1.113719.1.27.100.31";
+    public static final String GET_IDENTITY_NAME_RES		= "2.16.840.1.113719.1.27.100.32";
     public static final String GET_EFFECTIVE_PRIVILEGES_REQ	= "2.16.840.1.113719.1.27.100.33";
     public static final String GET_EFFECTIVE_PRIVILEGES_RES	= "2.16.840.1.113719.1.27.100.34";
+	public static final String SET_REPLICATION_FILTER_REQ   = "2.16.840.1.113719.1.27.100.35";
+    public static final String SET_REPLICATION_FILTER_RES	= "2.16.840.1.113719.1.27.100.36";
+    public static final String GET_REPLICATION_FILTER_REQ	= "2.16.840.1.113719.1.27.100.37";
+    public static final String GET_REPLICATION_FILTER_RES   = "2.16.840.1.113719.1.27.100.38";
+    public static final String CREATE_ORPHAN_NAMING_CONTEXT_REQ     = "2.16.840.1.113719.1.27.100.39";
+    public static final String CREATE_ORPHAN_NAMING_CONTEXT_RES	    = "2.16.840.1.113719.1.27.100.40";
+    public static final String REMOVE_ORPHAN_NAMING_CONTEXT_REQ	    = "2.16.840.1.113719.1.27.100.41";
+    public static final String REMOVE_ORPHAN_NAMING_CONTEXT_RES     = "2.16.840.1.113719.1.27.100.42";
+    
 
     /**
      * Naming Context operation flags
      *
      */
-    private static final int LDAP_ENSURE_SERVERS_UP = 1;
+    public static final int LDAP_ENSURE_SERVERS_UP = 1;
     
     
     /**
