@@ -14,73 +14,16 @@
  ******************************************************************************/
 package com.novell.ldap.extensions;
 
-import com.novell.ldap.*;
-import com.novell.ldap.asn1.*;
-import com.novell.ldap.resources.*;
-import java.io.IOException;
-import java.io.ByteArrayOutputStream;
+import com.novell.ldap.LDAPException;
 
 /**
- *
- * Creates a new orphan naming context.
- *
- * <p>To create a new orphan naming context, you must create an instance of
- *  this class and then call the extendedOperation method with this object
- *  as the required LDAPExtendedOperation parameter.</p>
- *
- * <p>The createOrphanNamingContextRequest extension uses the following OID:<br>
- *  &nbsp;&nbsp;&nbsp;2.16.840.1.113719.1.27.100.39</p>
- *
- *  <p>The requestValue has the following format:<br>
- *
- *  requestValue ::=<br>
- *  &nbsp;&nbsp;&nbsp;&nbsp;  serverDN&nbsp;&nbsp;&nbsp;&nbsp;     LDAPDN<br>
- *  &nbsp;&nbsp;&nbsp;&nbsp;  contextName&nbsp;&nbsp;&nbsp;&nbsp;  LDAPDN</p>
+ * deprecated. @see SplitOrphanPartitionRequest.
  */
-public class CreateOrphanNamingContextRequest extends LDAPExtendedOperation {
+public class CreateOrphanNamingContextRequest extends SplitOrphanPartitionRequest {
 
-/**
- *
- * Constructs an extended operation object for creating an orphan naming context.
- *
- *
- * @param serverDN    The distinguished name of the server on which
- *                    the new orphan naming context will reside.
- *<br><br>
- * @param contextName The distinguished name of the
- *                    new orphan naming context.
- *
- * @exception LDAPException A general exception which includes an error message
- *                          and an LDAP error code.
- */
- public CreateOrphanNamingContextRequest(String serverDN, String contextName)
+    public CreateOrphanNamingContextRequest(String serverDN, String contextName)
                 throws LDAPException {
 
-        super(NamingContextConstants.CREATE_ORPHAN_NAMING_CONTEXT_REQ, null);
-
-        try {
-
-            if ( (serverDN == null) || (contextName == null) )
-                throw new LDAPException(ExceptionMessages.PARAM_ERROR,
-                                    LDAPException.PARAM_ERROR);
-
-            ByteArrayOutputStream encodedData = new ByteArrayOutputStream();
-         LBEREncoder encoder  = new LBEREncoder();
-
-
-          ASN1OctetString asn1_serverDN = new ASN1OctetString(serverDN);
-          ASN1OctetString asn1_contextName = new ASN1OctetString(contextName);
-
-            asn1_serverDN.encode(encoder, encodedData);
-            asn1_contextName.encode(encoder, encodedData);
-
-            setValue(encodedData.toByteArray());
-
-        }
-      catch(IOException ioe) {
-         throw new LDAPException(ExceptionMessages.ENCODING_ERROR,
-                                 LDAPException.ENCODING_ERROR);
-      }
-   }
-
+        super(serverDN, contextName);
+    }
 }
