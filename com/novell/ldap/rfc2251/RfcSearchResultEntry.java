@@ -41,17 +41,17 @@ public class SearchResultEntry extends ASN1Sequence {
    /**
     *
     */
-   public LDAPDN getObjectName()
+   public ASN1OctetString getObjectName()
    {
-      return (LDAPDN)get(0);  // narrowing conversion
+      return (ASN1OctetString)get(0);
    }
 
    /**
     *
     */
-   public PartialAttributeList getAttributes()
+   public ASN1Sequence getAttributes()
    {
-      return (PartialAttributeList)get(1);
+      return (ASN1Sequence)get(1);
    }
 
    /**

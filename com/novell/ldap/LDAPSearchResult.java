@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/org/ietf/ldap/LDAPSearchResult.java,v 1.6 2000/08/10 18:09:24 smerrill Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/org/ietf/ldap/LDAPSearchResult.java,v 1.7 2000/08/13 21:23:32 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -193,14 +193,14 @@ public class LDAPSearchResult extends LDAPMessage {
    public LDAPEntry getEntry() {
       LDAPAttributeSet attrs = new LDAPAttributeSet();
 
-      PartialAttributeList attrList =
+      ASN1Sequence attrList =
          ((SearchResultEntry)message.getProtocolOp()).getAttributes();
 
       Enumeration seqEnum = attrList.elements();
       while(seqEnum.hasMoreElements()) {
          ASN1Sequence seq = (ASN1Sequence)seqEnum.nextElement();
          LDAPAttribute attr =
-            new LDAPAttribute(((AttributeDescription)seq.get(0)).getString());
+            new LDAPAttribute(((ASN1OctetString)seq.get(0)).getString());
 
          ASN1Set set = (ASN1Set)seq.get(1);
          Enumeration setEnum = set.elements();

@@ -60,7 +60,7 @@ public class ASN1Enumerated extends ASN1Numeric {
 	 */
 	public String toString()
 	{
-		return super.toString() + "ENUMERATED: " + content.longValue();
+		return super.toString() + "ENUMERATED: " + content;
 	}
 
 }

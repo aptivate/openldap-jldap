@@ -61,7 +61,7 @@ public class LDAPMessage extends ASN1Sequence {
    {
       super(dec, in, len);
 
-//      set(0, new MessageID(((ASN1Integer)get(0)).getInt()));
+      set(0, new MessageID(((ASN1Integer)get(0)).getInt()));
 
       // Decode implicitly tagged protocol operation from an ASN1Tagged type
       // to its appropriate application type.
@@ -73,6 +73,12 @@ public class LDAPMessage extends ASN1Sequence {
           new ByteArrayInputStream(content);
 
       switch(protocolOpId.getTag()) {
+			case ProtocolOp.SEARCH_RESULT_ENTRY:
+				set(1, new SearchResultEntry(dec, bais, content.length));
+				break;
+			case ProtocolOp.SEARCH_RESULT_DONE:
+				set(1, new SearchResultDone(dec, bais, content.length));
+				break;
          case ProtocolOp.BIND_RESPONSE:
             set(1, new BindResponse(dec, bais, content.length));
             break;
@@ -85,12 +91,9 @@ public class LDAPMessage extends ASN1Sequence {
          case ProtocolOp.EXTENDED_RESPONSE:
             set(1, new ExtendedResponse(dec, bais, content.length));
             break;
-//       case ProtocolOp.SEARCH_RESULT_ENTRY:
-//          set(1, new SearchResultEntry(dec, bais, content.length));
-//          break;
       }
 
-      // decode implicitly tagged optional controls
+      // decode optional implicitly tagged controls
 
    }
 
@@ -119,7 +122,9 @@ public class LDAPMessage extends ASN1Sequence {
     */
    public Controls getControls()
    {
-      return (Controls)get(2);
+		if(size() > 2)
+			return (Controls)get(2);
+		return null;
    }
 
 }

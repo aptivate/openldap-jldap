@@ -17,8 +17,7 @@ public class ASN1Integer extends ASN1Numeric {
 	 */
 	public ASN1Integer(int content)
 	{
-		id = new ASN1Identifier(ASN1Identifier.UNIVERSAL, false, INTEGER);
-		this.content = new Long(content);
+		this((long)content);
 	}
 
 	/**
