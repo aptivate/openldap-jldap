@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResults.java,v 1.29 2000/12/06 19:30:05 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResults.java,v 1.30 2000/12/06 19:38:40 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -16,6 +16,7 @@
 package com.novell.ldap;
 
 import com.novell.ldap.client.*;
+import com.novell.ldap.LDAPEntry;
 import java.util.*;
 import java.io.*;
 
@@ -306,14 +307,16 @@ public class LDAPSearchResults implements Enumeration
     public void sort(LDAPEntryComparator comp) {
        if (!completed){
          batchSize = Integer.MAX_VALUE;
-         if ( !getBatchOfResults() )//get all results and sort from this point on.
+         completed = getBatchOfResults();
+         if ( !completed )//get all results and sort from this point on.
          {
             //we should run out of memory before this happens
             throw new RuntimeException("All results could not be stored in memory, sort failed");
          }
        }
+
        //ready to sort from index on.
-        if (entryIndex < entries.size())  //if not all used up This replaces 'rangeCheck' in Java Source 1.2.2 of Arrays.sort(...comparator)
+        if (entryIndex < entries.size())  //if not all used up. This replaces 'rangeCheck' in Java Source 1.2.2 of Arrays.sort(...comparator)
            mergeSort((Vector)entries.clone(), entries, entryIndex, entries.size(), comp);
    }
 
@@ -348,12 +351,13 @@ public class LDAPSearchResults implements Enumeration
 
     private static void mergeSort(Vector src, Vector dest,
                                   int low, int high, LDAPEntryComparator c) {
-         int length = high - low;
-
+        int length = high - low;
+        int j = 0;
       	// Insertion sort on smallest arrays
       	if (length < 7) {
       	    for (int i=low; i<high; i++)
-      		for (int j=i; j>low && c.isGreater((LDAPEntry)dest.elementAt(j-1), (LDAPEntry)dest.elementAt(j)); j--)
+     		for (j=i; j>low && !(dest.elementAt(j) instanceof LDAPResponse) &&
+                c.isGreater((LDAPEntry)dest.elementAt(j-1), (LDAPEntry)dest.elementAt(j)); j--)
       		    swap(dest, j, j-1);
       	    return;
       	}
@@ -373,7 +377,8 @@ public class LDAPSearchResults implements Enumeration
 
         // Merge sorted halves (now in src) into dest
         for(int i = low, p = low, q = mid; i < high; i++) {
-            if (q>=high || p<mid && !c.isGreater((LDAPEntry)src.elementAt(p), (LDAPEntry)src.elementAt(q)))
+            if (q>=high || p<mid && ((src.elementAt(q) instanceof LDAPResponse)
+              || !c.isGreater((LDAPEntry)src.elementAt(p), (LDAPEntry)src.elementAt(q))))
                 dest.setElementAt(src.elementAt(p++),i );
             else
                 dest.setElementAt(src.elementAt(q++),i );
