@@ -135,7 +135,7 @@ public class ExceptionMessages extends java.util.ListResourceBundle {
       {"INVALID_FILTER_COMPARISON", "Invalid comparison operator"},
       {"INVALID_CHAR_IN_FILTER", "The invalid character \"{0}\" needs to be escaped as \"{1}\""},
       {"INVALID_ESC_IN_DESCR", "Escape sequence not allowed in attribute description"},
-      {"INVALID_CHAR_IN_DESCR", "The invalid character \"{0}\" in attribute description"},
+      {"INVALID_CHAR_IN_DESCR", "Invalid character \"{0}\" in attribute description"},
       {"NOT_AN_ATTRIBUTE", "Schema element is not an LDAPAttributeSchema object"},
       {"UNEQUAL_LENGTHS","Length of attribute Name array does not equal length of Flags array"},
       {"IMPROPER_REFERRAL","Referral not supported for command {0}"},
