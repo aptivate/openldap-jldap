@@ -19,7 +19,8 @@ package org.ietf.ldap;
  *  Encapsulates an ID which uniquely identifies a particular extended
  *  operation.
  *
- * @see com.novell.ldap.LDAPExtendedOperation
+ * @see <a href="../../../../doc/com/novell/ldap/LDAPExtendedOperation.html">
+            com.novell.ldap.LDAPExtendedOperation</a>
  */
 public class LDAPExtendedOperation
 {
@@ -37,7 +38,10 @@ public class LDAPExtendedOperation
     /**
      * Constructs a new object with the specified object ID and data.
      *
-     * @see com.novell.ldap.LDAPExtendedOperation
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPExtendedOperation.html
+            #LDAPExtendedOperation(java.lang.String, byte[])">
+            com.novell.ldap.LDAPExtendedOperation.LDAPExtendedOperation(String,
+            byte[])</a>
      */
     public LDAPExtendedOperation(String oid, byte[] vals)
 	{
@@ -48,7 +52,9 @@ public class LDAPExtendedOperation
     /**
      * Returns the unique identifier of the operation.
      *
-     * @see com.novell.ldap.LDAPExtendedOperation#getID()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPExtendedOperation.html
+            #getID()">
+            com.novell.ldap.LDAPExtendedOperation.getID()</a>
      */
     public String getID() {
         return exop.getID();
@@ -57,7 +63,9 @@ public class LDAPExtendedOperation
     /**
      * Returns a reference to the operation-specific data.
      *
-     * @see com.novell.ldap.LDAPExtendedOperation#getValue()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPExtendedOperation.html
+            #getValue()">
+            com.novell.ldap.LDAPExtendedOperation.getValue()</a>
      */
     public byte[] getValue() {
         return exop.getValue();
@@ -66,7 +74,9 @@ public class LDAPExtendedOperation
     /**
      *  Sets the value for the operation-specific data.
      *
-     * @see com.novell.ldap.LDAPExtendedOperation#setValue(byte[])
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPExtendedOperation.html
+            #setValue(byte[])">
+            com.novell.ldap.LDAPExtendedOperation.setValue(byte[])</a>
      */
     protected void setValue(byte[] newVals) {
         exop.mySetValue( newVals);
