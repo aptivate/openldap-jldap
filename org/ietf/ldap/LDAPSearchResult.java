@@ -40,7 +40,9 @@ public class LDAPSearchResult extends LDAPMessage
     /**
      * Returns the entry of a server's search response.
      *
-     * @see com.novell.ldap.LDAPSearchResult#getEntry()
+    * @see <a href="../../../../doc/com/novell/ldap/LDAPSearchResult.html
+            #getEntry()">
+            com.novell.ldap.LDAPSearchResult.getEntry()</a>
      */
     public LDAPEntry getEntry()
     {
