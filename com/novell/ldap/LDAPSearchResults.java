@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResults.java,v 1.28 2000/12/05 17:53:25 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResults.java,v 1.29 2000/12/06 19:30:05 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -342,7 +342,8 @@ public class LDAPSearchResults implements Enumeration
      * @param c the LDAPEntryComparator to determine the order of the Vector.
      * @throws ClassCastException if the array contains elements that are not
      *	       <i>LDAPEntry</i>.
-     * @see LDAPComparator or LDAPCompareAttrNames
+     * @see LDAPEntryComparator
+     * @see LDAPCompareAttrNames
      */
 
     private static void mergeSort(Vector src, Vector dest,
