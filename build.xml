@@ -23,103 +23,255 @@
 <!--               pkg directory.  Only available in top makefile            -->
 <!--     pkg     - Synonym for install                                       -->
 
-<property name="pkg" value="pkg"/>
-<property name="pkg.lib" value="pkg/lib"/>
-<property name="pkg.lib.debug" value="pkg/lib_debug"/>
-<property name="pkg.doc" value="pkg/doc"/>
-<property name="pkg.doc.framewk" value="pkg/doc/framewk"/>
-<property name="pkg.doc.ldap" value="pkg/doc/ldap"/>
-<property name="pkg.samples" value="pkg/samples"/>
+<property name="docsrc" value="."/>
+<property name="src" value="."/>
+<property name="ldap" value="ldap"/>
 
 <property name="lib" value="lib"/>
-<property name="doc" value="doc"/>
-<property name="doc.ldap" value="doc/ldap"/>
 <property name="lib.debug" value="lib_debug"/>
-<property name="src" value="src"/>
 
-  <target name="init">
-    <tstamp/>
-  </target>
+<property name="build" value="classes"/>
+<property name="build.debug" value="classes_debug"/>
+<property name="build.samples" value="classes_samples"/>
+<property name="build.tests" value="classes_tests"/>
 
-  <target name="clean" depends="cleanpkg">
-    <ant dir="${basedir}/${src}" target="clean"/>
-  </target>
+<property name="doc" value="doc"/>
+<property name="doc.novell" value="${doc}/novell"/>
 
-  <target name="cleanpkg" depends="init">
-	<deltree dir="${pkg}"/>
-  </target>
+<property name="pkg" value="pkg"/>
+<property name="pkg.lib" value="${pkg}/${lib}"/>
+<property name="pkg.lib.debug" value="${pkg}/${lib}_debug"/>
+<property name="pkg.samples" value="${pkg}/samples"/>
+<property name="pkg.doc" value="${pkg}/${doc}"/>
+<property name="pkg.doc.framework" value="${pkg}/${doc}/framework"/>
+<property name="pkg.doc.ldap" value="${pkg}/${doc}/ldap"/>
 
-  <target name="doc" depends="ldap.debug">
-    <ant dir="${basedir}/${src}" target="doc"/>
-  </target>
+<property name="pkg.doc.novell" value="${doc}/novell"/>
 
-  <target name="debug" depends="ldap.debug"/>
 
-  <target name="ldap.debug" depends="init">
-    <ant dir="${basedir}/${src}" target="debug" />
-  </target>
+    <!-- =================================================================== -->
+    <!-- Initialization                                                      -->
+    <!-- =================================================================== -->
+	<target name="init">
+		<tstamp/>
+	</target>
 
-  <target name="release" depends="init">
-    <ant dir="${basedir}/${src}" target="release" />
-  </target>
+    <!-- =================================================================== -->
+    <!-- all - clean, build debug, release, dist                             -->
+    <!-- =================================================================== -->
+	<target name="all" depends="init, cleanpkg, lib, doc, tests, samples, install" />
 
-  <target name="final" depends="release" />
+    <!-- =================================================================== -->
+    <!-- clean all files                                                     -->
+    <!-- =================================================================== -->
+	<target name="clean" depends="init">
+            <echo message="Cleaning files"/>
+            <deltree dir="${doc}"/>
+            <deltree dir="${pkg.doc}"/>
+            <deltree dir="${lib}"/>
+            <deltree dir="${lib.debug}"/>
+            <deltree dir="${build}"/>
+            <deltree dir="${build.debug}"/>
+            <deltree dir="${build.samples}"/>
+            <deltree dir="${build.tests}"/>
+	</target>
 
-  <target name="lib" depends="debug, release"/>
 
-  <target name="jar" depends="lib"/>
+    <!-- =================================================================== -->
+    <!-- clean the pkg directory                                             --> 
+    <!--       Note: The doc directory is left intact                        -->
+	<!--             ant doc will rebuild it                                 -->
+    <!-- =================================================================== -->
+	<target name="cleanpkg" depends="init">
+		<deltree dir="${pkg.lib}"/>
+		<deltree dir="${pkg.lib.debug}"/>
+		<deltree dir="${pkg.samples}"/>
+	</target>
 
-  <target name="install" depends="init">
-	<mkdir dir="${src}/${doc.framewk}"/>
-	<mkdir dir="${src}/${doc.ldap}"/>
-	<mkdir dir="${src}/${lib}"/>
-	<mkdir dir="${src}/${lib.debug}"/>
-	<mkdir dir="${novbp}/${doc}"/>
-	<mkdir dir="${novbp}/${lib}"/>
-	<mkdir dir="${novbp}/${lib.debug}"/>
-	<mkdir dir="${pkg.lib}"/>
-	<mkdir dir="${pkg.lib.debug}"/>
-	<mkdir dir="${pkg.doc}"/>
-	<mkdir dir="${pkg.doc}/${ldap}"/>
-	<mkdir dir="${pkg.samples}"/>
-	<mkdir dir="${pkg.samples}/extensions"/>
+    <!-- =================================================================== -->
+    <!-- really clean all files                                              -->
+    <!-- =================================================================== -->
+	<target name="reallyclean" depends="clean, cleanpkg">
+		<deltree dir="${pkg}"/>
+	</target>
 
-	<copydir src="${src}/${lib}"         dest="${pkg.lib}"/>
+    <!-- =================================================================== -->
+    <!-- create javadoc                                                      --> 
+    <!-- =================================================================== -->
+    <target name="doc" depends="docframework, docldap, docnovell"/>
 
-	<copydir src="${src}/${lib.debug}"   dest="${pkg.lib.debug}"/>
+    <!-- =================================================================== -->
+    <!-- build debug classes                                                 -->
+    <!-- =================================================================== -->
+    <target name="debug" depends="init">
+            <mkdir dir="${build.debug}"/>
 
-	<copydir src="${src}/${doc.framewk}" dest="${pkg.doc.framewk}"/>
-	<copydir src="${src}/${doc.ldap}"    dest="${pkg.doc.ldap}"/>
+        <echo message="DEBUG compile in com/novell"/>
 
-	<copydir src="${src}/samples/extensions"  dest="${pkg.samples}/extensions"/>
-  </target>
+                <mkdir dir="${build.debug}"/>
+        <javac srcdir="."
+                                includes="com/novell/**/*.java"
+                destdir="${build.debug}"
+                deprecation="off"
+                debug="on"
+                optimize="off">
+                                <classpath>
+                                        <pathelement location="external/ssl/domestic/nssl1.1_dom.jar"/>
+                                </classpath>
+        </javac>
 
-  <target name="pkg" depends="install"/>
+        <echo message="Creating DEBUG ${lib.debug}/${ldap}.jar file"/>
+        <mkdir dir="${lib.debug}"/>
+        <jar jarfile="${lib.debug}/${ldap}.jar"
+            basedir="${build.debug}"
+        />
+        </target>
 
-  <target name="all.subdir" depends="init">
-    <ant dir="${basedir}/${src}" target="all" />
-  </target>
+    <!-- =================================================================== -->
+    <!-- build release classes                                               -->
+    <!-- =================================================================== -->
+    <target name="release" depends="init">
+            <mkdir dir="${build}"/>
 
-  <target name="all" depends="init, all.subdir, cleanpkg, install" />
+        <echo message="RELEASE compile in com/novell"/>
 
-  <target name="samples" depends="init">
-    <ant dir="${basedir}/${src}" target="samples" />
-  </target>
+                <mkdir dir="${build}"/>
+        <javac srcdir="."
+                                includes="com/novell/**/*.java"
+                destdir="${build}"
+                deprecation="off"
+                debug="off"
+                optimize="on">
+                                <classpath>
+                                        <pathelement location="external/ssl/domestic/nssl1.1_dom.jar"/>
+                                </classpath>
+        </javac>
 
-  <!-- ===================================================================== -->
-  <!-- build test classes                                                    -->
-  <!-- ===================================================================== -->
-  <target name="tests" depends="debug">
-          <mkdir dir="${build.tests}/extensions"/>
+        <echo message="Creating RELEASE ${lib}/${ldap}.jar file"/>
+        <mkdir dir="${lib}"/>
+        <jar jarfile="${lib}/${ldap}.jar"
+            basedir="${build}"
+        />
+	</target>
 
-      <echo message="DEBUG compile tests" />
-              <ant dir="tests" target="all">
-                      <property name="build" value="${build.samples}"/>
-                      <property name="lib" value="${lib.debug}"/>
-                      <property name="ldap" value="${ldap}"/>
-                      <property name="debug" value="on"/>
-                      <property name="optimize" value="off"/>
-              </ant>
-     </target>
+    <!-- =================================================================== -->
+    <!-- final is synonym for build release classes                          -->
+    <!-- =================================================================== -->
+	<target name="final" depends="release" />
+
+    <!-- =================================================================== -->
+    <!-- build lib files                                                     -->
+    <!-- =================================================================== -->
+	<target name="lib" depends="debug, release"/>
+
+    <!-- =================================================================== -->
+    <!-- jar is synonym for build lib files                                  -->
+    <!-- =================================================================== -->
+	<target name="jar" depends="lib"/>
+
+    <!-- =================================================================== -->
+    <!-- Create distribution directory                                       -->
+    <!-- =================================================================== -->
+	<target name="dist" depends="init">
+		<mkdir dir="${src}/${lib}"/>
+		<mkdir dir="${src}/${lib.debug}"/>
+		<mkdir dir="${pkg.lib}"/>
+		<mkdir dir="${pkg.lib.debug}"/>
+		<mkdir dir="${pkg.doc}"/>
+		<mkdir dir="${pkg.doc}/${ldap}"/>
+		<mkdir dir="${pkg.samples}"/>
+		<mkdir dir="${pkg.samples}/extensions"/>
+
+		<copydir src="${src}/${lib}"         dest="${pkg.lib}"/>
+
+		<copydir src="${src}/${lib.debug}"   dest="${pkg.lib.debug}"/>
+
+		<copydir src="${src}/samples"  dest="${pkg.samples}"/>
+		<copydir src="${src}/samples/extensions"  dest="${pkg.samples}/extensions"/>
+	</target>
+
+    <!-- =================================================================== -->
+    <!-- pkg & install are synonyms for create distribution directory        -->
+    <!-- =================================================================== -->
+	<target name="install" depends="dist"/>
+	<target name="pkg" depends="dist"/>
+
+	<!-- ===================================================================== -->
+	<!-- build test classes                                                    -->
+	<!-- ===================================================================== -->
+	<target name="tests" depends="debug">
+		<mkdir dir="${build.tests}/extensions"/>
+
+		<echo message="DEBUG compile tests" />
+		<ant dir="tests" target="all">
+			<property name="build" value="${build.samples}"/>
+			<property name="lib" value="${lib.debug}"/>
+			<property name="ldap" value="${ldap}"/>
+			<property name="debug" value="on"/>
+			<property name="optimize" value="off"/>
+		</ant>
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- build Sample classes                                                -->
+	<!-- =================================================================== -->
+	<target name="samples" depends="debug"/>
+
+    <!-- =================================================================== -->
+    <!-- create javadoc for IETF ldap classes                                --> 
+    <!-- =================================================================== -->
+    <target name="docldap" depends="init">
+                <deltree dir="${pkg.doc.ldap}"/>
+        <echo message="Creating IETF ldap javadoc"/>
+        <mkdir dir="${pkg.doc.ldap}"/>
+        <javadoc sourcepath="${docsrc}"
+                        destdir="${pkg.doc.ldap}"
+                        classpath="${lib.debug}/${ldap}.jar"
+                        packagenames="com.novell.ldap,com.novell.ldap.extensions"
+                        Windowtitle="LDAP Classes"
+                        Splitindex="true"
+                        Doctitle="Novell, Inc. LDAP IETF Classes and Novell, Inc. Extensions"
+        />
+                        <!--Header="&lt;b>ASN.1 Classes&lt;/b>&lt;br>&lt;font size=\"-1\">Implements BER Encoding/Decoding&lt;/font>"-->
+                        <!--Bottom="&lt;font size=\"-1\">Novell, Inc.&lt;br>       1800 South Novell Place&lt;br>        Provo, Ut 84606&lt;br>       Phone: (801) 278-5948&lt;/font>"-->
+    </target>
+
+    <!-- =================================================================== -->
+    <!-- create javadoc for LDAP framework classes to                        --> 
+    <!-- =================================================================== -->
+    <target name="docframework" depends="init">
+                <deltree dir="${pkg.doc.framework}"/>
+        <echo message="Creating framework ldap javadoc"/>
+        <mkdir dir="${pkg.doc.framework}"/>
+        <javadoc sourcepath="${docsrc}"
+                        destdir="${pkg.doc.framework}"
+                        classpath="${lib.debug}/${ldap}.jar"
+                        packagenames="com.novell.ldap.asn1,com.novell.ldap.protocol"
+                        Windowtitle="LDAP Classes"
+                        Splitindex="true"
+                        Doctitle="Novell, Inc. Java LDAP Framework Classes"
+        />
+                        <!--Header="&lt;b>ASN.1 Classes&lt;/b>&lt;br>&lt;font size=\"-1\">Implements BER Encoding/Decoding&lt;/font>"-->
+                        <!--Bottom="&lt;font size=\"-1\">Novell, Inc.&lt;br>       1800 South Novell Place&lt;br>        Provo, Ut 84606&lt;br>       Phone: (801) 278-5948&lt;/font>"-->
+    </target>
+
+    <!-- =================================================================== -->
+    <!-- create javadoc for all LDAP classes for Novell internal use only    --> 
+    <!-- =================================================================== -->
+    <target name="docnovell" depends="init">
+                <deltree dir="${doc.novell}"/>
+        <echo message="Creating novell ldap javadoc"/>
+        <mkdir dir="${doc.novell}"/>
+        <javadoc sourcepath="${docsrc}"
+                        destdir="${doc.novell}"
+                        packagenames="com.novell.ldap,com.novell.ldap.asn1,com.novell.ldap.client,com.novell.ldap.protocol,com.novell.ldap.extensions"
+                        Windowtitle="LDAP Classes"
+                        Splitindex="true"
+                        Private="true"
+                        Doctitle="Novell, Inc. All Java LDAP Classes for Novell Internal Use"
+        />
+                        <!--Header="&lt;b>ASN.1 Classes&lt;/b>&lt;br>&lt;font size=\"-1\">Implements BER Encoding/Decoding&lt;/font>"-->
+                        <!--Bottom="&lt;font size=\"-1\">Novell, Inc.&lt;br>       1800 South Novell Place&lt;br>        Provo, Ut 84606&lt;br>       Phone: (801) 278-5948&lt;/font>"-->
+    </target>
 
 </project>
