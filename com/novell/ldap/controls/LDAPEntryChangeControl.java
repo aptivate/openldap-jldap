@@ -59,7 +59,7 @@ public class LDAPEntryChangeControl extends LDAPControl
      *                    the control is not supported. False if
      *                    the operation can be processed without the control.
      *<br><br>
-     *  @param values     The control-specific data.
+     *  @param value     The control-specific data.
      */
     public LDAPEntryChangeControl( String oid, boolean critical, byte[] value)
         throws IOException
