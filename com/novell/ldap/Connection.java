@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.15 2000/09/11 21:05:55 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.16 2000/09/13 22:33:55 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -155,7 +155,7 @@ public final class Connection implements Runnable {
     *
     */
    public void removeLDAPListener(LDAPListener listener) {
-      ldapListeners.remove(listener);
+      ldapListeners.removeElement(listener);
    }
 
    /**

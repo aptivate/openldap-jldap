@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttribute.java,v 1.6 2000/08/31 19:48:38 judy Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttribute.java,v 1.7 2000/09/14 15:29:29 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -63,7 +63,7 @@ public class LDAPAttribute {
     */
    public LDAPAttribute(String attrName, byte attrBytes[]) {
       name = attrName;
-      values.add(attrBytes);
+      values.addElement(attrBytes);
    }
 
    /**
@@ -74,7 +74,7 @@ public class LDAPAttribute {
     */
    public LDAPAttribute(String attrName, String attrString) {
       name = attrName;
-      values.add(attrString);
+      values.addElement(attrString);
    }
 
    /**
@@ -86,7 +86,7 @@ public class LDAPAttribute {
    public LDAPAttribute(String attrName, String attrStrings[]) {
       name = attrName;
       for(int i=0; i<attrStrings.length; i++) {
-         values.add(attrStrings[i]);
+         values.addElement(attrStrings[i]);
       }
    }
 
@@ -100,7 +100,7 @@ public class LDAPAttribute {
     * @param attrString Value of the attribute as a string.
     */
    public synchronized void addValue(String attrString) {
-      values.add(attrString);
+      values.addElement(attrString);
    }
 
    /**
@@ -109,7 +109,7 @@ public class LDAPAttribute {
     * @param attrBytes Value of the attribute as raw bytes.
     */
    public synchronized void addValue(byte attrBytes[]) {
-      values.add(attrBytes);
+      values.addElement(attrBytes);
    }
 
    /*
@@ -126,10 +126,10 @@ public class LDAPAttribute {
       while(e.hasMoreElements()) {
          Object o = e.nextElement();
          if(o instanceof String) {
-            bv.add(((String)o).getBytes());
+            bv.addElement(((String)o).getBytes());
          }
          else {
-            bv.add(o);
+            bv.addElement(o);
          }
       }
       return bv.elements();
@@ -148,10 +148,10 @@ public class LDAPAttribute {
       while(e.hasMoreElements()) {
          Object o = e.nextElement();
          if(o instanceof String) {
-            sv.add(o);
+            sv.addElement(o);
          }
          else {
-            sv.add(new String((byte[])o));
+            sv.addElement(new String((byte[])o));
          }
       }
       return sv.elements();
@@ -316,7 +316,7 @@ public class LDAPAttribute {
     * @param attrString   Value of the attribute as a string.
     */
    public synchronized void removeValue(String attrString) {
-      values.remove(attrString);
+      values.removeElement(attrString);
    }
 
    /**
@@ -325,7 +325,7 @@ public class LDAPAttribute {
     * @param attrBytes    Value of the attribute as raw bytes.
     */
    public synchronized void removeValue(byte attrBytes[]) {
-      values.remove(attrBytes);
+      values.removeElement(attrBytes);
    }
 
    /*

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPModificationSet.java,v 1.4 2000/08/28 22:18:57 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPModificationSet.java,v 1.5 2000/09/08 23:43:50 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -65,12 +65,12 @@ public class LDAPModificationSet {
     *  @param attr     The attribute to modify.
     */
    public synchronized void add(int op, LDAPAttribute attr) {
-      modSet.add(new LDAPModification(op, attr));
+      modSet.addElement(new LDAPModification(op, attr));
    }
 
-	/*
-	 *	This convenience method is not in the internet draft
-	 */
+    /*
+     *  This convenience method is not in the internet draft
+     */
 
   /**
   * Adds an LDAPModification object to the set.
@@ -78,7 +78,7 @@ public class LDAPModificationSet {
   * @param mod The LDAPModification object to add to the set.
   */
    public synchronized void add(LDAPModification mod) {
-      modSet.add(mod);
+      modSet.addElement(mod);
    }
 
    /*
@@ -110,13 +110,13 @@ public class LDAPModificationSet {
     *  @param name    Name of the attribute to be removed.
     */
    public synchronized void remove(String name) {
-		for(int i=0; i<modSet.size(); i++) {
-			LDAPModification mod = (LDAPModification)modSet.elementAt(i);
-			LDAPAttribute attr = mod.getAttribute();
-			if(attr.getName().equalsIgnoreCase(name)) {
-				modSet.removeElementAt(i);
-			}
-		}
+        for(int i=0; i<modSet.size(); i++) {
+            LDAPModification mod = (LDAPModification)modSet.elementAt(i);
+            LDAPAttribute attr = mod.getAttribute();
+            if(attr.getName().equalsIgnoreCase(name)) {
+                modSet.removeElementAt(i);
+            }
+        }
    }
 
    /*

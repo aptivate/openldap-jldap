@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPAttributeSet.java,v 1.6 2000/08/28 22:18:54 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttributeSet.java,v 1.7 2000/08/31 19:48:38 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -51,7 +51,7 @@ public class LDAPAttributeSet implements Cloneable {
     * @param attr Attribute to add to this set.
     */
    public synchronized void add(LDAPAttribute attr) {
-      attrs.add(attr);
+      attrs.addElement(attr);
    }
 
    /*
