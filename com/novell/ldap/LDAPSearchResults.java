@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResults.java,v 1.23 2000/10/04 21:54:18 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResults.java,v 1.24 2000/10/31 23:52:26 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -340,7 +340,7 @@ public class LDAPSearchResults implements Enumeration
                     } else 
                     if(msg instanceof LDAPSearchResultReference) { // Search Ref
                         Debug.trace( Debug.messages, "get references");
-                        String[] refs = ((LDAPSearchResultReference)msg).getUrls();
+                        String[] refs = ((LDAPSearchResultReference)msg).getReferrals();
                         Debug.trace( Debug.messages, "got references " + refs );
                         Debug.trace( Debug.messages, "got references size " + refs.length);
                         references.addElement( refs );
