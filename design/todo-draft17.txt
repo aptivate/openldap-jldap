@@ -348,14 +348,15 @@ com org
 
 [ ] [ ] 14: LDAPUrl
 [ ] [ ] 15: LDAPUrl
-[ ] [ ]      15: Implements Cloneable.
+[X] [X]      15: Implements Cloneable.
 [ ] [ ]      15: Implements Serializable
-[ ] [ ]      14: constructor: Remove signature which takes "secure" as a
+    [X]      14: constructor: Remove signature which takes "secure" as a
                  parameter Remove isSecure()
-[ ] [ ]      15: constructor: Add extensions parameter that take explicitly.
-[ ] [ ]      14: getFilter(): returns null instead of "(objectclass=*)"
+[X] [X]      15: constructor: Add extensions parameter that take explicitly.
+[X] [X]      14: getFilter(): returns null instead of "(objectclass=*)"
                  if no filter specified
-[ ] [ ]      15: getUrl(): Rename to toString().
+[X] [X]      15: getUrl(): Rename to toString().
+[ ]          15: remove usage of getURL from LDAPConnection and SearchResults
 
 [ ] [ ] 13: Security Considerations (Doc issue)
 [ ] [ ]      13: Add implementation guidelines
