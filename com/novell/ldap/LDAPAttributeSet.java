@@ -96,8 +96,8 @@ public class LDAPAttributeSet implements Cloneable {
     * <p>In both cases, null is returned if there is no exact match to the
     * specified attrName.</p>
     *
-    * <p>Note: NDS does not yet support language subtypes. It does support the "binary"
-    *  subtype.</p>
+    * <p>Note: Novell eDirectory does not yet support language subtypes.
+    * It does support the "binary" subtype.</p>
     *
     * @param attrName   The name of an attribute to retrieve, with or without
     * subtype specifications. For example, "cn", "cn;phonetic", and
@@ -160,8 +160,8 @@ public class LDAPAttributeSet implements Cloneable {
     *   <li>getAttribute( "sn", "lang-en" )   returns the "sn" attribute.</li>
     *  </ul>
     *
-    * <p>Note: NDS does not yet support language subtypes. It does support the "binary"
-    *  subtype.</p>
+    * <p>Note: Novell eDirectory does not yet support language subtypes.
+    * It does support the "binary" subtype.</p>
     *
     * @param attrName  The name of an attribute to retrieve, with or without
     * subtype specifications. For example, "cn", "cn;phonetic", and
@@ -263,8 +263,8 @@ public class LDAPAttributeSet implements Cloneable {
     *       which also are binary</li>
     * </ul>
     *
-    * <p>Note: NDS does not yet support language subtypes. It does support the "binary"
-    *  subtype.</p>
+    * <p>Note: Novell eDirectory does not yet support language subtypes.
+    * It does support the "binary" subtype.</p>
     *
     * @return An attribute set containing the attributes that match the specified
     *         subtype.

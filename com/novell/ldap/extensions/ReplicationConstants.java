@@ -315,8 +315,8 @@ public class ReplicationConstants {
     /**
      * Identifies this replica as a read-only replica of the partition.
      *
-     * <p>Only NDS synchronization processes can modified entries on this
-     * replica.</p>
+     * <p>Only Novell eDirectory synchronization processes can modified
+     * entries on this replica.</p>
      */
     public static final int LDAP_RT_READONLY        = 2;
 
@@ -324,9 +324,9 @@ public class ReplicationConstants {
      * Identifies this replica as a subordinate reference replica of the
      * partition.
      *
-     * <p>NDS automatically adds these replicas to a server when the server
-     * does not contain replicas of all child partitions. Only NDS can
-     * modify information on these types of replicas. </p>
+     * <p>NOvell eDirectory automatically adds these replicas to a server
+     * when the server does not contain replicas of all child partitions.
+     * Only eDirectory can modify information on these types of replicas.</p>
      */
     public static final int LDAP_RT_SUBREF          = 3;
 
@@ -345,8 +345,8 @@ public class ReplicationConstants {
      * but the replica contains sparse data.
      *
      * <p>The replica has been configured to contain only specified object types
-     * and attributes. On this type of replica, only NDS synchronization processes
-     * can modify the sparse data.</p>
+     * and attributes. On this type of replica, only Novell eDirectory
+     * synchronization processes can modify the sparse data.</p>
      */
     public static final int LDAP_RT_SPARSE_READ     = 5;
 
@@ -407,9 +407,9 @@ public class ReplicationConstants {
     /**
      * Indicates that a partition has a new master replica.
      *
-     * <p>When the new master is set to this state, NDS knows that the replica is
-     * now the master and changes its replica type to master and the old master to
-     * read/write.</p>
+     * <p>When the new master is set to this state, Novell eDirectory knows
+     * that the replica is now the master and changes its replica type to
+     * master and the old master to read/write.</p>
      */
     public static final int LDAP_RS_MASTER_DONE     = 12;
 

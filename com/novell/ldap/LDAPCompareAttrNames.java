@@ -30,9 +30,9 @@ import com.novell.ldap.resources.*;
  *  sensitive Java String comparison, which may not correspond to the
  *  LDAP ordering rules by which an LDAP server would sort them.
  *
- *  <p>Note: NDS supports only ascending sort order (A,B,C ...) and allows sorting
- *  only by one attribute. The NDS server must also be configured to index this
- *  attribute.</p>
+ *  <p>Note: Novell eDirectory LDAP server supports only ascending sort order
+ *  (A,B,C ...) and allows sorting only by one attribute. The directory server
+ *  must also be configured to index this attribute.</p>
  *
  *  @see LDAPEntryComparator
  *  @see LDAPSearchResults#sort
@@ -61,7 +61,6 @@ public class LDAPCompareAttrNames implements LDAPEntryComparator {
     * Constructs an object that sorts results by a single attribute, in
     * either ascending or descending order.
     *
-    *
     * @param attrName       Name of an attribute to sort by.
     *<br><br>
     * @param ascendingFlag  True specifies ascending order; false specifies
@@ -79,8 +78,9 @@ public class LDAPCompareAttrNames implements LDAPEntryComparator {
     * Constructs an object that sorts by one or more attributes, in the
     * order provided, in ascending order.
     *
-    * <p>Note: NDS allows sorting by one attribute only. The NDS server must also be
-    * configured to index the specified attribute.</p>
+    * <p>Note: Novell eDirectory allows sorting by one attribute only. The
+    * direcctory server must also be configured to index the specified
+    * attribute.</p>
     *
     * @param attrNames      Array of names of attributes to sort by.
     *
@@ -99,10 +99,9 @@ public class LDAPCompareAttrNames implements LDAPEntryComparator {
     * order provided, in either ascending or descending order for each
     * attribute.
     *
-    * <p>Note: NDS supports only ascending sort order (A,B,C ...) and allows sorting
-    * only by one attribute. The NDS server must be configured to index this
-    * attribute.</p>
-    *
+    * <p>Note: Novell eDirectory supports only ascending sort order (A,B,C ...)
+    * and allows sorting only by one attribute. The directory server must be
+    * configured to index this attribute.</p>
     *
     * @param attrNames      Array of names of attributes to sort by.
     *<br><br>

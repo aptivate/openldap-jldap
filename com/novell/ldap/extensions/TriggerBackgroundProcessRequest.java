@@ -19,8 +19,8 @@ import com.novell.ldap.asn1.*;
 import com.novell.ldap.resources.*;
 
 /**
- *      This API is used to trigger the specified background process on the
- *  NDS server.
+ * This API is used to trigger the specified background process on the
+ * Novell eDirectory server.
  *
  *  <p>The TriggerBackgroundProcessRequest uses tone of the following OID's
  *  depending on the process being triggered:<br>
@@ -40,7 +40,10 @@ import com.novell.ldap.resources.*;
 
 public class TriggerBackgroundProcessRequest extends LDAPExtendedOperation {
 
-    /** ID's used to refer to different NDS backgground processes*/
+    /**
+     * Constants used to refer to different Novell eDirectory
+     * background processes
+     */
     public static final int LDAP_BK_PROCESS_BKLINKER    = 1;
     public static final int LDAP_BK_PROCESS_JANITOR     = 2;
     public static final int LDAP_BK_PROCESS_LIMBER      = 3;

@@ -132,7 +132,7 @@ public interface LDAPDSConstants {
 	public static final long LDAP_DS_DYNAMIC_ACL     = 0x40000000L;
 
 	///////////////////////////////////////////////////////////////////////////
-	// bit values of entry flag in NDS eDirectory
+	// bit values of entry flag in Novell eDirectory
 	///////////////////////////////////////////////////////////////////////////
 	/**
 	 * Alias object.

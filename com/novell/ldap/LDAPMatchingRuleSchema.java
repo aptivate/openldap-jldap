@@ -27,8 +27,8 @@ import java.io.IOException;
  *  matching rule syntax, and to add or delete a matching rule definition
  *  in a directory.
  *
- * <p>NDS does not currently allow matching rules to be added or deleted from
- * the schema.</p>
+ * <p>Novell eDirectory does not currently allow matching rules to be added
+ * or deleted from the schema.</p>
  *
  * @see LDAPAttributeSchema
  * @see LDAPSchemaElement

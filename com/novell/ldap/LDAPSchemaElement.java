@@ -58,8 +58,8 @@ public abstract class LDAPSchemaElement {
     * A string array of optional, or vendor-specific, qualifiers for the
     * schema element.
     *
-    * <p> These optional qualifiers begin with "X-"; the NDS-specific qualifiers
-    * begin with "X-NDS". </p>
+    * <p> These optional qualifiers begin with "X-"; the Novell eDirectory
+    * specific qualifiers begin with "X-NDS". </p>
     */
 	protected String[] qualifier = {""};
 

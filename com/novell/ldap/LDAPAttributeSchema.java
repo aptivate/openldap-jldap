@@ -31,7 +31,7 @@ import java.io.IOException;
  * of the information on the LDAP representation of schema.
  * Draft-sermerseim-nds-ldap-schema-01, "LDAP Schema for NDS"
  * defines the schema descriptions and non-standard syntaxes
- * used by NDS.
+ * used by Novell eDirectory.
  *
  *  <p>Sample Code: <a href="http://developer.novell.com/ndk/doc/samplecode/
  *jldap_sample/jldap_sample/ExtendSchema.java.html">ExtendSchema.java</p>

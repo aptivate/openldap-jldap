@@ -43,8 +43,8 @@ public class LDAPSyntaxSchema
      * Constructs a syntax for adding to or deleting from the schema.
      *
      * <p>Adding and removing syntaxes is not typically a supported
-     * feature of LDAP servers. NDS does not allow syntaxes to be added
-     * or removed.</p>
+     * feature of LDAP servers. Novell eDirectory does not allow syntaxes to
+     * be added or removed.</p>
      *
      * @param oid         The unique object identifier of the syntax - in
      *                    dotted numerical format.</br></br>

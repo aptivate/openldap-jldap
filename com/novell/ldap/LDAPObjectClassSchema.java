@@ -40,14 +40,16 @@ public class LDAPObjectClassSchema extends LDAPSchemaElement{
  /**
   * This class definition defines an abstract schema class.
   *
-  * <p>This is equivalent to setting the NDS effective class flag to true.</p>
+  * <p>This is equivalent to setting the Novell eDirectory effective class
+  * flag to true.</p>
   */
   public final static int ABSTRACT = 0;
 
  /**
   * This class definition defines a structural schema class.
   *
-  * <p>This is equivalent to setting the NDS effective class flag to true.</p>
+  * <p>This is equivalent to setting the Novell eDirectory effective class
+  * flag to true.</p>
   */
   public final static int STRUCTURAL = 1;
 
