@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.45 2000/10/31 00:45:05 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.46 2000/10/31 23:52:19 vtag Exp $
 *
 * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
 * 
@@ -26,7 +26,7 @@ import com.novell.ldap.protocol.*;
  *  Represents the central class that encapsulates the connection
  *  to a directory server through the LDAP protocol. 
  *
- *  An LDAPConnection object is not connected on 
+ *  <p>An LDAPConnection object is not connected on 
  *  construction and can only be connected to one server at one 
  *  port. Multiple threads may share this single connection, typically
  *  by cloning the connection object, one for each thread. An
