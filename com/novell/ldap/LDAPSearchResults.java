@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResults.java,v 1.9 2000/09/12 22:50:13 judy Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResults.java,v 1.10 2000/09/14 15:29:30 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -128,6 +128,11 @@ public class LDAPSearchResults implements Enumeration {
     */
    public LDAPEntry next() throws LDAPException {
       Object element = elements.nextElement();
+	  if( Debug.LDAP_DEBUG ) {
+	  	Debug.trace( Debug.referrals,
+	  		"LDAPSearchResults: next. next object is " +
+	  		element.getClass().getName());
+	  }
       if(element instanceof LDAPResponse) {
          ((LDAPResponse)element).chkResultCode(); // will throw an exception
       }
@@ -203,16 +208,25 @@ public class LDAPSearchResults implements Enumeration {
                controls = msg.getControls();
                if(msg instanceof LDAPSearchResult) {
                   entries.addElement(((LDAPSearchResult)msg).getEntry()); // can we optimize this?
+				  if( Debug.LDAP_DEBUG ) {
+				  	Debug.trace( Debug.referrals,
+				  		"LDAPSearchResults: getBatchOfResults: got LDAPSearchResult");
+				  }
                   count++;
                   i++;
                }
                else if(msg instanceof LDAPSearchResultReference) {
-                  // can use narrowing conversion for LDAPSearchResultReference
-                  // since it doesn't add any behavior to LDAPMessage.
-                  // chase referrals???
+				  if( Debug.LDAP_DEBUG )
+				  	Debug.trace( Debug.referrals,
+				  		"LDAPSearchResults: getBatchOfResults: got LDAPSearchResultReference");
                }
                else { // SearchResultDone
                   int resultCode = ((LDAPResponse)msg).getResultCode();
+				  if( Debug.LDAP_DEBUG )
+					  Debug.trace( Debug.referrals,
+					  	"LDAPSearchResults: getBatchOfResults: got LDAPSearchResultDone, status " +
+						resultCode);
+
                   if(resultCode != LDAPException.SUCCESS) {
                      entries.addElement(msg);
                   }
