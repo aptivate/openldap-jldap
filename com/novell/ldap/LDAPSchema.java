@@ -983,7 +983,7 @@ public class LDAPSchema extends LDAPEntry {
      *  LDAPModification[] mods = new LDAPModification[2];
      *  mods[0] = new LDAPModification(LDAPModification.DELETE, newAuxClass);
      *  mods[1] = new LDAPModification(LDAPModification.DELETE, newObjClass);
-     *  lc.remove(mods);
+     *  lc.modify(lc.getSchemaDN(), mods);
      *  </code></pre></p>
      *
      *  It is not necessary to fetch the schema to perform schema modifications.
