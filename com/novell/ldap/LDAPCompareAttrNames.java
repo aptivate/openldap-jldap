@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPCompareAttrNames.java,v 1.5 2000/08/28 22:18:55 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPCompareAttrNames.java,v 1.6 2000/08/31 19:48:39 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -95,7 +95,7 @@ public class LDAPCompareAttrNames implements LDAPEntryComparator {
     * Returns the locale to be used for sorting, if a locale has been
     * specified. 
     *
-    * <p>If locale is null, a basic String.compareTo() is used for collation.
+    * <p>If locale is null, a basic String.compareTo method is used for collation.
     * If non-null, a locale-specific collation is used. </p>
     *
     * @return The locale if one has been specified

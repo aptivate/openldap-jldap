@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttributeSet.java,v 1.7 2000/08/31 19:48:38 judy Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttributeSet.java,v 1.8 2000/09/14 20:32:29 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -23,9 +23,9 @@ import java.util.*;
  */
 
 /**
- *  Represents a collection of LDAPAttributes, as returned in an entry
- *  on a search or read operation, or used to construct an entry
- *  to be added to a directory.
+ *  Represents a collection of LDAPAttributes, either used to construct an entry 
+ *  to be added to a directory or returned in an entry on a search or read 
+ *  operation.
  */
 public class LDAPAttributeSet implements Cloneable {
    private Vector attrs;
@@ -105,7 +105,7 @@ public class LDAPAttributeSet implements Cloneable {
     * specified attrName.</p>
     *
     * @param attrName   The name of an attribute to retrieve, with or without
-    * subtype specification(s). For example, "cn", "cn;phonetic", and 
+    * subtype specifications. For example, "cn", "cn;phonetic", and 
     * cn;binary" are valid attribute names.
     *
     * @return The attribute matching the specified attrName, or null if there
@@ -228,7 +228,9 @@ public class LDAPAttributeSet implements Cloneable {
     * <li> "binary;lang-ja" specifies only Japanese language subtypes
     *       which also are binary</li> 
     * </ul>               
-    *                                          
+    * 
+    * @return An attribute set containing the attributes that match the specified
+    *         subtype.                                         
     */
    public LDAPAttributeSet getSubset(String subtype) {
       return null;
@@ -243,7 +245,7 @@ public class LDAPAttributeSet implements Cloneable {
     * a member of the set, nothing happens.
     * 
     * <p> To remove an LDAPAttribute by object, the LDAPAttribute.getName 
-    * method can be used: LDAPAttributeSet.remove( attr.getName() );</p>
+    * method can be used: LDAPAttributeSet.remove( attr.getName );</p>
     *
     * @param name  Name of the attribute to remove from this set. 
     *              
