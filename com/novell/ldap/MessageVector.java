@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/client/MessageVector.java,v 1.2 2001/02/22 21:49:36 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/client/MessageVector.java,v 1.3 2001/03/01 00:30:06 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -88,6 +88,21 @@ public class MessageVector extends java.util.Vector
             }
         }
         throw new NoSuchFieldException();
+    }
+
+    /**
+     * Returns an array containing all of the elements in this
+     * MessageVector.
+     * Overrides the jdk1.2 version of this command if running 1.2 or 1.3
+     * and overloads the method if running version 1.1.x
+     *
+     * @return the elements of the vector in the correct order.
+     */
+    public synchronized Object[] toArray()
+    {
+	    Object[] results = new Object[elementCount];
+	    System.arraycopy( elementData, 0, results, 0, elementCount);
+	    return results;
     }
 
     /** Returns an array containing all of the elements in this MessageVector.
