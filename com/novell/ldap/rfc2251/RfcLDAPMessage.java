@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/rfc2251/RfcLDAPMessage.java,v 1.13 2000/11/10 16:50:08 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/rfc2251/RfcLDAPMessage.java,v 1.14 2000/11/22 22:17:43 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  ***************************************************************************/
@@ -12,30 +12,53 @@ import com.novell.ldap.client.Debug;
 
 /**
  *       LDAPMessage ::= SEQUENCE {
+ *<br>
  *               messageID       MessageID,
+ *<br>
  *               protocolOp      CHOICE {
+ *<br>
  *                   bindRequest     BindRequest,
+ *<br>
  *                   bindResponse    BindResponse,
+ *<br>
  *                   unbindRequest   UnbindRequest,
+ *<br>
  *                   searchRequest   SearchRequest,
+ *<br>
  *                   searchResEntry  SearchResultEntry,
+ *<br>
  *                   searchResDone   SearchResultDone,
+ *<br>
  *                   searchResRef    SearchResultReference,
+ *<br>
  *                   modifyRequest   ModifyRequest,
+ *<br>
  *                   modifyResponse  ModifyResponse,
+ *<br>
  *                   addRequest      AddRequest,
+ *<br>
  *                   addResponse     AddResponse,
+ *<br>
  *                   delRequest      DelRequest,
+ *<br>
  *                   delResponse     DelResponse,
+ *<br>
  *                   modDNRequest    ModifyDNRequest,
+ *<br>
  *                   modDNResponse   ModifyDNResponse,
+ *<br>
  *                   compareRequest  CompareRequest,
+ *<br>
  *                   compareResponse CompareResponse,
+ *<br>
  *                   abandonRequest  AbandonRequest,
+ *<br>
  *                   extendedReq     ExtendedRequest,
+ *<br>
  *                   extendedResp    ExtendedResponse },
+ *<br>
  *                controls       [0] Controls OPTIONAL }
- *
+ *<br><br>
  * Note: The creation of a MessageID should be hidden within the creation of
  *       an RfcLDAPMessage. The MessageID needs to be in sequence, and has an
  *       upper and lower limit. There is never a case when a user should be
