@@ -28,12 +28,36 @@ import com.novell.ldap.asn1.*;
 public class RfcAttributeValueAssertion extends ASN1Sequence {
 
     /**
+     * Creates an Attribute Value Assertion.
      *
+     * @parameter ad The assertion description
+     * 
+     * @parameter av The assertion value
      */
     public RfcAttributeValueAssertion(RfcAttributeDescription ad, RfcAssertionValue av)
     {
         super(2);
         add(ad);
         add(av);
+    }
+    
+    /**
+     * Returns the attribute description.
+     *
+     * @return the attribute description
+     */
+    public String getAttributeDescription()
+    {
+        return ((RfcAttributeDescription)get(0)).stringValue();
+    }
+    
+    /**
+     * Returns the assertion value.
+     *
+     * @return the assertion value.
+     */
+    public byte[] getAssertionValue()
+    {
+        return ((RfcAssertionValue)get(1)).byteValue();
     }
 }

@@ -81,4 +81,8 @@ public class RfcCompareRequest extends ASN1Sequence implements RfcRequest {
     {
         return ((RfcLDAPDN)get(0)).stringValue();
     }
+    public final RfcAttributeValueAssertion getAttributeValueAssertion()
+    {
+        return ((RfcAttributeValueAssertion)get(1));
+    }
 }

@@ -21,10 +21,14 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import com.novell.ldap.*;
-import com.novell.ldap.client.*;
+import com.novell.ldap.client.BindProperties;
+import com.novell.ldap.client.Connection;
+import com.novell.ldap.client.Debug;
+import com.novell.ldap.client.LocalException;
+import com.novell.ldap.client.MessageAgent;
+import com.novell.ldap.client.ReferralInfo;
 import com.novell.ldap.message.*;
-import com.novell.ldap.resources.*;
+import com.novell.ldap.resources.ExceptionMessages;
 
 /**
  * The central class that encapsulates the connection
@@ -736,7 +740,7 @@ public class LDAPConnection implements Cloneable
         conn.acquireWriteSemaphore( tlsID );
         try {
             if (!conn.areMessagesComplete()){
-                throw new com.novell.ldap.LDAPException(
+                throw new LDAPLocalException(
                         ExceptionMessages.OUTSTANDING_OPERATIONS,
                         LDAPException.OPERATIONS_ERROR );
             }
@@ -786,14 +790,14 @@ public class LDAPConnection implements Cloneable
     public void stopTLS() throws LDAPException {
 
         if (!isTLS()){
-            throw new LDAPException(ExceptionMessages.NO_STARTTLS,
+            throw new LDAPLocalException(ExceptionMessages.NO_STARTTLS,
                     LDAPException.OPERATIONS_ERROR );
         }
 
         int semaphoreID = conn.acquireWriteSemaphore();
         try{
             if (!conn.areMessagesComplete()) {
-                throw new LDAPException(
+                throw new LDAPLocalException(
                         ExceptionMessages.OUTSTANDING_OPERATIONS,
                         LDAPException.OPERATIONS_ERROR );
             }
@@ -1068,7 +1072,7 @@ public class LDAPConnection implements Cloneable
         // error check the parameters
         if(entry == null || entry.getDN() == null) {
             // Invalid Entry parameter
-            throw new LDAPException(
+            throw new LDAPLocalException(
                     ExceptionMessages.ENTRY_PARAM_ERROR,
                     LDAPException.PARAM_ERROR);
         }
@@ -1540,7 +1544,7 @@ public class LDAPConnection implements Cloneable
                      throws LDAPException
     {
         //"LDAPConnection.bind(with mechanisms) is not Implemented."
-        throw new LDAPException(ExceptionMessages.NOT_IMPLEMENTED,
+        throw new LDAPLocalException(ExceptionMessages.NOT_IMPLEMENTED,
                 new Object[] {"LDAPConnection.bind(with mechanisms)"},
                 LDAPException.LDAP_NOT_SUPPORTED);
     }
@@ -1648,7 +1652,7 @@ public class LDAPConnection implements Cloneable
             "saslBind(" + dn + ")");
         }
         //"LDAPConnection.bind(with mechanisms) is not Implemented."
-        throw new LDAPException(ExceptionMessages.NOT_IMPLEMENTED,
+        throw new LDAPLocalException(ExceptionMessages.NOT_IMPLEMENTED,
             new Object[] {"LDAPConnection.bind(with mechanisms)"},
             LDAPException.LDAP_NOT_SUPPORTED);
     }
@@ -1716,6 +1720,10 @@ public class LDAPConnection implements Cloneable
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.apiRequests, name +
             "compare(" + dn + ") if value");
+        }
+        if( attr.size() > 1) {
+            throw new IllegalArgumentException("Only one value allowed " +
+                    "in the LDAPAttribute for a compare operation");
         }
         LDAPResponseQueue queue =
             compare(dn, attr, null, cons);
@@ -1805,6 +1813,10 @@ public class LDAPConnection implements Cloneable
             Debug.trace( Debug.apiRequests, name +
             "compare(" + dn + ") compare value");
         }
+        if( attr.size() > 1) {
+            throw new IllegalArgumentException("Only one value allowed " +
+                    "in the LDAPAttribute for a compare operation");
+        }
         if(cons == null)
             cons = defSearchCons;
 
@@ -1813,7 +1825,7 @@ public class LDAPConnection implements Cloneable
 
         if(dn == null || value == null) {
             // Invalid parameter
-            throw new LDAPException(ExceptionMessages.PARAM_ERROR,
+            throw new LDAPLocalException(ExceptionMessages.PARAM_ERROR,
                                     LDAPException.PARAM_ERROR);
         }
 
@@ -1882,7 +1894,7 @@ public class LDAPConnection implements Cloneable
                                     address.substring(colonIndex+1));
                         address =   address.substring(0, colonIndex);
                     }catch (Exception e){
-                        throw new LDAPException(
+                        throw new LDAPLocalException(
                                 ExceptionMessages.INVALID_ADDRESS,
                                 new Object[] { address },
                                 LDAPException.PARAM_ERROR);
@@ -2007,7 +2019,7 @@ public class LDAPConnection implements Cloneable
         }
         if(dn == null) {
             // Invalid DN parameter
-            throw new LDAPException(ExceptionMessages.DN_PARAM_ERROR,
+            throw new LDAPLocalException(ExceptionMessages.DN_PARAM_ERROR,
                                     LDAPException.PARAM_ERROR);
         }
 
@@ -2244,7 +2256,7 @@ public class LDAPConnection implements Cloneable
         // error check the parameters
         if (op.getID() == null) {
             // Invalid extended operation parameter, no OID specified
-            throw new LDAPException(ExceptionMessages.OP_PARAM_ERROR,
+            throw new LDAPLocalException(ExceptionMessages.OP_PARAM_ERROR,
                                     LDAPException.PARAM_ERROR);
         }
 
@@ -2581,7 +2593,7 @@ public class LDAPConnection implements Cloneable
         }
         if(dn == null) {
             // Invalid DN parameter
-            throw new LDAPException(ExceptionMessages.DN_PARAM_ERROR,
+            throw new LDAPLocalException(ExceptionMessages.DN_PARAM_ERROR,
                                     LDAPException.PARAM_ERROR);
         }
 
@@ -2688,7 +2700,7 @@ public class LDAPConnection implements Cloneable
             ret = sr.next();
             if( sr.hasMoreElements()) {
                 // "Read response is ambiguous, multiple entries returned"
-                throw new LDAPException(ExceptionMessages.READ_MULTIPLE,
+                throw new LDAPLocalException(ExceptionMessages.READ_MULTIPLE,
                                     LDAPException.AMBIGUOUS_RESPONSE);
             }
         }
@@ -3033,7 +3045,7 @@ public class LDAPConnection implements Cloneable
     {
         if(dn == null || newRdn == null) {
             // Invalid DN or RDN parameter
-            throw new LDAPException(ExceptionMessages.RDN_PARAM_ERROR,
+            throw new LDAPLocalException(ExceptionMessages.RDN_PARAM_ERROR,
                                     LDAPException.PARAM_ERROR);
         }
 
@@ -3592,7 +3604,7 @@ public class LDAPConnection implements Cloneable
                                     referrals.toString());
                     }
                     // Could not match LDAPBind.bind() connecction with URL list
-                    ex = new LDAPException(
+                    ex = new LDAPLocalException(
                             ExceptionMessages.REFERRAL_BIND_MATCH,
                             LDAPException.CONNECT_ERROR);
                 }
@@ -3616,7 +3628,7 @@ public class LDAPConnection implements Cloneable
             if( ex instanceof LDAPException) {
                 ldapex = (LDAPException)ex;
             } else {
-                ldapex = new LDAPException(
+                ldapex = new LDAPLocalException(
                     ExceptionMessages.SERVER_CONNECT_ERROR,
                     new Object[] { conn.getHost() },
                     LDAPException.CONNECT_ERROR, ex);
@@ -3749,7 +3761,7 @@ public class LDAPConnection implements Cloneable
         try {
             // increment hop count, check max hops
             if( hopCount++ > cons.getHopLimit()) {
-                throw new LDAPException("Max hops exceeded",
+                throw new LDAPLocalException("Max hops exceeded",
                     LDAPException.REFERRAL_LIMIT_EXCEEDED);
             }
             // Get a connection to follow the referral
@@ -3877,7 +3889,7 @@ public class LDAPConnection implements Cloneable
             case LDAPMessage.ABANDON_REQUEST:
             case LDAPMessage.UNBIND_REQUEST:
             default:
-                throw new LDAPException(
+                throw new LDAPLocalException(
                      // "Referral doesn't make sense for command"
                     ExceptionMessages.IMPROPER_REFERRAL,
                     new Object[] {
@@ -4017,13 +4029,13 @@ public class LDAPConnection implements Cloneable
         LDAPAttribute attr = ent.getAttribute( attrSubSchema[0] );
         String values[] = attr.getStringValueArray();
         if( values == null || values.length < 1 ) {
-            throw new LDAPException(
+            throw new LDAPLocalException(
                 ExceptionMessages.NO_SCHEMA,
                 new Object[] { dn },
                 LDAPException.NO_RESULTS_RETURNED);
         }
         else if( values.length > 1 ) {
-            throw new LDAPException(
+            throw new LDAPLocalException(
                 ExceptionMessages.MULTIPLE_SCHEMA,
                 new Object[] { dn },
                 LDAPException.CONSTRAINT_VIOLATION);
@@ -4516,7 +4528,7 @@ public class LDAPConnection implements Cloneable
         throws LDAPException
     {
         // Requested property is not supported
-        throw new LDAPException(ExceptionMessages.NO_SUP_PROPERTY,
+        throw new LDAPLocalException(ExceptionMessages.NO_SUP_PROPERTY,
                 LDAPException.PARAM_ERROR);
     }
 

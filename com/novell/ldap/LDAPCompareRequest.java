@@ -56,4 +56,36 @@ public class LDAPCompareRequest extends LDAPMessage
                cont);
         return;
     }
+    
+    /**
+     * Returns the LDAPAttribute associated with this request.
+     *
+     * @return the LDAPAttribute
+     */
+    public String getAttributeDescription()
+    {
+        RfcCompareRequest req = (RfcCompareRequest)getASN1Object().getRequest();
+        return req.getAttributeValueAssertion().getAttributeDescription();
+    }
+    
+    /**
+     * Returns the LDAPAttribute associated with this request.
+     *
+     * @return the LDAPAttribute
+     */
+    public byte[] getAssertionValue()
+    {
+        RfcCompareRequest req = (RfcCompareRequest)getASN1Object().getRequest();
+        return req.getAttributeValueAssertion().getAssertionValue();
+    }
+    
+    /**
+     * Returns of the dn of the entry to compare in the directory
+     *
+     * @return the dn of the entry to compare
+     */
+    public String getDN()
+    {
+        return getASN1Object().getRequestDN();
+    }        
 }
