@@ -209,7 +209,7 @@
         <mkdir dir="${pkg.doc.ldap}"/>
         <javadoc sourcepath="${docsrc}"
                         destdir="${pkg.doc.ldap}"
-                        classpath="${lib.debug}/${ldap}.jar"
+                        classpath="${lib.debug}/${ldap}.jar;external/ssl/domestic/nssl1.1_dom.jar"
                         packagenames="com.novell.ldap,com.novell.ldap.extensions"
                         Windowtitle="LDAP Classes"
                         Splitindex="true"
@@ -228,7 +228,7 @@
         <mkdir dir="${pkg.doc.framework}"/>
         <javadoc sourcepath="${docsrc}"
                         destdir="${pkg.doc.framework}"
-                        classpath="${lib.debug}/${ldap}.jar"
+                        classpath="${lib.debug}/${ldap}.jar;external/ssl/domestic/nssl1.1_dom.jar"
                         packagenames="com.novell.ldap.asn1,com.novell.ldap.protocol"
                         Windowtitle="LDAP Classes"
                         Splitindex="true"
@@ -250,6 +250,7 @@
 		<copyfile src="com/novell/ldap/client/Debug.template" dest="com/novell/ldap/client/Debug.java" filtering="YES"/>
         <javadoc sourcepath="${docsrc}"
                         destdir="${doc.novell}"
+                        classpath="external/ssl/domestic/nssl1.1_dom.jar"
                         packagenames="com.novell.ldap,com.novell.ldap.asn1,com.novell.ldap.client,com.novell.ldap.protocol,com.novell.ldap.extensions"
                         Windowtitle="LDAP Classes"
                         Splitindex="true"
