@@ -1073,7 +1073,7 @@ public class LDAPConnection implements Cloneable
                     LDAPException.PARAM_ERROR);
         }
 
-        LDAPMessage msg = new LDAPAddRequest( entry, cons);
+        LDAPMessage msg = new LDAPAddRequest( entry, cons.getControls());
 
         return sendRequest(msg, cons.getTimeLimit(), queue, null);
     }
@@ -1429,7 +1429,7 @@ public class LDAPConnection implements Cloneable
         if(passwd == null)
             passwd = new byte[] {};
 
-        LDAPMessage msg = new LDAPBindRequest( version, dn, passwd, cons);
+        LDAPMessage msg = new LDAPBindRequest( version, dn, passwd, cons.getControls());
 
         msgId = msg.getMessageID();
         bindProps = new BindProperties(version, dn.trim(),"simple", null, null);
@@ -1817,7 +1817,9 @@ public class LDAPConnection implements Cloneable
                                     LDAPException.PARAM_ERROR);
         }
 
-        LDAPMessage msg = new LDAPCompareRequest( dn, name, value, cons);
+        LDAPMessage msg = new LDAPCompareRequest( dn, attr.getName(),
+                                                  attr.getByteValue(),
+                                                  cons.getControls());
 
         return sendRequest(msg, cons.getTimeLimit(), queue, null);
     }
@@ -2012,7 +2014,7 @@ public class LDAPConnection implements Cloneable
         if(cons == null)
             cons = defSearchCons;
 
-        LDAPMessage msg = new LDAPDeleteRequest( dn, cons);
+        LDAPMessage msg = new LDAPDeleteRequest( dn, cons.getControls());
 
         return sendRequest(msg, cons.getTimeLimit(), queue, null);
     }
@@ -2246,7 +2248,7 @@ public class LDAPConnection implements Cloneable
                                     LDAPException.PARAM_ERROR);
         }
 
-        return new LDAPExtendedRequest(op, cons);
+        return new LDAPExtendedRequest(op, cons.getControls());
     }
 
     //*************************************************************************
@@ -2586,7 +2588,7 @@ public class LDAPConnection implements Cloneable
         if(cons == null)
             cons = defSearchCons;
 
-        LDAPMessage msg = new LDAPModifyRequest( dn, mods, cons);
+        LDAPMessage msg = new LDAPModifyRequest( dn, mods, cons.getControls());
 
         return sendRequest(msg, cons.getTimeLimit(), queue, null);
     }
@@ -3043,7 +3045,7 @@ public class LDAPConnection implements Cloneable
             cons = defSearchCons;
 
         LDAPMessage msg = new LDAPModifyDNRequest( dn, newRdn, newParentdn,
-                                deleteOldRdn, cons);
+                                deleteOldRdn, cons.getControls());
 
         return sendRequest(msg, cons.getTimeLimit(), queue, null);
     }
@@ -3240,7 +3242,10 @@ public class LDAPConnection implements Cloneable
             cons = defSearchCons;
 
         LDAPMessage msg = new LDAPSearchRequest( base, scope, filter,
-                                                 attrs, typesOnly, cons);
+                                                 attrs, cons.getDereference(),
+                                                 cons.getMaxResults(),
+                                                 cons.getServerTimeLimit(),
+                                                 typesOnly, cons.getControls());
         MessageAgent agent;
         LDAPSearchQueue myqueue = queue;
         if(myqueue == null) {
