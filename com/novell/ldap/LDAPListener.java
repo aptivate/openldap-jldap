@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPListener.java,v 1.13 2000/10/31 00:45:06 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPListener.java,v 1.14 2000/10/31 23:52:22 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -35,9 +35,9 @@ public interface LDAPListener
    public int[] getMessageIDs();
    
    /**
-    * Returns the response.
+    * Returns the response from an LDAP request.
     *
-    * <p>The getResponse method locks until a response is available, or until all 
+    * <p>The getResponse method blocks until a response is available, or until all 
     * operations associated with the object have completed or been canceled, and 
     * then returns the response. The client is responsible for processing
     * the responses returned from a listener.</p>
@@ -51,12 +51,38 @@ public interface LDAPListener
             throws LDAPException;
 
    /**
+    * Returns the response from an LDAP request for a particular msg id.
+    *
+    * <p>The getResponse method blocks until a response is available
+    * for a particular message id, or until all 
+    * operations associated with the object have completed or been canceled, and 
+    * then returns the response. The client is responsible for processing
+    * the responses returned from a listener.</p>
+    *
+    * @return The response.
+    *
+    * @exception LDAPException A general exception which includes an error
+    *  message and an LDAP error code.
+    */
+   public LDAPMessage getResponse(int msgid)
+            throws LDAPException;
+
+   /**
     * Reports whether a response has been received from the server.
     *
     * @return True if a response has been received from the server; false if
     *         a response has not been received. 
     */
    public boolean isResponseReceived();
+   
+   /**
+    * Reports whether a response has been received from the server for
+    * a particular msg id.
+    *
+    * @return True if a response has been received from the server; false if
+    *         a response has not been received. 
+    */
+   public boolean isResponseReceived(int msgid);
    
    /**
     * Merges two response listeners by moving the contents from another

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchListener.java,v 1.16 2000/10/31 00:45:08 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchListener.java,v 1.17 2000/10/31 23:52:25 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -78,6 +78,18 @@ public class LDAPSearchListener implements LDAPListener
     {
         return listen.isResponseReceived();
     }
+
+   /**
+    * Reports whether a response has been received from the server.
+    *
+    * @return True if a response has been received from the server; false if
+    *         a response has not been received. 
+    */
+    public boolean isResponseReceived(int msgid)
+    {
+        throw new RuntimeException("LDAPSearchListener.isResponseReceived(msgid) is not implemented");
+    }
+
    /**
     * Merges two response listeners by moving the contents from another
     * listener to this one.
@@ -90,6 +102,17 @@ public class LDAPSearchListener implements LDAPListener
         listen.merge( listener2);
         return;
     }
+
+    /**
+     * Reports true if all results have been received for a particular
+     * message id, i.e. a response has been received from the server for the
+     * id.  There may still be messages waiting to be retrieved with
+     * getResponse.
+     */
+     public boolean isComplete( int msgid )
+     {
+        throw new RuntimeException("LDAPSearchListener.isComplete(msgid) is not implemented");
+     }
     
    /**
     * Blocks until a response is available, or until all operations
@@ -135,5 +158,30 @@ public class LDAPSearchListener implements LDAPListener
          throw e;
 
       return message;
+   }
+
+   /**
+    * Blocks until a response is available for a particular message id,
+    * or until all operations
+    * associated with the object have completed or been canceled, and
+    * returns the response. 
+    *
+    * <p>The response may be a search result, a search
+    * reference, a search response, or null (if there are no more
+    * outstanding requests). LDAPException is thrown on network errors.</p>
+    *
+    * <p>The only time this method should return a null is if there is no
+    * response in the message queue and there are no message IDs pending.</p>
+    *
+    * @return The response (a search result, search reference, or search response)or
+    *         null if there are no more outstanding requests.
+    *
+    * @exception LDAPException A general exception which includes an error 
+    *                          message and an LDAP error code.
+    */
+   public LDAPMessage getResponse(int msgid)
+      throws LDAPException
+   {
+        throw new RuntimeException("LDAPSearchListener.getResponse(msgid) is not implemented");
    }
 }

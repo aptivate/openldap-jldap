@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPResponseListener.java,v 1.15 2000/10/31 00:45:07 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPResponseListener.java,v 1.16 2000/10/31 23:52:24 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -80,6 +80,19 @@ public class LDAPResponseListener implements LDAPListener
     {
         return listen.isResponseReceived();
     }
+
+   /**
+    * Reports whether a response has been received from the server for a
+    * particular message id.
+    *
+    * @return True if a response has been received from the server; false if
+    *         a response has not been received. 
+    */
+    public boolean isResponseReceived(int msgid)
+    {
+        throw new RuntimeException("LDAPSearchListener.isResponseRecieved(msgid) is not implemented");
+    }
+
    /**
     * Merges two response listeners by moving the contents from another
     * listener to this one.
@@ -117,6 +130,25 @@ public class LDAPResponseListener implements LDAPListener
             response = new LDAPResponse(message);
         listen.removeMessageID(response.getMessageID());
         return (LDAPMessage)response;
+   }
+
+   /**
+    * Returns the response for a particular message id.
+    *
+    * <p>The getResponse method locks until a response is available, or until all 
+    * operations associated with the object have completed or been canceled, and 
+    * then returns the response. The client is responsible for processing
+    * the responses returned from a listener.</p>
+    *
+    * @return The response.
+    *
+    * @exception LDAPException A general exception which includes an error
+    *  message and an LDAP error code.
+    */
+   public LDAPMessage getResponse(int msgid)
+        throws LDAPException
+   {
+        throw new RuntimeException("LDAPSearchListener.getResponse(msgid) is not implemented");
    }
 
 }
