@@ -1,17 +1,17 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.61 2000/11/29 20:34:31 cmorris Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.62 2000/12/06 19:30:04 vtag Exp $
 *
 * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
-* 
+*
 * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
 * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
 * TO VERSION 2.0.1 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
 * AVAILABLE AT HTTP://WWW.OPENLDAP.ORG/LICENSE.HTML OR IN THE FILE "LICENSE"
 * IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
 * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
-* THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY. 
+* THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
 ***************************************************************************/
- 
+
 package com.novell.ldap;
 
 import java.io.*;
@@ -25,10 +25,10 @@ import com.novell.ldap.rfc2251.*;
 /**
  *
  *  Represents the central class that encapsulates the connection
- *  to a directory server through the LDAP protocol. 
+ *  to a directory server through the LDAP protocol.
  *
- *  An LDAPConnection object is not connected on 
- *  construction and can only be connected to one server at one 
+ *  An LDAPConnection object is not connected on
+ *  construction and can only be connected to one server at one
  *  port. Multiple threads may share this single connection, typically
  *  by cloning the connection object, one for each thread. An
  *  application may have more than one LDAPConnection object, connected
@@ -44,21 +44,21 @@ public class LDAPConnection implements Cloneable
     private static Object nameLock = new Object(); // protect agentNum
     private static int lConnNum = 0;  // Debug, LDAPConnection number
     private String name;             // String name for debug
-    
+
     /**
-     * Used with search to specify that the scope of entrys to search is to 
+     * Used with search to specify that the scope of entrys to search is to
      * search only the base obect.
      */
     public static final int SCOPE_BASE   = 0;
 
     /**
-     * Used with search to specify that the scope of entrys to search is to 
-     * search only the immediate subordinates of the base obect. 
+     * Used with search to specify that the scope of entrys to search is to
+     * search only the immediate subordinates of the base obect.
      */
     public static final int SCOPE_ONE    = 1;
 
     /**
-     * Used with search to specify that the scope of entrys to search is to 
+     * Used with search to specify that the scope of entrys to search is to
      * search the base object and all entries within its subtree.
      */
     public static final int SCOPE_SUB    = 2;
@@ -74,7 +74,7 @@ public class LDAPConnection implements Cloneable
      * attributes are to be returned.
      */
 	public static final String ALL_USER_ATTRS = "*";
-   
+
     /**
      * Specifies the LDAPv2 protocol version when performing a bind operation.
      *
@@ -88,7 +88,7 @@ public class LDAPConnection implements Cloneable
      * @see #bind(int, String, String, LDAPResponseListener, LDAPConstraints)
      */
     public static final int LDAP_V2 = 2;
-   
+
     /**
      * Specifies the LDAPv3 protocol version when performing a bind operation.
      *
@@ -164,7 +164,7 @@ public class LDAPConnection implements Cloneable
       conn = new Connection( factory );
       return;
    }
-   
+
    /*
     * The following are methods that affect the operation of
     * LDAPConnection, but are not LDAP requests.
@@ -172,15 +172,15 @@ public class LDAPConnection implements Cloneable
 
    /**
     * Returns a copy of the object with a private context, but sharing the
-    * network connection if there is one. 
+    * network connection if there is one.
     *
-    * <p>The network connection remains open until all clones have 
+    * <p>The network connection remains open until all clones have
     * disconnected or gone out of scope. Any connection opened after
     * cloning is private to the object making the connection.</p>
-    * 
-    * <p>The clone can issue requests and freely modify options and search 
-    * constraints, and , without affecting the source object or other clones. 
-    * If the clone disconnects or reconnects, it is completely dissociated 
+    *
+    * <p>The clone can issue requests and freely modify options and search
+    * constraints, and , without affecting the source object or other clones.
+    * If the clone disconnects or reconnects, it is completely dissociated
     * from the source object and other clones. Reauthenticating in a clone,
     * however, is a global operation which will affect the source object
     * and all associated clones, because it applies to the single shared
@@ -239,7 +239,7 @@ public class LDAPConnection implements Cloneable
     *
     * <p> 0 is returned if no authentication has been performed.</p>
     *
-    * @return The protol version used for authentication or 0 
+    * @return The protol version used for authentication or 0
     * not authenticated.
     *
     * @see #bind( int, String, String)
@@ -266,7 +266,7 @@ public class LDAPConnection implements Cloneable
    /**
     * Returns the method used to authenticate the connection. The return
     * value is one of the following:
-    * 
+    *
     *  <ul>
     *  <li>"none" indicates the connection is not authenticated.</li>
     *
@@ -289,7 +289,7 @@ public class LDAPConnection implements Cloneable
     *
     * <p> null is returned if no simple authentication has been performed.</p>
     *
-    * @return The password used for simple authentication or null if the 
+    * @return The password used for simple authentication or null if the
     * object is not authenticated.
     *
     * @see #bind( String, String)
@@ -306,7 +306,7 @@ public class LDAPConnection implements Cloneable
     * <p> Null is returned if no authentication has been performed
     * or no authentication Hashtable is present.</p>
     *
-    * @return The Hashtable used for SASL bind or null if the 
+    * @return The Hashtable used for SASL bind or null if the
     * object is not present or not authenticated. The object returned can
     * be either of type Hashtable or Properties.
     *
@@ -324,21 +324,21 @@ public class LDAPConnection implements Cloneable
     * <p> Null is returned if no authentication has been performed
     * or no authentication call back handler is present.</p>
     *
-    * @return The call back handler used for SASL bind or null if the 
+    * @return The call back handler used for SASL bind or null if the
     * object is not present or not authenticated.
     *
     * @see #bind( String, String[], Hashtable, Object )
     */
     public Object /* javax.security.auth.callback.CallbackHandler */
-           getSaslBindCallbackHandler() 
+           getSaslBindCallbackHandler()
     {
         return conn.getBindProperties().getSaslCallbackHandler();
     }
-   
+
    /**
-    * Returns a copy of the set of constraints associated with this 
-    * connection. These constraints apply to all operations performed 
-    * through this connection (unless a different set of constraints is 
+    * Returns a copy of the set of constraints associated with this
+    * connection. These constraints apply to all operations performed
+    * through this connection (unless a different set of constraints is
     * specified when calling an operation method).
     *
     * @return The set of default contraints that apply to this connection.
@@ -349,7 +349,7 @@ public class LDAPConnection implements Cloneable
    {
       return (LDAPConstraints)((LDAPConstraints)this.defSearchCons).clone();
    }
-   
+
    /**
     * Returns the host name of the LDAP server to which the object is or
     * was last connected, in the format originally specified.
@@ -417,13 +417,13 @@ public class LDAPConnection implements Cloneable
     *  <li>LDAP_PROPERTY_SDK returns the version of this SDK,
     *                        as a Float data type.</li>
     *
-    *  <li>LDAP_PROPERTY_PROTOCOL returns the highest supported version of 
+    *  <li>LDAP_PROPERTY_PROTOCOL returns the highest supported version of
     *                          the LDAP protocol, as a Float data type.</li>
     *
     *  <li>LDAP_PROPERTY_SECURITY returns a comma-separated list of the
     *                             types of authentication supported, as a
-    *                             string.                  
-    *  </ul>                                             
+    *                             string.
+    *  </ul>
     *
     *  <p>A deep copy of the property is provided where applicable; a
     *  client does not need to clone the object received.</p>
@@ -447,7 +447,7 @@ public class LDAPConnection implements Cloneable
     * through this connection (unless a different set of
     * constraints is specified when calling the search operation method).
     *
-    * @return The set of default search contraints that apply to 
+    * @return The set of default search contraints that apply to
     * this connection.
     *
     * @see #setSearchConstraints
@@ -562,8 +562,8 @@ public class LDAPConnection implements Cloneable
     * Sets a property of a connection object.
     *
     * <p>No property names which can be set have been defined at this time. </p>
-    * 
-    * 
+    *
+    *
     * @param name    Name of the property to set.<br><br>
     *<br><br>
     * @param value   Value to assign to the property.
@@ -609,7 +609,7 @@ public class LDAPConnection implements Cloneable
     * after LDAPConnection objects are created, those already created are not
     * affected even if they disconnect and establish a new connection.
     * It affects LDAPConnection objects only as they are constructed.</p>
-    *  
+    *
     *
     * <p>The following code snippet provides a typical usage example:
     * <pre><code>
@@ -635,16 +635,16 @@ public class LDAPConnection implements Cloneable
       Connection.setSocketFactory( factory);
       return;
    }
-  
+
    /**
     * Enables the processing of unsolicited messages from the server.
     *
-    * <p>An unsolicited message has the ID 0. If unsolicited 
-    * notifications are enabled, unsolicited messages can be queried and 
-    * retrieved from the response listener with isResponseReceived(0) and 
-    * getResponse(0). The default is for unsolicited messages to be 
+    * <p>An unsolicited message has the ID 0. If unsolicited
+    * notifications are enabled, unsolicited messages can be queried and
+    * retrieved from the response listener with isResponseReceived(0) and
+    * getResponse(0). The default is for unsolicited messages to be
     * discarded.</p>
-    *   
+    *
     *  @param listener  The listener returned for messages unsolicited
     *                   messages returned, or null if a new listener
     *                   is to be created.
@@ -652,7 +652,7 @@ public class LDAPConnection implements Cloneable
     *  @return The listener used to handle unsolicited messages.
     */
    public LDAPResponseListener addUnsolicitedNotificationListener (
-            LDAPResponseListener listener) 
+            LDAPResponseListener listener)
    {
       if( Debug.LDAP_DEBUG) {
          Debug.trace( Debug.apiRequests, name +
@@ -664,15 +664,15 @@ public class LDAPConnection implements Cloneable
    /**
     * Disables the processing of unsolicited messages from the server.
     *
-    *   
+    *
     *  @param listener  The listener used for handling unsolicited
     *                   messages returned.  Upon return from this
     *                   method, no more unsolicited messages from
     *                   this connection will be received by this listener.
     *
     */
-   public void removeUnsolicitedNotificationListener ( 
-            LDAPResponseListener listener) 
+   public void removeUnsolicitedNotificationListener (
+            LDAPResponseListener listener)
    {
       if( Debug.LDAP_DEBUG) {
          Debug.trace( Debug.apiRequests, name +
@@ -685,7 +685,7 @@ public class LDAPConnection implements Cloneable
     * Starts Transport Layer Security (TLS) protocol on this connection
     * to enable session privacy.
     * This affects the connection characteristics and thus will affect
-    * the source object and all clone objects.  
+    * the source object and all clone objects.
     *
     * @see #isTLS()
     */
@@ -707,7 +707,7 @@ public class LDAPConnection implements Cloneable
     //*************************************************************************
 
    /**
-    * 
+    *
     *
     * Notifies the server not to send additional results associated with
     * this LDAPSearchResults object, and discards any results already
@@ -715,7 +715,7 @@ public class LDAPConnection implements Cloneable
     *
     *  @param results   An object returned from a search.
     *
-    *  @exception LDAPException A general exception which includes an error 
+    *  @exception LDAPException A general exception which includes an error
     *                           message and an LDAP error code.
     */
    public void abandon(LDAPSearchResults results)
@@ -724,9 +724,9 @@ public class LDAPConnection implements Cloneable
       abandon( results, defSearchCons );
       return;
    }
-   
+
    /**
-    * 
+    *
     *
     * Notifies the server not to send additional results associated with
     * this LDAPSearchResults object, and discards any results already
@@ -734,9 +734,9 @@ public class LDAPConnection implements Cloneable
     *
     *  @param results   An object returned from a search.
     *<br><br>
-    *  @param cons     The contraints specific to the operation. 
+    *  @param cons     The contraints specific to the operation.
     *
-    *  @exception LDAPException A general exception which includes an error 
+    *  @exception LDAPException A general exception which includes an error
     *                           message and an LDAP error code.
     */
    public void abandon(LDAPSearchResults results, LDAPConstraints cons)
@@ -745,16 +745,16 @@ public class LDAPConnection implements Cloneable
       results.abandon();
       return;
    }
-   
+
    /**
     *
     *  Abandons an asynchronous operation.
     *
-    *  @param id      The ID of the asynchronous operation to abandon. The ID 
+    *  @param id      The ID of the asynchronous operation to abandon. The ID
     *                 can be obtained from the response listener for the
     *                 operation.
     *
-    *  @exception LDAPException A general exception which includes an error 
+    *  @exception LDAPException A general exception which includes an error
     *  message and an LDAP error code.
     */
    public void abandon(int id)
@@ -763,18 +763,18 @@ public class LDAPConnection implements Cloneable
       abandon(id, defSearchCons);
       return;
    }
-   
+
    /**
     *  Abandons a search operation for a listener, using the specified
     *  constraints.
     *
-    *  @param id The ID of the asynchronous operation to abandon. 
+    *  @param id The ID of the asynchronous operation to abandon.
     *            The ID can be obtained from the search
     *            listener for the operation.<br><br>
     *<br><br>
-    *  @param cons The contraints specific to the operation. 
+    *  @param cons The contraints specific to the operation.
     *
-    *  @exception LDAPException A general exception which includes an error 
+    *  @exception LDAPException A general exception which includes an error
     *  message and an LDAP error code.
     */
    public void abandon(int id, LDAPConstraints cons)
@@ -798,13 +798,13 @@ public class LDAPConnection implements Cloneable
    /**
     * Abandons all search operations for a listener.
     *
-    * <p>All operations in progress, which are managed by the specified listener, 
+    * <p>All operations in progress, which are managed by the specified listener,
     * are abandoned.</p>
     *
     *  @param listener  The handler returned for messages returned on a
-    *                   search request. 
+    *                   search request.
     *
-    *  @exception LDAPException A general exception which includes an error 
+    *  @exception LDAPException A general exception which includes an error
     *  message and an LDAP error code.
     */
    public void abandon( LDAPListener listener)
@@ -813,19 +813,19 @@ public class LDAPConnection implements Cloneable
       abandon( listener, defSearchCons);
       return;
    }
-   
+
    /**
     * Abandons all search operations for a listener.
     *
-    * <p>All operations in progress, which are managed by the specified listener, 
+    * <p>All operations in progress, which are managed by the specified listener,
     * are abandoned.</p>
     *
     *  @param listener  The handler returned for messages returned on a
-    *                   search request. 
+    *                   search request.
     *<br><br>
-    *  @param cons     The contraints specific to the operation. 
+    *  @param cons     The contraints specific to the operation.
     *
-    *  @exception LDAPException A general exception which includes an error 
+    *  @exception LDAPException A general exception which includes an error
     *  message and an LDAP error code.
     */
    public void abandon( LDAPListener listener, LDAPConstraints cons)
@@ -860,7 +860,7 @@ public class LDAPConnection implements Cloneable
     * @param entry    LDAPEntry object specifying the distinguished
     *                 name and attributes of the new entry.
     *
-    *  @exception LDAPException A general exception which includes an error 
+    *  @exception LDAPException A general exception which includes an error
     *  message and an LDAP error code.
     */
    public void add(LDAPEntry entry)
@@ -880,7 +880,7 @@ public class LDAPConnection implements Cloneable
     *<br><br>
     *  @param cons    Constraints specific to the operation.
     *
-    *  @exception LDAPException A general exception which includes an error 
+    *  @exception LDAPException A general exception which includes an error
     *  message and an LDAP error code.
     */
 
@@ -893,7 +893,7 @@ public class LDAPConnection implements Cloneable
       ((LDAPResponse)(listener.getResponse())).chkResultCode();
       return;
    }
-   
+
    /**
     *
     * Asynchronously adds an entry to the directory.
@@ -905,7 +905,7 @@ public class LDAPConnection implements Cloneable
     *                 response to this request. If it is null, a
     *                 listener object is created internally.
     *
-    *  @exception LDAPException A general exception which includes an error 
+    *  @exception LDAPException A general exception which includes an error
     *  message and an LDAP error code.
     */
    public LDAPResponseListener add(LDAPEntry entry,
@@ -928,7 +928,7 @@ public class LDAPConnection implements Cloneable
     *<br><br>
     *  @param cons   Constraints specific to the operation.
     *
-    *  @exception LDAPException A general exception which includes an error 
+    *  @exception LDAPException A general exception which includes an error
     *  message and an LDAP error code.
     */
    public LDAPResponseListener add(LDAPEntry entry,
@@ -980,13 +980,13 @@ public class LDAPConnection implements Cloneable
    /**
     *
     * Authenticates to the LDAP server (that the object is currently
-    * connected to) as an LDAPv3 bind, using the specified name and 
-    * password.  
+    * connected to) as an LDAPv3 bind, using the specified name and
+    * password.
     *
     * <p>If the object has been disconnected from an LDAP server,
     * this method attempts to reconnect to the server. If the object
     * has already authenticated, the old authentication is discarded.</p>
-    * 
+    *
     *  @param dn      If non-null and non-empty, specifies that the
     *                 connection and all operations through it should
     *                 be authenticated with dn as the distinguished
@@ -997,7 +997,7 @@ public class LDAPConnection implements Cloneable
     *                 be authenticated with dn as the distinguished
     *                 name and passwd as password.
     *
-    *  @exception LDAPException A general exception which includes an error 
+    *  @exception LDAPException A general exception which includes an error
     *  message and an LDAP error code.
     *
     */
@@ -1012,13 +1012,13 @@ public class LDAPConnection implements Cloneable
    /**
     *
     * Authenticates to the LDAP server (that the object is currently
-    * connected to) as an LDAPv3 bind, using the specified name, 
-    * password, and constraints.  
+    * connected to) as an LDAPv3 bind, using the specified name,
+    * password, and constraints.
     *
     * <p>If the object has been disconnected from an LDAP server,
     * this method attempts to reconnect to the server. If the object
     * has already authenticated, the old authentication is discarded.</p>
-    * 
+    *
     *  @param dn      If non-null and non-empty, specifies that the
     *                 connection and all operations through it should
     *                 be authenticated with dn as the distinguished
@@ -1031,7 +1031,7 @@ public class LDAPConnection implements Cloneable
     *<br><br>
     * @param cons     Constraints specific to the operation.
     *
-    *  @exception LDAPException A general exception which includes an error 
+    *  @exception LDAPException A general exception which includes an error
     *  message and an LDAP error code.
     *
     */
@@ -1047,13 +1047,13 @@ public class LDAPConnection implements Cloneable
    /**
     *
     * Authenticates to the LDAP server (that the object is currently
-    * connected to) as an LDAPv3 bind, using the specified name,  
-    * password, and listener.  
+    * connected to) as an LDAPv3 bind, using the specified name,
+    * password, and listener.
     *
     * <p>If the object has been disconnected from an LDAP server,
     * this method attempts to reconnect to the server. If the object
     * has already authenticated, the old authentication is discarded.</p>
-    * 
+    *
     *  @param dn      If non-null and non-empty, specifies that the
     *                 connection and all operations through it should
     *                 be authenticated with dn as the distinguished
@@ -1070,7 +1070,7 @@ public class LDAPConnection implements Cloneable
     *                 recommended that the client blocks
     *                 until the listener returns a response.
     *
-    *  @exception LDAPException A general exception which includes an error 
+    *  @exception LDAPException A general exception which includes an error
     *                           message and an LDAP error code.
     *
     */
@@ -1085,13 +1085,13 @@ public class LDAPConnection implements Cloneable
    /**
     *
     * Authenticates to the LDAP server (that the object is currently
-    * connected to) as an LDAPv3 bind, using the specified name, 
-    * password, listener, and constraints.  
+    * connected to) as an LDAPv3 bind, using the specified name,
+    * password, listener, and constraints.
     *
     * <p>If the object has been disconnected from an LDAP server,
     * this method attempts to reconnect to the server. If the object
     * has already authenticated, the old authentication is discarded.</p>
-    * 
+    *
     *  @param dn      If non-null and non-empty, specifies that the
     *                 connection and all operations through it should
     *                 be authenticated with dn as the distinguished
@@ -1110,7 +1110,7 @@ public class LDAPConnection implements Cloneable
     *<br><br>
     * @param cons     Constraints specific to the operation.
     *
-    *  @exception LDAPException A general exception which includes an error 
+    *  @exception LDAPException A general exception which includes an error
     *  message and an LDAP error code.
     *
     */
@@ -1126,14 +1126,14 @@ public class LDAPConnection implements Cloneable
    /**
     *
     * Authenticates to the LDAP server (that the object is currently
-    * connected to) using the specified name, password, and LDAP version.  
+    * connected to) using the specified name, password, and LDAP version.
     *
     * <p>If the object has been disconnected from an LDAP server,
     * this method attempts to reconnect to the server. If the object
     * has already authenticated, the old authentication is discarded.</p>
     *
-    *  @param version  The version of the LDAP protocol to use 
-    *                  in the bind, either LDAP_V2 or LDAP_V3. 
+    *  @param version  The version of the LDAP protocol to use
+    *                  in the bind, either LDAP_V2 or LDAP_V3.
     *<br><br>
     *  @param dn      If non-null and non-empty, specifies that the
     *                 connection and all operations through it should
@@ -1145,7 +1145,7 @@ public class LDAPConnection implements Cloneable
     *                 be authenticated with dn as the distinguished
     *                 name and passwd as password.
     *
-    *  @exception LDAPException A general exception which includes an error 
+    *  @exception LDAPException A general exception which includes an error
     *  message and an LDAP error code.
     *
     */
@@ -1161,8 +1161,8 @@ public class LDAPConnection implements Cloneable
    /**
     *
     * Authenticates to the LDAP server (that the object is currently
-    * connected to) using the specified name, password, LDAP version, 
-    * and constraints.  
+    * connected to) using the specified name, password, LDAP version,
+    * and constraints.
     *
     * <p>If the object has been disconnected from an LDAP server,
     * this method attempts to reconnect to the server. If the object
@@ -1182,7 +1182,7 @@ public class LDAPConnection implements Cloneable
     *<br><br>
     *  @param cons    The constraints specific to the operation.
     *
-    *  @exception LDAPException A general exception which includes an error 
+    *  @exception LDAPException A general exception which includes an error
     *  message and an LDAP error code.
     */
    public void bind(int version,
@@ -1210,9 +1210,9 @@ public class LDAPConnection implements Cloneable
 
    /**
     *
-    * Asynchronously authenticates to the LDAP server (that the object is 
-    * currently connected to) using the specified name, password, LDAP 
-    * version, and listener.  
+    * Asynchronously authenticates to the LDAP server (that the object is
+    * currently connected to) using the specified name, password, LDAP
+    * version, and listener.
     *
     * <p>If the object has been disconnected from an LDAP server,
     * this method attempts to reconnect to the server. If the object
@@ -1220,7 +1220,7 @@ public class LDAPConnection implements Cloneable
     *
     *
     *  @param version  The LDAP protocol version, either LDAP_V2 or LDAP_V3.
-    * <br><br>                 
+    * <br><br>
     *  @param dn      If non-null and non-empty, specifies that the
     *                 connection and all operations through it should
     *                 be authenticated with dn as the distinguished
@@ -1235,7 +1235,7 @@ public class LDAPConnection implements Cloneable
     *                   response to this request. If it is null, a
     *                   listener object is created internally.
     *
-    *  @exception LDAPException A general exception which includes an error 
+    *  @exception LDAPException A general exception which includes an error
     *  message and an LDAP error code.
     */
    public LDAPResponseListener bind(int version,
@@ -1249,8 +1249,8 @@ public class LDAPConnection implements Cloneable
 
    /**
     * Asynchronously authenticates to the LDAP server (that the object is
-    * currently connected to) using the specified name, password, LDAP 
-    * version, listener, and constraints.  
+    * currently connected to) using the specified name, password, LDAP
+    * version, listener, and constraints.
     *
     * <p>If the object has been disconnected from an LDAP server,
     * this method attempts to reconnect to the server. If the object
@@ -1274,7 +1274,7 @@ public class LDAPConnection implements Cloneable
     *<br><br>
     *  @param cons      Constraints specific to the operation.
     *
-    *  @exception LDAPException A general exception which includes an error 
+    *  @exception LDAPException A general exception which includes an error
     *  message and an LDAP error code.
     */
    public LDAPResponseListener bind(int version,
@@ -1325,7 +1325,7 @@ public class LDAPConnection implements Cloneable
    /**
     * Authenticates to the LDAP server (that the object is currently
     * connected to) using the specified name and the specified set of
-    * mechanisms. 
+    * mechanisms.
     *
     * <p>If none of the requested SASL mechanisms is available, an
     * exception is thrown.  If the object has been disconnected from an
@@ -1355,13 +1355,13 @@ public class LDAPConnection implements Cloneable
                     throws LDAPException
    {
       bind( dn, props, cbh, defSearchCons);
-      return;   
+      return;
    }
 
    /**
     * Authenticates to the LDAP server (that the object is currently
     * connected to) using the specified name and the specified set of
-    * mechanisms. 
+    * mechanisms.
     *
     * <p>If none of the requested SASL mechanisms is available, an
     * exception is thrown.  If the object has been disconnected from an
@@ -1399,7 +1399,7 @@ public class LDAPConnection implements Cloneable
    /**
     * Authenticates to the LDAP server (that the object is currently
     * connected to) using the specified name and the specified set of
-    * mechanisms. 
+    * mechanisms.
     *
     * <p>If none of the requested SASL mechanisms is available, an
     * exception is thrown.  If the object has been disconnected from an
@@ -1429,7 +1429,7 @@ public class LDAPConnection implements Cloneable
                     String[] mechanisms,
                     Hashtable props,
                     /*javax.security.auth.callback.CallbackHandler*/ Object cbh)
-                    
+
                     throws LDAPException
    {
       bind( dn, mechanisms, props, cbh, defSearchCons);
@@ -1438,7 +1438,7 @@ public class LDAPConnection implements Cloneable
    /**
     * Authenticates to the LDAP server (that the object is currently
     * connected to) using the specified name and the specified set of
-    * mechanisms. 
+    * mechanisms.
     *
     * <p>If none of the requested SASL mechanisms is available, an
     * exception is thrown.  If the object has been disconnected from an
@@ -1502,9 +1502,9 @@ public class LDAPConnection implements Cloneable
 
    /**
     *
-    * Synchronously checks to see if an entry contains an attribute 
-    * with a specified value. 
-    * 
+    * Synchronously checks to see if an entry contains an attribute
+    * with a specified value.
+    *
     *  @param dn      The distinguished name of the entry to use in the
     *                 comparison.<br><br>
     *<br><br>
@@ -1516,7 +1516,7 @@ public class LDAPConnection implements Cloneable
     *  @return True if the entry has the value, and false if the
     *  entry does not have the value or the attribute.
     *
-    *  @exception LDAPException A general exception which includes an error 
+    *  @exception LDAPException A general exception which includes an error
     *  message and an LDAP error code.
     */
      public boolean compare(String dn,
@@ -1525,11 +1525,11 @@ public class LDAPConnection implements Cloneable
    {
       return compare(dn, attr, defSearchCons);
    }
-   
+
    /**
     *
     * Checks to see if an entry contains an attribute with a specified
-    * value, using the specified constraints. 
+    * value, using the specified constraints.
     *
     *  @param dn      The distinguished name of the entry to use in the
     *                 comparison.<br><br>
@@ -1544,7 +1544,7 @@ public class LDAPConnection implements Cloneable
     *  @return  Returns true if the entry has the value, and false if the
     *  entry does not have the value or the attribute.
     *
-    *  @exception LDAPException A general exception which includes an error 
+    *  @exception LDAPException A general exception which includes an error
     *                           message and an LDAP error code.
     */
    public boolean compare(String dn,
@@ -1571,7 +1571,7 @@ public class LDAPConnection implements Cloneable
       else {
          res.chkResultCode();
       }
-      
+
       return ret;
    }
 
@@ -1589,7 +1589,7 @@ public class LDAPConnection implements Cloneable
     *                    response to this request. If it is null, a
     *                    listener object is created internally.
     *
-    *  @exception LDAPException A general exception which includes an error 
+    *  @exception LDAPException A general exception which includes an error
     *  message and an LDAP error code.
     */
    public LDAPResponseListener compare(String dn,
@@ -1615,7 +1615,7 @@ public class LDAPConnection implements Cloneable
     *<br><br>
     *  @param cons      Constraints specific to the operation.
     *
-    *  @exception LDAPException A general exception which includes an error 
+    *  @exception LDAPException A general exception which includes an error
     *  message and an LDAP error code.
     */
    public LDAPResponseListener compare(String dn,
@@ -1659,7 +1659,7 @@ public class LDAPConnection implements Cloneable
     *  Connects to the specified host and port
     *
     *  <p>If this LDAPConnection object represents an open connection, the
-    *  connection is closed first before the new connection is opened. 
+    *  connection is closed first before the new connection is opened.
     *  At this point, there is no authentication, and any operations are
     *  conducted as an anonymous client.</p>
     *
@@ -1668,15 +1668,15 @@ public class LDAPConnection implements Cloneable
     *
     *  @param host A host name or a dotted string representing the IP address
     *              of a host running an LDAP server. It may also
-    *              contain a list of host names, space-delimited. Each host 
+    *              contain a list of host names, space-delimited. Each host
     *              name can include a trailing colon and port number.<br><br>
     *<br><br>
-    *  @param port The TCP or UDP port number to connect to or contact. 
-    *              The default LDAP port is 389. The port parameter is 
-    *              ignored for any host hame which includes a colon and 
+    *  @param port The TCP or UDP port number to connect to or contact.
+    *              The default LDAP port is 389. The port parameter is
+    *              ignored for any host hame which includes a colon and
     *              port number.
     *<br><br>
-    *  @exception LDAPException A general exception which includes an error 
+    *  @exception LDAPException A general exception which includes an error
     *                           message and an LDAP error code.
     *
     */
@@ -1699,12 +1699,12 @@ public class LDAPConnection implements Cloneable
 
    /**
     *
-    * Synchronously deletes the entry with the specified distinguished name 
+    * Synchronously deletes the entry with the specified distinguished name
     * from the directory.
     *
     *  @param dn      The distinguished name of the entry to delete.
     *
-    *  @exception LDAPException A general exception which includes an error 
+    *  @exception LDAPException A general exception which includes an error
     *  message and an LDAP error code.
     */
    public void delete(String dn)
@@ -1713,17 +1713,17 @@ public class LDAPConnection implements Cloneable
       delete(dn, defSearchCons);
       return;
    }
-   
+
 
    /**
-    * Synchronously deletes the entry with the specified distinguished name 
+    * Synchronously deletes the entry with the specified distinguished name
     * from the directory, using the specified constraints.
     *
     *  @param dn      The distinguished name of the entry to delete.<br><br>
     *<br><br>
     *  @param cons    Constraints specific to the operation.
     *
-    *  @exception LDAPException A general exception which includes an error 
+    *  @exception LDAPException A general exception which includes an error
     *                           message and an LDAP error code.
     */
    public void delete(String dn, LDAPConstraints cons)
@@ -1734,7 +1734,7 @@ public class LDAPConnection implements Cloneable
       ((LDAPResponse)(listener.getResponse())).chkResultCode();
       return;
    }
-   
+
    /**
     *
     * Asynchronously deletes the entry with the specified distinguished name
@@ -1746,7 +1746,7 @@ public class LDAPConnection implements Cloneable
     *                   response to this request. If it is null, a
     *                   listener object is created internally.
     *
-    *  @exception LDAPException A general exception which includes an error 
+    *  @exception LDAPException A general exception which includes an error
     *  message and an LDAP error code.
     *
     */
@@ -1758,7 +1758,7 @@ public class LDAPConnection implements Cloneable
    }
 
    /**
-    * Asynchronously deletes the entry with the specified distinguished name 
+    * Asynchronously deletes the entry with the specified distinguished name
     * from the directory, using the specified contraints and listener.
     *
     *  @param dn      The distinguished name of the entry to delete.<br><br>
@@ -1769,7 +1769,7 @@ public class LDAPConnection implements Cloneable
     *<br><br>
     *  @param cons    The constraints specific to the operation.
     *
-    *  @exception LDAPException A general exception which includes an error 
+    *  @exception LDAPException A general exception which includes an error
     *  message and an LDAP error code.
     *
     */
@@ -1802,15 +1802,15 @@ public class LDAPConnection implements Cloneable
     //*************************************************************************
    /**
     *
-    * Synchronously disconnects from the LDAP server. 
+    * Synchronously disconnects from the LDAP server.
     *
-    * <p>Before the object can perform LDAP operations again, it must 
+    * <p>Before the object can perform LDAP operations again, it must
     * reconnect to the server by calling connect.</p>
     *
-    * <p>The disconnect method abandons any outstanding requests, issues an 
+    * <p>The disconnect method abandons any outstanding requests, issues an
     * unbind request to the server, and then closes the socket.</p>
     *
-    * @exception LDAPException A general exception which includes an error 
+    * @exception LDAPException A general exception which includes an error
     *  message and an LDAP error code.
     *
     */
@@ -1833,18 +1833,18 @@ public class LDAPConnection implements Cloneable
 
    /**
     *
-    * Provides a synchronous means to access extended, non-mandatory  
+    * Provides a synchronous means to access extended, non-mandatory
     * operations offered by a particular LDAPv3 compliant server.
     *
     * @param op  The object which contains (1) an identifier of an extended
-    *            operation which should be recognized by the particular LDAP 
+    *            operation which should be recognized by the particular LDAP
     *            server this client is connected to and (2) an operation-specific
-    *            sequence of octet strings or BER-encoded values. 
+    *            sequence of octet strings or BER-encoded values.
     *
-    * @return An operation-specific object, containing an ID and either an octet 
+    * @return An operation-specific object, containing an ID and either an octet
     * string or BER-encoded values.
     *
-    * @exception LDAPException A general exception which includes an error 
+    * @exception LDAPException A general exception which includes an error
     *  message and an LDAP error code.
     */
    public LDAPExtendedResponse extendedOperation(LDAPExtendedOperation op)
@@ -1856,23 +1856,23 @@ public class LDAPConnection implements Cloneable
    /*
     *  Synchronous LDAP extended request with SearchConstraints
     */
-    
+
     /**
     *
-    * Provides a synchronous means to access extended, non-mandatory  
+    * Provides a synchronous means to access extended, non-mandatory
     * operations offered by a particular LDAPv3 compliant server.
     *
     * @param op  The object which contains (1) an identifier of an extended
     *            operation which should be recognized by the particular LDAP
-    *            server this client is connected to and (2) an operation-specific 
-    *            sequence of octet strings or BER-encoded values.<br><br> 
+    *            server this client is connected to and (2) an operation-specific
+    *            sequence of octet strings or BER-encoded values.<br><br>
     *<br><br>
     * @param cons The constraints specific to the operation.
     *
-    * @return An operation-specific object, containing an ID and either an octet 
+    * @return An operation-specific object, containing an ID and either an octet
     * string or BER-encoded values.
     *
-    * @exception LDAPException A general exception which includes an error 
+    * @exception LDAPException A general exception which includes an error
     *  message and an LDAP error code.
     */
 
@@ -1889,26 +1889,26 @@ public class LDAPConnection implements Cloneable
 
 
    /*
-    * Asynchronous LDAP extended request 
+    * Asynchronous LDAP extended request
     */
-    
+
    /**
-    * Provides an asynchronous means to access extended, non-mandatory  
+    * Provides an asynchronous means to access extended, non-mandatory
     * operations offered by a particular LDAPv3 compliant server.
     *
     * @param op  The object which contains (1) an identifier of an extended
-    *            operation which should be recognized by the particular LDAP 
-    *            server this client is connected to and (2) an operation-specific 
+    *            operation which should be recognized by the particular LDAP
+    *            server this client is connected to and (2) an operation-specific
     *            sequence of octet strings or BER-encoded values.<br><br>
     *<br><br>
     * @param listener  The handler for messages returned from a server in
     *                  response to this request. If it is null, a listener
     *                  object is created internally.
     *
-    * @return An operation-specific object, containing an ID and either an octet 
+    * @return An operation-specific object, containing an ID and either an octet
     * string or BER-encoded values.
     *
-    * @exception LDAPException A general exception which includes an error 
+    * @exception LDAPException A general exception which includes an error
     *  message and an LDAP error code.
     */
 
@@ -1923,26 +1923,26 @@ public class LDAPConnection implements Cloneable
    /*
     *  Asynchronous LDAP extended request with SearchConstraints
     */
-    
+
    /**
-    * Provides an asynchronous means to access extended, non-mandatory  
+    * Provides an asynchronous means to access extended, non-mandatory
     * operations offered by a particular LDAPv3 compliant server.
     *
     * @param op  The object which contains (1) an identifier of an extended
-    *            operation which should be recognized by the particular LDAP 
+    *            operation which should be recognized by the particular LDAP
     *            server this client is connected to and (2) an operation-
-    *         specific sequence of octet strings or BER-encoded values.<br><br> 
+    *         specific sequence of octet strings or BER-encoded values.<br><br>
     *<br><br>
-    * @param listener  The handler for messages returned from a server in 
-    *                  response to this request. If it is null, a listener 
+    * @param listener  The handler for messages returned from a server in
+    *                  response to this request. If it is null, a listener
     *                  object is created internally.<br><br>
     *<br><br>
     * @param cons      The constraints specific to this operation.
     *
-    * @return An operation-specific object, containing an ID and either an octet 
+    * @return An operation-specific object, containing an ID and either an octet
     * string or BER-encoded values.
     *
-    * @exception LDAPException A general exception which includes an error 
+    * @exception LDAPException A general exception which includes an error
     *  message and an LDAP error code.
     */
 
@@ -1963,8 +1963,8 @@ public class LDAPConnection implements Cloneable
       if (op.getID() == null)
          throw new LDAPException("Invalid parameter",
                                  LDAPException.PARAM_ERROR);
-   
-      ASN1OctetString value = 
+
+      ASN1OctetString value =
          (op.getValue() != null) ? new ASN1OctetString(op.getValue()) : null;
 
       RfcExtendedRequest er = new RfcExtendedRequest(new RfcLDAPOID(op.getID()),
@@ -1982,9 +1982,9 @@ public class LDAPConnection implements Cloneable
     /**
     *  Returns the Server Controls associated with the most recent response to
     *  a synchronous request on this connection object, or null
-    *  if the latest response contained no Server Controls. The method 
-    *  always returns null for asynchronous requests. For asynchronous 
-    *  requests, the response controls are available in LDAPMessage. 
+    *  if the latest response contained no Server Controls. The method
+    *  always returns null for asynchronous requests. For asynchronous
+    *  requests, the response controls are available in LDAPMessage.
     *
     *  @return The server controls associated with the most recent response to a
     *  synchronous request or null if the response contains no server controls.
@@ -2005,10 +2005,10 @@ public class LDAPConnection implements Cloneable
     //*************************************************************************
 
    /**
-    * Synchronously makes a single change to an existing entry in the 
+    * Synchronously makes a single change to an existing entry in the
     * directory.
     *
-    * <p>For example, this modify method changes the value of an attribute,  
+    * <p>For example, this modify method changes the value of an attribute,
     * adds a new attribute value, or removes an existing attribute value. </p>
     *
     * <p>The LDAPModification object specifies both the change to be made and
@@ -2018,7 +2018,7 @@ public class LDAPConnection implements Cloneable
     *<br><br>
     *  @param mod    A single change to be made to the entry.
     *
-    * @exception LDAPException A general exception which includes an error 
+    * @exception LDAPException A general exception which includes an error
     *  message and an LDAP error code.
     */
     public void modify(String dn, LDAPModification mod)
@@ -2030,13 +2030,13 @@ public class LDAPConnection implements Cloneable
 
    /**
     *
-    * Synchronously makes a single change to an existing entry in the  
+    * Synchronously makes a single change to an existing entry in the
     * directory, using the specified constraints.
     *
-    * <p>For example, this modify method changes the value of an attribute,   
+    * <p>For example, this modify method changes the value of an attribute,
     * adds a new attribute value, or removes an existing attribute value.</p>
     *
-    * <p>The LDAPModification object specifies both the change to be 
+    * <p>The LDAPModification object specifies both the change to be
     * made and the LDAPAttribute value to be changed.</p>
     *
     *  @param dn       The distinguished name of the entry to modify.<br><br>
@@ -2045,7 +2045,7 @@ public class LDAPConnection implements Cloneable
     *<br><br>
     *  @param cons     The constraints specific to the operation.
     *
-    * @exception LDAPException A general exception which includes an error 
+    * @exception LDAPException A general exception which includes an error
     *  message and an LDAP error code.
     */
    public void modify(String dn,
@@ -2061,17 +2061,17 @@ public class LDAPConnection implements Cloneable
 
    /**
     *
-    * Synchronously makes a set of changes to an existing entry in the 
+    * Synchronously makes a set of changes to an existing entry in the
     * directory.
     *
-    * <p>For example, this modify method changes attribute values, adds  
+    * <p>For example, this modify method changes attribute values, adds
     * new attribute values, or removes existing attribute values.</p>
-    * 
+    *
     *  @param dn     Distinguished name of the entry to modify.<br><br>
     *<br><br>
     *  @param mods   A set of changes to be made to the entry.
     *
-    * @exception LDAPException A general exception which includes an error 
+    * @exception LDAPException A general exception which includes an error
     *  message and an LDAP error code.
     */
    public void modify(String dn, LDAPModificationSet mods)
@@ -2082,19 +2082,19 @@ public class LDAPConnection implements Cloneable
    }
 
    /**
-    * Synchronously makes a set of changes to an existing entry in the 
+    * Synchronously makes a set of changes to an existing entry in the
     * directory, using the specified constraints.
     *
-    * <p>For example, this modify method changes attribute values, adds new  
+    * <p>For example, this modify method changes attribute values, adds new
     * attribute values, or removes existing attribute values.</p>
-    * 
+    *
     *  @param dn      The distinguished name of the entry to modify.<br><br>
     *<br><br>
     *  @param mods    A set of changes to be made to the entry.<br><br>
     *<br><br>
     *  @param cons    The constraints specific to the operation.
     *
-    * @exception LDAPException A general exception which includes an 
+    * @exception LDAPException A general exception which includes an
     *                          error message and an LDAP error code.
     */
    public void modify(String dn,
@@ -2110,10 +2110,10 @@ public class LDAPConnection implements Cloneable
 
    /**
     *
-    * Asynchronously makes a single change to an existing entry in the 
+    * Asynchronously makes a single change to an existing entry in the
     * directory.
     *
-    * <p>For example, this modify method can change the value of an attribute, 
+    * <p>For example, this modify method can change the value of an attribute,
     * add a new attribute value, or remove an existing attribute value.</p>
     *
     * <p>The LDAPModification object specifies both the change to be made and
@@ -2139,13 +2139,13 @@ public class LDAPConnection implements Cloneable
    }
 
    /**
-    * Asynchronously makes a single change to an existing entry in the 
+    * Asynchronously makes a single change to an existing entry in the
     * directory, using the specified constraints and listener.
     *
-    * <p>For example, this modify method can change the value of an attribute, 
+    * <p>For example, this modify method can change the value of an attribute,
     * add a new attribute value, or remove an existing attribute value.</p>
     *
-    * <p>The LDAPModification object specifies both the change to be made 
+    * <p>The LDAPModification object specifies both the change to be made
     * and the LDAPAttribute value to be changed.</p>
     *
     *  @param dn          Distinguished name of the entry to modify.<br><br>
@@ -2176,7 +2176,7 @@ public class LDAPConnection implements Cloneable
     * Asynchronously makes a set of changes to an existing entry in the
     * directory.
     *
-    * <p>For example, this modify method can change attribute values, add new  
+    * <p>For example, this modify method can change attribute values, add new
     * attribute values, or remove existing attribute values.</p>
     *
     *  @param dn         The distinguished name of the entry to modify.<br><br>
@@ -2202,7 +2202,7 @@ public class LDAPConnection implements Cloneable
     * Asynchronously makes a set of changes to an existing entry in the
     * directory, using the specified constraints and listener.
     *
-    * <p>For example, this modify method can change attribute values, add new  
+    * <p>For example, this modify method can change attribute values, add new
     * attribute values, or remove existing attribute values.</p>
     *
     *  @param dn         The distinguished name of the entry to modify.<br><br>
@@ -2215,7 +2215,7 @@ public class LDAPConnection implements Cloneable
     *<br><br>
     *  @param cons       Constraints specific to the operation.
     *
-    *  @exception LDAPException A general exception which includes an error 
+    *  @exception LDAPException A general exception which includes an error
     *  message and an LDAP error code.
     */
    public LDAPResponseListener modify(String dn,
@@ -2273,12 +2273,12 @@ public class LDAPConnection implements Cloneable
     //*************************************************************************
 
    /**
-    * Synchronously reads the entry for the specified distiguished name (DN) 
+    * Synchronously reads the entry for the specified distiguished name (DN)
     * and retrieves all attributes for the entry.
     *
     *  @param dn        The distinguished name of the entry to retrieve.
     *
-    *  @exception LDAPException A general exception which includes an error 
+    *  @exception LDAPException A general exception which includes an error
     *                           message and an LDAP error code.
     */
    public LDAPEntry read(String dn)
@@ -2290,7 +2290,7 @@ public class LDAPConnection implements Cloneable
 
    /**
     *
-    * Synchronously reads the entry for the specified distiguished name (DN), 
+    * Synchronously reads the entry for the specified distiguished name (DN),
     * using the specified constraints, and retrieves all attributes for the
     * entry.
     *
@@ -2310,14 +2310,14 @@ public class LDAPConnection implements Cloneable
 
    /**
     *
-    * Synchronously reads the entry for the specified distinguished name (DN) 
+    * Synchronously reads the entry for the specified distinguished name (DN)
     * and retrieves only the specified attributes from the entry.
     *
     *  @param dn         The distinguished name of the entry to retrieve.<br><br>
     *<br><br>
     *  @param attrs      The names of the attributes to retrieve.
     *
-    *  @exception LDAPException A general exception which includes an error 
+    *  @exception LDAPException A general exception which includes an error
     *                            message and an LDAP error code.
     */
    public LDAPEntry read(String dn,
@@ -2330,7 +2330,7 @@ public class LDAPConnection implements Cloneable
    /**
     *
     * Synchronously reads the entry for the specified distinguished name (DN),
-    * using the specified constraints, and retrieves only the specified 
+    * using the specified constraints, and retrieves only the specified
     * attributes from the entry.
     *
     *  @param dn       The distinguished name of the entry to retrieve.<br><br>
@@ -2339,7 +2339,7 @@ public class LDAPConnection implements Cloneable
     *<br><br>
     *  @param cons     The constraints specific to the operation.
     *
-    *  @exception LDAPException A general exception which includes an error 
+    *  @exception LDAPException A general exception which includes an error
     *                           message and an LDAP error code.
     */
    public LDAPEntry read(String dn,
@@ -2375,18 +2375,21 @@ public class LDAPConnection implements Cloneable
     *
     *  @return The entry specified by the base DN.
     *
-    *  @exception LDAPException A general exception which includes an error 
+    *  @exception LDAPException A general exception which includes an error
     *  message and an LDAP error code.
     */
    public static LDAPEntry read(LDAPUrl toGet)
       throws LDAPException
    {
-      LDAPSearchConstraints defSearchCons = new LDAPSearchConstraints();
-         return read( toGet, defSearchCons);
+      LDAPConnection conn = new LDAPConnection();
+      conn.connect(toGet.getHost(),toGet.getPort());
+      LDAPEntry toReturn = conn.read(toGet.getDN(), toGet.getAttributeArray());
+      conn.disconnect();
+      return toReturn;
    }
 
    /**
-    * Synchronously reads the entry specified by the LDAP URL, using the 
+    * Synchronously reads the entry specified by the LDAP URL, using the
     * specified constraints.
     *
     * <p>When this method is called, a new connection is created
@@ -2405,14 +2408,18 @@ public class LDAPConnection implements Cloneable
     *<br><br>
     * @param cons       Constraints specific to the operation.
     *
-    * @exception LDAPException A general exception which includes an error 
+    * @exception LDAPException A general exception which includes an error
     * message and an LDAP error code.
     */
    public static LDAPEntry read(LDAPUrl toGet,
                                 LDAPSearchConstraints cons)
       throws LDAPException
    {
-      throw new RuntimeException("Method LDAPConnection.read(LDAPUrl) not implemented");
+      LDAPConnection conn = new LDAPConnection();
+      conn.connect(toGet.getHost(),toGet.getPort());
+      LDAPEntry toReturn = conn.read(toGet.getDN(), toGet.getAttributeArray(), cons);
+      conn.disconnect();
+      return toReturn;
    }
 
     //*************************************************************************
@@ -2453,12 +2460,12 @@ public class LDAPConnection implements Cloneable
     *  @param newRdn         The new relative distinguished name for the entry.
     *<br><br>
     *  @param deleteOldRdn   If true, the old name is not retained as an
-    *                        attribute value. If false, the old name is 
+    *                        attribute value. If false, the old name is
     *                        retained as an attribute value.
     *<br><br>
     *  @param cons           The constraints specific to the operation.
     *
-    * @exception LDAPException A general exception which includes an error 
+    * @exception LDAPException A general exception which includes an error
     * message and an LDAP error code.
     */
    public void rename(String dn,
@@ -2480,14 +2487,14 @@ public class LDAPConnection implements Cloneable
     *<br><br>
     *  @param newRdn         The new relative distinguished name for the entry.
     *<br><br>
-    *  @param newParentdn    The distinguished name of an existing entry which 
+    *  @param newParentdn    The distinguished name of an existing entry which
     *                        is to be the new parent of the entry.
     *<br><br>
     *  @param deleteOldRdn   If true, the old name is not retained as an
     *                        attribute value. If false, the old name is
     *                        retained as an attribute value.
     *
-    * @exception LDAPException A general exception which includes an error 
+    * @exception LDAPException A general exception which includes an error
     *                          message and an LDAP error code.
     */
    public void rename(String dn,
@@ -2502,15 +2509,15 @@ public class LDAPConnection implements Cloneable
 
    /**
     *
-    * Synchronously renames an existing entry in the directory, using the 
-    * specified constraints and possibly repositioning the entry in the 
+    * Synchronously renames an existing entry in the directory, using the
+    * specified constraints and possibly repositioning the entry in the
     * directory tree.
     *
     *  @param dn             The current distinguished name of the entry.
     *<br><br>
     *  @param newRdn         The new relative distinguished name for the entry.
     *<br><br>
-    *  @param newParentdn    The distinguished name of an existing entry which 
+    *  @param newParentdn    The distinguished name of an existing entry which
     *                        is to be the new parent of the entry.
     *<br><br>
     *  @param deleteOldRdn   If true, the old name is not retained as an
@@ -2519,7 +2526,7 @@ public class LDAPConnection implements Cloneable
     *<br><br>
     *  @param cons           The constraints specific to the operation.
     *
-    * @exception LDAPException A general exception which includes an error 
+    * @exception LDAPException A general exception which includes an error
     * message and an LDAP error code.
     */
    public void rename(String dn,
@@ -2529,7 +2536,7 @@ public class LDAPConnection implements Cloneable
                       LDAPConstraints cons)
       throws LDAPException
    {
-      LDAPResponseListener listener = 
+      LDAPResponseListener listener =
          rename(dn, newRdn, newParentdn, deleteOldRdn,
                (LDAPResponseListener)null, cons);
       ((LDAPResponse)(listener.getResponse())).chkResultCode();
@@ -2539,9 +2546,9 @@ public class LDAPConnection implements Cloneable
    /*
     * rename
     */
-    
+
    /**
-    * 
+    *
     * Asynchronously renames an existing entry in the directory.
     *
     *  @param dn             The current distinguished name of the entry.
@@ -2556,7 +2563,7 @@ public class LDAPConnection implements Cloneable
     *                        response to this request. If it is null, a
     *                        listener object is created internally.
     *
-    * @exception LDAPException A general exception which includes an error 
+    * @exception LDAPException A general exception which includes an error
     * message and an LDAP error code.
     */
    public LDAPResponseListener rename(String dn,
@@ -2567,7 +2574,7 @@ public class LDAPConnection implements Cloneable
    {
       return rename(dn, newRdn, deleteOldRdn, listener, defSearchCons);
    }
-   
+
    /**
     * Asynchronously renames an existing entry in the directory, using the
     * specified constraints.
@@ -2578,7 +2585,7 @@ public class LDAPConnection implements Cloneable
     *<br><br>
     *  @param deleteOldRdn   If true, the old name is not retained as an
     *                        attribute value. If false, the old name is
-    *                        retained as an attribute value. 
+    *                        retained as an attribute value.
     *<br><br>
     *  @param listener       The handler for messages returned from a server in
     *                        response to this request. If it is null, a
@@ -2586,7 +2593,7 @@ public class LDAPConnection implements Cloneable
     *<br><br>
     *  @param cons           The constraints specific to the operation.
     *
-    * @exception LDAPException A general exception which includes an error 
+    * @exception LDAPException A general exception which includes an error
     * message and an LDAP error code.
     */
    public LDAPResponseListener rename(String dn,
@@ -2600,15 +2607,15 @@ public class LDAPConnection implements Cloneable
    }
 
    /**
-    * 
-    * Asynchronously renames an existing entry in the directory, possibly 
+    *
+    * Asynchronously renames an existing entry in the directory, possibly
     * repositioning the entry in the directory.
     *
     *  @param dn             The current distinguished name of the entry.
     *<br><br>
     *  @param newRdn         The new relative distinguished name for the entry.
     *<br><br>
-    *  @param newParentdn    The distinguished name of an existing entry which 
+    *  @param newParentdn    The distinguished name of an existing entry which
     *                        is to be the new parent of the entry.
     *<br><br>
     *  @param deleteOldRdn   If true, the old name is not retained as an
@@ -2619,7 +2626,7 @@ public class LDAPConnection implements Cloneable
     *                        response to this request. If it is null, a
     *                        listener object is created internally.
     *
-    * @exception LDAPException A general exception which includes an error 
+    * @exception LDAPException A general exception which includes an error
     * message and an LDAP error code.
     */
    public LDAPResponseListener rename(String dn,
@@ -2646,11 +2653,11 @@ public class LDAPConnection implements Cloneable
     *<br><br>
     *  @param newRdn         The new relative distinguished name for the entry.
     *<br><br>
-    *  @param newParentdn    The distinguished name of an existing entry which 
+    *  @param newParentdn    The distinguished name of an existing entry which
     *                        is to be the new parent of the entry.
     *<br><br>
     *  @param deleteOldRdn   If true, the old name is not retained as an
-    *                        attribute value. If false, the old name is 
+    *                        attribute value. If false, the old name is
     *                        retained as an attribute value.
     *<br><br>
     *  @param listener       The handler for messages returned from a server in
@@ -2659,7 +2666,7 @@ public class LDAPConnection implements Cloneable
     *<br><br>
     *  @param cons           The constraints specific to the operation.
     *
-    * @exception LDAPException A general exception which includes an error 
+    * @exception LDAPException A general exception which includes an error
     * message and an LDAP error code.
     */
    public LDAPResponseListener rename(String dn,
@@ -2710,7 +2717,7 @@ public class LDAPConnection implements Cloneable
     *   <li>SCOPE_BASE - searches only the base DN
     *
     *   <li>SCOPE_ONE - searches only entries under the base DN
-    *                                  
+    *
     *   <li>SCOPE_SUB - searches the base DN and all entries
     *                           within its subtree
     *</ul><br><br>
@@ -2722,7 +2729,7 @@ public class LDAPConnection implements Cloneable
     *                        the attributes found. If false, returns the
     *                        names and values for attributes found.
     *
-    * @exception LDAPException A general exception which includes an error 
+    * @exception LDAPException A general exception which includes an error
     * message and an LDAP error code.
     */
    public LDAPSearchResults search(String base,
@@ -2737,9 +2744,9 @@ public class LDAPConnection implements Cloneable
 
    /**
     *
-    * Synchronously performs the search specified by the parameters, 
-    * using the specified search constraints (such as the 
-    * maximum number of entries to find or the maximum time to wait for 
+    * Synchronously performs the search specified by the parameters,
+    * using the specified search constraints (such as the
+    * maximum number of entries to find or the maximum time to wait for
     * search results).
     *
     * <p>As part of the search constraints, the method allows specifying
@@ -2756,7 +2763,7 @@ public class LDAPConnection implements Cloneable
     *   <li>SCOPE_BASE - searches only the base DN
     *
     *   <li>SCOPE_ONE - searches only entries under the base DN
-    *                                  
+    *
     *   <li>SCOPE_SUB - searches the base DN and all entries
     *                          within its subtree
     *</ul><br><br>
@@ -2770,7 +2777,7 @@ public class LDAPConnection implements Cloneable
     *<br><br>
     *  @param cons           The constraints specific to the search.
     *
-    * @exception LDAPException A general exception which includes an error 
+    * @exception LDAPException A general exception which includes an error
     * message and an LDAP error code.
     */
    public LDAPSearchResults search(String base,
@@ -2798,11 +2805,11 @@ public class LDAPConnection implements Cloneable
     *<br><br>
     *  @param scope          The scope of the entries to search. The following
     *                        are the valid options:
-    *<ul> 
+    *<ul>
     *   <li>SCOPE_BASE - searches only the base DN
     *
     *   <li>SCOPE_ONE - searches only entries under the base DN
-    *                                  
+    *
     *   <li>SCOPE_SUB - searches the base DN and all entries
     *                          within its subtree
     *</ul><br><br>
@@ -2818,7 +2825,7 @@ public class LDAPConnection implements Cloneable
     *                        response to this request. If it is null, a
     *                        listener object is created internally.
     *
-    * @exception LDAPException A general exception which includes an error 
+    * @exception LDAPException A general exception which includes an error
     * message and an LDAP error code.
     */
    public LDAPSearchListener search(String base,
@@ -2834,9 +2841,9 @@ public class LDAPConnection implements Cloneable
    }
 
    /**
-    * Asynchronously performs the search specified by the parameters, 
-    * also allowing specification of constraints for the search (such 
-    * as the maximum number of entries to find or the maximum time to 
+    * Asynchronously performs the search specified by the parameters,
+    * also allowing specification of constraints for the search (such
+    * as the maximum number of entries to find or the maximum time to
     * wait for search results).
     *
     *  @param base           The base distinguished name to search from.
@@ -2847,7 +2854,7 @@ public class LDAPConnection implements Cloneable
     *   <li>SCOPE_BASE - searches only the base DN
     *
     *   <li>SCOPE_ONE - searches only entries under the base DN
-    *                                  
+    *
     *   <li>SCOPE_SUB - searches the base DN and all entries
     *                           within its subtree
     *</ul><br><br>
@@ -2865,7 +2872,7 @@ public class LDAPConnection implements Cloneable
     *<br><br>
     *  @param cons           The constraints specific to the search.
     *
-    * @exception LDAPException A general exception which includes an error 
+    * @exception LDAPException A general exception which includes an error
     * message and an LDAP error code.
     */
    public LDAPSearchListener search(String base,
@@ -2920,14 +2927,14 @@ public class LDAPConnection implements Cloneable
    /*
     * LDAP URL search
     */
-   
+
    /**
     * Synchronously performs the search specified by the LDAP URL, returning
     * an enumerable LDAPSearchResults object.
     *
     * @param toGet The LDAP URL specifying the entry to read.
     *
-    * @exception LDAPException A general exception which includes an error 
+    * @exception LDAPException A general exception which includes an error
     * message and an LDAP error code.
     */
    public static LDAPSearchResults search(LDAPUrl toGet)
@@ -2939,9 +2946,9 @@ public class LDAPConnection implements Cloneable
    /*
     * LDAP URL search
     */
-    
+
     /**
-    * Synchronously perfoms the search specified by the LDAP URL, using 
+    * Synchronously perfoms the search specified by the LDAP URL, using
     * the specified search constraints (such as the maximum number of
     * entries to find or the maximum time to wait for search results).
     *
@@ -2961,7 +2968,7 @@ public class LDAPConnection implements Cloneable
     *<br><br>
     *  @param cons           The constraints specific to the search.
     *
-    *  @exception LDAPException A general exception which includes an error 
+    *  @exception LDAPException A general exception which includes an error
     *  message and an LDAP error code.
     */
    public static LDAPSearchResults search(LDAPUrl toGet,
