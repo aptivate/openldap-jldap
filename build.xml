@@ -1,4 +1,4 @@
-<!-- $Novell: /ldap/src/jldap/build.xml,v 1.19 2000/10/19 17:23:33 vtag Exp $ -->
+<!-- $Novell: /ldap/src/jldap/build.xml,v 1.20 2000/10/19 18:17:55 vtag Exp $ -->
 <!-- ======================================================================= -->
 <!-- TOP level build file                                                -->
 <!-- ======================================================================= -->
@@ -209,7 +209,7 @@
         <mkdir dir="${pkg.doc}"/>
         <javadoc sourcepath="${docsrc}"
                         destdir="${pkg.doc}"
-                        classpath="${lib.debug}/${ldap}.jar;external/ssl/domestic/nssl1.1_dom.jar"
+                        classpath="${lib.debug}/${ldap}.jar;external/ssl/domestic/nssl1.2_dom.jar"
                         packagenames="com.novell.ldap,com.novell.ldap.extensions,com.novell.ldap.asn1"
                         overview="overview.html"
                         Windowtitle="LDAP Classes"
@@ -229,7 +229,7 @@
         <mkdir dir="${pkg.doc.framework}"/>
         <javadoc sourcepath="${docsrc}"
                         destdir="${pkg.doc.framework}"
-                        classpath="${lib.debug}/${ldap}.jar;external/ssl/domestic/nssl1.1_dom.jar"
+                        classpath="${lib.debug}/${ldap}.jar;external/ssl/domestic/nssl1.2_dom.jar"
                         packagenames="com.novell.ldap.asn1,com.novell.ldap"
                         Windowtitle="LDAP Classes"
                         Splitindex="true"
@@ -251,7 +251,7 @@
 		<copyfile src="com/novell/ldap/client/Debug.template" dest="com/novell/ldap/client/Debug.java" filtering="YES"/>
         <javadoc sourcepath="${docsrc}"
                         destdir="${doc.novell}"
-                        classpath="external/ssl/domestic/nssl1.1_dom.jar"
+                        classpath="external/ssl/domestic/nssl1.2_dom.jar"
                         packagenames="com.novell.ldap,com.novell.ldap.asn1,com.novell.ldap.client,com.novell.ldap.protocol,com.novell.ldap.extensions"
                         Windowtitle="LDAP Classes"
                         Splitindex="true"
