@@ -56,6 +56,16 @@ Java LDAP API development that needs to be done (not in any order)
     - Add support for Extended Partial Response.
     
       Must be coordinated with LDAPExtendedResonse.register work above.
+
+	- Add LDAP Password Modify extended operation support
+	- Add LDAP Who Am I? extended operation support
+	- Add LDAP Cancel extended operation support
+	- Add LDAP Proxy Authorization control support
+	- Add LDAP Assertion control support
+	- Add LDAP Pre/Post Read control support
+	- Add LDAP Matched Values control support
+	- Add LDAP ManageDsaIT control support
+	- Add LDAP Subentries control support
     
 Implementation Notes
 --------------------
