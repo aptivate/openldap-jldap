@@ -30,8 +30,10 @@ public class ASN1Integer extends ASN1Numeric {
    public static final int TAG = 0x02;
 
    /**
-    * ID is added for Optimization. id needs only be one Value for every instance
-    * Thus we create it only once.
+    * ID is added for Optimization.
+    
+    * <p>ID needs only be one Value for every instance,
+    * thus we create it only once.</p>
     */
     public static final ASN1Identifier ID =
         new ASN1Identifier(ASN1Identifier.UNIVERSAL, false, TAG);

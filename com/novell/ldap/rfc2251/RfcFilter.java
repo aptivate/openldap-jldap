@@ -21,7 +21,7 @@ import com.novell.ldap.asn1.*;
 import com.novell.ldap.LDAPException;
 import com.novell.ldap.resources.*;
 
-/**
+/* 
  *       Filter ::= CHOICE {
  *               and             [0] SET OF Filter,
  *               or              [1] SET OF Filter,
@@ -481,11 +481,15 @@ class FilterTokenizer {
    }
 
    /**
-    * Reads either an operator (&, |, !), or an attribute, whichever is
-    * next in the filter string. If the next component is an attribute, it
-    * is read and stored in the attr field of this class which may be
-    * retrieved with getAttr() and a -1 is returned. Otherwise, the int
-    * value of the operator read is returned.
+    * Reads either an operator, or an attribute, whichever is
+    * next in the filter string.
+    *
+    * <p>Operators are &, |, or !.<p>
+    *
+    * <p>If the next component is an attribute, it is read and stored in the
+    * attr field of this class which may be retrieved with getAttr()
+    * and a -1 is returned. Otherwise, the int value of the operator read is
+    * returned.</p>
     */
    public int getOpOrAttr()
       throws LDAPException

@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import com.novell.ldap.asn1.*;
 
-/**
+/* 
  *        Control ::= SEQUENCE {
  *               controlType             LDAPOID,
  *               criticality             BOOLEAN DEFAULT FALSE,

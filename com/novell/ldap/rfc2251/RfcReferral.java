@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import com.novell.ldap.asn1.*;
 
-/**
+/* 
  *        Referral ::= SEQUENCE OF LDAPURL
  */
 public class RfcReferral extends ASN1SequenceOf {

@@ -32,8 +32,10 @@ public class ASN1Boolean extends ASN1Simple {
    public static final int TAG = 0x01;
 
    /**
-    * ID is added for Optimization. id needs only be one Value for every instance
-    * Thus we create it only once.
+    * ID is added for Optimization.
+    *
+    * <p>ID needs only be one Value for every instance,
+    * thus we create it only once.</p>
     */
     public static final ASN1Identifier ID =
         new ASN1Identifier(ASN1Identifier.UNIVERSAL, false, TAG);

@@ -16,7 +16,7 @@ package com.novell.ldap.rfc2251;
 
 import com.novell.ldap.asn1.*;
 
-/**
+/* 
  *       AttributeTypeAndValues ::= SEQUENCE {
  *               type    AttributeDescription,
  *               vals    SET OF AttributeValue }

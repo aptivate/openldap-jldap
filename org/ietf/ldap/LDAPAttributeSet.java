@@ -34,7 +34,7 @@ public class LDAPAttributeSet implements java.lang.Cloneable,
     private com.novell.ldap.LDAPAttributeSet attrSet;
 
     /**
-     * Constructs a new set of attributes. using an existing attribute set
+     * Constructs a new set of attributes, using an existing attribute set.
      */
     /* package */
     LDAPAttributeSet( com.novell.ldap.LDAPAttributeSet attrSet)
@@ -57,7 +57,7 @@ public class LDAPAttributeSet implements java.lang.Cloneable,
     }
 
     /**
-     * Gets the com.novell.ldap.LDAPAttributeSet object
+     * Gets the com.novell.ldap.LDAPAttributeSet object.
      */
     /* package */
     com.novell.ldap.LDAPAttributeSet getWrappedObject()
@@ -142,7 +142,7 @@ public class LDAPAttributeSet implements java.lang.Cloneable,
 
     /**
      * Unwraps the specified collection, returning a collection
-     * containing com.novell.ldap.LDAPAttribute classes
+     * containing com.novell.ldap.LDAPAttribute classes.
      */
     private Collection unwrapCollection( java.util.Collection attrs)
     {
@@ -181,7 +181,7 @@ public class LDAPAttributeSet implements java.lang.Cloneable,
     }
     
     /**
-     * Returns true if this AttributeSet contains the specified Attribute
+     * Returns true if this AttributeSet contains the specified Attribute.
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPAttributeSet.html
             #contains(java.lang.Object)">
@@ -197,10 +197,6 @@ public class LDAPAttributeSet implements java.lang.Cloneable,
     /**
      * Returns true if this Attribute set contains all the attributes
      * in the specified collection.
-     *
-     * <!--@see <a href="../../../../doc/com/novell/ldap/LDAPAttributeSet.html
-            #containsAll(java.util.Collection)">
-            com.novell.ldap.LDAPAttributeSet.containsAll(Collection)</a>-->
      */
     public boolean containsAll(java.util.Collection attrs)
     {
@@ -208,11 +204,7 @@ public class LDAPAttributeSet implements java.lang.Cloneable,
     }
 
     /**
-     * Compares the specified object with this set for equality
-     *
-     * <!--@see <a href="../../../../doc/com/novell/ldap/LDAPAttributeSet.html
-            #equals(java.lang.Object)">
-            com.novell.ldap.LDAPAttributeSet.equals(Object)</a>-->
+     * Compares the specified object with this set for equality.
      */
     public boolean equals(Object set)
     {
@@ -222,11 +214,7 @@ public class LDAPAttributeSet implements java.lang.Cloneable,
     }
     
     /**
-     * Returns the hash code value for this set
-     *
-     * <!--@see <a href="../../../../doc/com/novell/ldap/LDAPAttributeSet.html
-            #hashCode()">
-            com.novell.ldap.LDAPAttributeSet.hashCode()</a>-->
+     * Returns the hash code value for this set.
      */
     public int hashCode()
     {
@@ -234,7 +222,7 @@ public class LDAPAttributeSet implements java.lang.Cloneable,
     }
     
     /**
-     * Returns true if there are no elements in this set
+     * Returns true if there are no elements in this set.
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPAttributeSet.html
             #isEmpty()">
@@ -246,7 +234,7 @@ public class LDAPAttributeSet implements java.lang.Cloneable,
     }
     
     /**
-     * Returns an iterator over the elements of this set
+     * Returns an iterator over the elements of this set.
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPAttributeSet.html
             #iterator()">
@@ -303,7 +291,7 @@ public class LDAPAttributeSet implements java.lang.Cloneable,
     }
 
     /**
-     * Returns an array containing all the elements in this set
+     * Returns an array containing all the elements in this set.
      */
     public Object[] toArray()
     {
@@ -312,8 +300,10 @@ public class LDAPAttributeSet implements java.lang.Cloneable,
     }
     
     /**
-     * Returns an array containing all the elements in this set.  The runtime
-     * type of the returned array is that of the specified array.
+     * Returns an array containing all the elements in this set.
+     *
+     * <p>The runtime type of the returned array is that of the specified
+     * </p>array.
      */
     public Object[] toArray( Object[] a)
     {

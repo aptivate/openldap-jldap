@@ -16,7 +16,7 @@ package com.novell.ldap.rfc2251;
 
 import com.novell.ldap.asn1.*;
 
-/**
+/*
  *       MatchingRuleAssertion ::= SEQUENCE {
  *               matchingRule    [1] MatchingRuleId OPTIONAL,
  *               type            [2] AttributeDescription OPTIONAL,

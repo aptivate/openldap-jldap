@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import com.novell.ldap.asn1.*;
 
-/**
+/* 
  *       Attribute ::= SEQUENCE {
  *               type    AttributeDescription,
  *               vals    SET OF AttributeValue }

@@ -16,7 +16,7 @@ package com.novell.ldap.rfc2251;
 
 import com.novell.ldap.asn1.*;
 
-/**
+/* 
  * The AttributeDescriptionList is used to list attributes to be returned in
  * a search request.
  *

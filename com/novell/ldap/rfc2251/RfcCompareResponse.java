@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import com.novell.ldap.asn1.*;
 
-/**
+/* 
  *      CompareResponse ::= [APPLICATION 15] LDAPResult
  */
 public class RfcCompareResponse extends RfcLDAPResult {

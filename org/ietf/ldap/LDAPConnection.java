@@ -437,7 +437,7 @@ public class LDAPConnection implements Cloneable
     }
 
     /**
-     * Indicates if the connection uses TLS, i.e. startTLS has completed.
+     * Indicates if the connection uses TLS.
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
             #isTLS()">

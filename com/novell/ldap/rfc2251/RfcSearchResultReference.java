@@ -20,7 +20,7 @@ import java.util.Enumeration;
 import java.util.NoSuchElementException;
 import com.novell.ldap.asn1.*;
 
-/**
+/*
  *       SearchResultReference ::= [APPLICATION 19] SEQUENCE OF LDAPURL
  */
 public class RfcSearchResultReference extends ASN1SequenceOf

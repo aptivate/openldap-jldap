@@ -16,7 +16,7 @@ package com.novell.ldap.rfc2251;
 
 import com.novell.ldap.asn1.*;
 
-/**
+/* 
  *       SaslCredentials ::= SEQUENCE {
  *               mechanism               LDAPString,
  *               credentials             OCTET STRING OPTIONAL }

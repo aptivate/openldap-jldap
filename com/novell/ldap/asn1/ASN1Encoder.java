@@ -41,7 +41,7 @@ public interface ASN1Encoder extends Serializable {
    /* Encoders for ASN.1 simple types */
 
    /**
-    * Encode an ASN1Boolean directly into the provided output stream.<br>
+    * Encode an ASN1Boolean directly into the provided output stream.
     *
     * @param b The ASN1Boolean object to encode<br>
     *

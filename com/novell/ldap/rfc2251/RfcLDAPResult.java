@@ -19,7 +19,7 @@ import java.io.InputStream;
 import java.io.ByteArrayInputStream;
 import com.novell.ldap.asn1.*;
 
-/**
+/* 
  *        LDAPResult ::= SEQUENCE {
  *               resultCode      ENUMERATED {
  *                            success                      (0),

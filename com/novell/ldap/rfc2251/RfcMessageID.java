@@ -17,7 +17,7 @@ package com.novell.ldap.rfc2251;
 
 import com.novell.ldap.asn1.*;
 
-/**
+/* 
  *       MessageID ::= INTEGER (0 .. maxInt)
  *
  *       maxInt INTEGER ::= 2147483647 -- (2^^31 - 1) --

@@ -915,7 +915,10 @@ public final class Connection implements Runnable
         return;
     }
 
-    /** StopTLS, in this package, assumes the caller has:
+    /*
+     * Stops TLS.
+     *
+     * StopTLS, in this package, assumes the caller has:
      *  1) blocked writing (acquireWriteSemaphore).
      *  2) checked that no messages are outstanding.
      *

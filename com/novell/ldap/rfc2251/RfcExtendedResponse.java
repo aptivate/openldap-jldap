@@ -19,7 +19,7 @@ import java.io.InputStream;
 import java.io.ByteArrayInputStream;
 import com.novell.ldap.asn1.*;
 
-/**
+/* 
  *       ExtendedResponse ::= [APPLICATION 24] SEQUENCE {
  *               COMPONENTS OF LDAPResult,
  *               responseName     [10] LDAPOID OPTIONAL,

@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import com.novell.ldap.asn1.*;
 
-/**
+/* 
  *       DelResponse ::= [APPLICATION 11] LDAPResult
  */
 public class RfcDelResponse extends RfcLDAPResult {

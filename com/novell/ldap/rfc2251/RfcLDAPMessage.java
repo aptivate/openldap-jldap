@@ -24,53 +24,30 @@ import com.novell.ldap.asn1.*;
 import com.novell.ldap.client.Debug;
 import java.util.ArrayList;
 
-/**
+/* 
  *       LDAPMessage ::= SEQUENCE {
- *<br>
  *               messageID       MessageID,
- *<br>
  *               protocolOp      CHOICE {
- *<br>
  *                   bindRequest     BindRequest,
- *<br>
  *                   bindResponse    BindResponse,
- *<br>
  *                   unbindRequest   UnbindRequest,
- *<br>
  *                   searchRequest   SearchRequest,
- *<br>
  *                   searchResEntry  SearchResultEntry,
- *<br>
  *                   searchResDone   SearchResultDone,
- *<br>
  *                   searchResRef    SearchResultReference,
- *<br>
  *                   modifyRequest   ModifyRequest,
- *<br>
  *                   modifyResponse  ModifyResponse,
- *<br>
  *                   addRequest      AddRequest,
- *<br>
  *                   addResponse     AddResponse,
- *<br>
  *                   delRequest      DelRequest,
- *<br>
  *                   delResponse     DelResponse,
- *<br>
  *                   modDNRequest    ModifyDNRequest,
- *<br>
  *                   modDNResponse   ModifyDNResponse,
- *<br>
  *                   compareRequest  CompareRequest,
- *<br>
  *                   compareResponse CompareResponse,
- *<br>
  *                   abandonRequest  AbandonRequest,
- *<br>
  *                   extendedReq     ExtendedRequest,
- *<br>
  *                   extendedResp    ExtendedResponse },
- *<br>
  *                controls       [0] Controls OPTIONAL }
  *<br><br>
  * Note: The creation of a MessageID should be hidden within the creation of
@@ -90,7 +67,7 @@ public class RfcLDAPMessage extends ASN1Sequence
     /**
      * Create an RfcLDAPMessage by copying the content array
      *
-     * @parameter origContent the array list to copy
+     * @param origContent the array list to copy
      */
     /* package */
     RfcLDAPMessage( ArrayList origContent,
@@ -276,6 +253,14 @@ public class RfcLDAPMessage extends ASN1Sequence
         return newMsg;
     }
 
+    /**
+     * Returns the dn of the request, may be null
+     */
+    public String getRequestDN()
+    {
+        return op.getRequestDN();
+    }
+    
     /**
      * sets the original request in this message
      *

@@ -61,28 +61,28 @@ import java.io.EOFException;
 public class ASN1Identifier extends Object implements Cloneable {
 
    /**
-    * Universal tag class
+    * Universal tag class.
     *
     * <p> UNIVERSAL = 0 </p>
     */
    public static final int UNIVERSAL = 0;
 
    /**
-    * Application-wide tag class
+    * Application-wide tag class.
     *
     * <p> APPLICATION = 1 </p>
     */
    public static final int APPLICATION = 1;
 
    /**
-    * Context-specific tag class
+    * Context-specific tag class.
     *
     * <p> CONTEXT = 2 </p>
     */
    public static final int CONTEXT = 2;
 
    /**
-    * Private-use tag class
+    * Private-use tag class.
     *
     * <p> PRIVATE = 3 </p>
     */
@@ -101,7 +101,7 @@ public class ASN1Identifier extends Object implements Cloneable {
     */
 
    /**
-    * Constructs an ASN1Identifier using the classtype, form and tag
+    * Constructs an ASN1Identifier using the classtype, form and tag.
     *
     * @param tagClass As defined above.
     *
@@ -195,8 +195,9 @@ public class ASN1Identifier extends Object implements Cloneable {
    }
 
    /**
-    * Return a boolean indicating if the constructed bit is set.<br>
-    * Returns true if constructed and false if primitive.
+    * Return a boolean indicating if the constructed bit is set.
+    *
+    * @return true if constructed and false if primitive.
     */
    public boolean getConstructed()
    {
@@ -268,7 +269,7 @@ public class ASN1Identifier extends Object implements Cloneable {
 
    /**
     * Creates a duplicate of this object and returns a reference to the 
-    * duplicate
+    * duplicate.
     *
     */
    public Object clone()
