@@ -3,7 +3,7 @@
 <head>
 <!--
 
-  $Novell: /ldap/src/jldap/com/novell/ldap/asn1/package.html,v 1.5 2001/03/02 21:42:33 cmorris Exp $
+  $Novell: /ldap/src/jldap/com/novell/ldap/asn1/package.html,v 1.6 2001/04/06 17:00:20 javed Exp $
 
  ******************************************************************************
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
@@ -22,9 +22,9 @@
 </head>
 <body bgcolor="white">
 
-The classes provided in this package can be used to encode and decode Abstract Syntax Notation One (ASN.1) object types using BER (Basic Encding Rules). 
+The classes provided in this package can be used to encode and decode Abstract Syntax Notation One (ASN.1) object types using BER (Basic Encding Rules).
 <p>Abstract Syntax Notation One (ASN.1) is the language used by the OSI protocols for describing abstract syntax.  ASN.1 as defined in ISO documents 8824.2 and 8825.2.
-<p>Basic Encoding Rules or BER are historically the original encoding rules for ASN.1.  The LDAP protocol uses the BER encoding format and this package includes classes that allow ASN.1 to be encoded and decoded into the BER format.  
+<p>Basic Encoding Rules or BER are historically the original encoding rules for ASN.1.  The LDAP protocol uses the BER encoding format and this package includes classes that allow ASN.1 to be encoded and decoded into the BER format.
 <p>However the classes have been built to be flexible enought to allow an application to provide its own ASN1 Encoder class.  This class could encode data into any encoding format.
 <p>For example a particular application might want to use PER (Packed Encoding Rules) to encode the supported ASN.1 objects. This application would however be required to supply its own
 PER Encoder and PER Decoder classes. These application provided classes will need to implement the ASN1Encoder and ASN1Decoder interfaces defined in this package.
@@ -37,15 +37,6 @@ PER Encoder and PER Decoder classes. These application provided classes will nee
 <h2>Package Specification</h2>
 
 This package is designed to work on LDAPv3 servers. It has not been tested for backwards compatibility with LDAPv2 servers.
-
-<h2>Related Documentation</h2>
-
-For additional NDS and LDAP information, see the following:
-<ul>
-  <li><a href="http://developer.novell.com/ndk/doc/ndslib/schm_enu/data/h4q1mn1i.htm" target="_blank">NDS Schema Reference (website)</a>
-  <li><a href="http://developer.novell.com/ndk/doc/ldapover/ldap_enu/data/a3wyu4m.htm" target="_blank">LDAP and NDS (website)</a>
-</ul>
-
 
 </body>
 </html>
