@@ -15,7 +15,7 @@
 package com.novell.sasl.client;
 
 import java.util.*;
-import com.novell.sasl.*;
+import javax.security.sasl.*;
 
 /**
  * Implements the DigestChallenge class which will be used by the

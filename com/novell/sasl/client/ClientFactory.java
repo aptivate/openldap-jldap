@@ -14,7 +14,7 @@
  ******************************************************************************/
 package com.novell.sasl.client;
 
-import com.novell.sasl.*;
+import javax.security.sasl.*;
 import java.util.*;
 
 /**
