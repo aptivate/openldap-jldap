@@ -1,15 +1,16 @@
 
-LDAP Class Libraries for Java
-September 2001
+LDAP Classes for Java
+January 2002
 
 Table of Contents
-     1.0  LDAP Class Libraries for Java
+     1.0  LDAP Classes for Java
      2.0  Dependencies
      3.0  Installation
      4.0  LDAPv2 and LDAPv3 Support
-     5.0  Building JLDAP
+     5.0  Java LDAP Documentation
+     6.0  Building JLDAP
 
-1.0  LDAP Class Libraries for Java
+1.0  LDAP Classes for Java
 
           LDAP (Lightweight Directory Access Protocol) is
           an emerging Internet standard for accessing directory
@@ -19,7 +20,7 @@ Table of Contents
           entry management, schema management, and LDAP controls
           and extensions for expanding LDAP's functionality.
 
-          The LDAP Class Libraries for Java enables you to
+          The LDAP Classes for Java enables you to
           write applications to access, manage, update, and
           search for information stored in LDAP-aware directories.
 
@@ -59,7 +60,7 @@ Table of Contents
                 external/ant/lib/jaxp.jar
                 external/ant/lib/parser.jar
 
-     Running an application that uses the LDAP Class Libraries for
+     Running an application that uses the LDAP Classes for
      Java is dependent upon the following:
 
      -    JRE 1.1.7 or higher.
@@ -71,7 +72,7 @@ Table of Contents
           connections.
 
      -    The LDAP extensions for naming context and replica management
-          require NDS eDirectory 8.5.
+          require Novell eDirectory 8.5.
 
 3.0  Installation
 
@@ -86,13 +87,34 @@ Table of Contents
 
 4.0  LDAPv2 and LDAPv3 Support
 
-          This version of the LDAP Class Libraries for Java
+          This version of the LDAP Classes for Java
           supports LDAPv3. Since the consensus in the LDAP
           community is to encourage everyone to update to
           LDAPv3, there is no attempt to ensure that these
           libraries support LDAPv2 servers.
 
-5.0  Building JLDAP
+5.0  Java LDAP Documentation
+
+     Building JLDAP generates javadoc for the Java LDAP Classes.
+     There are three directories containing javadoc.  The index.html
+     file is the starting point for all of the javadoc.  The directories are:
+     
+     pkg/ietfdoc  - contains javadoc for the public classes of the IETF LDAP
+                    Java API.  These classes are used by applications needing
+                    binary compatibility with Java LDAP implementations from 
+                    other vendors.
+                    
+     pkg/doc      - contains javadoc for the public classes of the Novell LDAP
+                    Java API.  These classes provide a richer set of
+                    functionality than the IETF classes, and are used by
+                    applications needing a full featured API.
+                    
+     doc          - contains javadoc for all classes in the LDAP Java API.
+                    This javadoc is typically used by developers building
+                    new functionality, or modifying existing functionality
+                    in the API.
+                    
+6.0  Building JLDAP
 
 JLDAP is built using a system developed by jakarta.apache.org called ANT.
 
@@ -166,16 +188,28 @@ The following directories are created when "ant all" is run:
     Contents of directories in the ldap directory
         jldap/ldap/classes          # Classes used to build lib/ldap.jar 
         jldap/ldap/classes_debug    # Classes used to build lib_debug/ldap.jar 
-        jldap/ldap/doc              # Javadoc for all ldap.jar classes 
+        jldap/ldap/doc              # Developer Javadoc for all ldap.jar classes 
         jldap/ldap/lib              # Jar file for ldap - optimized, debug off 
         jldap/ldap/lib_debug        # Jar file for ldap - not optimized, debug on 
 
     Contents of directories in the jldap/pkg directory
         jldap/pkg                   # Distribution directories and files 
         jldap/pkg/doc               # Javadoc for the Java LDAP API
+        jldap/pkg/ietfdoc           # Javadoc for the IETF Java LDAP API
         jldap/pkg/lib               # Jar file for ldap - optimized, debug off 
         jldap/pkg/lib_debug         # Jar file for ldap - not optimized, debug on 
 
 
----
 $OpenLDAP$
+ ******************************************************************************
+ * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
+ *
+ * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
+ * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
+ * TO VERSION 2.0.1 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
+ * AVAILABLE AT HTTP://WWW.OPENLDAP.ORG/LICENSE.HTML OR IN THE FILE "LICENSE"
+ * IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
+ * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.1 OF THE OPENLDAP
+ * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
+ * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
+ ******************************************************************************
