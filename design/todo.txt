@@ -1,0 +1,52 @@
+
+OpenLDAP Java LDAP API To Do List
+-------------------
+
+This is a list of projects that need to be done.
+Contribute to projects based upon your personal priorities and experience.
+
+If you would like to work on any of these projects, please coordinate
+by posting to OpenLDAP-devel mailing list:
+  http://www.OpenLDAP.org/lists
+
+If you have a project you'd like added to this list, discuss it on
+Developer's list or just do it.
+
+Please read:
+    http://www.OpenLDAP.org/devel/programming.html
+    http://www.OpenLDAP.org/devel/contributing.html
+
+Java LDAP API Projects (not in any order)
+---------------------
+    Implement the startTLS & stopTLS methods in LDAPConnection.
+    
+    Implement the sasl bind methods in LDAPConnection.
+    
+    IETF Draft 17 support.  Currently the code is somewhere around
+         draft 14.  For the complete list of draft 17 changes, see
+         the file jldap/design/todo-draft17.txt.
+    
+    Implement a generalized response factory for LDAP Extended responses.
+       See the register command for LDAPControls as an example.  Right
+       generation of LDAPExtendedResponse classes is hard coded in
+       com/novell/ldap/client/ExtResponseFactory.java.
+    
+    Create Utility classes for reading and writing LDIF.
+    
+Implementation Notes
+--------------------
+
+    The org.ietf.ldap package exposes only those classes and methods
+    defined the the IETF Java LDAP API draft.  These classes are adapters
+    to the com.novell.ldap classes.  We do not deprecate methods and
+    classes eliminated by changes to the ITEF draft, we just remove them.
+    
+    The com.novell.ldap classes implement the functionality defined in
+    the LDAP API draft as well as additional functionality we feel is
+    useful.  Methods or classes that are removed by changes to the IETF
+    draft are deprecated.
+    
+    Note: All enhancements and updates should include appropriate Javadoc.
+
+---
+$OpenLDAP$

@@ -1,0 +1,269 @@
+Outline of changes needed to move from IETF Java LDAP API draft
+version 13 to version 17.
+
+See: http://www.ietf.org/internet-drafts/draft-ietf-ldapext-ldap-java-api-17.txt
+
+Note: The number followed by ":" indicates the draft revision
+where the change was made.
+
+The [ ] can contain the following
+  - (blank) no one working on feature
+r - (any letter except X) - initial of person working of feature
+X - (capitol X) - complete
+
+[ ] 15: LDAPAttribute 
+[ ]      15: Implements Cloneable. 
+[ ]      15: Implements Serializable
+
+[ ] 14: LDAPAttributeSchema 
+[ ] 15: LDAPAttributeSchema 
+[ ]      15: Constructor takes "String[] names" instead of "String name"
+             and "String[] aliases". 
+[ ]      14: isModifiable(): Change to isUserModifiable() 
+
+[ ] 15: LDAPAttributeSet 
+[ ]      15: Implements Cloneable.
+[ ]      15: Implements Serializable
+[ ]      15: Implements java.util.Set.
+             Remove methods made redundant by implementing Set
+             * add(LDAPAttribute attr): Remove Method
+             * elementAt(): Remove Method
+             * getAttributes(): Remove method
+             * remove(String name): Remove method 
+             * removeElementAt(): Remove method
+             * size(): Remove method
+
+[ ] 15: LDAPAuthHandler - was LDAPRebind
+
+[ ] 15: LDAPAuthProvider - was LDAPRebindAuth
+
+[ ] 15: LDAPCompareAttrNames 
+[ ]      15: Implements java.util.Comparator instead of LDAPEntryComparator. 
+
+[ ] 13: LDAPConnection 
+[ ] 14: LDAPConnection 
+[ ] 15: LDAPConnection 
+[ ]      13: bind(): Add signatures that take a byte array
+[ ]      14: bind(): Add signatures that take byte[] as password parameter, 
+[ ]      14: bind(): Remove signatures which do not take a version parameter 
+[ ]      15: bind() Remove all signatures which take String for password. 
+[ ]      13: bind(): Modify signatures for SASL to take an authzId parameter 
+[ ]      14: bind(): Use Hashtable, not Properties, in all SASL bind signatures 
+[ ]      15: bind(): Replace Hashtable as parameter with Map
+[ ]      13: disconnect(): may take LDAPConstraints parameter 
+[ ]      13: getAuthenticationPassword(): remove method
+[ ]      15: getSaslBindProperties(): Replace Hashtable with Map
+[ ]      13: modify(): replace LDAPModificationSet with LDAPModification[]
+[ ]      13: read(): throws LDAPException with AMBIGUOUS_RESPONSE
+             if there is than one result 
+[ ]      14: rename(): takes newParentdn before deleteOldRdn (one of the eight
+             signatures had order reversed) 
+[ ]      15: setInputStream(): throws an LDAPException. 
+[ ]      15: setOutputStream(): throws an LDAPException. 
+[ ]      15: Move setProperty to LDAPConstraints object
+[ ]      15: LDAP_PROPERTY_SDK is of type String rather than Float. 
+[ ]      15: LDAP_PROPERTY_PROTOCOL is of type Integer rather than Float. 
+[ ]      14: setSearchConstraints(): Remove method
+[ ]      15: stopTLS(): add method
+
+[ ] 13: LDAPConstraints 
+[ ] 15: LDAPConstraints 
+[ ]      15: Implements Cloneable. 
+[ ]      15: Implements Serializable
+[ ]      13: getReferralHandler(): Remove method
+[ ]      15: getServerControls(): rename to getControls. 
+[ ]      15: setServerControls(): rename to setControls. 
+[ ]      15: getProperty(): add Method
+[ ]      15: setProperty(): add Method
+[ ]      15: getClientControls(): remove method
+[ ]      15: setClientControls(): remove method
+
+[ ] 15: LDAPControl 
+[ ]      15: Implements Serializable
+[ ]      15: Remove all references to "client controls". 
+
+[ ] 15: LDAPDITContentRuleSchema 
+[ ]      15: Constructor takes "String[] names" instead of
+             "String name" and "String[] aliases". 
+
+[ ] 15: LDAPDITStructureRuleSchema 
+[ ]      15: Constructor takes "String[] names" instead of
+             " and "String[] aliases". 
+
+[ ] 13: LDAPDN 
+[ ]      13: isValid(): new Method 
+[ ]      13: normalize(): new Method
+
+[ ] 15: LDAPEntry 
+[ ]      15: Implements Serializable
+
+[ ] 15: LDAPEntryComparator 
+[ ]      15: Remove class: LDAPCompareAttrNames implements
+             java.util.Comparator instead. 
+
+[ ] 13: LDAPException
+[ ] 14: LDAPException 
+[ ] 15: LDAPException 
+[ ] 16: LDAPException 
+[ ]      16: constructors: Add serverMessage as parameter
+[ ]      14: toString(): Method overrides the default toString behavior 
+[ ]      15: errorCodeToString(): Rename to resultCodeToString(). 
+[ ]      15: getLDAPResultCode(): Rename to getResultCode (). 
+[ ]      13: Result codes: Add INVALID_RESPONSE
+[ ]      13: Result codes: Add AMBIGUOUS_RESPONSE 
+[ ]      13: Result codes: Remove PARAM_ERROR 
+
+[ ] 15: LDAPExtendedOperation 
+[ ]      15: Implements Serializable
+
+[ ] 15: LDAPListener 
+[ ]      15: Rename class to LDAPMessageQueue. 
+
+[ ] 14: LDAPMatchingRuleSchema 
+[ ] 15: LDAPMatchingRuleSchema 
+[ ]      15: Constructor: Combine the two constructors with explicit
+             field parameters. 
+[ ]      15: Constructor: takes "String[] names" instead of "String name"
+             and "String[] aliases". 
+[ ]      14: getSyntaxString(): returns String instead of String[]
+
+[ ] 15: LDAPMatchingRuleUseSchema 
+[ ]      15: Constructor: takes "String[] names" instead of "String name"
+             and "String[] aliases". 
+
+[ ] 15: LDAPMessage 
+         15: Implements Serializable
+
+[ ] 15: LDAPMessageQueue - was LDAPListener
+
+[ ] 15: LDAPModification 
+[ ]      15: Implements Serializable
+
+[ ] 15: LDAPModificationSet 
+[ ]      15: Remove class: (replace with LDAPModification[] as parameter
+             where referenced, see LDAPConnection.modify()). 
+
+[ ] 15: LDAPNameFormSchema 
+[ ]      15: Constructor: takes "String[] names" instead of "String name"
+             and "String[] aliases". 
+
+[ ] 15: LDAPObjectClassSchema 
+[ ]      15: Constructor: takes "String[] names" instead of "String name"
+             and "String[] aliases". 
+
+[ ] 15: LDAPRebind 
+[ ]      15: Rename class to LDAPAuthHandler. 
+
+[ ] 13: LDAPRebindAuth 
+[ ]      15: Rename class to to LDAPAuthProvider. 
+[ ]      13: constructor: Add a signature which takes byte[] as parameter 
+[ ]      13: getPassword(): returns byte[] instead of String 
+
+[ ] 13: LDAPReferralException 
+[ ]      13: Clarify that getReferrals() must return LDAP URL strings with
+             the scope rewritten if necessary (for SearchResultReferences on
+             search continuation). 
+
+[ ] 15: LDAPResponseListener 
+[ ]      15: Rename class to LDAPResponseQueue. 
+
+[ ] 15: LDAPResponseQueue - was LDAPResponseListener
+
+[ ] 15: LDAPSchema 
+[ ]      15: Implements Serializable
+[ ]      15: add(): Add method
+[ ]      15: Rename getAttribute() to getAttributeSchema()
+[ ]      15: Rename getAttributes() to getAttributeSchemas()
+[ ]      15: Rename getDITContentRule () to getDITContentRuleSchema()
+[ ]      15: Rename getDITContentRules() to getDITContentRuleSchemas()
+[ ]      15: Rename getDITStructureRule() to getDITStructureRuleSchema()
+[ ]      15: Rename getDITStructureRules() to getDITStructureRuleSchemas()
+[ ]      15: Rename getMatchingRule() to getMatchingRuleSchema()
+[ ]      15: Rename getMatchingRules() to getMatchingRuleSchemas()
+[ ]      15: Rename getMatchingRuleUse() to getMatchingRuleUseSchema()
+[ ]      15: Rename getMatchingRuleUses() to getMatchingRuleUseSchemas()
+[ ]      15: Rename getNameForm() to getNameFormSchema()
+[ ]      15: Rename getNameForms() to getNameFormSchemas() 
+[ ]      15: Rename getObjectClass() to getObjectClassSchema()
+[ ]      15: Rename getSyntax() to getSyntaxSchema()
+[ ]      15: Rename getSyntaxes() to getSyntaxSchemas()
+[ ]      15: modify(): Add method
+[ ]      15: remove(): Add method
+[ ]      15: saveSchema(): Add method
+
+[ ] 15: LDAPSchemaElement 
+[ ]      15: Implements Serializable
+[ ]      15: add(): Remove method
+[ ]      15: getAliases(): Remove method
+[ ]      15: getName(): Rename to getNames()
+[ ]      15: getValue(): Rename to toString()
+[ ]      15: modify(): Remove method
+[ ]      15: remove(): Remove method
+
+[ ] 15: LDAPSearchConstraints 
+[ ]      15: constructor: add constructor that takes LDAPConstraints as parameter. 
+
+[ ] 15: LDAPSearchListener 
+[ ]      15: Rename class to LDAPSearchQueue. 
+[ ]      15: Implements Serializable
+
+[ ] 15: LDAPSearchQueue - see LDAPSearchListener
+
+[ ] 15: LDAPSearchResults 
+[ ]      15: No longer implements Enumeration. 
+[ ]      15: Implements Serializable
+[ ]      15: nextElement():  Remove method
+[ ]      15: hasMoreElements(): Rename to hasMore(). 
+[ ]      15: sort(): Remove method (sorting can now be done wht classes/interfaces
+             of the Collections framework now that LDAPAttributeSet implements Set)
+
+[ ] 15: LDAPSocketFactory 
+[ ]      15: makeSocket(): Rename method to createSocket(). 
+
+[ ] 15: LDAPSyntaxSchema 
+[ ]      15: Constructor takes "String[] names" instead of "String name" and
+             "String[] aliases". 
+
+[ ] 13: LDAPUnsolicitedNotificationListener 
+[ ]      13: The argument to messageReceived() is LDAPExtendedResponse
+             and not LDAPMessage. 
+
+[ ] 14: LDAPUrl 
+[ ] 15: LDAPUrl 
+[ ]      15: Implements Cloneable. 
+[ ]      15: Implements Serializable
+[ ]      14: constructor: Remove signature which takes "secure" as a
+             parameter Remove isSecure() 
+[ ]      15: constructor: Adde extensions parameter that take explicitly. 
+[ ]      14: getFilter(): returns null instead of "(objectclass=*)"
+             if no filter specified 
+[ ]      15: getUrl(): Rename to toString(). 
+
+[ ] 13: Security Considerations 
+[ ]      13: Add implementation guidelines 
+
+[ ] 13: General 
+[ ] 14: General 
+[ ]      13: Many clarifications and editorial changes 
+[ ]      14: Clarifications and editorial changes 
+[ ] 
+[ ] 14: Examples 
+[ ] 16: Examples
+[ ]      14: ModifyEmail: Use SASL to bind in synchronous
+             example
+[ ]      14: ModifyEmail: Use TLS in to bind in asynchronous 
+             example
+
+[ ] 13: Implementation Considerations
+[ ] 15: Implementation Considerations 
+[ ]      15: Controls: Remove the specification of package name for controls.
+             The package name may be specified in a follow-on document describing
+             various controls. 
+[ ]      15: Dependencies: New section
+[ ]      13: Invalid responses: New section
+[ ]      13: Level of compatibility: New section
+[ ]      13: Notice of disconnection: New section
+[ ]      15: Move the package name up to section 1. 
+
+---
+$OpenLDAP$
