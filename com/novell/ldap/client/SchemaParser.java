@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: SchemaParser.java,v 1.2 2000/10/02 19:57:23 bgudmundson Exp $
+ * $Id: SchemaParser.java,v 1.3 2000/10/10 22:26:24 bgudmundson Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -22,6 +22,7 @@ import java.io.StreamTokenizer;
 import java.io.StringReader;
 import java.io.IOException;
 import com.novell.ldap.LDAPObjectClassSchema;
+import com.novell.ldap.LDAPAttributeSchema;
 
 public class SchemaParser{
 
@@ -37,6 +38,12 @@ public class SchemaParser{
         String optional[];
         boolean single = false;
         boolean obsolete = false;
+        String equality;
+        String ordering;
+        String substring;
+        boolean collective = false;
+        boolean userMod = true;
+        int usage = LDAPAttributeSchema.USER_APPLICATIONS;
         int type = -1;
         Vector qualifiers = new Vector();
 
@@ -53,18 +60,6 @@ public class SchemaParser{
                 st2.wordChars('{', '}');
                 st2.wordChars('_', '_');
                 st2.wordChars(';', ';');
-                //st2.quoteChar(''');
-		StringTokenizer strTokens = new StringTokenizer( rawString, " '()\t\r\n", true );
-		// Parse the string
-		String currToken;
-                String currToken2;
-            // First parse out the OID
-		if(strTokens.hasMoreTokens()){
-			currToken = strTokens.nextToken();
-  			if(currToken.equals("(")){
-                          getTokenPastSpaces(strTokens);
-			}
-            }
             //First parse out the OID
             try{
               String currName;
@@ -106,6 +101,24 @@ public class SchemaParser{
                         }
                         continue;
                       }
+                      if(st2.sval.equals("EQUALITY")){
+                        if( st2.nextToken() == StreamTokenizer.TT_WORD ){
+                          equality = st2.sval;
+                        }
+                        continue;
+                      }
+                      if(st2.sval.equals("ORDERING")){
+                        if( st2.nextToken() == StreamTokenizer.TT_WORD ){
+                          ordering = st2.sval;
+                        }
+                        continue;
+                      }
+                      if(st2.sval.equals("SUBSTR")){
+                        if( st2.nextToken() == StreamTokenizer.TT_WORD ){
+                          substring = st2.sval;
+                        }
+                        continue;
+                      }
                       if(st2.sval.equals("SUP")){
                         Vector values = new Vector();
                         st2.nextToken();
@@ -134,6 +147,14 @@ public class SchemaParser{
                       }
                       if(st2.sval.equals("OBSOLETE")){
                         obsolete = true;
+                        continue;
+                      }
+                      if(st2.sval.equals("COLLECTIVE")){
+                        collective = true;
+                        continue;
+                      }
+                      if(st2.sval.equals("NO-USER-MODIFICATION")){
+                        userMod = false;
                         continue;
                       }
                       if(st2.sval.equals("MUST")){
@@ -188,6 +209,24 @@ public class SchemaParser{
                         type = LDAPObjectClassSchema.AUXILIARY;
                         continue;
                       }
+                      if(st2.sval.equals("USAGE")){
+                        if( st2.nextToken() == StreamTokenizer.TT_WORD ){
+                          currName = st2.sval;
+                          if( currName.equals("directoryOperation")){
+                              usage = LDAPAttributeSchema.DIRECTORY_OPERATION;
+                          }
+                          else if( currName.equals("distributedOperation")){
+                              usage = LDAPAttributeSchema.DISTRIBUTED_OPERATION;
+                          }
+                          else if( currName.equals("dSAOperation")){
+                              usage = LDAPAttributeSchema.DSA_OPERATION;
+                          }
+                          else if( currName.equals("userApplications")){
+                              usage = LDAPAttributeSchema.USER_APPLICATIONS;
+                          }
+                        }
+                        continue;
+                      }
                       currName = st2.sval;
                       AttributeQualifier q = parseQualifier( st2, currName );
 		      if( q != null)
@@ -195,58 +234,12 @@ public class SchemaParser{
                       continue;
                     }
                   }
-		}
+		        }
               }
             }
             catch(IOException e){
               throw e;
             }
-            /*
-            // Get the rest of the schema elements
-		while(strTokens.hasMoreTokens()){
-		  currToken = getTokenPastSpaces(strTokens);
-    		  if(currToken.equals(")")){
-        		break;
-          	  }
-		  if(currToken.equals("NAME")){
-                    parseName( strTokens );
-                    continue;
-		  }
-                  if(currToken.equals("DESC")){
-                    parseDescription( strTokens );
-                    continue;
-		  }
-                  if(currToken.equals("SYNTAX")){
-                    getTokenPastSpaces( strTokens );
-                    continue;
-                  }
-                  if(currToken.equals("SUP")){
-                    getTokenPastSpaces( strTokens );
-                    continue;
-                  }
-                  if(currToken.equals("SINGLE-VALUE")){
-                    continue;
-                  }
-                  if(currToken.equals("OBSOLETE")){
-                    continue;
-                  }
-                  if(currToken.equals("ABSTRACT")){
-                    continue;
-                  }
-                  if(currToken.equals("STRUCTURAL")){
-                    continue;
-                  }
-                  if(currToken.equals("AUXILIARY")){
-                    continue;
-                  }
-
-                  // All remaining elements are stored as qualifiers
-                  AttributeQualifier q = parseQualifier( strTokens, currToken );
-                   if( q != null)
-                     qualifiers.addElement(q);
-                   continue;
-		}
-  	*/
 	}
 
 	public void setRawString( String rawString ) {
@@ -278,21 +271,39 @@ public class SchemaParser{
         public String getID() {
 		return id;
 	}
-        public String getDescription() {
+    public String getDescription() {
 		return description;
 	}
-        public String getSyntax() {
+    public String getSyntax() {
 		return syntax;
 	}
-        public String getSuperior() {
+    public String getSuperior() {
 		return superior;
 	}
-        public boolean getSingle() {
+    public boolean getSingle() {
 		return single;
 	}
-        public boolean getObsolete() {
+    public boolean getObsolete() {
 		return obsolete;
 	}
+    public String getEquality() {
+        return equality;
+    }
+    public String getOrdering() {
+        return ordering;
+    }
+    public String getSubstring() {
+        return substring;
+    }
+    public boolean getCollective(){
+        return collective;
+    }
+    public boolean getUserMod() {
+        return userMod;
+    }
+    public int getUsage() {
+        return usage;
+    }
  	public int getType() {
 		return type;
 	}
@@ -305,77 +316,12 @@ public class SchemaParser{
  	public String[] getOptional() {
 		return optional;
 	}
-        private String getTokenPastSpaces( StringTokenizer st ){
-          // Move past spaces
-          String currToken = null;
-          while(st.hasMoreTokens()){
-            currToken = st.nextToken();
-            if(currToken.equals(" ")){
-              continue;
-            }
-	    break;
-          }
-          return currToken;
-        }
-        private String parseName( StringTokenizer st ){
-          String currToken;
-          StringBuffer buf = new StringBuffer();
-          boolean inSingleQuote = false;
-          boolean inMultiName = false;
-          Vector names = new Vector();
 
-          aliases = null;
-          currToken = getTokenPastSpaces(st);
-          if( currToken.equals("(")){
-           inMultiName = true;
-           currToken = getTokenPastSpaces(st);
-          }
-          if( currToken.equals("'")){
-            inSingleQuote = true;
-          }
-	  while((inMultiName == true || inSingleQuote == true) && st.hasMoreTokens()){
-        	currToken = st.nextToken();
-	        if(currToken.equals("'") ){
-		    if(inSingleQuote == true){
-                      names.addElement(buf.toString());
-                      buf = new StringBuffer();
-                      inSingleQuote = false;
-		      continue;
-                    }
-                    else{
-		      inSingleQuote = true;
-		      continue;
-		    }
-                }
-                if(currToken.equals(" ")){
-		  if(inSingleQuote){
-		    buf.append(" ");
-	          }
-		  continue;
-		}
-		if(currToken.equals(")"))
-                  break;
+    private AttributeQualifier parseQualifier( StreamTokenizer st, String name ) throws IOException {
+        AttributeQualifier qualifier = new AttributeQualifier(name);
 
-		buf.append(currToken);
-	    }
-            int size;
-            String retString = null;
-            if( (size = names.size()) > 0){
-	      retString = (String) names.firstElement();
-              if( size > 1 ){
-                names.removeElementAt(0);
-                size -= 1;
-                aliases = new String[size];
-                names.copyInto(aliases);
-              }
-            }
-           return retString;
-        }
-        private AttributeQualifier parseQualifier( StreamTokenizer st, String name ) throws IOException {
-          AttributeQualifier qualifier = new AttributeQualifier(name);
-
-          try{
-          	if(st.nextToken() == '\'' ){
+        try{
+            if(st.nextToken() == '\'' ){
           		qualifier.addValue(st.sval);
            	}
            	else if(st.ttype == '(' ){
@@ -383,84 +329,11 @@ public class SchemaParser{
            			qualifier.addValue(st.sval);
              		}
            	}
-            }
-            catch(IOException e){
-              throw e;
-            }
-
-           return qualifier;
         }
-
-        private AttributeQualifier parseQualifier( StringTokenizer st, String name ){
-          AttributeQualifier qualifier = new AttributeQualifier(name);
-          String currToken;
-          StringBuffer buf = new StringBuffer();
-          boolean inSingleQuote = false;
-          boolean inMultiValue = false;
-
-          currToken = getTokenPastSpaces(st);
-          if( currToken.equals("(")){
-           inMultiValue = true;
-           currToken = getTokenPastSpaces(st);
-          }
-          if( currToken.equals("'")){
-            inSingleQuote = true;
-          }
-	  while((inMultiValue == true || inSingleQuote == true) && st.hasMoreTokens()){
-        	currToken = st.nextToken();
-	        if(currToken.equals("'") ){
-		    if(inSingleQuote == true){
-                      qualifier.addValue(buf.toString());
-                      buf = new StringBuffer();
-                      inSingleQuote = false;
-		      continue;
-                    }
-                    else{
-		      inSingleQuote = true;
-		      continue;
-		    }
-                }
-                if(currToken.equals(" ")){
-		  if(inSingleQuote){
-		    buf.append(" ");
-	          }
-		  continue;
-		}
-		if(currToken.equals(")"))
-                  break;
-
-		buf.append(currToken);
-	    }
-            return qualifier;
+        catch(IOException e){
+            throw e;
         }
+        return qualifier;
+    }
 
-        private String parseDescription( StringTokenizer st ){
-          String currToken;
-          StringBuffer buf = new StringBuffer();
-          boolean inSingleQuote = false;
-	    while(st.hasMoreTokens()){
-        	currToken = st.nextToken();
-	        if(currToken.equals("'") ){
-		    if(inSingleQuote == true){
-		      break;
-                    }
-                    else{
-		      inSingleQuote = true;
-		      continue;
-		    }
-                }
-                if(currToken.equals(" ")){
-		  if(inSingleQuote){
-		    buf.append(" ");
-	          }
-		  continue;
-	        }
-              buf.append(currToken);
-            }
-            inSingleQuote = false;
-	    if(buf.length() > 0){
-	      return buf.toString();
-            }
-          return null;
-        }
 }

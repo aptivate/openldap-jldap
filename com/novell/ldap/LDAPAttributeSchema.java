@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttributeSchema.java,v 1.8 2000/09/14 22:43:26 judy Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttributeSchema.java,v 1.9 2000/10/02 19:57:23 bgudmundson Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -36,9 +36,21 @@ import java.io.IOException;
  */
 public class LDAPAttributeSchema extends LDAPSchemaElement {
 
-   	private String syntaxString;
-	private boolean single = false;
-	private String superior;
+    private String syntaxString;
+    private boolean single = false;
+    private String superior;
+    private boolean obsolete = false;
+    private String equality;
+    private String ordering;
+    private String substring;
+    private boolean collective = false;
+    private boolean userMod = true;
+    private int usage = USER_APPLICATIONS;
+
+    public final static int USER_APPLICATIONS = 0;
+    public final static int DIRECTORY_OPERATION = 1;
+    public final static int DISTRIBUTED_OPERATION = 2;
+    public final static int DSA_OPERATION = 3;
 
    /*
     * 4.2.1 Constructors
@@ -70,7 +82,10 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
     */
    public LDAPAttributeSchema(String name, String oid, String description,
                               String syntaxString, boolean single,
-                              String superior, String[] aliases) {
+                              String superior, String[] aliases,
+                              boolean obsolete, String equality, String ordering,
+                              String substring, boolean collective, boolean userMod,
+                              int usage) {
 
 		super.name = new String(name);
 		super.oid = new String(oid);
@@ -84,7 +99,13 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
 	  		super.aliases[i] = aliases[i];
 		  }
                 }
-
+                this.obsolete = obsolete;
+                this.equality = new String(equality);
+                this.ordering = new String(ordering);
+                this.substring = new String(substring);
+                this.collective = collective;
+                this.userMod = userMod;
+                this.usage = usage;
    }
 
    /**
@@ -164,6 +185,54 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
       return single;
    }
 
+   /*
+    * 4.2.5 getEqualityMatchingRule
+    */
+
+   public String getEqualityMatchingRule() {
+      return equality;
+   }
+
+   /*
+    * 4.2.6 getOrderingMatchingRule
+    */
+
+   public String getOrderingMatchingRule() {
+      return ordering;
+   }
+
+   /*
+    * 4.2.7 getSubstringMatchingRule
+    */
+
+   public String getSubstringMatchingRule() {
+      return substring;
+   }
+
+   /*
+    * 4.2.8 isCollective
+    */
+
+   public boolean isCollective() {
+      return collective;
+   }
+
+   /*
+    * 4.2.9 isModifiable
+    */
+
+   public boolean isModifiable() {
+      return userMod;
+   }
+
+   /*
+    * 4.2.10 getUsage
+    */
+
+   public int getUsage() {
+      return usage;
+   }
+
    /**
     * Returns a string in a format suitable for directly adding to a
     * directory, as a value of the particular schema element attribute.
@@ -204,12 +273,46 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
         valueBuffer.append(" SUP ");
         valueBuffer.append("'" + token + "'");
       }
+      if( (token = getEqualityMatchingRule()) != null){
+        valueBuffer.append(" EQUALITY ");
+        valueBuffer.append("'" + token + "'");
+      }
+      if( (token = getOrderingMatchingRule()) != null){
+        valueBuffer.append(" ORDERING ");
+        valueBuffer.append("'" + token + "'");
+      }
+      if( (token = getSubstringMatchingRule()) != null){
+        valueBuffer.append(" SUBSTR ");
+        valueBuffer.append("'" + token + "'");
+      }
       if( (token = getSyntaxString()) != null){
         valueBuffer.append(" SYNTAX ");
         valueBuffer.append(token);
       }
       if( isSingleValued()){
         valueBuffer.append(" SINGLE-VALUE");
+      }
+      if( isCollective()){
+        valueBuffer.append(" COLLECTIVE");
+      }
+      if( isModifiable() == false){
+        valueBuffer.append(" NO-USER-MODIFICATION");
+      }
+      int useType;
+      if( (useType = getUsage()) != USER_APPLICATIONS ){
+        switch( useType){
+        	case DIRECTORY_OPERATION :
+           		valueBuffer.append( " USAGE directoryOperation" );
+           		break;
+          	case DISTRIBUTED_OPERATION :
+           		valueBuffer.append( " USAGE distributedOperation" );
+           		break;
+        	case DSA_OPERATION :
+         		valueBuffer.append( " USAGE dSAOperation" );
+           		break;
+             	default:
+              		break;
+        }
       }
       Enumeration en = getQualifierNames();
       while( en.hasMoreElements()){
@@ -218,9 +321,13 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
           valueBuffer.append(" " + token );
           strArray = getQualifier(token);
           if(strArray != null){
+            if(strArray.length > 1)
+            	valueBuffer.append("(");
             for( int i = 0; i < strArray.length; i++ ){
               valueBuffer.append(" '" + strArray[i] + "'");
             }
+            if(strArray.length > 1)
+            	valueBuffer.append(" )");
           }
         }
       }
