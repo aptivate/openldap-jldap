@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: DSMLWriter.java,v 1.24 2002/11/26 00:12:41 $
+ * $Novell: DSMLWriter.java,v 1.25 2002/11/26 15:59:25 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -42,9 +42,9 @@ public class DSMLWriter implements LDAPWriter {
     private String version = "2.0";
 
     private static final String BATCH_REQUEST_START =
-            "<batchRequest xmlns=\"urn:oasis:names:tc:DSML:2:0:core\">";
+            "<batchRequest xmlns=\"urn:oasis:names:tc:DSML:2:0:core\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">";
     private static final String BATCH_RESPONSE_START =
-            "<batchResponse xmlns=\"urn:oasis:names:tc:DSML:2:0:core\">";
+            "<batchResponse xmlns=\"urn:oasis:names:tc:DSML:2:0:core\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">";
 
     /**
      * Initializes this writer by opening the specified file to write DSML into.
