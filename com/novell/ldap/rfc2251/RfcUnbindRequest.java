@@ -63,7 +63,7 @@ public class RfcUnbindRequest extends ASN1Null implements RfcRequest {
         throw new LDAPException(
                     ExceptionMessages.NO_DUP_REQUEST,
                     new Object[] { "unbind" },
-                    LDAPException.LDAP_NOT_SUPPORTED);
+                    LDAPException.LDAP_NOT_SUPPORTED,(String)null);
     }
     
     public final String getRequestDN()
