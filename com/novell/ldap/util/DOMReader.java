@@ -1,7 +1,7 @@
 /* **************************************************************************
- * $Novell: DOMReader.java,v 1.4 2002/11/14 19:36:29 $
+ * $Novell: DOMReader.java,v 1.5 2003/01/03 22:33:23 $
  *
- * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
+ * Copyright (C) 2002 - 2003 Novell, Inc. All Rights Reserved.
  *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
