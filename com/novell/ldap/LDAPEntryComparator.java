@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPEntryComparator.java,v 1.7 2000/10/02 21:49:42 judy Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPEntryComparator.java,v 1.8 2000/10/31 23:52:21 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -39,7 +39,3 @@ public interface LDAPEntryComparator {
    public boolean isGreater(LDAPEntry entry1, LDAPEntry entry2);
 
 }
-
-
-
-
