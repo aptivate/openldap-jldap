@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/client/Message.java,v 1.6 2000/12/15 22:28:26 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/client/Message.java,v 1.7 2001/01/02 23:28:31 vtag Exp $
 *
 * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
 * 
@@ -283,10 +283,6 @@ public class Message extends Thread
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.messages, name + "Queuing exception");
         }
-        if( bindprops != null) {
-            // release the bind semaphore and wake up all waiting threads
-            conn.freeBindSemaphore( msgId);
-        }
         // wake up waiting threads
         sleepersAwake();
         return;
@@ -432,21 +428,19 @@ public class Message extends Thread
     public void run()
     {
         try {
+            if( Debug.LDAP_DEBUG) {
+                Debug.trace( Debug.messages, name + "client timer started, " +
+                    mslimit + " milliseconds");
+            }
             sleep(mslimit);
             acceptReplies = false;
-            if( bindprops != null) {    
-                if( Debug.LDAP_DEBUG) {
-                    Debug.trace( Debug.messages, name + "client timeout, bind operation");
-                }
-                // Clear the semaphore after failed bind
-                conn.freeBindSemaphore( msgId);
-            } else {
-                if( Debug.LDAP_DEBUG) {
-                    Debug.trace( Debug.messages, name + "client timeout");
-                }
+            if( Debug.LDAP_DEBUG) {
+                Debug.trace( Debug.messages, name + "client timed out");
             }
+            putException( new LDAPException("Client timed out operation",
+                LDAPException.LDAP_TIMEOUT));
+            // Note: Clear abandon clears the bind semaphore after failed bind.
             agent.abandon( msgId, null );
-            putException( new LDAPException("Client timeout", LDAPException.LDAP_TIMEOUT));
         } catch ( InterruptedException ie ) {
             if( Debug.LDAP_DEBUG) {
                 Debug.trace( Debug.messages, name + "timer stopped");

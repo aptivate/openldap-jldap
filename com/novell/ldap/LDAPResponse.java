@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPResponse.java,v 1.21 2000/11/09 23:50:39 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPResponse.java,v 1.22 2000/11/10 16:50:03 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -103,6 +103,10 @@ public class LDAPResponse extends LDAPMessage
     /* package */
     void chkResultCode() throws LDAPException
     {
+        if( Debug.LDAP_DEBUG) {
+            Debug.trace( Debug.messages, "LDAPResponse: message(" +
+                getMessageID() + ") result code " + getResultCode());                
+        }
         LDAPException ex = getResultException();
         if( ex == null)
             return;
