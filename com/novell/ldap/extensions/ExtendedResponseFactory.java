@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: ExtendedResponseFactory.java,v 1.6 2000/08/08 21:28:51 javed Exp $
+ * $Id: ExtendedResponseFactory.java,v 1.7 2000/08/15 21:40:42 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -57,6 +57,9 @@ public class ExtendedResponseFactory {
             }
             if (inOID.equals(NamingContextConstants.GET_REPLICA_INFO_RES) ) {
                 return new GetReplicaInfoResponse(inResponse);
+            }
+            if (inOID.equals(NamingContextConstants.LIST_REPLICAS_RES) ) {
+                return new ListReplicasResponse(inResponse);
             }
             else
                 throw new LDAPException("Unsupported OID in LDAPResponse", 
