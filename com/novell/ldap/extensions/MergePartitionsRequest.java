@@ -14,22 +14,25 @@
  ******************************************************************************/
 package com.novell.ldap.extensions;
 
-import com.novell.ldap.*;
-import com.novell.ldap.asn1.*;
-import com.novell.ldap.resources.*;
+import com.novell.ldap.LDAPExtendedOperation;
+import com.novell.ldap.LDAPException;
+import com.novell.ldap.asn1.LBEREncoder;
+import com.novell.ldap.asn1.ASN1Integer;
+import com.novell.ldap.asn1.ASN1OctetString;
+import com.novell.ldap.resources.ExceptionMessages;
 import java.io.IOException;
 import java.io.ByteArrayOutputStream;
 
 /**
  *
- *  Merges a child naming context (NDS partition) with its parent naming context.
+ *  Merges a child partition with its parent partition.
  *
- *  <p>To merge a child naming context with its parent, you must create an
+ *  <p>To merge a child partition with its parent, you must create an
  *  instance of this class and then call the extendedOperation method
  *  with this object as the required LDAPExtendedOperation parameter.</p>
 
  *
- *  <p>The mergeNamingContextsRequest extension uses the following OID:<br>
+ *  <p>The mergePartitionsRequest extension uses the following OID:<br>
  *   &nbsp;&nbsp;&nbsp;2.16.840.1.113719.1.27.100.5</p>
  *
  *  <p>The requestValue has the following format:<br>

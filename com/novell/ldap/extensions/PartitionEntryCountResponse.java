@@ -14,9 +14,11 @@
  ******************************************************************************/
 package com.novell.ldap.extensions;
 
-import com.novell.ldap.*;
-import com.novell.ldap.asn1.*;
-import com.novell.ldap.rfc2251.*;
+import com.novell.ldap.LDAPExtendedResponse;
+import com.novell.ldap.LDAPException;
+import com.novell.ldap.asn1.LBERDecoder;
+import com.novell.ldap.asn1.ASN1Integer;
+import com.novell.ldap.rfc2251.RfcLDAPMessage;
 import java.io.IOException;
 
 /**
