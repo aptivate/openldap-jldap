@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: LDIFReader.java,v 1.30 2002/10/21 18:29:35 $
+ * $Novell: LDIFReader.java,v 1.31 2002/10/22 22:15:57 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -505,7 +505,7 @@ public class LDIFReader extends LDIF implements LDAPReader {
     /**
      * Build String array object that contains moddn information.
      */
-    public void toModInfo()
+    private void toModInfo()
     throws UnsupportedEncodingException, LDAPLocalException {
 
         int index = 6;      // length of "newrdn"
@@ -590,7 +590,7 @@ public class LDIFReader extends LDIF implements LDAPReader {
     /**
      * Build LDAPModification array based on the content of LDIF modify record.
      */
-    public void toLDAPModifications () throws IOException, LDAPLocalException {
+    private void toLDAPModifications () throws IOException, LDAPLocalException {
 
         int        i, index;
         int        fieldIndex = 2;    // skip dn, control, and changetype field
@@ -742,7 +742,7 @@ public class LDIFReader extends LDIF implements LDAPReader {
      * <tt>trimField<tt> trims off extra spaces in a field. It also
      * trims confield and constructs control onjects.
      */
-    public StringBuffer trimField( StringBuffer line)
+    private StringBuffer trimField( StringBuffer line)
     throws UnsupportedEncodingException, LDAPLocalException  {
         int c, lastChar = 0, charIndex = 0;
         char t;
@@ -885,23 +885,6 @@ public class LDIFReader extends LDIF implements LDAPReader {
                 c += 5;
                 criticality = false;
             }
-            /*else {
-                /*
-                if( line.charAt(c) == ':') {
-                    // found colon, but no criticality,
-                    // use default value of 'false'
-                    criticality = false;
-                }
-                else {
-                    // see control value with no leading ':'
-                    throw new LDAPLocalException("com.novell.ldap.ldif_dsml."
-                        + "LDIFReader: Control value with no leading colon "
-                        + "in the record starting on line "
-                        + this.dnlNumber + " of the file.",
-                        LDAPException.LOCAL_ERROR);
-                }
-                */
-            //}
 
             if (c > lastChar) {  // to the end of the control field
                 // create LDAPControl object with oid,
