@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: ListReplicasResponse.java,v 1.5 2000/09/11 21:05:57 vtag Exp $
+ * $Id: ListReplicasResponse.java,v 1.6 2000/10/04 22:39:34 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -24,7 +24,7 @@ import java.io.*;
  *  <p>An object in this class is generated from an ExtendedResponse object 
  *  using the ExtendedResponseFactory class.</p>
  *
- * <p>The ListReplicasResponse operation uses the following OID:<br> 
+ * <p>The listReplicaResponse extension uses the following OID:<br> 
  *  &nbsp;&nbsp;&nbsp;2.16.840.1.113719.1.27.20</p>
  *
  */
@@ -34,7 +34,7 @@ public class ListReplicasResponse implements ParsedExtendedResponse {
    private String[] replicaList;
    
    /**
-    * Constructs an object from the responseValue with contains the list 
+    * Constructs an object from the responseValue which contains the list 
     * of replicas.
     *
     * <p>The constructor parses the responseValue which has the following 

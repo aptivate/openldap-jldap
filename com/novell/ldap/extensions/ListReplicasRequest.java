@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: ListReplicasRequest.java,v 1.6 2000/09/25 17:37:28 fzhao Exp $
+ * $Id: ListReplicasRequest.java,v 1.7 2000/10/04 22:39:34 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -24,9 +24,9 @@ import java.io.*;
  *
  *  <p>To list replicas, you must create an instance
  *  of this class and then call the extendedOperation method with this
- *  object as the required LDAPExtendedOperation parameter</p>
+ *  object as the required LDAPExtendedOperation parameter.</p>
  *
- *  <p>The ListReplicasRequest operation uses the following OID:<br>
+ *  <p>The listReplicaRequest extension uses the following OID:<br>
  *  &nbsp;&nbsp;&nbsp;2.16.840.1.113719.1.27.100.19</p>
  *
  *  <p>The requestValue has the following format:<br>
@@ -39,7 +39,7 @@ public class ListReplicasRequest extends LDAPExtendedOperation {
 /**
  *  Constructs an extended operation object for listing replicas. 
  *
- * @param serverName The server on which the replica will be added.
+ * @param serverName The server which contains replicas.
  *
  * @exception LDAPException A general exception which includes an error
  *                          message and an LDAP error code.     

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: NamingContextEntryCountResponse.java,v 1.9 2000/09/11 21:05:58 vtag Exp $
+ * $Id: NamingContextEntryCountResponse.java,v 1.10 2000/10/04 22:39:34 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -24,7 +24,7 @@ import java.io.*;
  *  <p>An object in this class is generated from an ExtendedResponse object 
  *  using the ExtendedResponseFactory class.</p>
  *
- * <p>The NamingContextEntryCountResponse operation uses the following 
+ * <p>The namingContextEntryCountResponse extension uses the following 
  * OID:<br> 
  * &nbsp;&nbsp;&nbsp;2.16.840.1.113719.1.27.100.14</p>
  *

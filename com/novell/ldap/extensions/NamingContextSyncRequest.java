@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: NamingContextSyncRequest.java,v 1.10 2000/09/25 17:40:18 fzhao Exp $
+ * $Id: NamingContextSyncRequest.java,v 1.11 2000/10/05 17:51:42 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -22,15 +22,15 @@ import java.io.*;
  *
  *  Synchronizes all replicas of a naming context.
  *
- *  The NamingContextSyncRequest operation uses the following OID:<br>
- *  &nbsp;&nbsp;&nbsp;2.16.840.1.113719.1.27.100.25<br>
+ *  <p>The namingContextSyncRequest extension uses the following OID:<br>
+ *  &nbsp;&nbsp;&nbsp;2.16.840.1.113719.1.27.100.25</p>
  *
  *  <p>The requestValue has the following format:<br>
  *
  *  requestValue ::=<br>
- *  &nbsp;&nbsp;&nbsp;&nbsp;    serverName      LDAPDN<br>
- *  &nbsp;&nbsp;&nbsp;&nbsp;    partitionRoot   LDAPDN<br>
- *  &nbsp;&nbsp;&nbsp;&nbsp;    delay           INTEGER</p>
+ *  &nbsp;&nbsp;&nbsp;&nbsp; serverName&nbsp;&nbsp;&nbsp;      LDAPDN<br>
+ *  &nbsp;&nbsp;&nbsp;&nbsp; partitionRoot&nbsp;&nbsp;&nbsp;   LDAPDN<br>
+ *  &nbsp;&nbsp;&nbsp;&nbsp; delay&nbsp;&nbsp;&nbsp;           INTEGER</p>
  */
 public class NamingContextSyncRequest extends LDAPExtendedOperation {
    

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: ReceiveAllUpdatesRequest.java,v 1.10 2000/09/25 17:40:54 fzhao Exp $
+ * $Id: ReceiveAllUpdatesRequest.java,v 1.11 2000/10/05 17:51:43 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -22,7 +22,7 @@ import java.io.*;
  *  Schedules a specified directory server to receive updates from another
  *  directory server for a specific replica.
  *
- *  <p>The ReceiveAllUpdatesRequest operation uses the following OID:<br>
+ *  <p>The receiveAllUpdatesRequest extension uses the following OID:<br>
  *  &nbsp;&nbsp;&nbsp;2.16.840.1.113719.1.27.100.21</p>
  *
  *  <p>The requestValue has the following format:<br>
@@ -37,14 +37,16 @@ public class ReceiveAllUpdatesRequest extends LDAPExtendedOperation {
 /**
  *
  * Constructs an extended operation object for receiving all updates from 
- * another directory server of a specific replica.
+ * another directory server for a specific replica.
  *
  * @param partitionRoot   The distinguished name of the replica
  *                        that will be updated.
  *<br><br>
- * @param toServerDN      The server holding the replica to be updated.
+ * @param toServerDN      The distinguished name of the server holding the 
+ *                        replica to be updated.
  * <br><br>     
- * @param fromServerDN    The server from which updates are sent.
+ * @param fromServerDN    The distinguished name of the server from which 
+ *                        updates are sent.
  *
  * @exception LDAPException A general exception which includes an error message 
  *                          and an LDAP error code.

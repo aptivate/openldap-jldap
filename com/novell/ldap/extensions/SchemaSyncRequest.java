@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: SchemaSyncRequest.java,v 1.10 2000/09/25 17:43:59 fzhao Exp $
+ * $Id: SchemaSyncRequest.java,v 1.11 2000/10/05 17:51:43 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -22,7 +22,7 @@ import java.io.*;
  *
  *  Synchronizes the schema.
  *
- *  <p>The SchemaSyncRequest operation uses the following OID: <br>
+ *  <p>The requestSchemaSyncRequest extension uses the following OID: <br>
  *  &nbsp;&nbsp;&nbsp;2.16.840.1.113719.1.27.100.27</p>
  *
  *  <p>The requestValue has the following format:<br>

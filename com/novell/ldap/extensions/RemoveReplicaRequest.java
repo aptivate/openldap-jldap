@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: RemoveReplicaRequest.java,v 1.10 2000/09/25 17:43:13 fzhao Exp $
+ * $Id: RemoveReplicaRequest.java,v 1.11 2000/10/05 17:51:43 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -26,7 +26,7 @@ import java.io.*;
  *  of this class and then call the extendedOperation method with this
  *  object as the required LDAPExtendedOperation parameter.</p>
  *
- *  <p>The RemoveReplicaRequest operation uses the following OID:<br>
+ *  <p>The removeReplicaRequest extension uses the following OID:<br>
  *  &nbsp;&nbsp;&nbsp;2.16.840.1.113719.1.27.100.11</p>
  *
  *  <p>The requestValue has the following format:<br>

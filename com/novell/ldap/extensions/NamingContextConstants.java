@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: NamingContextConstants.java,v 1.16 2000/09/11 21:05:57 vtag Exp $
+ * $Id: NamingContextConstants.java,v 1.17 2000/10/05 17:51:42 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -29,173 +29,203 @@ import java.io.IOException;
 public class NamingContextConstants {
    
     /**
-     * A constant for the createNamingContextRequest extension.
+     * A constant for the createNamingContextRequest OID.
      */
     public static final String CREATE_NAMING_CONTEXT_REQ    = "2.16.840.1.113719.1.27.100.3";
 
     /**
-     * A constant for the createNamingContextResponse extension.
+     * A constant for the createNamingContextResponse OID.
      */
     public static final String CREATE_NAMING_CONTEXT_RES    = "2.16.840.1.113719.1.27.100.4";
 
     /**
-     * A constant for the mergeNamingContextRequest extension.
+     * A constant for the mergeNamingContextRequest OID.
      */
     public static final String MERGE_NAMING_CONTEXT_REQ     = "2.16.840.1.113719.1.27.100.5";
 
     /**
-     * A constant for the mergeNamingContextResponse extension.
+     * A constant for the mergeNamingContextResponse OID.
      */
     public static final String MERGE_NAMING_CONTEXT_RES     = "2.16.840.1.113719.1.27.100.6";
 
     /**
-     * A constant for the addReplicaRequest extension.
+     * A constant for the addReplicaRequest OID.
      */
     public static final String ADD_REPLICA_REQ              = "2.16.840.1.113719.1.27.100.7";
 
     /**
-     * A constant for the addReplicaResponse extension.
+     * A constant for the addReplicaResponse OID.
      */
     public static final String ADD_REPLICA_RES              = "2.16.840.1.113719.1.27.100.8";
 
     /**
-     * A constant for the refreshServerRequest extension.
+     * A constant for the refreshServerRequest OID.
      */
     public static final String REFRESH_SERVER_REQ           = "2.16.840.1.113719.1.27.100.9";
 
     /**
-     * A constant for the refreshServerResponse extension.
+     * A constant for the refreshServerResponse OID.
      */
     public static final String REFRESH_SERVER_RES           = "2.16.840.1.113719.1.27.100.10";
 
     /**
-     * A constant for the removeReplicaRequest extension.
+     * A constant for the removeReplicaRequest OID.
      */
     public static final String DELETE_REPLICA_REQ           = "2.16.840.1.113719.1.27.100.11";
 
     /**
-     * A constant for the removeReplicaResponse extension.
+     * A constant for the removeReplicaResponse OID.
      */
     public static final String DELETE_REPLICA_RES           = "2.16.840.1.113719.1.27.100.12";
 
     /**
-     * A constant for the namingContextEntryCountRequest extension.
+     * A constant for the namingContextEntryCountRequest OID.
      */
     public static final String NAMING_CONTEXT_COUNT_REQ     = "2.16.840.1.113719.1.27.100.13";
 
     /**
-     * A constant for the namingContextEntryCountResponse extension.
+     * A constant for the namingContextEntryCountResponse OID.
      */
     public static final String NAMING_CONTEXT_COUNT_RES     = "2.16.840.1.113719.1.27.100.14";
 
     /**
-     * A constant for the changeReplicaTypeRequest extension.
+     * A constant for the changeReplicaTypeRequest OID.
      */
 	public static final String CHANGE_REPLICA_TYPE_REQ		= "2.16.840.1.113719.1.27.100.15";
 
 /**
-     * A constant for the changeReplicaTypeResponse extension.
+     * A constant for the changeReplicaTypeResponse OID.
      */
 	public static final String CHANGE_REPLICA_TYPE_RES		= "2.16.840.1.113719.1.27.100.16";
 
     /**
-     * A constant for the getReplicaInfoRequest extension.
+     * A constant for the getReplicaInfoRequest OID.
      */
     public static final String GET_REPLICA_INFO_REQ         = "2.16.840.1.113719.1.27.100.17";
 
     /**
-     * A constant for the getReplicaInfoResponse extension.
+     * A constant for the getReplicaInfoResponse OID.
      */
     public static final String GET_REPLICA_INFO_RES         = "2.16.840.1.113719.1.27.100.18";
 
     /**
-     * A constant for the listReplicaRequest extension.
+     * A constant for the listReplicaRequest OID.
      */
 	public static final String LIST_REPLICAS_REQ            = "2.16.840.1.113719.1.27.100.19";
 
     /**
-     * A constant for the listReplicaResponse extension.
+     * A constant for the listReplicaResponse OID.
      */
 	public static final String LIST_REPLICAS_RES    		= "2.16.840.1.113719.1.27.100.20";
 
     /**
-     * A constant for the receiveAllUpdatesRequest extension.
+     * A constant for the receiveAllUpdatesRequest OID.
      */
     public static final String RECEIVE_ALL_UPDATES_REQ		= "2.16.840.1.113719.1.27.100.21";
 
     /**
-     * A constant for the receiveAllUpdatesResponse extension.
+     * A constant for the receiveAllUpdatesResponse OID.
      */
 	public static final String RECEIVE_ALL_UPDATES_RES		= "2.16.840.1.113719.1.27.100.22";
 
     /**
-     * A constant for the sendAllUpdatesRequest extension.
+     * A constant for the sendAllUpdatesRequest OID.
      */
     public static final String SEND_ALL_UPDATES_REQ		    = "2.16.840.1.113719.1.27.100.23";
 
     /**
-     * A constant for the sendAllUpdatesResponse extension.
+     * A constant for the sendAllUpdatesResponse OID.
      */
 	public static final String SEND_ALL_UPDATES_RES		    = "2.16.840.1.113719.1.27.100.24";
 
     /**
-     * A constant for the requestNamingContextSyncRequest extension.
+     * A constant for the requestNamingContextSyncRequest OID.
      */
     public static final String NAMING_CONTEXT_SYNC_REQ	    = "2.16.840.1.113719.1.27.100.25";
 
     /**
-     * A constant for the requestNamingContextSyncResponse extension.
+     * A constant for the requestNamingContextSyncResponse OID.
      */
 	public static final String NAMING_CONTEXT_SYNC_RES	    = "2.16.840.1.113719.1.27.100.26";
 
     /**
-     * A constant for the requestSchemaSyncRequest extension.
+     * A constant for the requestSchemaSyncRequest OID.
      */
 	public static final String SCHEMA_SYNC_REQ		        = "2.16.840.1.113719.1.27.100.27";
 
     /**
-     * A constant for the requestSchemaSyncResponse extension.
+     * A constant for the requestSchemaSyncResponse OID.
      */
 	public static final String SCHEMA_SYNC_RES	    	    = "2.16.840.1.113719.1.27.100.28";
 
     /**
-     * A constant for the abortNamingContextOperationRequest extension.
+     * A constant for the abortNamingContextOperationRequest OID.
      */
     public static final String ABORT_NAMING_CONTEXT_OP_REQ  = "2.16.840.1.113719.1.27.100.29";
 
     /**
-     * A constant for the abortNamingContextOperationResponse extension.
+     * A constant for the abortNamingContextOperationResponse OID.
      */
 	public static final String ABORT_NAMING_CONTEXT_OP_RES	= "2.16.840.1.113719.1.27.100.30";
 
     /**
-     * A constant for the getContextIdentityNameRequest extension.
+     * A constant for the getContextIdentityNameRequest OID.
      */
 	public static final String GET_IDENTITY_NAME_REQ        = "2.16.840.1.113719.1.27.100.31";
 
     /**
-     * A constant for the getContextIdentityNameResponse extension.
+     * A constant for the getContextIdentityNameResponse OID.
      */
     public static final String GET_IDENTITY_NAME_RES		= "2.16.840.1.113719.1.27.100.32";
 
     /**
-     * A constant for the getEffectivePrivilegesRequest extension.
+     * A constant for the getEffectivePrivilegesRequest OID.
      */
     public static final String GET_EFFECTIVE_PRIVILEGES_REQ	= "2.16.840.1.113719.1.27.100.33";
 
     /**
-     * A constant for the getEffectivePrivilegesResponse extension.
+     * A constant for the getEffectivePrivilegesResponse OID.
      */
     public static final String GET_EFFECTIVE_PRIVILEGES_RES	= "2.16.840.1.113719.1.27.100.34";
 
-
+    /**
+     * A constant for the setReplicationFilterRequest OID.
+     */
 	public static final String SET_REPLICATION_FILTER_REQ   = "2.16.840.1.113719.1.27.100.35";
+
+    /**
+     * A constant for the setReplicationFilterResponse OID.
+     */
     public static final String SET_REPLICATION_FILTER_RES	= "2.16.840.1.113719.1.27.100.36";
+
+    /**
+     * A constant for the getReplicationFilterRequest OID.
+     */
     public static final String GET_REPLICATION_FILTER_REQ	= "2.16.840.1.113719.1.27.100.37";
+
+    /**
+     * A constant for the getReplicationFilterResponse OID.
+     */
     public static final String GET_REPLICATION_FILTER_RES   = "2.16.840.1.113719.1.27.100.38";
+
+    /**
+     * A constant for the createOrphanNamingContextRequest OID.
+     */
     public static final String CREATE_ORPHAN_NAMING_CONTEXT_REQ     = "2.16.840.1.113719.1.27.100.39";
+
+    /**
+     * A constant for the createOrphanNamingContextResponse OID.
+     */
     public static final String CREATE_ORPHAN_NAMING_CONTEXT_RES	    = "2.16.840.1.113719.1.27.100.40";
+
+    /**
+     * A constant for the removeOrphanNamingContextRequest OID.
+     */
     public static final String REMOVE_ORPHAN_NAMING_CONTEXT_REQ	    = "2.16.840.1.113719.1.27.100.41";
+
+    /**
+     * A constant for the removeOrphanNamingContextResponse OID.
+     */
     public static final String REMOVE_ORPHAN_NAMING_CONTEXT_RES     = "2.16.840.1.113719.1.27.100.42";
     
 
@@ -209,15 +239,16 @@ public class NamingContextConstants {
     /**
      * Identifies this replica as the master replica of the naming context.
      *
-     * <p>Entries can be modified on this replica; naming context operations 
-     * can be performed.</p>
+     * <p>On this type of replica, entries can be modified, and naming context  
+     * operations can be performed.</p>
      */
     public static final int LDAP_RT_MASTER          = 0;
     
     /**
      * Identifies this replica as a secondary replica of the naming context.
      *
-     * <p>The replica is a read/write replica and entries can be modified.
+     * <p>On this type of replica, read and write operations can be performed,
+     *  and entries can be modified.</p>
      */
     public static final int LDAP_RT_SECONDARY       = 1;
     
@@ -234,7 +265,7 @@ public class NamingContextConstants {
      * naming context.
      *
      * <p>NDS automatically adds these replicas to a server when the server 
-     * does not conatin replicas of all child naming contexts. Only NDS can 
+     * does not contain replicas of all child naming contexts. Only NDS can 
      * modify information on these types of replicas. </p>
      */
     public static final int LDAP_RT_SUBREF          = 3;
@@ -244,7 +275,8 @@ public class NamingContextConstants {
      * but the replica contains sparse data.
      *
      * <p>The replica has been configured to contain only specified object types
-     * and attributes.</p>
+     * and attributes. On this type of replica, only the attributes and objects 
+     * contained in the sparse data can be modified.</p>
      */
     public static final int LDAP_RT_SPARSE_WRITE    = 4;
     
@@ -253,7 +285,8 @@ public class NamingContextConstants {
      * but the replica contains sparse data.
      *
      * <p>The replica has been configured to contain only specified object types
-     * and attributes.</p>
+     * and attributes. On this type of replica, only NDS synchronization processes
+     * can modify the sparse data.</p>
      */
     public static final int LDAP_RT_SPARSE_READ     = 5; 
     
@@ -279,12 +312,12 @@ public class NamingContextConstants {
     
     /**
      * Indicates that the replica is locked. The move operation uses this state 
-     * to lock the parent partition of the child patition that is moving.
+     * to lock the parent naming context of the child naming context that is moving.
      */
     public static final int LDAP_RS_LOCKED          = 3;
     
     /**
-     * Indicates that a new replica has finished receiving is download from the 
+     * Indicates that a new replica has finished receiving its download from the 
      * master replica and is now receiving synchronization updates from other
      * replicas. 
      */
@@ -293,8 +326,8 @@ public class NamingContextConstants {
     
     /**
      * Indicates that the dying replica needs to synchronize with another replica
-     * before being converted to an external reference, if a root replica, or to a
-     * subordinate reference, if a non-root replica.
+     * before being converted either to an external reference, if a root replica, 
+     * or to a subordinate reference, if a non-root replica.
      */
      public static final int LDAP_RS_DEAD_REPLICA    = 7;
     
@@ -314,8 +347,8 @@ public class NamingContextConstants {
     /**
      * Indicates that a naming context has a new master replica. 
      *
-     * <p>When the new master is set to this state, NDS knows it is now the
-     * master and changes its replica type to master and the old master to
+     * <p>When the new master is set to this state, NDS knows that the replica is 
+     * now the master and changes its replica type to master and the old master to
      * read/write.</p>
      */
     public static final int LDAP_RS_MASTER_DONE     = 12;
@@ -340,9 +373,9 @@ public class NamingContextConstants {
      * into one naming context. 
      *
      * <p>In this state, the replicas that are affected are informed of the join 
-     * operation. The master replica of the parent and child partitions are first 
-     * set to this state and then all the replicas of the parent and child. New 
-     * replicas are added where needed.</p>
+     * operation. The master replica of the parent and child naming contexts are 
+     * first set to this state and then all the replicas of the parent and child. 
+     * New replicas are added where needed.</p>
      */
     public static final int LDAP_RS_JS_0            = 64;   // Replica joining 0
     
@@ -375,30 +408,33 @@ public class NamingContextConstants {
     public static final int LDAP_DS_ATTR_COMPARE    = 0x0001;
     
     /**
-     * Allows a trustee to read an attribute value. This right confers 
-     * the Compare right.
+     * A privilege flag that indicates a trustee to read an attribute value.  
+     * This right confers the Compare right.
      */
     public static final int LDAP_DS_ATTR_READ       = 0x0002;
     
     /**
-     * Allows a trustee to add, delete, or modify an attribute value.
+     * A privilege flag that indicates a trustee can add, delete, or modify 
+     * an attribute value.
      */
     public static final int LDAP_DS_ATTR_WRITE      = 0x0004;
     
     /**
-     * Allows a trustee to add or delete its name as an attribute value on 
-     * those attributes that take object names as their values.
+     * A privilege flag that indicates a trustee can add or delete its name as 
+     * an attribute value on those attributes that take object names 
+     * as their values.
      */
     public static final int LDAP_DS_ATTR_SELF       = 0x0008;
     
     /**
-     * Gives a trustee all rights to the object's attributes.
+     * A privilege flag that indicates a trustee has all rights to the 
+     * object's attributes.
      */
     public static final int LDAP_DS_ATTR_SUPERVISOR = 0x0020;
     
     /**
-     * Allows a trustee to inherit the rights granted in the ACL and 
-     * exercise these attribute rights on subordinate objects.
+     * A privilege flag that indicatesa trustee inherits the rights granted 
+     * in the ACL and can exercise these attribute rights on subordinate objects.
      */
     public static final int LDAP_DS_ATTR_INHERIT_CTL= 0x0040;
 

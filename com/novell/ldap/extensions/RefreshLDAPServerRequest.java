@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: RefreshLDAPServerRequest.java,v 1.8 2000/09/11 21:05:58 vtag Exp $
+ * $Id: RefreshLDAPServerRequest.java,v 1.9 2000/10/05 17:51:43 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -22,7 +22,7 @@ import java.io.*;
  *
  *  Reloads the LDAP server.
  *
- *  <p>The RefreshLDAPServerRequest operation uses the following OID:<br>
+ *  <p>The refreshLDAPServerRequest extension uses the following OID:<br>
  *  &nbsp;&nbsp;&nbsp;2.16.840.1.113719.1.27.100.9</p>
  *
  *  <p>The requestValue is set to null.</p>

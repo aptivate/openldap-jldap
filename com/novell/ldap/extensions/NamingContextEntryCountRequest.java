@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: NamingContextEntryCountRequest.java,v 1.10 2000/09/25 17:39:29 fzhao Exp $
+ * $Id: NamingContextEntryCountRequest.java,v 1.11 2000/10/04 22:39:34 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -31,7 +31,7 @@ import java.io.*;
  *  a NamingContextEntryCountResponse object. This class contains
  *  methods for retrieving the returned count.</p>
  *
- *  <p>The NamingContextEntryCountRequest operation uses the following 
+ *  <p>The namingContextEntryCountRequest extension uses the following 
  *  OID:<br>
  *  &nbsp;&nbsp;&nbsp;2.16.840.1.113719.1.27.100.13</p>
  *
@@ -46,7 +46,7 @@ import java.io.*;
     *  Constructs an extended operation object for counting entries 
     *  in a naming context.
     *
-    * @param dn  The naming context.
+    * @param dn  The distinguished name of the naming context.
     *
     * @exception LDAPException A general exception which includes an 
     *                          error message and an LDAP error code.

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: SendAllUpdatesRequest.java,v 1.10 2000/09/25 17:44:39 fzhao Exp $
+ * $Id: SendAllUpdatesRequest.java,v 1.11 2000/10/05 17:51:43 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -23,14 +23,14 @@ import java.io.*;
  *  Schedules an updated request to be sent to all directory servers in a 
  *  replica ring.
  * 
- *  <p>The SendAllUpdatesRequest operation uses the following OID:<br>
+ *  <p>The sendAllUpdatesRequest extension uses the following OID:<br>
  *  &nbsp;&nbsp;&nbsp;2.16.840.1.113719.1.27.100.23</p>
  *
  *  <p>The requestValue has the following format:<br>
  *
  *  requestValue ::=<br>
- *  &nbsp;&nbsp;&nbsp;&nbsp;partitionRoot   LDAPDN<br>
- *  &nbsp;&nbsp;&nbsp;&nbsp;origServerDN    LDAPDN</p>
+ *  &nbsp;&nbsp;&nbsp;&nbsp;    partitionRoot&nbsp;&nbsp;&nbsp;   LDAPDN<br>
+ *  &nbsp;&nbsp;&nbsp;&nbsp;    origServerDN&nbsp;&nbsp;&nbsp;    LDAPDN</p>
  */
 public class SendAllUpdatesRequest extends LDAPExtendedOperation {
    

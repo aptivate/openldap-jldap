@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: MergeNamingContextsRequest.java,v 1.12 2000/09/25 17:38:33 fzhao Exp $
+ * $Id: MergeNamingContextsRequest.java,v 1.13 2000/10/04 22:39:34 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -20,14 +20,14 @@ import java.io.*;
  
 /**
  *
- *  Merges a child naming context(NDS partition) with its parent naming context.
+ *  Merges a child naming context (NDS partition) with its parent naming context.
  *
  *  <p>To merge a child naming context with its parent, you must create an
  *  instance of this class and then call the extendedOperation method
  *  with this object as the required LDAPExtendedOperation parameter.</p>
  
  *
- *  <p>The MergeNamingContextsRequest operation uses the following OID:<br>
+ *  <p>The mergeNamingContextsRequest extension uses the following OID:<br>
  *   &nbsp;&nbsp;&nbsp;2.16.840.1.113719.1.27.100.5</p>
  *
  *  <p>The requestValue has the following format:<br>
@@ -45,7 +45,7 @@ public class MergeNamingContextsRequest extends LDAPExtendedOperation {
  * Constructs an extended operation object for merging naming contexts.
  *
  * @param dn        The distinguished name of the child naming
- *                  context's root that is to be joined to its parent.
+ *                  context's root.
  *<br><br>
  * @param flags     Determines whether all servers in the replica ring must 
  *                  be up before proceeding. When set to zero, the status of 

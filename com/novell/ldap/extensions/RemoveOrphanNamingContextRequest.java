@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: RemoveOrphanNamingContextRequest.java,v 1.10 2000/09/25 17:42:27 fzhao Exp $
+ * $Id: RemoveOrphanNamingContextRequest.java,v 1.11 2000/10/05 17:51:43 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -25,14 +25,14 @@ import java.io.*;
  *  class and then call the extendedOperation method with this
  *  object as the required LDAPExtendedOperation parameter.</p>
  *
- *  <p>The RemoveOrphanNamingContextRequest operation uses the following OID:<br>
+ *  <p>The removeOrphanNamingContextRequest extension uses the following OID:<br>
  *  &nbsp;&nbsp;&nbsp;2.16.840.1.113719.1.27.100.41</p>
  *
- *  The requestValue has the following format:<br><br>
+ *  <p>The requestValue has the following format:<br>
  *
- *  requestValue ::=
- * &nbsp;&nbsp;&nbsp;&nbsp;      serverDN &nbsp;&nbsp;&nbsp;    LDAPDN
- * &nbsp;&nbsp;&nbsp;&nbsp;      contextName &nbsp;&nbsp;&nbsp; LDAPDN
+ *  requestValue ::=<br>
+ * &nbsp;&nbsp;&nbsp;&nbsp;      serverDN &nbsp;&nbsp;&nbsp;    LDAPDN<br>
+ * &nbsp;&nbsp;&nbsp;&nbsp;      contextName &nbsp;&nbsp;&nbsp; LDAPDN</p>
  */
 public class RemoveOrphanNamingContextRequest extends LDAPExtendedOperation {
    
