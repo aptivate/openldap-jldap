@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell$
+ * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPSortControl.java,v 1.1 2000/09/19 17:37:09 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -67,10 +67,14 @@ public class LDAPSortControl extends LDAPControl {
         super(OID, critical, null);
 
         ASN1SequenceOf sortKeyList = new ASN1SequenceOf();
+
         for(int i=0; i<keys.length; i++) {
-            ASN1Sequence key = new ASN1Sequence();
+            
+			ASN1Sequence key = new ASN1Sequence();
+
             key.add(new AttributeDescription(keys[i].getKey()));
-            if(keys[i].getMatchRule() != null) {
+            
+			if(keys[i].getMatchRule() != null) {
                 key.add(
                     new ASN1Tagged(
                         new ASN1Identifier(ASN1Identifier.CONTEXT, false,
@@ -78,7 +82,8 @@ public class LDAPSortControl extends LDAPControl {
                         new MatchingRuleId(keys[i].getMatchRule()),
                         false));
             }
-            if(keys[i].getReverse() == true) { // only add if true
+            
+			if(keys[i].getReverse() == true) { // only add if true
                 key.add(
                     new ASN1Tagged(
                         new ASN1Identifier(ASN1Identifier.CONTEXT, false,
@@ -86,8 +91,12 @@ public class LDAPSortControl extends LDAPControl {
                         new ASN1Boolean(true),
                         false));
             }
-            sortKeyList.add(key);
+            
+			sortKeyList.add(key);
         }
+
+		setValue (sortKeyList.getEncoding(new LBEREncoder()));
+		
     }
 
     // 3.3.2 getFailedAttribute
