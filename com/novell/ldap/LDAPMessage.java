@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPMessage.java,v 1.8 2000/08/28 22:18:57 vtag Exp $
+ * $Novell: /ldap/src/jldap/src/com/novell/ldap/LDAPMessage.java,v 1.9 2000/09/08 23:43:50 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -15,15 +15,15 @@
  
 package com.novell.ldap;
 
-//import com.novell.asn1.ASN1Object;
-import com.novell.asn1.ldap.*;
+//import com.novell.ldap.asn1.ASN1Object;
+import com.novell.ldap.protocol.*;
 
 /**
  *  Base class for asynchronous LDAP request and response messages.
  */
 public class LDAPMessage {
 
-	protected com.novell.asn1.ldap.LDAPMessage message;
+	protected com.novell.ldap.protocol.LDAPMessage message;
 
   /**
    * A bind request operation.
@@ -157,7 +157,7 @@ public class LDAPMessage {
 		}
 
 		// create RFC 2251 LDAPMessage
-		message = new com.novell.asn1.ldap.LDAPMessage(op, asn1Ctrls);
+		message = new com.novell.ldap.protocol.LDAPMessage(op, asn1Ctrls);
 	}
 
 	/**
@@ -166,7 +166,7 @@ public class LDAPMessage {
      *
      * @param message An RFC 2251 LDAPMessage
 	 */
-	public LDAPMessage(com.novell.asn1.ldap.LDAPMessage message)
+	public LDAPMessage(com.novell.ldap.protocol.LDAPMessage message)
 	{
 		this.message = message;
 	}
@@ -247,7 +247,7 @@ public class LDAPMessage {
 	/**
 	 * Returns the RFC 2251 LDAPMessage composed in this object.
 	 */
-	public com.novell.asn1.ldap.LDAPMessage getASN1Object()
+	public com.novell.ldap.protocol.LDAPMessage getASN1Object()
 	{
 		return message;
 	}

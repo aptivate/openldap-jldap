@@ -1,10 +1,10 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/com/novell/asn1/LBERDecoder.java,v 1.4 2000/09/08 17:55:37 javed Exp $
+ * $Novell: /ldap/src/jldap/src/com/novell/ldap/asn1/LBERDecoder.java,v 1.5 2000/09/08 18:04:48 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  ***************************************************************************/
 
-package com.novell.asn1;
+package com.novell.ldap.asn1;
 
 import java.io.*;
 

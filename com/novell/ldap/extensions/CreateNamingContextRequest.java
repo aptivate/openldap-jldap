@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: CreateNamingContextRequest.java,v 1.11 2000/08/28 22:19:18 vtag Exp $
+ * $Id: CreateNamingContextRequest.java,v 1.12 2000/09/02 21:29:33 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -12,10 +12,10 @@
  * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
  * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY. 
  ***************************************************************************/
-package com.novell.ldap.ext; 
+package com.novell.ldap.extensions; 
 
 import com.novell.ldap.*;
-import com.novell.asn1.*;
+import com.novell.ldap.asn1.*;
 import java.io.*;
  
 /**

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPControl.java,v 1.6 2000/08/28 22:18:56 vtag Exp $
+ * $Novell: /ldap/src/jldap/src/com/novell/ldap/LDAPControl.java,v 1.7 2000/08/31 21:58:06 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -15,8 +15,8 @@
  
 package com.novell.ldap;
  
-import com.novell.asn1.*;
-import com.novell.asn1.ldap.*;
+import com.novell.ldap.asn1.*;
+import com.novell.ldap.protocol.*;
 
 /**
  *  Encapsulates optional additional parameters or constraints to be 

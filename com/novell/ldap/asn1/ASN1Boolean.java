@@ -1,10 +1,10 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/com/novell/asn1/ASN1Boolean.java,v 1.3 2000/09/03 06:43:06 smerrill Exp $
+ * $Novell: /ldap/src/jldap/src/com/novell/ldap/asn1/ASN1Boolean.java,v 1.4 2000/09/03 19:55:54 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  ***************************************************************************/
  
-package com.novell.asn1;
+package com.novell.ldap.asn1;
 
 import java.io.*;
 

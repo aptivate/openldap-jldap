@@ -1,7 +1,7 @@
 <!-- ======================================================================= -->
-<!-- COM.NOVELL.ASN1 build file                                                -->
+<!-- COM.NOVELL.LDAP.ASN1 build file                                                -->
 <!-- ======================================================================= -->
-<project name="ASN1" default="compile" basedir=".">
+<project name="LDAP.ASN1" default="compile" basedir=".">
 	<!-- Targets                                                             -->
 	<!--     clean   - Cleans all generated class files                      -->
 	<!--     compile - Builds debug classes and jar files                    -->
@@ -26,7 +26,7 @@
     <!-- clean class files                                                  -->
     <!-- =================================================================== -->
     <target name="clean" depends="init">
-		<delete dir="${top}/${build}/com/novell/asn1" includes="*.class"/>
+		<delete dir="${top}/${build}/com/novell/ldap/asn1" includes="*.class"/>
 	</target>
 
     <!-- =================================================================== -->
@@ -34,8 +34,8 @@
     <!-- =================================================================== -->
     <target name="compile" depends="init">
 		<mkdir dir="${top}/${build}"/>
-        <javac srcdir="${top}/src"
-				includes="com/novell/asn1/*.java"
+        <javac srcdir="${top}"
+				includes="com/novell/ldap/asn1/*.java"
                 destdir="${top}/${build}"
                 deprecation="off"
                 debug="${debug}"

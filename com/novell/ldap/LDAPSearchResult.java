@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPSearchResult.java,v 1.9 2000/08/21 18:35:43 vtag Exp $
+ * $Novell: /ldap/src/jldap/src/com/novell/ldap/LDAPSearchResult.java,v 1.10 2000/08/28 22:18:58 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -18,8 +18,8 @@ package com.novell.ldap;
 import java.io.IOException;
 import java.util.*;
 
-import com.novell.asn1.*;
-import com.novell.asn1.ldap.*;
+import com.novell.ldap.asn1.*;
+import com.novell.ldap.protocol.*;
 
 /**
  *  An LDAPSearchResult object encapsulates a single search result.
@@ -59,7 +59,7 @@ public class LDAPSearchResult extends LDAPMessage {
 
    /**
     */
-   public LDAPSearchResult(com.novell.asn1.ldap.LDAPMessage message)
+   public LDAPSearchResult(com.novell.ldap.protocol.LDAPMessage message)
    {
       super(message);
    }

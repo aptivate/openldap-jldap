@@ -1,5 +1,5 @@
 
-package com.novell.asn1.ldap;
+package com.novell.ldap.protocol;
 
 /**
  * This interface represents Protocol Operations that are requests from a

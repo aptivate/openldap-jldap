@@ -1,7 +1,7 @@
 
-package com.novell.asn1.ldap;
+package com.novell.ldap.protocol;
 
-import com.novell.asn1.*;
+import com.novell.ldap.asn1.*;
 
 /**
  *       SearchRequest ::= [APPLICATION 3] SEQUENCE {

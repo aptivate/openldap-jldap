@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPExtendedResponse.java,v 1.12 2000/08/28 22:18:56 vtag Exp $
+ * $Novell: /ldap/src/jldap/src/com/novell/ldap/LDAPExtendedResponse.java,v 1.13 2000/09/08 23:43:50 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -18,7 +18,7 @@ package com.novell.ldap;
 import java.io.IOException;
 
 import com.novell.ldap.LDAPResponse;
-import com.novell.asn1.ldap.*;
+import com.novell.ldap.protocol.*;
 //import com.novell.ldap.client.protocol.lber.*;
 
 
@@ -43,7 +43,7 @@ public class LDAPExtendedResponse extends LDAPResponse {
       * @param message  The LDAPMessage to convert to a Java-API
       *                 LDAPExtendedResponse
 	  */
-	 public LDAPExtendedResponse(com.novell.asn1.ldap.LDAPMessage message)
+	 public LDAPExtendedResponse(com.novell.ldap.protocol.LDAPMessage message)
 	 {
 		 super(message);
 	 }

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPResponse.java,v 1.7 2000/08/22 22:51:05 smerrill Exp $
+ * $Novell: /ldap/src/jldap/src/com/novell/ldap/LDAPResponse.java,v 1.8 2000/08/28 22:18:57 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -18,8 +18,8 @@ package com.novell.ldap;
 import java.io.IOException;
 import java.util.Vector;
 
-import com.novell.asn1.*;
-import com.novell.asn1.ldap.*;
+import com.novell.ldap.asn1.*;
+import com.novell.ldap.protocol.*;
 
 /**
  *  Represents the response to an LDAP protocol operation.
@@ -30,7 +30,7 @@ public class LDAPResponse extends LDAPMessage {
 	 * Creates an LDAPMessage when receiving an RFC 2251 LDAPMessage from a
 	 * server.
 	 */
-	public LDAPResponse(com.novell.asn1.ldap.LDAPMessage message)
+	public LDAPResponse(com.novell.ldap.protocol.LDAPMessage message)
 	{
 		super(message);
 	}
@@ -93,7 +93,7 @@ public class LDAPResponse extends LDAPMessage {
 			case LDAPException.SIZE_LIMIT_EXCEEDED:
 			case LDAPException.AUTH_METHOD_NOT_SUPPORTED:
 			case LDAPException.STRONG_AUTH_REQUIRED:
-			case LDAPException.PARTIAL_RESULTS:
+			case LDAPException.LDAP_PARTIAL_RESULTS:
 			case LDAPException.ADMIN_LIMIT_EXCEEDED:
 			case LDAPException.UNAVAILABLE_CRITICAL_EXTENSION:
 			case LDAPException.CONFIDENTIALITY_REQUIRED:

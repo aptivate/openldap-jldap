@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: ParsedExtendedResponse.java,v 1.3 2000/08/04 15:32:31 javed Exp $
+ * $Id: ParsedExtendedResponse.java,v 1.4 2000/08/28 22:19:20 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -12,7 +12,7 @@
  * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
  * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY. 
  ***************************************************************************/
-package com.novell.ldap.ext; 
+package com.novell.ldap.extensions; 
 
 import com.novell.ldap.*;
 

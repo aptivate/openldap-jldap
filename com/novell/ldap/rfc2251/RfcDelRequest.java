@@ -1,12 +1,12 @@
 /* **************************************************************************
- * $Novell$
+ * $Novell: /ldap/src/jldap/src/com/novell/ldap/protocol/DelRequest.java,v 1.3 2000/09/03 06:43:09 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  ***************************************************************************/
  
-package com.novell.asn1.ldap;
+package com.novell.ldap.protocol;
 
-import com.novell.asn1.*;
+import com.novell.ldap.asn1.*;
 
 /**
  *       DelRequest ::= [APPLICATION 10] LDAPDN

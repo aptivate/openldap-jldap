@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPResponseListener.java,v 1.7 2000/08/21 18:35:42 vtag Exp $
+ * $Novell: /ldap/src/jldap/src/com/novell/ldap/LDAPResponseListener.java,v 1.8 2000/08/28 22:18:58 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -18,7 +18,7 @@ package com.novell.ldap;
 import java.util.Vector;
 
 import com.novell.ldap.client.*;
-import com.novell.asn1.ldap.*;
+import com.novell.ldap.protocol.*;
 
 /**
  * 4.5 public class LDAPResponseListener
@@ -53,7 +53,7 @@ public class LDAPResponseListener extends LDAPListener {
 		throws LDAPException
 	{
 		LDAPResponse response;
-		com.novell.asn1.ldap.LDAPMessage message = queue.getLDAPMessage();
+		com.novell.ldap.protocol.LDAPMessage message = queue.getLDAPMessage();
 		if(message.getProtocolOp() instanceof ExtendedResponse)
 			response = new LDAPExtendedResponse(message);
 		else

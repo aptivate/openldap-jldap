@@ -1,13 +1,13 @@
 /* **************************************************************************
- * $Novell$
+ * $Novell: /ldap/src/jldap/src/com/novell/ldap/protocol/LDAPString.java,v 1.4 2000/09/03 06:43:09 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  ***************************************************************************/
 
-package com.novell.asn1.ldap;
+package com.novell.ldap.protocol;
 
 import java.io.*;
-import com.novell.asn1.*;
+import com.novell.ldap.asn1.*;
 
 /**
  *

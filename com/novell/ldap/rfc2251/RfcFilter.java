@@ -1,15 +1,15 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/com/novell/asn1/ldap/Filter.java,v 1.12 2000/08/30 23:46:05 smerrill Exp $
+ * $Novell: /ldap/src/jldap/src/com/novell/ldap/protocol/Filter.java,v 1.13 2000/08/31 05:12:43 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  ***************************************************************************/
 
-package com.novell.asn1.ldap;
+package com.novell.ldap.protocol;
 
 import java.util.*;
 import java.io.*;
 
-import com.novell.asn1.*;
+import com.novell.ldap.asn1.*;
 import com.novell.ldap.LDAPException;
 
 /**

@@ -1,5 +1,5 @@
 <!-- ======================================================================= -->
-<!-- ORG.IETF.ASN1 build file                                                -->
+<!-- COM.NOVELL.LDAP build file                                                -->
 <!-- ======================================================================= -->
 <project name="LDAP" default="compile" basedir=".">
 	<!-- Targets                                                             -->
@@ -7,7 +7,7 @@
 	<!--     compile - Builds debug classes and jar files                    -->
 	<!--     all     - Synonym for compile                                   -->
 
-	<property name="top" value="../../../.."/>
+	<property name="top" value="../../.."/>
     <property name="build" value="classes_debug"/>
     <property name="lib" value="lib_debug"/>
 	<property name="optimize" value="off"/>
@@ -34,7 +34,7 @@
     <!-- =================================================================== -->
     <target name="compile" depends="init">
 		<mkdir dir="${top}/${build}"/>
-        <javac srcdir="${top}/src"
+        <javac srcdir="${top}"
 				includes="com/novell/ldap/*.java,com/novell/ldap/client/*.java"
                 destdir="${top}/${build}"
                 deprecation="off"

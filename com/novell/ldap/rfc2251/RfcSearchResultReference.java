@@ -1,8 +1,8 @@
 
-package com.novell.asn1.ldap;
+package com.novell.ldap.protocol;
 
 import java.io.*;
-import com.novell.asn1.*;
+import com.novell.ldap.asn1.*;
 
 /**
  *       SearchResultReference ::= [APPLICATION 19] SEQUENCE OF LDAPURL

@@ -1,5 +1,5 @@
 
-package com.novell.asn1;
+package com.novell.ldap.asn1;
 
 import java.io.*;
 

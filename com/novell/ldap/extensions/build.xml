@@ -1,5 +1,5 @@
 <!-- ======================================================================= -->
-<!-- COM.NOVELL.LDAP.EXT build file                                                -->
+<!-- COM.NOVELL.LDAP.EXTENSIONS build file                                                -->
 <!-- ======================================================================= -->
 <project name="ext" default="compile" basedir=".">
 	<!-- Targets                                                             -->
@@ -7,7 +7,7 @@
 	<!--     compile - Builds debug classes and jar files                    -->
 	<!--     all     - Synonym for compile                                   -->
 
-	<property name="top" value="../../../../.."/>
+	<property name="top" value="../../../.."/>
 	<property name="ldap" value="ldap"/>
     <property name="build" value="classes_debug"/>
     <property name="lib" value="lib_debug"/>
@@ -27,7 +27,7 @@
     <!-- clean class files                                                  -->
     <!-- =================================================================== -->
     <target name="clean" depends="init">
-		<delete dir="${top}/${build}/com/novell/ldap/ext" includes="*.class"/>
+		<delete dir="${top}/${build}/com/novell/ldap/extensions" includes="*.class"/>
 	</target>
 
     <!-- =================================================================== -->
@@ -35,9 +35,8 @@
     <!-- =================================================================== -->
     <target name="compile" depends="init">
 		<mkdir dir="${top}/${build}"/>
-        <javac srcdir="${top}/src"
-				includes="com/novell/ldap/ext/*.java"
-				classpath="${top}/../${ldap}/${lib}/${ldap}.jar"
+        <javac srcdir="${top}"
+				includes="com/novell/ldap/extensions/*.java"
                 destdir="${top}/${build}"
                 deprecation="off"
                 debug="${debug}"

@@ -1,3 +1,6 @@
+<!-- ======================================================================= -->
+<!-- TOP level build file                                                -->
+<!-- ======================================================================= -->
 <project name="jldap" default="debug" basedir=".">
 <!-- Targets                                                                 -->
 <!--     clean   - Cleans all generated files and directories in this and    -->
@@ -26,24 +29,20 @@
 <property name="pkg.doc" value="pkg/doc"/>
 <property name="pkg.doc.framewk" value="pkg/doc/framewk"/>
 <property name="pkg.doc.ldap" value="pkg/doc/ldap"/>
-<property name="pkg.doc.novbp" value="pkg/doc/novbp"/>
 <property name="pkg.samples" value="pkg/samples"/>
 
 <property name="lib" value="lib"/>
 <property name="doc" value="doc"/>
-<property name="doc.framewk" value="doc/framewk"/>
 <property name="doc.ldap" value="doc/ldap"/>
 <property name="lib.debug" value="lib_debug"/>
-<property name="ldap" value="ldap"/>
-<property name="novbp" value="novbp"/>
+<property name="src" value="src"/>
 
   <target name="init">
     <tstamp/>
   </target>
 
   <target name="clean" depends="cleanpkg">
-    <ant dir="${basedir}/${ldap}" target="clean"/>
-    <ant dir="${basedir}/${novbp}" target="clean"/>
+    <ant dir="${basedir}/${src}" target="clean"/>
   </target>
 
   <target name="cleanpkg" depends="init">
@@ -51,23 +50,17 @@
   </target>
 
   <target name="doc" depends="ldap.debug">
-    <ant dir="${basedir}/${ldap}" target="doc"/>
-    <ant dir="${basedir}/${novbp}" target="doc"/>
+    <ant dir="${basedir}/${src}" target="doc"/>
   </target>
 
-  <target name="debug" depends="ldap.debug, novbp.debug"/>
+  <target name="debug" depends="ldap.debug"/>
 
   <target name="ldap.debug" depends="init">
-    <ant dir="${basedir}/${ldap}" target="debug" />
-  </target>
-
-  <target name="novbp.debug" depends="init">
-    <ant dir="${basedir}/${novbp}" target="debug" />
+    <ant dir="${basedir}/${src}" target="debug" />
   </target>
 
   <target name="release" depends="init">
-    <ant dir="${basedir}/${ldap}" target="release" />
-    <ant dir="${basedir}/${novbp}" target="release" />
+    <ant dir="${basedir}/${src}" target="release" />
   </target>
 
   <target name="final" depends="release" />
@@ -77,10 +70,10 @@
   <target name="jar" depends="lib"/>
 
   <target name="install" depends="init">
-	<mkdir dir="${ldap}/${doc.framewk}"/>
-	<mkdir dir="${ldap}/${doc.ldap}"/>
-	<mkdir dir="${ldap}/${lib}"/>
-	<mkdir dir="${ldap}/${lib.debug}"/>
+	<mkdir dir="${src}/${doc.framewk}"/>
+	<mkdir dir="${src}/${doc.ldap}"/>
+	<mkdir dir="${src}/${lib}"/>
+	<mkdir dir="${src}/${lib.debug}"/>
 	<mkdir dir="${novbp}/${doc}"/>
 	<mkdir dir="${novbp}/${lib}"/>
 	<mkdir dir="${novbp}/${lib.debug}"/>
@@ -88,39 +81,45 @@
 	<mkdir dir="${pkg.lib.debug}"/>
 	<mkdir dir="${pkg.doc}"/>
 	<mkdir dir="${pkg.doc}/${ldap}"/>
-	<mkdir dir="${pkg.doc}/${novbp}"/>
-	<mkdir dir="${pkg.samples}/${novbp}/ext"/>
+	<mkdir dir="${pkg.samples}"/>
+	<mkdir dir="${pkg.samples}/extensions"/>
 
-	<copydir src="${ldap}/${lib}"         dest="${pkg.lib}"/>
-	<copydir src="${novbp}/${lib}"        dest="${pkg.lib}"/>
+	<copydir src="${src}/${lib}"         dest="${pkg.lib}"/>
 
-	<copydir src="${ldap}/${lib.debug}"   dest="${pkg.lib.debug}"/>
-	<copydir src="${novbp}/${lib.debug}"  dest="${pkg.lib.debug}"/>
+	<copydir src="${src}/${lib.debug}"   dest="${pkg.lib.debug}"/>
 
-	<copydir src="${ldap}/${doc.framewk}" dest="${pkg.doc.framewk}"/>
-	<copydir src="${ldap}/${doc.ldap}"    dest="${pkg.doc.ldap}"/>
-	<copydir src="${novbp}/${doc}"        dest="${pkg.doc.novbp}"/>
+	<copydir src="${src}/${doc.framewk}" dest="${pkg.doc.framewk}"/>
+	<copydir src="${src}/${doc.ldap}"    dest="${pkg.doc.ldap}"/>
 
-	<copydir src="${novbp}/samples/ldap/ext"  dest="${pkg.samples}/${novbp}/ext"/>
+	<copydir src="${src}/samples/extensions"  dest="${pkg.samples}/extensions"/>
   </target>
 
   <target name="pkg" depends="install"/>
 
   <target name="all.subdir" depends="init">
-    <ant dir="${basedir}/${ldap}" target="all" />
-    <ant dir="${basedir}/${novbp}" target="all" />
+    <ant dir="${basedir}/${src}" target="all" />
   </target>
 
   <target name="all" depends="init, all.subdir, cleanpkg, install" />
 
   <target name="samples" depends="init">
-    <ant dir="${basedir}/${ldap}" target="samples" />
-    <ant dir="${basedir}/${novbp}" target="samples" />
+    <ant dir="${basedir}/${src}" target="samples" />
   </target>
 
-  <target name="tests" depends="init">
-    <ant dir="${basedir}/${ldap}" target="tests" />
-    <ant dir="${basedir}/${novbp}" target="tests" />
-  </target>
+  <!-- ===================================================================== -->
+  <!-- build test classes                                                    -->
+  <!-- ===================================================================== -->
+  <target name="tests" depends="debug">
+          <mkdir dir="${build.tests}/extensions"/>
+
+      <echo message="DEBUG compile tests" />
+              <ant dir="tests" target="all">
+                      <property name="build" value="${build.samples}"/>
+                      <property name="lib" value="${lib.debug}"/>
+                      <property name="ldap" value="${ldap}"/>
+                      <property name="debug" value="on"/>
+                      <property name="optimize" value="off"/>
+              </ant>
+     </target>
 
 </project>
