@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.26 2000/12/06 19:30:06 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.27 2000/12/15 22:28:26 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -61,7 +61,7 @@ public final class Connection implements Runnable
     // but may not have one, so we invent a unique one.
     private int fakeId = -1;
 
-    private Thread reader; // New thread that reads data from the server.
+    private Thread reader = null; // New thread that reads data from the server.
 
     private LBEREncoder encoder = new LBEREncoder();
     private LBERDecoder decoder = new LBERDecoder();
@@ -184,6 +184,10 @@ public final class Connection implements Runnable
      */
     public void freeBindSemaphore(int msgId)
     {
+        if( Debug.LDAP_DEBUG) {
+            Debug.trace( Debug.bindSemaphore, name +
+                "Free'd Bind Semaphore(" + msgId + ") count " + (bindSemaphoreCount - 1));
+        }
         synchronized( bindSemaphore) {
             if( bindSemaphoreOwner == 0) {
                 throw new RuntimeException("Connection.freeBindSemaphore("
@@ -200,10 +204,6 @@ public final class Connection implements Runnable
                 bindSemaphoreOwner = 0;
                 bindSemaphore.notify();
             }
-        }
-        if( Debug.LDAP_DEBUG) {
-            Debug.trace( Debug.bindSemaphore, name +
-                "Free'd Bind Semaphore(" + msgId + ") count " + bindSemaphoreCount);
         }
         return;
     }
@@ -246,6 +246,21 @@ public final class Connection implements Runnable
             Debug.trace( Debug.messages, name +
                 "connect(" + host + "," + port + ")");
         }
+        // Don't initialize connection while previous reader thread still active.
+        try {
+            // wait for previous reader thread to terminate
+            while( reader != null) {
+                if( Debug.LDAP_DEBUG) {
+                    Debug.trace( Debug.messages, name +
+                        "waiting for reader thread to exit");
+                }
+                synchronized( this) {
+                    this.wait(1000);
+                }
+            }
+        } catch ( InterruptedException ex) {
+            ;
+        }
         int semId = acquireBindSemaphore( semaphoreId);
 
         // Make socket connection to specified host and port
@@ -285,6 +300,9 @@ public final class Connection implements Runnable
         reader.setDaemon(true); // If this is the last thread running, exit.
         reader.start();
         freeBindSemaphore(semId);
+        if( Debug.LDAP_DEBUG) {
+            Debug.trace( Debug.messages, name + " connect: setup complete");
+        }
         return;
     }
 
@@ -342,6 +360,10 @@ public final class Connection implements Runnable
     public Connection destroyClone( String host, int port)
         throws LDAPException
     {
+        if( Debug.LDAP_DEBUG) {
+            Debug.trace( Debug.messages, name +
+                "destroyClone(" + host + "," + port + ")");
+        }
         Connection conn = this;
         int semId = acquireBindSemaphore();
         
@@ -360,7 +382,7 @@ public final class Connection implements Runnable
                     Debug.trace( Debug.messages, name +
                         "destroyClone(" + cloneCount + ") destroy old connection");
                 }
-                shutdown(null, semId);
+                shutdown("Destroy Clone", semId);
             }    
         }
         if( host != null) {
@@ -434,7 +456,8 @@ public final class Connection implements Runnable
     /* package */ void writeMessage(LDAPMessage msg)
         throws IOException
     {
-        if( out == null) {
+        OutputStream myOut = out;
+        if( myOut == null) {
             throw new IOException("Output stream not initialized");
         }
         int id = msg.getMessageID();
@@ -444,8 +467,8 @@ public final class Connection implements Runnable
             Debug.trace( Debug.messages, name +
                 "Writing Message(" + id + ")");
         }
-        out.write(ber, 0, ber.length);
-        out.flush();
+        myOut.write(ber, 0, ber.length);
+        myOut.flush();
         freeBindSemaphore(id);
         return;
     }
@@ -541,7 +564,11 @@ public final class Connection implements Runnable
      */
     protected void finalize()
     {
-        shutdown(null,0);
+        if( Debug.LDAP_DEBUG) {
+            Debug.trace( Debug.messages, name +
+                "finalize: shutdown connection");
+        }
+        shutdown("Finalize",0);
         return;
     }
     /**
@@ -550,14 +577,21 @@ public final class Connection implements Runnable
      * be called by LDAPConnection.disconnect().
      *
      */
-    public void shutdown( String reason, int semaphoreId)
+    private void shutdown( String reason, int semaphoreId)
     {
         Message info = null;
-        if( Debug.LDAP_DEBUG) {
-            Debug.trace( Debug.messages, name +
-                "shutdown: Shutting down connection");
+        if( in == null) {
+            if( Debug.LDAP_DEBUG) {
+                Debug.trace( Debug.messages, name +
+                    "shutdown: already shut down - " + reason);
+            }
+            return;
         }
         
+        if( Debug.LDAP_DEBUG) {
+            Debug.trace( Debug.messages, name +
+                "shutdown: Shutting down connection - " + reason);
+        }
         while( true ) {
             // remove messages from connection list and send abandon
             try {
@@ -593,18 +627,36 @@ public final class Connection implements Runnable
         }
         bindProperties = null;
 
-        if( (socket != null) && (out != null)) {
+        if( in != null) {
+            // Close the input stream
+            try {
+                in.close();
+            } catch(java.io.IOException ie) {
+                // ignore problem closing input stream
+            }
+            in = null;
+        }        
+
+        if( out != null) {
+            // Close the output stream
+            try {
+                out.close();
+            } catch(java.io.IOException ie) {
+                // ignore problem closing output stream
+            }
+            out = null;
+        }        
+
+        if( socket != null) {
             // Close the socket
             try {
-                out.flush();
                 socket.close();
             } catch(java.io.IOException ie) {
                 // ignore problem closing socket
             }
+            socket = null;
         }        
-        in = null;
-        out = null;
-        socket = null;
+
         freeBindSemaphore( semId);
         return;
     }
@@ -645,28 +697,43 @@ public final class Connection implements Runnable
      * Note: This thread needs a graceful shutdown implementation.
      */
     public void run() {
-        String reason = null;
+
+        String reason = "reader: thread stopped";
+
         try {
             for(;;) {
                 // ------------------------------------------------------------
                 // Decode an RfcLDAPMessage directly from the socket.
                 // ------------------------------------------------------------
                 Message info;
-                ASN1Identifier asn1ID = new ASN1Identifier(in);
+                ASN1Identifier asn1ID;
+                InputStream myIn;
+                /* get current value of in, keep value consistant
+                 * though the loop, i.e. even during shutdown
+                 */
+                myIn = in;
+                if( myIn == null) {
+                    if( Debug.LDAP_DEBUG) {
+                        Debug.trace( Debug.messages, name + 
+                            "reader: thread stopping, connection shut down");
+                    }
+                    break;
+                }
+                asn1ID = new ASN1Identifier(myIn);
                 int tag = asn1ID.getTag();
                 if(asn1ID.getTag() != ASN1Sequence.TAG) {
                     if( Debug.LDAP_DEBUG) {
                         Debug.trace( Debug.messages, name +
-                            "discarding message with tag " + tag);
+                            "reader: discarding message with tag " + tag);
                     }
                     continue; // loop looking for an RfcLDAPMessage identifier
                 }
 
                 // Turn the message into an RfcMessage class
-                ASN1Length asn1Len = new ASN1Length(in);
+                ASN1Length asn1Len = new ASN1Length(myIn);
 
                 RfcLDAPMessage msg =
-                    new RfcLDAPMessage( decoder, in, asn1Len.getLength());
+                    new RfcLDAPMessage( decoder, myIn, asn1Len.getLength());
 
                 // ------------------------------------------------------------
                 // Process the decoded RfcLDAPMessage.
@@ -682,35 +749,44 @@ public final class Connection implements Runnable
                     if( info.acceptsReplies()) {
                         if( Debug.LDAP_DEBUG ) {
                             Debug.trace( Debug.messages, name +
-                                "queue message(" + msgId + ")");
+                                "reader: queue message(" + msgId + ")");
                             Debug.trace( Debug.buffer, name +
-                                "message(" + msgId + ")=" +
+                                "reader: message(" + msgId + ")=" +
                                 msg.toString());
                         }
                         info.putReply( msg);   // queue & wake up waiting thread
                     } else {
                         if( Debug.LDAP_DEBUG ) {
                             Debug.trace( Debug.messages, name +
-                                "message(" + msgId +
+                                "reader: message(" + msgId +
                                 ") not accepting replies, discarding reply");
                         }        
                     }
                 } catch ( NoSuchFieldException ex) {
                     if( Debug.LDAP_DEBUG ) {
                         Debug.trace( Debug.messages, name +
-                            "message(" + msgId +
+                            "reader: message(" + msgId +
                             ") not found, discarding reply");
                     }        
                 }
             }
-        }
-        catch(IOException ioe) {
-            reason = "Connection lost for " + host + ":" + port + " " + ioe.toString();
-            Debug.trace( Debug.messages, name + reason);
-        }
-        finally {
+        } catch( IOException ioe) {
+            if( Debug.LDAP_DEBUG ) {
+                reason = "reader: Connection lost for " + host + ":" + port + " " + ioe.toString();
+                Debug.trace( Debug.messages, name + reason);
+            }        
+        } finally {
+            if( Debug.LDAP_DEBUG ) {
+                Debug.trace( Debug.messages, name +
+                "reader: connection shutdown");
+            }        
             shutdown(reason, 0);
         }
+        reader = null;
+        if( Debug.LDAP_DEBUG ) {
+            Debug.trace( Debug.messages, name +
+            "reader: thread terminated");
+        }        
         return;
     }
 }

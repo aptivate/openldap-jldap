@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.64 2000/12/14 23:03:22 cmorris Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.65 2000/12/15 22:28:25 vtag Exp $
 *
 * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
 *
@@ -1205,10 +1205,12 @@ public class LDAPConnection implements Cloneable
       try {
           conn = listener.getMessageAgent().getMessage( msgId).getConnection();
       } catch( NoSuchFieldException ex) {
-        throw new RuntimeException("Internal error, wrong messageID on bind");
+          throw new RuntimeException("Internal error, wrong messageID on bind");
       }
       LDAPResponse res = (LDAPResponse)listener.getResponse();
-      res.chkResultCode();
+      if( res != null) {
+        res.chkResultCode();
+      }
       return;
    }
 

@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/client/Message.java,v 1.5 2000/12/14 22:44:29 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/client/Message.java,v 1.6 2000/12/15 22:28:26 vtag Exp $
 *
 * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
 * 
@@ -390,13 +390,22 @@ public class Message extends Thread
     /* package */
     void abandon( LDAPConstraints cons)
     {
+        if( terminate) {
+            return;
+        }
         acceptReplies = false;  // don't listen to anyone 
         terminate = true;       // don't let sleeping threads lie 
         if( Debug.LDAP_DEBUG) {
-            Debug.trace( Debug.messages, name + "Abandon request");
+            Debug.trace( Debug.messages, name + "Abandon request, complete="
+                + complete + ", bind=" + (bindprops != null));
         }
         if( ! complete) {
             try {
+                // If a bind, release bind semaphore & wake up waiting threads
+                // Must do before writing abandon message, otherwise deadlock
+                if( bindprops != null) {
+                    conn.freeBindSemaphore( msgId);
+                }
                 // Create the abandon message, but don't track it. 
                 LDAPMessage msg = new LDAPMessage( new RfcAbandonRequest( msgId));
                 // Send abandon message to server       
@@ -407,6 +416,7 @@ public class Message extends Thread
             // remove message id from Connection list
             conn.removeMessage( this);
             complete = true;
+            agent.abandon( msgId, null); // Make sure agent list is clean
         }
         // Get rid of all replies queued
         cleanup();

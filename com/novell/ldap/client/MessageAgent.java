@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/client/MessageAgent.java,v 1.4 2000/12/14 22:44:30 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/client/MessageAgent.java,v 1.5 2000/12/15 22:28:26 vtag Exp $
 *
 * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
 * 
@@ -157,6 +157,7 @@ public class MessageAgent
                 "Abandon of Message(" + info.getMessageID() + ") failed");
             }
         }
+        return;
     }
 
     /**

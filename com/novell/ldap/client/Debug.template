@@ -1,4 +1,4 @@
-// $Novell: /ldap/src/jldap/com/novell/ldap/client/Debug.template,v 1.6 2000/11/22 22:17:40 vtag Exp $
+// $Novell: /ldap/src/jldap/com/novell/ldap/client/Debug.template,v 1.7 2000/12/06 19:30:06 vtag Exp $
 // **
 // ** NOTICE: Do NOT edit file Debug.java, the real file is Debug.template
 // **
@@ -51,7 +51,7 @@ import java.util.StringTokenizer;
  * </ul>
  *
  * @author Steven F. Sonntag
- * @version $Id: Debug.template,v 1.6 2000/11/22 22:17:40 vtag Exp $
+ * @version $Id: Debug.template,v 1.7 2000/12/06 19:30:06 vtag Exp $
  */
 
 public abstract class Debug {
@@ -197,8 +197,10 @@ public abstract class Debug {
                  */
                 if( tn.equalsIgnoreCase("VMTraceInstructions")) {
                     VMtraceInstructions = true;                
+                    VMtraceInstructions(true);
                 } else if( tn.equalsIgnoreCase("VMTraceMethodCalls")) {
                     VMtraceMethodCalls = true;                
+                    VMtraceMethodCalls(true);
                 /*
                  * Properties that turn on object dump methods
                  */
