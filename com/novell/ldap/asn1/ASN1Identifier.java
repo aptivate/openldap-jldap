@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell$
+ * $Novell: /ldap/src/jldap/ldap/src/com/novell/asn1/ASN1Identifier.java,v 1.3 2000/09/03 06:43:07 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  ***************************************************************************/
@@ -11,27 +11,31 @@ import java.io.*;
 /**
  * Represents an ASN.1 Identifier.
  *
- * An ASN1Identifier is composed of three parts: 1) a class type,
- * 2) a form, and 3) a tag.
+ * <p>An ASN1Identifier is composed of three parts: 1) a class type,
+ * 2) a form, and 3) a tag.</p>
  *
- * The class type is defined as:
+ * <p>The class type is defined as:</p>
+ *<pre>
  * bit 8 7 TAG CLASS
  * ------- -----------
  *     0 0 UNIVERSAL
  *     0 1 APPLICATION
  *     1 0 CONTEXT
  *     1 1 PRIVATE
- *
- * The form is defined as:
+ *</pre>
+ *<p> The form is defined as:</p>
+ *<pre>
  * bit 6 FORM
  * ----- --------
  *     0 PRIMITIVE
  *     1 CONSTRUCTED
+ *</pre>
  *
- * Note: CONSTRUCTED types are made up of other CONSTRUCTED or PRIMITIVE
- *       types.
+ *<p> Note: CONSTRUCTED types are made up of other CONSTRUCTED or PRIMITIVE
+ *       types.</p>
  *
- * The tag is defined as:
+ *<p> The tag is defined as:</p>
+ *<pre>
  * bit 5 4 3 2 1 TAG
  * ------------- ---------------------------------------------
  *     0 0 0 0 0
@@ -39,24 +43,35 @@ import java.io.*;
  *     1 1 1 1 0 (0-30) single octet tag
  *
  *     1 1 1 1 1 (> 30) multiple octet tag, more octets follow
- * 
+ *</pre>
  */
 public class ASN1Identifier { 
 
    /**
     * Universal tag class
+    *
+    * <p> UNIVERSAL = 0 </p>
     */
    public static final int UNIVERSAL = 0;
+
    /**
     * Application-wide tag class
+    *
+    * <p> APPLICATION = 1 </p>
     */
    public static final int APPLICATION = 1;
+
    /**
     * Context-specific tag class
+    *
+    * <p> CONTEXT = 2 </p>
     */
    public static final int CONTEXT = 2;
+
    /**
     * Private-use tag class
+    *
+    * <p> PRIVATE = 3 </p>
     */
    public static final int PRIVATE = 3;
 
@@ -125,10 +140,10 @@ public class ASN1Identifier {
    /**
     * Returns the CLASS of this ASN1Identifier as an int value.
     *
-    * @see UNIVERSAL
-    * @see APPLICATION
-    * @see CONTEXT
-    * @see PRIVATE
+    * @see #UNIVERSAL
+    * @see #APPLICATION
+    * @see #CONTEXT
+    * @see #PRIVATE
     */
    public int getASN1Class()
    {
@@ -168,6 +183,8 @@ public class ASN1Identifier {
    /**
     * Returns a boolean value indicating whether or not this ASN1Identifier
     * has a TAG CLASS of UNIVERSAL.
+    *
+    * @see #UNIVERSAL
     */
    public boolean isUniversal()
    {
@@ -177,6 +194,8 @@ public class ASN1Identifier {
    /**
     * Returns a boolean value indicating whether or not this ASN1Identifier
     * has a TAG CLASS of APPLICATION.
+    *
+    * @see #APPLICATION
     */
    public boolean isApplication()
    {
@@ -186,6 +205,8 @@ public class ASN1Identifier {
    /**
     * Returns a boolean value indicating whether or not this ASN1Identifier
     * has a TAG CLASS of CONTEXT-SPECIFIC.
+    *
+    * @see #CONTEXT
     */
    public boolean isContext()
    {
@@ -195,6 +216,8 @@ public class ASN1Identifier {
    /**
     * Returns a boolean value indicating whether or not this ASN1Identifier
     * has a TAG CLASS of PRIVATE.
+    *
+    * @see #PRIVATE
     */
    public boolean isPrivate()
    {
