@@ -1,44 +1,48 @@
 <project name="jldap" default="all" basedir=".">
   <target name="init">
     <tstamp/>
-    <property name="version" value="1.0.0" />
+    <property name="version" value="1.0.0"/>
   </target>
 
   <target name="all" depends="init">
-    <ant dir="${basedir}/asn1" target="all" />
-    <ant dir="${basedir}/asn1ldap" target="all" />
-    <ant dir="${basedir}/ldap" target="all" />
-    <ant dir="${basedir}/novbp" target="all" />
+	<mkdir dir="lib"/>
+    <ant dir="${basedir}/asn1" target="install"/>
+    <ant dir="${basedir}/asn1ldap" target="install"/>
+    <ant dir="${basedir}/ldap" target="install"/>
+    <ant dir="${basedir}/novbp" target="install"/>
   </target>
+
+  <target name="jar" depends="all"/>
 
   <target name="clean" depends="init">
-    <ant dir="asn1" target="clean" />
-    <ant dir="asn1ldap" target="clean" />
-    <ant dir="ldap" target="clean" />
-    <ant dir="novbp" target="clean" />
+    <ant dir="${basedir}/asn1" target="clean"/>
+    <ant dir="${basedir}/asn1ldap" target="clean"/>
+    <ant dir="${basedir}/ldap" target="clean"/>
+    <ant dir="${basedir}/novbp" target="clean"/>
+	<deltree dir="lib"/>
   </target>
 
-  <target name="install" depends="init">
-    <ant dir="asn1" target="install" />
-    <ant dir="asn1ldap" target="install" />
-    <ant dir="ldap" target="install" />
-    <ant dir="novbp" target="install" />
+  <target name="doc">
+    <ant dir="${basedir}/asn1" target="doc"/>
+    <ant dir="${basedir}/asn1ldap" target="doc"/>
+    <ant dir="${basedir}/ldap" target="doc"/>
+    <ant dir="${basedir}/novbp" target="doc"/>
   </target>
 
-  <target name="asn1" depends="init" >
-    <ant dir="asn1" />
+  <target name="asn1" depends="init">
+    <ant dir="${basedir}/asn1"/>
   </target>
 
-  <target name="asn1ldap" depends="init" >
-    <ant dir="asn1ldap" />
+  <target name="asn1ldap" depends="init">
+    <ant dir="${basedir}/asn1ldap"/>
   </target>
 
-  <target name="ldap" depends="init" >
-    <ant dir="ldap" />
+  <target name="ldap" depends="init">
+    <ant dir="${basedir}/ldap"/>
   </target>
 
-  <target name="novbp" depends="init" >
-    <ant dir="novbp" />
+  <target name="novbp" depends="init">
+    <ant dir="${basedir}/novbp"/>
   </target>
 
 </project>

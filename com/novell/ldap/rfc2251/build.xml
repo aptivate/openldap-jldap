@@ -4,8 +4,8 @@
 <project name="ASN1 LDAP Classes" default="all" basedir=".">
 
 	<property name="src.dir" value="${basedir}"/>
-	<property name="classes.dir" value="../../../../../classes"/>
-	<property name="classpath" value="../../../../../../lib/asn1.jar"/>
+	<property name="top.dir" value="../../../../.."/>
+	<property name="classes.dir" value="${top.dir}/classes"/>
 	<property name="debug" value="on"/>
 	<property name="optimize" value="on"/>
 
@@ -29,10 +29,13 @@
     <target name="compile" depends="init">
         <javac srcdir="${src.dir}"
                 destdir="${classes.dir}"
-                classpath="${classpath}"
                 debug="${debug}"
                 deprecation="off"
                 optimize="${optimize}">
+                <classpath>
+					<pathelement location="${top.dir}/../external/ssl/domestic/nssl1.2_dom.jar"/>
+					<pathelement location="${top.dir}/../lib/asn1.jar"/>
+				</classpath>
             <include name="*.java"/>
         </javac>
     </target>

@@ -1,13 +1,12 @@
 <!-- ======================================================================= -->
 <!-- ORG.IETF.ASN1 build file                                                -->
 <!-- ======================================================================= -->
-<project name="ASN1 Classes" default="all" basedir=".">
+<project name="ext Classes" default="all" basedir=".">
 
 	<property name="src.dir" value="${basedir}"/>
-	<property name="top.dir" value="../../../.."/>
+	<property name="top.dir" value="../../../../.."/>
 	<property name="classes.dir" value="${top.dir}/classes"/>
-	<property name="classpath" value=""/>
-	<property name="optimize" value="on"/>
+	<property name="optimize" value="off"/>
 	<property name="debug" value="on"/>
 
 
@@ -28,12 +27,15 @@
     <!-- compile java files                                                  -->
     <!-- =================================================================== -->
     <target name="compile" depends="init">
+		<mkdir dir="${classes.dir}"/>
         <javac srcdir="${src.dir}"
                 destdir="${classes.dir}"
-                classpath="${classpath}"
                 debug="${debug}"
                 deprecation="off"
                 optimize="${optimize}">
+            <classpath>
+			    <pathelement location="${top.dir}/../lib/ldap.jar"/>
+			</classpath>
             <include name="*.java"/>
         </javac>
     </target>

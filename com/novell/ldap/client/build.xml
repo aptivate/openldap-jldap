@@ -1,0 +1,37 @@
+<project name="com.novell.ldap.client" default="all" basedir=".">
+	<property name="name" value="com.novell.ldap.client"/>
+	<property name="top.dir" value="../../../../.."/>
+	<property name="src.dir" value="${basedir}"/>
+	<property name="ps" value="${path.separator}"/>
+	<property name="classes.dir" value="${top.dir}/classes"/>
+	<property name="optimize" value="off"/>
+	<property name="debug" value="on"/>
+
+	<target name="init">
+		<tstamp/>
+	</target>
+
+	<target name="all" depends="compile">
+		<echo message="${name}: Building all"/>
+	</target>
+
+    <!-- =================================================================== -->
+    <!-- compile java files                                                  -->
+    <!-- =================================================================== -->
+    <target name="compile" depends="init">
+		<mkdir dir="${classes.dir}"/>
+        <javac srcdir="${src.dir};${top.dir}/src/org/ietf/ldap"
+                destdir="${classes.dir}"
+                debug="${debug}"
+                deprecation="off"
+                optimize="${optimize}">
+			<classpath>
+				<pathelement location="${top.dir}/../lib/asn1.jar"/>
+				<pathelement location="${top.dir}/../lib/asn1ldap.jar"/>
+				<pathelement location="${top.dir}/../external/ssl/domestic/nssl1.1_dom.jar"/>
+				<pathelement location="${top.dir}/src"/>
+			</classpath>
+            <include name="*.java"/>
+        </javac>
+	</target>
+</project>
