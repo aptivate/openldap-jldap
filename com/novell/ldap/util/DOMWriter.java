@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: DOMWriter.java,v 1.6 2002/11/04 19:20:31 $
+ * $Novell: DOMWriter.java,v 1.7 2002/11/11 23:08:45 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -220,7 +220,7 @@ public class DOMWriter implements LDAPWriter
                 break;
         }
         //if valid tag && write requestIDs is set.
-        e.setAttribute("requestID", ""+message.getMessageID());
+        e.setAttribute("requestID", ""+findRequestID(message));
         return e;
     }
 
@@ -279,8 +279,7 @@ public class DOMWriter implements LDAPWriter
         for (int i=0; i< controls.length; i++){
             Element el = doc.createElement("control");
             el.setAttribute("NumericOID", controls[i].getID());
-            el.setAttribute("criticality", Boolean.toString(
-                    controls[i].isCritical()));
+            el.setAttribute("criticality", ""+controls[i].isCritical());
 
             byte byteValue[] = controls[i].getValue();
             if (byteValue!= null){
@@ -361,7 +360,7 @@ public class DOMWriter implements LDAPWriter
              message.getType()==LDAPMessage.SEARCH_RESULT_REFERENCE))
         {
             searchNode = doc.createElement("searchResponse");
-            searchNode.setAttribute("requestID", ""+message.getMessageID());
+            searchNode.setAttribute("requestID", ""+ findRequestID(message));
             root.appendChild(searchNode);
             state = SEARCH_RESPONSE;
         }
@@ -386,6 +385,14 @@ public class DOMWriter implements LDAPWriter
              LDAPException.ENCODING_ERROR);
         }
         return;
+    }
+
+    static String findRequestID(LDAPMessage message) {
+        String tag= null;//= message.getTag();
+        if (tag == null){
+            tag = message.getMessageID() + "";
+        }
+        return tag;
     }
 
     /**
