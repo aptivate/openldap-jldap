@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: DSMLWriter.java,v 1.12 2002/10/25 18:09:59 $
+ * $Novell: DSMLWriter.java,v 1.13 2002/10/28 23:16:10 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -91,11 +91,14 @@ public class DSMLWriter implements LDAPWriter {
         out.close();
     }
 
-    public void writeComments( String lines)
-    {
+    public void writeComments( String lines) throws IOException {
+        newLine(1);
+        out.write("<!-- ");
+        out.write(lines);
+        out.write(" -->");
         return;
     }
-    
+
     public void writeMessage(LDAPMessage messageToWrite)
                 throws IOException, LDAPLocalException
     {
@@ -133,6 +136,15 @@ public class DSMLWriter implements LDAPWriter {
                     state = SEARCH_TAG;
                 }
                 writeSearchResponse((LDAPSearchResult) messageToWrite);
+                break;
+            case LDAPMessage.SEARCH_RESULT_REFERENCE:
+                if (state != SEARCH_TAG){
+                    newLine(1);
+                    out.write("<searchResponse>");
+                    state = SEARCH_TAG;
+                }
+                writeSearchResultReference(
+                        (LDAPSearchResultReference) messageToWrite);
                 break;
             case LDAPMessage.SEARCH_RESULT:  //final search done message (or standard referral)
                 if (state != SEARCH_TAG){
@@ -188,22 +200,30 @@ public class DSMLWriter implements LDAPWriter {
                 newLine(1);
                 out.write("</compareResponse>");
                 break;
-            case LDAPMessage.SEARCH_RESULT_REFERENCE:
-                if (state != SEARCH_TAG){
-                    newLine(1);
-                    out.write("<searchResponse>");
-                    state = SEARCH_TAG;
-                }
-                writeSearchResultReference(
-                        (LDAPSearchResultReference) messageToWrite);
-                break;
             case LDAPMessage.EXTENDED_RESPONSE:
                 newLine(1);
-                out.write("<errorResponse type=\"other\"><message>ExtendedRequest not supported</message></errorResponse>");
+                LDAPExtendedResponse xResp =
+                        (LDAPExtendedResponse) messageToWrite;
+                out.write("<extendedResponse>");
+                newLine(2);
+
+                out.write("<responseName>");
+                out.write(xResp.getID());
+                out.write("</responseName>");
+
+                byte[] value = xResp.getValue();
+                if (value != null){
+                    newLine(2);
+                    out.write("<response xsi:type=\"base64Binary\">");
+                    out.write(Base64.encode(value));
+                    out.write("</response>");
+                }
+                newLine(1);
+                out.write("</extendedResponse>");
                 break;
         }
     }
-    
+
     /**
      * Gets the version of the LDIF data associated with the input stream
      *
@@ -224,7 +244,7 @@ public class DSMLWriter implements LDAPWriter {
     {
         return true;
     }
-    
+
     private void writeResult(LDAPResponse result, int indent) throws IOException {
         /* controls: */
         //LDAPControl[] controls = result.getControls();
@@ -237,7 +257,7 @@ public class DSMLWriter implements LDAPWriter {
         out.write(new Integer(result.getResultCode()).toString());
         out.write("\" descr=\"");
         out.write(LDAPException.resultCodeToString(result.getResultCode()));
-        out.write( "\"/>");
+        out.write( "\" />");
 
         /* Server Message: */
         String temp = result.getErrorMessage();
