@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: LDAPConnection.java,v 1.7 2000/04/04 20:21:38 smerrill Exp $
+ * $Id: LDAPConnection.java,v 1.8 2000/04/10 21:21:08 bgudmundson Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -1510,34 +1510,51 @@ public class LDAPConnection implements
    }
 
    /**
-    *
+    * Synchronous LDAP extended request 
     */
    public LDAPExtendedOperation extendedOperation(LDAPExtendedOperation op)
    throws LDAPException {
+
 		return extendedOperation(op, defSearchCons);
    }
 
    /**
-    * This is not in the draft yet.
+    *  Synchronous LDAP extended request with SearchConstraints
     */
    public LDAPExtendedOperation extendedOperation(LDAPExtendedOperation op,
 		                                            LDAPSearchConstraints cons)
    throws LDAPException {
-		return null;
-/*
-      if(cons == null) {
-         cons = defSearchCons;
-      }
 
-      try {
-			ldapClient.extendedOperation(op, cons);
-      }
-      catch(IOException ioe) {
-         throw new LDAPException("Communication error: ",
-				                     LDAPException.SERVER_DOWN);
-      }
-*/		
+	// this is temporary
+	ExtendedRequest temp1 = new ExtendedRequest(op, conn.getMessageID(),
+			                              cons.getClientControls(), ldapv3);
+	return null;
+	}
+
+
+   /**
+    * ASynchronous LDAP extended request 
+    */
+   public LDAPExtendedOperation extendedOperation(LDAPExtendedOperation op,
+												LDAPResponseListener listener)
+   throws LDAPException {
+
+		return extendedOperation(op, listener, defSearchCons);
    }
+
+   /**
+    *  ASynchronous LDAP extended request with SearchConstraints
+    */
+   public LDAPExtendedOperation extendedOperation(LDAPExtendedOperation op,
+													LDAPResponseListener listener,
+		                                            LDAPSearchConstraints cons)
+   throws LDAPException {
+
+	return null;
+	}
+
+
+
 
    /**
     *
