@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResults.java,v 1.24 2000/10/31 23:52:26 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResults.java,v 1.25 2000/11/03 23:26:29 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -388,7 +388,7 @@ public class LDAPSearchResults implements Enumeration
     /**
      * Cancels the search request and clears the message and enumeration.
      */
-    public void abandon() {
+    /*package*/ void abandon() {
         if( Debug.LDAP_DEBUG ) {
             Debug.trace( Debug.messages, name + ".abandon: Entry");
         }
