@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: DSMLWriter.java,v 1.33 2003/01/22 22:30:27 $
+ * $Novell: DSMLWriter.java,v 1.34 2003/01/28 23:52:25 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -592,7 +592,7 @@ public class DSMLWriter implements LDAPWriter {
                     offset += this.MAX_DOC_WIDTH;
                 }
                 out.write(toWrite, offset, lineLength - offset);
-                newLine(0);
+                newLine(4);
             }
             out.write("</value>");
         }
