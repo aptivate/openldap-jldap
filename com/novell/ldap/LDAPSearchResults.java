@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResults.java,v 1.40 2001/03/26 19:54:56 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResults.java,v 1.41 2001/04/19 18:40:34 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -588,14 +588,21 @@ public class LDAPSearchResults implements Enumeration
                         continue;
                     }
                 } else {
+                    if( Debug.LDAP_DEBUG) {
+                        Debug.trace( Debug.messages, name +
+                            "Connection timeout, no results returned");
+                    }
                     // We get here if the connection timed out
                     // we have no responses, no message IDs and no exceptions
-                    throw new LDAPException( null, LDAPException.LDAP_TIMEOUT);
+                    LDAPException e = new LDAPException( null,
+                                LDAPException.LDAP_TIMEOUT);
+                    entries.addElement(e );
+                    break;
                 }
             } catch(LDAPException e) {
                 if( Debug.LDAP_DEBUG ) {
                     Debug.trace( Debug.messages, name +
-                        "Caught exception: " + e.toString());
+                       "Caught exception, add to entry queue: " + e.toString());
                 }
                 // Hand exception off to user
                 entries.addElement( e);
