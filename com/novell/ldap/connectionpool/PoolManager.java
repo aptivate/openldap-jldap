@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: PoolManager.java,v 1.5 2003/01/23 00:47:54 $
+ * $Novell: PoolManager.java,v 1.6 2003/01/24 20:16:48 $
  *
  * Copyright (C) 2002 - 2003 Novell, Inc. All Rights Reserved.
  *
@@ -186,6 +186,11 @@ public class PoolManager
             if(sharedConns.allConnectionsAvailable())
             {
                 inUseListOfSharedConnections.remove(sharedConns);
+            }
+            else
+            {
+                // Do not add to available connection list.
+                sharedConns = null;
             }
         }
 
