@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttributeSchema.java,v 1.21 2001/04/23 21:09:28 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttributeSchema.java,v 1.22 2001/06/13 17:51:06 jhammons Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -168,6 +168,7 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
         }
     }
     catch( IOException e){
+        throw new RuntimeException(e.toString());
     }
    }
 
@@ -251,7 +252,7 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
     *         is read-write.
     */
 
-   public boolean isModifiable() {
+   public boolean isUserModifiable() {
       return userMod;
    }
 
@@ -329,7 +330,7 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
       if( isCollective()){
         valueBuffer.append(" COLLECTIVE");
       }
-      if( isModifiable() == false){
+      if( isUserModifiable() == false){
         valueBuffer.append(" NO-USER-MODIFICATION");
       }
       int useType;
