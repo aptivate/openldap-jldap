@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.24 2000/11/27 18:20:00 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.25 2000/11/28 23:50:42 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -53,21 +53,26 @@ import com.novell.ldap.client.*;
 public final class Connection implements Runnable
 {
 
+    private Object bindSemaphore = new Object();
+    private int    bindSemaphoreOwner = 0;
+    private int    bindSemaphoreCount = 0;
+    private BindProperties bindProperties = null;
+    // We need a message number for disconnect to grab the semaphore,
+    // but may not have one, so we invent a unique one.
+    private int fakeId = -1;
+
     private Thread reader; // New thread that reads data from the server.
 
     private LBEREncoder encoder = new LBEREncoder();
     private LBERDecoder decoder = new LBERDecoder();
 
     private Socket socket = null;
-    private boolean bound = false;
 
     private InputStream in = null;
     private OutputStream out = null;
 
     // Place to save message information classes
     private MessageVector messages = new MessageVector(5,5);
-    // place to store unsolicited notifications
-    private MessageVector reply0 = new MessageVector(5,5);
 
     // The LDAPSocketFactory to be used as the default to create new connections
     static private LDAPSocketFactory socketFactory = null;
@@ -75,15 +80,10 @@ public final class Connection implements Runnable
     private LDAPSocketFactory mySocketFactory = socketFactory;
     private String host = null;
     private int port = 0;
-    private int protocolVersion = 3;
-    private String authenticationPassword = null;
-    private String authenticationDN = null;
-    private String authenticationMethod = null;
-    private Hashtable saslBindProperties = null;
-    private Object /* javax.security.auth.callback.CallbackHandler */
-                saslBindCallbackHandler = null;
+    // Number of clones in addition to original LDAPConnection using this connection.
     private int cloneCount = 0;
-    // Connection number & name used for debug
+    // Connection number & name used only for debug
+    private static Object nameLock = new Object(); // protect connNum
     private static int connNum = 0;
     private String name;
     /**
@@ -93,10 +93,14 @@ public final class Connection implements Runnable
      */
     public Connection( LDAPSocketFactory factory)
     {
-        // save socket factory
-        mySocketFactory = factory;
+        if( factory == null) {
+            mySocketFactory = socketFactory;
+        } else {
+            // save socket factory
+            mySocketFactory = factory;
+        }
         if( Debug.LDAP_DEBUG) {
-            synchronized(this) {
+            synchronized(nameLock) {
                 name = "Connection(" + ++connNum + "): ";
             }
             Debug.trace( Debug.messages, name + "Created");
@@ -105,12 +109,102 @@ public final class Connection implements Runnable
     }
 
     /**
-     * Create a new Connection object using the default socket factory.
+     * Acquire a simple counting semaphore that synchronizes state affecting bind
+     * An fake message value is generated.
+     *
+     * We bind using the message ID because a different thread may unlock
+     * the semaphore than the one that set it.  It is cleared when the
+     * response to the bind is processed, or when the bind operation times out.
+     *
+     * Returns when the semaphore is acquired
+     *
+     * @return the fake message value that identifies the owner of this semaphore
      */
-    public Connection( )
+    public int acquireBindSemaphore()
     {
-        // Use default socket factory
-        this( socketFactory);
+        return acquireBindSemaphore(0);
+    }
+
+    /**
+     * Acquire a simple counting semaphore that synchronizes state affecting bind
+     * The semaphore is held by setting a value in bindSemaphoreOwner.
+     *
+     * We bind using the message ID because a different thread may unlock
+     * the semaphore than the one that set it.  It is cleared when the
+     * response to the bind is processed, or when the bind operation times out.
+     * Returns when the semaphore is acquired.
+     *
+     * @param msgId a value that identifies the owner of this semaphore. A 
+     * value of zero means assign a unique semaphore value.
+     * 
+     * @return the semaphore value used to acquire the lock
+     */
+    public int acquireBindSemaphore(int msgId)
+    {
+        int id = msgId;
+        synchronized( bindSemaphore) {
+            if( id == 0) {
+                fakeId = ((fakeId == Integer.MIN_VALUE) ? (fakeId = -1) : --fakeId);
+                id = fakeId;
+            }    
+            while( true) {
+                if( bindSemaphoreOwner == 0) {
+                   // we have acquired the semahpore
+                   bindSemaphoreOwner = id; 
+                   break;
+                } else {
+                    if( bindSemaphoreOwner == id) {
+                        // we already own the semahpore
+                        break;
+                    }
+                    try {
+                        // Keep trying for the lock
+                        bindSemaphore.wait();
+                        continue;
+                    } catch( InterruptedException ex) {
+                        // Keep trying for the lock
+                        continue;
+                    }
+                }
+            }
+            bindSemaphoreCount++;
+        }
+        if( Debug.LDAP_DEBUG) {
+            Debug.trace( Debug.bindSemaphore, name +
+                "Acquired Bind Semaphore(" + id + ")");
+        }
+        return id;
+    }
+
+    /**
+     * Release a simple counting semaphore that synchronizes state affecting bind
+     * Frees the semaphore when number of acquires and frees for this thread match
+     *
+     * @param msgId a value that identifies the owner of this semaphore
+     */
+    public void freeBindSemaphore(int msgId)
+    {
+        synchronized( bindSemaphore) {
+            if( bindSemaphoreOwner == 0) {
+                throw new RuntimeException("Connection.freeBindSemaphore("
+                    + msgId + "): semaphore not owned by any thread");
+            } else
+            if( bindSemaphoreOwner != msgId) {
+                throw new RuntimeException("Connection.freeBindSemaphore("
+                    + msgId + "): thread does not own the semaphore, owned by "
+                    + bindSemaphoreOwner);
+            }
+            // if all instances of this semaphore for this thread are released,
+            // wake up all threads waiting.
+            if( --bindSemaphoreCount == 0) {
+                bindSemaphoreOwner = 0;
+                bindSemaphore.notify();
+            }
+        }
+        if( Debug.LDAP_DEBUG) {
+            Debug.trace( Debug.bindSemaphore, name +
+                "Free'd Bind Semaphore(" + msgId + ")");
+        }
         return;
     }
 
@@ -127,20 +221,58 @@ public final class Connection implements Runnable
     public void connect(String host, int port)
       throws LDAPException
     {
+        connect(host, port, 0);
+        return;
+    }  
+
+    /**
+    * Constructs a TCP/IP connection to a server specified in host and port.
+    * Starts the reader thread.
+    *
+    * @param host The host to connect to.
+    *<br><br>
+    * @param host The port on the host to connect to.
+    *<br><br>
+    * @param LDAPSocketFactory specifies a factory to produce SSL sockets.
+    */
+    private void connect(String host, int port, int semaphoreId)
+      throws LDAPException
+    {
+        /* Synchronized so all variables are in a consistant state and
+         * so that another thread isn't doing a connect, disconnect, or clone
+         * at the same time.
+         */
+        if( Debug.LDAP_DEBUG) {
+            Debug.trace( Debug.messages, name +
+                "connect(" + host + "," + port + ")");
+        }
+        int semId = acquireBindSemaphore( semaphoreId);
+
         // Make socket connection to specified host and port
         if( port == 0) {
             port = LDAPConnection.DEFAULT_PORT;
         }
 
         try {
-            if(socketFactory != null) {
-                socket = socketFactory.makeSocket(host, port);
-            } else {
-                socket = new Socket(host, port);
-            }
+            if( (in == null) || (out == null) ) {
+                if(socketFactory != null) {
+                    if( Debug.LDAP_DEBUG) {
+                        Debug.trace( Debug.messages, name +
+                            "connect(socketFactory specified)");
+                    }
+                    socket = socketFactory.makeSocket(host, port);
+                } else {
+                    socket = new Socket(host, port);
+                }
 
-            in = new BufferedInputStream(socket.getInputStream());
-            out = new BufferedOutputStream(socket.getOutputStream());
+                in = new BufferedInputStream(socket.getInputStream());
+                out = new BufferedOutputStream(socket.getOutputStream());
+            } else {
+                if( Debug.LDAP_DEBUG) {
+                    Debug.trace( Debug.messages, name +
+                        "connect(input/out Stream specified)");
+                }
+            }
         } catch(IOException ioe) {
             throw new LDAPException("Unable to connect to server: " + host,
                              LDAPException.CONNECT_ERROR);
@@ -152,6 +284,7 @@ public final class Connection implements Runnable
         reader = new Thread(this);
         reader.setDaemon(true); // If this is the last thread running, exit.
         reader.start();
+        freeBindSemaphore(semId);
         return;
     }
 
@@ -167,20 +300,78 @@ public final class Connection implements Runnable
 
     /**
      *  Indicates that an LDAPConnection clone is being created
+     *
+     * @return true if other clones exist
      */
-    public synchronized void createClone()
+    public void createClone()
     {
+        int semId = acquireBindSemaphore();
         cloneCount++;
+        if( Debug.LDAP_DEBUG) {
+            Debug.trace( Debug.messages, name +
+                "createClone(" + cloneCount + ")");
+        }
+        freeBindSemaphore(semId);
         return;
     }
 
     /**
-     *  Indicates that an LDAPConnection clone is being destroyed
+     *  Destroys a clone.  If the object is a clone,
+     *  the connection is left untouched and a new
+     *  Connection object is returned.  If not a clone,
+     *  the current connnection is destroyed and the
+     *  existing object is returned.
+     *
+     * @return a Connection object.
      */
-    public synchronized void destroyClone()
+    public Connection destroyClone()
+        throws LDAPException
     {
-        cloneCount--;
-        return;
+        return destroyClone(null,0);
+    }
+    
+    /**
+     *  Destroys a clone.  If the object is a clone,
+     *  the connection is left untouched and a new
+     *  Connection object is returned.  If not a clone,
+     *  the current connnection is destroyed and the
+     *  existing object is returned.
+     *
+     * @return a Connection object.
+     */
+    public Connection destroyClone( String host, int port)
+        throws LDAPException
+    {
+        Connection conn = this;
+        int semId = acquireBindSemaphore();
+        
+        if( cloneCount > 0) {
+            cloneCount--;
+            // This is a clone, set a new connection object.
+            if( Debug.LDAP_DEBUG) {
+                Debug.trace( Debug.messages, name +
+                    "destroyClone(" + cloneCount + ") create new connection");
+            }
+            conn = new Connection( null );
+        } else {
+            if( in != null) {
+                // Not a clone and connected, destroy old connection
+                if( Debug.LDAP_DEBUG) {
+                    Debug.trace( Debug.messages, name +
+                        "destroyClone(" + cloneCount + ") destroy old connection");
+                }
+                shutdown(null, semId);
+            }    
+        }
+        if( host != null) {
+            if( Debug.LDAP_DEBUG) {
+                Debug.trace( Debug.messages, name +
+                    "destroyClone(" + cloneCount + ") connect(" + host + "," + port + ")");
+            }
+            conn.connect( host, port, semId);
+        }
+        freeBindSemaphore(semId);
+        return conn;
     }
 
     /**
@@ -202,13 +393,6 @@ public final class Connection implements Runnable
     public LDAPSocketFactory getSocketFactory()
     {
         return mySocketFactory;
-    }
-    /**
-     * gets the protocol version
-     */
-    public int getProtocolVersion()
-    {
-        return protocolVersion;
     }
 
     /**
@@ -235,10 +419,6 @@ public final class Connection implements Runnable
     /* package */ void writeMessage(Message info)
         throws IOException
     {
-        if( Debug.LDAP_DEBUG) {
-            Debug.trace( Debug.messages, name +
-                "Writing request for Message(" + info.getMessageID() + ")");
-        }
         messages.addElement( info);
         LDAPMessage msg = info.getRequest();
         writeMessage( msg);
@@ -254,13 +434,22 @@ public final class Connection implements Runnable
     /* package */ void writeMessage(LDAPMessage msg)
         throws IOException
     {
-        byte[] ber = msg.getASN1Object().getEncoding(encoder);
-        synchronized(this) {
-            out.write(ber, 0, ber.length);
-            out.flush();
+        if( out == null) {
+            throw new IOException("Output stream not initialized");
         }
+        int id = msg.getMessageID();
+        byte[] ber = msg.getASN1Object().getEncoding(encoder);
+        acquireBindSemaphore(id);
+        if( Debug.LDAP_DEBUG) {
+            Debug.trace( Debug.messages, name +
+                "Writing Message(" + id + ")");
+        }
+        out.write(ber, 0, ber.length);
+        out.flush();
+        freeBindSemaphore(id);
         return;
     }
+
     /**
      * Returns the message agent for this msg ID
      */
@@ -276,7 +465,7 @@ public final class Connection implements Runnable
      */
     public boolean isBound()
     {
-        return bound;
+        return (bindProperties != null);
     }
 
     /**
@@ -284,7 +473,7 @@ public final class Connection implements Runnable
      */
     public boolean isConnected()
     {
-        return (socket != null);
+        return (in != null);
     }
 
     /**
@@ -328,56 +517,6 @@ public final class Connection implements Runnable
     }
 
     /**
-     * Gets the authentication password
-     *
-     * @return the authentication password for this connection
-     */
-    public String getAuthenticationPassword()
-    {
-        return authenticationPassword;
-    }
-
-    /**
-     * Gets the authentication dn
-     *
-     * @return the authentication dn for this connection
-     */
-    public String getAuthenticationDN()
-    {
-        return authenticationPassword;
-    }
-
-    /**
-     * Gets the authentication method
-     *
-     * @return the authentication method for this connection
-     */
-    public String getAuthenticationMethod()
-    {
-        return authenticationMethod;
-    }
-
-    /**
-     * Gets the SASL Bind properties
-     *
-     * @return the sasl bind properties for this connection
-     */
-    public Hashtable getSaslBindProperties()
-    {
-        return saslBindProperties;
-    }
-
-    /**
-     * Gets the SASL callback handler
-     *
-     * @return the sasl callback handler for this connection
-     */
-    public Object /* javax.security.auth.callback.CallbackHandler */ getSaslCallbackHandler()
-    {
-        return saslBindCallbackHandler;
-    }
-
-    /**
      * Removes a Message class from the Connection's list
      *
      * @param info the Message class to remove from the list
@@ -396,7 +535,7 @@ public final class Connection implements Runnable
      */
     protected void finalize()
     {
-        shutdown(null);
+        shutdown(null,0);
     }
     /**
      * Cleans up resources associated with this connection.
@@ -404,42 +543,50 @@ public final class Connection implements Runnable
      * be called by LDAPConnection.disconnect().
      *
      */
-    public void shutdown( String reason)
+    public void shutdown( String reason, int semaphoreId)
     {
         Message info = null;
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.messages, name +
-                "Shutting down connection");
+                "shutdown: Shutting down connection");
         }
-        if(socket != null) {
-            while( true ) {
-                // remove messages from connection list and send abandon
-                try {
-                    info = (Message)messages.remove(0);         
-                    if( Debug.LDAP_DEBUG) {
-                        Debug.trace( Debug.messages, name +
-                            "Shutdown removed message(" + info.getMessageID() + ")");
-                    }
-                } catch( ArrayIndexOutOfBoundsException ex) {
-                    // No more messages
-                    break;
+        
+        while( true ) {
+            // remove messages from connection list and send abandon
+            try {
+                info = (Message)messages.remove(0);         
+                if( Debug.LDAP_DEBUG) {
+                    Debug.trace( Debug.messages, name +
+                        "Shutdown removed message(" + info.getMessageID() + ")");
                 }
-                info.abandon( null );
+            } catch( ArrayIndexOutOfBoundsException ex) {
+                // No more messages
+                break;
             }
-            // Now send unbind before closing socket
-            if(bound) {
-                bound = false;
-                try {
-                    LDAPMessage msg = new LDAPMessage( new RfcUnbindRequest(),null);
-                    byte[] ber = msg.getASN1Object().getEncoding(encoder);
-                    synchronized(this) {
-                        out.write(ber, 0, ber.length);
-                        out.flush();
-                    }
-                } catch( IOException ex) {
-                    ;  // don't worry about error
+            info.abandon( null );
+        }
+
+        // Now send unbind before closing socket
+        int semId = acquireBindSemaphore( semaphoreId);
+        if( (bindProperties != null) && (out != null)) {
+            try {
+                LDAPMessage msg = new LDAPMessage( new RfcUnbindRequest(),null);
+                if( Debug.LDAP_DEBUG) {
+                    Debug.trace( Debug.messages, name +
+                     "Writing unbind request (" + msg.getMessageID() + ")");
                 }
+                byte[] ber = msg.getASN1Object().getEncoding(encoder);
+                if( out != null) {
+                    out.write(ber, 0, ber.length);
+                    out.flush();
+                }
+            } catch( IOException ex) {
+                ;  // don't worry about error
             }
+        }
+        bindProperties = null;
+
+        if( (socket != null) && (out != null)) {
             // Close the socket
             try {
                 out.flush();
@@ -447,9 +594,11 @@ public final class Connection implements Runnable
             } catch(java.io.IOException ie) {
                 // ignore problem closing socket
             }
-            socket = null;
-        }
-        clearBound();
+        }        
+        in = null;
+        out = null;
+        socket = null;
+        freeBindSemaphore( semId);
     }
 
     /**
@@ -458,70 +607,28 @@ public final class Connection implements Runnable
     *  and set flag indicating successful bind.
     * 
     *
-    * @param version protocol version, either 2 or 3
     *<br><br>
-    * @param dn   If non-null and non-empty, specifies that the 
-    *              connection and all operations through it should be 
-    *              authenticated with the DN as the distinguished name.<br><br>
-    *<br><br>
-    * @param passwd   If non-null and non-empty, specifies that the
-    *                  connection and all operations through it should 
-    *                  be authenticated with the dn as the distinguished 
-    *                  name and passwd as the password.
-    *<br><br>
-    * @param method Authentication method.
-    *<br><br>
-    * @param method Authentication hash for SASL bind.
-    *<br><br>
-    * @param method Authentication callback handler for SASL bind.
+    * @param bindProps   The BindProperties object to set.
     */
-
-
-    public synchronized void setBound(   int version,
-                                  String dn,
-                                  String passwd,
-                                  String method,
-                                  Hashtable bindProperties,
-                                  Object bindCallbackHandler)
+    public void setBindProperties( BindProperties bindProps)
     {
-        protocolVersion = version;
-        authenticationDN = dn;
-        authenticationPassword = passwd;
-        authenticationMethod = method;
-        saslBindProperties = bindProperties;
-        saslBindCallbackHandler = bindCallbackHandler;
-        bound = true;
+        bindProperties = bindProps;
         return;
     }
 
     /**
     *
-    *  Clears the authentication credentials in the object
-    *  and clears the flag indicating successful bind.
+    *  Sets the authentication credentials in the object
+    *  and set flag indicating successful bind.
     * 
     *
-    *  @param dn   If non-null and non-empty, specifies that the 
-    *              connection and all operations through it should be 
-    *              authenticated with the DN as the distinguished name.<br><br>
     *<br><br>
-    *  @param passwd   If non-null and non-empty, specifies that the
-    *                  connection and all operations through it should 
-    *                  be authenticated with the dn as the distinguished 
-    *                  name and passwd as the password.
+    * @param bindProps   The BindProperties object to set.
     */
-
-    /* Package */ synchronized void clearBound( )
+    public BindProperties getBindProperties()
     {
-        bound = false;
-        protocolVersion = 3;
-        authenticationDN = null;
-        authenticationPassword = null;
-        authenticationMethod = null;
-        saslBindProperties = null;
-        saslBindCallbackHandler = null;
-        return;
+        return bindProperties;
     }
-
 
     /**
      * This thread decodes and processes RfcLDAPMessage's from the server.
@@ -585,7 +692,7 @@ public final class Connection implements Runnable
             Debug.trace( Debug.messages, name + reason);
         }
         finally {
-            shutdown(reason);
+            shutdown(reason, 0);
         }
     }
 }

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResults.java,v 1.27 2000/11/22 22:17:39 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResults.java,v 1.28 2000/12/05 17:53:25 cmorris Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -37,6 +37,7 @@ public class LDAPSearchResults implements Enumeration
     private int count = 0;              // Number of entries read
     private LDAPControl[] controls = null; // Last set of controls
     private LDAPSearchListener listener;
+    private static Object nameLock = new Object(); // protect resultsNum
     private static int resultsNum = 0;  // used for debug
     private String name;                // used for debug
 
@@ -65,7 +66,7 @@ public class LDAPSearchResults implements Enumeration
         this.batchSize = (batchSize == 0) ? Integer.MAX_VALUE : batchSize;
 
         if( Debug.LDAP_DEBUG ) {
-            synchronized(this) {
+            synchronized(nameLock) {
                 name = "LDAPSearchResults(" + ++resultsNum + "): ";
             }
             Debug.trace( Debug.messages, name + " Object created, batch size " +

@@ -1,4 +1,4 @@
-// $Novell: /ldap/src/jldap/com/novell/ldap/client/Debug.template,v 1.5 2000/09/28 13:56:07 vtag Exp $
+// $Novell: /ldap/src/jldap/com/novell/ldap/client/Debug.template,v 1.6 2000/11/22 22:17:40 vtag Exp $
 // **
 // ** NOTICE: Do NOT edit file Debug.java, the real file is Debug.template
 // **
@@ -51,7 +51,7 @@ import java.util.StringTokenizer;
  * </ul>
  *
  * @author Steven F. Sonntag
- * @version $Id: Debug.template,v 1.5 2000/09/28 13:56:07 vtag Exp $
+ * @version $Id: Debug.template,v 1.6 2000/11/22 22:17:40 vtag Exp $
  */
 
 public abstract class Debug {
@@ -79,9 +79,17 @@ public abstract class Debug {
      */
     public static final String referrals = "Referrals";
     /**
-     * The string value used to enable debug tracing of referral processing.
+     * The string value used to enable debug tracing of message processing
      */
     public static final String messages = "Messages";
+    /**
+     * The string value used to enable debug tracing of API Requests
+     */
+    public static final String apiRequests = "APIRequests";
+    /**
+     * The string value used to enable debug tracing of the bind semaphore
+     */
+    public static final String bindSemaphore = "BindSemaphore";
     /**
      * The string value used to enable debug tracing of BER Encoding.
      */
@@ -147,6 +155,8 @@ public abstract class Debug {
     private static boolean traceDecoding = false;
     private static boolean traceReferrals = false;
     private static boolean traceMessages = false;
+    private static boolean traceBindSemaphore = false;
+    private static boolean traceAPIRequests = false;
     private static boolean traceUrlParse = false;
     private static boolean traceConnections = false;
     private static Properties objprop = new Properties();
@@ -220,6 +230,8 @@ public abstract class Debug {
                     traceRawOutput = true;                
                     traceReferrals = true;                
                     traceMessages = true;                
+                    traceAPIRequests = true;                
+                    traceBindSemaphore = true;                
                     traceUrlParse = true;                
                     traceEncoding = true;                
                     traceDecoding = true;                
@@ -232,6 +244,10 @@ public abstract class Debug {
                     traceReferrals = toggle( traceReferrals);                
                 } else if( tn.equalsIgnoreCase(messages)) {
                     traceMessages = toggle( traceMessages);                
+                } else if( tn.equalsIgnoreCase(apiRequests)) {
+                    traceMessages = toggle( traceAPIRequests);                
+                } else if( tn.equalsIgnoreCase(bindSemaphore)) {
+                    traceMessages = toggle( traceBindSemaphore);                
                 } else if( tn.equalsIgnoreCase(urlParse)) {
                     traceUrlParse = toggle( traceUrlParse);                
                 } else if( tn.equalsIgnoreCase(encoding)) {
@@ -257,6 +273,8 @@ public abstract class Debug {
                             traceRawOutput ||
                             traceReferrals ||
                             traceMessages  ||
+                            traceBindSemaphore  ||
+                            traceAPIRequests    ||
                             traceUrlParse  ||
                             traceEncoding  ||
                             traceDecoding  ||
@@ -269,6 +287,10 @@ public abstract class Debug {
                 return(traceReferrals);
             } else if( type.equalsIgnoreCase(messages)) {
                 return(traceMessages);
+            } else if( type.equalsIgnoreCase(apiRequests)) {
+                return(traceAPIRequests);
+            } else if( type.equalsIgnoreCase(bindSemaphore)) {
+                return(traceBindSemaphore);
             } else if( type.equalsIgnoreCase(urlParse)) {
                 return(traceUrlParse);
             } else if( type.equalsIgnoreCase(encoding)) {
@@ -296,6 +318,8 @@ public abstract class Debug {
                 traceRawOutput = val;
                 traceReferrals = val;
                 traceMessages = val;
+                traceAPIRequests = val;
+                traceBindSemaphore = val;
                 traceUrlParse  = val;
                 traceEncoding  = val;
                 traceDecoding  = val;
@@ -308,6 +332,10 @@ public abstract class Debug {
                 traceReferrals = val;
             } else if( type.equalsIgnoreCase(messages)) {
                 traceMessages = val;
+            } else if( type.equalsIgnoreCase(apiRequests)) {
+                traceAPIRequests = val;
+            } else if( type.equalsIgnoreCase(bindSemaphore)) {
+                traceBindSemaphore = val;
             } else if( type.equalsIgnoreCase(urlParse)) {
                 traceUrlParse = val;
             } else if( type.equalsIgnoreCase(encoding)) {
@@ -336,6 +364,8 @@ public abstract class Debug {
                             traceRawOutput ||
                             traceReferrals ||
                             traceMessages  ||
+                            traceAPIRequests    ||
+                            traceBindSemaphore  ||
                             traceUrlParse  ||
                             traceEncoding  ||
                             traceDecoding  ||
@@ -353,6 +383,12 @@ public abstract class Debug {
             } else if( type.equalsIgnoreCase(messages)) {
                 printit = traceMessages;
                 tracing="traceMessages";
+            } else if( type.equalsIgnoreCase(apiRequests)) {
+                printit = traceAPIRequests;
+                tracing="traceAPIRequests";
+            } else if( type.equalsIgnoreCase(bindSemaphore)) {
+                printit = traceBindSemaphore;
+                tracing="traceBindSemaphore";
             } else if( type.equalsIgnoreCase(urlParse)) {
                 printit = traceUrlParse;
                 tracing="traceUrlParse";

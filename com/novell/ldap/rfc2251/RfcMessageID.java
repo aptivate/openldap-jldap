@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/rfc2251/RfcMessageID.java,v 1.8 2000/11/09 23:50:56 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/rfc2251/RfcMessageID.java,v 1.9 2000/11/10 16:50:09 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  ***************************************************************************/
@@ -23,25 +23,39 @@ import com.novell.ldap.asn1.*;
  */
 class RfcMessageID extends ASN1Integer {
 
-   private static int messageID;
+    private static int messageID = 0;
+    private static Object lock = new Object();
 
-   /**
-    * Creates a MessageID with an auto incremented ASN1Integer value.
-	 *
-	 * Bounds: (0 .. 2,147,483,647) (2^^31 - 1 or Integer.MAX_VALUE)
-    */
-   protected RfcMessageID()
-   {
-		super((messageID < Integer.MAX_VALUE) ? ++messageID : (messageID = 0));
-   }
+    /**
+     * Creates a MessageID with an auto incremented ASN1Integer value.
+     *
+     * Bounds: (0 .. 2,147,483,647) (2^^31 - 1 or Integer.MAX_VALUE)
+     *
+     * MessageID zero is never used in this implementation.  Always
+     * start the messages with one.
+     */
+    protected RfcMessageID()
+    {
+        super(getMessageID());
+    }
 
-   /**
-    * Creates a MessageID with a specified int value.
-    */
-   protected RfcMessageID(int i)
-   {
-      super(i);
-   }
+    /**
+     * Creates a MessageID with a specified int value.
+     */
+    protected RfcMessageID(int i)
+    {
+        super(i);
+    }
 
+    /**
+     * Increments the message number atomically
+     *
+     * @return the new message number
+     */
+    private static int getMessageID() {
+        synchronized(lock) {
+            return (messageID < Integer.MAX_VALUE) ? ++messageID : (messageID = 1);
+        }
+    }
 }
 

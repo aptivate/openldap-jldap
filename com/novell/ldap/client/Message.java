@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/client/Message.java,v 1.2 2000/11/27 18:20:00 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/client/Message.java,v 1.3 2000/11/27 22:56:35 vtag Exp $
 *
 * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
 * 
@@ -38,6 +38,7 @@ public class Message extends Thread
     private boolean terminate = false;   // true if don't wait for reply
     private boolean complete = false;    // true LDAPResult received
     private String name;                 // String name used for Debug
+    private BindProperties bindprops;    // Bind properties if a bind request
 
     /**
      * Constructs a Message class encapsulating information about this message.
@@ -53,11 +54,12 @@ public class Message extends Thread
      * @param listen    the application LDAPListener for this message
      */
     public Message( 
-                        LDAPMessage msg,
-                        int mslimit,
-                        Connection conn,
-                        MessageAgent agent,
-                        LDAPListener listen)
+                        LDAPMessage    msg,
+                        int            mslimit,
+                        Connection     conn,
+                        MessageAgent   agent,
+                        LDAPListener   listen,
+                        BindProperties bindprops)
                 throws IOException
     {
         this.msg = msg;
@@ -66,6 +68,7 @@ public class Message extends Thread
         this.listen = listen;
         this.mslimit = mslimit;
         this.msgId = msg.getMessageID();
+        this.bindprops = bindprops;
 
         if( Debug.LDAP_DEBUG) {
             name = "Message(" + this.msgId + "): ";
@@ -147,10 +150,8 @@ public class Message extends Thread
         synchronized( replies) {
             replies.notify();
         }
-        // Notify any thread waiting for any message id
-        synchronized( agent) {
-            agent.notify();
-        }
+        // Notify a thread waiting for any message id
+        agent.sleepersAwake(false);
         return;
     }
 
@@ -159,8 +160,7 @@ public class Message extends Thread
      *
      * @return the Connection associated with this message.
      */
-    /* package */
-    Connection getConnection()
+    public Connection getConnection()
     {
         return( conn );
     }
@@ -229,17 +229,37 @@ public class Message extends Thread
     /* package */
     void putReply( RfcLDAPMessage message)
     {
+        if( Debug.LDAP_DEBUG) {
+            Debug.trace( Debug.messages, name + "Queuing message");
+        }
         stopTimer();
         replies.addElement( message); 
-        if( message.getProtocolOp() instanceof RfcLDAPResult) {
+        if( message.getProtocolOp() instanceof RfcResponse) {
             if( Debug.LDAP_DEBUG) {
                 Debug.trace( Debug.messages, name +
                     "Queuing LDAPResult, message complete");
             }
             complete = true;
-        } else
-        if( Debug.LDAP_DEBUG) {
-            Debug.trace( Debug.messages, name + "Queuing message");
+            conn.removeMessage(this);   // Accept no more results for this msg
+            if( bindprops != null) {
+                if( Debug.LDAP_DEBUG) {
+                    Debug.trace( Debug.messages, name + "Bind properties found");
+                }
+                int res = ((RfcResponse)message.getProtocolOp()).getResultCode().getInt();
+                if(res == LDAPException.SUCCESS) {
+                    // Set bind properties into connection object
+                    conn.setBindProperties(bindprops);
+                    if( Debug.LDAP_DEBUG) {
+                        Debug.trace( Debug.messages, name + "Bind status success");
+                    }
+                } else { 
+                    if( Debug.LDAP_DEBUG) {
+                        Debug.trace( Debug.messages, name + "Bind status " + res);
+                    }
+                }
+                // release the bind semaphore and wake up all waiting threads
+                conn.freeBindSemaphore( msgId);
+            }
         }
         // wake up waiting threads
         sleepersAwake();
@@ -257,6 +277,10 @@ public class Message extends Thread
         replies.addElement( ex); 
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.messages, name + "Queuing exception");
+        }
+        if( bindprops != null) {
+            // release the bind semaphore and wake up all waiting threads
+            conn.freeBindSemaphore( msgId);
         }
         // wake up waiting threads
         sleepersAwake();
@@ -386,11 +410,19 @@ public class Message extends Thread
         try {
             sleep(mslimit);
             acceptReplies = false;
+            if( bindprops != null) {    
+                if( Debug.LDAP_DEBUG) {
+                    Debug.trace( Debug.messages, name + "client timeout, bind operation");
+                }
+                // Clear the semaphore after failed bind
+                conn.freeBindSemaphore( msgId);
+            } else {
+                if( Debug.LDAP_DEBUG) {
+                    Debug.trace( Debug.messages, name + "client timeout");
+                }
+            }
             agent.abandon( msgId, null );
             putException( new LDAPException("Client timeout", LDAPException.LDAP_TIMEOUT));
-            if( Debug.LDAP_DEBUG) {
-                Debug.trace( Debug.messages, name + "client timeout");
-            }
         } catch ( InterruptedException ie ) {
             if( Debug.LDAP_DEBUG) {
                 Debug.trace( Debug.messages, name + "timer stopped");

@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/client/MessageAgent.java,v 1.1 2000/11/22 22:17:41 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/client/MessageAgent.java,v 1.2 2000/11/27 22:56:35 vtag Exp $
 *
 * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
 * 
@@ -24,6 +24,7 @@ public class MessageAgent
 {
     private MessageVector messages = new MessageVector(5,5);
     private int indexLastRead =0;
+    private static Object nameLock = new Object(); // protect agentNum
     private static int agentNum = 0; // Debug, agent number
     private String name;             // String name for debug
 
@@ -31,7 +32,7 @@ public class MessageAgent
     {
         // Get a unique agent id for debug
         if( Debug.LDAP_DEBUG) {
-            synchronized( this) {
+            synchronized( nameLock) {
                 name = "MessageAgent(" + ++agentNum + "): ";
             }
             Debug.trace( Debug.messages, name + "Created");
@@ -66,14 +67,31 @@ public class MessageAgent
             ((Message)(msgs[i])).setAgent( this);
             messages.addElement( msgs[i]);
         }
-        if( msgs.length > 1) {
-            notifyAll();  // wake all threads waiting for messages
-        } else
-        if( msgs.length == 1) {
-            notify();    // only wake one thread
+        synchronized(messages) {
+            if( msgs.length > 1) {
+                messages.notifyAll();  // wake all threads waiting for messages
+            } else
+            if( msgs.length == 1) {
+                messages.notify();    // only wake one thread
+            }
+        }    
+        return;
+        }
+
+    /**
+     * Wakes up any threads waiting for messages in the message agent
+     *
+     */
+     public void sleepersAwake(boolean all)
+     {
+        synchronized(messages) {
+            if( all)
+                messages.notifyAll();
+            else
+                messages.notify();
         }
         return;
-    }
+     }
 
     /**
      * Returns true if any responses are queued for any of the agent's messages
@@ -98,7 +116,7 @@ public class MessageAgent
     }
     
     /**
-     * Returns true if any responses are queued for the specified msg id
+     * Returns true if any responses are queued for the specified msgId
      *
      * return false if no responses are queued, otherwise true
      */
@@ -182,25 +200,6 @@ public class MessageAgent
 	}
     
     /**
-     * Indicates whether all operations are complete
-     *
-     * @return true if all operations complete
-     */
-	public boolean isComplete()
-	{
-        int size = messages.size();
-        Message info;
-
-        for( int i = 0; i < size; i++ ) {
-            info = (Message)messages.elementAt(i);
-            if( ! info.isComplete()) {
-                return false;
-            }
-        }
-        return true;
-    }
-    
-    /**
      * Indicates whether a specific operation is complete
      *
      * @return true if a specific operation is complete
@@ -217,6 +216,17 @@ public class MessageAgent
         }
         return true;
 	}
+
+    /**
+     * Returns the Message object for a given messageID
+     *
+     * @param the message ID.
+     */
+    public Message getMessage(int msgid)
+            throws NoSuchFieldException
+    {
+        return (Message)messages.findMessageById( msgid);
+    }
 
     /**
      * Send a request to the server.  A Message class is created
@@ -236,13 +246,14 @@ public class MessageAgent
                             Connection      conn,
                             LDAPMessage     msg,
                             int             timeOut,
-                            LDAPListener    listen)
+                            LDAPListener    listen,
+                            BindProperties  bindProps)
             throws IOException
     {
         // creating a messageInfo causes the message to be sent
         // and a timer to be started if needed.
         Message message = new Message( msg, timeOut, conn,
-                                    this, listen);
+                                    this, listen, bindProps);
         messages.addElement( message);
         return;
     }
@@ -291,7 +302,7 @@ public class MessageAgent
                     messages.remove( info);
                     if( Debug.LDAP_DEBUG) {
                         Debug.trace( Debug.messages, name +
-                        "Remove completed Message(" + info.getMessageID() + ")");
+                        "getLDAPMessage: Remove completed Message(" + info.getMessageID() + ")");
                     }
                 }
                 return rfcMsg;
@@ -300,7 +311,7 @@ public class MessageAgent
             }
         } else {
             // A msgId was NOT specified, any message will do
-            synchronized( this ) {
+            synchronized( messages ) {
                 while( true) {
                     // If no messages for this agent, just return null
                     if( messages.size() == 0) {
@@ -322,7 +333,7 @@ public class MessageAgent
                              messages.remove( info);
                              if( Debug.LDAP_DEBUG) {
                                 Debug.trace( Debug.messages, name +
-                                "Remove completed Message(" +
+                                "getLDAPMessage: Remove completed Message(" +
                                 info.getMessageID() + ")");
                              }
                           }
@@ -330,7 +341,7 @@ public class MessageAgent
                        } catch( ArrayIndexOutOfBoundsException ex) {
                              if( Debug.LDAP_DEBUG) {
                                 Debug.trace( Debug.messages, name +
-                                "no messages queued for Message(" +
+                                "getLDAPMessage: no messages queued for Message(" +
                                 info.getMessageID() + ")");
                              }
                           continue;
@@ -340,13 +351,17 @@ public class MessageAgent
                     try {
                         if( Debug.LDAP_DEBUG) {
                            Debug.trace( Debug.messages, name +
-                           "waiting for incoming messages");
+                           "getLDAPMessage: waiting for incoming messages");
                         }
-                        wait();
+                        messages.wait();
+                        if( Debug.LDAP_DEBUG) {
+                           Debug.trace( Debug.messages, name +
+                           "getLDAPMessage: wake up from wait");
+                        }
                     } catch( InterruptedException ex) {
                         if( Debug.LDAP_DEBUG) {
                            Debug.trace( Debug.messages, name +
-                           "wake up from wait");
+                           "getLDAPMessage: interrupted up from wait");
                         }
                         // Look for any new queued message
                         continue;

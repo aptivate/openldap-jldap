@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchListener.java,v 1.22 2000/11/10 16:50:03 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchListener.java,v 1.23 2000/11/22 22:17:39 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -27,6 +27,11 @@ import com.novell.ldap.rfc2251.*;
 public class LDAPSearchListener implements LDAPListener
 {
  
+    // Connection number & name used only for debug
+    private static Object nameLock = new Object(); // protect connNum
+    private static int sListenNum = 0;
+    private String name = "";
+
    /**
     * The client listener object
     */
@@ -40,10 +45,28 @@ public class LDAPSearchListener implements LDAPListener
     /* package */
     LDAPSearchListener(MessageAgent agent)
     {
+        if( Debug.LDAP_DEBUG) {
+            synchronized(nameLock) {
+                name = "LDAPSearchListener(" + ++sListenNum + "): ";
+            }
+            Debug.trace( Debug.messages, name + "Created");
+        }
         this.agent = agent;
         return;    
     }
 
+    /**
+     * Returns the name used for debug
+     *
+     * @return name of object instance used for debug
+     */
+    /* package */
+    String getDebugName()
+    {
+        return name;
+    }
+
+   /**
    /**
     * Returns the internal client listener object
     *
@@ -54,7 +77,7 @@ public class LDAPSearchListener implements LDAPListener
     {
         return agent;
     }
-    
+
    /**
     * Returns the message IDs for all outstanding requests. 
     *
@@ -99,6 +122,10 @@ public class LDAPSearchListener implements LDAPListener
     */
     public void merge(LDAPResponseListener listener2)
     {
+        if( Debug.LDAP_DEBUG) {
+            Debug.trace( Debug.messages, name +
+                "merge " + listener2.getDebugName());
+        }
         agent.merge( listener2.getMessageAgent());
         return;
     }
@@ -111,7 +138,7 @@ public class LDAPSearchListener implements LDAPListener
      */
      public boolean isComplete( int msgid )
      {
-        return agent.isComplete();
+        return agent.isComplete( msgid);
      }
     
    /**
