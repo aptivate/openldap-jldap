@@ -39,6 +39,8 @@ public class LDAPModification {
    /**
     * Adds the listed values to the given attribute, creating
     * the attribute if it does not already exist.
+    *
+    *<p>ADD = 0</p>
     */
    public static final int ADD = 0;
 
@@ -47,6 +49,8 @@ public class LDAPModification {
     * removing the entire attribute (1) if no values are listed or
     * (2) if all current values of the attribute are listed for
     * deletion.
+    *
+    *<p>DELETE = 1</p>
     */
    public static final int DELETE = 1;
 
@@ -58,6 +62,7 @@ public class LDAPModification {
     * <p> A replace with no value deletes the entire attribute if it
     *  exists, and is ignored if the attribute does not exist. </p>
     *
+    *<p>REPLACE = 2</p>
     */
    public static final int REPLACE = 2;
 
