@@ -15,11 +15,15 @@
 
 package com.novell.ldap;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 
-import com.novell.ldap.rfc2251.*;
-import com.novell.ldap.asn1.*;
+import com.novell.ldap.asn1.ASN1Object;
+import com.novell.ldap.asn1.ASN1OctetString;
 import com.novell.ldap.client.Debug;
+import com.novell.ldap.rfc2251.RfcControls;
+import com.novell.ldap.rfc2251.RfcLDAPMessage;
+import com.novell.ldap.rfc2251.RfcSearchResultReference;
 
 /**
  *
@@ -32,6 +36,16 @@ public class LDAPSearchResultReference extends LDAPMessage {
     private static Object nameLock = new Object(); // protect agentNum
     private static int refNum = 0;  // Debug, LDAPConnection number
     private String name;             // String name for debug
+	
+	/**
+	 * This constructor was added to support default Serialization
+	 *
+	 */
+	public LDAPSearchResultReference()
+	{
+		super();
+	}
+    
 	/**
      * Constructs an LDAPSearchResultReference object.
      *
@@ -77,4 +91,21 @@ public class LDAPSearchResultReference extends LDAPMessage {
         }
         return( srefs );
    }
+     
+   protected void setDeserializedValues(LDAPMessage readObject, RfcControls asn1Ctrls)
+	  throws IOException, ClassNotFoundException {
+//	   Check if it is the correct message type
+	 if(!(readObject instanceof LDAPSearchResultReference))
+	   throw new ClassNotFoundException("Error occured while deserializing " +
+		   "LDAPSearchResultReference object");
+
+		LDAPSearchResultReference tmp = (LDAPSearchResultReference)readObject;
+	
+		String[] referals = tmp.getReferrals();
+	    tmp = null; //remove reference after getting properties
+
+	    message = new RfcLDAPMessage(new RfcSearchResultReference(referals)); 	 
+//	    Garbage collect the readObject from readDSML()..	
+	   readObject = null;
+	  }          
 }

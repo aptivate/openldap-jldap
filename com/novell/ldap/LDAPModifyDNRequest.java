@@ -15,8 +15,16 @@
 
 package com.novell.ldap;
 
-import com.novell.ldap.asn1.*;
-import com.novell.ldap.rfc2251.*;
+import java.io.IOException;
+
+import com.novell.ldap.asn1.ASN1Boolean;
+import com.novell.ldap.asn1.ASN1Object;
+import com.novell.ldap.rfc2251.RfcControls;
+import com.novell.ldap.rfc2251.RfcLDAPDN;
+import com.novell.ldap.rfc2251.RfcLDAPMessage;
+import com.novell.ldap.rfc2251.RfcModifyDNRequest;
+import com.novell.ldap.rfc2251.RfcRelativeLDAPDN;
+import com.novell.ldap.rfc2251.RfcRequest;
 
 /**
  * Represents an LDAP ModifyDN request
@@ -31,6 +39,15 @@ import com.novell.ldap.rfc2251.*;
  */
 public class LDAPModifyDNRequest extends LDAPMessage
 {
+	/**
+	 * This constructor was added to support default Serialization
+	 *
+	 */
+	public LDAPModifyDNRequest()
+	{
+		super(LDAPMessage.MODIFY_RDN_REQUEST);
+	}
+    
     /**
      * Constructs a ModifyDN (rename) Request.
      *
@@ -130,4 +147,28 @@ public class LDAPModifyDNRequest extends LDAPMessage
     {
         return getASN1Object().toString();
     }
+	protected void setDeserializedValues(LDAPMessage readObject, RfcControls asn1Ctrls)
+	   throws IOException, ClassNotFoundException {
+//		Check if it is the correct message type
+	  if(!(readObject instanceof LDAPModifyDNRequest))
+		throw new ClassNotFoundException("Error occured while deserializing " +
+			"LDAPModifyDNRequest object");
+
+		LDAPModifyDNRequest tmp = (LDAPModifyDNRequest)readObject;
+		String dn = tmp.getDN();
+		String newRdn = tmp.getNewRDN();
+		boolean deleteOldRdn = tmp.getDeleteOldRDN();
+		String newParentdn = tmp.getParentDN();
+		tmp = null; //remove reference after getting properties
+
+		RfcRequest operation =  new RfcModifyDNRequest(
+		new RfcLDAPDN(dn),
+		new RfcRelativeLDAPDN(newRdn),
+		new ASN1Boolean(deleteOldRdn),
+		(newParentdn != null) ? new RfcLDAPDN(newParentdn) : null);
+
+		message = new RfcLDAPMessage(operation, asn1Ctrls); 
+//		Garbage collect the readObject from readDSML()..	
+		readObject = null;
+   }           
 }

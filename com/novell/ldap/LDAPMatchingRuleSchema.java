@@ -14,8 +14,20 @@
  ******************************************************************************/
 
 package com.novell.ldap;
-import com.novell.ldap.client.SchemaParser;
+import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Iterator;
+
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+
+import com.novell.ldap.client.SchemaParser;
+import com.novell.ldap.util.LDAPXMLHandler;
+import com.novell.ldap.util.SAXEventMultiplexer;
+import com.novell.ldap.util.ValueXMLhandler;
 /**
  *  The schematic definition of a particular matching rule
  *  in a particular Directory Server.
@@ -35,6 +47,16 @@ public class LDAPMatchingRuleSchema extends LDAPSchemaElement
 {
     private String syntaxString;
     private String[] attributes;
+   
+	/**
+	 * This constructor was added to support default Serialization
+	 *
+	 */
+	public LDAPMatchingRuleSchema()
+	{
+		super(LDAPSchema.schemaTypeNames[LDAPSchema.MATCHING]);
+	}
+   
    /**
     * Constructs a matching rule definition for adding to or deleting from
     * a directory.
@@ -170,4 +192,149 @@ public class LDAPMatchingRuleSchema extends LDAPSchemaElement
       valueBuffer.append(" )");
       return valueBuffer.toString();
    }
+
+	 protected void setDeserializedValues(BufferedInputStream istream)
+	 throws IOException {
+	   LDAPMatchingRuleSchema readObject = 
+					   (LDAPMatchingRuleSchema)LDAPMatchingRuleSchema.readDSML(istream); 
+		//	super classes properties 
+		 this.oid = readObject.getID();	
+		 this.names = readObject.getNames();
+		 this.description = readObject.getDescription();
+		 this.obsolete = readObject.isObsolete(); 
+		 Enumeration enum = readObject.getQualifierNames();
+		 while(enum.hasMoreElements()){
+			 String xname = (String)enum.nextElement();
+			 String[] qualifierVals = readObject.getQualifier(xname);
+			 this.setQualifier(xname, qualifierVals);		
+		 }
+		 super.setValue(formatString());
+		  
+		//class specific properties
+		this.syntaxString = readObject.getSyntaxString();
+		this.attributes = readObject.getAttributes();
+				
+		 //Garbage collect the readObject from readDSML()..	
+		 readObject = null;
+	 } 
+    
+   //Overloaded function for DSML..
+   protected void writeValue(java.io.Writer out) throws IOException {
+  	
+	 String value = formatString();
+	 out.write(ValueXMLhandler.newLine(2));
+	 out.write("<value>");
+	 out.write(value);
+	 out.write("</value>");
+  
+   }        
+  
+   protected void writeValue(StringBuffer buff){
+  	
+	String value = formatString();
+	 buff.append(ValueXMLhandler.newLine(2));
+	 buff.append("<value>");
+	 buff.append(value);
+	 buff.append("</value>"); 
+   }
+	
+   /**
+	   * This method is used to deserialize the DSML encoded representation of
+	   * this class.
+	   * @param input InputStream for the DSML formatted data. 
+	   * @return Deserialized form of this class.
+	   * @throws IOException when serialization fails.
+	   */    
+	   public static Object readDSML(InputStream input)throws IOException    
+	   {
+		   SAXEventMultiplexer xmlreader = new SAXEventMultiplexer();
+		   xmlreader.setLDAPXMLHandler(getTopXMLHandler("LDAPAttribute",null));		
+		   return (LDAPMatchingRuleSchema) xmlreader.parseXML(input);
+	   }
+    
+	   //This is added to fix the bug in parsing logic written in 
+	   //getXMLHandler() method of this class 
+	   private static LDAPXMLHandler getTopXMLHandler(String tagname,LDAPXMLHandler parenthandler) {
+		 return new LDAPXMLHandler(tagname, parenthandler) {
+
+		   java.util.List valuelist = new ArrayList();
+		   protected void initHandler() {
+			 //set LDAPAttribute handler.
+			 setchildelement(LDAPMatchingRuleSchema.getXMLHandler("attr",this));
+		   }
+
+		   protected void endElement() {
+				setObject((LDAPMatchingRuleSchema)valuelist.get(0));
+		   }
+		   protected void addValue(String tag, Object value) {
+			 if (tag.equals("attr")) {
+			   valuelist.add(value);
+			 }
+		   }
+		 };
+
+	   }
+
+	   /**
+	   * This method return the LDAPHandler which handles the XML (DSML) tags
+	   * for this class
+	   * @param tagname Name of the Root tag used to represent this class.
+	   * @param parenthandler Parent LDAPXMLHandler for this tag.
+	   * @return LDAPXMLHandler to handle this element.
+	   */    
+	   static LDAPXMLHandler getXMLHandler(String tagname,LDAPXMLHandler parenthandler)
+	   {
+		   return new LDAPXMLHandler(tagname,parenthandler){
+		   String attrName;
+		   java.util.List valuelist= new ArrayList();
+		   protected void initHandler() {
+			 //set value handler.
+			 setchildelement(new ValueXMLhandler(this));          
+		   }
+
+		   protected void endElement() {
+			
+			   Iterator valueiterator = valuelist.iterator();
+			LDAPMatchingRuleSchema attr = new LDAPMatchingRuleSchema();
+			
+			   byte[] temp = (byte[])valueiterator.next();
+			   StringBuffer bf = new StringBuffer(temp.length);
+			   for(int i=0; i < temp.length; i++)
+				   bf.append((char)temp[i]);
+         	
+			   try {
+				   
+				SchemaParser matchParser = new SchemaParser(bf.toString());
+				attr.names = (String[])matchParser.getNames().clone();
+				attr.oid = matchParser.getID();
+				attr.description = matchParser.getDescription();
+				attr.obsolete = matchParser.getObsolete();
+				attr.syntaxString = matchParser.getSyntax();
+				
+			   attr.setValue(attr.formatString());
+			   } catch( IOException e) {
+				   throw new RuntimeException(e.toString());
+			   }
+			   setObject(attr);
+			   
+			 valuelist.clear();
+		   }
+		   protected void addValue(String tag,Object value)
+		   {
+			   if (tag.equals("value"))
+			   {
+				   valuelist.add(value);
+			   }
+		   }
+
+		   protected void handleAttributes(Attributes attributes)throws SAXException {
+			   attrName = attributes.getValue("name");
+			   if (attrName== null)
+				   throw new SAXException("invalid attr Tag, name is mandatory element: ");
+		   }
+    		
+		   };
+    	
+	   }
+
 }

@@ -47,13 +47,15 @@ public class ValueXMLhandler extends LDAPXMLHandler {
   protected void endElement() {
     try {
       byte[] temp;
+      String name = getName();
       String value = getValue();
       if (this.isBase64) {
         temp = Base64.decode(value);
       } else {
         temp = value.getBytes("UTF-8");
       }
-      getParent().addValue("value", temp);
+      //getParent().addValue("value", temp);
+	  getParent().addValue(name, temp);
     } catch (UnsupportedEncodingException e) {
     }
   }
@@ -65,5 +67,47 @@ public class ValueXMLhandler extends LDAPXMLHandler {
       isBase64 = false;
     }
   }
+  
+   /**
+   * This mehod separates whitespaces in non-text nodes during XML de-serialization.
+   * The whitespaces are added in non-text nodes because of XML doc written during
+   * Serialization needs to be stored with proper indentation. 
+   * @param whole The XML String with whitespaces in non-text nodes read from stream
+   * during de-serialization
+   * @param buffer StringBuffer which holds the resulting string after removal of 
+   * unwanted whitespaces in non-text nodes
+   */
+   public static void parseInput(String whole, StringBuffer buffer){		 
+		String token, part;
+		int start, end;
+		start = whole.indexOf('<');
+		if(start != -1)
+		{
+			//if Index of start is not '<'
+			if(start > 0)
+				  start = 0;
+			end = whole.indexOf('>');
+			token = whole.substring(start, end + 1);
+			buffer.append(token);
+			part = whole.substring(end + 1).trim();
+			parseInput(part, buffer);  
+		}
+		return;
+	 }
+   
+	 /**
+	 * This mehod supports for adding indentation to the XML document written 
+	 * during XML serialization.
+	 * @param indentTabs The integer specifying the number of indentation tabs
+	 */
+	 public static String newLine(int indentTabs){
+		  String tabString = "    "; 
+		  String result = "\n";   
+		
+		  for (int i=0; i< indentTabs; i++){
+			  result += tabString;
+		  }
+		  return result;
+	 }
 
 }

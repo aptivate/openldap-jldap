@@ -15,9 +15,16 @@
 
 package com.novell.ldap;
 
-import com.novell.ldap.asn1.*;
-import com.novell.ldap.rfc2251.*;
+import java.io.IOException;
 import java.util.Iterator;
+
+import com.novell.ldap.asn1.ASN1Object;
+import com.novell.ldap.asn1.ASN1OctetString;
+import com.novell.ldap.asn1.ASN1Sequence;
+import com.novell.ldap.asn1.ASN1Set;
+import com.novell.ldap.rfc2251.RfcControls;
+import com.novell.ldap.rfc2251.RfcLDAPMessage;
+import com.novell.ldap.rfc2251.RfcSearchResultEntry;
 /**
  *  Encapsulates a single search result that is in response to an asynchronous
  *  search operation.
@@ -30,6 +37,15 @@ public class LDAPSearchResult extends LDAPMessage
 {
 
     private LDAPEntry entry = null;
+    
+	/**
+	 * This constructor was added to support default Serialization
+	 *
+	 */
+	public LDAPSearchResult()
+	{
+		super();
+	}
     
     /**
      * Constructs an LDAPSearchResult object.
@@ -84,7 +100,7 @@ public class LDAPSearchResult extends LDAPMessage
    * @param entry The LDAPEntry to be encoded.
    * @return ASN Encoded representation of the entry.
    */
-  private static ASN1Sequence getEntrySequence(LDAPEntry entry) {
+	private static ASN1Sequence getEntrySequence(LDAPEntry entry) {
 		if (entry == null) {
 			throw new IllegalArgumentException("Argument \"entry\" cannot be null");
 		}
@@ -155,4 +171,25 @@ public class LDAPSearchResult extends LDAPMessage
         }
         return str;
     }
+    
+	protected void setDeserializedValues(LDAPMessage readObject, RfcControls asn1Ctrls)
+		   throws IOException, ClassNotFoundException {
+//			Check if it is the correct message type	
+		  if(!(readObject instanceof LDAPSearchResult))
+			throw new ClassNotFoundException("Error occured while deserializing " +
+				"LDAPSearchResult object");
+
+			LDAPSearchResult tmp = (LDAPSearchResult)readObject;
+			  LDAPEntry entry = tmp.getEntry();
+			  tmp = null; //remove reference after getting properties
+
+			  message = new RfcLDAPMessage(
+							  new RfcSearchResultEntry(
+								  new ASN1OctetString(entry.getDN()),
+								  LDAPSearchResult.getEntrySequence(entry)),
+								  asn1Ctrls);
+//			Garbage collect the readObject from readDSML()..	
+			readObject = null;
+	   }       
+        
 }

@@ -15,10 +15,26 @@
 
 package com.novell.ldap;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
-import com.novell.ldap.asn1.*;
-import com.novell.ldap.rfc2251.*;
-import com.novell.ldap.client.*;
+
+import com.novell.ldap.asn1.ASN1Enumerated;
+import com.novell.ldap.asn1.ASN1OctetString;
+import com.novell.ldap.asn1.ASN1Sequence;
+import com.novell.ldap.client.Debug;
+import com.novell.ldap.client.ReferralInfo;
+import com.novell.ldap.rfc2251.RfcAddResponse;
+import com.novell.ldap.rfc2251.RfcCompareResponse;
+import com.novell.ldap.rfc2251.RfcControls;
+import com.novell.ldap.rfc2251.RfcDelResponse;
+import com.novell.ldap.rfc2251.RfcLDAPDN;
+import com.novell.ldap.rfc2251.RfcLDAPMessage;
+import com.novell.ldap.rfc2251.RfcLDAPString;
+import com.novell.ldap.rfc2251.RfcModifyDNResponse;
+import com.novell.ldap.rfc2251.RfcModifyResponse;
+import com.novell.ldap.rfc2251.RfcReferral;
+import com.novell.ldap.rfc2251.RfcResponse;
+import com.novell.ldap.rfc2251.RfcSearchResultDone;
 
 /**
  *  A message received from an LDAPServer
@@ -40,6 +56,15 @@ public class LDAPResponse extends LDAPMessage
     private InterThreadException exception = null;
     private ReferralInfo activeReferral;
 
+	/**
+	 * This constructor was added to support default Serialization
+	 *
+	 */
+	public LDAPResponse()
+	{
+		super();
+	}
+    
     /**
      * Creates an LDAPResponse using an LDAPException.
      * Used to wake up the user following an abandon.
@@ -155,7 +180,7 @@ public class LDAPResponse extends LDAPMessage
 
 	}
 
-    private static ASN1Sequence RfcResultFactory(   int type,
+	private static ASN1Sequence RfcResultFactory(   int type,
                                                     int resultCode,
                                                     String matchedDN,
                                                     String serverMessage,
@@ -455,4 +480,26 @@ public class LDAPResponse extends LDAPMessage
      {
         return activeReferral;
      }
+	protected void setDeserializedValues(LDAPMessage readObject, RfcControls asn1Ctrls)
+	   throws IOException, ClassNotFoundException {
+//	  Check if it is the correct message type
+	  if(!(readObject instanceof LDAPResponse))
+		throw new ClassNotFoundException("Error occured while deserializing " +
+			"LDAPResponse object");
+
+		LDAPResponse tmp = (LDAPResponse)readObject;
+	
+		int type = tmp.getType();
+		int resultCode = tmp.getResultCode();
+		String matchedDN = tmp.getMatchedDN();
+		String serverMessage = tmp.getErrorMessage();
+		String[] referrals = tmp.getReferrals();
+		tmp = null; //remove reference after getting properties
+
+		message = new RfcLDAPMessage(
+			LDAPResponse.RfcResultFactory( type, resultCode, matchedDN,
+				  serverMessage, referrals)); 	 
+//		Garbage collect the readObject from readDSML()..	
+		readObject = null;
+   }       
 }

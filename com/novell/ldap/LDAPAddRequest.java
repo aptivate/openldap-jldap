@@ -15,11 +15,22 @@
 
 package com.novell.ldap;
 
-import com.novell.ldap.asn1.*;
-import com.novell.ldap.rfc2251.*;
-
+import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Iterator;
+
+import com.novell.ldap.asn1.ASN1Object;
+import com.novell.ldap.asn1.ASN1OctetString;
+import com.novell.ldap.asn1.ASN1SetOf;
+import com.novell.ldap.rfc2251.RfcAddRequest;
+import com.novell.ldap.rfc2251.RfcAttributeDescription;
+import com.novell.ldap.rfc2251.RfcAttributeList;
+import com.novell.ldap.rfc2251.RfcAttributeTypeAndValues;
+import com.novell.ldap.rfc2251.RfcAttributeValue;
+import com.novell.ldap.rfc2251.RfcControls;
+import com.novell.ldap.rfc2251.RfcLDAPDN;
+import com.novell.ldap.rfc2251.RfcLDAPMessage;
+import com.novell.ldap.rfc2251.RfcRequest;
 
 /**
  * Represents an LDAP Add Request.
@@ -32,6 +43,16 @@ import java.util.Iterator;
  */
 public class LDAPAddRequest extends LDAPMessage
 {
+    
+	/**
+	 * This constructor was added to support default Serialization
+	 *
+	 */
+	public LDAPAddRequest()
+	{
+		super(LDAPMessage.ADD_REQUEST);
+	}
+	
     /**
      * Constructs a request to add an entry to the directory.
      *
@@ -84,7 +105,7 @@ public class LDAPAddRequest extends LDAPMessage
      *
      * @param entry The LDAPEntry associated with this add request.
      */
-    private static final RfcAttributeList makeRfcAttrList( LDAPEntry entry)
+	private static final RfcAttributeList makeRfcAttrList( LDAPEntry entry)
     {
         // convert Java-API LDAPEntry to RFC2251 AttributeList
         LDAPAttributeSet attrSet = entry.getAttributeSet();
@@ -112,4 +133,22 @@ public class LDAPAddRequest extends LDAPMessage
     {
         return getASN1Object().toString();
     }
+	protected void setDeserializedValues(LDAPMessage readObject, RfcControls asn1Ctrls)
+			   throws IOException, ClassNotFoundException {
+//	  Check if it is the correct message type
+	  if(!(readObject instanceof LDAPAddRequest))
+		throw new ClassNotFoundException("Error occured while deserializing " +
+			"LDAPAddRequest object");
+
+		LDAPAddRequest tmp = (LDAPAddRequest)readObject;
+		LDAPEntry entry = tmp.getEntry();
+		tmp = null; //remove reference after getting properties
+
+		RfcRequest operation =  new RfcAddRequest(
+			new RfcLDAPDN(entry.getDN()), 
+					LDAPAddRequest.makeRfcAttrList( entry));
+		message = new RfcLDAPMessage(operation, asn1Ctrls); 
+//		Garbage collect the readObject from readDSML()..	
+		readObject = null;
+   }           
 }

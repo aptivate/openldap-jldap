@@ -15,11 +15,21 @@
 
 package com.novell.ldap;
 
-import com.novell.ldap.client.Debug;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.HashMap;
+import java.util.Iterator;
+
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+
+import com.novell.ldap.client.Debug;
 import com.novell.ldap.client.EnumeratedIterator;
+import com.novell.ldap.util.LDAPXMLHandler;
+import com.novell.ldap.util.SAXEventMultiplexer;
 
 /**
  * <p>Represents a schema entry that controls one or more entries held by a
@@ -77,7 +87,7 @@ import com.novell.ldap.client.EnumeratedIterator;
  * @see LDAPConnection#fetchSchema
  * @see LDAPConnection#getSchemaDN
  */
-public class LDAPSchema extends LDAPEntry implements java.io.Serializable{
+public class LDAPSchema extends LDAPEntry{
 
     /** The idTable hash on the oid (or integer ID for DITStructureRule) and
      *  is used for retrieving enumerations
@@ -105,7 +115,7 @@ public class LDAPSchema extends LDAPEntry implements java.io.Serializable{
                 "matchingRules",
                 "matchingRuleUse"
     };
-
+    
     /** An index into the the arrays schemaTypeNames, idTable, and nameTable */
     /*package*/
     static final int ATTRIBUTE      = 0;
@@ -132,6 +142,15 @@ public class LDAPSchema extends LDAPEntry implements java.io.Serializable{
     static final int MATCHING_USE   = 7;
 
 
+	/**
+	 * This constructor was added to support default Serialization
+	 *
+	 */
+	public LDAPSchema()
+	{
+		super();
+	}
+    
     /**
      * Constructs an LDAPSchema object from attributes of an LDAPEntry.
      * <p>The object is empty if the entry parameter contains no schema
@@ -636,28 +655,54 @@ public class LDAPSchema extends LDAPEntry implements java.io.Serializable{
             throw new IllegalArgumentException(
                 "The specified schema element type is not recognized");
     }
-    /**
-    *  Writes the object state to a stream in standard Default Binary format
-    *  This function wraps ObjectOutputStream' s defaultWriteObject() to write
-    *  the non-static and non-transient fields of the current class to the stream
-    *   
-    *  @param objectOStrm  The OutputSteam where the Object need to be written
-    */
-    private void writeObject(java.io.ObjectOutputStream objectOStrm)
-	    throws java.io.IOException {
-		objectOStrm.defaultWriteObject();
-    }
     
-    /**
-    *  Reads the serialized object from the underlying input stream.
-    *  This function wraps ObjectInputStream's  defaultReadObject() function
-    *
-    *  @param objectIStrm  InputStream used to recover those objects previously serialized. 
-    */
-    private void readObject(java.io.ObjectInputStream objectIStrm)
-         throws java.io.IOException, ClassNotFoundException
-    {
-	  objectIStrm.defaultReadObject();
-    }
-
+	/**
+		* This method is used to deserialize the DSML encoded representation of
+		* this class.
+		* @param input InputStream for the DSML formatted data. 
+		* @return Deserialized form of this class.
+		* @throws IOException when serialization fails.
+		*/     
+		public static Object readDSML(InputStream input)throws IOException    
+			 {
+			 SAXEventMultiplexer xmlreader = new SAXEventMultiplexer();
+			 xmlreader.setLDAPXMLHandler(getXMLHandler("LDAPEntry",null));		
+			 return (LDAPSchema) xmlreader.parseXML(input);
+			 }
+		/**
+		* This method return the LDAPHandler which handles the XML (DSML) tags
+		* for this class
+		* @param tagname Name of the Root tag used to represent this class.
+		* @param parenthandler Parent LDAPXMLHandler for this tag.
+		* @return LDAPXMLHandler to handle this element.
+		*/    		 
+		static LDAPXMLHandler getXMLHandler(String tagname,LDAPXMLHandler parenthandler) {
+			return new LDAPXMLHandler(tagname, parenthandler) {
+				String dn;
+				List valuelist = new ArrayList();
+				protected void initHandler() {
+					//set LDAPAttribute handler.
+					setchildelement(LDAPAttribute.getXMLHandler("attr",this));
+				}
+				protected void endElement() {
+					LDAPAttributeSet attrset = new LDAPAttributeSet();
+					attrset.addAll(valuelist);
+					LDAPEntry entry = new LDAPEntry(dn,attrset);				
+					LDAPSchema sch = new LDAPSchema(entry);
+					setObject(sch);
+				}
+				protected void addValue(String tag, Object value) {
+					if (tag.equals("attr")) {
+						valuelist.add(value);
+					}
+				}
+				protected void handleAttributes(Attributes attributes)throws SAXException {
+						dn = attributes.getValue("dn");
+						if (dn== null)
+							throw new SAXException("invalid entry Tag, dn is mandatory element: ");
+							}
+    		
+				};
+			}
+    
 }

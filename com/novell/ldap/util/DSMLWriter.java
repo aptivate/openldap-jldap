@@ -165,7 +165,7 @@ public class DSMLWriter implements LDAPWriter {
         out.flush();
         return;
     }
-
+   
     /**
      * Writes the specified strings as XML comments.
      * @param lines Comments to be written
@@ -693,6 +693,11 @@ public class DSMLWriter implements LDAPWriter {
             throws IOException, LDAPLocalException
     {
         checkState(false);
+        
+//		  added this fix for OCT' 04 NDK
+		  if( (controls !=null) && (controls.length != 0)) {
+			  writeControls(controls, 3);
+		  }
         newLine(1);
         out.write("</modDNRequest>");
         return;
@@ -757,6 +762,12 @@ public class DSMLWriter implements LDAPWriter {
             newLine(2);
             out.write("</modification>");
         }
+        
+//		added this fix for OCT' 04 NDK
+		  if( (controls !=null) && (controls.length != 0)) {
+			  writeControls(controls, 3);
+		  }
+        
         newLine(1);
         out.write("</modifyRequest>");
         return;
@@ -779,6 +790,11 @@ public class DSMLWriter implements LDAPWriter {
             throws IOException, LDAPLocalException
     {
         checkState(false);
+//		added this fix for OCT' 04 NDK
+		  if( (controls !=null) && (controls.length != 0)) {
+			  writeControls(controls, 3);
+		  }
+        
         newLine(1);
         out.write("</delRequest>");
         return;
@@ -815,7 +831,12 @@ public class DSMLWriter implements LDAPWriter {
             out.write(Base64.encode(vals));
             out.write("</requestValue>");
         }
-
+        
+		//		  added this fix for OCT' 04 NDK
+		if( (controls !=null) && (controls.length != 0)) {
+			writeControls(controls, 3);
+		}
+				
         newLine(1);
         out.write("</extendedRequest>");
         return;
@@ -851,6 +872,12 @@ public class DSMLWriter implements LDAPWriter {
         out.write("</value>");
         newLine(2);
         out.write("</assertion>");
+        
+//		added this fix for OCT' 04 NDK
+		  if( (controls !=null) && (controls.length != 0)) {
+			  writeControls(controls, 3);
+		  }
+        
         newLine(1);
         out.write("</compareRequest>");
     }

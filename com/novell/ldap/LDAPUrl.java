@@ -15,16 +15,21 @@
 
 package com.novell.ldap;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.Externalizable;
 import java.io.IOException;
 import java.io.InputStream;
-
-import java.util.Enumeration;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.net.MalformedURLException;
+import java.util.Enumeration;
 
-import com.novell.ldap.client.Debug;
 import com.novell.ldap.client.ArrayEnumeration;
+import com.novell.ldap.client.Debug;
 import com.novell.ldap.util.LDAPXMLHandler;
 import com.novell.ldap.util.SAXEventMultiplexer;
+import com.novell.ldap.util.ValueXMLhandler;
 
  /**
  *
@@ -37,7 +42,7 @@ import com.novell.ldap.util.SAXEventMultiplexer;
  *
  * @see LDAPConnection#search
  */
-public class LDAPUrl implements java.lang.Cloneable,java.io.Serializable
+public class LDAPUrl implements java.lang.Cloneable,Externalizable
 {
     static private final int    DEFAULT_SCOPE  = LDAPConnection.SCOPE_BASE;
 
@@ -52,6 +57,15 @@ public class LDAPUrl implements java.lang.Cloneable,java.io.Serializable
     private int        scope  = DEFAULT_SCOPE;       // Scope
     private String[]   extensions = null;            // Extensions
 
+	/**
+	 * This constructor was added to support default Serialization
+	 *
+	 */
+	public LDAPUrl()
+	{
+		super();
+	}
+    
     /**
     * Constructs a URL object with the specified string as the URL.
     *
@@ -839,29 +853,73 @@ public class LDAPUrl implements java.lang.Cloneable,java.io.Serializable
 
   }
      /**
-    *  Writes the object state to a stream in standard Default Binary format
-    *  This function wraps ObjectOutputStream' s defaultWriteObject() to write
-    *  the non-static and non-transient fields of the current class to the stream
-    *   
-    *  @param objectOStrm  The OutputSteam where the Object need to be written
-    */
-    
-    private void writeObject(java.io.ObjectOutputStream objectOStrm)
-	    throws java.io.IOException {
-		objectOStrm.defaultWriteObject();
-    }
-    
-    /**
-    *  Reads the serialized object from the underlying input stream.
-    *  This function wraps ObjectInputStream's  defaultReadObject() function
-    *
-    *  @param objectIStrm  InputStream used to recover those objects previously serialized. 
-    */
-    
-    private void readObject(java.io.ObjectInputStream objectIStrm)
-         throws java.io.IOException, ClassNotFoundException
-    {
-	  objectIStrm.defaultReadObject();
-    }
+	 * Writes the object state to a stream in XML format  
+	 * @param out The ObjectOutput stream where the Object in XML format 
+	 * is being written to
+	 * @throws IOException - If I/O errors occur
+	 */  
+	 public void writeExternal(ObjectOutput out) throws IOException
+	 {
+		  StringBuffer buff = new StringBuffer();
+		  buff.append(ValueXMLhandler.newLine(0));
+		  buff.append(ValueXMLhandler.newLine(0));
+		
+		  String header = "";
+		  header += "*************************************************************************\n";
+		  header += "** The encrypted data above and below is the Class definition and  ******\n";
+		  header += "** other data specific to Java Serialization Protocol. The data  ********\n";
+		  header += "** which is of most application specific interest is as follows... ******\n";
+		  header += "*************************************************************************\n";
+		  header += "****************** Start of application data ****************************\n";
+		  header += "*************************************************************************\n";
+		  
+		  buff.append(header);
+		  buff.append(ValueXMLhandler.newLine(0));
+		  
+		  buff.append("<LDAPUrl>");
+		  buff.append(toString());
+		  buff.append("</LDAPUrl>"); 
+		  buff.append(ValueXMLhandler.newLine(0));
+		  buff.append(ValueXMLhandler.newLine(0));
+		
+		  String tail = "";
+		  tail += "*************************************************************************\n";
+		  tail += "****************** End of application data ******************************\n";
+		  tail += "*************************************************************************\n";
+		  
+		  buff.append(tail);
+		  buff.append(ValueXMLhandler.newLine(0));       
+		  out.writeUTF(buff.toString());	
+	 }
+	 /**
+	 * Reads the serialized object from the underlying input stream.
+	 * @param in The ObjectInput stream where the Serialized Object is being read from
+	 * @throws IOException - If I/O errors occur
+	 * @throws ClassNotFoundException - If the class for an object being restored 
+	 * cannot be found.
+	 */ 
+	 public void readExternal(ObjectInput in) 
+			throws IOException, ClassNotFoundException
+	 {
+		String readData = in.readUTF();
+		String readProperties = readData.substring(readData.indexOf('<'), 
+				  (readData.lastIndexOf('>') + 1));
+	  			
+		//Insert  parsing logic here for separating whitespaces in non-text nodes
+		StringBuffer parsedBuff = new StringBuffer();
+		ValueXMLhandler.parseInput(readProperties, parsedBuff);
+	    
+		BufferedInputStream istream = 
+				new BufferedInputStream(
+						new ByteArrayInputStream((parsedBuff.toString()).getBytes()));
+	
+		LDAPUrl readObject = 
+					  (LDAPUrl)LDAPUrl.readDSML(istream);
+	
+		this.parseURL( readObject.toString() );
+		
+		//Garbage collect the readObject from readDSML()..	
+		readObject = null;
+	 }
 
 }

@@ -15,7 +15,16 @@
 
 package com.novell.ldap;
 
-import com.novell.ldap.rfc2251.*;
+import java.io.IOException;
+
+import com.novell.ldap.rfc2251.RfcAssertionValue;
+import com.novell.ldap.rfc2251.RfcAttributeDescription;
+import com.novell.ldap.rfc2251.RfcAttributeValueAssertion;
+import com.novell.ldap.rfc2251.RfcCompareRequest;
+import com.novell.ldap.rfc2251.RfcControls;
+import com.novell.ldap.rfc2251.RfcLDAPDN;
+import com.novell.ldap.rfc2251.RfcLDAPMessage;
+import com.novell.ldap.rfc2251.RfcRequest;
 
 /**
  * Represents an LDAP Compare Request.
@@ -28,6 +37,15 @@ import com.novell.ldap.rfc2251.*;
  */
 public class LDAPCompareRequest extends LDAPMessage
 {
+	/**
+	 * This constructor was added to support default Serialization
+	 *
+	 */
+	public LDAPCompareRequest()
+	{
+		super(LDAPMessage.COMPARE_REQUEST);
+	}
+    
     /**
      * Constructs an LDAPCompareRequest Object.
      *<br><br>
@@ -88,5 +106,27 @@ public class LDAPCompareRequest extends LDAPMessage
     public String getDN()
     {
         return getASN1Object().getRequestDN();
-    }        
+    }
+	protected void setDeserializedValues(LDAPMessage readObject, RfcControls asn1Ctrls)
+		   throws IOException, ClassNotFoundException {
+//			Check if it is the correct message type
+		  if(!(readObject instanceof LDAPCompareRequest))
+			throw new ClassNotFoundException("Error occured while deserializing " +
+				"LDAPCompareRequest object");
+
+			LDAPCompareRequest tmp = (LDAPCompareRequest)readObject;
+			String dn = tmp.getDN();
+			String name = tmp.getAttributeDescription();
+			byte[] value = tmp.getAssertionValue();
+			tmp = null; //remove reference after getting properties
+
+			RfcRequest operation =  new RfcCompareRequest(
+				   new RfcLDAPDN(dn),
+				   new RfcAttributeValueAssertion(
+					   new RfcAttributeDescription(name),
+					   new RfcAssertionValue(value))); 	 
+			message = new RfcLDAPMessage(operation, asn1Ctrls); 
+//			Garbage collect the readObject from readDSML()..	
+			readObject = null;
+	   }       
 }

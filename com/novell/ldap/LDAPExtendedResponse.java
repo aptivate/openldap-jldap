@@ -15,11 +15,19 @@
 
 package com.novell.ldap;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 
-import com.novell.ldap.rfc2251.*;
-import com.novell.ldap.asn1.*;
+import com.novell.ldap.asn1.ASN1Enumerated;
+import com.novell.ldap.asn1.ASN1OctetString;
 import com.novell.ldap.client.RespExtensionSet;
+import com.novell.ldap.rfc2251.RfcControls;
+import com.novell.ldap.rfc2251.RfcExtendedResponse;
+import com.novell.ldap.rfc2251.RfcLDAPDN;
+import com.novell.ldap.rfc2251.RfcLDAPMessage;
+import com.novell.ldap.rfc2251.RfcLDAPOID;
+import com.novell.ldap.rfc2251.RfcLDAPString;
+import com.novell.ldap.rfc2251.RfcReferral;
 
 
 /**
@@ -30,12 +38,20 @@ import com.novell.ldap.client.RespExtensionSet;
  *  The response can contain the OID of the extension, an octet string
  *  with the operation's data, both, or neither.
  */
-public class LDAPExtendedResponse extends LDAPResponse implements 
-    java.io.Serializable {
+public class LDAPExtendedResponse extends LDAPResponse {
 
     private static RespExtensionSet registeredResponses =
                                                     new RespExtensionSet();
 
+	/**
+	 * This constructor was added to support default Serialization
+	 *
+	 */
+	public LDAPExtendedResponse()
+	{
+		super(LDAPMessage.EXTENDED_RESPONSE);
+	}
+  
   /**
    * Creates the Extended Response Object passing the individual parameters.
    *  
@@ -147,28 +163,40 @@ public class LDAPExtendedResponse extends LDAPResponse implements
     {
         return registeredResponses;
     }
-    /**
-    *  Writes the object state to a stream in standard Default Binary format
-    *  This function wraps ObjectOutputStream' s defaultWriteObject() to write
-    *  the non-static and non-transient fields of the current class to the stream
-    *   
-    *  @param objectOStrm  The OutputSteam where the Object need to be written
-    */
-    private void writeObject(java.io.ObjectOutputStream objectOStrm)
-	    throws java.io.IOException {
-		objectOStrm.defaultWriteObject();
-    }
-    
-    /**
-    *  Reads the serialized object from the underlying input stream.
-    *  This function wraps ObjectInputStream's  defaultReadObject() function
-    *
-    *  @param objectIStrm  InputStream used to recover those objects previously serialized. 
-    */
-    private void readObject(java.io.ObjectInputStream objectIStrm)
-         throws java.io.IOException, ClassNotFoundException
-    {
-	  objectIStrm.defaultReadObject();
-    }
+	protected void setDeserializedValues(LDAPMessage readObject, RfcControls asn1Ctrls)
+		   throws IOException, ClassNotFoundException {
+//		  Check if it is the correct message type
+		  if(!(readObject instanceof LDAPExtendedResponse))
+			throw new ClassNotFoundException("Error occured while deserializing " +
+				"LDAPExtendedResponse object");
+			
+			LDAPExtendedResponse tmp = (LDAPExtendedResponse)readObject;
+	
+			//Parent class properties
+			int type = tmp.getType();
+			int resultCode = tmp.getResultCode();
+			String matchedDN = tmp.getMatchedDN();
+			String serverMessage = tmp.getErrorMessage();
+			String[] referrals = tmp.getReferrals();
+			
+			//This class specific properties
+			String extendedid = tmp.getID();
+			byte[] extendedvalue = tmp.getValue();
+			tmp = null; //remove reference after getting properties
 
+			message = new RfcLDAPMessage(
+			new RfcExtendedResponse(
+			  new ASN1Enumerated(resultCode),
+			  (matchedDN != null) ? new RfcLDAPDN(matchedDN) : new RfcLDAPDN(""),
+			  (serverMessage != null)
+				? new RfcLDAPString(serverMessage)
+				: new RfcLDAPString(""),
+			  (referrals != null) ? new RfcReferral(referrals) : null,
+			  (extendedid != null) ? new RfcLDAPOID(extendedid) : null,
+			  (extendedvalue != null)
+				? new ASN1OctetString(extendedvalue)
+				: null)); 
+//			Garbage collect the readObject from readDSML()..	
+			readObject = null;
+	   }           
 }

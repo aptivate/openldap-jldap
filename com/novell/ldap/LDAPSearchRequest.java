@@ -15,10 +15,20 @@
 
 package com.novell.ldap;
 
-import com.novell.ldap.asn1.*;
-import com.novell.ldap.rfc2251.*;
-
+import java.io.IOException;
 import java.util.Iterator;
+
+import com.novell.ldap.asn1.ASN1Boolean;
+import com.novell.ldap.asn1.ASN1Enumerated;
+import com.novell.ldap.asn1.ASN1Integer;
+import com.novell.ldap.rfc2251.RfcAttributeDescription;
+import com.novell.ldap.rfc2251.RfcAttributeDescriptionList;
+import com.novell.ldap.rfc2251.RfcControls;
+import com.novell.ldap.rfc2251.RfcFilter;
+import com.novell.ldap.rfc2251.RfcLDAPDN;
+import com.novell.ldap.rfc2251.RfcLDAPMessage;
+import com.novell.ldap.rfc2251.RfcRequest;
+import com.novell.ldap.rfc2251.RfcSearchRequest;
 
 /**
  * Represents an LDAP Search request.
@@ -103,7 +113,15 @@ public class LDAPSearchRequest extends LDAPMessage {
      * Note: A FINAL SUBSTRING is represented as "*<value>".
      */
     public final static int FINAL = 2;
-
+    
+	/**
+	 * This constructor was added to support default Serialization
+	 *
+	 */
+    public LDAPSearchRequest(){
+    	super(LDAPMessage.SEARCH_REQUEST);
+    }
+    
     /**
      * Constructs an LDAP Search Request.
      *
@@ -414,4 +432,43 @@ public class LDAPSearchRequest extends LDAPMessage {
     {
         return getRfcFilter().getFilterIterator();
     }
+    
+	protected void setDeserializedValues(LDAPMessage readObject, RfcControls asn1Ctrls)
+	   throws IOException, ClassNotFoundException {
+//		Check if it is the correct message type
+	  if(!(readObject instanceof LDAPSearchRequest))
+	  	throw new ClassNotFoundException("Error occured while deserializing " +	  		"LDAPSearchRequest object");
+	  try{
+		   LDAPSearchRequest tmpObject = (LDAPSearchRequest)readObject;	
+		   String base = tmpObject.getDN();
+		   int scope = tmpObject.getScope();
+		   String filter = tmpObject.getStringFilter();
+		   String[] attrs = tmpObject.getAttributes();
+		   int dereference = tmpObject.getDereference();
+		   int maxResults = tmpObject.getMaxResults();
+		   int serverTimeLimit = tmpObject.getServerTimeLimit();
+		   boolean typesOnly = tmpObject.isTypesOnly();
+		  tmpObject = null; //remove reference after getting properties
+	
+		  RfcRequest operation = null;
+		  operation =  new RfcSearchRequest (
+					  new RfcLDAPDN(base),
+					  new ASN1Enumerated(scope),
+					  new ASN1Enumerated(dereference),
+					  new ASN1Integer(maxResults),
+					  new ASN1Integer(serverTimeLimit),
+					  new ASN1Boolean(typesOnly),
+					  new RfcFilter(filter),
+					  new RfcAttributeDescriptionList(attrs)); 	 
+		    	
+			message = new RfcLDAPMessage(operation, asn1Ctrls); 
+	  }
+	  catch(LDAPException le){
+	 	  throw new IOException("LDAPException occured while de-serializing the stored " +
+		  "object. There is a corruption in stored object. Restore it before" +
+		  "using this feature." + le);
+	  }
+//		Garbage collect the readObject from readDSML()..	
+		readObject = null;
+   }       
 }

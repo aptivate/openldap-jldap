@@ -16,27 +16,30 @@
 package com.novell.ldap;
 
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.List;
+import java.util.StringTokenizer;
+
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+
 import com.novell.ldap.client.ArrayEnumeration;
 import com.novell.ldap.util.Base64;
 import com.novell.ldap.util.LDAPXMLHandler;
 import com.novell.ldap.util.SAXEventMultiplexer;
 import com.novell.ldap.util.ValueXMLhandler;
-
-
-import java.io.InputStream;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.StringTokenizer;
-import java.util.Enumeration;
-import com.novell.ldap.util.Base64;
-
-import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
 /**
  * The name and values of one attribute of a directory entry.
  *
@@ -55,12 +58,21 @@ import org.xml.sax.SAXException;
 
 public class LDAPAttribute implements java.lang.Cloneable,
                                       java.lang.Comparable,
-                                      java.io.Serializable {
+										Externalizable {
     private String name;              // full attribute name
     private String baseName;          // cn of cn;lang-ja;phonetic
     private String[] subTypes = null; // lang-ja of cn;lang-ja
     private Object[] values = null;   // Array of byte[] attribute values
 
+	/**
+	 * This constructor was added to support default Serialization
+	 *
+	 */
+	public LDAPAttribute()
+	{
+		super();
+	}
+    
     /**
      * Constructs an attribute with copies of all values of the input
      * attribute.
@@ -916,27 +928,34 @@ public class LDAPAttribute implements java.lang.Cloneable,
         out.write("<attr name=\"");
         out.write(getName());
         out.write("\">");
-        String values[] = getStringValueArray();
-        byte bytevalues[][] = getByteValueArray();
-        for(int i=0; i<values.length; i++){
-            newLine(2,out);
-            if (Base64.isValidUTF8(bytevalues[i], false)){
-                out.write("<value>");
-                out.write(values[i]);
-                out.write("</value>");
-            } else {
-                out.write("<value xsi:type=\"xsd:base64Binary\">");
-                out.write(Base64.encode(bytevalues[i]));
-                out.write("</value>");
-            }
-
-        }
+        
+		//sub classes override this..
+		writeValue(out);
+        
         newLine(1,out);
         out.write("</attr>");
         newLine(0,out);
         out.write("</LDAPAttribute>");        
         out.close();
-    }        
+    }
+    
+//	Sub classes override this method..
+	protected void writeValue(java.io.Writer out) throws IOException {
+  	      String values[] = getStringValueArray();
+		  byte bytevalues[][] = getByteValueArray();
+		  for(int i=0; i<values.length; i++){
+			  newLine(2,out);
+			  if (Base64.isValidUTF8(bytevalues[i], false)){
+				  out.write("<value>");
+				  out.write(values[i]);
+				  out.write("</value>");
+			  } else {
+				  out.write("<value xsi:type=\"xsd:base64Binary\">");
+				  out.write(Base64.encode(bytevalues[i]));
+				  out.write("</value>");
+			  }
+		  }
+	}        
         
 	/**
 	* This method is used to deserialize the DSML encoded representation of
@@ -948,9 +967,33 @@ public class LDAPAttribute implements java.lang.Cloneable,
     public static Object readDSML(InputStream input)throws IOException    
     {
 		SAXEventMultiplexer xmlreader = new SAXEventMultiplexer();
-		xmlreader.setLDAPXMLHandler(getXMLHandler("attr",null));		
+		xmlreader.setLDAPXMLHandler(getTopXMLHandler("LDAPAttribute",null));		
 		return (LDAPAttribute) xmlreader.parseXML(input);
     }
+    
+    //This is added to fix the bug in parsing logic written in 
+    //getXMLHandler() method of this class 
+	private static LDAPXMLHandler getTopXMLHandler(String tagname, LDAPXMLHandler
+	 parenthandler) {
+	  return new LDAPXMLHandler(tagname, parenthandler) {
+
+		List valuelist = new ArrayList();
+		protected void initHandler() {
+		  //set LDAPAttribute handler.
+		  setchildelement(LDAPAttribute.getXMLHandler("attr",this));
+		}
+
+		protected void endElement() {
+			setObject((LDAPAttribute)valuelist.get(0));
+		}
+		protected void addValue(String tag, Object value) {
+		  if (tag.equals("attr")) {
+			valuelist.add(value);
+		  }
+		}
+	  };
+
+	}
 
 	/**
 	* This method return the LDAPHandler which handles the XML (DSML) tags
@@ -970,15 +1013,16 @@ public class LDAPAttribute implements java.lang.Cloneable,
         }
 
         protected void endElement() {
-         LDAPAttribute attr = new LDAPAttribute(attrName);
-          Iterator valueiterator = valuelist.iterator();
-          while (valueiterator.hasNext())
-          {
-          	attr.addValue((byte[])valueiterator.next());
-          }
-		  setObject(attr);
-		  
+			Iterator valueiterator = valuelist.iterator();
+			LDAPAttribute attr = new LDAPAttribute(attrName);  
+			  while (valueiterator.hasNext())
+			  {
+				attr.addValue((byte[])valueiterator.next());
+			  }	
+			setObject(attr);
+		  valuelist.clear();
         }
+
 		protected void addValue(String tag,Object value)
 		{
 			if (tag.equals("value"))
@@ -996,30 +1040,130 @@ public class LDAPAttribute implements java.lang.Cloneable,
     	};
     	
     }
-    /**
-    *  Writes the object state to a stream in standard Default Binary format
-    *  This function wraps ObjectOutputStream' s defaultWriteObject() to write
-    *  the non-static and non-transient fields of the current class to the stream
-    *   
-    *  @param objectOStrm  The OutputSteam where the Object need to be written
-    */
-    
-    private void writeObject(java.io.ObjectOutputStream objectOStrm)
-	    throws java.io.IOException {
-		objectOStrm.defaultWriteObject();
-    }
     
     /**
-    *  Reads the serialized object from the underlying input stream.
-    *  This function wraps ObjectInputStream's  defaultReadObject() function
-    *
-    *  @param objectIStrm  InputStream used to recover those objects previously serialized. 
+    * Writes the object state to a stream in XML format  
+    * @param out The ObjectOutput stream where the Object in XML format 
+    * is being written to
+    * @throws IOException - If I/O errors occur
     */
+	public void writeExternal(ObjectOutput out) throws IOException
+	{
+		StringBuffer buff = new StringBuffer();
+		buff.append(ValueXMLhandler.newLine(0));
+		buff.append(ValueXMLhandler.newLine(0));
+		
+		String header = "";
+		header += "*************************************************************************\n";
+		header += "** The encrypted data above and below is the Class definition and  ******\n";
+		header += "** other data specific to Java Serialization Protocol. The data  ********\n";
+		header += "** which is of most application specific interest is as follows... ******\n";
+		header += "*************************************************************************\n";
+		header += "****************** Start of application data ****************************\n";
+		header += "*************************************************************************\n";
+		
+		buff.append(header);
+		buff.append(ValueXMLhandler.newLine(0));
+		buff.append("<LDAPAttribute>");
+		buff.append(ValueXMLhandler.newLine(1));
+		buff.append("<attr name=\"");
+		buff.append(getName());
+		buff.append("\">");
+		
+//		Sub classes override this method..
+		writeValue(buff);
+  			
+		buff.append(ValueXMLhandler.newLine(1));
+		buff.append("</attr>");
+		buff.append(ValueXMLhandler.newLine(0));
+		buff.append("</LDAPAttribute>"); 
+		buff.append(ValueXMLhandler.newLine(0));
+		buff.append(ValueXMLhandler.newLine(0));
+		
+		String tail = "";
+		tail += "*************************************************************************\n";
+		tail += "****************** End of application data ******************************\n";
+		tail += "*************************************************************************\n";
+		
+		buff.append(tail);
+		buff.append(ValueXMLhandler.newLine(0));       
+		out.writeUTF(buff.toString());
+		
+		//clean and garbage the buffer
+		buff.delete(0, buff.length());
+		buff = null;
+  }
+  
+  //Sub classes override this method..
+  protected void writeValue(StringBuffer buff){
+  	
+	String values[] = getStringValueArray();
+	byte bytevalues[][] = getByteValueArray();
+	for(int i=0; i<values.length; i++){
+		buff.append(ValueXMLhandler.newLine(2));
+		if (Base64.isValidUTF8(bytevalues[i], false)){
+			buff.append("<value>");
+			buff.append(values[i]);
+			buff.append("</value>");
+		} else {
+			buff.append("<value xsi:type=\"xsd:base64Binary\">");
+			buff.append(Base64.encode(bytevalues[i]));
+			buff.append("</value>");
+		}
+	}
+  
+  }
     
-    private void readObject(java.io.ObjectInputStream objectIStrm)
-         throws java.io.IOException, ClassNotFoundException
-    {
-	  objectIStrm.defaultReadObject();
-    }
-        
+    /**
+    * Reads the serialized object from the underlying input stream.
+    * @param in The ObjectInput stream where the Serialized Object is being read from
+    * @throws IOException - If I/O errors occur
+    * @throws ClassNotFoundException - If the class for an object being restored 
+    * cannot be found.
+    */
+	public void readExternal(ObjectInput in) 
+			throws IOException, ClassNotFoundException
+	 {
+		String readData = in.readUTF();
+		String readProperties = readData.substring(readData.indexOf('<'), 
+				  (readData.lastIndexOf('>') + 1));
+				  
+		//Insert  parsing logic here for separating whitespace text nodes
+		StringBuffer parsedBuff = new StringBuffer();
+		ValueXMLhandler.parseInput(readProperties, parsedBuff);
+	    
+		BufferedInputStream istream = 
+				new BufferedInputStream(
+						new ByteArrayInputStream((parsedBuff.toString()).getBytes()));
+//		Sub classes need to override this method
+		setDeserializedValues(istream);
+		
+//		Close the DSML reader stream
+		istream.close(); 
+	
+	}
+	
+	//Sub classes need to override this method
+	protected void setDeserializedValues(BufferedInputStream istream)
+	throws IOException {
+		LDAPAttribute readObject = 
+			(LDAPAttribute)LDAPAttribute.readDSML(istream);
+	
+//		Do a deep copy of the LDAPAttribute template
+		 this.name = readObject.name;
+		 this.baseName = readObject.baseName;
+		 if( null != readObject.subTypes ) {
+			 this.subTypes = new String[ readObject.subTypes.length ];
+			 System.arraycopy( readObject.subTypes, 0, this.subTypes, 0,
+					 this.subTypes.length );
+		 }
+
+		 if( null != readObject.values) {
+			 this.values = new Object[ readObject.values.length ];
+			 System.arraycopy( readObject.values, 0, this.values, 0, this.values.length );
+		 }
+	
+		//Garbage collect the readObject from readDSML()..	
+		readObject = null;	   
+	}
 }

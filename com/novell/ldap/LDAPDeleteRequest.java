@@ -15,7 +15,12 @@
 
 package com.novell.ldap;
 
-import com.novell.ldap.rfc2251.*;
+import java.io.IOException;
+
+import com.novell.ldap.rfc2251.RfcControls;
+import com.novell.ldap.rfc2251.RfcDelRequest;
+import com.novell.ldap.rfc2251.RfcLDAPMessage;
+import com.novell.ldap.rfc2251.RfcRequest;
 
 /**
  * Represents a request to delete an entry.
@@ -26,6 +31,15 @@ import com.novell.ldap.rfc2251.*;
  */
 public class LDAPDeleteRequest extends LDAPMessage
 {
+	/**
+	 * This constructor was added to support default Serialization
+	 *
+	 */
+	public LDAPDeleteRequest()
+	{
+		super(LDAPMessage.DEL_REQUEST);
+	}
+    
     /**
      * Constructs a request to delete an entry from the directory
      *
@@ -61,4 +75,20 @@ public class LDAPDeleteRequest extends LDAPMessage
     {
         return getASN1Object().toString();
     }
+	protected void setDeserializedValues(LDAPMessage readObject, RfcControls asn1Ctrls)
+	   throws IOException, ClassNotFoundException {
+//	  Check if it is the correct message type
+	  if(!(readObject instanceof LDAPDeleteRequest))
+		throw new ClassNotFoundException("Error occured while deserializing " +
+			"LDAPDeleteRequest object");
+
+		LDAPDeleteRequest tmp = (LDAPDeleteRequest)readObject;
+		String dn = tmp.getDN();
+		tmp = null; //remove reference after getting properties
+
+		RfcRequest operation =  new RfcDelRequest(dn); 	 
+		message = new RfcLDAPMessage(operation, asn1Ctrls); 
+//		Garbage collect the readObject from readDSML()..	
+		readObject = null;
+   }           
 }

@@ -15,8 +15,13 @@
 
 package com.novell.ldap;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.Externalizable;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -26,10 +31,10 @@ import com.novell.ldap.asn1.ASN1OctetString;
 import com.novell.ldap.client.RespControlVector;
 import com.novell.ldap.rfc2251.RfcControl;
 import com.novell.ldap.rfc2251.RfcLDAPOID;
+import com.novell.ldap.util.Base64;
 import com.novell.ldap.util.LDAPXMLHandler;
 import com.novell.ldap.util.SAXEventMultiplexer;
 import com.novell.ldap.util.ValueXMLhandler;
-import com.novell.ldap.util.Base64;
 /**
  *  Encapsulates optional additional parameters or constraints to be applied to
  *  an LDAP operation.
@@ -42,13 +47,22 @@ import com.novell.ldap.util.Base64;
  * @see LDAPSearchConstraints#getControls
  * @see LDAPSearchConstraints#setControls
  */
-public class LDAPControl implements Cloneable,java.io.Serializable {
+public class LDAPControl implements Cloneable,Externalizable {
 
     private static RespControlVector registeredControls =
                                                     new RespControlVector(5, 5);
 
     private RfcControl control; // An RFC 2251 Control
 
+	/**
+	 * This constructor was added to support default Serialization
+	 *
+	 */
+	public LDAPControl()
+	{
+		super();
+	}
+    
     /**
      * Constructs a new LDAPControl object using the specified values.
      *
@@ -221,14 +235,14 @@ public class LDAPControl implements Cloneable,java.io.Serializable {
     {
         java.io.Writer out=new java.io.OutputStreamWriter(oout,"UTF-8");
         int indent=0;
-        newLine(indent,out);
+//        newLine(indent,out);
         out.write("<control type=\"");
         out.write(getID());
         out.write("\" criticality=\""+isCritical()+ "\"");
 
         byte value[] = getValue();
         if (value == null){
-            out.write(" / >");
+            out.write("/>");
         } else {
             out.write(">");
             newLine(indent+1,out);
@@ -276,7 +290,7 @@ public class LDAPControl implements Cloneable,java.io.Serializable {
         setObject(control);
       }
       protected void addValue(String tag, Object value) {
-        if (tag.equals("value")) {
+        if (tag.equals("controlValue")) {
           controlvalue = (byte[]) value;
         }
       }
@@ -308,27 +322,94 @@ public class LDAPControl implements Cloneable,java.io.Serializable {
 		return result.toString();
   }    
     /**
-    *  Writes the object state to a stream in standard Default Binary format
-    *  This function wraps ObjectOutputStream' s defaultWriteObject() to write
-    *  the non-static and non-transient fields of the current class to the stream
-    *   
-    *  @param objectOStrm  The OutputSteam where the Object need to be written
-    */
-    private void writeObject(java.io.ObjectOutputStream objectOStrm)
-	    throws java.io.IOException {
-		objectOStrm.defaultWriteObject();
-    }
-    
-    /**
-    *  Reads the serialized object from the underlying input stream.
-    *  This function wraps ObjectInputStream's  defaultReadObject() function
-    *
-    *  @param objectIStrm  InputStream used to recover those objects previously serialized. 
-    */
-    private void readObject(java.io.ObjectInputStream objectIStrm)
-         throws java.io.IOException, ClassNotFoundException
-    {
-	  objectIStrm.defaultReadObject();
-    }
+   * Writes the object state to a stream in XML format  
+   * @param out The ObjectOutput stream where the Object in XML format 
+   * is being written to
+   * @throws IOException - If I/O errors occur
+   */  
+   public void writeExternal(ObjectOutput out) throws IOException
+   {
+		StringBuffer buff = new StringBuffer();
+		buff.append(ValueXMLhandler.newLine(0));
+		buff.append(ValueXMLhandler.newLine(0));
+		
+		String header = "";
+		header += "*************************************************************************\n";
+		header += "** The encrypted data above and below is the Class definition and  ******\n";
+		header += "** other data specific to Java Serialization Protocol. The data  ********\n";
+		header += "** which is of most application specific interest is as follows... ******\n";
+		header += "*************************************************************************\n";
+		header += "****************** Start of application data ****************************\n";
+		header += "*************************************************************************\n";
+		  
+		buff.append(header);
+		buff.append(ValueXMLhandler.newLine(0));
+		
+		buff.append("<control type=\"");
+		buff.append(getID());
+		buff.append("\" criticality=\""+isCritical()+ "\"");
+
+		byte value[] = getValue();
+		if (value == null){
+			buff.append("/>");
+		} else {
+			buff.append(">");
+			buff.append(ValueXMLhandler.newLine(1));
+			buff.append("<controlValue xsi:type=\"xsd:base64Binary\">");
+			buff.append(Base64.encode(value));
+			buff.append("</controlValue>");
+			buff.append(ValueXMLhandler.newLine(0));
+			buff.append("</control>");
+		}
+		
+		buff.append(ValueXMLhandler.newLine(0));
+		buff.append(ValueXMLhandler.newLine(0));
+		
+		String tail = "";
+		tail += "*************************************************************************\n";
+		tail += "****************** End of application data ******************************\n";
+		tail += "*************************************************************************\n";
+		  
+		buff.append(tail);
+		buff.append(ValueXMLhandler.newLine(0));       
+		out.writeUTF(buff.toString());
+	}
+	
+   /**
+   * Reads the serialized object from the underlying input stream.
+   * @param in The ObjectInput stream where the Serialized Object is being read from
+   * @throws IOException - If I/O errors occur
+   * @throws ClassNotFoundException - If the class for an object being restored 
+   * cannot be found.
+   */ 
+   public void readExternal(ObjectInput in) 
+		  throws IOException, ClassNotFoundException
+   {
+	  String readData = in.readUTF();
+	  String readProperties = readData.substring(readData.indexOf('<'), 
+	  			(readData.lastIndexOf('>') + 1));
+	  			
+	  //Insert  parsing logic here for separating whitespaces in non-text nodes
+	  StringBuffer parsedBuff = new StringBuffer();
+	  ValueXMLhandler.parseInput(readProperties, parsedBuff);
+	  
+	  BufferedInputStream istream = 
+			  new BufferedInputStream(
+					  new ByteArrayInputStream((parsedBuff.toString()).getBytes()));
+	  LDAPControl readObject = 
+					(LDAPControl)LDAPControl.readDSML(istream);
+	  byte[] vals = readObject.getValue();
+	  if( vals == null) {
+			this.control = new RfcControl( new RfcLDAPOID(readObject.getID()),
+									  new ASN1Boolean(readObject.isCritical()));
+		} else {
+			control = new RfcControl( new RfcLDAPOID(readObject.getID()),
+									  new ASN1Boolean(readObject.isCritical()),
+									  new ASN1OctetString(vals));
+		}
+
+	  //Garbage collect the readObject from readDSML()..	
+	  readObject = null;
+   }   
      
 }

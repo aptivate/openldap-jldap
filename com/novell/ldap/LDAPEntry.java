@@ -15,18 +15,25 @@
 
 package com.novell.ldap;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.Externalizable;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
+import com.novell.ldap.util.Base64;
 import com.novell.ldap.util.LDAPXMLHandler;
 import com.novell.ldap.util.SAXEventMultiplexer;
-
-import com.novell.ldap.util.Base64;
-import java.util.Iterator;
+import com.novell.ldap.util.ValueXMLhandler;
 /**
  * Represents a single entry in a directory, consisting of
  * a distinguished name (DN) and zero or more attributes.
@@ -39,7 +46,7 @@ import java.util.Iterator;
  * @see LDAPAttribute
  * @see LDAPAttributeSet
  */
-public class LDAPEntry implements java.lang.Comparable,java.io.Serializable
+public class LDAPEntry implements java.lang.Comparable,	Externalizable
 {
     protected String dn;
     protected LDAPAttributeSet attrs;
@@ -199,7 +206,8 @@ public class LDAPEntry implements java.lang.Comparable,java.io.Serializable
         
     }
     
-    private void writeAttribute(LDAPAttribute attr,java.io.Writer out) throws java.io.IOException
+    private void writeAttribute(LDAPAttribute attr,java.io.Writer out) 
+    throws java.io.IOException
     {
         newLine(2,out);
         out.write("<attr name=\"");
@@ -292,28 +300,124 @@ public class LDAPEntry implements java.lang.Comparable,java.io.Serializable
 						}
     		
 			};
-		};
-    /**
-    *  Writes the object state to a stream in standard Default Binary format
-    *  This function wraps ObjectOutputStream' s defaultWriteObject() to write
-    *  the non-static and non-transient fields of the current class to the stream
-    *   
-    *  @param objectOStrm  The OutputSteam where the Object need to be written
-    */
-    private void writeObject(java.io.ObjectOutputStream objectOStrm)
-	    throws java.io.IOException {
-		objectOStrm.defaultWriteObject();
-    }
-    
-    /**
-    *  Reads the serialized object from the underlying input stream.
-    *  This function wraps ObjectInputStream's  defaultReadObject() function
-    *
-    *  @param objectIStrm  InputStream used to recover those objects previously serialized. 
-    */
-    private void readObject(java.io.ObjectInputStream objectIStrm)
-         throws java.io.IOException, ClassNotFoundException
-    {
-	  objectIStrm.defaultReadObject();
-    }    
+		}
+		    
+	  //Overloaded method added for supporting XML Serialization
+	  private void writeAttribute(LDAPAttribute attr, StringBuffer buff) 
+			  throws java.io.IOException
+	  {
+		  buff.append(ValueXMLhandler.newLine(1));
+		  buff.append("<attr name=\"");
+		  buff.append(attr.getName());
+		  buff.append("\">");
+	
+			String values[] = attr.getStringValueArray();
+			byte bytevalues[][] = attr.getByteValueArray();
+			for(int i=0; i<values.length; i++){
+				buff.append(ValueXMLhandler.newLine(2));
+				if (Base64.isValidUTF8(bytevalues[i], false)){
+					buff.append("<value>");
+					buff.append(values[i]);
+					buff.append("</value>");
+				} else {
+					buff.append("<value xsi:type=\"xsd:base64Binary\">");
+					buff.append(Base64.encode(bytevalues[i]));
+					buff.append("</value>");
+				}
+	
+			}
+			buff.append(ValueXMLhandler.newLine(1));
+			buff.append("</attr>");        
+	  }
+
+	 	//private access
+	 	private String writeExternal0() throws IOException {
+		StringBuffer buff = new StringBuffer();
+		 buff.append(ValueXMLhandler.newLine(0));
+		 buff.append(ValueXMLhandler.newLine(0));
+
+		 String header = "";
+		 header += "*************************************************************************\n";
+		 header += "** The encrypted data above and below is the Class definition and  ******\n";
+		 header += "** other data specific to Java Serialization Protocol. The data  ********\n";
+		 header += "** which is of most application specific interest is as follows... ******\n";
+		 header += "*************************************************************************\n";
+		 header += "****************** Start of application data ****************************\n";
+		 header += "*************************************************************************\n";
+  
+		 buff.append(header);
+		 buff.append(ValueXMLhandler.newLine(0));
+  
+  
+		 buff.append("<LDAPEntry dn=\"");
+		 buff.append(getDN());
+		 buff.append("\">");
+  
+		 Iterator i = getAttributeSet().iterator();
+		 while (i.hasNext()){
+			 writeAttribute( (LDAPAttribute) i.next(),buff);
+		 }
+		 buff.append(ValueXMLhandler.newLine(0));
+		 buff.append("</LDAPEntry>"); 
+		 buff.append(ValueXMLhandler.newLine(0));
+		 buff.append(ValueXMLhandler.newLine(0));
+
+		 String tail = "";
+		 tail += "*************************************************************************\n";
+		 tail += "****************** End of application data ******************************\n";
+		 tail += "*************************************************************************\n";
+  
+		 buff.append(tail);
+		 buff.append(ValueXMLhandler.newLine(0));
+		 return buff.toString();	 	
+	 }
+	 
+	 
+	 /**
+	 * Writes the object state to a stream in XML format  
+	 * @param out The ObjectOutput stream where the Object in XML format 
+	 * is being written to
+	 * @throws IOException - If I/O errors occur
+	 */  
+	 public void writeExternal(ObjectOutput out) throws IOException
+	 {
+		out.write(writeExternal0().getBytes());
+	 }
+	 
+	 /**
+	 * Reads the serialized object from the underlying input stream.
+	 * @param in The ObjectInput stream where the Serialized Object is being read from
+	 * @throws IOException - If I/O errors occur
+	 * @throws ClassNotFoundException - If the class for an object being restored 
+	 * cannot be found.
+	 */ 
+	 public void readExternal(ObjectInput in) 
+			throws IOException, ClassNotFoundException
+	 {
+		ObjectInputStream reader = (ObjectInputStream)in;	
+		StringBuffer rawBuff = new StringBuffer();
+		while(reader.available() != 0)
+			rawBuff.append((char)reader.read());
+
+		String readData = rawBuff.toString();
+		readData = readData.substring(readData.indexOf('<'), 
+			  (readData.lastIndexOf('>') + 1));
+
+		//Insert  parsing logic here for separating whitespaces in non-text nodes
+		StringBuffer parsedBuff = new StringBuffer();
+		ValueXMLhandler.parseInput(readData, parsedBuff);
+	  
+		BufferedInputStream istream = 
+			new BufferedInputStream(
+				new ByteArrayInputStream((parsedBuff.toString()).getBytes()));
+
+		LDAPEntry readObject = 
+					  (LDAPEntry)LDAPEntry.readDSML(istream);
+	
+		this.dn = readObject.getDN();
+		this.attrs = readObject.getAttributeSet();
+		
+		//Garbage collect the readObject from readDSML()..	
+		readObject = null;
+	 }   
 }

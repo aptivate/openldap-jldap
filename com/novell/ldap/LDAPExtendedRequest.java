@@ -15,10 +15,15 @@
 
 package com.novell.ldap;
 
+import java.io.IOException;
+
 import com.novell.ldap.asn1.ASN1OctetString;
 import com.novell.ldap.asn1.ASN1Tagged;
+import com.novell.ldap.rfc2251.RfcControls;
 import com.novell.ldap.rfc2251.RfcExtendedRequest;
+import com.novell.ldap.rfc2251.RfcLDAPMessage;
 import com.novell.ldap.rfc2251.RfcLDAPOID;
+import com.novell.ldap.rfc2251.RfcRequest;
 
 /**
  * Represents an LDAP Extended Request.
@@ -31,6 +36,15 @@ import com.novell.ldap.rfc2251.RfcLDAPOID;
  */
 public class LDAPExtendedRequest extends LDAPMessage
 {
+    
+	/**
+	 * This constructor was added to support default Serialization
+	 *
+	 */
+	public LDAPExtendedRequest(){
+		super(LDAPMessage.EXTENDED_REQUEST);
+	}
+    
     /**
      * Constructs an LDAPExtendedRequest.
      *<br><br>
@@ -75,4 +89,26 @@ public class LDAPExtendedRequest extends LDAPMessage
         }
         return new LDAPExtendedOperation(requestID, requestValue);
     }
+	protected void setDeserializedValues(LDAPMessage readObject, RfcControls asn1Ctrls)
+		   throws IOException, ClassNotFoundException {
+//			Check if it is the correct message type
+		  if(!(readObject instanceof LDAPExtendedRequest))
+			throw new ClassNotFoundException("Error occured while deserializing " +
+				"LDAPExtendedRequest object");
+
+			LDAPExtendedRequest tmp = (LDAPExtendedRequest)readObject;
+			LDAPExtendedOperation extendedOp = tmp.getExtendedOperation();
+			tmp = null; //remove reference after getting properties
+			
+			RfcRequest operation =  new RfcExtendedRequest(
+				   new RfcLDAPOID(extendedOp.getID()),
+				   (extendedOp.getValue() != null) ?
+					   new ASN1OctetString(extendedOp.getValue()) :
+					   null); 	 	
+			message = new RfcLDAPMessage(operation, asn1Ctrls); 
+//			Garbage collect the readObject from readDSML()..	
+			readObject = null;
+	   }       
+    
+    
 }

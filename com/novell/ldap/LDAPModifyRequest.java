@@ -15,10 +15,22 @@
 
 package com.novell.ldap;
 
-import com.novell.ldap.asn1.*;
-import com.novell.ldap.rfc2251.*;
-
+import java.io.IOException;
 import java.util.Enumeration;
+
+import com.novell.ldap.asn1.ASN1Enumerated;
+import com.novell.ldap.asn1.ASN1Object;
+import com.novell.ldap.asn1.ASN1Sequence;
+import com.novell.ldap.asn1.ASN1SequenceOf;
+import com.novell.ldap.asn1.ASN1SetOf;
+import com.novell.ldap.rfc2251.RfcAttributeDescription;
+import com.novell.ldap.rfc2251.RfcAttributeTypeAndValues;
+import com.novell.ldap.rfc2251.RfcAttributeValue;
+import com.novell.ldap.rfc2251.RfcControls;
+import com.novell.ldap.rfc2251.RfcLDAPDN;
+import com.novell.ldap.rfc2251.RfcLDAPMessage;
+import com.novell.ldap.rfc2251.RfcModifyRequest;
+import com.novell.ldap.rfc2251.RfcRequest;
 
 /**
  * Modification Request.
@@ -36,6 +48,15 @@ import java.util.Enumeration;
  */
 public class LDAPModifyRequest extends LDAPMessage
 {
+	/**
+	 * This constructor was added to support default Serialization
+	 *
+	 */
+	public LDAPModifyRequest()
+	{
+		super(LDAPMessage.MODIFY_REQUEST);
+	}
+	
     /**
      * Constructs an LDAP Modify request.
      *
@@ -68,7 +89,7 @@ public class LDAPModifyRequest extends LDAPMessage
      * @return an ASN1SequenceOf object containing the modifications.
      */
     final static
-    private ASN1SequenceOf encodeModifications( LDAPModification[] mods)
+	private ASN1SequenceOf encodeModifications( LDAPModification[] mods)
     {
         // Convert Java-API LDAPModification[] to RFC2251 SEQUENCE OF SEQUENCE
         ASN1SequenceOf rfcMods = new ASN1SequenceOf(mods.length);
@@ -161,4 +182,23 @@ public class LDAPModifyRequest extends LDAPMessage
     {
         return getASN1Object().toString();
     }
+	protected void setDeserializedValues(LDAPMessage readObject, RfcControls asn1Ctrls)
+	   throws IOException, ClassNotFoundException {
+//		Check if it is the correct message type
+	  if(!(readObject instanceof LDAPModifyRequest))
+		throw new ClassNotFoundException("Error occured while deserializing " +
+			"LDAPModifyRequest object");
+
+		LDAPModifyRequest tmp = (LDAPModifyRequest)readObject;
+		String dn = tmp.getDN();
+		LDAPModification[] mods = tmp.getModifications();
+		tmp = null; //remove reference after getting properties
+
+		RfcRequest operation =  new RfcModifyRequest(
+				new RfcLDAPDN(dn),
+				LDAPModifyRequest.encodeModifications(mods));
+		message = new RfcLDAPMessage(operation, asn1Ctrls); 
+//		Garbage collect the readObject from readDSML()..	
+		readObject = null;
+	}           
 }
