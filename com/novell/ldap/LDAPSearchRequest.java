@@ -281,6 +281,7 @@ public class LDAPSearchRequest extends LDAPMessage {
      * @see com.novell.ldap.LDAPConnection#SCOPE_BASE
      * @see com.novell.ldap.LDAPConnection#SCOPE_ONE
      * @see com.novell.ldap.LDAPConnection#SCOPE_SUB
+     * * @see com.novell.ldap.LDAPConnection#SCOPE_SUBORDINATESUBTREE
      */
     public int getScope()
     {

@@ -830,6 +830,8 @@ private ArrayList errors = new ArrayList();
             scope = LDAPConnection.SCOPE_ONE;
           } else if (temp.equals("wholeSubtree")) {
             scope = LDAPConnection.SCOPE_SUB;
+          } else if (temp.equals("subordinateSubtree")) {
+            scope = LDAPConnection.SCOPE_SUBORDINATESUBTREE;
           } else {
             throw new SAXException(
               "Invalid value for attribute 'scope', " + temp);

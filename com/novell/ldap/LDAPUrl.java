@@ -749,7 +749,10 @@ public class LDAPUrl implements java.lang.Cloneable,Externalizable
         } else
         if( scopeStr.equalsIgnoreCase("sub")) {
             scope = LDAPConnection.SCOPE_SUB;
-        } else {
+        } else        
+        if( scopeStr.equalsIgnoreCase("subordinateSubtree")) {
+            scope = LDAPConnection.SCOPE_SUBORDINATESUBTREE;
+        }else {
             throw new MalformedURLException("LDAPUrl: URL invalid scope");
         }
 

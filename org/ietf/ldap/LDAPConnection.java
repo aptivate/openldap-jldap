@@ -62,7 +62,18 @@ public class LDAPConnection implements Cloneable
      */
     public static final int SCOPE_SUB =
                             com.novell.ldap.LDAPConnection.SCOPE_SUB;
+    
+    /**
+     * Used with search to specify that the scope of entrys to search is to
+     * search the subordinate subtree object and all entries within it.
+     *
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#SCOPE_SUBORDINATESUBTREE">
+            com.novell.ldap.LDAPConnection.SCOPE_SUBORDINATESUBTREE</a>
+     */
+    public static final int SCOPE_SUBORDINATESUBTREE =
+                            com.novell.ldap.LDAPConnection.SCOPE_SUBORDINATESUBTREE;
 
+    
     /**
      * Used with search instead of an attribute list to indicate that no
      * attributes are to be returned.

@@ -93,6 +93,14 @@ public class LDAPConnection implements Cloneable
      *<p>SCOPE_ONE = 2</p>
      */
     public static final int SCOPE_SUB    = 2;
+    
+    /**
+     * Used with search to specify that the scope of entries to search is to
+     * search the subordinate subtree object and all entries within it.
+     *
+     *<p>SCOPE_SUBORDINATESUBTREE = 4</p>
+     */
+    public static final int SCOPE_SUBORDINATESUBTREE = 4;
 
     /**
      * Used with search instead of an attribute list to indicate that no
