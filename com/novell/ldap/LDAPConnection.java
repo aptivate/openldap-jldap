@@ -22,12 +22,8 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 import com.novell.ldap.client.BindProperties;
-import com.novell.ldap.client.Connection;
 import com.novell.ldap.client.Debug;
-import com.novell.ldap.client.LocalException;
-import com.novell.ldap.client.MessageAgent;
 import com.novell.ldap.client.ReferralInfo;
-import com.novell.ldap.message.*;
 import com.novell.ldap.resources.ExceptionMessages;
 
 /**
@@ -3371,10 +3367,36 @@ public class LDAPConnection implements Cloneable
      * Sends an LDAP request to a directory server.
      *
      * <p>The specified the LDAP request is sent to the directory server
+     * associated with this connection using default constraints. An LDAP
+     * request object is a subclass {@link LDAPMessage} with the operation
+     * type set to one of the request types. You can build a request by using
+     * the request classes found in this package</p>
+     *
+     * @param request The LDAP request to send to the directory server.
+     * @param queue    The queue for messages returned from a server in
+     *                 response to this request. If it is null, a
+     *                 queue object is created internally.
+     * @exception     LDAPException A general exception which includes an error
+     *                message and an LDAP error code.
+     *
+     * @see LDAPMessage#getType()
+     * @see LDAPMessage#isRequest()
+     */
+    public LDAPMessageQueue sendRequest( LDAPMessage request,
+                                         LDAPMessageQueue queue)
+            throws LDAPException
+    {
+		return sendRequest( request, queue, null);
+	}
+
+    /**
+     * Sends an LDAP request to a directory server.
+     *
+     * <p>The specified the LDAP request is sent to the directory server
      * associated with this connection. An LDAP request object is an
      * {@link LDAPMessage} with the operation type set to one of the request
-     * types. You can build a request by using the request classes found in the
-     * {@link com.novell.ldap.message } package</p>
+     * types. You can build a request by using the request classes found in this
+     * package</p>
      *
      * @param request The LDAP request to send to the directory server.
      * @param queue    The queue for messages returned from a server in
@@ -3816,7 +3838,7 @@ public class LDAPConnection implements Cloneable
                 }
                 agent.sendMessage( rconn.getConnection(), newMsg,
                         defSearchCons.getTimeLimit(), queue, null);
-            } catch(LocalException ex) {
+            } catch(InterThreadException ex) {
                 // Error ending request to referred server
                 LDAPReferralException rex = new LDAPReferralException(
                      ExceptionMessages.REFERRAL_SEND,

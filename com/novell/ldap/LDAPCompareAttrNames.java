@@ -17,7 +17,6 @@ package com.novell.ldap;
 
 import java.util.Locale;
 import java.text.Collator;
-import com.novell.ldap.*;
 import com.novell.ldap.resources.*;
 
 

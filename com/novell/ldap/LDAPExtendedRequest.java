@@ -13,11 +13,8 @@
  * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
  ******************************************************************************/
 
-package com.novell.ldap.message;
+package com.novell.ldap;
 
-import com.novell.ldap.LDAPControl;
-import com.novell.ldap.LDAPMessage;
-import com.novell.ldap.LDAPExtendedOperation;
 import com.novell.ldap.asn1.ASN1OctetString;
 import com.novell.ldap.asn1.ASN1Tagged;
 import com.novell.ldap.rfc2251.RfcExtendedRequest;
@@ -25,6 +22,8 @@ import com.novell.ldap.rfc2251.RfcLDAPOID;
 
 /**
  * Represents an LDAP Extended Request.
+ *
+ * @see LDAPConnection#sendRequest
  *//*
  *       ExtendedRequest ::= [APPLICATION 23] SEQUENCE {
  *               requestName      [0] LDAPOID,

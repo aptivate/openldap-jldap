@@ -13,14 +13,15 @@
  * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
  ******************************************************************************/
 
-package com.novell.ldap.message;
+package com.novell.ldap;
 
-import com.novell.ldap.*;
 import com.novell.ldap.asn1.*;
 import com.novell.ldap.rfc2251.*;
 
 /**
  * Represents an LDAP Search request.
+ *
+ * @see LDAPConnection#sendRequest
  *//*
  *       SearchRequest ::= [APPLICATION 3] SEQUENCE {
  *               baseObject      LDAPDN,

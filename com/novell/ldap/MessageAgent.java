@@ -1,6 +1,6 @@
 /* **************************************************************************
-* $OpenLDAP$
-*
+ * $OpenLDAP$
+ *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
@@ -13,12 +13,12 @@
  * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
  ******************************************************************************/
 
-package com.novell.ldap.client;
+package com.novell.ldap;
 
 import com.novell.ldap.client.*;
-import com.novell.ldap.*;
 
-public class MessageAgent
+/* package */
+class MessageAgent
 {
     private MessageVector messages = new MessageVector(5,5);
     private int indexLastRead =0;
@@ -26,7 +26,8 @@ public class MessageAgent
     private static int agentNum = 0; // Debug, agent number
     private String name;             // String name for debug
 
-    public MessageAgent()
+    /* package */
+    MessageAgent()
     {
         // Get a unique agent id for debug
         if( Debug.LDAP_DEBUG) {
@@ -53,7 +54,8 @@ public class MessageAgent
      *
      * @param fromAgent the agent to be merged into this one
      */
-    public final void merge( MessageAgent fromAgent)
+    /* package */
+    final void merge( MessageAgent fromAgent)
     {
         Object[] msgs = fromAgent.getMessageArray();
         for(int i = 0; i < msgs.length; i++) {
@@ -87,7 +89,8 @@ public class MessageAgent
      * Wakes up any threads waiting for messages in the message agent
      *
      */
-     public final void sleepersAwake(boolean all)
+     /* package */
+     final void sleepersAwake(boolean all)
      {
         synchronized(messages) {
             if( all)
@@ -103,7 +106,8 @@ public class MessageAgent
      *
      * return false if no responses are queued, otherwise true
      */
-    public final boolean isResponseReceived()
+    /* package */
+    final boolean isResponseReceived()
     {
         int size = messages.size();
         int next = indexLastRead + 1;
@@ -125,7 +129,8 @@ public class MessageAgent
      *
      * return false if no responses are queued, otherwise true
      */
-    public final boolean isResponseReceived( int msgId)
+    /* package */
+    final boolean isResponseReceived( int msgId)
     {
         try {
             Message info = messages.findMessageById( msgId);
@@ -142,7 +147,8 @@ public class MessageAgent
      *<br><br>
      * @param cons constraints associated with this request
      */
-    public final void abandon(int msgId, LDAPConstraints cons) //, boolean informUser)
+    /* package */
+    final void abandon(int msgId, LDAPConstraints cons) //, boolean informUser)
     {
         Message info = null;
         try {
@@ -170,7 +176,8 @@ public class MessageAgent
     /**
      * Abandon all requests on this MessageAgent
      */
-    public final void abandonAll()
+    /* package */
+    final void abandonAll()
     {
         int size = messages.size();
         Message info;
@@ -198,7 +205,8 @@ public class MessageAgent
      *
      * @return an array of integers representing the message ids
      */
-	public final int[] getMessageIDs()
+	/* package */
+	final int[] getMessageIDs()
 	{
         int size = messages.size();
         int[] ids = new int[size];
@@ -216,7 +224,8 @@ public class MessageAgent
      *
      * @return true if a specific operation is complete
      */
-	public final boolean isComplete(int msgid)
+	/* package */
+	final boolean isComplete(int msgid)
 	{
         try {
             Message info = messages.findMessageById( msgid);
@@ -234,7 +243,8 @@ public class MessageAgent
      *
      * @param msgid the message ID.
      */
-    public final Message getMessage(int msgid)
+    /* package */
+    final Message getMessage(int msgid)
             throws NoSuchFieldException
     {
         return messages.findMessageById( msgid);
@@ -254,7 +264,8 @@ public class MessageAgent
      * <code>null</code> if infinite.
      * @param queue the LDAPMessageQueue associated with this request.
      */
-    public final void sendMessage(
+    /* package */
+    final void sendMessage(
                             Connection       conn,
                             LDAPMessage      msg,
                             int              timeOut,
@@ -280,7 +291,8 @@ public class MessageAgent
      * Returns a response queued, or waits if none queued
      *
      */
-    public final Object getLDAPMessage( Integer msgId)
+    /* package */
+    final Object getLDAPMessage( Integer msgId)
     {
         Object rfcMsg;
         if( Debug.LDAP_DEBUG) {
@@ -414,7 +426,8 @@ public class MessageAgent
     /**
      * Get a count of all messages queued
      */
-    public int getCount()
+    /* package */
+    int getCount()
     {
         int count = 0;
         Object[] msgs = messages.toArray();

@@ -13,7 +13,7 @@
  * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
  ******************************************************************************/
 
-package com.novell.ldap.client;
+package com.novell.ldap;
 
 import com.novell.ldap.client.*;
 
@@ -21,9 +21,11 @@ import com.novell.ldap.client.*;
  * The <code>MessageVector</code> class implements additional semantics
  * to Vector needed for handling messages.
  */
-public class MessageVector extends java.util.Vector
+/* package */
+class MessageVector extends java.util.Vector
 {
-    public MessageVector( int cap, int incr)
+    /* package */
+    MessageVector( int cap, int incr)
     {
         super( cap, incr);
         return;
@@ -40,7 +42,8 @@ public class MessageVector extends java.util.Vector
      * @throws NoSuchFieldException when no object with the corresponding
      * value for the MsgId field can be found.
      */
-    public final synchronized Message findMessageById( int msgId)
+    /* package */
+    final synchronized Message findMessageById( int msgId)
                 throws NoSuchFieldException
     {
         Message msg = null;
@@ -61,7 +64,8 @@ public class MessageVector extends java.util.Vector
      *
      * @return the array containing all of the elements.
      */
-    public final synchronized Object[] getObjectArray()
+    /* package */
+    final synchronized Object[] getObjectArray()
     {
         Object[] results = new Object[elementCount];
         System.arraycopy( elementData, 0, results, 0, elementCount);

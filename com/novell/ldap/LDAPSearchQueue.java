@@ -15,8 +15,6 @@
 
 package com.novell.ldap;
 
-import com.novell.ldap.client.MessageAgent;
-
 /**
  *  A mechanism for queuing asynchronous search results
  *  received from a server.

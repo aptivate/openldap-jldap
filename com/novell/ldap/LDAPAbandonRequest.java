@@ -13,13 +13,14 @@
  * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
  ******************************************************************************/
  
-package com.novell.ldap.message;
+package com.novell.ldap;
 
-import com.novell.ldap.*;
 import com.novell.ldap.rfc2251.*;
 
 /**
  * Represents an LDAP Abandon Request
+ *
+ * @see LDAPConnection#sendRequest
  *//*
  *       AbandonRequest ::= [APPLICATION 16] MessageID
  */

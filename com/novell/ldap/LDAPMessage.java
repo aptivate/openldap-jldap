@@ -15,7 +15,7 @@
 
 package com.novell.ldap;
 
-import com.novell.ldap.message.LDAPSearchRequest; // for javadoc
+import com.novell.ldap.LDAPSearchRequest; // for javadoc
 import com.novell.ldap.rfc2251.*;
 import com.novell.ldap.client.RespControlVector;
 import com.novell.ldap.client.Debug;
@@ -203,25 +203,9 @@ public class LDAPMessage
     private String stringTag = null;
 
     /**
-     * Creates an LDAPMessage when sending a protocol operation.
-     *
-     * @param op The operation type of message.
-     *
-     * @deprecated For internal use only
-     *
-     * @see #getType
-     */
-    public LDAPMessage(RfcRequest op)
-    {
-        this(-1, op, null);
-    }
-
-    /**
      * Dummy constuctor
-     *
-     * @deprecated For internal use only
      */
-    /* protected */
+	/* package */
     LDAPMessage()
     {
         return;
@@ -235,23 +219,15 @@ public class LDAPMessage
      *<br><br>
      * @param controls The controls to use with the operation.
      *
-     * @deprecated For internal use only
-     *
      * @see #getType
      */
-    protected
+    /*package*/
     LDAPMessage( int type,
                  RfcRequest op,
                  LDAPControl[] controls)
     {
 
         // Get a unique number for this request message
-        /* Turn on after ASN.1 conversion
-        synchronized( msgLock) {
-             msgNum += 1;
-             imsgNum = msgNum;
-        }
-        */
 
         messageType = type;
         RfcControls asn1Ctrls = null;
@@ -497,10 +473,9 @@ public class LDAPMessage
 
     /**
      * Returns the RFC 2251 LDAPMessage composed in this object.
-     *
-     * @deprecated For internal use only
      */
-    final public RfcLDAPMessage getASN1Object()
+    /* package */
+    RfcLDAPMessage getASN1Object()
     {
         return message;
     }

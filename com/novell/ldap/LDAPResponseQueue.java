@@ -15,8 +15,6 @@
 
 package com.novell.ldap;
 
-import com.novell.ldap.client.MessageAgent;
-
 /**
  *  A mechanism for processing asynchronous messages received from a server.
  *  It represents the message queue associated with a particular asynchronous

@@ -13,13 +13,14 @@
  * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
  ******************************************************************************/
 
-package com.novell.ldap.message;
+package com.novell.ldap;
 
-import com.novell.ldap.*;
 import com.novell.ldap.rfc2251.*;
 
 /**
  * Represents an LDAP Unbind Request.
+ *
+ * @see LDAPConnection#sendRequest
  *//*
  *       UnbindRequest ::= [APPLICATION 2] NULL
  */

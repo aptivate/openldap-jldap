@@ -13,13 +13,14 @@
  * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
  ******************************************************************************/
 
-package com.novell.ldap.message;
+package com.novell.ldap;
 
-import com.novell.ldap.*;
 import com.novell.ldap.rfc2251.*;
 
 /**
  * Represents a request to delete an entry.
+ *
+ * @see LDAPConnection#sendRequest
  *//*
  *       DelRequest ::= [APPLICATION 10] LDAPDN
  */

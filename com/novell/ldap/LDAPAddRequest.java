@@ -13,9 +13,8 @@
  * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
  ******************************************************************************/
 
-package com.novell.ldap.message;
+package com.novell.ldap;
 
-import com.novell.ldap.*;
 import com.novell.ldap.asn1.*;
 import com.novell.ldap.rfc2251.*;
 
@@ -23,6 +22,8 @@ import java.util.Enumeration;
 
 /**
  * Represents an LDAP Add Request.
+ *
+ * @see LDAPConnection#sendRequest
  *//*
  *       AddRequest ::= [APPLICATION 8] SEQUENCE {
  *               entry           LDAPDN,

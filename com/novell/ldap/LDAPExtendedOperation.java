@@ -89,8 +89,6 @@ public class LDAPExtendedOperation implements Cloneable
     /**
      *  Resets the OID for the operation to a new value
      *
-     *  @deprecated For internal use only
-     *
      *  @param newoid  The new OID for the operation
      */
     protected void setID(String newoid) {

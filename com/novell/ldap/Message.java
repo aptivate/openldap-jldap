@@ -1,6 +1,6 @@
 /* **************************************************************************
-* $OpenLDAP$
-*
+ * $OpenLDAP$
+ *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
@@ -13,17 +13,16 @@
  * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
  ******************************************************************************/
 
-package com.novell.ldap.client;
+package com.novell.ldap;
 
-import com.novell.ldap.*;
-import com.novell.ldap.message.*;
 import com.novell.ldap.client.*;
 import com.novell.ldap.rfc2251.*;
 
 /**
  * Encapsulates an LDAP message, its state, and its replies.
  */
-public class Message
+/* package */
+class Message
 {
     private LDAPMessage msg;             // msg request sent to server
     private Connection conn;             // Connection object where msg sent
@@ -53,7 +52,8 @@ public class Message
      *<br><br>
      * @param queue     the application LDAPMessageQueue for this message
      */
-    public Message(
+    /* package */
+    Message(
                         LDAPMessage      msg,
                         int              mslimit,
                         Connection       conn,
@@ -90,7 +90,8 @@ public class Message
      * When the message is sent, the timer thread is started to time
      * the message.
      */
-     public final void sendMessage()
+     /* package */
+     final void sendMessage()
                 throws LDAPException
      {
         if( Debug.LDAP_DEBUG) {
@@ -136,7 +137,8 @@ public class Message
      * Get number of messages queued.
      * Don't count the last message containing result code.
      */
-    public int getCount()
+    /* package */
+    int getCount()
     {
         int size = replies.size();
         if( complete) {
@@ -440,7 +442,7 @@ public class Message
      * @param informUserEx true if user must be informed of operation
      */
     /* package */
-    void abandon( LDAPConstraints cons, LocalException informUserEx)
+    void abandon( LDAPConstraints cons, InterThreadException informUserEx)
     {
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.messages, name + "Abandon request, complete="
@@ -555,7 +557,8 @@ public class Message
      *
      * @return true if a bind request
      */
-    public final boolean isBindRequest()
+    /* package */
+    final boolean isBindRequest()
     {
         return (bindprops != null);
     }
@@ -582,7 +585,8 @@ public class Message
         private int timeToWait = 0;
         private Message message;
 
-        public Timeout( int interval, Message msg)
+        /* package */
+        Timeout( int interval, Message msg)
         {
             super();
             timeToWait = interval;
@@ -608,7 +612,7 @@ public class Message
                 }
                 // Note: Abandon clears the bind semaphore after failed bind.
                 message.abandon( null,
-                            new LocalException("Client request timed out",
+                            new InterThreadException("Client request timed out",
                             null, LDAPException.LDAP_TIMEOUT, null, message));
             } catch ( InterruptedException ie ) {
                 if( Debug.LDAP_DEBUG) {

@@ -37,7 +37,7 @@ import com.novell.ldap.client.*;
   */
 public class LDAPResponse extends LDAPMessage
 {
-    private LocalException exception = null;
+    private InterThreadException exception = null;
     private ReferralInfo activeReferral;
 
     /**
@@ -54,7 +54,7 @@ public class LDAPResponse extends LDAPMessage
      *  @param activeReferral  The referral actually used to create the
      *                             connection
      */
-    public LDAPResponse( LocalException ex,
+    public LDAPResponse( InterThreadException ex,
                          ReferralInfo activeReferral)
     {
         exception = ex;

@@ -13,17 +13,17 @@
  * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
  ******************************************************************************/
 
-package com.novell.ldap.client;
+package com.novell.ldap;
 
-import com.novell.ldap.*;
 import com.novell.ldap.client.Debug;
 
-public class LocalException extends LDAPException
+/* package */
+class InterThreadException extends LDAPException
 {
     private Message request;
 
     /**
-     * Constructs a LocalException with its associated message.
+     * Constructs a InterThreadException with its associated message.
      *
      *  @param message        The text providign additional error information.
      *<br><br>
@@ -31,7 +31,8 @@ public class LocalException extends LDAPException
      *<br><br>
      *  @param request        The Message class associated with this exception.
      */
-    public LocalException(  String message,
+	/* package */
+    InterThreadException(  String message,
                             Object[] arguments,
                             int resultCode,
                             Throwable rootException,
@@ -40,11 +41,11 @@ public class LocalException extends LDAPException
         super( message, arguments, resultCode, rootException);
         this.request = request;
         if( Debug.LDAP_DEBUG) {
-            Debug.trace( Debug.messages, "LocalException created with msg \"" +
+            Debug.trace( Debug.messages, "InterThreadException created with msg \"" +
                 getMessage() + "\" and  code " + resultCode);
             if( rootException != null) {
                 Debug.trace( Debug.messages,
-                        "LocalException has rootException - " +
+                        "InterThreadException has rootException - " +
                         rootException.toString());
             }
 
@@ -58,7 +59,8 @@ public class LocalException extends LDAPException
      * @return the message ID.  Returns -1 if no message
      * is associated with this exception.
      */
-    public final int getMessageID()
+	/* package */
+    final int getMessageID()
     {
         if( request == null) {
             return -1;
@@ -73,7 +75,8 @@ public class LocalException extends LDAPException
      * @return the message type of the expected reply.  Returns -1
      * if no reply expected.
      */
-    public final int getReplyType()
+    /* package */
+    final int getReplyType()
     {
         if( request == null) {
             return -1;

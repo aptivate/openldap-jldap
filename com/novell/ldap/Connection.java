@@ -13,18 +13,17 @@
  * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
  ******************************************************************************/
 
-package com.novell.ldap.client;
+package com.novell.ldap;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 
-import com.novell.ldap.*;
-import com.novell.ldap.rfc2251.*;
+
 import com.novell.ldap.asn1.*;
 import com.novell.ldap.client.*;
-import com.novell.ldap.message.*;
+import com.novell.ldap.rfc2251.*;
 import com.novell.ldap.resources.*;
 
 /**
@@ -49,7 +48,8 @@ import com.novell.ldap.resources.*;
  * operating systems do not time slice.
  *
  */
-public final class Connection implements Runnable
+/*package*/
+final class Connection
 {
 
     private Object writeSemaphore = new Object();
@@ -123,16 +123,20 @@ public final class Connection implements Runnable
     // method in LDAPConnection.  Future releases might require
     // these to be local variables that can be modified using
     // the setProperty method.
-    public static String sdk = new String("2.0");
-    public static Integer protocol = new Integer(3);
-    public static String security = "simple";
+    /* package */
+    static String sdk = new String("2.0");
+    /* package */
+    static Integer protocol = new Integer(3);
+    /* package */
+    static String security = "simple";
 
     /**
      * Create a new Connection object
      *
      * @param factory specifies the factory to use to produce SSL sockets.
      */
-    public Connection( LDAPSocketFactory factory)
+    /* package */
+    Connection( LDAPSocketFactory factory)
     {
         if( factory != null) {
             /* verify the 'setFactory' permision is set */
@@ -168,7 +172,8 @@ public final class Connection implements Runnable
      *
      * @return a shallow copy of this object
      */
-    public Object copy()
+    /* package */
+    Object copy()
     {
         Connection c = new Connection(this.mySocketFactory);
         c.host = this.host;
@@ -189,7 +194,8 @@ public final class Connection implements Runnable
      *
      * @return the fake message value that identifies semaphore's owner
      */
-    public final int acquireWriteSemaphore()
+    /* package */
+    final int acquireWriteSemaphore()
     {
         return acquireWriteSemaphore(0);
     }
@@ -208,7 +214,8 @@ public final class Connection implements Runnable
      *
      * @return the semaphore value used to acquire the lock
      */
-    public final int acquireWriteSemaphore(int msgId)
+    /* package */
+    final int acquireWriteSemaphore(int msgId)
     {
         int id = msgId;
         synchronized( writeSemaphore) {
@@ -254,7 +261,8 @@ public final class Connection implements Runnable
      *
      * @param msgId a value that identifies the owner of this semaphore
      */
-    public final void freeWriteSemaphore(int msgId)
+    /* package */
+    final void freeWriteSemaphore(int msgId)
     {
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.bindSemaphore, name +
@@ -346,7 +354,8 @@ public final class Connection implements Runnable
     *<br><br>
     * @param host The port on the host to connect to.
     */
-    public void connect(String host, int port)
+    /* package */
+    void connect(String host, int port)
       throws LDAPException
     {
         connect( host, port, 0);
@@ -436,7 +445,8 @@ public final class Connection implements Runnable
      *
      * @return true if clones exist, false otherwise.
      */
-    public final boolean isCloned()
+    /* package */
+    final boolean isCloned()
     {
         return( cloneCount > 0);
     }
@@ -444,7 +454,8 @@ public final class Connection implements Runnable
     /**
      *  Increments the count of cloned connections
      */
-    synchronized public final void incrCloneCount()
+    /* package */
+    synchronized final void incrCloneCount()
     {
         cloneCount++;
         if( Debug.LDAP_DEBUG) {
@@ -483,8 +494,8 @@ public final class Connection implements Runnable
      *
      * @return a Connection object or null if finalizing.
      */
-    synchronized public final
-    Connection destroyClone( boolean apiCall)
+    /* package */
+    synchronized final Connection destroyClone( boolean apiCall)
     {
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.messages, name +
@@ -520,7 +531,7 @@ public final class Connection implements Runnable
                  * The boolean flag indicates whether the close came
                  * from an API call or from the object being finalized.
                  */
-                LocalException notify = new LocalException(
+                InterThreadException notify = new InterThreadException(
                     (apiCall ? ExceptionMessages.CONNECTION_CLOSED :
                                ExceptionMessages.CONNECTION_FINALIZED),
                                null, LDAPException.CONNECT_ERROR, null, null);
@@ -536,7 +547,8 @@ public final class Connection implements Runnable
      *
      * @param factory the default factory to set
      */
-    public final static void setSocketFactory( LDAPSocketFactory factory)
+    /* package */
+    final static void setSocketFactory( LDAPSocketFactory factory)
     {
         /* verify the 'setFactory' permision is set */
         SecurityManager security = System.getSecurityManager();
@@ -552,7 +564,8 @@ public final class Connection implements Runnable
      *
      * @return the default factory for this connection
      */
-    public final LDAPSocketFactory getSocketFactory()
+    /* package */
+    final LDAPSocketFactory getSocketFactory()
     {
         return mySocketFactory;
     }
@@ -560,7 +573,8 @@ public final class Connection implements Runnable
     /**
      * gets the host used for this connection
      */
-    public final String getHost()
+    /* package */
+    final String getHost()
     {
         return host;
     }
@@ -568,7 +582,8 @@ public final class Connection implements Runnable
     /**
      * gets the port used for this connection
      */
-    public final int getPort()
+    /* package */
+    final int getPort()
     {
         return port;
     }
@@ -656,7 +671,8 @@ public final class Connection implements Runnable
     /**
      * Returns the message agent for this msg ID
      */
-    public final MessageAgent getMessageAgent( int msgId)
+    /* package */
+    final MessageAgent getMessageAgent( int msgId)
         throws NoSuchFieldException
     {
         Message info  = messages.findMessageById( msgId);
@@ -667,7 +683,8 @@ public final class Connection implements Runnable
      * Return whether the application is bound to this connection.
      * Note: an anonymous bind returns false - not bound
      */
-    public final boolean isBound()
+    /* package */
+    final boolean isBound()
     {
         if( bindProperties != null) {
             String dn = bindProperties.getAuthenticationDN();
@@ -679,7 +696,8 @@ public final class Connection implements Runnable
     /**
      * Return whether a connection has been made
      */
-    public final boolean isConnected()
+    /* package */
+    final boolean isConnected()
     {
         return (in != null);
     }
@@ -689,7 +707,8 @@ public final class Connection implements Runnable
      *
      * @param info the Message class to remove from the list
      */
-    public final void removeMessage( Message info)
+    /* package */
+    final void removeMessage( Message info)
     {
         boolean done = messages.removeElement(info);
         if( Debug.LDAP_DEBUG) {
@@ -723,8 +742,7 @@ public final class Connection implements Runnable
      * Should not have a writeSemaphore lock in place, as deadlock can occur
      * while abandoning connections.
      */
-    private void
-    shutdown( String reason, int semaphoreId, LocalException notifyUser)
+    private void shutdown( String reason, int semaphoreId, InterThreadException notifyUser)
     {
         Message info = null;
         if( shutdown) {
@@ -802,7 +820,8 @@ public final class Connection implements Runnable
     *<br><br>
     * @param bindProps   The BindProperties object to set.
     */
-    public final void setBindProperties( BindProperties bindProps)
+    /* package */
+    final void setBindProperties( BindProperties bindProps)
     {
         bindProperties = bindProps;
         return;
@@ -817,7 +836,8 @@ public final class Connection implements Runnable
     *<br><br>
     * @return  The BindProperties object for this connection.
     */
-    public final BindProperties getBindProperties()
+    /* package */
+    final BindProperties getBindProperties()
     {
         return bindProperties;
     }
@@ -830,7 +850,8 @@ public final class Connection implements Runnable
      *
      * @return true if no outstanding messages
      */
-    public final boolean areMessagesComplete(){
+    /* package */
+    final boolean areMessagesComplete(){
         Object[] messages = this.messages.getObjectArray();
         int length = messages.length;
 
@@ -859,7 +880,8 @@ public final class Connection implements Runnable
      * to the messageID passed in to this method.  This is used by
      * LDAPConnection.StartTLS.
      */
-    public final void stopReaderOnReply(int messageID){
+    /* package */
+    final void stopReaderOnReply(int messageID){
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.TLS, "startTLS: stopReaderOnReply of " +
             "message " + messageID);
@@ -873,9 +895,10 @@ public final class Connection implements Runnable
      *  set or changed.  In particular after client.Connection.startTLS()
      *  It assumes the reader thread is not running.
      */
-    public final void startReader() throws LDAPException {
+    /* package */
+    final void startReader() throws LDAPException {
         // Start Reader Thread
-        Thread r = new Thread(this);
+        Thread r = new Thread(new ReaderThread());
         r.setDaemon(true); // If the last thread running, allow exit.
         r.start();
         waitForReader(r);
@@ -887,7 +910,8 @@ public final class Connection implements Runnable
      *
      * Returns true if using TLS protection.
      */
-    public final boolean isTLS(){
+    /* package */
+    final boolean isTLS(){
         return (this.nonTLSBackup != null);
     }
 
@@ -904,7 +928,8 @@ public final class Connection implements Runnable
      * stop and start the reader thread.  Connection.StopTLS will stop
      * and start the reader thread.
      */
-    public final void startTLS()
+    /* package */
+    final void startTLS()
         throws LDAPException
     {
         if (this.mySocketFactory == null){
@@ -971,7 +996,8 @@ public final class Connection implements Runnable
      * used any more, even though autoclose was false: you get an IOException.
      * IBM's JSSE hangs when you close the JSSE socket.
      */
-    public final void stopTLS() throws LDAPException
+    /* package */
+    final void stopTLS() throws LDAPException
     {
         try{
             this.stopReaderMessageID = this.STOP_READING;
@@ -997,210 +1023,219 @@ public final class Connection implements Runnable
         return;
     }
 
-    /**
-     * This thread decodes and processes RfcLDAPMessage's from the server.
-     *
-     * Note: This thread needs a graceful shutdown implementation.
-     */
-    public final void run()
-    {
+	public class ReaderThread implements Runnable
+	{
+		private ReaderThread()
+		{
+            return;
+		}
 
-        String reason = "reader: thread stopping";
-        LocalException notify = null;
-        Message info = null;
-        IOException ioex = null;
+        /**
+         * This thread decodes and processes RfcLDAPMessage's from the server.
+         *
+         * Note: This thread needs a graceful shutdown implementation.
+         */
+        public final void run()
+        {
 
-        reader = Thread.currentThread();
-        if( Debug.LDAP_DEBUG) {
-            Debug.trace( Debug.messages, name + "reader: thread starting: " +
-                reader.toString());
-        }
-        try {
-            for(;;) {
-                // ------------------------------------------------------------
-                // Decode an RfcLDAPMessage directly from the socket.
-                // ------------------------------------------------------------
-                ASN1Identifier asn1ID;
-                InputStream myIn;
-                /* get current value of in, keep value consistant
-                 * though the loop, i.e. even during shutdown
-                 */
-                myIn = in;
-                if( myIn == null) {
-                    if( Debug.LDAP_DEBUG) {
-                        Debug.trace( Debug.messages, name +
-                            "reader: thread stopping, connection shut down");
-                    }
-                    break;
-                }
-                asn1ID = new ASN1Identifier(myIn);
-                int tag = asn1ID.getTag();
-                if(asn1ID.getTag() != ASN1Sequence.TAG) {
-                    if( Debug.LDAP_DEBUG) {
-                        Debug.trace( Debug.messages, name +
-                            "reader: discarding message with tag " + tag);
-                    }
-                    continue; // loop looking for an RfcLDAPMessage identifier
-                }
+            String reason = "reader: thread stopping";
+            InterThreadException notify = null;
+            Message info = null;
+            IOException ioex = null;
 
-                // Turn the message into an RfcMessage class
-                ASN1Length asn1Len = new ASN1Length(myIn);
-
-                RfcLDAPMessage msg =
-                    new RfcLDAPMessage( decoder, myIn, asn1Len.getLength());
-                if( Debug.LDAP_DEBUG) {
-                    Debug.trace( Debug.rawInput, name + "RawRead: " +
-                            msg.toString());
-                }
-
-                // ------------------------------------------------------------
-                // Process the decoded RfcLDAPMessage.
-                // ------------------------------------------------------------
-                int msgId = msg.getMessageID();
-
-                // Find the message which requested this response.
-                // It is possible to receive a response for a request which
-                // has been abandoned. If abandoned, throw it away
-                try {
-                    info = messages.findMessageById( msgId);
-                    if( Debug.LDAP_DEBUG ) {
-                        Debug.trace( Debug.messages, name +
-                            "reader: queue message(" + msgId + ")");
-                    }
-                    info.putReply( msg);   // queue & wake up waiting thread
-                } catch ( NoSuchFieldException ex) {
-
-                    /*
-                     * We get the NoSuchFieldException when we could not find
-                     * a matching message id.  First check to see if this is
-                     * an unsolicited notification (msgID == 0). If it is not
-                     * we throw it away. If it is we call any unsolicited
-                     * listeners that might have been registered to listen for these
-                     * messages.
+            reader = Thread.currentThread();
+            if( Debug.LDAP_DEBUG) {
+                Debug.trace( Debug.messages, name + "reader: thread starting: " +
+                    reader.toString());
+            }
+            try {
+                for(;;) {
+                    // -------------------------------------------------------
+                    // Decode an RfcLDAPMessage directly from the socket.
+                    // -------------------------------------------------------
+                    ASN1Identifier asn1ID;
+                    InputStream myIn;
+                    /* get current value of in, keep value consistant
+                     * though the loop, i.e. even during shutdown
                      */
+                    myIn = in;
+                    if( myIn == null) {
+                        if( Debug.LDAP_DEBUG) {
+                            Debug.trace( Debug.messages, name +
+                                "reader: thread stopping, connection shut down");
+                        }
+                        break;
+                    }
+                    asn1ID = new ASN1Identifier(myIn);
+                    int tag = asn1ID.getTag();
+                    if(asn1ID.getTag() != ASN1Sequence.TAG) {
+                        if( Debug.LDAP_DEBUG) {
+                            Debug.trace( Debug.messages, name +
+                                "reader: discarding message with tag " + tag);
+                        }
+                        continue; // loop looking for an RfcLDAPMessage identifier
+                    }
 
+                    // Turn the message into an RfcMessage class
+                    ASN1Length asn1Len = new ASN1Length(myIn);
 
-                    /* Note the location of this code.  We could have required
-                     * that message ID 0 be just like other message ID's but
-                     * since message ID 0 has to be treated specially we have
-                     * a separate check for message ID 0.  Also note that
-                     * this test is after the regular message list has been
-                     * checked for.  We could have always checked the list
-                     * of messages after checking if this is an unsolicited
-                     * notification but that would have inefficient as
-                     * message ID 0 is a rare event (as of this time).
-                     */
-                    if (msgId == 0) {
+                    RfcLDAPMessage msg =
+                        new RfcLDAPMessage( decoder, myIn, asn1Len.getLength());
+                    if( Debug.LDAP_DEBUG) {
+                        Debug.trace( Debug.rawInput, name + "RawRead: " +
+                                msg.toString());
+                    }
 
+                    // ------------------------------------------------------------
+                    // Process the decoded RfcLDAPMessage.
+                    // ------------------------------------------------------------
+                    int msgId = msg.getMessageID();
+
+                    // Find the message which requested this response.
+                    // It is possible to receive a response for a request which
+                    // has been abandoned. If abandoned, throw it away
+                    try {
+                        info = messages.findMessageById( msgId);
                         if( Debug.LDAP_DEBUG ) {
                             Debug.trace( Debug.messages, name +
-                                    "Received message id 0");
+                                "reader: queue message(" + msgId + ")");
                         }
-
-                        // Notify any listeners that might have been registered
-                        notifyAllUnsolicitedListeners(msg);
+                        info.putReply( msg);   // queue & wake up waiting thread
+                    } catch ( NoSuchFieldException ex) {
 
                         /*
-                         * Was this a server shutdown unsolicited notification.
-                         * IF so we quit. Actually calling the return will
-                         * first transfer control to the finally clause which
-                         * will do the necessary clean up.
+                         * We get the NoSuchFieldException when we could not find
+                         * a matching message id.  First check to see if this is
+                         * an unsolicited notification (msgID == 0). If it is not
+                         * we throw it away. If it is we call any unsolicited
+                         * listeners that might have been registered to listen for these
+                         * messages.
                          */
-                        if (serverShutdownNotification) {
-                            notify = new LocalException(
-                                ExceptionMessages.SERVER_SHUTDOWN_REQ,
-                                new Object[] {host, new Integer(port)},
-                                LDAPException.CONNECT_ERROR,
-                                null, null);
 
-                            return;
-                        }
-                    } else {
 
-                        if( Debug.LDAP_DEBUG ) {
-                            Debug.trace( Debug.messages, name +
-                                "reader: message(" + msgId +
-                                ") not found, discarding reply");
+                        /* Note the location of this code.  We could have required
+                         * that message ID 0 be just like other message ID's but
+                         * since message ID 0 has to be treated specially we have
+                         * a separate check for message ID 0.  Also note that
+                         * this test is after the regular message list has been
+                         * checked for.  We could have always checked the list
+                         * of messages after checking if this is an unsolicited
+                         * notification but that would have inefficient as
+                         * message ID 0 is a rare event (as of this time).
+                         */
+                        if (msgId == 0) {
+
+                            if( Debug.LDAP_DEBUG ) {
+                                Debug.trace( Debug.messages, name +
+                                        "Received message id 0");
+                            }
+
+                            // Notify any listeners that might have been registered
+                            notifyAllUnsolicitedListeners(msg);
+
+                            /*
+                             * Was this a server shutdown unsolicited notification.
+                             * IF so we quit. Actually calling the return will
+                             * first transfer control to the finally clause which
+                             * will do the necessary clean up.
+                             */
+                            if (serverShutdownNotification) {
+                                notify = new InterThreadException(
+                                    ExceptionMessages.SERVER_SHUTDOWN_REQ,
+                                    new Object[] {host, new Integer(port)},
+                                    LDAPException.CONNECT_ERROR,
+                                    null, null);
+
+                                return;
+                            }
+                        } else {
+
+                            if( Debug.LDAP_DEBUG ) {
+                                Debug.trace( Debug.messages, name +
+                                    "reader: message(" + msgId +
+                                    ") not found, discarding reply");
+                            }
+
                         }
 
                     }
-
+                    if ((stopReaderMessageID == msgId) ||
+                        (stopReaderMessageID == STOP_READING)) {
+                        // Stop the reader Thread.
+                        return;
+                    }
                 }
-                if ((this.stopReaderMessageID == msgId) ||
-                    (this.stopReaderMessageID == this.STOP_READING)) {
-                    // Stop the reader Thread.
-                    return;
+            } catch( IOException ioe) {
+                if( Debug.LDAP_DEBUG ) {
+                    Debug.trace( Debug.messages, name +
+                        "Connection lost waiting for results from " +
+                        host + ":" + port + ", shutdown=" + shutdown +
+                        "\n\t" + ioe.toString());
+                }
+
+                ioex = ioe;
+                if((stopReaderMessageID != STOP_READING ) && ! shutdown ){
+                    // Connection lost waiting for results from host:port
+                    notify = new InterThreadException(
+                        ExceptionMessages.CONNECTION_WAIT,
+                                new Object[] { host, new Integer(port)},
+                                LDAPException.CONNECT_ERROR,
+                                ioe, info);
+                }
+                // The connection is no good, don't use it any more
+                in = null;
+                out = null;
+            } finally {
+                if( Debug.LDAP_DEBUG ) {
+                    Debug.trace( Debug.messages, name +
+                    "reader: connection shutdown");
+                }
+                /*
+                 * There can be four states that the reader can be in at this point:
+                 *  1) We are starting TLS and will be restarting the reader
+                 *     after we have negotiated TLS.
+                 *      - Indicated by whether stopReaderMessageID does not
+                 *        equal CONTINUE_READING.
+                 *      - Don't call Shutdown.
+                 *  2) We are stoping TLS and will be restarting after TLS is
+                 *     stopped.
+                 *      - Indicated by an IOException AND stopReaderMessageID equals
+                 *        STOP_READING - in which case notify will be null.
+                 *      - Don't call Shutdown
+                 *  3) We receive a Server Shutdown notification.
+                 *      - Indicated by messageID equal to 0.
+                 *      - call Shutdown.
+                 *  4) Another error occured
+                 *      - Indicated by an IOException AND notify is not NULL
+                 *      - call Shutdown.
+                 */
+                if (shutdown || (notify != null)) {  //#3 & 4
+                    shutdown( reason, 0, notify );
+                } else {
+                    stopReaderMessageID = CONTINUE_READING;
+                    if( Debug.LDAP_DEBUG ) {       //#1 & #2
+                        Debug.trace( Debug.TLS,
+                            "reader: Stopping thread, retaining the connection");
+                    }
                 }
             }
-        } catch( IOException ioe) {
+            deadReaderException = ioex;
+            deadReader = reader;
+            reader = null;
             if( Debug.LDAP_DEBUG ) {
                 Debug.trace( Debug.messages, name +
-                    "Connection lost waiting for results from " +
-                    host + ":" + port + ", shutdown=" + shutdown +
-                    "\n\t" + ioe.toString());
+                "reader: thread terminated");
             }
-
-            ioex = ioe;
-            if((this.stopReaderMessageID != this.STOP_READING ) && ! shutdown ){
-                // Connection lost waiting for results from host:port
-                notify = new LocalException(
-                    ExceptionMessages.CONNECTION_WAIT,
-                            new Object[] { host, new Integer(port)},
-                            LDAPException.CONNECT_ERROR,
-                            ioe, info);
-            }
-            // The connection is no good, don't use it any more
-            in = null;
-            out = null;
-        } finally {
-            if( Debug.LDAP_DEBUG ) {
-                Debug.trace( Debug.messages, name +
-                "reader: connection shutdown");
-            }
-            /*
-             * There can be four states that the reader can be in at this point:
-             *  1) We are starting TLS and will be restarting the reader
-             *     after we have negotiated TLS.
-             *      - Indicated by whether stopReaderMessageID does not
-             *        equal CONTINUE_READING.
-             *      - Don't call Shutdown.
-             *  2) We are stoping TLS and will be restarting after TLS is
-             *     stopped.
-             *      - Indicated by an IOException AND stopReaderMessageID equals
-             *        STOP_READING - in which case notify will be null.
-             *      - Don't call Shutdown
-             *  3) We receive a Server Shutdown notification.
-             *      - Indicated by messageID equal to 0.
-             *      - call Shutdown.
-             *  4) Another error occured
-             *      - Indicated by an IOException AND notify is not NULL
-             *      - call Shutdown.
-             */
-            if (shutdown || (notify != null)) {  //#3 & 4
-                shutdown( reason, 0, notify );
-            } else {
-                this.stopReaderMessageID = this.CONTINUE_READING;
-                if( Debug.LDAP_DEBUG ) {       //#1 & #2
-                    Debug.trace( Debug.TLS,
-                        "reader: Stopping thread, retaining the connection");
-                }
-            }
+            return;
         }
-        deadReaderException = ioex;
-        deadReader = reader;
-        reader = null;
-        if( Debug.LDAP_DEBUG ) {
-            Debug.trace( Debug.messages, name +
-            "reader: thread terminated");
-        }
-        return;
-    }
+	} // End class ReaderThread
 
     /**
      * Sets the current referral active on this connection if created to
      * follow referrals.
      */
-    public final void setActiveReferral( ReferralInfo referral)
+    /* package */
+    final void setActiveReferral( ReferralInfo referral)
     {
         activeReferral = referral;
         return;
@@ -1212,7 +1247,8 @@ public final class Connection implements Runnable
      *
      * @return the active referral url
      */
-    public final ReferralInfo getActiveReferral()
+    /* package */
+    final ReferralInfo getActiveReferral()
     {
         return activeReferral;
     }
@@ -1220,8 +1256,8 @@ public final class Connection implements Runnable
     /** Add the specific object to the list of listeners that want to be
      * notified when an unsolicited notification is received.
      */
-    public final void
-      addUnsolicitedNotificationListener(LDAPUnsolicitedNotificationListener listener)
+    /* package */
+    final void addUnsolicitedNotificationListener(LDAPUnsolicitedNotificationListener listener)
     {
         unsolicitedListeners.add(listener);
         return;
@@ -1229,8 +1265,8 @@ public final class Connection implements Runnable
 
     /** Remove the specific object from current list of listeners
     */
-    public final void
-      removeUnsolicitedNotificationListener(LDAPUnsolicitedNotificationListener listener)
+    /* package */
+    final void removeUnsolicitedNotificationListener(LDAPUnsolicitedNotificationListener listener)
     {
         unsolicitedListeners.removeElement(listener);
         return;
@@ -1243,14 +1279,15 @@ public final class Connection implements Runnable
      *  Since we do not know what the application unsolicited listener
      *  might be doing and how long it will take to process the uncoslicited
      *  notification.  We use this class to spawn off the unsolicited
-     *  notification as a seperate thread
+     *  notification as a separate thread
      */
     private class UnsolicitedListenerThread extends Thread
     {
         private LDAPUnsolicitedNotificationListener listenerObj;
         private LDAPExtendedResponse unsolicitedMsg;
 
-        public UnsolicitedListenerThread( LDAPUnsolicitedNotificationListener l,
+        /* package */
+        UnsolicitedListenerThread( LDAPUnsolicitedNotificationListener l,
                                           LDAPExtendedResponse m)
         {
             this.listenerObj = l;

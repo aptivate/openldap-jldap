@@ -15,7 +15,6 @@
 
 package com.novell.ldap;
 
-import com.novell.ldap.client.MessageAgent;
 import com.novell.ldap.client.Debug;
 import com.novell.ldap.rfc2251.RfcLDAPMessage;
 import com.novell.ldap.client.ExtResponseFactory;
