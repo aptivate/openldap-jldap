@@ -14,9 +14,9 @@
  ******************************************************************************
 -->
 <!-- ======================================================================= -->
-<!-- DN tests build file                                                     -->
+<!-- DN test build file                                                      -->
 <!-- ======================================================================= -->
-<project name="DNTests" default="compile" basedir=".">
+<project name="DN Test" default="compile" basedir=".">
     <!-- Targets                                                             -->
     <!--     clean   - Cleans all generated class files                      -->
     <!--     compile - Builds debug classes and jar files                    -->
@@ -50,7 +50,7 @@
         <mkdir dir="${build}"/>
         <javac srcdir="."
                 includes="*.java,*/*.java"
-                classpath="../../../javaldap/pkg/lib_debug/ldap.jar"
+                classpath="../../pkg/lib_debug/ldap.jar"
                 destdir="${build}"
                 deprecation="off"
                 debug="${debug}"
