@@ -45,11 +45,10 @@ import com.novell.ldap.ldif_dsml.Base64Encoder;
  */
 
 
-public class LDIFWriter extends LDIF implements LDAPWriter {
+public class LDIFWriter extends LDIF implements LDAPWriter, LDAPImport {
 
     private int            recordType;                    // record type
     private String         dn;                            // record dn
-    private StringBuffer   longLine = new StringBuffer(); //
     private Base64Encoder  base64Encoder = new Base64Encoder();
     private BufferedWriter bufWriter;
     private LDAPControl[]  currentControls;
@@ -72,7 +71,6 @@ public class LDIFWriter extends LDIF implements LDAPWriter {
 
         this( out, 1 );
     }
-
 
     /**
      * Constructs an LDIFWriter object by calling super constructor, and
@@ -107,16 +105,25 @@ public class LDIFWriter extends LDIF implements LDAPWriter {
      *
      * @throws IOException if an I/O error occurs.
      */
-    protected void writeVersionLine () throws IOException {
+    public void writeVersionLine () throws IOException {
 
         // LDIF file is  currently using 'version 1'
         String versionLine = new String("version: " + getVersion());
         bufWriter.write( versionLine, 0, versionLine.length());
-        // start a new line and then an extra line to separate
-        // the version line with the rest of the contents in LDIF file
-        bufWriter.newLine();
+        // write an empty line separate the version line
+        // with the rest of the contents in LDIF file
         bufWriter.newLine();
     }
+
+    /**
+     * Write an empty line.
+     *
+     * @throws IOException if an I/O error occurs.
+     */
+    public void writeEmptyLine () throws IOException {
+        bufWriter.newLine();
+    }
+
 
     /**
      * Write a comment line into the OutputStream.
@@ -130,29 +137,30 @@ public class LDIFWriter extends LDIF implements LDAPWriter {
      *
      * @throws IOException if an I/O error occurs.
      */
-    public void writeCommentLine ( String line ) throws IOException {
+    public void writeCommentLine (String line) throws IOException {
 
-        if ( line != null) {
+        if (line != null && line.length() != 0) {
 
             if (line.length()<=78) {
-                 bufWriter.write("# " + line, 0, line.length()+2);
+                // short line, write it out
+                bufWriter.write("# " + line, 0, line.length()+2);
             }
             else {
-                // berak the line
-                this.longLine = new StringBuffer();
-                this.longLine.append(line);
+                // long line, berak it
+                StringBuffer longLine = new StringBuffer();
+                longLine.append(line);
 
-                while(this.longLine.length() > 78) {
+                while(longLine.length() > 78) {
                     // write "# " and 78 chars
-                    bufWriter.write("# " + this.longLine, 0, 80);
+                    bufWriter.write("# " + longLine, 0, 80);
                     // start a new line
                     bufWriter.newLine();
                     // remove the chars already wrote out
-                    this.longLine.delete(0, 78);
+                    longLine.delete(0, 78);
                 }
 
                 // write the remaining part of the lien out
-                bufWriter.write("# " + this.longLine, 0, this.longLine.length()+2);
+                bufWriter.write("# " + longLine, 0, longLine.length()+2);
             }
             // start a new line
             bufWriter.newLine();
@@ -171,32 +179,35 @@ public class LDIFWriter extends LDIF implements LDAPWriter {
      *
      * @throws IOException if an I/O error occurs.
      */
-    public void writeLine ( String line ) throws IOException {
+    public void writeLine (String line) throws IOException {
 
-        if ( line != null) {
+        if ( line != null && line.length() != 0) {
 
             if (line.length()<=80) {
-                 bufWriter.write(line, 0, line.length());
+                // short line, write it out
+                bufWriter.write(line, 0, line.length());
             }
             else {
-                // berak the line
-                this.longLine = new StringBuffer();
-                this.longLine.append(line);
-                bufWriter.write("" + this.longLine, 0, 80);
-                this.longLine.delete(0, 80);
+                // long line, berak it
+                StringBuffer longLine = new StringBuffer();
+                longLine.append(line);
+                // write the first 80 chars to outputStream
+                bufWriter.write(longLine.toString(), 0, 80);
+                // remove the chars that already been written out
+                longLine.delete(0, 80);
                 bufWriter.newLine();
 
-                while(this.longLine.length() > 79) {
+                while(longLine.length() > 79) {
                     // write continuation line
-                    bufWriter.write(" " + this.longLine, 0, 80);
+                    bufWriter.write(" " + longLine, 0, 80);
+                    // remove the chars that already been written out
+                    longLine.delete(0, 79);
                     // start a new line
                     bufWriter.newLine();
-                    // remove the chars that already been written out
-                    this.longLine.delete(0, 79);
                 }
 
                 // write the remaining part of the lien out
-                bufWriter.write(" " + this.longLine, 0, this.longLine.length()+1);
+                bufWriter.write(" " + longLine, 0, longLine.length()+1);
             }
 
             // write an empty line
@@ -304,13 +315,12 @@ public class LDIFWriter extends LDIF implements LDAPWriter {
      */
     public void writeChange(LDAPRequest change) throws IOException  {
 
-        this.dn = change.getDN();
         this.currentControls = change.getControls();
         LDAPModification[] mods;
         String[] modInfo;
 
         // write dn field to outputStream
-        writeDN();
+        writeDN(change.getDN());
 
         if ( change instanceof LDAPAdd) {
             // LDAPAdd request, get LDAPEntry
@@ -389,8 +399,7 @@ public class LDIFWriter extends LDIF implements LDAPWriter {
         }
         else {
             // get dn from the entry
-            this.dn = new String( entry.getDN() );
-            writeDN();
+            writeDN(entry.getDN());
         }
 
         // save attribute fields
@@ -533,7 +542,7 @@ public class LDIFWriter extends LDIF implements LDAPWriter {
         writeLine("changetype: moddn");
 
         // save new RDN
-        if ( isSafeString(modInfo[0]) ) {
+        if ( isSafe(modInfo[0]) ) {
             writeLine("newrdn:" + modInfo[0]);
         }
         else {
@@ -549,7 +558,7 @@ public class LDIFWriter extends LDIF implements LDAPWriter {
         // save newSuperior
         if ( ((modInfo[2]).length()) != 0) {
 
-            if ( isSafeString(modInfo[2]) ) {
+            if ( isSafe(modInfo[2]) ) {
                 writeLine("newsuperior:" + modInfo[2]);
             }
             else {
@@ -588,20 +597,18 @@ public class LDIFWriter extends LDIF implements LDAPWriter {
     }
 
 
-    public void writeDN() throws IOException, UnsupportedEncodingException {
+    public void writeDN(String dn)
+    throws IOException, UnsupportedEncodingException {
 
         Base64Encoder base64Encoder = new Base64Encoder();
 
-        if ( !isSafeString( this.dn ) ) {
-            // IF dn contains NON-SAFE-INIT-CHAR or NON-SAFE-CHAR,
-            // it has to be base64 encoded
-            this.dn = base64Encoder.encoder( this.dn );
-            // base64 encoded dn ended with white spavce
-            writeLine("dn: " + this.dn);
+        if ( isSafe(dn) ) {
+            // safe
+            writeLine("dn: " + dn);
         }
         else {
-            // add dn to record fileds
-            writeLine("dn: " + this.dn);
+            // not safe
+            writeLine("dn:: " + base64Encoder.encoder(dn) + " ");
         }
 
     }
@@ -647,25 +654,49 @@ public class LDIFWriter extends LDIF implements LDAPWriter {
     /**
      * Weite attribute name and value into outputStream.
      *
-     * <p>Check if attribute value contains NON-SAFE-INIT-CHAR or
-     * NON-SAFE-CHAR. if it does, it needs to be base64 encoded</p>
+     * <p>Check if attrVal starts with NUL, LF, CR, ' ', ':', or '<'
+     * or contains any NUL, LF, or CR and then write it out</p>
      */
-    public void writeAttribute(String attrName, String attrSpec)
+    public void writeAttribute(String attrName, String attrVal)
     throws IOException, UnsupportedEncodingException {
 
-        if (attrSpec != null) {
-            if ( !isSafeString(attrSpec) ) {
-                // IF attrSpec contains NON-SAFE-INIT-CHAR or NON-SAFE-CHAR,
-                // it has to be base64 encoded
-                attrSpec = base64Encoder.encoder(attrSpec);
-                // base64 encoded attribute spec ended with white spavce
-                writeLine(attrName + ":: " + attrSpec + " " );
+        if (attrVal != null) {
+            if ( isSafe(attrVal) ) {
+                writeLine( attrName + ": " + attrVal );
             }
             else {
-                writeLine( attrName + ": " + attrSpec );
+                // IF attrSpec contains NON-SAFE-INIT-CHAR or NON-SAFE-CHAR,
+                // it has to be base64 encoded
+                attrVal = base64Encoder.encoder(attrVal);
+                // base64 encoded attribute spec ended with white spavce
+                writeLine(attrName + ":: " + attrVal + " " );
             }
         }
+    }
 
+
+    /**
+     * Weite attribute name and value into outputStream.
+     *
+     * <p>Check if attribute value contains NON-SAFE-INIT-CHAR or
+     * NON-SAFE-CHAR. if it does, it needs to be base64 encoded and then
+     * write it out</p>
+     */
+    public void writeAttribute(String attrName, byte[] attrVal)
+    throws IOException, UnsupportedEncodingException {
+
+        if ((attrVal != null)&&(attrVal.length != 0)) {
+            if ( isSafe(attrVal) && isPrintable(attrVal) ) {
+                // safe to make a String value
+                writeLine( attrName + ": " + new String(attrVal) );
+            }
+            else {
+                // not safe
+                attrVal = base64Encoder.encoder(attrVal);
+                // base64 encoded attriVal ends with white space
+                writeLine(attrName + ":: " + new String(attrVal) + " " );
+            }
+        }
     }
 
 
@@ -674,24 +705,107 @@ public class LDIFWriter extends LDIF implements LDAPWriter {
      *
      * @param boolean object to incidate that the string is safe or not safe
      */
-    private boolean isSafeString( String value ) {
+    public boolean isSafe(String value) {
 
-        // is there any NON-SAFE-INIT-CHAR
-        if (   (value.charAt(0) == 0x00)     // NUL
-            || (value.charAt(0) == 0x0A)     // linefeeder
-            || (value.charAt(0) == 0x0D)     // carrage return
-            || (value.charAt(0) == 0x20)     // space(' ')
-            || (value.charAt(0) == 0x3A)     // colon(':')
-            || (value.charAt(0) == 0x3C)) {  // less-than('<')
-            return false;
+       if (value.length() > 0) {
+            if (value.length() > 1){
+                // is there any NON-SAFE-INIT-CHAR
+                if (      (value.charAt(0) == 0x00)     // NUL
+                       || (value.charAt(0) == 0x0A)     // linefeeder
+                       || (value.charAt(0) == 0x0D)     // carrage return
+                       || (value.charAt(0) == 0x20)     // space(' ')
+                       || (value.charAt(0) == 0x3A)     // colon(':')
+                       || (value.charAt(0) == 0x3C)) {  // less-than('<')
+                    return false;
+                }
+                // is there any NON-SAFE-CHAR
+                for ( int i = 1; i < value.length(); i++ ) {
+                    if (      (value.charAt(i) == 0x00)    // NUL
+                           || (value.charAt(i) == 0x0A)    // linefeeder
+                           || (value.charAt(i) == 0x0D)) { // carrage return
+                        return false;
+                    }
+                }
+            }
+            else {
+                // is there any NON-SAFE-INIT-CHAR
+                if (      (value.charAt(0) == 0x00)     // NUL
+                       || (value.charAt(0) == 0x0A)     // linefeeder
+                       || (value.charAt(0) == 0x0D)     // carrage return
+                       || (value.charAt(0) == 0x20)     // space(' ')
+                       || (value.charAt(0) == 0x3A)     // colon(':')
+                       || (value.charAt(0) == 0x3C)) {  // less-than('<')
+                    return false;
+                }
+            }
         }
 
-        // is there any NON-SAFE-CHAR
-        for ( int i = 1; i < value.length(); i++ ) {
-            if (   (value.charAt(i) == 0x00)    // NUL
-                || (value.charAt(i) == 0x0A)    // linefeeder
-                || (value.charAt(i) == 0x0D)) { // carrage return
-                return false;
+        return true;
+    }
+
+    /**
+     * Check if the input byte array object is safe.
+     *
+     * <p>Check if the bytes starts with UL, LF, CR, ' ', ':', or '<',
+     * or contains any NUL, LF, or CR</p>
+     *
+     * @param boolean object to incidate that the string is safe or not safe
+     */
+    public boolean isSafe(byte[] bytes) {
+
+        if (bytes.length > 0) {
+            if (bytes.length > 1){
+                // is there any NON-SAFE-INIT-CHAR
+                if (      (bytes[0] == 0x00)     // NUL
+                       || (bytes[0] == 0x0A)     // linefeeder
+                       || (bytes[0] == 0x0D)     // carrage return
+                       || (bytes[0] == 0x20)     // space(' ')
+                       || (bytes[0] == 0x3A)     // colon(':')
+                       || (bytes[0] == 0x3C)) {  // less-than('<')
+                    return false;
+                }
+                // is there any NON-SAFE-CHAR
+                for ( int i = 1; i < bytes.length; i++ ) {
+                    if (      (bytes[0] == 0x00)    // NUL
+                           || (bytes[0] == 0x0A)    // linefeeder
+                           || (bytes[0] == 0x0D)) { // carrage return
+                        return false;
+                    }
+                }
+            }
+            else {
+                // is there any NON-SAFE-INIT-CHAR
+                if (      (bytes[0] == 0x00)     // NUL
+                       || (bytes[0] == 0x0A)     // linefeeder
+                       || (bytes[0] == 0x0D)     // carrage return
+                       || (bytes[0] == 0x20)     // space(' ')
+                       || (bytes[0] == 0x3A)     // colon(':')
+                       || (bytes[0] == 0x3C)) {  // less-than('<')
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Check if the input byte array object is safe to make a String.
+     *
+     * <p>Check if the input byte array contains any un-printable value</p>
+     *
+     * @param bytes The byte array object to be checked.
+     *
+     * @return boolean object to incidate that the byte array
+     * object is safe or not
+     */
+    public boolean isPrintable( byte[] bytes ) {
+
+        if (bytes.length > 0) {
+            for (int i=0; i<bytes.length; i++) {
+                if ( (bytes[i]&0x00ff) < 0x20 || (bytes[i]&0x00ff) > 0x7e ) {
+                    return false;
+                }
             }
         }
         return true;
