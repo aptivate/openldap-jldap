@@ -59,7 +59,7 @@ public class LDAPJSSEStartTLSFactory
      *
      * </p>This SSLSocketFactory is used when startTLS is called.
      * For information on using the SSLSocketFactory see also
-     * <a href="http://java.sun.com/j2se/1.4/docs/api/javax/net/ssl/SSLSocketFactory.html>
+     * <a href="http://java.sun.com/j2se/1.4/docs/api/javax/net/ssl/SSLSocketFactory.html">
      * javax.net.ssl.SSLContext</a>.</p>
      */
     public LDAPJSSEStartTLSFactory(SSLSocketFactory factory)

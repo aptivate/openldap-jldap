@@ -17,7 +17,7 @@ package com.novell.ldap;
 
 import com.novell.ldap.asn1.*;
 import com.novell.ldap.rfc2251.*;
-
+import java.util.Iterator;
 /**
  *  Encapsulates a single search result that is in response to an asynchronous
  *  search operation.
@@ -52,14 +52,60 @@ public class LDAPSearchResult extends LDAPMessage
      */
     public LDAPSearchResult(LDAPEntry entry, LDAPControl[] cont)
     {
-        super();
-        if( entry == null) {
-            throw new IllegalArgumentException("Argument \"entry\" cannot be null");
-        }    
+        super(	
+        		new RfcLDAPMessage(
+				new RfcSearchResultEntry(
+					new ASN1OctetString(entry.getDN()),
+					getEntrySequence(entry)),
+				RfcControlFactory(cont)));
+
         this.entry = entry;
         return;
     }
+	/** Converts a LDAPControl array to an RfcControl Structure.
+   * @param controls array of LDAPControl
+   * @return RfcControls Structure representation of controls arrray.
+   */
+  private static RfcControls RfcControlFactory(LDAPControl[] controls) {
+		RfcControls rfcs = new RfcControls();
 
+		if (controls != null) {
+
+			for (int i = 0; i < controls.length; i++) {
+				rfcs.add(controls[i].getASN1Object());
+			}
+			return rfcs;
+		} else
+			return null;
+
+	}
+	/**
+   * Creates a ASN Encoded Sequence for the specified entry.
+   * @param entry The LDAPEntry to be encoded.
+   * @return ASN Encoded representation of the entry.
+   */
+  private static ASN1Sequence getEntrySequence(LDAPEntry entry) {
+		if (entry == null) {
+			throw new IllegalArgumentException("Argument \"entry\" cannot be null");
+		}
+		
+		Iterator entryiterator = entry.getAttributeSet().iterator();
+		ASN1Sequence attributelistsequence = new ASN1Sequence();
+		while (entryiterator.hasNext()) {
+			ASN1Sequence attributesequence = new ASN1Sequence();
+			LDAPAttribute attribute = (LDAPAttribute) entryiterator.next();
+			attributesequence.add(new ASN1OctetString(attribute.getName()));
+			ASN1Set valueset = new ASN1Set();
+			String[] valueArray = attribute.getStringValueArray();
+			if (valueArray != null)
+				for (int i = 0; i < valueArray.length; i++) {
+					valueset.add(new ASN1OctetString(valueArray[i]));
+				}
+			attributesequence.add(valueset);
+			attributelistsequence.add(attributesequence);
+		}
+		return attributelistsequence;
+	}
     /**
      * Returns the entry of a server's search response.
      *

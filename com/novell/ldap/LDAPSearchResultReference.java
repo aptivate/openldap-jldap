@@ -15,6 +15,8 @@
 
 package com.novell.ldap;
 
+import java.net.MalformedURLException;
+
 import com.novell.ldap.rfc2251.*;
 import com.novell.ldap.asn1.*;
 import com.novell.ldap.client.Debug;
@@ -45,6 +47,14 @@ public class LDAPSearchResultReference extends LDAPMessage {
             Debug.trace( Debug.referrals, name + "Created");
         }
         return;
+	}
+   /** Constructs the Object from an array of referals, passed as string.
+   * @param referals array of search referals.
+   * @throws MalformedURLException When any referals url is not well-formed.
+   */
+  public LDAPSearchResultReference(String referals[]) throws MalformedURLException
+	{
+		super(new RfcLDAPMessage(new RfcSearchResultReference(referals)));
 	}
 
    /**

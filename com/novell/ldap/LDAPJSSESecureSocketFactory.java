@@ -57,7 +57,7 @@ public class LDAPJSSESecureSocketFactory
      * SSLSocketFactory specified.
      *
      * For information on using the the SSLSocketFactory, see also
-     * <a href="http://java.sun.com/j2se/1.4/docs/api/javax/net/ssl/SSLSocketFactory.html>
+     * <a href="http://java.sun.com/j2se/1.4/docs/api/javax/net/ssl/SSLSocketFactory.html">
      * javax.net.ssl.SSLSocketFactory</a>
      */
     public LDAPJSSESecureSocketFactory(SSLSocketFactory factory)

@@ -187,6 +187,9 @@ public abstract class LDAPMessageQueue
             case LDAPMessage.SEARCH_RESULT_REFERENCE:
                 response = new LDAPSearchResultReference(message);
                 break;
+            case LDAPMessage.INTERMEDIATE_RESPONSE:
+                response = new LDAPIntermediateResponse(message);
+                break;
             case LDAPMessage.EXTENDED_RESPONSE:
                 ExtResponseFactory fac = new ExtResponseFactory();
                 response = fac.convertToExtendedResponse(message);

@@ -137,6 +137,24 @@ public class LDAPResponse extends LDAPMessage
         return;
     }
 
+	/** Converts a LDAPControl array to an RfcControl Structure.
+	* @param controls array of LDAPControl
+	* @return RfcControls Structure representation of controls arrray.
+	*/
+	private static RfcControls RfcControlFactory(LDAPControl[] controls) {
+		RfcControls rfcs = new RfcControls();
+
+		if (controls != null) {
+
+			for (int i = 0; i < controls.length; i++) {
+				rfcs.add(controls[i].getASN1Object());
+			}
+			return rfcs;
+		} else
+			return null;
+
+	}
+
     private static ASN1Sequence RfcResultFactory(   int type,
                                                     int resultCode,
                                                     String matchedDN,
@@ -144,7 +162,17 @@ public class LDAPResponse extends LDAPMessage
                                                     String[] referrals)
     {
         ASN1Sequence ret;
-        
+		RfcReferral rfcreferal = null;
+		if (referrals != null)
+			{
+				try{
+					rfcreferal = new RfcReferral(referrals);
+				}catch(MalformedURLException e)
+				{
+					//Referals are malformed
+					e.printStackTrace();
+				}
+			} 
         if( matchedDN == null)
             matchedDN = "";
         if( serverMessage == null)
@@ -152,52 +180,57 @@ public class LDAPResponse extends LDAPMessage
             
         switch( type) {
         case SEARCH_RESULT:
-            ret = new RfcSearchResultDone( new ASN1Enumerated( resultCode),
+				ret =
+					new RfcSearchResultDone(
+						new ASN1Enumerated(resultCode),
                                            new RfcLDAPDN( matchedDN),
                                            new RfcLDAPString( serverMessage),
-                                           null /*new RfcReferral( referrals)*/);
+						rfcreferal);
             break;
         case BIND_RESPONSE:
             ret = null;                     // Not yet implemented
             break;                                   
         case SEARCH_RESPONSE:
-            ret = null;                     // Not yet implemented
+				ret = null; // Not yet implemented, implemented as
+				// separate classes.
             break;                                   
         case MODIFY_RESPONSE:
             ret = new RfcModifyResponse(   new ASN1Enumerated( resultCode),
                                            new RfcLDAPDN( matchedDN),
                                            new RfcLDAPString( serverMessage),
-                                           null /*new RfcReferral( referrals)*/);
+						rfcreferal);
             break;                                   
         case ADD_RESPONSE:
             ret = new RfcAddResponse(      new ASN1Enumerated( resultCode),
                                            new RfcLDAPDN( matchedDN),
                                            new RfcLDAPString( serverMessage),
-                                           null /*new RfcReferral( referrals)*/);
+						rfcreferal);
             break;                                   
         case DEL_RESPONSE:
             ret = new RfcDelResponse(      new ASN1Enumerated( resultCode),
                                            new RfcLDAPDN( matchedDN),
                                            new RfcLDAPString( serverMessage),
-                                           null /*new RfcReferral( referrals)*/);
+						rfcreferal);
             break;                                   
         case MODIFY_RDN_RESPONSE:
             ret = new RfcModifyDNResponse( new ASN1Enumerated( resultCode),
                                            new RfcLDAPDN( matchedDN),
                                            new RfcLDAPString( serverMessage),
-                                           null /*new RfcReferral( referrals)*/);
+						rfcreferal);
             break;                                   
         case COMPARE_RESPONSE:
             ret = new RfcCompareResponse(  new ASN1Enumerated( resultCode),
                                            new RfcLDAPDN( matchedDN),
                                            new RfcLDAPString( serverMessage),
-                                           null /*new RfcReferral( referrals)*/);
+						rfcreferal);
             break;                                   
         case SEARCH_RESULT_REFERENCE:
-            ret = null;                     // Not yet implemented
+				ret = null; // Not yet implemented, implemented as 
+				// LDAPSearchResultReference Object.
             break;                                   
         case EXTENDED_RESPONSE:
-            ret = null;                     // Not yet implemented
+			ret = null; // Not yet implemented, implemented 
+			//as LDAPExtendedResponse			
             break;                                   
         default:
             throw new RuntimeException("Type " + type + " Not Supported");
