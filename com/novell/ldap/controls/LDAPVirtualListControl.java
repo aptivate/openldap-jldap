@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPVirtualListControl.java,v 1.3 2001/03/30 22:56:01 javed Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPVirtualListControl.java,v 1.4 2001/04/02 15:21:38 javed Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -20,9 +20,8 @@ import com.novell.ldap.asn1.*;
 import com.novell.ldap.rfc2251.*;
 
 /**
- * <p>public class LDAPVirtualListControl extends LDAPControl <br>
  *  
- * <p>LDAPVirtualListControl is a Server Control used to specify 
+ * LDAPVirtualListControl is a Server Control used to specify 
  * that results from a search are to be returned in pages - which are
  * subsets of the entire virtual result set.<br>
  *
