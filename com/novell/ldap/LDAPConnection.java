@@ -158,7 +158,12 @@ public class LDAPConnection implements
     */
    public String getAuthenticationMethod()
 	{
-      return null;
+		if(isBound()) {
+			return "simple";
+		}
+		else {
+			return "none";
+		}
    }
 
    /*
@@ -184,7 +189,7 @@ public class LDAPConnection implements
     */
    public String getHost()
 	{
-      return null;
+		return isConnected() ? conn.getHost() : null;
    }
 
    /*
@@ -223,7 +228,7 @@ public class LDAPConnection implements
     */
    public int getPort()
 	{
-      return 0;
+		return isConnected() ? conn.getPort() : -1;
    }
 
 

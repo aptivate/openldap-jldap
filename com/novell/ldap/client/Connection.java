@@ -1,5 +1,4 @@
-/* **************************************************************************
- * $Id
+/* $Id
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -103,6 +102,14 @@ public final class Connection implements Runnable {
    public OutputStream getOutputStream() {
       return outStream;
    }
+
+	public String getHost() {
+		return host;
+	}
+
+	public int getPort() {
+		return port;
+	}
 
    /**
     * Constructs a TCP/IP connection to a server specified in host and port.
