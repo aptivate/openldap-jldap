@@ -35,7 +35,7 @@ import com.novell.ldap.ldif_dsml.LDAPModDN;
 import com.novell.ldap.ldif_dsml.LDAPModify;
 
 /**
- * The class that is used to process the inputStream object.
+ * The class that is used to process the inputStream object to read an LDIF file.
  *
  * <p>The object of the class is used to read LDAPEntries from an LDIF content
  * file, or read LDAP operations from an LDIF change file. According to the
