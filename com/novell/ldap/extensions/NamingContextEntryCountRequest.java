@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: NamingContextEntryCountRequest.java,v 1.2 2000/07/27 18:08:13 javed Exp $
+ * $Id: NamingContextEntryCountRequest.java,v 1.1 2000/07/27 22:04:09 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -19,34 +19,31 @@ import com.novell.ldap.client.protocol.lber.*;
 import java.io.IOException;
  
 /**
- *  public class NamingContextEntryCountRequest
  *
  *      This class inherits from the LDAPExtendedOperation class
  *  and returns a count of the number of entries (objects) in the
- *  specified naming context.
+ *  specified naming context.<br><br>
  *  To add a replica to a particular server create an instance of this 
  *  class and then call the extendedOperation method with this
  *  object as the required LDAPExtendedOperation parameter
  *  The returned LDAPExtendedResponse object can then be converted to
  *  a NamingContextEntryCountResponse object.  This object contains
- *  methods for retreiving the returned count
+ *  methods for retreiving the returned count.<br><br>
  *
  *  The OID used for this extended operation is:
- *      "2.16.840.1.113719.1.27.100.13"
+ *      "2.16.840.1.113719.1.27.100.13"<br><br>
  *
- *  The RequestValue has the folling ASN:
+ *  The RequestValue has the folling ASN:<br>
  *
- *  requestValue ::=
- *          dn          LDAPDN
+ *  requestValue ::=<br><br>
+ *  &nbsp;&nbsp;&nbsp;&nbsp;    dn          LDAPDN
  */
  public class NamingContextEntryCountRequest extends LDAPExtendedOperation {
  
     /**
-    *  public NamingContextEntryCountRequest()
+    *      The constructor takes four parameters:<br><br>
     *
-    *      The constructor takes four parameters:
-    *
-    *      String dn:  This parameter identifies the naming context.
+    *      String dn:  This parameter identifies the naming context.<br>
     *
     */  
 

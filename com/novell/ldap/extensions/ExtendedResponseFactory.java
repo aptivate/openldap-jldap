@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: ExtendedResponseFactory.java,v 1.1 2000/07/27 17:50:57 javed Exp $
+ * $Id: ExtendedResponseFactory.java,v 1.2 2000/07/27 22:04:09 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -17,7 +17,6 @@ package com.novell.ldap.ext;
 import com.novell.ldap.*;
 import java.io.IOException; 
 /**
- * public class ExtendedResponseFactory
  *
  *  This factory class takes an LDAPExtendedResponse and returns 
  *  an object (that implements the base class ParsedExtendedResponse)
@@ -38,6 +37,9 @@ public class ExtendedResponseFactory {
         try {
             if (inOID.equals(NamingContextConstants.NAMING_CONTEXT_COUNT_RES)) {
                 return new NamingContextEntryCountResponse(inResponse);
+            }
+            if (inOID.equals(NamingContextConstants.GET_IDENTITY_NAME_RES) ) {
+                return new GetContextIdentityNameResponse(inResponse);
             }
             else
                 throw new LDAPException("Unsupported OID in LDAPResponse", 

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: ChangeReplicaTypeRequest.java,v 1.2 2000/07/27 18:08:13 javed Exp $
+ * $Id: ChangeReplicaTypeRequest.java,v 1.1 2000/07/28 20:24:07 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -19,45 +19,43 @@ import com.novell.ldap.client.protocol.lber.*;
 import java.io.IOException;
  
 /**
- *  public class ChangeReplicaTypeRequest
  *
  *      This class inherits from the LDAPExtendedOperation class
  *  and is used to change the type of the replica that resides 
  *  on the specified directory server.  Create an instance of this 
  *  class and then call the extendedOperation method with this
- *  object as the required LDAPExtendedOperation parameter
+ *  object as the required LDAPExtendedOperation parameter.<br>
  *
  *  The OID used for this extended operation is:
- *      "2.16.840.1.113719.1.27.100.15"
+ *      "2.16.840.1.113719.1.27.100.15"<br>
  *
- *  The RequestValue has the folling ASN:
+ *  The RequestValue has the folling ASN:<br><br>
  *
- *  requestValue ::=
- *          flags       INTEGER
- *          replicaType INTEGER
- *          serverName  LDAPDN
- *          dn          LDAPDN
+ *  requestValue ::=<br>
+ *  &nbsp;&nbsp;&nbsp;&nbsp;       flags       INTEGER<br>
+ *  &nbsp;&nbsp;&nbsp;&nbsp;       replicaType INTEGER<br>
+ *  &nbsp;&nbsp;&nbsp;&nbsp;       serverName  LDAPDN<br>
+ *  &nbsp;&nbsp;&nbsp;&nbsp;       dn          LDAPDN<br>
  */
 public class ChangeReplicaTypeRequest extends LDAPExtendedOperation {
    
 /**
- *  public ChangeReplicaTypeRequest()
  *
- *      The constructor takes four parameters:
+ *      The constructor takes four parameters:<br><br>
  *
  *      String dn:          Specify the distinguished name of the replica's
- *                          partition root
+ *                          partition root<br><br>
  *
  *      String serverDN:    Points to the server on which the
- *							interesting replica resides
+ *							interesting replica resides<br><br>
  *      
  *      int replicaType:    The new replica type. The replica types are defined 
- *							in the NamingContextConstants class
+ *							in the NamingContextConstants class<br><br>
  *
  *      int flags:          Specifies if all servers in the replica ring 
  *                          must be up before proceeding.  Set to 
  *                          LDAP_ENSURE_SERVERS_UP field defined in the 
- *                          NamingContextConstants class .
+ *                          NamingContextConstants class .<br><br>
  */   
  public ChangeReplicaTypeRequest(String dn, String serverDN, int replicaType, int flags) 
                 throws LDAPException {

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: ReceiveAllUpdatesRequest.java,v 1.2 2000/07/27 18:08:13 javed Exp $
+ * $Id: ReceiveAllUpdatesRequest.java,v 1.1 2000/07/31 16:00:37 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -19,8 +19,6 @@ import com.novell.ldap.client.protocol.lber.*;
 import java.io.IOException;
  
 /**
- *  public class ReceiveAllUpdatesRequest
- *
  *      This class inherits from the LDAPExtendedOperation class
  *  and is used to schedule a specified directory server to receive
  *  updates from another directory server for a specific partition.
@@ -30,24 +28,23 @@ import java.io.IOException;
  *
  *  The RequestValue has the folling ASN:
  *
- *  requestValue ::=
- *          partitionRoot   LDAPDN
- *          toServerDN      LDAPDN
- *          fromServerDN    LDAPDN
+ *  requestValue ::=<br>
+ * &nbsp;&nbsp;&nbsp;&nbsp;     partitionRoot   LDAPDN<br>
+ * &nbsp;&nbsp;&nbsp;&nbsp;     toServerDN      LDAPDN<br>
+ * &nbsp;&nbsp;&nbsp;&nbsp;     fromServerDN    LDAPDN<br>
  */
 public class ReceiveAllUpdatesRequest extends LDAPExtendedOperation {
    
 /**
- *  public ReceiveAllUpdatesRequest()
  *
- *      The constructor takes four parameters:
+ *      The constructor takes four parameters:<br><br>
  *
  *      String partitionRoot:   Specify the distinguished name of the replica
- *                              that will be updated
+ *                              that will be updated<br><br>
  *
- *      String toServerDN:      The server holding the replica to be updated
+ *      String toServerDN:      The server holding the replica to be updated<br><br>
  *      
- *      String fromServerDN:    The server from which updates are sent out.
+ *      String fromServerDN:    The server from which updates are sent out.<br><br>
  *
  */   
  public ReceiveAllUpdatesRequest(String partitionRoot, String toServerDN, String fromServerDN) 

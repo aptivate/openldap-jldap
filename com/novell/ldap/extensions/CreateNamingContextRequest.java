@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: CreateNamingContextRequest.java,v 1.4 2000/07/27 16:35:23 javed Exp $
+ * $Id: CreateNamingContextRequest.java,v 1.5 2000/07/27 17:50:57 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -19,36 +19,34 @@ import com.novell.ldap.client.protocol.lber.*;
 import java.io.IOException;
  
 /**
- *  public class CreateNamingContextRequest
  *
  *      This class inherits from the LDAPExtendedOperation class
  *  and is used to create a new naming context. (NDS partition).
  *  To create a new naming context create an instance of this 
  *  class and then call the extendedOperation method with this
- *  object as the required LDAPExtendedOperation parameter
+ *  object as the required LDAPExtendedOperation parameter.<br><br>
  *
  *  The OID used for this extended operation is:
- *      "2.16.840.1.113719.1.27.100.3"
+ *      "2.16.840.1.113719.1.27.100.3"<br><br>
  *
- *  The RequestValue has the folling ASN:
+ *  The RequestValue has the folling ASN:<br><br>
  *
- *  requestValue ::=
- *          flags   INTEGER
- *          dn      LDAPDN
+ *  requestValue ::=<br>
+ *  &nbsp;&nbsp;&nbsp;&nbsp;    flags   INTEGER<br>
+ *  &nbsp;&nbsp;&nbsp;&nbsp;    dn      LDAPDN<br>
  */
 public class CreateNamingContextRequest extends LDAPExtendedOperation {
    
 /**
- *  public CreateNamingContextRequest()
  *
- *      The constructor takes two parameters:
+ *      The constructor takes two parameters:<br><br>
  *
  *      String dn:  Specify the distinguished name of the container
- *                  where the new naming context root should be located.
+ *                  where the new naming context root should be located.<br><br>
  *
  *      int flags:  Specifies if all servers in the replica ring must be
  *                  up before proceeding.  Set to LDAP_ENSURE_SERVERS_UP 
- *                  field defined in the NamingContextConstants class .
+ *                  field defined in the NamingContextConstants class.<br><br>
  */   
  public CreateNamingContextRequest(String dn, int flags) 
                 throws LDAPException {

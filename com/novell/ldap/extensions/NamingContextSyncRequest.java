@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: NamingContextSyncRequest.java,v 1.1 2000/07/31 16:00:37 javed Exp $
+ * $Id: NamingContextSyncRequest.java,v 1.1 2000/07/31 16:51:42 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -19,35 +19,33 @@ import com.novell.ldap.client.protocol.lber.*;
 import java.io.IOException;
  
 /**
- *  public class NamingContextSyncRequest
  *
  *      This class inherits from the LDAPExtendedOperation class
- *  and is used to synchronize all replicas in a partition ring
+ *  and is used to synchronize all replicas in a partition ring<br><br>
  *
  *  The OID used for this extended operation is:
- *      "2.16.840.1.113719.1.27.100.25"
+ *      "2.16.840.1.113719.1.27.100.25"<br><br>
  *
- *  The RequestValue has the folling ASN:
+ *  The RequestValue has the folling ASN:<br><br>
  *
- *  requestValue ::=
- *          serverName      LDAPDN
- *          partitionRoot   LDAPDN
- *          delay           INTEGER
+ *  requestValue ::=<br>
+ *  &nbsp;&nbsp;&nbsp;&nbsp;    serverName      LDAPDN<br>
+ *  &nbsp;&nbsp;&nbsp;&nbsp;    partitionRoot   LDAPDN<br>
+ *  &nbsp;&nbsp;&nbsp;&nbsp;    delay           INTEGER<br>
  */
 public class NamingContextSyncRequest extends LDAPExtendedOperation {
    
 /**
- *  public NamingContextSyncRequest()
  *
- *      The constructor takes four parameters:
+ *      The constructor takes four parameters:<br><br>
  *
- *      String  serverName:     The server to sync from
+ *      String  serverName:     The server to sync from<br><br>
  *
  *      String partitionRoot:   Specify the distinguished name of the replica
- *                              that will be synchronized
+ *                              that will be synchronized<br><br>
  *
  *      int delay:              The time in seconds after which the synchronization 
- *                              should start.
+ *                              should start.<br><br>
  *
  */   
  public NamingContextSyncRequest(String serverName, String partitionRoot, int delay) 

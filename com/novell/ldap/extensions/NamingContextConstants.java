@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: NamingContextConstants.java,v 1.9 2000/07/31 19:54:20 javed Exp $
+ * $Id: NamingContextConstants.java,v 1.10 2000/07/31 21:07:21 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -86,7 +86,41 @@ public class NamingContextConstants {
     public static final int LDAP_RT_READONLY        = 2;
     public static final int LDAP_RT_SUBREF          = 3;
     public static final int LDAP_RT_SPARSE_WRITE    = 4;
-    public static final int LDAP_RT_SPARSE_READ     = 5;    
+    public static final int LDAP_RT_SPARSE_READ     = 5; 
+    
+    /**
+     * Replica States
+     */
+     
+    public static final int LDAP_RS_ON              = 0;
+    public static final int LDAP_RS_NEW_REPLICA     = 1;
+    public static final int LDAP_RS_DYING_REPLICA   = 2;
+    public static final int LDAP_RS_LOCKED          = 3;
+    public static final int LDAP_RS_TRANSITION_ON   = 6;
+    public static final int LDAP_RS_DEAD_REPLICA    = 7;
+    public static final int LDAP_RS_BEGIN_ADD       = 8;
+    public static final int LDAP_RS_MASTER_START    = 11;
+    public static final int LDAP_RS_MASTER_DONE     = 12;
+    public static final int LDAP_RS_SS_0            = 48;   // Replica splitting 0
+    public static final int LDAP_RS_SS_1            = 49;   // Replica splitting 1
+    public static final int LDAP_RS_JS_0            = 64;   // Replica joining 0
+    public static final int LDAP_RS_JS_1            = 65;   // Replica joining 1
+    public static final int LDAP_RS_JS_2            = 66;   // Replica joining 2
+    
+    /** EFFECTIVE PRIVILIGES FLAGS
+     *
+     */
+    public static final int LDAP_DS_ATTR_COMPARE    = 0x0001;
+    public static final int LDAP_DS_ATTR_READ       = 0x0002;
+    public static final int LDAP_DS_ATTR_WRITE      = 0x0004;
+    public static final int LDAP_DS_ATTR_SELF       = 0x0008;
+    public static final int LDAP_DS_ATTR_SUPERVISOR = 0x0020;
+    public static final int LDAP_DS_ATTR_INHERIT_CTL= 0x0040;
+
+    /** Values for flags used in the replica info class structure */
+    public static final int LDAP_DS_FLAG_BUSY       = 0x0001;
+    public static final int LDAP_DS_FLAG_BOUNDARY   = 0x0002;
+
     
     public NamingContextConstants()  {}   
 }

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: RefreshLDAPServerRequest.java,v 1.1 2000/07/27 19:33:21 javed Exp $
+ * $Id: GetContextIdentityNameRequest.java,v 1.1 2000/07/27 22:04:09 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -21,25 +21,36 @@ import java.io.IOException;
 /**
  *
  *      This class inherits from the LDAPExtendedOperation class
- *  and is used to reload the ldap server.<br><br>
+ *  and returns the distingusihed name of the object your are 
+ *  logged in as.<br><br>
+ *
+ *  To use this API create an instance of this 
+ *  class and then call the extendedOperation method with this
+ *  object as the required LDAPExtendedOperation parameter.<br><br>
+ *
+ *  The returned LDAPExtendedResponse object can then be converted to
+ *  a GetContextIdentityNameResponse object.  This object contains
+ *  methods for retreiving the dn.<br><br>
  *
  *  The OID used for this extended operation is:
- *      "2.16.840.1.113719.1.27.100.7"<br><br>
+ *      "2.16.840.1.113719.1.27.100.31"<br><br>
  *
- *  The RequestValue is set to null<br><br>
+ *  The RequestValue has a value of null<br>
+ *
  */
-public class RefreshLDAPServerRequest extends LDAPExtendedOperation {
-   
-/**
- *
- *      The constructor does not have any parametes.  We merely set the OID.
- *
- */   
- public RefreshLDAPServerRequest() 
+ public class GetContextIdentityNameRequest extends LDAPExtendedOperation {
+ 
+    /**
+    *      The constructor takes four parameters:<br><br>
+    *
+    *   This API takes no parameters.  
+    *
+    */  
+
+    public GetContextIdentityNameRequest() 
                 throws LDAPException {
         
-        super(NamingContextConstants.REFRESH_SERVER_REQ, null);
+        super(NamingContextConstants.GET_IDENTITY_NAME_REQ, null);
         
-   }
-
+     }
 }

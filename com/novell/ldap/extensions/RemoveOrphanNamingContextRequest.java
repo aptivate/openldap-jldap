@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: RemoveOrphanNamingContextRequest.java,v 1.5 2000/07/27 17:50:57 javed Exp $
+ * $Id: RemoveOrphanNamingContextRequest.java,v 1.1 2000/07/31 21:07:21 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -19,35 +19,31 @@ import com.novell.ldap.client.protocol.lber.*;
 import java.io.IOException;
  
 /**
- *  public class RemoveOrphanNamingContextRequest
- *
  *      This class inherits from the LDAPExtendedOperation class
  *  and is used to delete an orphan partition.
  *  To delete an orphan partition create an instance of this 
  *  class and then call the extendedOperation method with this
- *  object as the required LDAPExtendedOperation parameter
+ *  object as the required LDAPExtendedOperation parameter.<br><br>
  *
  *  The OID used for this extended operation is:
- *      "2.16.840.1.113719.1.27.100.41"
+ *      "2.16.840.1.113719.1.27.100.41"<br>
  *
- *  The RequestValue has the folling ASN:
+ *  The RequestValue has the folling ASN:<br><br>
  *
  *  requestValue ::=
- *          serverDN    LDAPDN
- *          contextName LDAPDN
+ * &nbsp;&nbsp;&nbsp;&nbsp;        serverDN    LDAPDN
+ * &nbsp;&nbsp;&nbsp;&nbsp;        contextName LDAPDN
  */
 public class RemoveOrphanNamingContextRequest extends LDAPExtendedOperation {
    
 /**
- *  public RemoveOrphanNamingContextRequest()
- *
- *      The constructor takes two parameters:
+ *      The constructor takes two parameters:<br><br>
  *
  *      String serverDN:    Specify the distinguished name of the 
- *                          server on which the orphan parition resides.
+ *                          server on which the orphan parition resides.<br><br>
  *
  *      String contextName: Specifies the distinguished name of the 
- *                          orphan partition to delete.
+ *                          orphan partition to delete.<br><br>
  */   
  public RemoveOrphanNamingContextRequest(String serverDN, String contextName) 
                 throws LDAPException {

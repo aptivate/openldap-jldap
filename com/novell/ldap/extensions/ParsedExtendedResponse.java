@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: ParsedExtendedResponse.java,v 1.1 2000/07/27 17:50:57 javed Exp $
+ * $Id: ParsedExtendedResponse.java,v 1.1 2000/07/27 22:04:10 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -16,13 +16,11 @@ package com.novell.ldap.ext;
 import com.novell.ldap.*;
  
 /**
- * public class ParsedExtendedResponse
  *
  *  The ExtendedResponseFactory returns objects that have this base class.  The
  *  child classes will have methods that enable parsing of the data contained
  *  in the Extended Response.  The actual methods available depend on the type 
  *  of the extended response.
- *  
  *
  */
 public interface ParsedExtendedResponse {
