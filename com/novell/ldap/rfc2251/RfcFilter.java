@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/src/com/novell/ldap/protocol/Filter.java,v 1.13 2000/08/31 05:12:43 smerrill Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/protocol/Filter.java,v 1.14 2000/09/11 21:06:01 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  ***************************************************************************/
@@ -115,8 +115,7 @@ public class Filter extends ASN1Choice {
       throws LDAPException
    {
       if(filterExpr == null || filterExpr.equals("")) {
-         throw new LDAPException("Invalid filter",
-                                 LDAPException.FILTER_ERROR);
+		 filterExpr = new String("(objectclass=*)");
       }
 
       if(filterExpr.charAt(0) != '(')
