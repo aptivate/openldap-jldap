@@ -27,34 +27,34 @@ import com.novell.ldap.resources.*;
  */
 public class RfcAbandonRequest extends RfcMessageID implements RfcRequest {
 
-	//*************************************************************************
-	// Constructor for AbandonRequest
-	//*************************************************************************
+    //*************************************************************************
+    // Constructor for AbandonRequest
+    //*************************************************************************
 
-	/**
-	 * Constructs an RfcAbandonRequest
-	 */
-	public RfcAbandonRequest(int msgId)
-	{
-		super(msgId);
+    /**
+     * Constructs an RfcAbandonRequest
+     */
+    public RfcAbandonRequest(int msgId)
+    {
+        super(msgId);
         return;
-	}
+    }
 
-	//*************************************************************************
-	// Accessors
-	//*************************************************************************
+    //*************************************************************************
+    // Accessors
+    //*************************************************************************
 
-	/**
-	 * Override getIdentifier to return an application-wide id.
-	 *<pre>
-	 * ID = CLASS: APPLICATION, FORM: CONSTRUCTED, TAG: 16. (0x50)
+    /**
+     * Override getIdentifier to return an application-wide id.
+     *<pre>
+     * ID = CLASS: APPLICATION, FORM: CONSTRUCTED, TAG: 16. (0x50)
      *</pre>
-	 */
-	public final ASN1Identifier getIdentifier()
-	{
-		return new ASN1Identifier(ASN1Identifier.APPLICATION, false,
-			                       RfcProtocolOp.ABANDON_REQUEST);
-	}
+     */
+    public final ASN1Identifier getIdentifier()
+    {
+        return new ASN1Identifier(ASN1Identifier.APPLICATION, false,
+                                   LDAPMessage.ABANDON_REQUEST);
+    }
 
     public final RfcRequest dupRequest(String base, String filter, boolean reference)
             throws LDAPException

@@ -17,7 +17,6 @@ package com.novell.ldap.rfc2251;
 
 import com.novell.ldap.asn1.*;
 import com.novell.ldap.*;
-import com.novell.ldap.resources.*;
 
 /**
  * Represents and LDAP Bind Request.
@@ -37,25 +36,25 @@ public class RfcBindRequest extends ASN1Sequence implements RfcRequest {
      * thus we create it only once.<p>
      */
     private static final ASN1Identifier ID =
-        new ASN1Identifier(ASN1Identifier.APPLICATION, true, RfcProtocolOp.BIND_REQUEST);
+        new ASN1Identifier(ASN1Identifier.APPLICATION, true, LDAPMessage.BIND_REQUEST);
 
 
-	//*************************************************************************
-	// Constructors for BindRequest
-	//*************************************************************************
+    //*************************************************************************
+    // Constructors for BindRequest
+    //*************************************************************************
 
-	/**
-	 *
-	 */
-	public RfcBindRequest(ASN1Integer version, RfcLDAPDN name,
-		                RfcAuthenticationChoice auth)
-	{
-		super(3);
-		add(version);
-		add(name);
-		add(auth);
+    /**
+     *
+     */
+    public RfcBindRequest(ASN1Integer version, RfcLDAPDN name,
+                        RfcAuthenticationChoice auth)
+    {
+        super(3);
+        add(version);
+        add(name);
+        add(auth);
         return;
-	}
+    }
 
     /**
      * Constructs a new Bind Request copying the original data from
@@ -74,76 +73,76 @@ public class RfcBindRequest extends ASN1Sequence implements RfcRequest {
         return;
     }
     
-	//*************************************************************************
-	// Mutators
-	//*************************************************************************
+    //*************************************************************************
+    // Mutators
+    //*************************************************************************
 
-	/**
-	 * Sets the protocol version
-	 */
-	public final void setVersion(ASN1Integer version)
-	{
-		set(0, version);
+    /**
+     * Sets the protocol version
+     */
+    public final void setVersion(ASN1Integer version)
+    {
+        set(0, version);
         return;
-	}
+    }
 
-	/**
-	 * 
-	 */
-	public final void setName(RfcLDAPDN name)
-	{
-		set(1, name);
+    /**
+     * 
+     */
+    public final void setName(RfcLDAPDN name)
+    {
+        set(1, name);
         return;
-	}
+    }
 
-	/**
-	 *
-	 */
-	public final void setAuthenticationChoice(RfcAuthenticationChoice auth)
-	{
-		set(2, auth);
+    /**
+     *
+     */
+    public final void setAuthenticationChoice(RfcAuthenticationChoice auth)
+    {
+        set(2, auth);
         return;    
-	}
+    }
 
-	//*************************************************************************
-	// Accessors
-	//*************************************************************************
+    //*************************************************************************
+    // Accessors
+    //*************************************************************************
 
-	/**
-	 *
-	 */
-	public final ASN1Integer getVersion()
-	{
-		return (ASN1Integer)get(0);
-	}
+    /**
+     *
+     */
+    public final ASN1Integer getVersion()
+    {
+        return (ASN1Integer)get(0);
+    }
 
-	/**
-	 *
-	 */
-	public final RfcLDAPDN getName()
-	{
-		return (RfcLDAPDN)get(1);
-	}
+    /**
+     *
+     */
+    public final RfcLDAPDN getName()
+    {
+        return (RfcLDAPDN)get(1);
+    }
 
-	/**
-	 *
-	 */
-	public final RfcAuthenticationChoice getAuthenticationChoice()
-	{
-		return (RfcAuthenticationChoice)get(2);
-	}
+    /**
+     *
+     */
+    public final RfcAuthenticationChoice getAuthenticationChoice()
+    {
+        return (RfcAuthenticationChoice)get(2);
+    }
 
-	/**
-	 * Override getIdentifier to return an application-wide id.
-	 *
+    /**
+     * Override getIdentifier to return an application-wide id.
+     *
      *<pre>
-	 * ID = CLASS: APPLICATION, FORM: CONSTRUCTED, TAG: 0. (0x60)
+     * ID = CLASS: APPLICATION, FORM: CONSTRUCTED, TAG: 0. (0x60)
      *</pre>
-	 */
-	public final ASN1Identifier getIdentifier()
-	{
-		return ID; // new ASN1Identifier(ASN1Identifier.APPLICATION, true, RfcProtocolOp.BIND_REQUEST);
-	}
+     */
+    public final ASN1Identifier getIdentifier()
+    {
+        return ID;
+    }
 
     public final RfcRequest dupRequest(String base, String filter, boolean request)
             throws LDAPException

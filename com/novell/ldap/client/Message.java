@@ -270,10 +270,20 @@ public class Message
         }
         replies.addElement( message);
         message.setRequestingMessage( msg); // Save request message info
-        if( message.getProtocolOp() instanceof RfcResponse) {
+        switch( message.getType()) {
+        case LDAPMessage.SEARCH_RESPONSE:
+        case LDAPMessage.SEARCH_RESULT_REFERENCE:
+            // SearchResultEntry or SearchResultReference
+            if( Debug.LDAP_DEBUG) {
+                Debug.trace( Debug.messages, name +
+                    "Reply Queued (" + replies.size() + " in queue)");
+            }
+            break;
+        default:
+            // All Responses with a result code
             int res;
             if( Debug.LDAP_DEBUG) {
-                res = ((RfcResponse)message.getProtocolOp()).getResultCode().intValue();
+                res = ((RfcResponse)message.getResponse()).getResultCode().intValue();
                 Debug.trace( Debug.messages, name +
                     "Queued LDAPResult (" + replies.size() +
                     " in queue), message complete stopping timer, status " + res);
@@ -287,7 +297,7 @@ public class Message
                 if( Debug.LDAP_DEBUG) {
                     Debug.trace( Debug.messages, name + "Bind properties found");
                 }
-                res = ((RfcResponse)message.getProtocolOp()).getResultCode().intValue();
+                res = ((RfcResponse)message.getResponse()).getResultCode().intValue();
                 if(res == LDAPException.SUCCESS) {
                     // Set bind properties into connection object
                     conn.setBindProperties(bindprops);
@@ -301,11 +311,6 @@ public class Message
                 }
                 // release the bind semaphore and wake up all waiting threads
                 conn.freeWriteSemaphore( msgId);
-            }
-        } else {
-            if( Debug.LDAP_DEBUG) {
-                Debug.trace( Debug.messages, name +
-                    "Reply Queued (" + replies.size() + " in queue)");
             }
         }
         // wake up waiting threads

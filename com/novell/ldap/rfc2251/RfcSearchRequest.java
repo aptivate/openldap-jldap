@@ -16,8 +16,8 @@ package com.novell.ldap.rfc2251;
 
 import com.novell.ldap.LDAPException;
 import com.novell.ldap.LDAPConnection;
+import com.novell.ldap.*;
 import com.novell.ldap.asn1.*;
-import com.novell.ldap.client.Debug;
 
 /**
  * Represents an LDAP Search Request.
@@ -43,29 +43,29 @@ import com.novell.ldap.client.Debug;
  */
 public class RfcSearchRequest extends ASN1Sequence implements RfcRequest {
 
-	//*************************************************************************
-	// Constructors for SearchRequest
-	//*************************************************************************
+    //*************************************************************************
+    // Constructors for SearchRequest
+    //*************************************************************************
 
-	/*
-	 *
-	 */
-	public RfcSearchRequest(RfcLDAPDN baseObject, ASN1Enumerated scope,
-		                  ASN1Enumerated derefAliases, ASN1Integer sizeLimit,
-		                  ASN1Integer timeLimit, ASN1Boolean typesOnly,
-		                  RfcFilter filter, RfcAttributeDescriptionList attributes)
-	{
-		super(8);
-		add(baseObject);
-		add(scope);
-		add(derefAliases);
-		add(sizeLimit);
-		add(timeLimit);
-		add(typesOnly);
-		add(filter);
-		add(attributes);
+    /*
+     *
+     */
+    public RfcSearchRequest(RfcLDAPDN baseObject, ASN1Enumerated scope,
+                          ASN1Enumerated derefAliases, ASN1Integer sizeLimit,
+                          ASN1Integer timeLimit, ASN1Boolean typesOnly,
+                          RfcFilter filter, RfcAttributeDescriptionList attributes)
+    {
+        super(8);
+        add(baseObject);
+        add(scope);
+        add(derefAliases);
+        add(sizeLimit);
+        add(timeLimit);
+        add(typesOnly);
+        add(filter);
+        add(attributes);
         return;
-	}
+    }
 
     /**
     * Constructs a new Search Request copying from an existing request.
@@ -100,22 +100,22 @@ public class RfcSearchRequest extends ASN1Sequence implements RfcRequest {
         return;
     }
 
-	//*************************************************************************
-	// Accessors
-	//*************************************************************************
+    //*************************************************************************
+    // Accessors
+    //*************************************************************************
 
-	/**
-	 * Override getIdentifier to return an application-wide id.
-	 *
+    /**
+     * Override getIdentifier to return an application-wide id.
+     *
      *<pre>
-	 * ID = CLASS: APPLICATION, FORM: CONSTRUCTED, TAG: 3. (0x63)
+     * ID = CLASS: APPLICATION, FORM: CONSTRUCTED, TAG: 3. (0x63)
      *</pre>
-	 */
-	public final ASN1Identifier getIdentifier()
-	{
-		return new ASN1Identifier(ASN1Identifier.APPLICATION, true,
-			                       RfcProtocolOp.SEARCH_REQUEST);
-	}
+     */
+    public final ASN1Identifier getIdentifier()
+    {
+        return new ASN1Identifier(ASN1Identifier.APPLICATION, true,
+                                   LDAPMessage.SEARCH_REQUEST);
+    }
 
     public final RfcRequest dupRequest(String base, String filter, boolean request)
             throws LDAPException

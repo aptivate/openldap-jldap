@@ -16,7 +16,6 @@
 
 import com.novell.ldap.asn1.*;
 import com.novell.ldap.*;
-import com.novell.ldap.resources.*;
 
 /**
  * Represents an LDAM MOdify DN Request.
@@ -31,32 +30,32 @@ import com.novell.ldap.resources.*;
  */
 public class RfcModifyDNRequest extends ASN1Sequence implements RfcRequest {
 
-	//*************************************************************************
-	// Constructors for ModifyDNRequest
-	//*************************************************************************
+    //*************************************************************************
+    // Constructors for ModifyDNRequest
+    //*************************************************************************
 
-	/**
-	 *
-	 */
-	public RfcModifyDNRequest(RfcLDAPDN entry, RfcRelativeLDAPDN newrdn,
-		                    ASN1Boolean deleteoldrdn)
-	{
-		this(entry, newrdn, deleteoldrdn, null);
-	}
+    /**
+     *
+     */
+    public RfcModifyDNRequest(RfcLDAPDN entry, RfcRelativeLDAPDN newrdn,
+                            ASN1Boolean deleteoldrdn)
+    {
+        this(entry, newrdn, deleteoldrdn, null);
+    }
 
-	/**
-	 *
-	 */
-	public RfcModifyDNRequest(RfcLDAPDN entry, RfcRelativeLDAPDN newrdn,
-		                    ASN1Boolean deleteoldrdn, RfcLDAPDN newSuperior)
-	{
-		super(4);
-		add(entry);
-		add(newrdn);
-		add(deleteoldrdn);
-		if(newSuperior != null)
-			add(newSuperior);
-	}
+    /**
+     *
+     */
+    public RfcModifyDNRequest(RfcLDAPDN entry, RfcRelativeLDAPDN newrdn,
+                            ASN1Boolean deleteoldrdn, RfcLDAPDN newSuperior)
+    {
+        super(4);
+        add(entry);
+        add(newrdn);
+        add(deleteoldrdn);
+        if(newSuperior != null)
+            add(newSuperior);
+    }
 
     /**
     * Constructs a new Delete Request copying from the ArrayList of
@@ -74,22 +73,22 @@ public class RfcModifyDNRequest extends ASN1Sequence implements RfcRequest {
         }
         return;
     }
-	//*************************************************************************
-	// Accessors
-	//*************************************************************************
+    //*************************************************************************
+    // Accessors
+    //*************************************************************************
 
-	/**
-	 * Override getIdentifier to return an application-wide id.
+    /**
+     * Override getIdentifier to return an application-wide id.
      *
-	 *<pre>
-	 * ID = CLASS: APPLICATION, FORM: CONSTRUCTED, TAG: 12.
+     *<pre>
+     * ID = CLASS: APPLICATION, FORM: CONSTRUCTED, TAG: 12.
      *</pre>
-	 */
-	public final ASN1Identifier getIdentifier()
-	{
-		return new ASN1Identifier(ASN1Identifier.APPLICATION, true,
-			                       RfcProtocolOp.MODIFY_DN_REQUEST);
-	}
+     */
+    public final ASN1Identifier getIdentifier()
+    {
+        return new ASN1Identifier(ASN1Identifier.APPLICATION, true,
+                                   LDAPMessage.MODIFY_RDN_REQUEST);
+    }
 
     public final RfcRequest dupRequest(String base, String filter, boolean request)
             throws LDAPException

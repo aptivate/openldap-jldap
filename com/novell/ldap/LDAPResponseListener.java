@@ -15,8 +15,6 @@
 
 package com.novell.ldap;
 
-import java.util.Vector;
-
 import com.novell.ldap.client.*;
 import com.novell.ldap.rfc2251.*;
 
@@ -155,12 +153,12 @@ public class LDAPResponseListener implements LDAPMessageQueue
         }
         // Normal message handling
         message = (RfcLDAPMessage)resp;
-        if(message.getProtocolOp() instanceof RfcExtendedResponse) {
+        if(message.getType() == LDAPMessage.EXTENDED_RESPONSE) {
             ExtResponseFactory fac = new ExtResponseFactory();
             response = fac.convertToExtendedResponse(message);
         } else {
             response = new LDAPResponse(message);
         }
-        return (LDAPMessage)response;
+        return response;
    }
 }

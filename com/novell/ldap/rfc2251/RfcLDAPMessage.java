@@ -100,7 +100,7 @@ public class RfcLDAPMessage extends ASN1Sequence
     }
 
     /**
-     * Create an RfcLDAPMessage using the specified LDAP Request Protocol Op.
+     * Create an RfcLDAPMessage using the specified LDAP Request.
      */
     public RfcLDAPMessage(RfcRequest op)
     {
@@ -149,34 +149,34 @@ public class RfcLDAPMessage extends ASN1Sequence
             protocolOpId.getTag());
         }
         switch(protocolOpId.getTag()) {
-            case RfcProtocolOp.SEARCH_RESULT_ENTRY:
+            case LDAPMessage.SEARCH_RESPONSE:
                 set(1, new RfcSearchResultEntry(dec, bais, content.length));
                 break;
-            case RfcProtocolOp.SEARCH_RESULT_DONE:
+            case LDAPMessage.SEARCH_RESULT:
                 set(1, new RfcSearchResultDone(dec, bais, content.length));
                 break;
-            case RfcProtocolOp.SEARCH_RESULT_REFERENCE:
+            case LDAPMessage.SEARCH_RESULT_REFERENCE:
                 set(1, new RfcSearchResultReference(dec, bais, content.length));
                 break;
-            case RfcProtocolOp.ADD_RESPONSE:
+            case LDAPMessage.ADD_RESPONSE:
                 set(1, new RfcAddResponse(dec, bais, content.length));
                 break;
-            case RfcProtocolOp.BIND_RESPONSE:
+            case LDAPMessage.BIND_RESPONSE:
                 set(1, new RfcBindResponse(dec, bais, content.length));
                 break;
-            case RfcProtocolOp.COMPARE_RESPONSE:
+            case LDAPMessage.COMPARE_RESPONSE:
                 set(1, new RfcCompareResponse(dec, bais, content.length));
                 break;
-            case RfcProtocolOp.DEL_RESPONSE:
+            case LDAPMessage.DEL_RESPONSE:
                 set(1, new RfcDelResponse(dec, bais, content.length));
                 break;
-            case RfcProtocolOp.EXTENDED_RESPONSE:
+            case LDAPMessage.EXTENDED_RESPONSE:
                 set(1, new RfcExtendedResponse(dec, bais, content.length));
                 break;
-            case RfcProtocolOp.MODIFY_RESPONSE:
+            case LDAPMessage.MODIFY_RESPONSE:
                 set(1, new RfcModifyResponse(dec, bais, content.length));
                 break;
-            case RfcProtocolOp.MODIFY_DN_RESPONSE:
+            case LDAPMessage.MODIFY_RDN_RESPONSE:
                 set(1, new RfcModifyDNResponse(dec, bais, content.length));
                 break;
             default:
@@ -211,11 +211,22 @@ public class RfcLDAPMessage extends ASN1Sequence
     }
 
     /**
-     * Returns the Protocol Operation for this RfcLDAPMessage.
+     * Returns this RfcLDAPMessage's message type
      */
-    public final ASN1Object getProtocolOp()
+    public final int getType()
     {
-        return (ASN1Object)get(1);
+        return get(1).getIdentifier().getTag();
+    }
+    
+    /**
+     * Returns the response associated with this RfcLDAPMessage.
+     * Can be one of RfcLDAPResult, RfcBindResponse, RfcExtendedResponse
+     * all which extend RfcResponse. It can also be
+     * RfcSearchResultEntry, or RfcSearchResultReference
+     */
+    public final ASN1Object getResponse()
+    {
+        return get(1);
     }
 
     /**
@@ -235,7 +246,7 @@ public class RfcLDAPMessage extends ASN1Sequence
      * <br><br>
      * @param filter the filter
      * <br><br>
-     * @param scope the scope
+     * @param reference true if a search reference
      *
      * @return the object representing the new message
      */

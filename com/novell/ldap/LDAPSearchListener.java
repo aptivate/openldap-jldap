@@ -16,7 +16,6 @@
 package com.novell.ldap;
 
 import com.novell.ldap.client.*;
-import java.util.Vector;
 
 import com.novell.ldap.rfc2251.*;
 
@@ -142,49 +141,50 @@ public class LDAPSearchListener implements LDAPMessageQueue
         return agent.isComplete( msgid);
      }
 
-   public LDAPMessage getResponse()
-      throws LDAPException
-   {
-      return getResp( null );
-   }
+    public LDAPMessage getResponse()
+            throws LDAPException
+    {
+        return getResp( null );
+    }
 
-   public LDAPMessage getResponse(int msgid)
-      throws LDAPException
-   {
-      return getResp( new Integer(msgid));
-   }
+    public LDAPMessage getResponse(int msgid)
+        throws LDAPException
+    {
+        return getResp( new Integer(msgid));
+    }
 
-   private LDAPMessage getResp( Integer msgid)
-   {
-      LDAPMessage message;
-      RfcLDAPMessage msg;
-      Object resp;
+    private LDAPMessage getResp( Integer msgid)
+    {
+        LDAPMessage message;
+        RfcLDAPMessage msg;
+        Object resp;
 
-      if( Debug.LDAP_DEBUG) {
-          Debug.trace( Debug.apiRequests, name +
-              "getResponse(" + msgid + ")");
-      }
+        if( Debug.LDAP_DEBUG) {
+            Debug.trace( Debug.apiRequests, name +
+                "getResponse(" + msgid + ")");
+        }
 
-      if( (resp = agent.getLDAPMessage( msgid)) == null) { // blocks
-          return null;  // no messages on this agent
-      }
+        if( (resp = agent.getLDAPMessage( msgid)) == null) { // blocks
+            return null;  // no messages on this agent
+        }
 
-      // Local error occurred
-      if( resp instanceof LDAPResponse) {
-           return (LDAPMessage)resp;
-      }
-      // Normal message handling
-      msg = (RfcLDAPMessage)resp;
-      if(msg.getProtocolOp() instanceof RfcSearchResultEntry) {
-         message = new LDAPSearchResult(msg);
-      }
-      else if(msg.getProtocolOp() instanceof RfcSearchResultReference) {
-         message = new LDAPSearchResultReference(msg);
-      }
-      else { // must be SearchResultDone
-         message = new LDAPResponse(msg);
-      }
-
-      return message;
-   }
+        // Local error occurred
+        if( resp instanceof LDAPResponse) {
+            return (LDAPMessage)resp;
+        }
+        // Normal message handling
+        msg = (RfcLDAPMessage)resp;
+        switch( msg.getType()) {
+            case LDAPMessage.SEARCH_RESPONSE: // Entry returned from a search
+                message = new LDAPSearchResult(msg);
+                break;
+            case LDAPMessage.SEARCH_RESULT_REFERENCE:
+                message = new LDAPSearchResultReference(msg);
+                break;
+            default:                         // This must be a SearchResultDone
+                message = new LDAPResponse(msg);
+                break;
+        }
+        return message;
+    }
 }

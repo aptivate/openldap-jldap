@@ -18,9 +18,6 @@ package com.novell.ldap;
 import com.novell.ldap.rfc2251.*;
 import com.novell.ldap.asn1.*;
 import com.novell.ldap.client.Debug;
-import java.io.IOException;
-import java.util.Vector;
-import java.util.Enumeration;
 
 /**
  *
@@ -59,8 +56,8 @@ public class LDAPSearchResultReference extends LDAPMessage {
         if( Debug.LDAP_DEBUG ) {
             Debug.trace( Debug.messages, name + "Enter getReferrals");
         }
-        RfcSearchResultReference sresref = (RfcSearchResultReference)message.getProtocolOp();
-        ASN1Object[] references = sresref.toArray();
+        ASN1Object[] references =
+                    ((RfcSearchResultReference)message.getResponse()).toArray();
         srefs = new String[references.length];
         for( int i=0; i<references.length; i++) {
             srefs[i] = ((ASN1OctetString)(references[i])).stringValue(); 

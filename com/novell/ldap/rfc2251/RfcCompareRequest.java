@@ -16,7 +16,6 @@ package com.novell.ldap.rfc2251;
 
 import com.novell.ldap.asn1.*;
 import com.novell.ldap.*;
-import com.novell.ldap.resources.*;
 
 /**
  * Represents and LDAP Compare Request.
@@ -29,20 +28,20 @@ import com.novell.ldap.resources.*;
  */
 public class RfcCompareRequest extends ASN1Sequence implements RfcRequest {
 
-	//*************************************************************************
-	// Constructor for CompareRequest
-	//*************************************************************************
+    //*************************************************************************
+    // Constructor for CompareRequest
+    //*************************************************************************
 
-	/**
-	 *
-	 */
-	public RfcCompareRequest(RfcLDAPDN entry, RfcAttributeValueAssertion ava)
-	{
-		super(2);
-		add(entry);
-		add(ava);
+    /**
+     *
+     */
+    public RfcCompareRequest(RfcLDAPDN entry, RfcAttributeValueAssertion ava)
+    {
+        super(2);
+        add(entry);
+        add(ava);
         return;
-	}
+    }
 
     /**
     * Constructs a new Compare Request copying from the data of
@@ -60,18 +59,18 @@ public class RfcCompareRequest extends ASN1Sequence implements RfcRequest {
         }
         return;
     }
-	//*************************************************************************
-	// Accessors
-	//*************************************************************************
+    //*************************************************************************
+    // Accessors
+    //*************************************************************************
 
-	/**
-	 * Override getIdentifier to return an application-wide id.
-	 */
-	public final ASN1Identifier getIdentifier()
-	{
-		return new ASN1Identifier(ASN1Identifier.APPLICATION, true,
-			                       RfcProtocolOp.COMPARE_REQUEST);
-	}
+    /**
+     * Override getIdentifier to return an application-wide id.
+     */
+    public final ASN1Identifier getIdentifier()
+    {
+        return new ASN1Identifier(ASN1Identifier.APPLICATION, true,
+                                   LDAPMessage.COMPARE_REQUEST);
+    }
 
     public final RfcRequest dupRequest(String base, String filter, boolean request)
             throws LDAPException

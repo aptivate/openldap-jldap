@@ -17,17 +17,13 @@ package com.novell.ldap;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.StringTokenizer;
-import java.net.MalformedURLException;
 
 import com.novell.ldap.*;
-import com.novell.ldap.asn1.*;
 import com.novell.ldap.client.*;
 import com.novell.ldap.message.*;
-import com.novell.ldap.rfc2251.*;
 import com.novell.ldap.resources.*;
 
 /**
@@ -223,7 +219,7 @@ public class LDAPConnection implements Cloneable
      */
     public LDAPConnection()
     {
-        this( (LDAPSocketFactory)null);
+        this( null);
         return;
     }
 
@@ -300,8 +296,8 @@ public class LDAPConnection implements Cloneable
         else {
             newClone.responseCtls = null;
         }
-        conn.createClone();     // Tell the Connection object a clone exists
-        return (Object) newClone;
+        conn.incrCloneCount();     // Increment the count of clones
+        return newClone;
     }
 
     /**
@@ -438,7 +434,7 @@ public class LDAPConnection implements Cloneable
      */
     public LDAPConstraints getConstraints()
     {
-        return (LDAPConstraints)((LDAPConstraints)this.defSearchCons).clone();
+        return (LDAPConstraints)(this.defSearchCons).clone();
     }
 
     /**
@@ -752,8 +748,7 @@ public class LDAPConnection implements Cloneable
             LDAPResponseQueue queue =
                     sendRequest(
                         startTLS,
-                        defSearchCons.getTimeLimit(),
-                        (LDAPResponseQueue)null, null );
+                        defSearchCons.getTimeLimit(), null, null );
 
             LDAPExtendedResponse response =
                     (LDAPExtendedResponse) queue.getResponse();
@@ -1010,7 +1005,7 @@ public class LDAPConnection implements Cloneable
                     LDAPConstraints cons)
         throws LDAPException
     {
-        LDAPResponseQueue queue = add(entry, (LDAPResponseQueue)null, cons);
+        LDAPResponseQueue queue = add(entry, null, cons);
 
         // Get a handle to the add response
         LDAPResponse addResponse = (LDAPResponse)(queue.getResponse());
@@ -1328,9 +1323,8 @@ public class LDAPConnection implements Cloneable
                      LDAPConstraints cons)
         throws LDAPException
     {
-        Connection conn;
         LDAPResponseQueue queue =
-            bind(version, dn, passwd, (LDAPResponseQueue)null, cons);
+            bind(version, dn, passwd, null, cons);
         LDAPResponse res = (LDAPResponse)queue.getResponse();
         if( res != null) {
             // Set local copy of responseControls synchronously if any
@@ -1724,7 +1718,7 @@ public class LDAPConnection implements Cloneable
             "compare(" + dn + ") if value");
         }
         LDAPResponseQueue queue =
-            compare(dn, attr, (LDAPResponseQueue)null, cons);
+            compare(dn, attr, null, cons);
         LDAPResponse res = (LDAPResponse)queue.getResponse();
 
         // Set local copy of responseControls synchronously - if there were any
@@ -1945,7 +1939,7 @@ public class LDAPConnection implements Cloneable
         throws LDAPException
     {
         LDAPResponseQueue queue =
-            delete(dn, (LDAPResponseQueue)null, cons);
+            delete(dn, null, cons);
 
         // Get a handle to the delete response
         LDAPResponse deleteResponse = (LDAPResponse)(queue.getResponse());
@@ -2145,8 +2139,7 @@ public class LDAPConnection implements Cloneable
     {
 
         // Call asynchronous API and get back handler to reponse queue
-        LDAPResponseQueue queue = extendedOperation(op, cons,
-                            (LDAPResponseQueue)null);
+        LDAPResponseQueue queue = extendedOperation(op, cons, null);
         LDAPExtendedResponse response =
                             (LDAPExtendedResponse) queue.getResponse();
 
@@ -2432,7 +2425,7 @@ public class LDAPConnection implements Cloneable
         throws LDAPException
     {
         LDAPResponseQueue queue =
-            modify(dn, mods, (LDAPResponseQueue)null, cons);
+            modify(dn, mods, null, cons);
 
         // Get a handle to the modify response
         LDAPResponse modifyResponse = (LDAPResponse)(queue.getResponse());
@@ -2637,7 +2630,7 @@ public class LDAPConnection implements Cloneable
                           LDAPSearchConstraints cons)
         throws LDAPException
     {
-        return read(dn, (String[]) null, cons);
+        return read(dn, null, cons);
     }
 
     /**
@@ -2890,8 +2883,7 @@ public class LDAPConnection implements Cloneable
         throws LDAPException
     {
         LDAPResponseQueue queue =
-            rename(dn, newRdn, newParentdn, deleteOldRdn,
-                (LDAPResponseQueue)null, cons);
+            rename(dn, newRdn, newParentdn, deleteOldRdn, null, cons);
 
         // Get a handle to the rename response
         LDAPResponse renameResponse = (LDAPResponse)(queue.getResponse());
@@ -3144,8 +3136,7 @@ public class LDAPConnection implements Cloneable
         throws LDAPException
     {
         LDAPSearchQueue queue =
-            search(base, scope, filter, attrs, typesOnly,
-                    (LDAPSearchQueue)null, cons);
+            search(base, scope, filter, attrs, typesOnly, null, cons);
 
         if( cons == null )
             cons = defSearchCons;
@@ -3264,7 +3255,7 @@ public class LDAPConnection implements Cloneable
         } catch(LDAPException lex) {
             throw lex;
         }
-        return (LDAPSearchQueue)myqueue;
+        return myqueue;
     }
 
     /*
@@ -3347,9 +3338,10 @@ public class LDAPConnection implements Cloneable
      * <p>the LDAP requests can be LDAPAdd, LDAPdelete, LDAPModDN,
      * or LDAPModify</p>
      *
-     * @param ld     The LDAPConnection object
-     * @param change The LDAPMessage request which represents a specific
-     *               LDAP operation
+     * @param request   The LDAPMessage to send
+     * @param queue     The queue to be used for receipt of results
+     * @param cons      Any constraings to apply to this request
+     *
      * @exception    LDAPException A general exception which includes an error
      *               message and an LDAP error code.
      */
@@ -3384,7 +3376,7 @@ public class LDAPConnection implements Cloneable
         } catch(LDAPException lex) {
             throw lex;
         }
-        return (LDAPSearchQueue)myqueue;
+        return myqueue;
     }
 
     /**
@@ -3394,9 +3386,9 @@ public class LDAPConnection implements Cloneable
      * <p>the LDAP requests can be LDAPAdd, LDAPdelete, LDAPModDN,
      * or LDAPModify</p>
      *
-     * @param ld     The LDAPConnection object
      * @param request The LDAPRequest object which represents a specific
      *               LDAP request
+     * @param cons The constraints to apply to this request
      * @exception    LDAPException A general exception which includes an error
      *               message and an LDAP error code.
      */
@@ -3450,7 +3442,7 @@ public class LDAPConnection implements Cloneable
         }
 
         agent.sendMessage( conn, msg, timeout, queue, bindProps);
-        return (LDAPResponseQueue)queue;
+        return queue;
     }
 
     /**
@@ -3480,11 +3472,10 @@ public class LDAPConnection implements Cloneable
      * This function is never called if cons.getReferralFollowing() returns
      * false.
      *
-     * @param refs the array of referral strings
+     * @param referrals the array of referral strings
      *<br><br>
      * @param search true if a search operation
      *<br><br>
-     * @param returnUrl the LDAPUrl that was connected to
      *
      * @return The referralInfo object
      *
@@ -3749,7 +3740,7 @@ public class LDAPConnection implements Cloneable
         if( initialReferrals != null) {
             // Search continuation reference from a search request
             refs = initialReferrals;
-            origMsg = msg.getASN1Object().getRequestingMessage();
+            origMsg = msg.getRequestingMessage();
         } else { // Not a search request
             LDAPResponse resp = (LDAPResponse)queue.getResponse();
             if( resp.getResultCode() != LDAPException.REFERRAL) {
@@ -3759,7 +3750,7 @@ public class LDAPConnection implements Cloneable
             }
             // We have a referral response
             refs = resp.getReferrals();
-            origMsg = resp.getASN1Object().getRequestingMessage();
+            origMsg = resp.getRequestingMessage();
         }
         LDAPUrl refUrl;             // referral represented as URL
         try {
@@ -3864,51 +3855,45 @@ public class LDAPConnection implements Cloneable
     LDAPMessage rebuildRequest( LDAPMessage msg, LDAPUrl url, boolean reference)
             throws LDAPException
     {
-        RfcLDAPMessage rfcMsg = msg.getASN1Object();
-        ASN1Identifier id = rfcMsg.getProtocolOp().getIdentifier();
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.referrals, name +
                 "rebuildRequest: original request = " +
                 "message(" + msg.getMessageID() + "), request type " +
-                id.getTag());
+                msg.getType());
         }
 
         String dn = url.getDN(); // new base
         String filter = null;
 
-        switch( id.getTag()) {
-            case RfcProtocolOp.SEARCH_REQUEST:
+        switch( msg.getType()) {
+            case LDAPMessage.SEARCH_REQUEST:
                 if( reference) {
                     filter = url.getFilter();
                 }
                 break;
             // We are allowed to get a referral for the following
-            case RfcProtocolOp.ADD_REQUEST:
-            case RfcProtocolOp.BIND_REQUEST:
-            case RfcProtocolOp.COMPARE_REQUEST:
-            case RfcProtocolOp.DEL_REQUEST:
-            case RfcProtocolOp.EXTENDED_REQUEST:
-            case RfcProtocolOp.MODIFY_DN_REQUEST:
-            case RfcProtocolOp.MODIFY_REQUEST:
+            case LDAPMessage.ADD_REQUEST:
+            case LDAPMessage.BIND_REQUEST:
+            case LDAPMessage.COMPARE_REQUEST:
+            case LDAPMessage.DEL_REQUEST:
+            case LDAPMessage.EXTENDED_REQUEST:
+            case LDAPMessage.MODIFY_RDN_REQUEST:
+            case LDAPMessage.MODIFY_REQUEST:
                 break;
             // The following return no response
-            case RfcProtocolOp.ABANDON_REQUEST:
-            case RfcProtocolOp.UNBIND_REQUEST:
+            case LDAPMessage.ABANDON_REQUEST:
+            case LDAPMessage.UNBIND_REQUEST:
             default:
                 throw new LDAPException(
                      // "Referral doesn't make sense for command"
                     ExceptionMessages.IMPROPER_REFERRAL,
                     new Object[] {
-                        new Integer(
-                            rfcMsg.getProtocolOp().getIdentifier().getTag())
+                        new Integer( msg.getType())
                     },
                     LDAPException.LOCAL_ERROR);
         }
 
-        RfcLDAPMessage newRfcMsg =
-                (RfcLDAPMessage)rfcMsg.dupMessage( dn, filter, reference);
-
-        return new LDAPMessage( newRfcMsg);
+        return msg.clone( dn, filter, reference);
     }
 
     /*
@@ -3964,7 +3949,7 @@ public class LDAPConnection implements Cloneable
      * <p>The schema DN for a particular entry is obtained by calling the
      * getSchemaDN method of LDAPConnection</p>
      *
-     * @param    The schema DN used to fetch the schema.
+     * @param    schemaDN The schema DN used to fetch the schema.
      *
      * @return    An LDAPSchema entry containing schema attributes.  If the
      * entry contains no schema attributes then the returned LDAPSchema object
@@ -4036,7 +4021,6 @@ public class LDAPConnection implements Cloneable
          * no entries are returned. */
         LDAPEntry ent = this.read( dn, attrSubSchema );
 
-        String schemaDN;
         LDAPAttribute attr = ent.getAttribute( attrSubSchema[0] );
         String values[] = attr.getStringValueArray();
         if( values == null || values.length < 1 ) {
@@ -4483,8 +4467,7 @@ public class LDAPConnection implements Cloneable
                                      LDAPSearchListener queue)
         throws LDAPException
     {
-        return search(base, scope, filter, attrs, typesOnly,
-                      (LDAPSearchListener)queue, defSearchCons);
+        return search(base, scope, filter, attrs, typesOnly, queue, defSearchCons);
     }
 
     /**
@@ -4592,8 +4575,7 @@ public class LDAPConnection implements Cloneable
                                      LDAPResponseListener queue)
         throws LDAPException
     {
-        return bind(version, dn, passwd,
-                            (LDAPResponseListener)queue, defSearchCons);
+        return bind(version, dn, passwd, queue, defSearchCons);
     }
 
     /**
@@ -4661,8 +4643,7 @@ public class LDAPConnection implements Cloneable
     {
         LDAPResponseListener l;
         try {
-            l = bind(LDAP_V3, dn, passwd.getBytes("UTF8"),
-                                 (LDAPResponseListener)listener, defSearchCons);
+            l = bind(LDAP_V3, dn, passwd.getBytes("UTF8"), listener, defSearchCons);
         } catch( UnsupportedEncodingException ex) {
             throw new RuntimeException( ex.toString());
         }

@@ -17,7 +17,6 @@ package com.novell.ldap.rfc2251;
 
 import com.novell.ldap.asn1.*;
 import com.novell.ldap.*;
-import com.novell.ldap.resources.*;
 
 /**
  * Represents an LDAP Delete Request.
@@ -62,7 +61,7 @@ public class RfcDelRequest extends RfcLDAPDN implements RfcRequest {
    public final ASN1Identifier getIdentifier()
    {
       return new ASN1Identifier(ASN1Identifier.APPLICATION, false,
-                                RfcProtocolOp.DEL_REQUEST);
+                                LDAPMessage.DEL_REQUEST);
    }
 
     public final RfcRequest dupRequest(String base, String filter, boolean request)

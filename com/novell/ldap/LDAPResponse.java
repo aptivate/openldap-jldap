@@ -15,10 +15,7 @@
 
 package com.novell.ldap;
 
-import java.io.IOException;
 import java.net.MalformedURLException;
-import java.util.Vector;
-
 import com.novell.ldap.asn1.*;
 import com.novell.ldap.rfc2251.*;
 import com.novell.ldap.client.*;
@@ -53,8 +50,6 @@ public class LDAPResponse extends LDAPMessage
      * to follow a referral.
      *
      *  @param ex  The exception
-     * <br><br>
-     *  @param refeerralList  The list of referrals from the server
      * <br><br>
      *  @param activeReferral  The referral actually used to create the
      *                             connection
@@ -96,7 +91,7 @@ public class LDAPResponse extends LDAPMessage
         if( exception != null) {
             return exception.getLDAPErrorMessage();
         }
-        return ((RfcResponse)message.getProtocolOp()).getErrorMessage().stringValue();
+        return ((RfcResponse)message.getResponse()).getErrorMessage().stringValue();
     }
 
     /**
@@ -111,7 +106,7 @@ public class LDAPResponse extends LDAPMessage
         if( exception != null) {
             return exception.getMatchedDN();
         }
-        return ((RfcResponse)message.getProtocolOp()).getMatchedDN().stringValue();
+        return ((RfcResponse)message.getResponse()).getMatchedDN().stringValue();
     }
 
     /**
@@ -122,7 +117,7 @@ public class LDAPResponse extends LDAPMessage
     public String[] getReferrals()
     {
         String[] referrals = null;
-        RfcReferral ref = ((RfcResponse)message.getProtocolOp()).getReferral();
+        RfcReferral ref = ((RfcResponse)message.getResponse()).getReferral();
 
         if(ref == null) {
             referrals = new String[0];
@@ -166,7 +161,7 @@ public class LDAPResponse extends LDAPMessage
         if( exception != null) {
             return exception.getLDAPResultCode();
         }
-        return ((RfcResponse)message.getProtocolOp()).getResultCode().intValue();
+        return ((RfcResponse)message.getResponse()).getResultCode().intValue();
     }
 
     /**

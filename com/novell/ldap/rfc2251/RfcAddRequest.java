@@ -16,7 +16,6 @@ package com.novell.ldap.rfc2251;
 
 import com.novell.ldap.asn1.*;
 import com.novell.ldap.*;
-import com.novell.ldap.resources.*;
 
 /**
  * Represents the LDAP Add Request.
@@ -29,24 +28,24 @@ import com.novell.ldap.resources.*;
  */
 public class RfcAddRequest extends ASN1Sequence implements RfcRequest {
 
-	//*************************************************************************
-	// Constructors for AddRequest
-	//*************************************************************************
+    //*************************************************************************
+    // Constructors for AddRequest
+    //*************************************************************************
 
-	/**
-	 * Constructs an RFCAddRequest
+    /**
+     * Constructs an RFCAddRequest
      *
-     * @param RfcLDAPDN the DN of the entry
+     * @param entry the entry
      *
-     * @param RfcLDAPAttributeList the Attributes making up the Entry
-	 */
-	public RfcAddRequest(RfcLDAPDN entry, RfcAttributeList attributes)
-	{
-		super(2);
-		add(entry);
-		add(attributes);
+     * @param attributes the Attributes making up the Entry
+     */
+    public RfcAddRequest(RfcLDAPDN entry, RfcAttributeList attributes)
+    {
+        super(2);
+        add(entry);
+        add(attributes);
         return;
-	}
+    }
 
     /**
     * Constructs a new Add Request using data from an existing request.
@@ -67,37 +66,37 @@ public class RfcAddRequest extends ASN1Sequence implements RfcRequest {
         }
         return;
     }
-	//*************************************************************************
-	// Accessors
-	//*************************************************************************
+    //*************************************************************************
+    // Accessors
+    //*************************************************************************
 
-	/**
-	 * Get's the DN of the entry
-	 */
-	public final RfcLDAPDN getEntry()
-	{
-		return (RfcLDAPDN)get(0);
-	}
+    /**
+     * Get's the DN of the entry
+     */
+    public final RfcLDAPDN getEntry()
+    {
+        return (RfcLDAPDN)get(0);
+    }
 
-	/**
-	 * Gets the attributes of the entry
-	 */
-	public final RfcAttributeList getAttributes()
-	{
-		return (RfcAttributeList)get(1);
-	}
+    /**
+     * Gets the attributes of the entry
+     */
+    public final RfcAttributeList getAttributes()
+    {
+        return (RfcAttributeList)get(1);
+    }
 
-	/**
-	 * Override getIdentifier to return an application-wide id.
+    /**
+     * Override getIdentifier to return an application-wide id.
      *<pre>
-	 * ID = CLASS: APPLICATION, FORM: CONSTRUCTED, TAG: 8. (0x68)
+     * ID = CLASS: APPLICATION, FORM: CONSTRUCTED, TAG: 8. (0x68)
      *</pre>
-	 */
-	public final ASN1Identifier getIdentifier()
-	{
-		return new ASN1Identifier(ASN1Identifier.APPLICATION, true,
-			                       RfcProtocolOp.ADD_REQUEST);
-	}
+     */
+    public final ASN1Identifier getIdentifier()
+    {
+        return new ASN1Identifier(ASN1Identifier.APPLICATION, true,
+                                   LDAPMessage.ADD_REQUEST);
+    }
 
     public final RfcRequest dupRequest(String base, String filter, boolean request)
             throws LDAPException

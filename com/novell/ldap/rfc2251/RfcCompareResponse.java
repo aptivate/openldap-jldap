@@ -16,6 +16,7 @@ package com.novell.ldap.rfc2251;
 
 import java.io.IOException;
 import java.io.InputStream;
+import com.novell.ldap.*;
 import com.novell.ldap.asn1.*;
 
 /**
@@ -27,32 +28,30 @@ import com.novell.ldap.asn1.*;
  */
 public class RfcCompareResponse extends RfcLDAPResult {
 
-	//*************************************************************************
-	// Constructor for CompareResponse
-	//*************************************************************************
+    //*************************************************************************
+    // Constructor for CompareResponse
+    //*************************************************************************
 
-	/**
-	 * The only time a client will create a CompareResponse is when it is
-	 * decoding it from an InputStream
-	 */
-	public RfcCompareResponse(ASN1Decoder dec, InputStream in, int len)
-		throws IOException
-	{
-		super(dec, in, len);
-	}
+    /**
+     * The only time a client will create a CompareResponse is when it is
+     * decoding it from an InputStream
+     */
+    public RfcCompareResponse(ASN1Decoder dec, InputStream in, int len)
+        throws IOException
+    {
+        super(dec, in, len);
+    }
 
-	//*************************************************************************
-	// Accessors
-	//*************************************************************************
+    //*************************************************************************
+    // Accessors
+    //*************************************************************************
 
-	/**
-	 * Override getIdentifier to return an application-wide id.
-	 */
-	public final ASN1Identifier getIdentifier()
-	{
-		return new ASN1Identifier(ASN1Identifier.APPLICATION, true,
-			                       RfcProtocolOp.COMPARE_RESPONSE);
-	}
-
+    /**
+     * Override getIdentifier to return an application-wide id.
+     */
+    public final ASN1Identifier getIdentifier()
+    {
+        return new ASN1Identifier(ASN1Identifier.APPLICATION, true,
+                                   LDAPMessage.COMPARE_RESPONSE);
+    }
 }
-

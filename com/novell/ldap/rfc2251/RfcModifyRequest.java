@@ -16,7 +16,6 @@ package com.novell.ldap.rfc2251;
 
 import com.novell.ldap.asn1.*;
 import com.novell.ldap.*;
-import com.novell.ldap.resources.*;
 
 /**
  * Represents an LDAP Modify Request.
@@ -34,20 +33,20 @@ import com.novell.ldap.resources.*;
  */
 public class RfcModifyRequest extends ASN1Sequence implements RfcRequest {
 
-	//*************************************************************************
-	// Constructor for ModifyRequest
-	//*************************************************************************
+    //*************************************************************************
+    // Constructor for ModifyRequest
+    //*************************************************************************
 
-	/**
-	 *
-	 */
-	public RfcModifyRequest(RfcLDAPDN object, ASN1SequenceOf modification)
-	{
-		super(2);
-		add(object);
-		add(modification);
+    /**
+     *
+     */
+    public RfcModifyRequest(RfcLDAPDN object, ASN1SequenceOf modification)
+    {
+        super(2);
+        add(object);
+        add(modification);
         return;
-	}
+    }
 
     /**
     * Constructs a new Modify Request copying from the ArrayList of
@@ -65,18 +64,18 @@ public class RfcModifyRequest extends ASN1Sequence implements RfcRequest {
         }
         return;
     }
-	//*************************************************************************
-	// Accessors
-	//*************************************************************************
+    //*************************************************************************
+    // Accessors
+    //*************************************************************************
 
-	/**
-	 * Override getIdentifier to return an application-wide id.
-	 */
-	public final ASN1Identifier getIdentifier()
-	{
-		return new ASN1Identifier(ASN1Identifier.APPLICATION, true,
-			                       RfcProtocolOp.MODIFY_REQUEST);
-	}
+    /**
+     * Override getIdentifier to return an application-wide id.
+     */
+    public final ASN1Identifier getIdentifier()
+    {
+        return new ASN1Identifier(ASN1Identifier.APPLICATION, true,
+                                   LDAPMessage.MODIFY_REQUEST);
+    }
 
     public final RfcRequest dupRequest(String base, String filter, boolean request)
             throws LDAPException

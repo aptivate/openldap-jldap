@@ -16,7 +16,7 @@ package com.novell.ldap.rfc2251;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.NoSuchElementException;
+import com.novell.ldap.*;
 import com.novell.ldap.asn1.*;
 
 /**
@@ -33,7 +33,6 @@ public class RfcSearchResultReference extends ASN1SequenceOf
     // Constructors for SearchResultReference
     //*************************************************************************
 
-    private String name = "SearchResultReference@" + Integer.toHexString(hashCode());
     /**
      * The only time a client will create a SearchResultReference is when it is
      * decoding it from an InputStream
@@ -55,6 +54,6 @@ public class RfcSearchResultReference extends ASN1SequenceOf
     public final ASN1Identifier getIdentifier()
     {
         return new ASN1Identifier(ASN1Identifier.APPLICATION, true,
-                                RfcProtocolOp.SEARCH_RESULT_REFERENCE);
+                                LDAPMessage.SEARCH_RESULT_REFERENCE);
     }
 }

@@ -15,7 +15,6 @@
 
 package com.novell.ldap;
 
-import java.io.IOException;
 import com.novell.ldap.LDAPResponse;
 import com.novell.ldap.rfc2251.*;
 import com.novell.ldap.asn1.*;
@@ -50,7 +49,7 @@ public class LDAPExtendedResponse extends LDAPResponse {
     public String getID()
     {
         RfcLDAPOID respOID =
-            ((RfcExtendedResponse)message.getProtocolOp()).getResponseName();
+            ((RfcExtendedResponse)message.getResponse()).getResponseName();
         if (respOID == null)
             return null;
         return respOID.stringValue();
@@ -63,7 +62,8 @@ public class LDAPExtendedResponse extends LDAPResponse {
      */
     public byte[] getValue()
     {
-		ASN1OctetString tempString = ((RfcExtendedResponse)message.getProtocolOp()).getResponse();
+		ASN1OctetString tempString =
+                ((RfcExtendedResponse)message.getResponse()).getResponse();
 		if (tempString == null)
 			return null;
 		else

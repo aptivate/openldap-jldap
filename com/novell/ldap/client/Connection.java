@@ -327,7 +327,7 @@ public final class Connection implements Runnable
     *<br><br>
     * @param host The port on the host to connect to.
     *<br><br>
-    * @param LDAPSocketFactory specifies a factory to produce SSL sockets.
+    * @param semaphoreId The write semaphore ID to use for the connect
     */
     private void connect(String host, int port, int semaphoreId)
       throws LDAPException
@@ -408,16 +408,14 @@ public final class Connection implements Runnable
     }
 
     /**
-     *  Indicates that an LDAPConnection clone is being created
-     *
-     * @return true if other clones exist
+     *  Increments the count of cloned connections
      */
-    synchronized public final void createClone()
+    synchronized public final void incrCloneCount()
     {
         cloneCount++;
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.messages, name +
-                "createClone(" + cloneCount + ")");
+                "incrCloneCount(" + cloneCount + ")");
         }
         return;
     }
@@ -518,7 +516,7 @@ public final class Connection implements Runnable
     /**
      * gets the socket factory used for this connection
      *
-     * @param factory the default factory to set
+     * @return the default factory for this connection
      */
     public final LDAPSocketFactory getSocketFactory()
     {
@@ -542,10 +540,10 @@ public final class Connection implements Runnable
     }
 
     /**
-    * Writes an LDAPMessage to the LDAP server over a socket.
-    *
-    * @param msg the Message containing the message to write.
-    */
+     * Writes an LDAPMessage to the LDAP server over a socket.
+     *
+     * @param msg the Message containing the message to write.
+     */
     /* package */
     void writeMessage(Message info)
         throws LDAPException
@@ -562,10 +560,10 @@ public final class Connection implements Runnable
 
 
     /**
-    * Writes an LDAPMessage to the LDAP server over a socket.
-    *
-    * @param msg the message to write.
-    */
+     * Writes an LDAPMessage to the LDAP server over a socket.
+     *
+     * @param msg the message to write.
+     */
     /* package */
     void writeMessage(LDAPMessage msg)
         throws LDAPException
@@ -781,7 +779,7 @@ public final class Connection implements Runnable
     *
     *
     *<br><br>
-    * @param bindProps   The BindProperties object to set.
+    * @return  The BindProperties object for this connection.
     */
     public final BindProperties getBindProperties()
     {

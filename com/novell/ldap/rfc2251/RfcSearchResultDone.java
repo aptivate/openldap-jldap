@@ -16,6 +16,7 @@ package com.novell.ldap.rfc2251;
 
 import java.io.IOException;
 import java.io.InputStream;
+import com.novell.ldap.*;
 import com.novell.ldap.asn1.*;
 
 /**
@@ -51,7 +52,7 @@ public class RfcSearchResultDone extends RfcLDAPResult {
    public final ASN1Identifier getIdentifier()
    {
       return new ASN1Identifier(ASN1Identifier.APPLICATION, true,
-                                RfcProtocolOp.SEARCH_RESULT_DONE);
+                                LDAPMessage.SEARCH_RESULT);
    }
 
 }

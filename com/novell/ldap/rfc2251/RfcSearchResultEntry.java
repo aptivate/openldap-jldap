@@ -16,12 +16,13 @@ package com.novell.ldap.rfc2251;
 
 import java.io.IOException;
 import java.io.InputStream;
+import com.novell.ldap.*;
 import com.novell.ldap.asn1.*;
 import com.novell.ldap.client.Debug;
 
 /**
  * Represents an LDAP Search Result Entry.
- *.
+ *
  *<pre>
  *       SearchResultEntry ::= [APPLICATION 4] SEQUENCE {
  *               objectName      LDAPDN,
@@ -63,7 +64,7 @@ public class RfcSearchResultEntry extends ASN1Sequence {
     {
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.messages, "RfcSearchResultEntry - Object name: " +
-                ((ASN1OctetString)get(0)).toString());
+                get(0).toString());
         }
         return (ASN1OctetString)get(0);
     }
@@ -82,6 +83,6 @@ public class RfcSearchResultEntry extends ASN1Sequence {
     public final ASN1Identifier getIdentifier()
     {
         return new ASN1Identifier(ASN1Identifier.APPLICATION, true,
-                                  RfcProtocolOp.SEARCH_RESULT_ENTRY);
+                                  LDAPMessage.SEARCH_RESPONSE);
     }
 }

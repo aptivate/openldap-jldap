@@ -16,7 +16,6 @@
 package com.novell.ldap;
 
 import com.novell.ldap.rfc2251.*;
-import com.novell.ldap.asn1.*;
 import com.novell.ldap.client.RespControlVector;
 import com.novell.ldap.client.Debug;
 
@@ -179,7 +178,7 @@ public class LDAPMessage
     /**
      * A request or response message for an asynchronous LDAP operation.
      */
-	protected RfcLDAPMessage message;
+    protected RfcLDAPMessage message;
 
     /**
      * Lock object to protect counter for message numbers
@@ -200,19 +199,19 @@ public class LDAPMessage
     private int messageType = -1;
     private boolean ifRequest = false;
     
-	/**
-	 * Creates an LDAPMessage when sending a protocol operation.
+    /**
+     * Creates an LDAPMessage when sending a protocol operation.
      *
      * @param op The operation type of message.
      *
      * @deprecated For internal use only
      *
      * @see #getType
-	 */
-	public LDAPMessage(RfcRequest op)
-	{
-		this(-1, op, null);
-	}
+     */
+    public LDAPMessage(RfcRequest op)
+    {
+        this(-1, op, null);
+    }
 
     /**
      * Dummy constuctor
@@ -225,9 +224,9 @@ public class LDAPMessage
         return;
     }
 
-	/**
-	 * Creates an LDAPMessage when sending a protocol operation and sends
-	 * some optional controls with the message.
+    /**
+     * Creates an LDAPMessage when sending a protocol operation and sends
+     * some optional controls with the message.
      *
      * @param op The operation type of message.
      *<br><br>
@@ -236,11 +235,12 @@ public class LDAPMessage
      * @deprecated For internal use only
      *
      * @see #getType
-	 */
-	public LDAPMessage( int type,
-                        RfcRequest op,
-                        LDAPControl[] controls)
-	{
+     */
+    protected
+    LDAPMessage( int type,
+                 RfcRequest op,
+                 LDAPControl[] controls)
+    {
         
         // Get a unique number for this request message
         /* Turn on after ASN.1 conversion
@@ -252,36 +252,70 @@ public class LDAPMessage
     
         messageType = type;
         RfcControls asn1Ctrls = null;
-		if(controls != null) {
-			// Move LDAPControls into an RFC 2251 Controls object.
-			asn1Ctrls = new RfcControls();
-			for(int i=0; i<controls.length; i++) {
-				asn1Ctrls.add(controls[i].getASN1Object());
-			}
-		}
+        if(controls != null) {
+            // Move LDAPControls into an RFC 2251 Controls object.
+            asn1Ctrls = new RfcControls();
+            for(int i=0; i<controls.length; i++) {
+                asn1Ctrls.add(controls[i].getASN1Object());
+            }
+        }
 
-		// create RFC 2251 LDAPMessage
-		message = new RfcLDAPMessage(op, asn1Ctrls);
+        // create RFC 2251 LDAPMessage
+        message = new RfcLDAPMessage(op, asn1Ctrls);
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.apiRequests, "Creating " + toString());
         }
         return;
-	}
+    }
 
-	/**
-	 * Creates an Rfc 2251 LDAPMessage when the libraries receive a response
-	 * from a command.
+    /**
+     * Creates an Rfc 2251 LDAPMessage when the libraries receive a response
+     * from a command.
      *
      * @param message A response message.
-     *
-     * @deprecated For internal use only
-	 */
-	public LDAPMessage(RfcLDAPMessage message)
-	{
-		this.message = message;
+     */
+    protected 
+    LDAPMessage(RfcLDAPMessage message)
+    {
+        this.message = message;
         return;
-	}
+    }
+    
+    /**
+     * Returns a mutated clone of this LDAPMessage,
+     * replacing base dn, filter.
+     *
+     * @param dn the base dn
+     * <br><br>
+     * @param filter the filter
+     * <br><br>
+     * @param reference true if a search reference
+     *
+     * @return the object representing the new message
+     */
+    /* package */
+    final LDAPMessage clone( String dn, String filter, boolean reference)
+            throws LDAPException
+    {
+        return new LDAPMessage( 
+            (RfcLDAPMessage)message.dupMessage( dn, filter, reference));
+    }
 
+    /**
+     * Returns the LDAPMessage request associated with this response
+     */
+    /* package */ 
+    final LDAPMessage getRequestingMessage()
+    {
+        if( Debug.LDAP_DEBUG) {
+            if( isRequest()) { 
+                throw new RuntimeException("LDAPMessage: Cannot retrieve " +
+                    "requesting message for an LDAP Request Message");
+            }            
+        }
+        return message.getRequestingMessage();
+    }
+    
     /**
      * Returns any controls in the message.
      */
@@ -292,36 +326,36 @@ public class LDAPMessage
         RfcControls asn1Ctrls = message.getControls();
 
         // convert from RFC 2251 Controls to LDAPControl[].
-	    if(asn1Ctrls != null) {
-		    controls = new LDAPControl[asn1Ctrls.size()];
-		    for(int i=0; i<asn1Ctrls.size(); i++) {
+        if(asn1Ctrls != null) {
+            controls = new LDAPControl[asn1Ctrls.size()];
+            for(int i=0; i<asn1Ctrls.size(); i++) {
 
                 /*
-		         * At this point we have an RfcControl which needs to be
-		         * converted to the appropriate Response Control.  This requires
-		         * calling the constructor of a class that extends LDAPControl.
+                 * At this point we have an RfcControl which needs to be
+                 * converted to the appropriate Response Control.  This requires
+                 * calling the constructor of a class that extends LDAPControl.
                  * The controlFactory method searches the list of registered
-		         * controls and if a match is found calls the constructor
-		         * for that child LDAPControl. Otherwise, it returns a regular
-		         * LDAPControl object.
+                 * controls and if a match is found calls the constructor
+                 * for that child LDAPControl. Otherwise, it returns a regular
+                 * LDAPControl object.
                  *
-		         * Question: Why did we not call the controlFactory method when
-		         * we were parsing the control. Answer: By the time the
-		         * code realizes that we have a control it is already too late.
+                 * Question: Why did we not call the controlFactory method when
+                 * we were parsing the control. Answer: By the time the
+                 * code realizes that we have a control it is already too late.
                  */
-		        RfcControl rfcCtl = (RfcControl)asn1Ctrls.get(i);
+                RfcControl rfcCtl = (RfcControl)asn1Ctrls.get(i);
                 String oid = rfcCtl.getControlType().stringValue();
                 byte[] value = rfcCtl.getControlValue().byteValue();
                 boolean critical = rfcCtl.getCriticality().booleanValue();
 
-		        /* Return from this call should return either an LDAPControl
-		         * or a class extending LDAPControl that implements the
-		         * appropriate registered response control
+                /* Return from this call should return either an LDAPControl
+                 * or a class extending LDAPControl that implements the
+                 * appropriate registered response control
                  */
-		        controls[i] = controlFactory(oid, critical, value);
-		    }
-	    }
-	    return controls;
+                controls[i] = controlFactory(oid, critical, value);
+            }
+        }
+        return controls;
     }
     
     /**
@@ -330,9 +364,6 @@ public class LDAPMessage
      * that control by calling its contructor.  Otherwise we default to
      * returning a regular LDAPControl object
      *
-     * @deprecated  Not to be used by application programs.
-     *
-     * @param data A RfcControl object that encodes the returned control.
      */
     private final LDAPControl controlFactory(String oid,boolean critical,byte[] value)
     {
@@ -443,13 +474,13 @@ public class LDAPMessage
      * @return The operation type of the message.
      */
     public int getType()
-	{
+    {
         if( messageType == -1) {
-		    messageType = message.getProtocolOp().getIdentifier().getTag();
+            messageType = message.getType();
         }
         return messageType;
     }
-
+    
     /**
      * Indicates whether the message is a request or a response
      *
@@ -457,22 +488,20 @@ public class LDAPMessage
      * a search result, or a search result reference.
      */
     public boolean isRequest()
-	{
-        if( messageType == -1) {
-		    messageType = message.getProtocolOp().getIdentifier().getTag();
-            getName();
-        }
+    {
+        getName();
         return ifRequest;
     }
+    
     /**
-	 * Returns the RFC 2251 LDAPMessage composed in this object.
+     * Returns the RFC 2251 LDAPMessage composed in this object.
      *
      * @deprecated For internal use only
-	 */
-	final public RfcLDAPMessage getASN1Object()
-	{
-		return message;
-	}
+     */
+    final public RfcLDAPMessage getASN1Object()
+    {
+        return message;
+    }
 
     /**
      * Creates a String representation of this object
@@ -488,13 +517,13 @@ public class LDAPMessage
     String getName()
     {
         switch(getType()) {
+            case SEARCH_RESPONSE:
+                return "LDAPSearchResponse";
             case SEARCH_RESULT:
                 return "LDAPSearchResult";
             case SEARCH_REQUEST:
                 ifRequest = true;
                 return "LDAPSearchRequest";
-            case SEARCH_RESPONSE:
-                return "LDAPSearchResponse";
             case MODIFY_REQUEST:
                 ifRequest = true;
                 return "LDAPModifyRequest";

@@ -28,34 +28,34 @@ import com.novell.ldap.resources.*;
  */
 public class RfcUnbindRequest extends ASN1Null implements RfcRequest {
 
-	//*************************************************************************
-	// Constructor for UnbindRequest
-	//*************************************************************************
+    //*************************************************************************
+    // Constructor for UnbindRequest
+    //*************************************************************************
 
-	/**
-	 * Construct an RfCUnbind Request
-	 */
-	public RfcUnbindRequest()
-	{
-		super();
+    /**
+     * Construct an RfCUnbind Request
+     */
+    public RfcUnbindRequest()
+    {
+        super();
         return;
-	}
+    }
 
-	//*************************************************************************
-	// Accessors
-	//*************************************************************************
+    //*************************************************************************
+    // Accessors
+    //*************************************************************************
 
-	/**
-	 * Override getIdentifier to return an application-wide id.
-	 *<pre>
-	 * ID = CLASS: APPLICATION, FORM: PRIMITIVE, TAG: 2. (0x42)
+    /**
+     * Override getIdentifier to return an application-wide id.
+     *<pre>
+     * ID = CLASS: APPLICATION, FORM: PRIMITIVE, TAG: 2. (0x42)
      *</pre>
-	 */
-	public final ASN1Identifier getIdentifier()
-	{
-		return new ASN1Identifier(ASN1Identifier.APPLICATION, false,
-			                       RfcProtocolOp.UNBIND_REQUEST);
-	}
+     */
+    public final ASN1Identifier getIdentifier()
+    {
+        return new ASN1Identifier(ASN1Identifier.APPLICATION, false,
+                                   LDAPMessage.UNBIND_REQUEST);
+    }
 
     public final RfcRequest dupRequest(String base, String filter, boolean request)
             throws LDAPException
