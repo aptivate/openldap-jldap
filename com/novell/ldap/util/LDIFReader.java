@@ -47,7 +47,7 @@ import com.novell.ldap.ldif_dsml.Base64Decoder;
  *
  * <p>The constructors uses '1' as default LDIF file version</p>
  */
-public class LDIFReader extends LDIF implements LDAPImport {
+public class LDIFReader extends LDIF implements LDAPReader {
 
     private int                version;                   // LDIF file version
     private int                operationType;             //

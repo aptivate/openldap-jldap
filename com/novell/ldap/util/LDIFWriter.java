@@ -45,7 +45,7 @@ import com.novell.ldap.ldif_dsml.Base64Encoder;
  */
 
 
-public class LDIFWriter extends LDIF implements LDAPExport {
+public class LDIFWriter extends LDIF implements LDAPWriter {
 
     private int            recordType;                    // record type
     private String         dn;                            // record dn

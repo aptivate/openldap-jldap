@@ -2,7 +2,7 @@
 
 package com.novell.ldap.ldif_dsml;
 
-public class DSMLWriter implements LDAPExport {
+public class DSMLWriter implements LDAPWriter {
     
     public final static LDAPRequest currentChange = null;
 }
