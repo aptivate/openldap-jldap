@@ -737,21 +737,26 @@ class DSMLHandler extends DefaultHandler implements
                     state = COMPARE_REQUEST;
                     break;
                 case ADD_ATTRIBUTE:
-                    {
-                        byte[] byteValue;
-                        Object addValue = attributeValues.get(0);
-                        if (addValue instanceof byte[]){
-                            byteValue = (byte[])addValue;
-                        } else {
-                            byteValue = ((String)addValue).getBytes("UTF8");
-                        }
-                        state = ADD_REQUEST;
+                    {   //find an existing LDAPAttribute
                         LDAPAttribute attr = attrSet.getAttribute(attrName);
+
                         if (attr == null){
-                            //create a new attribute
-                            attr = new LDAPAttribute(attrName, byteValue);
+                            //create a new LDAPAttribute and use it.
+                            attr = new LDAPAttribute(attrName);
                             attrSet.add(attr);
-                        } else {
+                        }
+
+                        //iterate through values and add them the LDAPAttribute
+                        int size=attributeValues.size();
+                        for (int i=0; i<size; i++){
+                            byte[] byteValue;
+                            Object addValue = attributeValues.get(i);
+                            if (addValue instanceof byte[]){
+                                byteValue = (byte[])addValue;
+                            } else {
+                                byteValue = ((String)addValue).getBytes("UTF8");
+                            }
+                            state = ADD_REQUEST;
                             attr.addValue(byteValue);
                         }
                     }
