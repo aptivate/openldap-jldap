@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Identifier.java,v 1.5 2000/09/11 21:05:52 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Identifier.java,v 1.6 2001/03/01 00:30:00 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -18,10 +18,12 @@ package com.novell.ldap.asn1;
 import java.io.*;
 
 /**
- * Represents an ASN.1 Identifier.
+ * This class is used to encapsulate an ASN.1 Identifier.
  *
- * <p>An ASN1Identifier is composed of three parts: 1) a class type,
- * 2) a form, and 3) a tag.</p>
+ * <p>An ASN1Identifier is composed of three parts: 
+ * <li> a class type,
+ * <li> a form, and 
+ * <li> a tag.</p>
  *
  * <p>The class type is defined as:</p>
  *<pre>
@@ -85,21 +87,25 @@ public class ASN1Identifier {
    public static final int PRIVATE = 3;
 
 
-   //*************************************************************************
-   // Private variables
-   //*************************************************************************
+   /* Private variables
+    */
 
    private int tagClass;
    private boolean constructed;
    private int tag;
    private int encodedLength;
 
-   //*************************************************************************
-   // Constructors for ASN1Identifier
-   //*************************************************************************
+   /* Constructors for ASN1Identifier
+    */
 
    /**
-    * Constructs an ASN1Identifier.
+    * Constructs an ASN1Identifier using the classtype, form and tag
+    *
+    * @param tagClass As defined above.
+    *
+    * @param constructed Set to true if constructed and false if primitive.
+    *
+    * @param tag The tag of this identifier
     */
    public ASN1Identifier(int tagClass, boolean constructed, int tag)
    {
@@ -109,8 +115,10 @@ public class ASN1Identifier {
    }
 
    /**
-    * Decode an ASN1Identifier directly from an InputStream. Save the
-    * encoded length of the ASN1Identifier.
+    * Decode an ASN1Identifier directly from an InputStream and
+    * save the encoded length of the ASN1Identifier.
+    *
+    * @param in The input stream to decode from.
     */
    public ASN1Identifier(InputStream in)
       throws IOException
@@ -160,9 +168,8 @@ public class ASN1Identifier {
    }
 
    /**
-    * Return a boolean indicating if the constructed bit is set.
-    *
-    * FORM bit: 0 = primitive, 1 = constructed
+    * Return a boolean indicating if the constructed bit is set.<br>
+    * Returns true if constructed and false if primitive.
     */
    public boolean getConstructed()
    {
@@ -185,9 +192,8 @@ public class ASN1Identifier {
       return encodedLength;
    }
 
-   //*************************************************************************
-   // Convenience methods
-   //*************************************************************************
+   /* Convenience methods
+    */
 
    /**
     * Returns a boolean value indicating whether or not this ASN1Identifier

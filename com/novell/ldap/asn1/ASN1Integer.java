@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Integer.java,v 1.5 2000/09/11 21:05:52 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Integer.java,v 1.6 2001/03/01 00:30:00 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -18,7 +18,7 @@ package com.novell.ldap.asn1;
 import java.io.*;
 
 /**
- * Represents the ASN.1 INTEGER type.
+ * This class encapsulates the ASN.1 INTEGER type.
  */
 public class ASN1Integer extends ASN1Numeric {
 
@@ -27,12 +27,15 @@ public class ASN1Integer extends ASN1Numeric {
     */
    public static final int TAG = 0x02;
 
-   //*************************************************************************
-   // Constructors for ASN1Integer
-   //*************************************************************************
+   /* Constructors for ASN1Integer
+    */
 
    /**
-    * Constructs an ASN1Integer object using an int value.
+    * Call this constructor to construct an ASN1Integer 
+    * object from an integer value.
+    *
+    * @param content The integer value to be contained in the
+    * this ASN1Integer object
     */
    public ASN1Integer(int content)
    {
@@ -40,7 +43,11 @@ public class ASN1Integer extends ASN1Numeric {
    }
 
    /**
-    * Constructs an ASN1Integer object using a long value.
+    * Call this constructor to construct an ASN1Integer 
+    * object from a long value.
+    *
+    * @param content The long value to be contained in the
+    * this ASN1Integer object
     */
    public ASN1Integer(long content)
    {
@@ -49,7 +56,15 @@ public class ASN1Integer extends ASN1Numeric {
    }
 
    /**
-    * Constructs an ASN1Integer object by decoding data from an input stream.
+    * Constructs an ASN1Integer object by decoding data from an 
+    * input stream.
+    *
+    * @param dec The decoder object to use when decoding the
+    * input stream.  Sometimes a developer might want to pass
+    * in his/her own decoder object<br>
+    *
+    * @param in A byte stream that contains the encoded ASN.1
+    *
     */
    public ASN1Integer(ASN1Decoder dec, InputStream in, int len)
       throws IOException
@@ -58,13 +73,17 @@ public class ASN1Integer extends ASN1Numeric {
       content = (Long)dec.decodeNumeric(in, len);
    }
 
-   //*************************************************************************
-   // ASN1Object implementation
-   //*************************************************************************
+   /* ASN1Object implementation
+    */
 
    /**
-    * Encodes the contents of this ASN1Integer directly to an output
-    * stream.
+    * Call this method to encode the current instance into the 
+    * specified output stream using the specified encoder object.
+    *
+    * @param enc Encoder object to use when encoding self.<br>
+    *
+    * @param out The output stream onto which the encoded byte 
+    * stream is written.
     */
    public void encode(ASN1Encoder enc, OutputStream out)
       throws IOException
@@ -72,12 +91,11 @@ public class ASN1Integer extends ASN1Numeric {
       enc.encode(this, out);
    }
 
-   //*************************************************************************
-   // ASN1Integer specific methods
-   //*************************************************************************
+   /* ASN1Integer specific methods
+    */
 
    /**
-    * Return a String representation of this ASN1Integer.
+    * Returns a String representation of this ASN1Integer object.
     */
    public String toString()
    {

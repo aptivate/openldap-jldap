@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Null.java,v 1.4 2000/09/11 21:05:52 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Null.java,v 1.5 2001/03/01 00:30:00 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -18,7 +18,7 @@ package com.novell.ldap.asn1;
 import java.io.*;
 
 /**
- * Represents the ASN.1 NULL type.
+ * This class represents the ASN.1 NULL type.
  */
 public class ASN1Null extends ASN1Simple {
 
@@ -27,24 +27,30 @@ public class ASN1Null extends ASN1Simple {
     */
    public static final int TAG = 0x05;
 
-   //*************************************************************************
-   // Constructor for ASN1Null
-   //*************************************************************************
+   /* Constructor for ASN1Null
+    */
 
    /**
-    * Constructs an ASN1Null object.
+    * Call this constructor to construct a new ASN1Null 
+    * object.
+    *
     */
    public ASN1Null()
    {
       id = new ASN1Identifier(ASN1Identifier.UNIVERSAL, false, TAG);
    }
 
-   //*************************************************************************
-   // ASN1Object implementation
-   //*************************************************************************
+   /* ASN1Object implementation
+    */
 
    /**
-    * Encodes this Null directly to an output stream.
+    * Call this method to encode the current instance into the 
+    * specified output stream using the specified encoder object.
+    *
+    * @param enc Encoder object to use when encoding self.<br>
+    *
+    * @param out The output stream onto which the encoded byte 
+    * stream is written.
     */
    public void encode(ASN1Encoder enc, OutputStream out)
       throws IOException
@@ -52,12 +58,11 @@ public class ASN1Null extends ASN1Simple {
       enc.encode(this, out);
    }
 
-   //*************************************************************************
-   // ASN1Null specific methods
-   //*************************************************************************
+   /* ASN1Null specific methods
+    */
 
    /**
-    * Return a String representation of this ASN1Object.
+    * Return a String representation of this ASN1Null object.
     */
    public String toString()
    {

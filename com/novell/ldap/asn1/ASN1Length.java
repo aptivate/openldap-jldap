@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell$
+ * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Length.java,v 1.4 2001/03/01 00:30:00 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -17,21 +17,19 @@ package com.novell.ldap.asn1;
 import java.io.*;
 
 /**
- * This class provides the means to manipulate ASN.1 Length's. It will
+ * This class provides a means to manipulate ASN.1 Length's. It will
  * be used by ASN1Encoder's and ASN1Decoder's by composition.
  */
 public class ASN1Length {
 
-   //*************************************************************************
-   // Private variables
-   //*************************************************************************
+   /* Private variables
+    */
 
    private int length;
    private int encodedLength;
 
-   //*************************************************************************
-   // Constructors for ASN1Length
-   //*************************************************************************
+   /* Constructors for ASN1Length
+    */
 
    /**
 	 * Constructs an ASN1Length
@@ -42,8 +40,11 @@ public class ASN1Length {
    }
 
    /**
-    * Decode an ASN1Length directly from an InputStream. Save the
-    * encoded length of the ASN1Length.
+    * Constructs an ASN1Length object by decoding data from an 
+    * input stream.
+    *
+    * @param in A byte stream that contains the encoded ASN.1
+    *
     */
    public ASN1Length(InputStream in)
       throws IOException
