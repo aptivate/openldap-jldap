@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: AttributeQualifier.java,v 1.1 2000/05/17 19:03:45 bgudmundson Exp $
+ * $Id: AttributeQualifier.java,v 1.2 2001/03/01 00:30:04 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -15,17 +15,20 @@
 
 package com.novell.ldap.client;
 
-import java.util.Vector;
+import com.novell.ldap.client.ArrayList;
+
 public class AttributeQualifier{
    String name;
-   Vector values;
+   ArrayList values;
 
    public AttributeQualifier( String name ){
      this.name = name;
-     values = new Vector();
+     values = new ArrayList(5);
+     return;
    }
    public void addValue( String value ){
-     values.addElement( value );
+     values.add( value );
+     return;
    }
    public String getName(){
      return name;

@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/client/MessageAgent.java,v 1.9 2001/03/01 00:30:06 cmorris Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/client/MessageAgent.java,v 1.10 2001/03/06 19:19:13 vtag Exp $
 *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -154,7 +154,7 @@ public class MessageAgent
             // Send abandon request and remove from connection list
             info = messages.findMessageById( msgId);
             info.abandon( cons, null);
-            messages.remove( info);  // This message is now dead
+            messages.removeElement( info);  // This message is now dead
 
             if( Debug.LDAP_DEBUG) {
                 Debug.trace( Debug.messages, name +
@@ -190,7 +190,7 @@ public class MessageAgent
                 "abandonAll: Removing abandoned Message(" + info.getMessageID() + ")");
             }
             info.abandon( null, null);
-            messages.remove( info);
+            messages.removeElement( info);
         }
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.messages, name +
@@ -306,7 +306,7 @@ public class MessageAgent
                 rfcMsg = info.waitForReply(); // blocks for a response
                 if( ! info.acceptsReplies() && ! info.hasReplies()) {
                     // Message complete and no more replies, remove from id list
-                    messages.remove( info);
+                    messages.removeElement( info);
                     if( Debug.LDAP_DEBUG) {
                         Debug.trace( Debug.messages, name +
                             "getLDAPMessage: By ID Return Message(" +
@@ -345,7 +345,7 @@ public class MessageAgent
                           rfcMsg = info.getReply();
                           if( ! info.acceptsReplies() & ! info.hasReplies()) {
                              // Message complete & no more replies, remove from id list
-                             messages.remove( info);
+                             messages.removeElement( info);
                              if( Debug.LDAP_DEBUG) {
                                 Debug.trace( Debug.messages, name +
                                     "getLDAPMessage: Return Message(" +

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.43 2001/03/09 17:54:44 javed Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.44 2001/03/12 16:45:59 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -84,7 +84,7 @@ public final class Connection implements Runnable
     private String activeReferral = null;
 
     // Place to save unsolicited message listeners
-    private Vector unsolicitedListeners = new Vector(3,3);
+    private Vector2 unsolicitedListeners = new Vector2(3,3);
 
     // The LDAPSocketFactory to be used as the default to create new connections
     static private LDAPSocketFactory socketFactory = null;
@@ -951,7 +951,7 @@ public final class Connection implements Runnable
 	*/
 	public void removeUnsolicitedNotificationListener(LDAPUnsolicitedNotificationListener listener)
 	{
-		unsolicitedListeners.remove(listener);
+		unsolicitedListeners.removeElement(listener);
 	}
 
     /** Inner class defined so that we can spawn off each unsolicited
@@ -1025,7 +1025,6 @@ public final class Connection implements Runnable
 			// the notification listener method to return.
 			UnsolicitedListenerThread u = new UnsolicitedListenerThread(listener, tempLDAPMessage);
             u.start();
-
 		}
 
 

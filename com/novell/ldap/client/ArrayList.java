@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/client/ArrayList.java,v 1.1 2001/01/30 21:21:16 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/client/ArrayList.java,v 1.2 2001/03/01 00:30:04 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -108,11 +108,13 @@ public class ArrayList
      * Appends the specified item to the end of this ArrayList.
      *
      * @param newItem the item to be added to the ArrayList.
+     * 
+     * @returns true if the object was added
      */
-    public void add(Object newItem) {
+    public boolean add(Object newItem) {
 	    ensureCapacity(size + 1);
 	    items[size++] = newItem;
-	    return;
+	    return true;
     }
 
     /**
