@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttributeSet.java,v 1.21 2001/04/19 16:58:05 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttributeSet.java,v 1.22 2001/04/20 16:07:45 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -68,7 +68,7 @@ public class LDAPAttributeSet implements Cloneable {
     * index is outside of the array.
     *
     */
-   public LDAPAttribute ElementAt(int index)
+   public LDAPAttribute elementAt(int index)
     throws ArrayIndexOutOfBoundsException {
       return (LDAPAttribute)attrs.get(index);
    }
