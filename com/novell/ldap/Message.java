@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/client/Message.java,v 1.1 2000/11/22 22:17:41 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/client/Message.java,v 1.2 2000/11/27 18:20:00 vtag Exp $
 *
 * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
 * 
@@ -109,6 +109,16 @@ public class Message extends Thread
     void refuseReplies()
     {
         acceptReplies = false;
+        return;
+    }
+
+    /**
+     * sets the agent for this message
+     */
+    /* package */
+    void setAgent( MessageAgent agent)
+    {
+        this.agent = agent;
         return;
     }
 

@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.57 2000/11/10 17:08:14 javed Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/client/MessageAgent.java,v 1.1 2000/11/22 22:17:41 vtag Exp $
 *
 * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
 * 
@@ -63,7 +63,14 @@ public class MessageAgent
                 Debug.trace( Debug.messages, name +
                 "Merging Message(" + info.getMessageID() + ")");
             }
+            ((Message)(msgs[i])).setAgent( this);
             messages.addElement( msgs[i]);
+        }
+        if( msgs.length > 1) {
+            notifyAll();  // wake all threads waiting for messages
+        } else
+        if( msgs.length == 1) {
+            notify();    // only wake one thread
         }
         return;
     }
