@@ -32,7 +32,7 @@ import com.novell.ldap.LDAPEntry;
 import com.novell.ldap.LDAPException;
 import com.novell.ldap.LDAPModification;
 import com.novell.ldap.ldif_dsml.LDAPRequest;
-import com.novell.ldap.ldif_dsml.Base64Encoder;
+import com.novell.ldap.ldif_dsml.Base64;
 
 /**
  * The class that is used to write LDIF content records or LDIF change records
@@ -49,7 +49,7 @@ public class LDIFWriter extends LDIF implements LDAPWriter {
 
     private int            recordType;                    // record type
     private String         dn;                            // record dn
-    private Base64Encoder  base64Encoder = new Base64Encoder();
+    private Base64         base64 = new Base64();
     private BufferedWriter bufWriter;
     private LDAPControl[]  currentControls;
     private LDAPEntry      currentEntry = null;
@@ -527,7 +527,7 @@ public class LDIFWriter extends LDIF implements LDAPWriter {
         }
         else {
             // base64 encod newRDN
-            tempString = base64Encoder.encoder(modInfo[0]);
+            tempString = base64.encoder(modInfo[0]);
             // put newRDN into record fields with a trailing space
             writeLine(new String("newrdn:" + tempString + " "));
         }
@@ -543,7 +543,7 @@ public class LDIFWriter extends LDIF implements LDAPWriter {
             }
             else {
                 // base64 encod newRDN
-                tempString = base64Encoder.encoder(modInfo[2]);
+                tempString = base64.encoder(modInfo[2]);
                 // put newSuperior into record fields with a trailing space
                 writeLine("newsuperior:" + tempString);
             }
@@ -584,13 +584,13 @@ public class LDIFWriter extends LDIF implements LDAPWriter {
             writeLine("dn: " + dn);
         }
         else { // not safe
-            writeLine("dn:: " + base64Encoder.encoder(dn) + " ");
+            writeLine("dn:: " + base64.encoder(dn) + " ");
         }
     }
 
 
     /**
-     * Convert LDAPControl array object to control fields in LDIF format
+     * Write control line(s).
      *
      * @param ctrls LDAPControl array object
      *
@@ -604,7 +604,7 @@ public class LDIFWriter extends LDIF implements LDAPWriter {
 
             if ( cVal != null && cVal.length > 0 ) {
                 // always encode control value(s) ?
-                cVal = base64Encoder.encoder(cVal);
+                cVal = base64.encoder(cVal);
                 String controlValue = new String(cVal);
                 // a trailing space is add to the end
                 writeLine( "control: " + ctrls[i].getID() + " "
@@ -634,7 +634,7 @@ public class LDIFWriter extends LDIF implements LDAPWriter {
             else {
                 // IF attrSpec contains NON-SAFE-INIT-CHAR or NON-SAFE-CHAR,
                 // it has to be base64 encoded
-                attrVal = base64Encoder.encoder(attrVal);
+                attrVal = base64.encoder(attrVal);
                 // base64 encoded attribute spec ended with white spavce
                 writeLine(attrName + ":: " + attrVal + " " );
             }
@@ -655,13 +655,13 @@ public class LDIFWriter extends LDIF implements LDAPWriter {
         if ((attrVal != null)&&(attrVal.length != 0)) {
             if ( isSafe(attrVal) && isPrintable(attrVal) ) {
                 // safe to make a String value
-                writeLine( attrName + ": " + new String(attrVal) );
+                writeLine( attrName + ": " + new String(attrVal, "UTF-8") );
             }
             else {
                 // not safe
-                attrVal = base64Encoder.encoder(attrVal);
+                attrVal = base64.encoder(attrVal);
                 // base64 encoded attriVal ends with white space
-                writeLine(attrName + ":: " + new String(attrVal) + " " );
+                writeLine(attrName + ":: " + new String(attrVal, "UTF-8") + " " );
             }
         }
     }
