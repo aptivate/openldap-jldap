@@ -124,7 +124,7 @@ public final class Connection implements Runnable
     // method in LDAPConnection.  Future releases might require
     // these to be local variables that can be modified using
     // the setProperty method.
-    public static String sdk = new String("1.7");
+    public static String sdk = new String("2.0");
     public static Integer protocol = new Integer(3);
     public static String security = "simple";
 
