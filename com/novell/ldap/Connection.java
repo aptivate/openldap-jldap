@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.41 2001/03/07 00:30:04 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.42 2001/03/08 20:59:39 javed Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -283,6 +283,12 @@ public final class Connection implements Runnable
         }
         // Wait for active reader to terminate
         waitForReader(null);
+
+		// Clear the server shutdown notification flag.  This should already
+		// be false unless of course we are reusing the same Connection object
+		// after a server shutdown notification
+		serverShutdownNotification = false;
+
         int semId = acquireBindSemaphore( semaphoreId);
 
         // Make socket connection to specified host and port
@@ -513,7 +519,21 @@ public final class Connection implements Runnable
                     "I/O Exception on host" + host + ":" + port +
                     " " + ioe.toString());
             }
-            // I/O Exception on host:port
+
+			// Could this be due to a server shutdown notification which caused
+			// our Connection to quit.  If so we send back a slightly different
+			// error message.  We could have checked this a little earlier in the
+			// method but that would be an expensive check each time we send out
+			// a message.  Since this shutdown request is going to be an infrequent
+			// occurence we check for it only when we get an IOException
+			if (serverShutdownNotification) {
+				throw new LDAPException( LDAPExceptionMessageResource.SERVER_SHUTDOWN_REQ,
+					null,
+					LDAPException.CONNECT_ERROR,
+					ioe);
+			}
+
+            // Other I/O Exception on host:port get reported as is
             throw new LDAPException(LDAPExceptionMessageResource.IO_EXCEPTION,
                 new Object[] {host, new Integer(port)},
                 LDAPException.CONNECT_ERROR, ioe);
@@ -798,12 +818,12 @@ public final class Connection implements Runnable
 					// notification (msgID == 0). If it is not we throw it away.
 					// If it is we call any unsolicited
 					// listeners that might have been registered to listen for these
-					// message.
+					// messages.
 
 
 					// Note the location of this code.  We could have required that
 					// message ID 0 be just like other message ID's but since
-					// message ID has to be treated specially we have a seperate
+					// message ID 0 has to be treated specially we have a seperate
 					// check for message ID 0.  Also note that this test is after the
 					// regular message list has been checked for.  We could have always
 					// checked the list of messages after checking if this is an
@@ -817,6 +837,23 @@ public final class Connection implements Runnable
 
 						// Notify any listeners that might have been registered
 						notifyAllUnsolicitedListeners(msg);
+
+						// Was this a server shutdown unsolicited notification.  IF so 
+						// we quit. Actually calling the return will first transfer
+						// control to the finally clause which will do the necessary
+						// clean up.  Note this check could get expensive once junta
+						// starts using unsolcited notifications.  But since not many
+						// unsolicited notifications have been defined as of today
+						// we are OK.
+						if (serverShutdownNotification) {
+							notify = new LocalException(
+								LDAPExceptionMessageResource.SERVER_SHUTDOWN_REQ,
+								null,
+								LDAPException.CONNECT_ERROR,
+								null, null);
+
+							return;
+						}
 
 					}
 					else {
@@ -837,7 +874,8 @@ public final class Connection implements Runnable
                     host + ":" + port + ", shutdown=" + shutdown +
                     "\n\t" + ioe.toString());
             }
-            if( ! shutdown) {
+			
+			if( ! shutdown) {
                 // Connection lost waiting for results from host:port
                 notify = new LocalException(
                     LDAPExceptionMessageResource.CONNECTION_WAIT,
