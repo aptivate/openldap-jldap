@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPModificationSet.java,v 1.5 2000/09/08 23:43:50 judy Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPModificationSet.java,v 1.6 2000/09/14 20:32:30 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -12,15 +12,15 @@
  * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
  * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY. 
  ***************************************************************************/
- 
+
 package com.novell.ldap;
 
 import java.util.Vector;
 
 /*
- * 4.16 public class LDAPModificationSet
+ * 4.21 public class LDAPModificationSet
  */
- 
+
 /**
  *
  *  Represents a collection of modifications to be made to the attributes 
@@ -28,88 +28,93 @@ import java.util.Vector;
  */
 public class LDAPModificationSet {
 
-   private Vector modSet;
+    private Vector modSet;
 
-   /*
-    * 4.16.1 Constructors
-    */
+    /*
+     * 4.21.1 Constructors
+     */
 
-   /**
-    * Constructs a new, empty set of modifications.
-    */
-   public LDAPModificationSet() {
-      modSet = new Vector();
-   }
+    /**
+     * Constructs a new, empty set of modifications.
+     */
+    public LDAPModificationSet()
+    {
+        modSet = new Vector();
+    }
 
-   /*
-    * 4.16.2 add
-    */
+    /*
+     * 4.21.2 add
+     */
 
-   /**
-    * Specifies a modification to be added to the set of
-    * modifications.
-    *
-    *  @param op       The type of modification to make, which can be
-    *                  one of the following:
-    *<ul>
-    *         <li>LDAPModification.ADD - The value should be added to
-    *                                    the attribute</li>
-    *
-    *         <li>LDAPModification.DELETE - The value should be removed
-    *                                       from the attribute </li>
-    *
-    *         <li>LDAPModification.REPLACE - The value should replace all
-    *                                        existing values of the
-    *                                        attribute </li>
-    *</ul><br><br>
-    *  @param attr     The attribute to modify.
-    */
-   public synchronized void add(int op, LDAPAttribute attr) {
-      modSet.addElement(new LDAPModification(op, attr));
-   }
+    /**
+     * Specifies a modification to be added to the set of
+     * modifications.
+     *
+     *  @param op       The type of modification to make, which can be
+     *                  one of the following:
+     *<ul>
+     *         <li>LDAPModification.ADD - The value should be added to
+     *                                    the attribute</li>
+     *
+     *         <li>LDAPModification.DELETE - The value should be removed
+     *                                       from the attribute </li>
+     *
+     *         <li>LDAPModification.REPLACE - The value should replace all
+     *                                        existing values of the
+     *                                        attribute </li>
+     *</ul><br><br>
+     *  @param attr     The attribute to modify.
+     */
+    public synchronized void add(int op, LDAPAttribute attr)
+    {
+        modSet.addElement(new LDAPModification(op, attr));
+    }
 
     /*
      *  This convenience method is not in the internet draft
      */
 
-  /**
-  * Adds an LDAPModification object to the set.
-  *
-  * @param mod The LDAPModification object to add to the set.
-  */
-   public synchronized void add(LDAPModification mod) {
-      modSet.addElement(mod);
-   }
-
-   /*
-    * 4.16.3 elementAt
-    */
-
-   /**
-    * Retrieves a particular LDAPModification object at the position
-    * specified by the index.
+    /**
+    * Adds an LDAPModification object to the set.
     *
-    *  @param index      Index of the modification to get.
-    *
-    * @exception ArrayIndexOutOfBoundsException The index value is out of
-    *            range for the array.
+    * @param mod The LDAPModification object to add to the set.
     */
-   public LDAPModification elementAt(int index)
-      throws ArrayIndexOutOfBoundsException {
-      return (LDAPModification)modSet.elementAt(index);
-   }
+    public synchronized void add(LDAPModification mod)
+    {
+        modSet.addElement(mod);
+    }
 
-   /*
-    * 4.16.4 remove
-    */
+    /*
+     * 4.21.3 elementAt
+     */
 
-   /**
-    * Removes the first attribute with the specified name in the set of
-    * modifications.
-    *
-    *  @param name    Name of the attribute to be removed.
-    */
-   public synchronized void remove(String name) {
+    /**
+     * Retrieves a particular LDAPModification object at the position
+     * specified by the index.
+     *
+     *  @param index      Index of the modification to get.
+     *
+     * @exception ArrayIndexOutOfBoundsException The index value is out of
+     *            range for the array.
+     */
+    public LDAPModification elementAt(int index)
+        throws ArrayIndexOutOfBoundsException
+    {
+        return(LDAPModification)modSet.elementAt(index);
+    }
+
+    /*
+     * 4.21.4 remove
+     */
+
+    /**
+     * Removes the first attribute with the specified name in the set of
+     * modifications.
+     *
+     *  @param name    Name of the attribute to be removed.
+     */
+    public synchronized void remove(String name)
+    {
         for(int i=0; i<modSet.size(); i++) {
             LDAPModification mod = (LDAPModification)modSet.elementAt(i);
             LDAPAttribute attr = mod.getAttribute();
@@ -117,37 +122,40 @@ public class LDAPModificationSet {
                 modSet.removeElementAt(i);
             }
         }
-   }
+    }
 
-   /*
-    * 4.16.5 removeElementAt
-    */
+    /*
+     * 4.21.5 removeElementAt
+     */
 
-   /**
-    * Removes a particular LDAPModification object at the position
-    * specified by the index.
-    *
-    *  @param index     Index of the modification to remove.
-    *
-    * @exception ArrayIndexOutOfBoundsException The index value is out of
-    *            range for the array.
-    */
-   public void removeElementAt(int index)
-      throws ArrayIndexOutOfBoundsException {
-      modSet.removeElementAt(index);
-   }
+    /**
+     * Removes a particular LDAPModification object at the position
+     * specified by the index.
+     *
+     *  @param index     Index of the modification to remove.
+     *
+     * @exception ArrayIndexOutOfBoundsException The index value is out of
+     *            range for the array.
+     */
+    public void removeElementAt(int index)
+        throws ArrayIndexOutOfBoundsException
+    {
+        modSet.removeElementAt(index);
+    }
 
-   /*
-    * 4.16.6 size
-    */
+    /*
+     * 4.21.6 size
+     */
 
-   /**
-    * Retrieves the number of LDAPModification objects in this set.
-    *
-    * @return The number of objects in this set.
-    */
-   public int size() {
-      return modSet.size();
-   }
+    /**
+     * Retrieves the number of LDAPModification objects in this set.
+     *
+     * @return The number of objects in this set.
+     */
+    public int size()
+    {
+        return modSet.size();
+    }
 
 }
+

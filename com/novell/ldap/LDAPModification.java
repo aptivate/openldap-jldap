@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPModification.java,v 1.4 2000/08/28 22:18:57 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPModification.java,v 1.5 2000/09/08 23:43:50 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -26,8 +26,8 @@ package com.novell.ldap;
  */
 public class LDAPModification {
 
-   private int _op;
-   private LDAPAttribute _attr;
+   private int op;
+   private LDAPAttribute attr;
 
    /**
     * Adds the listed values to the given attribute, creating
@@ -77,9 +77,10 @@ public class LDAPModification {
     *  @param attr     The attribute to modify.
     *                  
     */
-   public LDAPModification(int op, LDAPAttribute attr) {
-      _op = op;
-      _attr = attr;
+   public LDAPModification(int op, LDAPAttribute attr)
+   {
+      this.op = op;
+      this.attr = attr;
    }
 
    /*
@@ -91,8 +92,9 @@ public class LDAPModification {
     *
     * @return The attribute to modify.
     */
-   public LDAPAttribute getAttribute() {
-      return _attr;
+   public LDAPAttribute getAttribute()
+   {
+      return attr;
    }
 
    /*
@@ -104,8 +106,10 @@ public class LDAPModification {
     *
     * @return The type of modification specified by this object.
     */
-   public int getOp() {
-      return _op;
+   public int getOp()
+   {
+      return op;
    }
 
 }
+

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPResponseListener.java,v 1.9 2000/09/11 21:05:50 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPResponseListener.java,v 1.10 2000/09/11 22:47:50 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -21,7 +21,7 @@ import com.novell.ldap.client.*;
 import com.novell.ldap.protocol.*;
 
 /*
- * 4.5 public class LDAPResponseListener
+ * 4.28 public class LDAPResponseListener
  */
  
 /**
@@ -30,21 +30,21 @@ import com.novell.ldap.protocol.*;
  */
 public class LDAPResponseListener extends LDAPListener {
 
-	/**
-	 * Constructs a response listener on the specifiec connection.
+    /**
+     * Constructs a response listener on the specific connection.
      *
      *  @param conn The connection for the listener.
-	 */
-	public LDAPResponseListener(Connection conn)
-	{
-		this.conn = conn;
-		this.queue = new LDAPMessageQueue();
-		this.exceptions = new Vector(5);
-		conn.addLDAPListener(this);
-	}
+     */
+    public LDAPResponseListener(Connection conn)
+    {
+        this.conn = conn;
+        this.queue = new LDAPMessageQueue();
+        this.exceptions = new Vector(5);
+        conn.addLDAPListener(this);
+    }
 
    /*
-    * 4.5.2 getResponse
+    * 4.28.2 getResponse
     */
 
    /**
@@ -53,7 +53,7 @@ public class LDAPResponseListener extends LDAPListener {
     * <p>Blocks until a response is available, or until all operations
     * associated with the object have completed or been canceled, and then
     * returns the response. It is the responsibility of the client to
-	* process the responses returned from a listener.</p>
+    * process the responses returned from a listener.</p>
     *
     * @return The response.
     *
@@ -61,16 +61,16 @@ public class LDAPResponseListener extends LDAPListener {
     *  message and an LDAP error code.
     */
    public LDAPResponse getResponse()
-		throws LDAPException
-	{
-		LDAPResponse response;
-		com.novell.ldap.protocol.LDAPMessage message = queue.getLDAPMessage();
-		if(message.getProtocolOp() instanceof ExtendedResponse)
-			response = new LDAPExtendedResponse(message);
-		else
-			response = new LDAPResponse(message);
-		queue.removeMessageID(response.getMessageID());
-		return response;
+        throws LDAPException
+    {
+        LDAPResponse response;
+        com.novell.ldap.protocol.LDAPMessage message = queue.getLDAPMessage();
+        if(message.getProtocolOp() instanceof ExtendedResponse)
+            response = new LDAPExtendedResponse(message);
+        else
+            response = new LDAPResponse(message);
+        queue.removeMessageID(response.getMessageID());
+        return response;
    }
 
 }
