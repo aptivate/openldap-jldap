@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: LDIFReader.java,v 1.31 2002/10/22 22:15:57 $
+ * $Novell: LDIFReader.java,v 1.32 2002/10/23 19:22:29 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -25,7 +25,6 @@ import com.novell.ldap.LDAPControl;
 import com.novell.ldap.LDAPEntry;
 import com.novell.ldap.LDAPAttribute;
 import com.novell.ldap.LDAPAttributeSet;
-import com.novell.ldap.LDAPConstraints;
 import com.novell.ldap.LDAPMessage;
 import com.novell.ldap.LDAPModification;
 import com.novell.ldap.LDAPException;
@@ -254,15 +253,12 @@ public class LDIFReader extends LDIF implements LDAPReader {
         }
         toRecordProperties();  // set record properties
 
-        LDAPConstraints cons = new LDAPConstraints();
-        cons.setControls( controls);
-
         switch( this.reqType ) {
             case LDAPMessage.ADD_REQUEST :
-                this.currentRequest = new LDAPAddRequest(currentEntry, cons);
+                this.currentRequest = new LDAPAddRequest(currentEntry, controls);
                 break;
             case LDAPMessage.DEL_REQUEST :
-                this.currentRequest = new LDAPDeleteRequest(this.entryDN, cons);
+                this.currentRequest = new LDAPDeleteRequest(this.entryDN, controls);
                 break;
             case LDAPMessage.MODIFY_RDN_REQUEST :
                 boolean  delOldRdn;
@@ -275,15 +271,15 @@ public class LDIFReader extends LDIF implements LDAPReader {
 
                 if((modInfo[2].length())==0 ) {
                     this.currentRequest = new LDAPModifyDNRequest( this.entryDN,
-                                     this.modInfo[0], null, delOldRdn, cons);
+                                     this.modInfo[0], null, delOldRdn, controls);
                 } else {
                     this.currentRequest = new LDAPModifyDNRequest(this.entryDN,
-                         this.modInfo[0], modInfo[2], delOldRdn, cons);
+                         this.modInfo[0], modInfo[2], delOldRdn, controls);
                 }
                 break;
             case LDAPMessage.MODIFY_REQUEST :
                 this.currentRequest =
-                          new LDAPModifyRequest(this.entryDN, mods, cons);
+                          new LDAPModifyRequest(this.entryDN, mods, controls);
                 break;
             default:
         }

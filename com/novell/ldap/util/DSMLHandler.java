@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: DSMLHandler.java,v 1.13 2002/10/15 22:31:00 $
+ * $Novell: DSMLHandler.java,v 1.14 2002/10/16 19:41:59 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -608,12 +608,20 @@ class DSMLHandler implements ContentHandler, ErrorHandler
                         message = new LDAPSearchRequest(dn, scope, "",
                                 (String[]) attributeNames.toArray(
                                         new String[ attributeNames.size() ] ),
-                                typesOnly, searchCons );
+                                searchCons.getDereference(),
+                                searchCons.getMaxResults(),
+                                searchCons.getServerTimeLimit(),
+                                typesOnly,
+                                searchCons.getControls());
                     } else {
                         message = new LDAPSearchRequest(dn, scope, filter,
                                 (String[]) attributeNames.toArray(
                                         new String[ attributeNames.size() ] ),
-                                typesOnly, searchCons );
+                                searchCons.getDereference(),
+                                searchCons.getMaxResults(),
+                                searchCons.getServerTimeLimit(),
+                                typesOnly,
+                                searchCons.getControls());
                     }
                     queue.add(message);
                     break;
