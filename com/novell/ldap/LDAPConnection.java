@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.66 2001/01/02 23:28:29 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.67 2001/01/03 18:46:20 vtag Exp $
 *
 * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
 *
@@ -794,7 +794,7 @@ public class LDAPConnection implements Cloneable
              Debug.trace( Debug.apiRequests, name +
              "abandon(" + id + ")");
           }
-          agent.abandon(id, cons);
+          agent.abandon(id, cons, false);
           return;
       } catch( NoSuchFieldException ex) {
           if( Debug.LDAP_DEBUG) {
@@ -854,7 +854,7 @@ public class LDAPConnection implements Cloneable
          }
          int[] msgIds = agent.getMessageIDs();
          for(int i=0; i<msgIds.length; i++) {
-            agent.abandon(msgIds[i], cons);
+            agent.abandon(msgIds[i], cons, false);
          }
       }
       return;
