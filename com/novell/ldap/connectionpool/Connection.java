@@ -14,8 +14,6 @@
  ******************************************************************************/
 package com.novell.ldap.connectionpool;
 
-import java.util.Map;
-
 import com.novell.ldap.LDAPConnection;
 import com.novell.ldap.LDAPConstraints;
 import com.novell.ldap.LDAPResponseQueue;
@@ -43,10 +41,9 @@ import com.novell.ldap.resources.ExceptionMessages;
     private boolean allowPoolBind = false;
     
     /**
-     * Connection
+     * Establish an LDAPConnection supplying an appropriate socket factory.
      *
-     * <p>Set up the socket factory.</p>
-     * @param factory LDAPSocketFactory.
+     * @param factory LDAPSocketFactory or null if none
      * @see com.novell.ldap.LDAPSocketFactory               
      */
     public Connection(LDAPSocketFactory factory)
@@ -76,7 +73,7 @@ import com.novell.ldap.resources.ExceptionMessages;
     }
     
     /**
-     * Clear inUse to true
+     * Clear the inUse flag, marking the connection no long in use.
      *
      * @return inUse flag.
      */
@@ -97,7 +94,7 @@ import com.novell.ldap.resources.ExceptionMessages;
     }
 
     /**
-     * Allow PoolManager a way to do a bind.
+     * Provide the PoolManager a way to do a bind.
      */
     void poolBind(int version,
                      String dn,

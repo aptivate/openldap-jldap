@@ -16,9 +16,7 @@ package com.novell.ldap.connectionpool;
 import java.util.LinkedList;
 
 /**
- * List of Shared Connections
- *
- * <p>This is a helper class to manage SharedConnections.</p>
+ * This helper class manages SharedConnections.
  *
  * @see SharedConnections
  */
@@ -76,4 +74,3 @@ class ListOfSharedConnections extends LinkedList
         return null;
     }
 }
-

@@ -16,7 +16,6 @@ package com.novell.ldap.connectionpool;
 
 import com.novell.ldap.LDAPConnection;
 import com.novell.ldap.LDAPException;
-import com.novell.ldap.LDAPJSSESecureSocketFactory;
 import com.novell.ldap.LDAPSocketFactory;
 import com.novell.ldap.LDAPTLSSocketFactory;
 
@@ -79,8 +78,6 @@ public class PoolManager
                           LDAPSocketFactory factory)
         throws LDAPException
     {
-        LDAPSocketFactory fac = null;
-
         // Use the keystore file if it is there.
 
         inUseListOfSharedConnections = new ListOfSharedConnections();

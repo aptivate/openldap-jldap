@@ -37,24 +37,36 @@ class SharedConnections extends ArrayList
     public SharedConnections(int initialCapacity)
     {
         super(initialCapacity);
+        return;
     }
         
     /**
-     * Set the password
+     * Set the password.
+     *
+     * @param PW the login password.
      */
     public void setPW(byte[] PW)
     {
         this.PW = PW;
+        return;
     }
     
     /**
-     * Set the DN
+     * Set the DN.
+     *
+     * @param DN the login DN.
      */
     public void setDN(String DN)
     {
         this.DN = DN;
+        return;
     }
     
+    /**
+     * Get an available connection from the pool.
+     *
+     * @return the Connection or null if none.
+     */
     public Connection getAvailableConnection()
     {
         for (int i = 0; i < super.size(); i++)
@@ -66,6 +78,13 @@ class SharedConnections extends ArrayList
         return null;
     }
         
+    /**
+     *  Check if a connection belongs to this pool.
+     *
+     * @param thisConn a Connection object to check.
+     *
+     * @return true if the Connection belongs to this pool, false otherwise.
+     */
     public boolean isConnInHere(Connection thisConn)
     {
         for (int i = 0; i < super.size(); i++)
@@ -85,6 +104,12 @@ class SharedConnections extends ArrayList
     }
     
 
+    /**
+     * Checks if all connections are available.  If no connections
+     * are in use, the function returns true.
+     *
+     * @return true if all available, false otherwise.
+     */
     public boolean allConnectionsAvailable()
     {
         for (int j = 0; j < super.size(); j++)
@@ -98,9 +123,11 @@ class SharedConnections extends ArrayList
     }
     
     /**
-     * equals
+     * Compare two strings values for equality.
      *
-     * <p>String compare. Ingnore case. null == null</p>
+     * <p>Performs a case insensitive compare of tow strings. Note: null == null</p>
+     *
+     * @return true if the string values are equal, false otherwise.
      */  
     private boolean equals(String s1, String s2)
     {        
@@ -120,7 +147,10 @@ class SharedConnections extends ArrayList
     }
     
     /**
-     * Byte array compare. null == null
+     * Compare two byte arrays for equality.
+     * Note: null == null
+     *
+     * @return true if the byte array values are equal, false otherwise.
      */
     private boolean equals(byte[] ba1, byte[] ba2)
     {        
