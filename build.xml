@@ -1,48 +1,83 @@
 <project name="jldap" default="all" basedir=".">
+<!- Targets                                                                  -->
+<!-     clean   - Cleans all generated files and directories in this and     -->
+<!-               subbordinate directories                                   -->
+<!-     doc     - Builds javadoc files                                       -->
+<!-               Not available at the lowest directory level                -->
+<!-     debug   - Builds debug classes and jar files                         -->
+<!                At the lowest level directory it only compiles java files. -->
+<!-     release - Builds release classes and jar files                       -->
+<!                At the lowest level directory it only compiles java files. -->
+<!-     jar     - Builds debug & release classes and jar files               -->
+<!                At the lowest level directory it only compiles java files. -->
+<!-     lib     - Builds debug & release classes and jar files.              -->
+<!                At the lowest level directory it only compiles java files. -->
+<!-     all     - Builds everything possible.  At the top directory level it -->
+<!-               builds all, doc, & install.  At one directory level below  --> 
+<!-               the top it builds all, & doc. At the lowest directory      -->
+<!-               level it compiles java files for release and debug.        -->
+<!-     install - Copies build results from all directories and creates the  -->
+<!-               pkg directory.  Only available in top makefile             -->
+
+<property name="pkg" value="pkg"/>
+<property name="pkg.lib" value="pkg/lib"/>
+<property name="pkg.lib.debug" value="pkg/lib_debug"/>
+<property name="pkg.doc" value="pkg/doc"/>
+<property name="pkg.samples" value="pkg/samples"/>
+<property name="doc" value="doc"/>
+<property name="lib" value="lib"/>
+<property name="lib.debug" value="lib_debug"/>
+<property name="novbp" value="novbp"/>
+<property name="ldap" value="ldap"/>
+
   <target name="init">
     <tstamp/>
-    <property name="version" value="1.0.0"/>
   </target>
-
-  <target name="all" depends="init">
-	<mkdir dir="lib"/>
-    <ant dir="${basedir}/asn1" target="install"/>
-    <ant dir="${basedir}/asn1ldap" target="install"/>
-    <ant dir="${basedir}/ldap" target="install"/>
-    <ant dir="${basedir}/novbp" target="install"/>
-  </target>
-
-  <target name="jar" depends="all"/>
 
   <target name="clean" depends="init">
-    <ant dir="${basedir}/asn1" target="clean"/>
-    <ant dir="${basedir}/asn1ldap" target="clean"/>
-    <ant dir="${basedir}/ldap" target="clean"/>
-    <ant dir="${basedir}/novbp" target="clean"/>
-	<deltree dir="lib"/>
+    <ant dir="${basedir}/${ldap}" target="clean"/>
+    <ant dir="${basedir}/${novbp}" target="clean"/>
+	<deltree dir="${pkg}"/>
   </target>
 
-  <target name="doc">
-    <ant dir="${basedir}/asn1" target="doc"/>
-    <ant dir="${basedir}/asn1ldap" target="doc"/>
-    <ant dir="${basedir}/ldap" target="doc"/>
-    <ant dir="${basedir}/novbp" target="doc"/>
+  <target name="doc" depends="init">
+    <ant dir="${basedir}/${ldap}" target="doc"/>
+    <ant dir="${basedir}/${novbp}" target="doc"/>
   </target>
 
-  <target name="asn1" depends="init">
-    <ant dir="${basedir}/asn1"/>
+  <target name="debug" depends="init">
+    <ant dir="${basedir}/${ldap}" target="lib" -Ddebug="on" -Doptimize-"off"/>
+    <ant dir="${basedir}/${novbp}" target="lib" -Ddebug="on" -Doptimize-"off"/>
   </target>
 
-  <target name="asn1ldap" depends="init">
-    <ant dir="${basedir}/asn1ldap"/>
+  <target name="release" depends="init">
+    <ant dir="${basedir}/${ldap}" target="lib" -Ddebug="off" -Doptimize-"on"/>
+    <ant dir="${basedir}/${novbp}" target="lib" -Ddebug="off" -Doptimize-"on"/>
   </target>
 
-  <target name="ldap" depends="init">
-    <ant dir="${basedir}/ldap"/>
+  <target name="final" depends="release">
+
+  <target name="lib" depends="debug, release"/>
+
+  <target name="jar" depends="lib"/>
+
+  <target name="install" depends="init">
+	<mkdir dir="${pkg.lib}"/>
+	<mkdir dir="${pkg.lib.debug}"/>
+	<mkdir dir="${pkg.doc}"/>
+	<mkdir dir="${pkg.doc}/${ldap}"/>
+	<mkdir dir="${pkg.doc}/${novbp}"/>
+	<mkdir dir="${pkg.samples}.${novbp}"/>
+	<mkdir dir="${pkg.samples}.${ldap}"/>
+
+	<copyfile src="${ldap>/${lib}/${ldap}.jar"   dest="${pkg.lib}/${ldap}.jar"/>
+	<copyfile src="${novbp>/${lib}/${novbp}.jar" dest="${pkg.lib}/${novbp}.jar"/>
+	<copyfile src="${ldap>/${lib.debug}/${ldap}.jar"   dest="${pkg.lib.debug}/${ldap}.jar"/>
+	<copyfile src="${novbp>/${lib.debug}/${novbp}.jar" dest="${pkg.lib.debug}/${novbp}.jar"/>
+
+	<copydir src="${ldap>/${doc}/**" dest="${pkg.doc}/${ldap}"/>
+	<copydir src="${novbp>/${doc}/**" dest="${pkg.doc}/${novbp}"/>
   </target>
 
-  <target name="novbp" depends="init">
-    <ant dir="${basedir}/novbp"/>
-  </target>
-
+  <target name="all" depends="lib doc install"/>
 </project>

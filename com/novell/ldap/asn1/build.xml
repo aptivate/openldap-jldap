@@ -1,13 +1,14 @@
 <!-- ======================================================================= -->
 <!-- ORG.IETF.ASN1 build file                                                -->
 <!-- ======================================================================= -->
-<project name="ASN1 Classes" default="all" basedir=".">
+<project name="ASN1" default="compile" basedir=".">
+	<!-- Targets                                                             -->
+	<!--     clean   - Cleans all generated class files                      -->
+	<!--     compile - Builds debug classes and jar files                    -->
 
-	<property name="src.dir" value="${basedir}"/>
-	<property name="top.dir" value="../../../.."/>
-	<property name="classes.dir" value="${top.dir}/classes"/>
-	<property name="classpath" value=""/>
-	<property name="optimize" value="on"/>
+	<property name="top" value="../../../.."/>
+    <property name="build" value="classes_debug"/>
+	<property name="optimize" value="off"/>
 	<property name="debug" value="on"/>
 
 
@@ -16,23 +17,25 @@
     <!-- =================================================================== -->
     <target name="init">
         <tstamp/>
-		<mkdir dir="${classes.dir}"/>
     </target>
 
+
     <!-- =================================================================== -->
-    <!-- all task (default                                                   -->
+    <!-- clean class files                                                  -->
     <!-- =================================================================== -->
-    <target name="all" depends="compile"/>
+    <target name="clean" depends="init">
+		<deltree dir="${top}/${build}/org/ietf/asn1"/>
+	</target>
 
     <!-- =================================================================== -->
     <!-- compile java files                                                  -->
     <!-- =================================================================== -->
     <target name="compile" depends="init">
-        <javac srcdir="${src.dir}"
-                destdir="${classes.dir}"
-                classpath="${classpath}"
-                debug="${debug}"
+		<mkdir dir="${top}/${build}"/>
+        <javac srcdir="."
+                destdir="${top}/${build}"
                 deprecation="off"
+                debug="${debug}"
                 optimize="${optimize}">
             <include name="*.java"/>
         </javac>
