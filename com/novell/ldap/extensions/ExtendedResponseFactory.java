@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: ExtendedResponseFactory.java,v 1.2 2000/07/27 22:04:09 javed Exp $
+ * $Id: ExtendedResponseFactory.java,v 1.3 2000/08/01 01:03:31 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -41,6 +41,10 @@ public class ExtendedResponseFactory {
             if (inOID.equals(NamingContextConstants.GET_IDENTITY_NAME_RES) ) {
                 return new GetContextIdentityNameResponse(inResponse);
             }
+            if (inOID.equals(NamingContextConstants.GET_EFFECTIVE_PRIVILEGES_RES) ) {
+                return new GetEffectivePrivilegesResponse(inResponse);
+            }
+            
             else
                 throw new LDAPException("Unsupported OID in LDAPResponse", 
                     LDAPException.DECODING_ERROR);
