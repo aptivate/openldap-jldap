@@ -19,7 +19,8 @@ package org.ietf.ldap;
  *  An interface to support arbitrary sorting algorithms for entries returned
  *  by a search operation.
  *
- *  @see com.novell.ldap.LDAPEntryComparator
+ * @see <a href="../../../../doc/com/novell/ldap/LDAPEntryComparator.html">
+            com.novell.ldap.LDAPEntryComparator</a>
  */
 public interface LDAPEntryComparator
 {
@@ -27,7 +28,10 @@ public interface LDAPEntryComparator
      * Returns true if entry1 is to be considered greater than or equal to
      * entry2, for the purpose of sorting.
      *
-     *  @see com.novell.ldap.LDAPEntryComparator#isGreater(LDAPEntry,LDAPEntry)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPEntryComparator.html
+            #isGreater(com.novell.ldap.LDAPEntry, com.novell.ldap.LDAPEntry)">
+            com.novell.ldap.LDAPEntryComparator.isGreater(LDAPEntry,
+            LDAPEntry)</a>
      */
     public boolean isGreater(LDAPEntry entry1, LDAPEntry entry2);
 }
