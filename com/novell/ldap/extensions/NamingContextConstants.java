@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: NamingContextConstants.java,v 1.1 2000/07/26 21:50:03 javed Exp $
+ * $Id: NamingContextConstants.java,v 1.2 2000/07/27 16:35:23 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -24,7 +24,41 @@ import java.io.IOException;
  */
 public class NamingContextConstants {
    
+    /**
+     * Extended Operation Request and Repsonse OIDs
+     *
+     */
+    public static final String CREATE_NAMING_CONTEXT_REQ    = "2.16.840.1.113719.1.27.100.3";
+    public static final String CREATE_NAMING_CONTEXT_RES    = "2.16.840.1.113719.1.27.100.4";
+    public static final String MERGE_NAMING_CONTEXT_REQ     = "2.16.840.1.113719.1.27.100.5";
+    public static final String MERGE_NAMING_CONTEXT_RES     = "2.16.840.1.113719.1.27.100.6";
+    public static final String ADD_REPLICA_REQ              = "2.16.840.1.113719.1.27.100.7";
+    public static final String ADD_REPLICA_RES              = "2.16.840.1.113719.1.27.100.8";
+    
+    
+    
+    
+    public static final String DELETE_REPLICA_REQ           = "2.16.840.1.113719.1.27.100.11";
+    public static final String DELETE_REPLICA_RES           = "2.16.840.1.113719.1.27.100.12";
+    
+    
+    /**
+     * Naming Context operation flags
+     *
+     */
     private static final int LDAP_ENSURE_SERVERS_UP = 1;
+    
+    
+    /**
+     * Replica Type Constants
+     *
+     */
+    public static final int LDAP_RT_MASTER          = 0;
+    public static final int LDAP_RT_SECONDARY       = 1;
+    public static final int LDAP_RT_READONLY        = 2;
+    public static final int LDAP_RT_SUBREF          = 3;
+    public static final int LDAP_RT_SPARSE_WRITE    = 4;
+    public static final int LDAP_RT_SPARSE_READ     = 5;    
     
     public NamingContextConstants()  {}   
 		

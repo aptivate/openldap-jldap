@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: CreateNamingContextRequest.java,v 1.2 2000/07/26 21:33:18 javed Exp $
+ * $Id: CreateNamingContextRequest.java,v 1.4 2000/07/27 16:35:23 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -38,9 +38,6 @@ import java.io.IOException;
  */
 public class CreateNamingContextRequest extends LDAPExtendedOperation {
    
-    private static final String requestOID  = "2.16.840.1.113719.1.27.100.3";
-    private static final String respOID  = "2.16.840.1.113719.1.27.100.4";
-
 /**
  *  public CreateNamingContextRequest()
  *
@@ -56,7 +53,7 @@ public class CreateNamingContextRequest extends LDAPExtendedOperation {
  public CreateNamingContextRequest(String dn, int flags) 
                 throws LDAPException {
         
-        super(requestOID, null);
+        super(NamingContextConstants.CREATE_NAMING_CONTEXT_REQ, null);
         
         try {
             // ber encode the parameters and set the requestValue
