@@ -136,7 +136,7 @@ attr=*)
 	*// unescaped closing paren in valueencoding
 (attr=\)
 	*// unescaped backslash in valueencoding
-(attr=\GG)s
+(attr=\GG)
 	*// invalid hex character
 (attr=\F)
 	*// invalid escaping (single hex character)
