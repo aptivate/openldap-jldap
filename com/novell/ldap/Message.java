@@ -519,7 +519,7 @@ public class Message
         msg = null;
         // agent = null;  // leave this reference
         listen = null;
-        replies = null;
+        //replies = null; //leave this since we use it as a semaphore
         bindprops = null;
         return;
     }
@@ -533,7 +533,7 @@ public class Message
     {
         return (bindprops != null);
     }
-    
+
     /**
      * finalize
      */
@@ -563,7 +563,7 @@ public class Message
             message = msg;
             return;
         }
-                    
+
         /**
          * The timeout thread.  If it wakes from the sleep, future input
          * is stopped and the request is timed out.
