@@ -17,7 +17,8 @@ package org.ietf.ldap;
 /**
  *  Represents a specific a name form in the directory schema.
  *
- * @see com.novell.ldap.LDAPNameFormSchema
+ * @see <a href="../../../../doc/com/novell/ldap/LDAPNameFormSchema.html">
+            com.novell.ldap.LDAPNameFormSchema</a>
  */
 
 public class LDAPNameFormSchema
@@ -39,8 +40,12 @@ public class LDAPNameFormSchema
     /**
      * Constructs a name form for adding to or deleting from the schema.
      *
-     * @see com.novell.ldap.LDAPNameFormSchema#LDAPNameFormSchema(
-            String,String,String,boolean,String,String[],String[],String[])
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPNameFormSchema.html
+            #LDAPNameFormSchema(java.lang.String, java.lang.String, 
+            java.lang.String, boolean, java.lang.String, java.lang.String[], 
+            java.lang.String[], java.lang.String[])">
+            com.novell.ldap.LDAPNameFormSchema.LDAPNameFormSchema(
+            String,String,String,boolean,String,String[],String[],String[])</a>
      */
     public LDAPNameFormSchema(String name,
                               String oid,
@@ -67,7 +72,9 @@ public class LDAPNameFormSchema
      * Constructs a DIT content rule from the raw string value returned on a
      * schema query for nameForms.
      *
-     * @see com.novell.ldap.LDAPNameFormSchema#LDAPNameFormSchema(String)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPNameFormSchema.html
+            #LDAPNameFormSchema(java.lang.String)">
+            com.novell.ldap.LDAPNameFormSchema.LDAPNameFormSchema(String)</a>
      */
     public LDAPNameFormSchema(String raw)
     {
@@ -79,7 +86,9 @@ public class LDAPNameFormSchema
     /**
      * Returns the name of the object class which this name form applies to.
      *
-     * @see com.novell.ldap.LDAPNameFormSchema#getObjectClass()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPNameFormSchema.html
+            #getObjectClass()">
+            com.novell.ldap.LDAPNameFormSchema.getObjectClass()</a>
      */
     public String getObjectClass()
     {
@@ -91,7 +100,9 @@ public class LDAPNameFormSchema
      * Returns the list of required naming attributes for an entry
      * controlled by this name form.
      *
-     * @see com.novell.ldap.LDAPNameFormSchema#getRequiredNamingAttributes()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPNameFormSchema.html
+            #getRequiredNamingAttributes()">
+            com.novell.ldap.LDAPNameFormSchema.getRequiredNamingAttributes()</a>
      */
     public String[]getRequiredNamingAttributes()
     {
@@ -102,7 +113,9 @@ public class LDAPNameFormSchema
      * Returns the list of optional naming attributes for an entry
      * controlled by this content rule.
      *
-     * @see com.novell.ldap.LDAPNameFormSchema#getOptionalNamingAttributes()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPNameFormSchema.html
+            #getOptionalNamingAttributes()">
+            com.novell.ldap.LDAPNameFormSchema.getOptionalNamingAttributes()</a>
      */
     public String[]getOptionalNamingAttributes()
     {

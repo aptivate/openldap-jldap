@@ -41,7 +41,7 @@ public class LDAPModificationSet {
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPModificationSet.html
             #LDAPModificationSet()">
-            com.novell.ldap.LDAPModification.LDAPModificationSet()</a>
+            com.novell.ldap.LDAPModificationSet.LDAPModificationSet()</a>
      */
     public LDAPModificationSet()
     {
@@ -64,7 +64,7 @@ public class LDAPModificationSet {
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPModificationSet.html
             #add(int, com.novell.ldap.LDAPAttribute)">
-            com.novell.ldap.LDAPModification.add(int, LDAPAttribute)</a>
+            com.novell.ldap.LDAPModificationSet.add(int, LDAPAttribute)</a>
      */
     public void add(int op, LDAPAttribute attr)
     {
@@ -78,7 +78,7 @@ public class LDAPModificationSet {
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPModificationSet.html
             #elementAt(int)">
-            com.novell.ldap.LDAPModification.elementAt(int)</a>
+            com.novell.ldap.LDAPModificationSet.elementAt(int)</a>
      */
     public LDAPModification elementAt(int index)
         throws ArrayIndexOutOfBoundsException
@@ -92,7 +92,7 @@ public class LDAPModificationSet {
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPModificationSet.html
             #remove(java.lang.String)">
-            com.novell.ldap.LDAPModification.remove(String)</a>
+            com.novell.ldap.LDAPModificationSet.remove(String)</a>
      */
     public void remove(String name)
     {
@@ -106,7 +106,7 @@ public class LDAPModificationSet {
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPModificationSet.html
             #removeElementAt(int)">
-            com.novell.ldap.LDAPModification.removeElementAt(int)</a>
+            com.novell.ldap.LDAPModificationSet.removeElementAt(int)</a>
      */
     public void removeElementAt(int index)
         throws ArrayIndexOutOfBoundsException
@@ -120,7 +120,7 @@ public class LDAPModificationSet {
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPModificationSet.html
             #size()">
-            com.novell.ldap.LDAPModification.size()</a>
+            com.novell.ldap.LDAPModificationSet.size()</a>
      */
     public int size()
     {
