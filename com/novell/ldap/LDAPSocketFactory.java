@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSocketFactory.java,v 1.7 2000/10/31 23:52:26 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSocketFactory.java,v 1.8 2001/03/01 00:29:57 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -22,7 +22,7 @@ import java.io.IOException;
  *
  *  Used to construct a socket connection for use in an LDAPConnection.
  *
- *  <p>Proagrammers needing to provide or use specialized socket connections,
+ *  <p>Programmers needing to provide or use specialized socket connections,
  *  including Transport Layer Security (TLS) based ones, can provide an
  *  object constructor to implement them using this interface.
  *  An implementation of this interface may, for example, provide a
