@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: NamingContextConstants.java,v 1.2 2000/07/27 16:35:23 javed Exp $
+ * $Id: NamingContextConstants.java,v 1.3 2000/07/27 17:50:58 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -34,10 +34,8 @@ public class NamingContextConstants {
     public static final String MERGE_NAMING_CONTEXT_RES     = "2.16.840.1.113719.1.27.100.6";
     public static final String ADD_REPLICA_REQ              = "2.16.840.1.113719.1.27.100.7";
     public static final String ADD_REPLICA_RES              = "2.16.840.1.113719.1.27.100.8";
-    
-    
-    
-    
+    public static final String REFRESH_SERVER_REQ           = "2.16.840.1.113719.1.27.100.9";
+    public static final String REFRESH_SERVER_RES           = "2.16.840.1.113719.1.27.100.10";
     public static final String DELETE_REPLICA_REQ           = "2.16.840.1.113719.1.27.100.11";
     public static final String DELETE_REPLICA_RES           = "2.16.840.1.113719.1.27.100.12";
     

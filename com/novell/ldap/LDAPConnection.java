@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: LDAPConnection.java,v 1.11 2000/07/25 23:38:58 javed Exp $
+ * $Id: LDAPConnection.java,v 1.12 2000/07/27 16:35:22 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -1558,7 +1558,7 @@ public class LDAPConnection implements
 			cons = defSearchCons;
 
 		// error check the parameters
-		if ( (op.getID() == null) || (op.getValue() == null) )
+		if (op.getID() == null)
 			throw new LDAPException("Invalid parameter",
 				                     LDAPException.PARAM_ERROR);
 	
