@@ -62,10 +62,10 @@ public class ExtResponseFactory {
         // detailed LDAPExtendedResponse object
         try {
             if (inOID.equals(ReplicationConstants.NAMING_CONTEXT_COUNT_RES)) {
-                return new NamingContextEntryCountResponse(inResponse);
+                return new PartitionEntryCountResponse(inResponse);
             }
             if (inOID.equals(ReplicationConstants.GET_IDENTITY_NAME_RES) ) {
-                return new GetContextIdentityNameResponse(inResponse);
+                return new GetBindDNResponse(inResponse);
             }
             if (inOID.equals(ReplicationConstants.GET_EFFECTIVE_PRIVILEGES_RES) ) {
                 return new GetEffectivePrivilegesResponse(inResponse);
@@ -86,7 +86,7 @@ public class ExtResponseFactory {
         catch(IOException ioe) {
             throw new LDAPException(
                           ExceptionMessages.DECODING_ERROR,
-                          LDAPException.DECODING_ERROR);
+                          LDAPException.DECODING_ERROR,(String) null);
         }
     }
 }
