@@ -299,7 +299,7 @@ public class RfcLDAPMessage extends ASN1Sequence
                 Debug.trace( Debug.referrals,
                     "RfcLDAPMessage op == null, cannot dupMessage");
             }
-            throw new LDAPException("DUP_ERROR", LDAPException.LOCAL_ERROR);
+            throw new LDAPException("DUP_ERROR", LDAPException.LOCAL_ERROR, (String) null);
         }
 
         RfcLDAPMessage newMsg = new RfcLDAPMessage( toArray(),
