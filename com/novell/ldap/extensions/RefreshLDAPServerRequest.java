@@ -15,7 +15,6 @@
 package com.novell.ldap.extensions;
 
 import com.novell.ldap.*;
-import com.novell.ldap.asn1.*;
 
 /**
  *

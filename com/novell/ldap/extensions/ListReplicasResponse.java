@@ -49,7 +49,7 @@ public class ListReplicasResponse extends LDAPExtendedResponse {
    public ListReplicasResponse (RfcLDAPMessage rfcMessage)
          throws IOException {
 
-        super((RfcLDAPMessage)rfcMessage);
+        super(rfcMessage);
 
         if (getResultCode() != LDAPException.SUCCESS)
         {
