@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSchemaElement.java,v 1.12 2001/03/01 00:29:55 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSchemaElement.java,v 1.13 2001/03/02 23:10:28 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -15,9 +15,11 @@
 
 package com.novell.ldap;
 
+import com.novell.ldap.client.ArrayList;
+import com.novell.ldap.client.ArrayEnumeration;
+import java.util.NoSuchElementException;
 import java.util.Enumeration;
 import java.util.Hashtable;
-import java.util.Vector;
 import com.novell.ldap.client.AttributeQualifier;
 
 /**
@@ -155,14 +157,14 @@ public abstract class LDAPSchemaElement {
     */
    public Enumeration getQualifierNames() {
       int size;
-      Vector qualNames = new Vector();
+      ArrayList qualNames = new ArrayList();
       if((size = hashQualifier.size()) > 0){
         Enumeration en = hashQualifier.elements();
         for( int i = 0; en.hasMoreElements(); i++){
-          qualNames.addElement( ((AttributeQualifier)en.nextElement()).getName());
+          qualNames.add( ((AttributeQualifier)en.nextElement()).getName());
         }
       }
-      return qualNames.elements();
+      return new ArrayEnumeration(qualNames.toArray());
    }
 
    /**

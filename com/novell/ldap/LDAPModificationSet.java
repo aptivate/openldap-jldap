@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPModificationSet.java,v 1.11 2000/11/03 22:48:26 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPModificationSet.java,v 1.12 2001/03/01 00:29:52 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -15,7 +15,7 @@
 
 package com.novell.ldap;
 
-import java.util.Vector;
+import com.novell.ldap.client.ArrayList;
 
 /**
  *
@@ -24,14 +24,14 @@ import java.util.Vector;
  */
 public class LDAPModificationSet {
 
-    private Vector modSet;
+    private ArrayList modSet;
 
     /**
      * Constructs a new, empty set of modifications.
      */
     public LDAPModificationSet()
     {
-        modSet = new Vector();
+        modSet = new ArrayList();
     }
 
     /**
@@ -55,7 +55,7 @@ public class LDAPModificationSet {
      */
     public void add(int op, LDAPAttribute attr)
     {
-        modSet.addElement(new LDAPModification(op, attr));
+        modSet.add(new LDAPModification(op, attr));
     }
 
     /*
@@ -69,7 +69,7 @@ public class LDAPModificationSet {
     */
     /*package*/ void add(LDAPModification mod)
     {
-        modSet.addElement(mod);
+        modSet.add(mod);
     }
 
     /**
@@ -84,7 +84,7 @@ public class LDAPModificationSet {
     public LDAPModification elementAt(int index)
         throws ArrayIndexOutOfBoundsException
     {
-        return(LDAPModification)modSet.elementAt(index);
+        return(LDAPModification)modSet.get(index);
     }
 
     /**
@@ -96,10 +96,10 @@ public class LDAPModificationSet {
     public void remove(String name)
     {
         for(int i=0; i<modSet.size(); i++) {
-            LDAPModification mod = (LDAPModification)modSet.elementAt(i);
+            LDAPModification mod = (LDAPModification)modSet.get(i);
             LDAPAttribute attr = mod.getAttribute();
             if(attr.getName().equalsIgnoreCase(name)) {
-                modSet.removeElementAt(i);
+                modSet.remove(i);
             }
         }
     }
@@ -116,7 +116,7 @@ public class LDAPModificationSet {
     public void removeElementAt(int index)
         throws ArrayIndexOutOfBoundsException
     {
-        modSet.removeElementAt(index);
+        modSet.remove(index);
     }
 
     /**

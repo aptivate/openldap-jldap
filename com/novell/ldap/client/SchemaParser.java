@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: SchemaParser.java,v 1.6 2000/12/20 20:59:29 bgudmundson Exp $
+ * $Id: SchemaParser.java,v 1.7 2001/03/01 00:30:06 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -15,8 +15,9 @@
 
 package com.novell.ldap.client;
 
+import com.novell.ldap.client.ArrayList;
+import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
-import java.util.Vector;
 import java.util.Enumeration;
 import java.io.StreamTokenizer;
 import java.io.StringReader;
@@ -50,7 +51,7 @@ public class SchemaParser{
         boolean userMod = true;
         int usage = LDAPAttributeSchema.USER_APPLICATIONS;
         int type = -1;
-        Vector qualifiers = new Vector();
+        ArrayList qualifiers = new ArrayList();
 
 	public SchemaParser( String rawString ) throws IOException {
 		this.rawString = rawString;
@@ -83,13 +84,13 @@ public class SchemaParser{
                           if(st2.nextToken() == '\'' ){
                            name = st2.sval;
                           }
-                          Vector names = new Vector();
+                          ArrayList names = new ArrayList();
                           while( st2.nextToken() == '\''){
-                            names.addElement(st2.sval);
+                            names.add(st2.sval);
                           }
                           if(names.size() > 0){
                             aliases = new String[names.size()];
-                            names.copyInto(aliases);
+                            names.toArray(aliases);
                           }
                         }
                         continue;
@@ -137,24 +138,24 @@ public class SchemaParser{
                         continue;
                       }
                       if(st2.sval.equals("SUP")){
-                        Vector values = new Vector();
+                        ArrayList values = new ArrayList();
                         st2.nextToken();
                         if(st2.ttype == '(' ){
                           st2.nextToken();
                           while(st2.ttype != ')' ){
                             if(st2.ttype != '$'){
-                            	values.addElement(st2.sval);
+                            	values.add(st2.sval);
                              }
                              st2.nextToken();
                           }
                         }
                       	else{
-                      		values.addElement(st2.sval);
+                      		values.add(st2.sval);
                         	superior = st2.sval;
                         }
                         if(values.size() > 0){
                             superiors = new String[values.size()];
-                            values.copyInto(superiors);
+                            values.toArray(superiors);
                           }
                         continue;
                       }
@@ -175,82 +176,82 @@ public class SchemaParser{
                         continue;
                       }
                       if(st2.sval.equals("MUST")){
-                        Vector values = new Vector();
+                        ArrayList values = new ArrayList();
                         st2.nextToken();
                         if(st2.ttype == '(' ){
                           st2.nextToken();
                           while(st2.ttype != ')' ){
                             if(st2.ttype != '$'){
-                            	values.addElement(st2.sval);
+                            	values.add(st2.sval);
                              }
                              st2.nextToken();
                           }
                         }
                       	else
-                      		values.addElement(st2.sval);
+                      		values.add(st2.sval);
                         if(values.size() > 0){
                             required = new String[values.size()];
-                            values.copyInto(required);
+                            values.toArray(required);
                           }
                         continue;
                       }
                       if(st2.sval.equals("MAY")){
-                        Vector values = new Vector();
+                        ArrayList values = new ArrayList();
                         st2.nextToken();
                         if(st2.ttype == '(' ){
                           st2.nextToken();
                           for(int i = 0; st2.ttype != ')'; i++ ){
                             if(st2.ttype != '$'){
-                            	values.addElement(st2.sval);
+                            	values.add(st2.sval);
                              }
                              st2.nextToken();
                           }
                         }
                       	else
-                      		values.addElement(st2.sval);
+                      		values.add(st2.sval);
                         if(values.size() > 0){
                             optional = new String[values.size()];
-                            values.copyInto(optional);
+                            values.toArray(optional);
                           }
                         continue;
                       }
 					  if(st2.sval.equals("NOT")){
-                        Vector values = new Vector();
+                        ArrayList values = new ArrayList();
                         st2.nextToken();
                         if(st2.ttype == '(' ){
                           st2.nextToken();
                           for(int i = 0; st2.ttype != ')'; i++ ){
                             if(st2.ttype != '$'){
-                            	values.addElement(st2.sval);
+                            	values.add(st2.sval);
                              }
                              st2.nextToken();
                           }
                         }
                       	else
-                      		values.addElement(st2.sval);
+                      		values.add(st2.sval);
                         if(values.size() > 0){
                             precluded = new String[values.size()];
-                            values.copyInto(precluded);
+                            values.toArray(precluded);
                           }
                         continue;
                       }
 					  if(st2.sval.equals("AUX")){
-                        Vector values = new Vector();
+                        ArrayList values = new ArrayList();
                         st2.nextToken();
                         if(st2.ttype == '(' ){
                           st2.nextToken();
                           for(int i = 0; st2.ttype != ')'; i++ ){
                             if(st2.ttype != '$'){
-                            	values.addElement(st2.sval);
+                            	values.add(st2.sval);
                              }
                              st2.nextToken();
                           }
                         }
                       	else
-                      		values.addElement(st2.sval);
+                      		values.add(st2.sval);
                         if(values.size() > 0){
                             auxiliary = new String[values.size()];
-                            values.copyInto(auxiliary);
+                            values.toArray(auxiliary);
                           }
                         continue;
                       }
@@ -285,29 +286,29 @@ public class SchemaParser{
                         continue;
                       }
                       if(st2.sval.equals("APPLIES")){
-                        Vector values = new Vector();
+                        ArrayList values = new ArrayList();
                         st2.nextToken();
                         if(st2.ttype == '(' ){
                           st2.nextToken();
                           while(st2.ttype != ')' ){
                             if(st2.ttype != '$'){
-                            	values.addElement(st2.sval);
+                            	values.add(st2.sval);
                              }
                              st2.nextToken();
                           }
                         }
                       	else
-                      		values.addElement(st2.sval);
+                      		values.add(st2.sval);
                         if(values.size() > 0){
                             applies = new String[values.size()];
-                            values.copyInto(applies);
+                            values.toArray(applies);
                           }
                         continue;
                       }
                       currName = st2.sval;
                       AttributeQualifier q = parseQualifier( st2, currName );
 		      if( q != null)
-                     	qualifiers.addElement(q);
+                     	qualifiers.add(q);
                       continue;
                     }
                   }
@@ -331,21 +332,21 @@ public class SchemaParser{
 		return name;
 	}
 
-        public Enumeration getQualifiers(){
-          return qualifiers.elements();
-        }
+    public Enumeration getQualifiers(){
+        return new ArrayEnumeration(qualifiers.toArray());
+    }
 
-        public String[] getAliases() {
-          String[] retVal = null;
-          if( aliases != null ){
+    public String[] getAliases() {
+        String[] retVal = null;
+        if( aliases != null ){
             retVal = new String[aliases.length];
             for(int i = 0; i < aliases.length; i++ ){
               retVal[i] = aliases[i];
             }
-          }
-          return retVal;
         }
-        public String getID() {
+        return retVal;
+    }
+    public String getID() {
 		return id;
 	}
     public String getDescription() {
@@ -427,5 +428,4 @@ public class SchemaParser{
         }
         return qualifier;
     }
-
 }

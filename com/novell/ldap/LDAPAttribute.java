@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttribute.java,v 1.18 2001/01/22 20:15:21 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttribute.java,v 1.19 2001/03/01 00:29:45 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -14,6 +14,9 @@
  ******************************************************************************/
 
 package com.novell.ldap;
+
+import com.novell.ldap.client.ArrayList;
+import com.novell.ldap.client.ArrayEnumeration;
 
 import java.util.*;
 import java.io.UnsupportedEncodingException;
@@ -38,7 +41,7 @@ public class LDAPAttribute {
     private String name;              // full attribute name
     private static String baseName = null;   // cn of cn;lang-ja;phonetic
     private static String[] subTypes = null; // lang-ja of cn;lang-ja
-    private Vector values = new Vector(5);
+    private ArrayList values = new ArrayList(5);
 
     /**
      * Constructs an attribute with copies of all values of the input
@@ -73,7 +76,7 @@ public class LDAPAttribute {
         //just raw bytes
         name = attrName;
         getSubtypes(attrName);  //set Subtypes
-        values.addElement(attrBytes);
+        values.add(attrBytes);
     }
 
     /**
@@ -99,7 +102,7 @@ public class LDAPAttribute {
 
         if(attrStrings != null) {
             for(int i=0; i<attrStrings.length; i++) {
-                values.addElement(attrStrings[i]);
+                values.add(attrStrings[i]);
             }
         }
     }
@@ -110,7 +113,7 @@ public class LDAPAttribute {
      * @param attrString Value of the attribute as a string.
      */
     public void addValue(String attrString) {
-        values.addElement(attrString);
+        values.add(attrString);
     }
 
     /**
@@ -120,7 +123,7 @@ public class LDAPAttribute {
      * <P> Note: If attrBytes is a string if should be UTF8 encoded. </P>
      */
     public void addValue(byte[] attrBytes) {
-        values.addElement(attrBytes);
+        values.add(attrBytes);
     }
 
     /**
@@ -132,20 +135,20 @@ public class LDAPAttribute {
      * toString method. Example:  byteArray.toString("UTF8"); </P>
      */
     public Enumeration getByteValues() {
-        Vector bv = new Vector(values.size());
-        Enumeration e = values.elements();
-        while(e.hasMoreElements()) {
-            Object o = e.nextElement();
+        ArrayList bv = new ArrayList(values.size());
+        Object[] a = values.toArray();
+        for( int i=0; i < a.length; i++) {
+            Object o = a[i];
             if(o instanceof String) {
                 try{
-                bv.addElement(((String)o).getBytes("UTF8"));
+                bv.add(((String)o).getBytes("UTF8"));
                 }catch (UnsupportedEncodingException uee){}
             }
             else {//if this byte[] is a string it will be UTF8 encoded also
-                bv.addElement(o);
+                bv.add(o);
             }
         }
-        return bv.elements();
+        return new ArrayEnumeration( bv.toArray());
     }
 
     /**
@@ -154,20 +157,20 @@ public class LDAPAttribute {
      * @return The string values of an attribute.
      */
     public Enumeration getStringValues() {
-        Vector sv = new Vector(values.size());
-        Enumeration e = values.elements();
-        while(e.hasMoreElements()) {
-            Object o = e.nextElement();
+        ArrayList sv = new ArrayList(values.size());
+        Object[] a = values.toArray();
+        for( int i=0; i < a.length; i++) {
+            Object o = a[i];
             if(o instanceof String) {
-                sv.addElement(o);
+                sv.add(o);
             }
             else {
                 try{
-                  sv.addElement(new String((byte[])o, "UTF8"));
+                  sv.add(new String((byte[])o, "UTF8"));
                 }catch(UnsupportedEncodingException uee){}
             }
         }
-        return sv.elements();
+        return new ArrayEnumeration(sv.toArray());
     }
 
     /**
@@ -178,9 +181,9 @@ public class LDAPAttribute {
     public byte[][] getByteValueArray() {
         byte[][] bva = new byte[values.size()][];
         int i=0;
-        Enumeration e = values.elements();
-        while(e.hasMoreElements()) {
-            Object o = e.nextElement();
+        Object[] a = values.toArray();
+        for( int j=0; j < a.length; j++) {
+            Object o = a[j];
             bva[i++] = (o instanceof String) ? ((String)o).getBytes() : (byte[])o;
         }//do you want these bytes in UTF8??? if so ^^^ needs ,"UTF8"
         return bva;
@@ -194,9 +197,9 @@ public class LDAPAttribute {
     public String[] getStringValueArray() {
         String[] sva = new String[values.size()];
         int i=0;
-        Enumeration e = values.elements();
-        while(e.hasMoreElements()) {
-            Object o = e.nextElement();
+        Object[] a = values.toArray();
+        for( int j=0; j < a.length; j++) {
+            Object o = a[j];
             try{
             sva[i++] = (o instanceof String) ? (String)o : new String((byte[])o, "UTF8");
             }catch(UnsupportedEncodingException uee){}
@@ -349,7 +352,14 @@ public class LDAPAttribute {
      * @param attrString   Value of the attribute as a string.
      */
     public void removeValue(String attrString) {
-        values.removeElement(attrString);
+        Object[] a = values.toArray();
+        for( int i=0; i < a.length; i++) {
+            if( attrString.equals(a[i])) {
+                values.remove(i);
+                break;
+            }
+        }
+        return;
     }
 
     /**
@@ -360,7 +370,14 @@ public class LDAPAttribute {
      * aString.getBytes("UTF8"); </P>
      */
     public void removeValue(byte[] attrBytes) {
-        values.removeElement(attrBytes);
+        Object[] a = values.toArray();
+        for( int i=0; i < a.length; i++) {
+            if( attrBytes.equals(a[i])) {
+                values.remove(i);
+                break;
+            }
+        }
+        return;
     }
 
     /**
@@ -371,12 +388,4 @@ public class LDAPAttribute {
     public int size() {
         return values.size();
     }
-
-    /*
-     * Returns the internal Vector which stores values.
-     */
-    private Vector getValues() {
-        return values;
-    }
-
 }

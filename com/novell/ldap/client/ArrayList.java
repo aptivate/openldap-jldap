@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/client/ArrayList.java,v 1.2 2001/03/01 00:30:04 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/client/ArrayList.java,v 1.3 2001/03/23 19:13:33 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -14,6 +14,8 @@
  ******************************************************************************/
 
 package com.novell.ldap.client;
+
+import java.lang.reflect.Array;
 
 /**
  * Resizable array implementation.  This is a subset of java.util.ArrayList
@@ -191,5 +193,62 @@ public class ArrayList
 	        System.arraycopy(items, index+1, items, index, numMoved);
 	    items[--size] = null;
 	    return oldItem;
+    }
+
+    /**
+     * Returns an array containing all of the elements in this ArrayList.
+     * Overrides the jdk1.2 version of this command if running 1.2 or 1.3
+     * and overloads the method if running version 1.1.x
+     *
+     * @return the elements of the vector in the correct order.
+     */
+    public synchronized Object[] toArray()
+    {
+	    Object[] results = new Object[size];
+	    System.arraycopy( items, 0, results, 0, size);
+	    return results;
+    }
+
+    /**
+     * Returns an array containing all of the elements in this ArrayList.
+     * The runtime type of the returned array is that of the specified array.
+     * If the ArrayList list fits in the specified array, it is returned
+     * in the specified array.  If not, a new array is allocated with the
+     * same type as the specified array and the size of this ArrayList.<p>
+     *
+     * If the copied array fits in the specified array and at least one extra
+     * element remains, then the the element in the array immediately following
+     * the the last element is set to to null.  This can be used to determe
+     * the length of the list if the array does not contain any null
+     * elements.<p>
+     *
+     * Overrides the jdk1.2 version of this command if running 1.2 or 1.3
+     * and overloads the method if running version 1.1.x<p>
+
+     * @param array the array into which the elements of the ArrayList are to
+     *       		be copied, if the array is large enough; if not,
+     *              a new array of the same runtime type as the specified array
+     *              is allocated for this purpose.
+     * @return      the array containing the elements of the ArrayList.
+     * @throws      ArrayStoreException if the runtime type of a is not a
+     *              supertype of the runtime type of every element in this list.
+     */
+    public Object[] toArray(Object array[])
+    {
+        // If application array is too small, get one that is big enough
+        if (array.length < size) {
+            array = (Object[])Array.newInstance(
+                    array.getClass().getComponentType(), size);
+        }
+
+        // Copy the data into application array
+	    System.arraycopy(items, 0, array, 0, size);
+
+        // Set end to null if large enough
+        if (array.length > size) {
+            array[size] = null;
+        }
+
+        return array;
     }
 }

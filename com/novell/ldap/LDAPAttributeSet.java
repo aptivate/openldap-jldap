@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttributeSet.java,v 1.18 2000/12/07 17:06:01 javed Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttributeSet.java,v 1.19 2001/03/01 00:29:46 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -15,6 +15,8 @@
 
 package com.novell.ldap;
 
+import com.novell.ldap.client.ArrayList;
+import com.novell.ldap.client.ArrayEnumeration;
 import java.util.*;
 
 /**
@@ -23,13 +25,13 @@ import java.util.*;
  *  operation.
  */
 public class LDAPAttributeSet implements Cloneable {
-   private Vector attrs;
+   private ArrayList attrs;
 
    /**
     * Constructs a new set of attributes. This set is initially empty.
     */
    public LDAPAttributeSet() {
-      attrs = new Vector();
+      attrs = new ArrayList();
    }
 
    /**
@@ -38,7 +40,7 @@ public class LDAPAttributeSet implements Cloneable {
     * @param attr Attribute to add to this set.
     */
    public void add(LDAPAttribute attr) {
-      attrs.addElement(attr);
+      attrs.add(attr);
    }
 
    /**
@@ -49,7 +51,7 @@ public class LDAPAttributeSet implements Cloneable {
    public Object clone() {
       LDAPAttributeSet newAttrs = new LDAPAttributeSet();
       for(int i = 0; i < attrs.size(); i++){
-         newAttrs.add( new LDAPAttribute( (LDAPAttribute)attrs.elementAt(i)));
+         newAttrs.add( new LDAPAttribute( (LDAPAttribute)attrs.get(i)));
       }
       return (Object)newAttrs;
    }
@@ -66,9 +68,9 @@ public class LDAPAttributeSet implements Cloneable {
     * index is outside of the array.
     *
     */
-   public LDAPAttribute elementAt(int index)
+   public LDAPAttribute ElementAt(int index)
     throws ArrayIndexOutOfBoundsException {
-      return (LDAPAttribute)attrs.elementAt(index);
+      return (LDAPAttribute)attrs.get(index);
    }
 
    /**
@@ -95,12 +97,12 @@ public class LDAPAttributeSet implements Cloneable {
     */
    public LDAPAttribute getAttribute(String attrName) {
       LDAPAttribute attrib;
-      Enumeration enumAttr = attrs.elements();
-      while( enumAttr.hasMoreElements()){
-        attrib = (LDAPAttribute) enumAttr.nextElement();
-        if(attrib.getName().equals(attrName)){
-          return attrib;
-        }
+      Object[] arrayAttr = attrs.toArray();
+      for( int i=0; i < arrayAttr.length; i++) {
+          attrib = (LDAPAttribute)arrayAttr[i];
+          if(attrib.getName().equals(attrName)){
+            return attrib;
+          }
       }
       return null;
    }
@@ -169,14 +171,14 @@ public class LDAPAttributeSet implements Cloneable {
 
 	  partialMatch = null;
 	  partialMatchLen = 0;
-      Enumeration enumAttr = attrs.elements();
+      Object[] arrayAttr = attrs.toArray();
 
-	  while( enumAttr.hasMoreElements()){
+        for( int i = 0; i < arrayAttr.length; i++) {
 
-	    attrib = (LDAPAttribute) enumAttr.nextElement();
+	      attrib = (LDAPAttribute) arrayAttr[i];
 
-		// Find a matching attrubute
-        if(attrib.getName().equals(attrName)){
+          // Find a matching attribute
+          if(attrib.getName().equals(attrName)){
 
 			// Get the lang subtype for this attribute
 			String attribSubType = attrib.getLangSubtype();
@@ -201,11 +203,11 @@ public class LDAPAttributeSet implements Cloneable {
 
 			// else goto next attribute
 
-		}
+		  }
       }
 
-	  // Return a partial match if there was one, else we will be returning a
-	  // null pointer
+	  // Return a partial match if there was one,
+	  //   else we will be returning a null pointer
       return partialMatch;
 
    }
@@ -216,7 +218,7 @@ public class LDAPAttributeSet implements Cloneable {
     * @return  An enumeration of the attributes in this attribute set.
     */
    public Enumeration getAttributes() {
-      return attrs.elements();
+      return new ArrayEnumeration(attrs.toArray());
    }
 
    /**
@@ -264,7 +266,7 @@ public class LDAPAttributeSet implements Cloneable {
       // Cycle throught this.attributeSet
 	  for(int i = 0; i < attrs.size(); i++) {
 
-		 LDAPAttribute tempAttr = new LDAPAttribute( (LDAPAttribute)attrs.elementAt(i));
+		 LDAPAttribute tempAttr = new LDAPAttribute( (LDAPAttribute)attrs.get(i));
 
 		 // Does this attribute have the subtype we are looking for. If
 		 // yes then add it to our AttributeSet, else next attribute
@@ -288,12 +290,13 @@ public class LDAPAttributeSet implements Cloneable {
     */
    public void remove(String name) {
        for(int i=0; i<attrs.size(); i++) {
-           LDAPAttribute attr = (LDAPAttribute)attrs.elementAt(i);
+           LDAPAttribute attr = (LDAPAttribute)attrs.get(i);
            if(attr.getName().equals(name)) {
-               attrs.removeElementAt(i);
+               attrs.remove(i);
                break;
            }
        }
+       return;
    }
 
    /**
@@ -308,7 +311,8 @@ public class LDAPAttributeSet implements Cloneable {
     */
    public void removeElementAt(int index)
    throws ArrayIndexOutOfBoundsException {
-      attrs.removeElementAt(index);
+      attrs.remove(index);
+      return;
    }
 
    /**
