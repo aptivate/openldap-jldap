@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSchemaElement.java,v 1.7 2000/09/12 22:50:12 judy Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSchemaElement.java,v 1.8 2000/09/29 22:17:41 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -262,6 +262,7 @@ public abstract class LDAPSchemaElement {
     *                           message and an LDAP error code.
     */
    public void add(LDAPConnection ld) throws LDAPException {
+       throw new RuntimeException("Method LDAPSchemaElement.add not implemented");
    }
 
    /**
@@ -279,6 +280,7 @@ public abstract class LDAPSchemaElement {
     *                           message and an LDAP error code.
     */
    public void add(LDAPConnection ld, String dn) throws LDAPException {
+       throw new RuntimeException("Method LDAPSchemaElement.add not implemented");
    }
 
    /*
@@ -297,6 +299,7 @@ public abstract class LDAPSchemaElement {
     *                           message and an LDAP error code.
     */
    public void remove(LDAPConnection ld) throws LDAPException {
+       throw new RuntimeException("Method LDAPSchemaElement.remove not implemented");
    }
 
    /**
@@ -314,6 +317,7 @@ public abstract class LDAPSchemaElement {
     *                           message and an LDAP error code.
     */
    public void remove(LDAPConnection ld, String dn) throws LDAPException {
+       throw new RuntimeException("Method LDAPSchemaElement.remove not implemented");
    }
 
    /*
@@ -335,6 +339,7 @@ public abstract class LDAPSchemaElement {
     */
    public void modify(LDAPConnection ld,
                       LDAPSchemaElement newValue) throws LDAPException {
+       throw new RuntimeException("Method LDAPSchemaElement.modify not implemented");
    }
 
    /**
@@ -357,6 +362,6 @@ public abstract class LDAPSchemaElement {
    public void modify(LDAPConnection ld,
                       LDAPSchemaElement newValue,
                       String dn) throws LDAPException {
+       throw new RuntimeException("Method LDAPSchemaElement.modify not implemented");
    }
-
 }

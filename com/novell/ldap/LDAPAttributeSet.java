@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttributeSet.java,v 1.9 2000/09/26 20:56:27 judy Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttributeSet.java,v 1.10 2000/09/29 15:17:12 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -64,7 +64,7 @@ public class LDAPAttributeSet implements Cloneable {
     * @return A deep copy of this attribute set.
     */
    public Object clone() {
-      return null;
+      throw new RuntimeException("Method LDAPAttributeSet.clone not implemented");
    }
 
    /*
@@ -184,7 +184,7 @@ public class LDAPAttributeSet implements Cloneable {
     *     
     */
    public LDAPAttribute[] getAttribute(String attrName, String lang) {
-      return null;
+      throw new RuntimeException("Method LDAPAttributeSet.getAttribute not implemented");
    }
 
    /*
@@ -242,7 +242,7 @@ public class LDAPAttributeSet implements Cloneable {
     *         subtype.                                         
     */
    public LDAPAttributeSet getSubset(String subtype) {
-      return null;
+      throw new RuntimeException("Method LDAPAttributeSet.getSubset not implemented");
    }
 
    /*
@@ -260,6 +260,7 @@ public class LDAPAttributeSet implements Cloneable {
     *              
     */
    public synchronized void remove(String name) {
+      throw new RuntimeException("Method LDAPAttributeSet.remove not implemented");
    }
 
    /*
@@ -293,5 +294,4 @@ public class LDAPAttributeSet implements Cloneable {
    public int size() {
       return attrs.size();
    }
-
 }

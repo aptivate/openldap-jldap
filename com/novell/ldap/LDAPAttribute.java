@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttribute.java,v 1.8 2000/09/14 20:32:29 smerrill Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttribute.java,v 1.9 2000/09/14 22:43:26 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -225,7 +225,7 @@ public class LDAPAttribute {
     *         has none.
     */
    public String getLangSubtype() {
-      return null;
+      throw new RuntimeException("Method LDAPAttribute.getLangSubtype not implemented");
    }
 
    /*
@@ -241,7 +241,7 @@ public class LDAPAttribute {
     * @return The base name of the attribute.
     */
    public String getBaseName() {
-      return null;
+      throw new RuntimeException("Method LDAPAttribute.getBaseName not implemented");
    }
 
    /**
@@ -256,7 +256,7 @@ public class LDAPAttribute {
     * @return The base name of the attribute.
     */
    public static String getBaseName(String attrName) {
-      return null;
+      throw new RuntimeException("Method LDAPAttribute.getBaseName not implemented");
    }
 
    /*
@@ -285,7 +285,7 @@ public class LDAPAttribute {
     * @return An array subtypes or null if the attribute has none.
     */
    public String[] getSubtypes() {
-      return null;
+      throw new RuntimeException("Method LDAPAttribute.getSubtypes not implemented");
    }
 
    /**
@@ -300,7 +300,7 @@ public class LDAPAttribute {
     * @return An array subtypes or null if the attribute has none.
     */
    public static String[] getSubtypes(String attrName) {
-      return null;
+      throw new RuntimeException("Method LDAPAttribute.getSubtypes not implemented");
    }
 
    /*
@@ -384,5 +384,4 @@ public class LDAPAttribute {
    private Vector getValues() {
       return values;
    }
-
 }

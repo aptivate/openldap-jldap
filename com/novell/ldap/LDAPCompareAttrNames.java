@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPCompareAttrNames.java,v 1.7 2000/09/26 20:56:28 judy Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPCompareAttrNames.java,v 1.8 2000/09/29 15:17:12 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -114,7 +114,7 @@ public class LDAPCompareAttrNames implements LDAPEntryComparator {
     * @return The locale if one has been specified
     */
    public Locale getLocale () {
-      return null;
+      throw new RuntimeException("Method LDAPAttrNames.getLocale not implemented");
    }
 
    /*
@@ -127,6 +127,7 @@ public class LDAPCompareAttrNames implements LDAPEntryComparator {
     * @param locale   The locale to be used for sorting.
     */
    public void setLocale (Locale locale) {
+      throw new RuntimeException("Method LDAPAttrNames.setLocale not implemented");
    }
 
    /*
@@ -145,7 +146,6 @@ public class LDAPCompareAttrNames implements LDAPEntryComparator {
     * @return True if entry1 is greater than enter2; otherwise, false.
     */
    public boolean isGreater (LDAPEntry entry1, LDAPEntry entry2) {
-      return false;
+      throw new RuntimeException("Method LDAPAttrNames.isGreater not implemented");
    }
-
 }

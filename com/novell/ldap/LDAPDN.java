@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPDN.java,v 1.5 2000/08/31 21:58:06 judy Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPDN.java,v 1.6 2000/09/29 15:17:13 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -41,7 +41,7 @@ public class LDAPDN {
     *         if the DNs are different. 
     */
    public static boolean equals (String dn1, String dn2) {
-      return false;
+      throw new RuntimeException("Method LDAPDN.equals not implemented");
    }
 
    /*
@@ -59,7 +59,7 @@ public class LDAPDN {
     *@return The RDN with escaping characters.
     */
    public static String escapeRDN (String rdn) {
-      return null;
+      throw new RuntimeException("Method LDAPDN.escapeRDN not implemented");
    }
 
    /*
@@ -77,7 +77,7 @@ public class LDAPDN {
     * @return The RDN with the escaping characters removed.
     */
    public static String unescapeRDN (String rdn) {
-      return null;
+      throw new RuntimeException("Method LDAPDN.unescapeRDN not implemented");
    }
 
    /*
@@ -100,7 +100,7 @@ public class LDAPDN {
     * of a DN, or null if the DN is not a valid DN.
     */
    public static String[] explodeDN(String dn, boolean noTypes) {
-      return null;
+      throw new RuntimeException("Method LDAPDN.explodeDN not implemented");
    }
 
    /*
@@ -123,7 +123,7 @@ public class LDAPDN {
 
     */
    public static String[] explodeRDN(String rdn, boolean noTypes) {
-      return null;
+      throw new RuntimeException("Method LDAPRDN.explodeRDN not implemented");
    }
 
 }

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPObjectClassSchema.java,v 1.8 2000/09/29 15:55:27 judy Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPObjectClassSchema.java,v 1.9 2000/10/02 19:46:52 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -139,7 +139,7 @@ public class LDAPObjectClassSchema extends LDAPSchemaElement{
     * @return The object classes superior to this class.
     */
    public String[] getSuperiors() {
-      return null;
+      throw new RuntimeException("Method LDAPObjectClassSchema.getSuperiors not implemented");
    }
 
    /*
@@ -153,7 +153,7 @@ public class LDAPObjectClassSchema extends LDAPSchemaElement{
     * @return The list of required attributes defined for this class.
     */
    public String[] getRequiredAttributes() {
-      return null;
+      throw new RuntimeException("Method LDAPObjectClassSchema.getRequiredAttributes not implemented");
    }
 
    /*
@@ -167,7 +167,7 @@ public class LDAPObjectClassSchema extends LDAPSchemaElement{
     * @return The list of optional attributes defined for this class.
     */
    public String[] getOptionalAttributes() {
-      return null;
+      throw new RuntimeException("Method LDAPObjectClassSchema.getOptionalAttributes not implemented");
    }
 
    /*

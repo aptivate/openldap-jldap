@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPMatchingRuleSchema.java,v 1.6 2000/09/29 15:17:14 judy Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPMatchingRuleSchema.java,v 1.7 2000/10/02 19:46:52 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -91,7 +91,6 @@ public class LDAPMatchingRuleSchema extends LDAPSchemaElement {
     *@return The OIDs of the attributes to which this matching rule applies.
     */
    public String[] getAttributes() {
-      return null;
+      throw new RuntimeException("Method LDAPMatchingRuleSchema.getAttributes not implemented");
    }
-
 }

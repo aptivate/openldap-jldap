@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.41 2000/10/03 21:43:59 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.42 2000/10/04 17:15:51 smerrill Exp $
 *
 * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
 * 
@@ -396,7 +396,7 @@ public class LDAPConnection implements
     */
    public Object clone()
    {
-      return null;
+      throw new RuntimeException("Method LDAPConnection.clone not implemented");
    }
 
    /*
@@ -580,7 +580,7 @@ public class LDAPConnection implements
    public Object getProperty(String name)
       throws LDAPException
    {
-      return null;
+      throw new RuntimeException("Method LDAPConnection.getProperty not implemented");
    }
 
    /**
@@ -718,7 +718,7 @@ public class LDAPConnection implements
    public void setProperty(String name, Object value)
       throws LDAPException
    {
-      return;
+      throw new RuntimeException("Method LDAPConnection.setProperty not implemented");
    }
 
    /**
@@ -2220,7 +2220,7 @@ public class LDAPConnection implements
                                 LDAPSearchConstraints cons)
       throws LDAPException
    {
-      return null;
+      throw new RuntimeException("Method LDAPConnection.read(LDAPUrl) not implemented");
    }
 
     //*************************************************************************
@@ -2648,7 +2648,7 @@ public class LDAPConnection implements
    public static LDAPSearchResults search(LDAPUrl toGet)
       throws LDAPException
    {
-      return null;
+      throw new RuntimeException("Method LDAPConnection.search(LDAPUrl) not implemented");
    }
 
    /*
@@ -2683,7 +2683,7 @@ public class LDAPConnection implements
                                           LDAPSearchConstraints cons)
       throws LDAPException
    {
-      return null;
+      throw new RuntimeException("Method LDAPConnection.search(LDAPUrl) not implemented");
    }
 
     //*************************************************************************
@@ -2758,5 +2758,4 @@ public class LDAPConnection implements
       }
       return;
    }
-
 }

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSchema.java,v 1.9 2000/10/02 19:57:23 bgudmundson Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSchema.java,v 1.10 2000/10/03 22:26:13 bgudmundson Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -209,7 +209,7 @@ public class LDAPSchema {
     *  @return The attribute definition, or null if not found.
     */
    public LDAPAttributeSchema getAttribute( String name ) {
-      return null;
+      throw new RuntimeException("Method LDAPSchema.getAttribute not implemented");
    }
 
    /*
@@ -225,7 +225,7 @@ public class LDAPSchema {
     * @return The object class definition, or null if not found.
     */
    public LDAPObjectClassSchema getObjectClass( String name ) {
-      return null;
+      throw new RuntimeException("Method LDAPSchema.getObjectClass not implemented");
    }
 
    /*
@@ -241,7 +241,7 @@ public class LDAPSchema {
     *  @return The matching rule definition, or null if not found.
     */
    public LDAPMatchingRuleSchema getMatchingRule( String name ) {
-      return null;
+      throw new RuntimeException("Method LDAPSchema.getMatchingRule not implemented");
    }
 
    /*
@@ -267,7 +267,7 @@ public class LDAPSchema {
     * @return An enumeration of object class definitions.
     */
    public Enumeration getObjectClasses() {
-      return null;
+      throw new RuntimeException("Method LDAPSchema.getObjectClasses not implemented");
    }
 
    /*
@@ -280,7 +280,7 @@ public class LDAPSchema {
     * @exception An enumeration of matching rule definitions.
     */
    public Enumeration getMatchingRules() {
-      return null;
+      throw new RuntimeException("Method LDAPSchema.getMatchingRules not implemented");
    }
 
    /*
@@ -293,7 +293,7 @@ public class LDAPSchema {
     * @return An enumeration of attribute names.
     */
    public Enumeration getAttributeNames() {
-      return null;
+      throw new RuntimeException("Method LDAPSchema.getAttributeNames not implemented");
    }
 
    /*
@@ -306,7 +306,7 @@ public class LDAPSchema {
     * @return An enumeration of object class names.
     */
    public Enumeration getObjectClassNames() {
-      return null;
+      throw new RuntimeException("Method LDAPSchema.getObjectClassNames not implemented");
    }
 
    /*
@@ -319,7 +319,6 @@ public class LDAPSchema {
     * @return An enumeration of matching rule names.
     */
    public Enumeration getMatchingRuleNames() {
-      return null;
+      throw new RuntimeException("Method LDAPSchema.getMatchingRuleNames not implemented");
    }
-
 }

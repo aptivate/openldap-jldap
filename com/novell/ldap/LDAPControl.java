@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPControl.java,v 1.9 2000/09/27 22:04:59 judy Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPControl.java,v 1.10 2000/09/28 20:18:01 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -63,7 +63,7 @@ public class LDAPControl implements Cloneable {
      */
     public Object clone()
     {
-        return null;
+       throw new RuntimeException("Method LDAPControl.clone not implemented");
     }
 
     /**
@@ -106,7 +106,7 @@ public class LDAPControl implements Cloneable {
      */
     public static LDAPControl newInstance(byte[] data)
     {
-        return null;
+        throw new RuntimeException("Method LDAPControl.newInstance not implemented");
     }
 
     /**
@@ -122,6 +122,7 @@ public class LDAPControl implements Cloneable {
      */
     public static void register(String oid, Class controlClass)
     {
+        throw new RuntimeException("Method LDAPControl.register not implemented");
     }
 
     /**
@@ -134,4 +135,3 @@ public class LDAPControl implements Cloneable {
         return control;
     }
 }
-
