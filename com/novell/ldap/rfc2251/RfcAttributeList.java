@@ -17,6 +17,8 @@ package com.novell.ldap.rfc2251;
 import com.novell.ldap.asn1.*;
 
 /* 
+ * Represents an LDAP Attribute List.
+ *
  *       AttributeList ::= SEQUENCE OF SEQUENCE {
  *               type    AttributeDescription,
  *               vals    SET OF AttributeValue }

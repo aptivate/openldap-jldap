@@ -18,6 +18,8 @@ package com.novell.ldap.rfc2251;
 import com.novell.ldap.asn1.*;
 
 /** 
+ * Represents an LDAP Message ID.
+ *
  *<pre>
  *       MessageID ::= INTEGER (0 .. maxInt)
  *

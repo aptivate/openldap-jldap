@@ -21,6 +21,9 @@ import com.novell.ldap.*;
 import com.novell.ldap.resources.*;
 
 /* 
+ * Represents an LDAP Modify Request.
+ *
+ *<pre>
  *       ModifyRequest ::= [APPLICATION 6] SEQUENCE {
  *               object          LDAPDN,
  *               modification    SEQUENCE OF SEQUENCE {
@@ -29,6 +32,7 @@ import com.novell.ldap.resources.*;
  *                                               delete  (1),
  *                                               replace (2) },
  *                       modification    AttributeTypeAndValues } }
+ *</pre>
  */
 public class RfcModifyRequest extends ASN1Sequence implements RfcRequest {
 

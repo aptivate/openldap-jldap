@@ -20,6 +20,8 @@ import java.io.ByteArrayInputStream;
 import com.novell.ldap.asn1.*;
 
 /** 
+ * Represents an LDAPResult.
+ *
  *<pre>
  *        LDAPResult ::= SEQUENCE {
  *               resultCode      ENUMERATED {

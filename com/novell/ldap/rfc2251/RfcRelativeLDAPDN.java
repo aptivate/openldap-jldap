@@ -17,7 +17,7 @@ package com.novell.ldap.rfc2251;
 import com.novell.ldap.asn1.*;
 
 /* 
- *
+ * Represents an LDAP Relative DN.
  */
 public class RfcRelativeLDAPDN extends RfcLDAPString {
 

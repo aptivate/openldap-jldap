@@ -20,6 +20,8 @@ import java.io.InputStream;
 import com.novell.ldap.asn1.*;
 
 /**
+ * Represents an LDAP Control.
+ *
  *<pre>
  *        Control ::= SEQUENCE {
  *               controlType             LDAPOID,

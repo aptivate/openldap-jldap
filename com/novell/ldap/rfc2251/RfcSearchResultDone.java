@@ -19,6 +19,8 @@ import java.io.InputStream;
 import com.novell.ldap.asn1.*;
 
 /**
+ * Represents an LDAP Search Result Done Response.
+ *
  *<pre>
  *       SearchResultDone ::= [APPLICATION 5] LDAPResult
  *</pre>

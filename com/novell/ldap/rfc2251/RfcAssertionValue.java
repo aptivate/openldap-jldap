@@ -17,6 +17,8 @@ package com.novell.ldap.rfc2251;
 import com.novell.ldap.asn1.*;
 
 /**
+ * Represents the LDAP Assertion Value.
+ *
  *<pre>
  *        AssertionValue ::= OCTET STRING
  *</pre>

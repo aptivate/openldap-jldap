@@ -25,6 +25,9 @@ import com.novell.ldap.client.Debug;
 import java.util.ArrayList;
 
 /* 
+ * Represents an LDAP Message.
+ *
+ *<pre>
  *       LDAPMessage ::= SEQUENCE {
  *               messageID       MessageID,
  *               protocolOp      CHOICE {
@@ -49,6 +52,8 @@ import java.util.ArrayList;
  *                   extendedReq     ExtendedRequest,
  *                   extendedResp    ExtendedResponse },
  *                controls       [0] Controls OPTIONAL }
+ *</pre>
+ *
  *<br><br>
  * Note: The creation of a MessageID should be hidden within the creation of
  *       an RfcLDAPMessage. The MessageID needs to be in sequence, and has an

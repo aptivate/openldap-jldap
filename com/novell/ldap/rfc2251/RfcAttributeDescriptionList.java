@@ -20,8 +20,10 @@ import com.novell.ldap.asn1.*;
  * The AttributeDescriptionList is used to list attributes to be returned in
  * a search request.
  *
+ *<pre>
  *       AttributeDescriptionList ::= SEQUENCE OF
  *               AttributeDescription
+ *</pre>
  *
  * @see RfcAttributeDescription
  * @see ASN1SequenceOf

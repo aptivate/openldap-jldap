@@ -19,6 +19,8 @@ import java.io.InputStream;
 import com.novell.ldap.asn1.*;
 
 /**
+ * Represents and LDAP Compare Response.
+ *
  *<pre>
  *      CompareResponse ::= [APPLICATION 15] LDAPResult
  *</pre>

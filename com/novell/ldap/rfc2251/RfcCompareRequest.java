@@ -21,9 +21,13 @@ import com.novell.ldap.*;
 import com.novell.ldap.resources.*;
 
 /* 
+ * Represents and LDAP Compare Request.
+ *
+ *<pre>
  *       CompareRequest ::= [APPLICATION 14] SEQUENCE {
  *               entry           LDAPDN,
  *               ava             AttributeValueAssertion }
+ *</pre>
  */
 public class RfcCompareRequest extends ASN1Sequence implements RfcRequest {
 

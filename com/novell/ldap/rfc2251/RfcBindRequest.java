@@ -21,10 +21,14 @@ import com.novell.ldap.*;
 import com.novell.ldap.resources.*;
 
 /*
+ * Represents and LDAP Bind Request.
+ *
+ *<pre>
  *       BindRequest ::= [APPLICATION 0] SEQUENCE {
  *               version                 INTEGER (1 .. 127),
  *               name                    LDAPDN,
  *               authentication          AuthenticationChoice }
+ *<pre>
  */
 public class RfcBindRequest extends ASN1Sequence implements RfcRequest {
 

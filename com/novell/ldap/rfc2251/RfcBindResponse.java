@@ -20,6 +20,8 @@ import java.io.ByteArrayInputStream;
 import com.novell.ldap.asn1.*;
 
 /**
+ * Represents and LDAP Bind Response.
+ *
  *<pre>
  *       BindResponse ::= [APPLICATION 1] SEQUENCE {
  *

@@ -17,6 +17,8 @@ package com.novell.ldap.rfc2251;
 import com.novell.ldap.asn1.*;
 
 /**
+ * Represents an LDAP URL.
+ *
  *<pre>
  *        LDAPURL ::= LDAPString -- limited to characters permitted in URLs
  *</pre>

@@ -16,6 +16,8 @@
 package com.novell.ldap.rfc2251;
 
 /**
+ * Represents an LDAP Matching Rule ID.
+ *
  *<pre>
  *        MatchingRuleId ::= LDAPString
  *</pre>

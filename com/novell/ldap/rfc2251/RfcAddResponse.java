@@ -19,6 +19,8 @@ import java.io.InputStream;
 import com.novell.ldap.asn1.*;
 
 /**
+ * Represents the LDAP Add Response.
+ *
  *<pre>
  *       AddResponse ::= [APPLICATION 9] LDAPResult
  *</pre>

@@ -21,11 +21,15 @@ import com.novell.ldap.*;
 import com.novell.ldap.resources.*;
 
 /*
+ * Represents an LDAM MOdify DN Request.
+ *
+ *<pre>
  *       ModifyDNRequest ::= [APPLICATION 12] SEQUENCE {
  *               entry           LDAPDN,
  *               newrdn          RelativeLDAPDN,
  *               deleteoldrdn    BOOLEAN,
  *               newSuperior     [0] LDAPDN OPTIONAL }
+ *</pre>
  */
 public class RfcModifyDNRequest extends ASN1Sequence implements RfcRequest {
 

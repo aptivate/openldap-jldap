@@ -22,6 +22,9 @@ import com.novell.ldap.LDAPException;
 import com.novell.ldap.resources.*;
 
 /* 
+ * Represents an LDAP Filter.
+ *
+ *<pre>
  *       Filter ::= CHOICE {
  *               and             [0] SET OF Filter,
  *               or              [1] SET OF Filter,
@@ -33,6 +36,7 @@ import com.novell.ldap.resources.*;
  *               present         [7] AttributeDescription,
  *               approxMatch     [8] AttributeValueAssertion,
  *               extensibleMatch [9] MatchingRuleAssertion }
+ *</pre>
  */
 public class RfcFilter extends ASN1Choice {
 

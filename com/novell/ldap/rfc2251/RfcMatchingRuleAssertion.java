@@ -17,11 +17,15 @@ package com.novell.ldap.rfc2251;
 import com.novell.ldap.asn1.*;
 
 /*
+ * Represents an LDAP Matching Rule Assertion.
+ *
+ *<pre>
  *       MatchingRuleAssertion ::= SEQUENCE {
  *               matchingRule    [1] MatchingRuleId OPTIONAL,
  *               type            [2] AttributeDescription OPTIONAL,
  *               matchValue      [3] AssertionValue,
  *               dnAttributes    [4] BOOLEAN DEFAULT FALSE }
+ *</pre>
  */
 public class RfcMatchingRuleAssertion extends ASN1Sequence {
 

@@ -19,6 +19,8 @@ import java.io.InputStream;
 import com.novell.ldap.asn1.*;
 
 /**
+ * Represents an LDAP Modify DN Request.
+ *
  *<pre>
  *       ModifyDNResponse ::= [APPLICATION 13] LDAPResult
  *</pre>

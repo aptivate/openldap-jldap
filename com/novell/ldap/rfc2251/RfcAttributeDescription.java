@@ -19,7 +19,7 @@ import java.io.InputStream;
 import com.novell.ldap.asn1.*;
 
 /* 
- *
+ * Represents the LDAP Attribute Description.
  */
 public class RfcAttributeDescription extends RfcLDAPString {
 

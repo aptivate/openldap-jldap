@@ -20,6 +20,8 @@ import com.novell.ldap.*;
 import com.novell.ldap.resources.*;
 
 /**
+ * Represents the LDAP Unbind request.
+ *
  *<pre>
  *       UnbindRequest ::= [APPLICATION 2] NULL
  *</pre>

@@ -21,6 +21,8 @@ import com.novell.ldap.*;
 import com.novell.ldap.resources.*;
 
 /* 
+ * Represents the LDAP Add Request.
+ *
  *       AddRequest ::= [APPLICATION 8] SEQUENCE {
  *               entry           LDAPDN,
  *               attributes      AttributeList }

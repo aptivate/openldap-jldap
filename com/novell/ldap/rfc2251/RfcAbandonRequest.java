@@ -19,6 +19,8 @@ import com.novell.ldap.*;
 import com.novell.ldap.resources.*;
 
 /**
+ * Represents the LDAP Abandon Request.
+ *
  *<pre>
  *       AbandonRequest ::= [APPLICATION 16] MessageID
  *</pre>

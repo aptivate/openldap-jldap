@@ -20,6 +20,8 @@ import com.novell.ldap.*;
 import com.novell.ldap.resources.*;
 
 /**
+ * Represents an LDAP Delete Request.
+ *
  *<pre>
  *       DelRequest ::= [APPLICATION 10] LDAPDN
  *</pre>

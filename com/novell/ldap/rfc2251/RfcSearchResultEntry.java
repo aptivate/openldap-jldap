@@ -20,6 +20,8 @@ import com.novell.ldap.asn1.*;
 import com.novell.ldap.client.Debug;
 
 /**
+ * Represents an LDAP Search Result Entry.
+ *.
  *<pre>
  *       SearchResultEntry ::= [APPLICATION 4] SEQUENCE {
  *               objectName      LDAPDN,

@@ -20,6 +20,8 @@ import java.io.ByteArrayInputStream;
 import com.novell.ldap.asn1.*;
 
 /** 
+ * Represents an LDAP Extended Response.
+ *
  *<pre>
  *       ExtendedResponse ::= [APPLICATION 24] SEQUENCE {
  *               COMPONENTS OF LDAPResult,

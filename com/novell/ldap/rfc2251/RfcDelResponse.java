@@ -19,6 +19,8 @@ import java.io.InputStream;
 import com.novell.ldap.asn1.*;
 
 /** 
+ * Represents and LDAP Delete Response.
+ *
  *<pre>
  *       DelResponse ::= [APPLICATION 11] LDAPResult
  *</pre>

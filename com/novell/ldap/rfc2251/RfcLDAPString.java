@@ -20,7 +20,7 @@ import java.io.InputStream;
 import com.novell.ldap.asn1.*;
 
 /**
- *
+ * Represnts an LDAP String.
  */
 public class RfcLDAPString extends ASN1OctetString {
 

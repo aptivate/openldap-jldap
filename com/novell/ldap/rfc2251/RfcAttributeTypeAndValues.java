@@ -17,6 +17,8 @@ package com.novell.ldap.rfc2251;
 import com.novell.ldap.asn1.*;
 
 /**
+ * Represents and LDAP Attribute Type and Values.
+ *
  *<pre>
  *       AttributeTypeAndValues ::= SEQUENCE {
  *               type    AttributeDescription,

@@ -17,7 +17,7 @@ package com.novell.ldap.rfc2251;
 import com.novell.ldap.asn1.*;
 
 /* 
- *
+ * Represents an LDAP Attribute Value.
  */
 public class RfcAttributeValue extends ASN1OctetString {
 

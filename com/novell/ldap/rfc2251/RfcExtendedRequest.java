@@ -21,9 +21,13 @@ import com.novell.ldap.*;
 import com.novell.ldap.resources.*;
 
 /* 
+ * Represents an LDAP Extended Request.
+ *
+ *<pre>
  *       ExtendedRequest ::= [APPLICATION 23] SEQUENCE {
  *               requestName      [0] LDAPOID,
  *               requestValue     [1] OCTET STRING OPTIONAL }
+ *<pre>
  */
 public class RfcExtendedRequest extends ASN1Sequence implements RfcRequest {
 

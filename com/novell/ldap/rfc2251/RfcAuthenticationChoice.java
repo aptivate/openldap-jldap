@@ -17,6 +17,8 @@ package com.novell.ldap.rfc2251;
 import com.novell.ldap.asn1.*;
 
 /**
+ * Represents an LDAP Authentication Choice.
+ *
  *<pre>
  *        AuthenticationChoice ::= CHOICE {
  *               simple                  [0] OCTET STRING,

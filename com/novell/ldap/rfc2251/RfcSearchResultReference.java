@@ -21,7 +21,11 @@ import java.util.NoSuchElementException;
 import com.novell.ldap.asn1.*;
 
 /*
+ * Represents an LDAP Search Result Reference.
+ *
+ *<pre>
  *       SearchResultReference ::= [APPLICATION 19] SEQUENCE OF LDAPURL
+ *</pre>
  */
 public class RfcSearchResultReference extends ASN1SequenceOf
                                     implements Enumeration {
