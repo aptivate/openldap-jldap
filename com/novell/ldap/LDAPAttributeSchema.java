@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttributeSchema.java,v 1.7 2000/08/31 19:48:38 judy Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttributeSchema.java,v 1.8 2000/09/14 22:43:26 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -24,13 +24,13 @@ import java.io.IOException;
  * 4.2 public class LDAPAttributeSchema
  *                extends LDAPSchemaElement
  */
- 
+
 /**
- *  Represents the definition of an attribute in the schema. 
+ *  Represents the definition of an attribute in the schema.
  *
- *  <p>The LDAPAttributeSchema class is used to query for an attribute's syntax, 
+ *  <p>The LDAPAttributeSchema class is used to query for an attribute's syntax,
  *  to add an attribute definition to a directory's schema, and to delete an
- *  attribute definition from the schema. See RFC 2252 for a description of 
+ *  attribute definition from the schema. See RFC 2252 for a description of
  *  attribute representation in LDAP.</p>
  *
  */
@@ -111,40 +111,12 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
                    syntaxString = new String(parser.getSuperior());
                   single = parser.getSingle();
                   super.obsolete = parser.getObsolete();
-                  System.out.print( "     " + getName());
-                  if(aliases != null) {
-                   for( int i = 0; i < aliases.length; i++){
-                     System.out.print( " " + aliases[i]);
-                   }
-                  }
                   Enumeration qualifiers = parser.getQualifiers();
                   AttributeQualifier attrQualifier;
                   while(qualifiers.hasMoreElements()){
                    attrQualifier = (AttributeQualifier) qualifiers.nextElement();
                    setQualifier(attrQualifier.getName(), attrQualifier.getValues());
                   }
-                  System.out.print( " " + getID());
-                  System.out.print( " " + getDescription());
-                  System.out.print( " " + getSyntaxString());
-                  System.out.print( " " + getSuperior());
-                  System.out.print( " " + (isSingleValued() == true ? "Single Valued" : "MultiValued"));
-                  if( (qualifiers = getQualifierNames()) != null){
-                   String qualName;
-                    String[] qualValue;
-                    while( qualifiers.hasMoreElements() ) {
-                     qualName = (String)qualifiers.nextElement();
-                     System.out.print( " " + qualName);
-                     if((qualValue = getQualifier( qualName )) != null){
-                       for(int i = 0; i < qualValue.length; i++ ){
-                        System.out.print( " " + qualValue[i]);
-                       }
-                     }
-                    }
-                  }
-                  if(isObsolete())
-                   System.out.print( " " + "Obsolete");
-                  System.out.println("");
-                  System.out.println(getValue());
               }
               catch( IOException e){
               }

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSchema.java,v 1.7 2000/09/11 22:47:50 judy Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSchema.java,v 1.8 2000/09/29 22:17:41 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -21,7 +21,7 @@ import java.util.*;
 /*
  * 4.29 public class LDAPSchema
  */
- 
+
 /**
  *  Supports querying a directory server for its schema
  *  and for definitions of individual schema elements.
@@ -67,7 +67,6 @@ public class LDAPSchema {
     *                           message and an LDAP error code.
     */
    public void fetchSchema(LDAPConnection ld) throws LDAPException {
-
 		try{
 			fetchSchema(ld,"");
 		}
@@ -90,7 +89,7 @@ public class LDAPSchema {
     *                  the entry is queried to find the location of the
     *                  schema to be returned.
     *
-    *  @exception LDAPException A general exception which includes an error 
+    *  @exception LDAPException A general exception which includes an error
     *   message and an LDAP error code.
     */
    public void fetchSchema(LDAPConnection ld,
@@ -106,7 +105,7 @@ public class LDAPSchema {
 									attrSubSchema,
 									false);
 
-			if(sr.hasMoreElements())
+			if(sr != null && sr.hasMoreElements())
 			{
 				String schemaDN;
 				LDAPEntry ent = sr.next();
@@ -128,17 +127,15 @@ public class LDAPSchema {
 									false);
 
 						String attrName;
-						while(sr.hasMoreElements())
+						while(sr != null && sr.hasMoreElements())
 						{
 							ent = sr.next();
-							System.out.println( "Search returned: " + ent.getDN() );
 							attrSet = ent.getAttributeSet();
 							en = attrSet.getAttributes();
 							while(en.hasMoreElements())
 							{
 								attr = (LDAPAttribute) en.nextElement();
 								attrName = attr.getName();
-								System.out.println("Attr name = " + attrName);
 
 								if(attrName.equals("objectClass")){
 									enumString = attr.getStringValues();
@@ -146,7 +143,6 @@ public class LDAPSchema {
 									while(enumString.hasMoreElements())
 									{
 										value = (String) enumString.nextElement();
-										//System.out.println( "     " + value);
 									}
 								}
 								else if(attrName.equals("objectClasses")){
@@ -155,7 +151,6 @@ public class LDAPSchema {
 									while(enumString.hasMoreElements())
 									{
 										value = (String) enumString.nextElement();
-										//System.out.println( "     " + value);
 									}
 								}
 								else if(attrName.equals("attributeTypes")){
@@ -174,7 +169,6 @@ public class LDAPSchema {
 									while(enumString.hasMoreElements())
 									{
 										value = (String) enumString.nextElement();
-										System.out.println( "*****" + value);
 									}
 
 									continue;

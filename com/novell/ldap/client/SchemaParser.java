@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: LDAPSchemaElement.java,v 1.2 2000/03/14 18:17:29 smerrill Exp $
+ * $Id: SchemaParser.java,v 1.1 2000/05/17 19:03:46 bgudmundson Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -37,7 +37,6 @@ public class SchemaParser{
 
 	public SchemaParser( String rawString ) throws IOException {
 		this.rawString = rawString;
-                System.out.println(rawString);
   		StreamTokenizer st2 = new StreamTokenizer(new StringReader(rawString));
                 st2.ordinaryChar('.');
                 st2.ordinaryChars('0', '9');
