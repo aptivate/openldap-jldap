@@ -13,7 +13,11 @@
  ******************************************************************************
 -->
 <!-- ======================================================================= -->
-<!-- COM.NOVELL.LDAP.ASN1 build file                                                -->
+<!-- com.novell.ldap.asn1 build file                                         -->
+<!--                              											 -->
+<!-- Note: This makefile works only if other packages are already built.     -->
+<!--       It only does a debug build of files in the com.novell.ldap package-->
+<!--       It is typically used when checking for compile errors or debugging-->
 <!-- ======================================================================= -->
 <project name="LDAP.ASN1" default="compile" basedir=".">
 	<!-- Targets                                                             -->
@@ -37,10 +41,12 @@
 
 
     <!-- =================================================================== -->
-    <!-- clean class files                                                  -->
+    <!-- clean class files                                                   -->
     <!-- =================================================================== -->
     <target name="clean" depends="init">
-		<delete dir="${top}/${build}/com/novell/ldap/asn1" includes="*.class"/>
+		<delete>
+			<fileset dir="${top}/${build}/com/novell/ldap/asn1" includes="*.class"/>
+		</delete>
 	</target>
 
     <!-- =================================================================== -->
