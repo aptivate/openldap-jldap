@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: DOMWriter.java,v 1.3 2002/10/30 23:23:47 $
+ * $Novell: DOMWriter.java,v 1.4 2002/10/31 00:04:23 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -210,6 +210,8 @@ public class DOMWriter implements LDAPWriter
                 }
                 break;
         }
+        //if valid tag && write requestIDs is set.
+        e.setAttribute("requestID", ""+message.getMessageID());
         return e;
     }
 
@@ -316,6 +318,7 @@ public class DOMWriter implements LDAPWriter
              message.getType()==LDAPMessage.SEARCH_RESULT_REFERENCE))
         {
             searchNode = doc.createElement("searchResponse");
+            searchNode.setAttribute("requestID", ""+message.getMessageID());
             state = SEARCH_RESPONSE;
         }
 

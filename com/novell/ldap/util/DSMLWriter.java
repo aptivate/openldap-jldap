@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: DSMLWriter.java,v 1.13 2002/10/28 23:16:10 $
+ * $Novell: DSMLWriter.java,v 1.14 2002/10/30 23:23:47 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -31,7 +31,7 @@ public class DSMLWriter implements LDAPWriter {
     private static final int SEARCH_TAG = 3;
     private boolean indent = false;
     private String tabString = "    ";
-    private String version = "2.1";
+    private String version = "2.0";
 
     private static final String BATCH_REQUEST_START =
             "<batchRequest xmlns=\"urn:oasis:names:tc:DSML:2:0:core\">";
@@ -132,7 +132,7 @@ public class DSMLWriter implements LDAPWriter {
             case LDAPMessage.SEARCH_RESPONSE:
                 if (state != SEARCH_TAG){
                     newLine(1);
-                    out.write("<searchResponse>");
+                    writeTagWithID("searchResponse", messageToWrite);
                     state = SEARCH_TAG;
                 }
                 writeSearchResponse((LDAPSearchResult) messageToWrite);
@@ -140,7 +140,7 @@ public class DSMLWriter implements LDAPWriter {
             case LDAPMessage.SEARCH_RESULT_REFERENCE:
                 if (state != SEARCH_TAG){
                     newLine(1);
-                    out.write("<searchResponse>");
+                    writeTagWithID("searchResponse", messageToWrite);
                     state = SEARCH_TAG;
                 }
                 writeSearchResultReference(
@@ -149,10 +149,10 @@ public class DSMLWriter implements LDAPWriter {
             case LDAPMessage.SEARCH_RESULT:  //final search done message (or standard referral)
                 if (state != SEARCH_TAG){
                     newLine(1);
-                    out.write("<searchResponse>");
+                    writeTagWithID("searchResponse", messageToWrite);
                 }
                 newLine(2);
-                out.write("<searchResultDone>");
+                writeTagWithID("searchResultDone", messageToWrite);
                     writeResult((LDAPResponse)messageToWrite, 3);
                 newLine(2);
                 out.write("</searchResultDone>");
@@ -164,7 +164,7 @@ public class DSMLWriter implements LDAPWriter {
 
             case LDAPMessage.MODIFY_RESPONSE:
                 newLine(1);
-                out.write("<modifyResponse>");
+                writeTagWithID("modifyResponse", messageToWrite);
                 writeResult((LDAPResponse)messageToWrite, 2);
                 newLine(1);
                 out.write("</modifyResponse>");
@@ -172,7 +172,7 @@ public class DSMLWriter implements LDAPWriter {
 
             case LDAPMessage.ADD_RESPONSE:
                 newLine(1);
-                out.write("<addResponse>");
+                writeTagWithID("addResponse", messageToWrite);
                 writeResult((LDAPResponse)messageToWrite, 2);
                 newLine(1);
                 out.write("</addResponse>");
@@ -180,7 +180,7 @@ public class DSMLWriter implements LDAPWriter {
 
             case LDAPMessage.DEL_RESPONSE:
                 newLine(1);
-                out.write("<delResponse>");
+                writeTagWithID("delResponse", messageToWrite);
                 writeResult((LDAPResponse)messageToWrite, 2);
                 newLine(1);
                 out.write("</delResponse>");
@@ -188,14 +188,14 @@ public class DSMLWriter implements LDAPWriter {
 
             case LDAPMessage.MODIFY_RDN_RESPONSE:
                 newLine(1);
-                out.write("<modDNResponse>");
+                writeTagWithID("modDNResponse", messageToWrite);
                 writeResult((LDAPResponse)messageToWrite, 2);
                 newLine(1);
                 out.write("</modDNResponse>");
                 break;
             case LDAPMessage.COMPARE_RESPONSE:
                 newLine(1);
-                out.write("<compareResponse>");
+                writeTagWithID("compareResponse", messageToWrite);
                 writeResult((LDAPResponse)messageToWrite, 2);
                 newLine(1);
                 out.write("</compareResponse>");
@@ -204,7 +204,7 @@ public class DSMLWriter implements LDAPWriter {
                 newLine(1);
                 LDAPExtendedResponse xResp =
                         (LDAPExtendedResponse) messageToWrite;
-                out.write("<extendedResponse>");
+                writeTagWithID("extendedResponse", messageToWrite);
                 newLine(2);
 
                 out.write("<responseName>");
@@ -222,6 +222,12 @@ public class DSMLWriter implements LDAPWriter {
                 out.write("</extendedResponse>");
                 break;
         }
+    }
+
+    private void writeTagWithID(String tag, LDAPMessage message)
+            throws IOException
+    {
+        out.write("<" + tag + " requestID=\""+ message.getMessageID() +"\">");
     }
 
     /**
@@ -284,7 +290,8 @@ public class DSMLWriter implements LDAPWriter {
     {
         String[] refs = ref.getReferrals();
         newLine(2);
-        out.write("<searchResultReference>");
+        writeTagWithID("searchResultReference", ref);
+        //out.write("<searchResultReference>");
         for(int i=0; i< refs.length; i++){
             newLine(3);
             out.write("<ref>");
@@ -301,6 +308,8 @@ public class DSMLWriter implements LDAPWriter {
         newLine(2);
         out.write("<searchResultEntry dn=\"");
         out.write(entry.getDN());
+        out.write("\" requestID=\"");
+        out.write(""+result.getMessageID());
         out.write("\">");
         LDAPAttributeSet set = entry.getAttributeSet();
         Iterator i = set.iterator();
