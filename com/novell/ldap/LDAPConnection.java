@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.51 2000/11/03 18:52:59 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.52 2000/11/03 21:16:56 vtag Exp $
 *
 * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
 * 
@@ -414,6 +414,22 @@ public class LDAPConnection implements Cloneable
     }
 
 
+   /**
+    * Indicates if unsolicited messages from the server are accepted or 
+    * not. An unsolicited message has the ID 0. If unsolicited 
+    * notifications are enabled, unsolicited messages can be queried and 
+    * retrieved from a response listener with isResponseReceived(0) and 
+    * getResponse(0). The default is for unsolicited messages to be 
+    * discarded. 
+    *
+    * @return true if unsolicited notifications are enabled
+    */
+    public boolean getUnsolicitedNotifications()
+    {
+      throw new RuntimeException("Method LDAPConnection.getUnsolicitedNotifications not implemented");
+    }
+    
+    
    /**
     * Returns a copy of the set of search constraints associated with this
     * connection. These constraints apply to search operations performed

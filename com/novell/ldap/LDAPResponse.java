@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPResponse.java,v 1.17 2000/10/31 23:52:24 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPResponse.java,v 1.18 2000/11/03 23:16:31 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -175,8 +175,8 @@ public class LDAPResponse extends LDAPMessage
         case LDAPException.MORE_RESULTS_TO_RETURN:
         case LDAPException.CLIENT_LOOP:
         case LDAPException.REFERRAL_LIMIT_EXCEEDED:
-            ex = new LDAPException(getErrorMessage(), getMatchedDN(),
-                getResultCode());
+            ex = new LDAPException(getErrorMessage(),
+                getResultCode(), getMatchedDN());
             break;
         case LDAPException.REFERRAL:
             // only throw this if automatic referral handling has not been
@@ -191,8 +191,8 @@ public class LDAPResponse extends LDAPMessage
             ex = new LDAPReferralException(null, LDAPException.REFERRAL, refs);
             break;
         default: // unknown
-            ex = new LDAPException(getErrorMessage(), getMatchedDN(),
-                getResultCode());
+            ex = new LDAPException(getErrorMessage(),
+                getResultCode(), getMatchedDN());
             break;
         }
         return ex;

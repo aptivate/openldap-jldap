@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPException.java,v 1.14 2000/11/03 21:43:42 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPException.java,v 1.15 2000/11/03 22:22:30 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -105,7 +105,8 @@ import java.util.Locale;
  *   <li> TLS_NOT_SUPPORTED</li>
  */
  
-public class LDAPException extends Exception {
+public class LDAPException extends Exception
+{
 
    private int resultCode;
    private String errorMessage = null;
@@ -114,7 +115,8 @@ public class LDAPException extends Exception {
    /**
     * Constructs a default exception with no specific error information.
     */
-   public LDAPException() {
+   public LDAPException()
+   {
       super();
    }
 
@@ -127,15 +129,12 @@ public class LDAPException extends Exception {
     *<br><br>
     *  @param resultCode     The result code returned.
     */
-   public LDAPException(String message, int resultCode) {
+   public LDAPException(String message, int resultCode)
+   {
       super(message);
       this.resultCode = resultCode;
    }
 
-   /*
-    * this is not in the draft yet.
-    */
-    
    /**
     * Constructs an exception with an error code, a specified string,
     * and the matched part of the distinguished name of the entry from the 
@@ -143,20 +142,20 @@ public class LDAPException extends Exception {
     *
     *  @param message        The additional error information.
     *<br><br>
+    *  @param resultCode     The result code returned.
+    *<br><br>
     *  @param matchedDN      The part of the distinguished name that 
     *                        the server could match.
-    *<br><br>
-    *  @param resultCode     The result code returned.
-
     */
-   public LDAPException(String errorMessage, String matchedDN,
-                        int resultCode) {
+   public LDAPException(String errorMessage,
+                        int resultCode,
+                        String matchedDN)
+   {
       super(errorMessage);
       this.errorMessage = errorMessage;
       this.matchedDN = matchedDN;
       this.resultCode = resultCode;
    }
-
 
    /**
     * Returns a string representing the internal error code, in the default
@@ -164,7 +163,8 @@ public class LDAPException extends Exception {
     *
     * @return The message for the result code in the LDAPException object.
     */
-   public String errorCodeToString() {
+   public String errorCodeToString()
+   {
 		return errorStrings[resultCode];
    }
 
@@ -177,7 +177,8 @@ public class LDAPException extends Exception {
     * @return The message corresponding to the specified error code, or 
     *         null if the error code doesn't exist.
     */
-   public static String errorCodeToString( int code ) {
+   public static String errorCodeToString( int code )
+   {
       return errorStrings[code];
    }
 
@@ -193,7 +194,8 @@ public class LDAPException extends Exception {
     * for the requested locale.
 
     */
-   public String errorCodeToString( Locale locale ) {
+   public String errorCodeToString( Locale locale )
+   {
       throw new RuntimeException("errorCodeToString( Locale ) not implemented");
    }
 
@@ -211,7 +213,8 @@ public class LDAPException extends Exception {
     *  specified locale, or null if the message is not available
     *  for the requested locale or the error code doesn't exist.
     */
-   public static String errorCodeToString( int code, Locale locale ) {
+   public static String errorCodeToString( int code, Locale locale )
+   {
       throw new RuntimeException("errorCodeToString( code, Locale ) not implemented");
    }
 
@@ -224,7 +227,8 @@ public class LDAPException extends Exception {
     * @return The error message or null if the message was not set.
     * 
     */
-   public String getLDAPErrorMessage() {
+   public String getLDAPErrorMessage()
+   {
       return errorMessage;
    }
 
@@ -237,7 +241,8 @@ public class LDAPException extends Exception {
     * code will be one of those defined for the class. Otherwise, a local error
     * code is returned. </p>
     */
-   public int getLDAPResultCode() {
+   public int getLDAPResultCode()
+   {
       return resultCode;
    }
 
@@ -259,7 +264,8 @@ public class LDAPException extends Exception {
     *@return The part of a submitted distinguished name which could be
     * matched by the server or null if the error is a local error.
     */
-   public String getMatchedDN() {
+   public String getMatchedDN()
+   {
       return matchedDN;
    }
 
@@ -913,7 +919,8 @@ public class LDAPException extends Exception {
 	 * When debugging an object class, converts the integer value 
      * to a string, in the default locale.
 	 */
-	public String toString() {
+	public String toString()
+	{
 		return super.toString() + ": (" + resultCode + ") " +
 			    errorCodeToString();
 	}
