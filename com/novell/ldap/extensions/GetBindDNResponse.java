@@ -14,9 +14,11 @@
  ******************************************************************************/
 package com.novell.ldap.extensions;
 
-import com.novell.ldap.*;
-import com.novell.ldap.asn1.*;
-import com.novell.ldap.rfc2251.*;
+import com.novell.ldap.LDAPExtendedResponse;
+import com.novell.ldap.LDAPException;
+import com.novell.ldap.asn1.LBERDecoder;
+import com.novell.ldap.asn1.ASN1OctetString;
+import com.novell.ldap.rfc2251.RfcLDAPMessage;
 import java.io.IOException;
 
 /**
@@ -25,7 +27,7 @@ import java.io.IOException;
  *  <p>An object in this class is generated from an LDAPExtendedResponse object
  *  using the ExtendedResponseFactory class.</p>
  *
- * <p>The GetContextIdentityNameResponse extension uses the following OID:<br>
+ * <p>The GetBindDNResponse extension uses the following OID:<br>
  *  &nbsp;&nbsp;&nbsp;2.16.840.1.113719.1.27.100.32 </p>
  *
  */
@@ -35,7 +37,7 @@ public class GetBindDNResponse extends LDAPExtendedResponse {
    private String identity;
 
    /**
-    * Constructs an object from the responseValue which contains the identity.
+    * Constructs an object from the responseValue which contains the bind dn.
     *
     *  <p>The constructor parses the responseValue which has the following
     *  format:<br>
@@ -80,7 +82,7 @@ public class GetBindDNResponse extends LDAPExtendedResponse {
    /**
     * Returns the identity of the object.
     *
-    * @return A string value specifying the identity returned by the server.
+    * @return A string value specifying the bind dn returned by the server.
     */
    public String getIdentity() {
         return identity;
