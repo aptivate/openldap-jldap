@@ -21,9 +21,19 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import com.novell.sasl.*;
+import javax.security.auth.callback.CallbackHandler;
+
+import com.novell.ldap.*;
+import com.novell.ldap.asn1.*;
+import com.novell.ldap.client.*;
 import com.novell.ldap.client.BindProperties;
 import com.novell.ldap.client.Debug;
 import com.novell.ldap.client.ReferralInfo;
+import com.novell.ldap.rfc2251.RfcBindRequest;
+import com.novell.ldap.rfc2251.RfcBindResponse;
+
+//import com.novell.ldap.message.*;
 import com.novell.ldap.resources.ExceptionMessages;
 
 /**
@@ -99,25 +109,6 @@ public class LDAPConnection implements Cloneable
      *<p>ALL_USER_ATTRS = "*"</p>
      */
     public static final String ALL_USER_ATTRS = "*";
-
-    /**
-     * Specifies the LDAPv2 protocol version when performing a bind operation.
-     *
-     * <p>Specifies LDAP version V2 of the protocol, and is specified
-     * when performing bind operations.  It may work
-     * in some circumstances, but is not supported.
-     * Use protocol version {@link #LDAP_V3}</p>
-     *
-     * @deprecated use {@link #LDAP_V3}
-     *<p>LDAP_V2 = 2</p>
-     *
-     * @see #LDAP_V3
-     * @see #bind(int, String, byte[])
-     * @see #bind(int, String, byte[], LDAPConstraints)
-     * @see #bind(int, String, byte[], LDAPResponseQueue)
-     * @see #bind(int, String, byte[], LDAPResponseQueue, LDAPConstraints)
-     */
-    public static final int LDAP_V2 = 2;
 
     /**
      * Specifies the LDAPv3 protocol version when performing a bind operation.
@@ -1134,7 +1125,7 @@ public class LDAPConnection implements Cloneable
      *  @exception LDAPException A general exception which includes an error
      *  message and an LDAP error code.
      *
-     * @see #bind(int, String, byte[])
+     * @deprecated replaced by {@link #bind(int, String, byte[])}
      */
     public void bind(String dn,
                      String passwd)
@@ -1175,7 +1166,7 @@ public class LDAPConnection implements Cloneable
      *  @exception LDAPException A general exception which includes an error
      *  message and an LDAP error code.
      *
-     * @see #bind(int, String, byte[])
+     * @deprecated replaced by {@link #bind(int, String, byte[])}
      */
     public void bind(int version,
                      String dn,
@@ -1215,7 +1206,7 @@ public class LDAPConnection implements Cloneable
      *  @exception LDAPException A general exception which includes an error
      *  message and an LDAP error code.
      *
-     * @see #bind(int, String, byte[], LDAPConstraints)
+     * @deprecated replaced by {@link #bind(int, String, byte[], LDAPConstraints)}
      */
     public void bind(String dn,
                      String passwd,
@@ -1259,7 +1250,8 @@ public class LDAPConnection implements Cloneable
      *  @exception LDAPException A general exception which includes an error
      *  message and an LDAP error code.
      *
-     * @see #bind(int, String, byte[], LDAPConstraints)
+     * @deprecated replaced by 
+     * {@link #bind(int, String, byte[], LDAPConstraints)}
      */
     public void bind(int version,
                      String dn,
@@ -1692,10 +1684,159 @@ public class LDAPConnection implements Cloneable
             Debug.trace( Debug.apiRequests, name +
             "saslBind(" + dn + ")");
         }
-        //"LDAPConnection.bind(with mechanisms) is not Implemented."
-        throw new LDAPLocalException(ExceptionMessages.NOT_IMPLEMENTED,
-            new Object[] {"LDAPConnection.bind(with mechanisms)"},
-            LDAPException.LDAP_NOT_SUPPORTED);
+
+        if(cons == null)
+            cons = defSearchCons;
+
+        if(dn == null)
+            dn = "";
+
+        if (authzId == null)
+            authzId = "";
+
+        try
+        {
+            SaslClient saslClient = Sasl.createSaslClient(mechanisms,
+                                                     authzId,
+                                                     "ldap",
+                                                     this.getHost(),
+                                                     props,
+                                                     (CallbackHandler)cbh);
+            if (saslClient == null)
+            {
+                throw new LDAPException(
+                      "Unsupported SASL mechanism(s) and/or properties",
+                      LDAPException.AUTH_METHOD_NOT_SUPPORTED,(String) null);
+            }
+            else
+            {
+                byte[]  clientResponse = null;
+                boolean anonymous = false;
+           		BindProperties bindProps = new BindProperties(LDAP_V3,
+           		                                              null,
+           		                                              "sasl",
+           		                                              anonymous,
+           		                                              null,
+           		                                              null);
+                if (saslClient.hasInitialResponse())
+                {
+                    clientResponse = saslClient.evaluateChallenge(new 
+                                                                  byte[0]);
+                }
+                //byte[] replyBuf = null;
+                while(!saslClient.isComplete())
+                {
+                    try
+                    {
+                        byte[] replyBuf = LDAPTransport(
+                                              clientResponse,
+                                              saslClient.getMechanismName(),
+                                              bindProps);
+                                              
+                        if(replyBuf!=null)
+                        {
+                            clientResponse = saslClient.evaluateChallenge(
+                                                                 replyBuf);
+                        }
+                        else
+                        {
+                            clientResponse = saslClient.evaluateChallenge(
+                                                              new byte[0]);
+                        }
+                    }
+                    catch(SaslException e)
+                    {
+                        throw new LDAPException("Unexpected SASL error.",
+                                                 LDAPException.OTHER,
+                                                 e.toString());
+                    }
+                    catch(LDAPException lde)                                   
+                    {
+                    // This call will free the NMASClient thread which is 
+                    // blocked waiting for the transport to finish        
+                        saslClient.dispose();
+                        throw lde;                         
+
+                    }
+                }
+            }
+        }
+        catch (SaslException eSasl)
+        {
+            throw new LDAPException("Unexpected SASL error.", 
+                                     LDAPException.OTHER,
+                                     (String)null,
+                                     eSasl.getCause());
+        }
+
+        //LDAP Bind complete
+    }
+
+    /**
+     * Implements a LDAP Transport method which recives requests from the
+     * saslClient and send Data to the LDAP server and returns the response
+     * back to the saslClient
+     *
+     * @param toWrite   request received from saslClient in a byte array
+     * @param mechanism Name of the saslClient  Mechanism 
+     * @param bindProps Bindproperties
+     *
+     * @return  Response reived from the LDAP server in a byte array
+     *
+     * @exception LDAPException A general exception which includes an error
+     *  message and an LDAP error code.
+     */
+    private byte[] LDAPTransport( byte[] toWrite,
+                                  String mechanism, 
+                                  BindProperties bindProps)
+            throws LDAPException
+	{
+
+	    LDAPMessage     msg;
+		int             msgId;
+		RfcBindResponse bindResponse;
+		LDAPConstraints cons;
+		ASN1OctetString serverCreds;
+
+		cons = defSearchCons;
+		msg = new LDAPMessage(LDAPMessage.BIND_REQUEST,
+			     			  new RfcBindRequest(LDAP_V3,
+			     			                     "",
+			     			                     mechanism,toWrite),
+							  cons.getControls());
+							  
+		msgId = msg.getMessageID();
+		conn.acquireWriteSemaphore(msgId);
+   		LDAPResponseQueue queue = sendRequestToServer(msg,
+   		                                              cons.getTimeLimit(),
+   		                                              null,
+   		                                              bindProps);
+		LDAPResponse ldapResponse = (LDAPResponse)queue.getResponse();
+		bindResponse = (RfcBindResponse)ldapResponse.getASN1Object().get(1);
+		serverCreds = bindResponse.getServerSaslCreds();
+		int resultCode = ldapResponse.getResultCode();
+		
+        if ((resultCode == LDAPException.SASL_BIND_IN_PROGRESS) ||
+            (resultCode == LDAPException.SUCCESS))
+        {
+			if (serverCreds != null)
+            {
+                byte[] replyBuf = serverCreds.byteValue();
+                int actualReplyLength = replyBuf.length;
+                if ( actualReplyLength > 0 )
+                {
+                    return replyBuf;
+                }
+            }
+            // Otherwise just return null
+            return null;
+            }
+            else{
+               ldapResponse.chkResultCode();
+               throw new LDAPException("Unexpected SASL error.", 
+                                        LDAPException.OTHER,
+                                        (String) null);
+            }
     }
 
     //*************************************************************************
@@ -1930,10 +2071,8 @@ public class LDAPConnection implements Cloneable
                                     address.substring(colonIndex+1));
                         address =   address.substring(0, colonIndex);
                     }catch (Exception e){
-                        throw new LDAPLocalException(
-                                ExceptionMessages.INVALID_ADDRESS,
-                                new Object[] { address },
-                                LDAPException.PARAM_ERROR);
+                          throw new IllegalArgumentException(
+                                     ExceptionMessages.INVALID_ADDRESS);
                     }
                 }
                 // This may return a different conn object
@@ -2058,8 +2197,8 @@ public class LDAPConnection implements Cloneable
         }
         if(dn == null) {
             // Invalid DN parameter
-            throw new LDAPLocalException(ExceptionMessages.DN_PARAM_ERROR,
-                                    LDAPException.PARAM_ERROR);
+            throw new IllegalArgumentException(
+                                     ExceptionMessages.DN_PARAM_ERROR);
         }
 
         if(cons == null)
@@ -2295,8 +2434,8 @@ public class LDAPConnection implements Cloneable
         // error check the parameters
         if (op.getID() == null) {
             // Invalid extended operation parameter, no OID specified
-            throw new LDAPLocalException(ExceptionMessages.OP_PARAM_ERROR,
-                                    LDAPException.PARAM_ERROR);
+            throw new IllegalArgumentException(
+                                     ExceptionMessages.OP_PARAM_ERROR);
         }
 
         return new LDAPExtendedRequest(op, cons.getControls());
@@ -2632,8 +2771,8 @@ public class LDAPConnection implements Cloneable
         }
         if(dn == null) {
             // Invalid DN parameter
-            throw new LDAPLocalException(ExceptionMessages.DN_PARAM_ERROR,
-                                    LDAPException.PARAM_ERROR);
+            throw new IllegalArgumentException(
+                                     ExceptionMessages.DN_PARAM_ERROR);
         }
 
         if(cons == null)
@@ -2735,9 +2874,9 @@ public class LDAPConnection implements Cloneable
                                       attrs, false, cons);
 
         LDAPEntry ret = null;
-        if( sr.hasMoreElements()) {
+        if( sr.hasMore()) {
             ret = sr.next();
-            if( sr.hasMoreElements()) {
+            if( sr.hasMore()) {
                 // "Read response is ambiguous, multiple entries returned"
                 throw new LDAPLocalException(ExceptionMessages.READ_MULTIPLE,
                                     LDAPException.AMBIGUOUS_RESPONSE);
@@ -3084,8 +3223,8 @@ public class LDAPConnection implements Cloneable
     {
         if(dn == null || newRdn == null) {
             // Invalid DN or RDN parameter
-            throw new LDAPLocalException(ExceptionMessages.RDN_PARAM_ERROR,
-                                    LDAPException.PARAM_ERROR);
+            throw new IllegalArgumentException(
+                                     ExceptionMessages.RDN_PARAM_ERROR);
         }
 
         if( Debug.LDAP_DEBUG) {
@@ -3570,8 +3709,7 @@ public class LDAPConnection implements Cloneable
         LDAPReferralHandler rh = defSearchCons.getReferralHandler();
         int i = 0;
         // Check if we use LDAPRebind to get authentication credentials
-        if( (rh == null) || (rh instanceof LDAPRebind) ||
-                                        (rh instanceof LDAPAuthHandler)) {
+        if( (rh == null) ||      (rh instanceof LDAPAuthHandler)) {
             for( i = 0; i < referrals.length; i++) {
                 // dn, pw are null in the default case (anonymous bind)
                 String dn = null;
@@ -3594,17 +3732,6 @@ public class LDAPConnection implements Cloneable
                                         url.getHost(),url.getPort());
                             dn = ap.getDN();
                             pw = ap.getPassword();
-                        } else {
-                            // This is an instance of LDAPRebind, deprecated
-                            LDAPRebindAuth ra =
-                                    ((LDAPRebind)rh).getRebindAuthentication(
-                                        url.getHost(),url.getPort());
-                            dn = ra.getDN();
-                            try {
-                                pw = ra.getPassword().getBytes("UTF8");
-                            } catch( UnsupportedEncodingException ux) {
-                                throw new RuntimeException( ux.toString());
-                            }
                         }
                     }
                     rconn.bind( LDAP_V3, dn, pw);
@@ -3640,7 +3767,7 @@ public class LDAPConnection implements Cloneable
                                                 "getReferralConnection: " +
                                                 "Call LDAPBind.bind()");
                 }
-                rconn = ((LDAPBind)rh).bind( referrals, this);
+                rconn = ((LDAPBindHandler)rh).bind( referrals, this);
                 if( rconn == null) {
                     LDAPReferralException rex = new LDAPReferralException(
                         ExceptionMessages.REFERRAL_ERROR);
@@ -4116,777 +4243,4 @@ public class LDAPConnection implements Cloneable
         return values[0];
    }
 
-
-    //*************************************************************************
-    // deprecated methods
-    //*************************************************************************
-
-    /**
-     * Abandons all outstanding operations managed by the queue.
-     *
-     * <p>This method has been changed to use the LDAPMessageQueue parameter
-     * as of IETF draft 17 of the Java LDAP API
-     * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-     * from the LDAP Classes for Java API in the fall of 2003.</p>
-     *
-     * @deprecated replaced by {@link #abandon(LDAPMessageQueue)}.
-     */
-    public void abandon( LDAPListener queue)
-        throws LDAPException
-    {
-        abandon( (LDAPMessageQueue)queue, defSearchCons);
-        return;
-    }
-
-    /**
-     * Abandons all outstanding operations managed by the listener.
-     *
-     * <p>This method has been changed to use the LDAPMessageQueue parameter
-     * as of IETF draft 17 of the Java LDAP API
-     * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-     * from the LDAP Classes for Java API in the fall of 2003.</p>
-     *
-     * @deprecated replaced by
-     * {@link #abandon(LDAPMessageQueue, LDAPConstraints)}.
-     */
-    public void abandon( LDAPListener queue, LDAPConstraints cons)
-        throws LDAPException
-    {
-        abandon( (LDAPMessageQueue)queue, cons);
-        return;
-    }
-
-    /**
-     * Asynchronously adds an entry to the directory.
-     *
-     * <p>This method has been changed to use the LDAPMessageQueue parameter
-     * as of IETF draft 17 of the Java LDAP API
-     * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-     * from the LDAP Classes for Java API in the fall of 2003.</p>
-     *
-     * @deprecated replaced by {@link #add(LDAPEntry, LDAPResponseQueue)}.
-     */
-    public LDAPResponseListener add(LDAPEntry entry, LDAPResponseListener queue)
-        throws LDAPException
-    {
-        return add(entry, (LDAPResponseQueue)queue, defSearchCons);
-    }
-
-    /**
-     * Asynchronously adds an entry to the directory, using the specified
-     * constraints.
-     *
-     * <p>This method has been changed to use the LDAPMessageQueue parameter
-     * as of IETF draft 17 of the Java LDAP API
-     * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-     * from the LDAP Classes for Java API in the fall of 2003.</p>
-     *
-     * @deprecated replaced by
-     * {@link #add(LDAPEntry, LDAPResponseQueue, LDAPConstraints)}.
-     */
-    public LDAPResponseListener add(LDAPEntry entry,
-                                    LDAPResponseListener queue,
-                                    LDAPConstraints cons)
-        throws LDAPException
-    {
-        return add(entry, (LDAPResponseQueue)queue, cons);
-    }
-
-    /**
-     * Asynchronously compares an attribute value with one in the directory,
-     * using the specified queue.
-     *
-     * <p>This method has been changed to use the LDAPMessageQueue parameter
-     * as of IETF draft 17 of the Java LDAP API
-     * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-     * from the LDAP Classes for Java API in the fall of 2003.</p>
-     *
-     * @deprecated replaced by
-     * {@link #compare(String, LDAPAttribute, LDAPResponseQueue)}.
-     */
-    public LDAPResponseListener compare(String dn,
-                                        LDAPAttribute attr,
-                                        LDAPResponseListener queue)
-        throws LDAPException
-    {
-        return compare(dn, attr, (LDAPResponseQueue)queue, defSearchCons);
-    }
-
-    /**
-     * Asynchronously compares an attribute value with one in the directory,
-     * using the specified queue and contraints.
-     *
-     * <p>This method has been modified to use the LDAPMessageQueue parameter
-     * as of IETF draft 17 of the Java LDAP API
-     * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-     * from the LDAP Classes for Java API in the fall of 2003.</p>
-     *
-     * @deprecated replaced by {@link #compare(String, LDAPAttribute,
-                            LDAPResponseQueue, LDAPConstraints)}.
-     */
-    public LDAPResponseListener compare(String dn,
-                                        LDAPAttribute attr,
-                                        LDAPResponseListener queue,
-                                        LDAPConstraints cons)
-        throws LDAPException
-    {
-        return compare( dn, attr, (LDAPResponseQueue)queue, cons);
-    }
-
-    /**
-     * Asynchronously deletes the entry with the specified distinguished name
-     * from the directory and returns the results to the specified queue.
-     *
-     * <p>This method has been changed to use the LDAPMessageQueue parameter
-     * as of IETF draft 17 of the Java LDAP API
-     * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-     * from the LDAP Classes for Java API in the fall of 2003.</p>
-     *
-     * @deprecated replaced by {@link #delete(String, LDAPResponseQueue)}.
-     */
-    public LDAPResponseListener delete(String dn, LDAPResponseListener queue)
-        throws LDAPException
-    {
-        return delete(dn, (LDAPResponseQueue)queue, defSearchCons);
-    }
-
-    /**
-     * Asynchronously deletes the entry with the specified distinguished name
-     * from the directory, using the specified contraints and queue.
-     *
-     * <p>This method has been changed to use the LDAPMessageQueue parameter
-     * as of IETF draft 17 of the Java LDAP API
-     * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-     * from the LDAP Classes for Java API in the fall of 2003.</p>
-     *
-     * @deprecated replaced by
-     * {@link #delete(String, LDAPResponseQueue, LDAPConstraints)}.
-     */
-    public LDAPResponseListener delete(String dn,
-                                    LDAPResponseListener queue,
-                                    LDAPConstraints cons)
-        throws LDAPException
-    {
-        return delete( dn, (LDAPResponseQueue)queue, cons);
-    }
-
-    /**
-     * Provides an asynchronous means to access extended, non-mandatory
-     * operations offered by a particular LDAPv3 compliant server.
-     *
-     * <p>This method has been changed to use the LDAPMessageQueue parameter
-     * as of IETF draft 17 of the Java LDAP API
-     * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-     * from the LDAP Classes for Java API in the fall of 2003.</p>
-     *
-     * @deprecated replaced by
-     * {@link #extendedOperation(LDAPExtendedOperation, LDAPResponseQueue)}.
-     */
-    public LDAPResponseListener extendedOperation(LDAPExtendedOperation op,
-                                     LDAPResponseListener queue)
-        throws LDAPException
-    {
-
-        return extendedOperation(op, defSearchCons, (LDAPResponseQueue)queue);
-    }
-
-    /**
-     * Provides an asynchronous means to access extended, non-mandatory
-     * operations offered by a particular LDAPv3 compliant server.
-     *
-     * <p>This method has been changed to use the LDAPMessageQueue parameter
-     * as of IETF draft 17 of the Java LDAP API
-     * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-     * in the fall of 2003.</p>
-     *
-     * @deprecated replaced by {@link #extendedOperation(LDAPExtendedOperation,
-     *   LDAPConstraints, LDAPResponseQueue)}.
-     */
-    public LDAPResponseListener extendedOperation(LDAPExtendedOperation op,
-                                                  LDAPConstraints cons,
-                                                  LDAPResponseListener queue)
-        throws LDAPException
-    {
-        return extendedOperation(op, cons, (LDAPResponseQueue)queue);
-    }
-
-    /**
-     * Asynchronously makes a single change to an existing entry in the
-     * directory.
-     *
-     * <p>This method has been changed to use the LDAPMessageQueue parameter
-     * as of IETF draft 17 of the Java LDAP API
-     * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-     * from the LDAP Classes for Java API in the fall of 2003.</p>
-     *
-     * @deprecated replaced by
-     * {@link #modify(String, LDAPModification, LDAPResponseQueue)}.
-     */
-    public LDAPResponseListener modify(String dn,
-                                       LDAPModification mod,
-                                       LDAPResponseListener queue)
-        throws LDAPException
-    {
-        return modify(dn, mod, (LDAPResponseQueue)queue, defSearchCons);
-    }
-
-    /**
-     * Asynchronously makes a single change to an existing entry in the
-     * directory, using the specified constraints and queue.
-     *
-     * <p>This method has been modified to use the LDAPMessageQueue parameter
-     * as of IETF draft 17 of the Java LDAP API
-     * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-     * from the LDAP Classes for Java API in the fall of 2003.</p>
-     *
-     * @deprecated replaced by
-     * {@link #modify(String, LDAPModification, LDAPResponseQueue,
-     * LDAPConstraints)}.
-     */
-    public LDAPResponseListener modify(String dn,
-                                       LDAPModification mod,
-                                       LDAPResponseListener queue,
-                                       LDAPConstraints cons)
-        throws LDAPException
-    {
-        return modify(dn, mod, (LDAPResponseQueue)queue, cons);
-    }
-
-    /**
-     * Asynchronously makes a set of changes to an existing entry in the
-     * directory.
-     *
-     * <p>This method has been changed to use the LDAPMessageQueue parameter
-     * as of IETF draft 17 of the Java LDAP API
-     * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-     * from the LDAP Classes for Java API in the fall of 2003.</p>
-     *
-     * @deprecated replaced by
-     * {@link #modify(String, LDAPModification[], LDAPResponseQueue)}.
-     */
-    public LDAPResponseListener modify(String dn,
-                                       LDAPModificationSet mods,
-                                       LDAPResponseListener queue)
-        throws LDAPException
-    {
-        return modify(dn, mods.toArray(), (LDAPResponseQueue)queue);
-    }
-
-    /**
-     * Asynchronously makes a set of changes to an existing entry in the
-     * directory, using the specified constraints and queue.
-     *
-     * <p>This method has been modified to use the LDAPMessageQueue parameter
-     * as of IETF draft 17 of the Java LDAP API
-     * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-     * from the LDAP Classes for Java API in the fall of 2003.</p>
-     *
-     * @deprecated replaced by
-     * {@link #modify(String, LDAPModification[],
-     *  LDAPResponseQueue, LDAPConstraints)}.
-     */
-    public LDAPResponseListener modify(String dn,
-                                       LDAPModificationSet mods,
-                                       LDAPResponseListener queue,
-                                       LDAPConstraints cons)
-        throws LDAPException
-    {
-        return modify(dn, mods.toArray(), (LDAPResponseQueue)queue, cons);
-    }
-
-    /**
-     * Synchronously makes a set of changes to an existing entry in the
-     * directory.
-     *
-     * <p>This method has been changed to use the LDAPModificaton[] parameter
-     * as of IETF draft 17 of the Java LDAP API
-     * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-     * from the LDAP Classes for Java API in the fall of 2003.</p>
-     *
-     * @deprecated replaced by {@link #modify(String, LDAPModification[])}
-     */
-    public void modify(String dn, LDAPModificationSet mods)
-        throws LDAPException
-    {
-        modify(dn, mods.toArray(), defSearchCons);
-        return;
-    }
-
-    /**
-     * Synchronously makes a set of changes to an existing entry in the
-     * directory, using the specified constraints.
-     *
-     * <p>This method has been changed to use the LDAPModificaton[] parameter
-     * as of IETF draft 17 of the Java LDAP API
-     * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-     * from the LDAP Classes for Java API in the fall of 2003.</p>
-     *
-     * @deprecated replaced by
-     * {@link #modify(String, LDAPModification[], LDAPConstraints)}
-     */
-    public void modify(String dn,
-                       LDAPModificationSet mods,
-                       LDAPConstraints cons)
-        throws LDAPException
-    {
-        modify( dn, mods.toArray(), cons);
-        return;
-    }
-
-    /**
-     * Asynchronously renames an existing entry in the directory.
-     *
-     * <p>This method has been changed to use the LDAPMessageQueue parameter
-     * as of IETF draft 17 of the Java LDAP API
-     * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-     * from the LDAP Classes for Java API in the fall of 2003.</p>
-     *
-     * @deprecated replaced by
-     * {@link #rename(String, String, boolean, LDAPResponseQueue)}.
-     */
-    public LDAPResponseListener rename(String dn,
-                                       String newRdn,
-                                       boolean deleteOldRdn,
-                                       LDAPResponseListener queue)
-        throws LDAPException
-    {
-        return rename(dn, newRdn, deleteOldRdn,
-                                (LDAPResponseQueue)queue, defSearchCons);
-    }
-
-    /**
-     * Asynchronously renames an existing entry in the directory, using the
-     * specified constraints.
-     *
-     * <p>This method has been modified to use the LDAPMessageQueue parameter
-     * as of IETF draft 17 of the Java LDAP API
-     * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-     * from the LDAP Classes for Java API in the fall of 2003.</p>
-     *
-     * @deprecated replaced by
-     * {@link #rename(String, String, boolean, LDAPResponseQueue,
-     *  LDAPConstraints)}.
-     */
-    public LDAPResponseListener rename(String dn,
-                                       String newRdn,
-                                       boolean deleteOldRdn,
-                                       LDAPResponseListener queue,
-                                       LDAPConstraints cons)
-        throws LDAPException
-    {
-        return rename(dn, newRdn, null, deleteOldRdn,
-                                            (LDAPResponseQueue)queue, cons);
-    }
-
-    /**
-     * Asynchronously renames an existing entry in the directory, possibly
-     * repositioning the entry in the directory.
-     *
-     * <p>This method has been modified to use the LDAPMessageQueue parameter
-     * as of IETF draft 17 of the Java LDAP API
-     * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-     * from the LDAP Classes for Java API in the fall of 2003.</p>
-     *
-     * @deprecated replaced by {@link #rename(String, String, String, boolean,
-     *    LDAPResponseQueue)}.
-     */
-    public LDAPResponseListener rename(String dn,
-                                       String newRdn,
-                                       String newParentdn,
-                                       boolean deleteOldRdn,
-                                       LDAPResponseListener queue)
-        throws LDAPException
-    {
-        return rename(dn, newRdn, newParentdn, deleteOldRdn,
-                                       (LDAPResponseQueue)queue, defSearchCons);
-    }
-
-    /**
-     * Asynchronously renames an existing entry in the directory, using the
-     * specified constraints and possibily repositioning the entry in the
-     * directory.
-     *
-     * <p>This method has been modified to use the LDAPMessageQueue parameter
-     * as of IETF draft 17 of the Java LDAP API
-     * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-     * from the LDAP Classes for Java API in the fall of 2003.</p>
-     *
-     * @deprecated replaced by {@link #rename(String, String, String, boolean,
-     *    LDAPResponseQueue, LDAPConstraints)}.
-     */
-    public LDAPResponseListener rename(String dn,
-                                       String newRdn,
-                                       String newParentdn,
-                                       boolean deleteOldRdn,
-                                       LDAPResponseListener queue,
-                                       LDAPConstraints cons)
-        throws LDAPException
-    {
-        return rename(dn, newRdn, newParentdn, deleteOldRdn,
-                                            (LDAPResponseQueue)queue, cons);
-    }
-
-    /**
-     * Asynchronously performs the search specified by the parameters.
-     *
-     * <p>This method has been modified to use the LDAPMessageQueue parameter
-     * as of IETF draft 17 of the Java LDAP API
-     * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-     * from the LDAP Classes for Java API in the fall of 2003.</p>
-     *
-     * @deprecated replaced by {@link #search(String, int, String, String[], boolean,
-     *   LDAPSearchQueue)}.
-     */
-    public LDAPSearchListener search(String base,
-                                     int scope,
-                                     String filter,
-                                     String[] attrs,
-                                     boolean typesOnly,
-                                     LDAPSearchListener queue)
-        throws LDAPException
-    {
-        return search(base, scope, filter, attrs, typesOnly, queue, defSearchCons);
-    }
-
-    /**
-     * Asynchronously performs the search specified by the parameters,
-     * also allowing specification of constraints for the search (such
-     * as the maximum number of entries to find or the maximum time to
-     * wait for search results).
-     *
-     * <p>This method has been modified to use the LDAPMessageQueue parameter
-     * as of IETF draft 17 of the Java LDAP API
-     * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-     * from the LDAP Classes for Java API in the fall of 2003.</p>
-     *
-     * @deprecated replaced by {@link #search(String, int, String, String[], boolean,
-     *   LDAPSearchQueue, LDAPSearchConstraints)}.
-     */
-    public LDAPSearchListener search(String base,
-                                     int scope,
-                                     String filter,
-                                     String[] attrs,
-                                     boolean typesOnly,
-                                     LDAPSearchListener queue,
-                                     LDAPSearchConstraints cons)
-        throws LDAPException
-    {
-        return search(base, scope, filter, attrs, typesOnly,
-                      (LDAPSearchQueue)queue, cons);
-    }
-
-    /**
-     * Sets a property of a connection object.
-     *
-     * <p>No property names which can be set have been defined at this time.</p>
-     *
-     *
-     * @param name    Name of the property to set.
-     *<br><br>
-     * @param value   Value to assign to the property.
-     *
-     * @exception LDAPException Thrown if the specified
-     *                 property is not supported.
-     *
-     * @see #getProperty( String )
-     *
-     * <p>This method has been modified to use the LDAPConstraints class
-     * as of IETF draft 17 of the Java LDAP API
-     * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-     * from the LDAP Classes for Java API in the fall of 2003.</p>
-     *
-     * @deprecated replaced by {@link LDAPConstraints#setProperty(String, Object)}.
-     */
-    public void setProperty(String name, Object value)
-        throws LDAPException
-    {
-        // Requested property is not supported
-        throw new LDAPLocalException(ExceptionMessages.NO_SUP_PROPERTY,
-                LDAPException.PARAM_ERROR);
-    }
-
-    /**
-     * Sets the constraints that apply to all operations performed through
-     * this connection (unless a different set of constraints is specified
-     * when calling an operation method).  An LDAPSearchConstraints object
-     * which is passed to this method sets all constraints, while an
-     * LDAPConstraints object passed to this method sets only base constraints.
-     *
-     * @param cons  An LDAPSearchConstraints Object containing the contstraint
-     * values to set.
-     *
-     * @see #getSearchConstraints()
-     *
-     * <p>This method has been removed as of IETF draft 17 of the Java LDAP API
-     * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-     * from the LDAP Classes for Java API in the fall of 2003.</p>
-     *
-     * @deprecated replaced by {@link #setConstraints(LDAPConstraints)}.
-     */
-    public void setSearchConstraints(LDAPSearchConstraints cons)
-    {
-        setConstraints( cons);
-        return;
-    }
-
-
-    //*************************************************************************
-    // deprecated bind methods
-    //*************************************************************************
-
-    /**
-     * Asynchronously authenticates to the LDAP server (that the object is
-     * currently connected to) using the specified name, password, LDAP
-     * version, and queue.
-     *
-     * <p>This method has been modified to use the LDAPMessageQueue class
-     * as of IETF draft 17 of the Java LDAP API
-     * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-     * from the LDAP Classes for Java API in the fall of 2003.</p>
-     *
-     * @deprecated replaced by
-     * {@link #bind(int, String, byte[], LDAPResponseQueue)}.
-     */
-    public LDAPResponseListener bind(int version,
-                                     String dn,
-                                     byte[] passwd,
-                                     LDAPResponseListener queue)
-        throws LDAPException
-    {
-        return bind(version, dn, passwd, queue, defSearchCons);
-    }
-
-    /**
-     * Asynchronously authenticates to the LDAP server (that the object is
-     * currently connected to) using the specified name, password, LDAP
-     * version, queue, and constraints.
-     *
-     * <p>This method has been modified to use the LDAPMessageQueue parameter
-     * as of IETF draft 17 of the Java LDAP API
-     * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-     * from the LDAP Classes for Java API in the fall of 2003.</p>
-     *
-     * @deprecated replaced by
-     * {@link #bind(int, String, byte[], LDAPResponseQueue,
-     *  LDAPConstraints)}.
-     */
-    public LDAPResponseListener bind(int version,
-                                     String dn,
-                                     byte[] passwd,
-                                     LDAPResponseListener queue,
-                                     LDAPConstraints cons)
-        throws LDAPException
-    {
-        return bind(version, dn, passwd, (LDAPResponseQueue)queue, cons);
-    }
-
-    /**
-     *
-     * Authenticates to the LDAP server (that the object is currently
-     * connected to) as an LDAPv3 bind, using the specified name,
-     * password, and listener.
-     *
-     * <p>If the object has been disconnected from an LDAP server,
-     * this method attempts to reconnect to the server. If the object
-     * has already authenticated, the old authentication is discarded.</p>
-     *
-     *  @param dn      If non-null and non-empty, specifies that the
-     *                 connection and all operations through it should
-     *                 be authenticated with dn as the distinguished
-     *                 name.
-     *<br><br>
-     *  @param passwd  If non-null and non-empty, specifies that the
-     *                 connection and all operations through it should
-     *                 be authenticated with dn as the distinguished
-     *                 name and passwd as password.
-     *<br><br>
-     * @param listener Handler for messages returned from a server in
-     *                 response to this request. If it is null, a
-     *                 listener object is created internally. It is
-     *                 recommended that the client blocks
-     *                 until the listener returns a response.
-     *
-     *  @exception LDAPException A general exception which includes an error
-     *                           message and an LDAP error code.
-     *
-     * This method has been modified to use the LDAPMessageQueue parameter
-     * as of IETF draft 17 of the Java LDAP API
-     * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-     * from the LDAP Classes for Java API in the fall of 2003.
-     */
-    public LDAPResponseListener bind(String dn,
-                                     String passwd,
-                                     LDAPResponseListener listener)
-                                     throws LDAPException
-    {
-        LDAPResponseListener l;
-        try {
-            l = bind(LDAP_V3, dn, passwd.getBytes("UTF8"), listener, defSearchCons);
-        } catch( UnsupportedEncodingException ex) {
-            throw new RuntimeException( ex.toString());
-        }
-        return l;
-    }
-
-    /**
-     *
-     * Authenticates to the LDAP server (that the object is currently
-     * connected to) as an LDAPv3 bind, using the specified name,
-     * password, listener, and constraints.
-     *
-     * <p>If the object has been disconnected from an LDAP server,
-     * this method attempts to reconnect to the server. If the object
-     * has already authenticated, the old authentication is discarded.</p>
-     *
-     *  @param dn      If non-null and non-empty, specifies that the
-     *                 connection and all operations through it should
-     *                 be authenticated with dn as the distinguished
-     *                 name.
-     *<br><br>
-     *  @param passwd  If non-null and non-empty, specifies that the
-     *                 connection and all operations through it should
-     *                 be authenticated with dn as the distinguished
-     *                 name and passwd as password.
-     *<br><br>
-     * @param listener Handler for messages returned from a server in
-     *                 response to this request. If it is null, a
-     *                 listener object is created internally. It is
-     *                 recommended that the client blocks
-     *                 until the listener returns a response.
-     *<br><br>
-     * @param cons     Constraints specific to the operation.
-     *
-     *  @exception LDAPException A general exception which includes an error
-     *  message and an LDAP error code.
-     *
-     * <p>This method has been modified to use the LDAPMessageQueue parameter
-     * as of IETF draft 17 of the Java LDAP API
-     * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-     * from the LDAP Classes for Java API in the fall of 2003.</p>
-     *
-     * @deprecated replaced by {@link #bind(int, String, byte[],
-     *     LDAPResponseQueue, LDAPConstraints)}.
-     */
-    public LDAPResponseListener bind(String dn,
-                                     String passwd,
-                                     LDAPResponseListener listener,
-                                     LDAPConstraints cons)
-                                     throws LDAPException
-    {
-        LDAPResponseListener l;
-        try {
-            l = bind(LDAP_V3, dn, passwd.getBytes("UTF8"),
-                                        (LDAPResponseQueue)listener, cons);
-        } catch( UnsupportedEncodingException ex) {
-            throw new RuntimeException( ex.toString());
-        }
-        return l;
-    }
-
-    /**
-     * Asynchronously authenticates to the LDAP server (that the object is
-     * currently connected to) using the specified name, password, LDAP
-     * version, and listener.
-     *
-     * <p>If the object has been disconnected from an LDAP server,
-     * this method attempts to reconnect to the server. If the object
-     * has already authenticated, the old authentication is discarded.</p>
-     *
-     *
-     *  @param version  The LDAP protocol version, use LDAP_V3.
-     * <br><br>
-     *  @param dn      If non-null and non-empty, specifies that the
-     *                 connection and all operations through it should
-     *                 be authenticated with dn as the distinguished
-     *                 name.
-     *<br><br>
-     *  @param passwd  If non-null and non-empty, specifies that the
-     *                 connection and all operations through it should
-     *                 be authenticated with dn as the distinguished
-     *                 name and passwd as password.
-     *<br><br>
-     *  @param listener  Handler for messages returned from a server in
-     *                   response to this request. If it is null, a
-     *                   listener object is created internally.
-     *
-     *  @exception LDAPException A general exception which includes an error
-     *  message and an LDAP error code.
-     *
-     * <p>This method has been modified to use the LDAPMessageQueue parameter
-     * as of IETF draft 17 of the Java LDAP API
-     * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-     * from the LDAP Classes for Java API in the fall of 2003.</p>
-     *
-     * @deprecated replaced by {@link #bind(int, String, byte[], LDAPResponseQueue)}.
-     */
-    public LDAPResponseListener bind(int version,
-                                     String dn,
-                                     String passwd,
-                                     LDAPResponseListener listener)
-        throws LDAPException
-    {
-        LDAPResponseListener l;
-        try {
-            l = bind(version, dn, passwd.getBytes("UTF8"),
-                                    (LDAPResponseQueue)listener, defSearchCons);
-        } catch( UnsupportedEncodingException ex) {
-            throw new RuntimeException( ex.toString());
-        }
-        return l;
-    }
-
-    /**
-     * Asynchronously authenticates to the LDAP server (that the object is
-     * currently connected to) using the specified name, password, LDAP
-     * version, listener, and constraints.
-     *
-     * <p>If the object has been disconnected from an LDAP server,
-     * this method attempts to reconnect to the server. If the object
-     * had already authenticated, the old authentication is discarded.</p>
-     *
-     *  @param version  The LDAP protocol version, use LDAP_V3.
-     * <br><br>
-     *  @param dn      If non-null and non-empty, specifies that the
-     *                 connection and all operations through it should
-     *                 be authenticated with dn as the distinguished
-     *                 name.
-     *<br><br>
-     *  @param passwd  If non-null and non-empty, specifies that the
-     *                 connection and all operations through it should
-     *                 be authenticated with dn as the distinguished
-     *                 name and passwd as password.
-     *<br><br>
-     *  @param listener  Handler for messages returned from a server in
-     *                   response to this request. If it is null, a
-     *                   listener object is created internally.
-     *<br><br>
-     *  @param cons      Constraints specific to the operation.
-     *
-     *  @exception LDAPException A general exception which includes an error
-     *  message and an LDAP error code.
-     *
-     * <p>This method has been modified to use the LDAPMessageQueue and byte[]
-     * parameter as of IETF draft 17 of the Java LDAP API
-     * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-     * from the LDAP Classes for Java API in the fall of 2003.</p>
-     *
-     * @deprecated replaced by {@link #bind(int, String, byte[],
-     *         LDAPResponseListener, LDAPConstraints)}.
-     */
-    public LDAPResponseListener bind(int version,
-                                     String dn,
-                                     String passwd,
-                                     LDAPResponseListener listener,
-                                     LDAPConstraints cons)
-        throws LDAPException
-    {
-        LDAPResponseListener l;
-        try {
-            l = bind( version, dn, passwd.getBytes("UTF8"),
-                                            (LDAPResponseQueue)listener, cons);
-        } catch( UnsupportedEncodingException ex) {
-            throw new RuntimeException( ex.toString());
-        }
-        return l;
-    }
 }
