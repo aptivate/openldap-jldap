@@ -19,7 +19,7 @@ package org.ietf.ldap;
  *  Represents the a message received from an LDAPServer
  *  in response to an asynchronous request.
  *
- *  @see <a href="../../../../doc/com/novell/ldap/LDAPResponse.html">
+ *  @see <a href="../../../../api/com/novell/ldap/LDAPResponse.html">
             com.novell.ldap.LDAPResponse</a>
  */
 public class LDAPResponse extends LDAPMessage
@@ -39,8 +39,7 @@ public class LDAPResponse extends LDAPMessage
     /**
      * Returns any error message in the response.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPResponse.html
-            #getErrorMessage()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPResponse.html#getErrorMessage()">
             com.novell.ldap.LDAPResponse.getErrorMessage()</a>
      */
     public String getErrorMessage()
@@ -52,8 +51,7 @@ public class LDAPResponse extends LDAPMessage
      * Returns the partially matched DN field from the server response,
      * if the response contains one.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPResponse.html
-            #getMatchedDN()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPResponse.html#getMatchedDN()">
             com.novell.ldap.LDAPResponse.getMatchedDN()</a>
      */
     public String getMatchedDN()
@@ -64,8 +62,7 @@ public class LDAPResponse extends LDAPMessage
     /**
      * Returns all referrals in a server response, if the response contains any.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPResponse.html
-            #getReferrals()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPResponse.html#getReferrals()">
             com.novell.ldap.LDAPResponse.getReferrals()</a>
      */
     public String[] getReferrals()
@@ -76,8 +73,7 @@ public class LDAPResponse extends LDAPMessage
     /**
      * Returns the result code in a server response.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPResponse.html
-            #getResultCode()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPResponse.html#getResultCode()">
             com.novell.ldap.LDAPResponse.getResultCode()</a>
      */
     public int getResultCode()
@@ -90,8 +86,7 @@ public class LDAPResponse extends LDAPMessage
     /**
      * Returns any controls in the message.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPResponse.html
-            #getControls()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPResponse.html#getControls()">
             com.novell.ldap.LDAPResponse.getControls()</a>
      */
     public LDAPControl[] getControls() {
@@ -111,8 +106,7 @@ public class LDAPResponse extends LDAPMessage
     /**
      * Returns the message ID.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPResponse.html
-            #getMessageID()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPResponse.html#getMessageID()">
             com.novell.ldap.LDAPResponse.getMessageID()</a>
      */
     public int getMessageID() {
@@ -122,8 +116,7 @@ public class LDAPResponse extends LDAPMessage
     /**
      * Returns the LDAP operation type of the message.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPResponse.html
-            #getType()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPResponse.html#getType()">
             com.novell.ldap.LDAPResponse.getType()</a>
      */
     public int getType()

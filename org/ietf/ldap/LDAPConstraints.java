@@ -18,7 +18,7 @@ package org.ietf.ldap;
 /**
  *  Represents a set of options to control an LDAP operation.
  *
- * @see <a href="../../../../doc/com/novell/ldap/LDAPConstraints.html">
+ * @see <a href="../../../../api/com/novell/ldap/LDAPConstraints.html">
             com.novell.ldap.Constraints</a>
  */
 public class LDAPConstraints implements Cloneable
@@ -70,8 +70,7 @@ public class LDAPConstraints implements Cloneable
      *
      * @return a clone of this object
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConstraints.html
-            #clone()">com.novell.ldap.LDAPConstraints.clone()</a>
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConstraints.html#clone()">com.novell.ldap.LDAPConstraints.clone()</a>
      */
     public Object clone()
     {
@@ -87,8 +86,7 @@ public class LDAPConstraints implements Cloneable
      * Constructs an LDAPConstraints object, using the default
      * option values.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConstraints.html
-            #LDAPConstraints()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConstraints.html#LDAPConstraints()">
             com.novell.ldap.LDAPConstraints.LDAPConstraints()</a>
      */
     public LDAPConstraints()
@@ -104,8 +102,7 @@ public class LDAPConstraints implements Cloneable
      *
      * @see com.novell.ldap.LDAPConstraints#LDAPConstraints(
                 int,boolean,LDAPReferralHandler,int)
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConstraints.html
-            #LDAPConstraints(int, boolean,
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConstraints.html#LDAPConstraints(int, boolean,
             com.novell.ldap.LDAPReferralHandler, int)">
             com.novell.ldap.LDAPConstraints.LDAPConstraints(int, boolean,
             LDAPReferralHandler, int)</a>
@@ -199,8 +196,7 @@ public class LDAPConstraints implements Cloneable
      * Returns the maximum number of hops to follow during automatic
      * referral following.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConstraints.html
-            #getHopLimit()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConstraints.html#getHopLimit()">
             com.novell.ldap.LDAPConstraints.getHopLimit()</a>
      */
     public int getHopLimit()
@@ -212,8 +208,7 @@ public class LDAPConstraints implements Cloneable
      * Returns a properties constraints objects which has been assigned with
      * set property.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConstraints.html
-            #getProperty(java.lang.String)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConstraints.html#getProperty(java.lang.String)">
             com.novell.ldap.LDAPConstraints.getProperty(String)</a>
      */
     public Object getProperty(String name)
@@ -224,8 +219,7 @@ public class LDAPConstraints implements Cloneable
     /**
      * Returns true if referrals are to be followed automatically.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConstraints.html
-            #getReferralFollowing()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConstraints.html#getReferralFollowing()">
             com.novell.ldap.LDAPConstraints.getReferralFollowing()</a>
      */
     public boolean getReferralFollowing()
@@ -237,8 +231,7 @@ public class LDAPConstraints implements Cloneable
      * Returns the maximum number of milliseconds to wait for any operation
      * under these constraints.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConstraints.html
-            #getTimeLimit()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConstraints.html#getTimeLimit()">
             com.novell.ldap.LDAPConstraints.getTimeLimit()</a>
      */
     public int getTimeLimit()
@@ -250,8 +243,7 @@ public class LDAPConstraints implements Cloneable
      * Sets the maximum number of hops to follow in sequence during
      * automatic referral following.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConstraints.html
-            #setHopLimit(int)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConstraints.html#setHopLimit(int)">
             com.novell.ldap.LDAPConstraints.setHopLimit(int)</a>
      */
     public void setHopLimit(int hop_limit)
@@ -263,8 +255,7 @@ public class LDAPConstraints implements Cloneable
     /**
      * Specifies the object that will process authentication requests.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConstraints.html
-            #setReferralHandler(com.novell.ldap.LDAPReferralHandler)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConstraints.html#setReferralHandler(com.novell.ldap.LDAPReferralHandler)">
             com.novell.ldap.LDAPConstraints.setReferralHandler(
             LDAPReferralHandler)</a>
      */
@@ -301,8 +292,7 @@ public class LDAPConstraints implements Cloneable
      * Specifies whether referrals are followed automatically or whether
      * referrals throw an LDAPReferralException.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConstraints.html
-            #setReferralFollowing(boolean)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConstraints.html#setReferralFollowing(boolean)">
             com.novell.ldap.LDAPConstraints.setReferralFollowing(boolean)</a>
      */
     public void setReferralFollowing(boolean doReferrals)
@@ -315,8 +305,7 @@ public class LDAPConstraints implements Cloneable
      * Sets the maximum number of milliseconds the client waits for
      * any operation under these search constraints to complete.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConstraints.html
-            #setTimeLimit(int)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConstraints.html#setTimeLimit(int)">
             com.novell.ldap.LDAPConstraints.setTimeLimit(int)</a>
      */
     public void setTimeLimit(int msLimit)
@@ -328,8 +317,7 @@ public class LDAPConstraints implements Cloneable
     /**
      * Returns the controls to be sent to the server.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConstraints.html
-            #getControls()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConstraints.html#getControls()">
             com.novell.ldap.LDAPConstraints.getControls()</a>
      */
     public LDAPControl[] getControls()
@@ -350,8 +338,7 @@ public class LDAPConstraints implements Cloneable
     /**
      * Sets a control to be sent to the server.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConstraints.html
-            #setControls(com.novell.ldap.LDAPControl)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConstraints.html#setControls(com.novell.ldap.LDAPControl)">
             com.novell.ldap.LDAPConstraints.setControls(LDAPControl)</a>
      */
     public void setControls(LDAPControl control)
@@ -363,8 +350,7 @@ public class LDAPConstraints implements Cloneable
     /**
      * Sets an array of controls to be sent to the server.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConstraints.html
-            #setControls(com.novell.ldap.LDAPControl[])">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConstraints.html#setControls(com.novell.ldap.LDAPControl[])">
             com.novell.ldap.LDAPConstraints.setControls(LDAPControl[])</a>
      */
     public void setControls(LDAPControl[] controls)
@@ -376,8 +362,7 @@ public class LDAPConstraints implements Cloneable
     /**
      * Sets a property of the constraints object.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConstraints.html
-            #setProperty(java.lang.String, java.lang.Object)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConstraints.html#setProperty(java.lang.String, java.lang.Object)">
             com.novell.ldap.LDAPConstraints.setProperty(String, Object)</a>
      */
     public void setProperty( String name, Object value)

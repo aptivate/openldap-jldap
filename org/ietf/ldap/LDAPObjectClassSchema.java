@@ -19,7 +19,7 @@ package org.ietf.ldap;
  *  Represents the schematic definition of a particular object class in
  *  a particular directory server.
  *
- * @see <a href="../../../../doc/com/novell/ldap/LDAPObjectClassSchema.html">
+ * @see <a href="../../../../api/com/novell/ldap/LDAPObjectClassSchema.html">
             com.novell.ldap.LDAPObjectClassSchema</a>
  */
 public class LDAPObjectClassSchema extends LDAPSchemaElement
@@ -29,8 +29,7 @@ public class LDAPObjectClassSchema extends LDAPSchemaElement
     /**
      * This class definition defines an abstract schema class.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPObjectClassSchema.html
-            #ABSTRACT">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPObjectClassSchema.html#ABSTRACT">
             com.novell.ldap.LDAPObjectClassSchema.ABSTRACT</a>
      */
      public final static int ABSTRACT =
@@ -39,8 +38,7 @@ public class LDAPObjectClassSchema extends LDAPSchemaElement
     /**
      * This class definition defines a structural schema class.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPObjectClassSchema.html
-            #STRUCTURAL">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPObjectClassSchema.html#STRUCTURAL">
             com.novell.ldap.LDAPObjectClassSchema.STRUCTURAL</a>
      */
      public final static int STRUCTURAL =
@@ -49,8 +47,7 @@ public class LDAPObjectClassSchema extends LDAPSchemaElement
     /**
      * This class definition defines an auxiliary schema class.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPObjectClassSchema.html
-            #AUXILIARY">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPObjectClassSchema.html#AUXILIARY">
             com.novell.ldap.LDAPObjectClassSchema.AUXILIARY</a>
      */
      public final static int AUXILIARY =
@@ -60,8 +57,7 @@ public class LDAPObjectClassSchema extends LDAPSchemaElement
      * Constructs an object class definition for adding to or deleting from
      * a directory's schema.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPObjectClassSchema.html
-            #LDAPObjectClassSchema(java.lang.String[], java.lang.String,
+     * @see <a href="../../../../api/com/novell/ldap/LDAPObjectClassSchema.html#LDAPObjectClassSchema(java.lang.String[], java.lang.String,
             java.lang.String[], java.lang.String, java.lang.String[],
             java.lang.String[], int, boolean)">
             com.novell.ldap.LDAPObjectClassSchema.LDAPObjectClassSchema(
@@ -93,8 +89,7 @@ public class LDAPObjectClassSchema extends LDAPSchemaElement
      * Constructs an object class definition from the raw string value
      * returned from a directory query for "objectClasses".
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPObjectClassSchema.html
-            #LDAPObjectClassSchema(java.lang.String)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPObjectClassSchema.html#LDAPObjectClassSchema(java.lang.String)">
             com.novell.ldap.LDAPObjectClassSchema.LDAPObjectClassSchema(
             String)</a>
      */
@@ -119,8 +114,7 @@ public class LDAPObjectClassSchema extends LDAPSchemaElement
     /**
      * Returns the object classes from which this one derives.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPObjectClassSchema.html
-            #getSuperiors()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPObjectClassSchema.html#getSuperiors()">
             com.novell.ldap.LDAPObjectClassSchema.getSuperiors()</a>
      */
     public String[] getSuperiors()
@@ -132,8 +126,7 @@ public class LDAPObjectClassSchema extends LDAPSchemaElement
      * Returns a list of attributes required for an entry with this object
      * class.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPObjectClassSchema.html
-            #getRequiredAttributes()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPObjectClassSchema.html#getRequiredAttributes()">
             com.novell.ldap.LDAPObjectClassSchema.getRequiredAttributes()</a>
      */
     public String[] getRequiredAttributes()
@@ -145,8 +138,7 @@ public class LDAPObjectClassSchema extends LDAPSchemaElement
      * Returns a list of optional attributes but not required of an entry
      * with this object class.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPObjectClassSchema.html
-            #getOptionalAttributes()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPObjectClassSchema.html#getOptionalAttributes()">
             com.novell.ldap.LDAPObjectClassSchema.getOptionalAttributes()</a>
      */
     public String[] getOptionalAttributes()
@@ -157,8 +149,7 @@ public class LDAPObjectClassSchema extends LDAPSchemaElement
     /**
      * Returns the type of object class.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPObjectClassSchema.html
-            #getType()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPObjectClassSchema.html#getType()">
             com.novell.ldap.LDAPObjectClassSchema.getType()</a>
      */
     public int getType()

@@ -19,7 +19,7 @@ package org.ietf.ldap;
  *  Used to provide authentication credentials when processing a
  *  referral.
  *
- *  @see <a href="../../../../doc/com/novell/ldap/LDAPAuthHandler.html">
+ *  @see <a href="../../../../api/com/novell/ldap/LDAPAuthHandler.html">
             com.novell.ldap.LDAPAuthHandler</a>
  */
 public interface LDAPAuthHandler extends LDAPReferralHandler
@@ -28,8 +28,7 @@ public interface LDAPAuthHandler extends LDAPReferralHandler
     * Returns an object which can provide authentication credentials to
     * a server at the specified host and port.
     *
-    * @see <a href="../../../../doc/com/novell/ldap/LDAPAuthHandler.html
-            #getRebindAuthentication(java.lang.String, int)">
+    * @see <a href="../../../../api/com/novell/ldap/LDAPAuthHandler.html#getRebindAuthentication(java.lang.String, int)">
             com.novell.ldap.LDAPAuthHandler.getRebindAuthentication(
             String, int)</a>
     */

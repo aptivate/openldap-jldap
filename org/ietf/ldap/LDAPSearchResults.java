@@ -19,7 +19,7 @@ package org.ietf.ldap;
  * <p>An LDAPSearchResults provides access to all results received during
  * the operation (entries and exceptions).</p>
  *
- *  @see <a href="../../../../doc/com/novell/ldap/LDAPSearchResults.html">
+ *  @see <a href="../../../../api/com/novell/ldap/LDAPSearchResults.html">
             com.novell.ldap.LDAPSearchResults</a>
  */
 public class LDAPSearchResults
@@ -47,8 +47,7 @@ public class LDAPSearchResults
     /**
      * Returns a count of the entries in the search result.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPSearchResults.html
-            #getCount()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPSearchResults.html#getCount()">
             com.novell.ldap.LDAPSearchResults.getCount()</a>
      */
     public int getCount()
@@ -61,8 +60,7 @@ public class LDAPSearchResults
      * in the context of this search request, or null
      * if no server controls were returned.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPSearchResults.html
-            #getResponseControls()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPSearchResults.html#getResponseControls()">
             com.novell.ldap.LDAPSearchResults.getResponseControls()</a>
      */
     public LDAPControl[] getResponseControls()
@@ -83,8 +81,7 @@ public class LDAPSearchResults
     /**
      * Reports if there are more search results.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPSearchResults.html
-            #hasMore()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPSearchResults.html#hasMore()">
             com.novell.ldap.LDAPSearchResults.hasMoreElements()</a>
      */
     public boolean hasMore()
@@ -95,8 +92,7 @@ public class LDAPSearchResults
     /**
      * Returns the next result as an LDAPEntry.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPSearchResults.html
-            #next()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPSearchResults.html#next()">
             com.novell.ldap.LDAPSearchResults.next()</a>
      */
     public LDAPEntry next() throws LDAPException

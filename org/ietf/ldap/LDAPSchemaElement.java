@@ -20,7 +20,7 @@ import java.util.Enumeration;
 /**
  *  The base class for representing LDAP schema elements.
  *
- *  @see <a href="../../../../doc/com/novell/ldap/LDAPSchemaElement.html">
+ *  @see <a href="../../../../api/com/novell/ldap/LDAPSchemaElement.html">
             com.novell.ldap.LDAPSchemaElement</a>
  */
 public abstract class LDAPSchemaElement extends LDAPAttribute
@@ -43,8 +43,7 @@ public abstract class LDAPSchemaElement extends LDAPAttribute
      * Returns an array of names for the element, or null if
      * none is found.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPSchemaElement.html
-            #getNames()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPSchemaElement.html#getNames()">
             com.novell.ldap.LDAPSchemaElement.getNames()</a>
      */
     public String[] getNames()
@@ -55,8 +54,7 @@ public abstract class LDAPSchemaElement extends LDAPAttribute
     /**
      * Returns the description of the element.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPSchemaElement.html
-            #getDescription()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPSchemaElement.html#getDescription()">
             com.novell.ldap.LDAPSchemaElement.getDescription()</a>
      */
     public String getDescription()
@@ -67,8 +65,7 @@ public abstract class LDAPSchemaElement extends LDAPAttribute
     /**
      * Returns the unique object identifier (OID) of the element.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPSchemaElement.html
-            #getID()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPSchemaElement.html#getID()">
             com.novell.ldap.LDAPSchemaElement.getID()</a>
      */
     public String getID()
@@ -80,8 +77,7 @@ public abstract class LDAPSchemaElement extends LDAPAttribute
      * Returns an array of all values of a specified optional or non-
      * standard qualifier of the element.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPSchemaElement.html
-            #getQualifier(java.lang.String)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPSchemaElement.html#getQualifier(java.lang.String)">
             com.novell.ldap.LDAPSchemaElement.getID(java.lang.String)</a>
      */
     public String[] getQualifier(String name)
@@ -93,8 +89,7 @@ public abstract class LDAPSchemaElement extends LDAPAttribute
      * Returns an enumeration of all qualifiers of the element which are
      * vendor specific (begin with "X-").
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPSchemaElement.html
-            #getQualifierNames()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPSchemaElement.html#getQualifierNames()">
             com.novell.ldap.LDAPSchemaElement.getQualifierNames()</a>
      */
     public Enumeration getQualifierNames()
@@ -106,8 +101,7 @@ public abstract class LDAPSchemaElement extends LDAPAttribute
      * Returns whether the element has the OBSOLETE qualifier
      * in its LDAP definition.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPSchemaElement.html
-            #isObsolete()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPSchemaElement.html#isObsolete()">
             com.novell.ldap.LDAPSchemaElement.isObsolete()</a>
      */
     public boolean isObsolete()
@@ -119,8 +113,7 @@ public abstract class LDAPSchemaElement extends LDAPAttribute
      * Returns a string in a format suitable for directly adding to a
      * directory, as a value of the particular schema element.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPSchemaElement.html
-            #toString()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPSchemaElement.html#toString()">
             com.novell.ldap.LDAPSchemaElement.toString()</a>
      */
     public String toString()
@@ -132,8 +125,7 @@ public abstract class LDAPSchemaElement extends LDAPAttribute
      * Sets the values of a specified optional or non-standard qualifier of
      * the element.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPSchemaElement.html
-            #setQualifier(java.lang.String, java.lang.String[])">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPSchemaElement.html#setQualifier(java.lang.String, java.lang.String[])">
             com.novell.ldap.LDAPSchemaElement.setQualifier( java.lang.String,
             java.lang.String[])</a>
      */

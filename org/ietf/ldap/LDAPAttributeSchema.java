@@ -19,7 +19,7 @@ package org.ietf.ldap;
  * Represents the schematic definition of a
  * particular attribute in a particular Directory Server.
  *
- * @see <a href="../../../../doc/com/novell/ldap/LDAPAttributeSchema.html">
+ * @see <a href="../../../../api/com/novell/ldap/LDAPAttributeSchema.html">
             com.novell.ldap.LDAPAttributeSchema</a>
  */
 public class LDAPAttributeSchema extends LDAPSchemaElement
@@ -30,8 +30,7 @@ public class LDAPAttributeSchema extends LDAPSchemaElement
      * Indicates that the attribute usage is for ordinary application
      * or user data.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttributeSchema.html
-            #USER_APPLICATIONS">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPAttributeSchema.html#USER_APPLICATIONS">
             com.novell.ldap.LDAPAttributeSchema.USER_APPLICATIONS</a>
      */
     public final static int USER_APPLICATIONS =
@@ -40,8 +39,7 @@ public class LDAPAttributeSchema extends LDAPSchemaElement
      * Indicates that the attribute usage is for directory operations.
      * Values are vendor specific.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttributeSchema.html
-            #DIRECTORY_OPERATION">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPAttributeSchema.html#DIRECTORY_OPERATION">
             com.novell.ldap.LDAPAttributeSchema.DIRECTORY_OPERATION</a>
      */
     public final static int DIRECTORY_OPERATION =
@@ -51,8 +49,7 @@ public class LDAPAttributeSchema extends LDAPSchemaElement
      * attributes. These hold server (DSA) information that is shared among
      * servers holding replicas of the entry.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttributeSchema.html
-            #DISTRIBUTED_OPERATION">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPAttributeSchema.html#DISTRIBUTED_OPERATION">
             com.novell.ldap.LDAPAttributeSchema.DISTRIBUTED_OPERATION</a>
      */
     public final static int DISTRIBUTED_OPERATION =
@@ -61,8 +58,7 @@ public class LDAPAttributeSchema extends LDAPSchemaElement
      * Indicates that the attribute usage is for local operational attributes.
      * These hold server (DSA) information that is local to a server.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttributeSchema.html
-            #DSA_OPERATION">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPAttributeSchema.html#DSA_OPERATION">
             com.novell.ldap.LDAPAttributeSchema.DSA_OPERATION</a>
      */
     public final static int DSA_OPERATION =
@@ -83,8 +79,7 @@ public class LDAPAttributeSchema extends LDAPSchemaElement
      * Constructs an attribute definition for adding to or deleting from a
      * directory's schema.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttributeSchema.html
-            #LDAPAttributeSchema(java.lang.string[], java.lang.String,
+     * @see <a href="../../../../api/com/novell/ldap/LDAPAttributeSchema.html#LDAPAttributeSchema(java.lang.string[], java.lang.String,
             java.lang.String, java.lang.String, boolean, java.lang.String,
             boolean, java.lang.String, java.lang.String,
             java.lang.String, boolean, boolean, int)">
@@ -110,8 +105,7 @@ public class LDAPAttributeSchema extends LDAPSchemaElement
      * Constructs an attribute definition from the raw string value returned
      * on a directory query for "attributetypes".
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttributeSchema.html
-            #LDAPAttributeSchema(java.lang.string)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPAttributeSchema.html#LDAPAttributeSchema(java.lang.string)">
             com.novell.ldap.LDAPAttributeSchema.LDAPAttributeSchema(String)</a>
      */
     public LDAPAttributeSchema(String raw)
@@ -125,8 +119,7 @@ public class LDAPAttributeSchema extends LDAPSchemaElement
      * Returns the object identifer of the syntax of the attribute, in
      * dotted numerical format.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttributeSchema.html
-            #getSyntaxString()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPAttributeSchema.html#getSyntaxString()">
             com.novell.ldap.LDAPAttributeSchema.getSyntaxString()</a>
      */
     public String getSyntaxString()
@@ -138,8 +131,7 @@ public class LDAPAttributeSchema extends LDAPSchemaElement
      * Returns the name of the attribute type which this attribute derives
      * from, or null if there is no superior attribute.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttributeSchema.html
-            #getSuperior()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPAttributeSchema.html#getSuperior()">
             com.novell.ldap.LDAPAttributeSchema.getSuperior()</a>
      */
     public String getSuperior()
@@ -150,8 +142,7 @@ public class LDAPAttributeSchema extends LDAPSchemaElement
     /**
      * Returns true if the attribute is single-valued.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttributeSchema.html
-            #isSingleValued()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPAttributeSchema.html#isSingleValued()">
             com.novell.ldap.LDAPAttributeSchema.isSingleValued()</a>
      */
     public boolean isSingleValued()
@@ -162,8 +153,7 @@ public class LDAPAttributeSchema extends LDAPSchemaElement
     /**
      * Returns the matching rule for this attribute.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttributeSchema.html
-            #getEqualityMatchingRule()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPAttributeSchema.html#getEqualityMatchingRule()">
             com.novell.ldap.LDAPAttributeSchema.getEqualityMatchingRule()</a>
      */
     public String getEqualityMatchingRule()
@@ -174,8 +164,7 @@ public class LDAPAttributeSchema extends LDAPSchemaElement
     /**
      * Returns the ordering matching rule for this attribute.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttributeSchema.html
-            #getOrderingMatchingRule()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPAttributeSchema.html#getOrderingMatchingRule()">
             com.novell.ldap.LDAPAttributeSchema.getOrderingMatchingRule()</a>
      */
     public String getOrderingMatchingRule()
@@ -186,8 +175,7 @@ public class LDAPAttributeSchema extends LDAPSchemaElement
     /**
      * Returns the substring matching rule for this attribute.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttributeSchema.html
-            #getSubstringMatchingRule()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPAttributeSchema.html#getSubstringMatchingRule()">
             com.novell.ldap.LDAPAttributeSchema.getSubstringMatchingRule()</a>
      */
     public String getSubstringMatchingRule()
@@ -198,8 +186,7 @@ public class LDAPAttributeSchema extends LDAPSchemaElement
     /**
      * Returns true if the attribute is a collective attribute.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttributeSchema.html
-            #isCollective()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPAttributeSchema.html#isCollective()">
             com.novell.ldap.LDAPAttributeSchema.isCollective()</a>
      */
     public boolean isCollective()
@@ -210,8 +197,7 @@ public class LDAPAttributeSchema extends LDAPSchemaElement
     /**
      * Returns false if the attribute is read-only.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttributeSchema.html
-            #isUserModifiable()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPAttributeSchema.html#isUserModifiable()">
             com.novell.ldap.LDAPAttributeSchema.isUserModifiable()</a>
      */
     public boolean isUserModifiable()
@@ -222,8 +208,7 @@ public class LDAPAttributeSchema extends LDAPSchemaElement
     /**
      * Returns the usage of the attribute.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttributeSchema.html
-            #getUsage()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPAttributeSchema.html#getUsage()">
             com.novell.ldap.LDAPAttributeSchema.getUsage()</a>
      */
     public int getUsage()

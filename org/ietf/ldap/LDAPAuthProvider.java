@@ -19,7 +19,7 @@ package org.ietf.ldap;
  *  This class encapsulates authentiation credentials for the specified
  *  host and port.
  *
- *  @see <a href="../../../../doc/com/novell/ldap/LDAPAuthProvider.html">
+ *  @see <a href="../../../../api/com/novell/ldap/LDAPAuthProvider.html">
             com.novell.ldap.LDAPAuthProvider</a>
  */
 public class LDAPAuthProvider
@@ -29,8 +29,7 @@ public class LDAPAuthProvider
      * Constructs information that is used by the client for authentication
      * when following referrals automatically.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPAuthProvider.html
-            #LDAPAuthProvider(java.lang.String, java.lang.String)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPAuthProvider.html#LDAPAuthProvider(java.lang.String, java.lang.String)">
             com.novell.ldap.LDAPAuthProvider.LDAPAuthProvider( String, String)</a>
      */
     public LDAPAuthProvider ( String dn, byte[] password )
@@ -52,8 +51,7 @@ public class LDAPAuthProvider
      * Returns the distinguished name to be used for authentication on
      * automatic referral following.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPAuthProvider.html
-            #getDN()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPAuthProvider.html#getDN()">
             com.novell.ldap.LDAPAuthProvider.getDN()</a>
      */
     public String getDN()
@@ -65,8 +63,7 @@ public class LDAPAuthProvider
      * Returns the password to be used for authentication on automatic
      * referral following.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPAuthProvider.html
-            #getPassword()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPAuthProvider.html#getPassword()">
             com.novell.ldap.LDAPAuthProvider.getPassword()</a>
      */
     public byte[] getPassword()

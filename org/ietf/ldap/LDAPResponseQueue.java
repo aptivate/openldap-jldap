@@ -19,7 +19,7 @@ package org.ietf.ldap;
  *  Encapsulates a low-level mechanism for processing asynchronous messages
  *  received from a server.
  *
- *  @see <a href="../../../../doc/com/novell/ldap/LDAPResponseQueue.html">
+ *  @see <a href="../../../../api/com/novell/ldap/LDAPResponseQueue.html">
             com.novell.ldap.LDAPResponseQueue</a>
  */
 public class LDAPResponseQueue implements LDAPMessageQueue
@@ -48,8 +48,7 @@ public class LDAPResponseQueue implements LDAPMessageQueue
     /**
      * Returns the message IDs for all outstanding requests.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPResponseQueue.html
-            #getMessageIDs()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPResponseQueue.html#getMessageIDs()">
             com.novell.ldap.LDAPResponse.getMessageIDs()</a>
      */
      public int[] getMessageIDs()
@@ -60,8 +59,7 @@ public class LDAPResponseQueue implements LDAPMessageQueue
     /**
      * Reports whether a response has been received from the server.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPResponseQueue.html
-            #isResponseReceived()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPResponseQueue.html#isResponseReceived()">
             com.novell.ldap.LDAPResponse.isResponseReceived()</a>
      */
      public boolean isResponseReceived()
@@ -73,8 +71,7 @@ public class LDAPResponseQueue implements LDAPMessageQueue
      * Reports whether a response has been received from the server for a
      * particular message id.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPResponseQueue.html
-            #isResponseReceived(int)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPResponseQueue.html#isResponseReceived(int)">
             com.novell.ldap.LDAPResponse.isResponseReceived(int)</a>
      */
      public boolean isResponseReceived(int msgid)
@@ -86,8 +83,7 @@ public class LDAPResponseQueue implements LDAPMessageQueue
      * Merges two response queues by moving the contents from another
      * queue to this one.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPMessageQueue.html
-            #merge(com.novell.ldap.LDAPResponseQueue)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPMessageQueue.html#merge(com.novell.ldap.LDAPResponseQueue)">
             com.novell.ldap.LDAPResponse.merge(LDAPMessageQueue)</a>
      */
      public void merge(LDAPMessageQueue queue2)
@@ -106,8 +102,7 @@ public class LDAPResponseQueue implements LDAPMessageQueue
     /**
      * Returns the response.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPResponseQueue.html
-            #getResponse()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPResponseQueue.html#getResponse()">
             com.novell.ldap.LDAPResponse.getResponse()</a>
      */
     public LDAPMessage getResponse()
@@ -128,8 +123,7 @@ public class LDAPResponseQueue implements LDAPMessageQueue
     /**
      * Returns the response for a particular message id.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPResponseQueue.html
-            #getResponse(int)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPResponseQueue.html#getResponse(int)">
             com.novell.ldap.LDAPResponse.getResponse(int)</a>
      */
     public LDAPMessage getResponse(int msgid)

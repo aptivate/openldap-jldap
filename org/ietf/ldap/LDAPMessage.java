@@ -18,7 +18,7 @@ package org.ietf.ldap;
 /**
  *  Represents the base class for LDAP request and response messages.
  *
- * @see <a href="../../../../doc/com/novell/ldap/LDAPMessage.html">
+ * @see <a href="../../../../api/com/novell/ldap/LDAPMessage.html">
             com.novell.ldap.LDAPMessage</a>
  */
 public class LDAPMessage {
@@ -31,8 +31,7 @@ public class LDAPMessage {
     /**
      * A bind request operation.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPMessage.html
-            #BIND_REQUEST">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPMessage.html#BIND_REQUEST">
             com.novell.ldap.LDAPMessage.BIND_REQUEST</a>
      */
     public final static int BIND_REQUEST =
@@ -41,8 +40,7 @@ public class LDAPMessage {
     /**
      * A bind response operation.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPMessage.html
-            #BIND_RESPONSE">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPMessage.html#BIND_RESPONSE">
             com.novell.ldap.LDAPMessage.BIND_RESPONSE</a>
      */
     public final static int BIND_RESPONSE =
@@ -51,8 +49,7 @@ public class LDAPMessage {
     /**
      * An unbind request operation.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPMessage.html
-            #UNBIND_REQUEST">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPMessage.html#UNBIND_REQUEST">
             com.novell.ldap.LDAPMessage.UNBIND_REQUEST</a>
      */
     public final static int UNBIND_REQUEST =
@@ -60,8 +57,7 @@ public class LDAPMessage {
     /**
      * A search request operation.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPMessage.html
-            #SEARCH_REQUEST">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPMessage.html#SEARCH_REQUEST">
             com.novell.ldap.LDAPMessage.SEARCH_REQUEST</a>
      */
     public final static int SEARCH_REQUEST =
@@ -70,8 +66,7 @@ public class LDAPMessage {
     /**
      * A search response containing data.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPMessage.html
-            #SEARCH_RESPONSE">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPMessage.html#SEARCH_RESPONSE">
             com.novell.ldap.LDAPMessage.SEARCH_RESPONSE</a>
      */
     public final static int SEARCH_RESPONSE =
@@ -80,8 +75,7 @@ public class LDAPMessage {
     /**
      * A search result message - contains search status.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPMessage.html
-            #SEARCH_RESULT">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPMessage.html#SEARCH_RESULT">
             com.novell.ldap.LDAPMessage.SEARCH_REULT</a>
      */
     public final static int SEARCH_RESULT =
@@ -90,8 +84,7 @@ public class LDAPMessage {
     /**
      * A modify request operation.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPMessage.html
-            #MODIFY_REQUEST">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPMessage.html#MODIFY_REQUEST">
             com.novell.ldap.LDAPMessage.MODIFY_REQUEST</a>
      */
     public final static int MODIFY_REQUEST =
@@ -100,8 +93,7 @@ public class LDAPMessage {
     /**
      * A modify response operation.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPMessage.html
-            #MODIFY_RESPONSE">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPMessage.html#MODIFY_RESPONSE">
             com.novell.ldap.LDAPMessage.MODIFY_RESPONSE</a>
      */
     public final static int MODIFY_RESPONSE =
@@ -110,8 +102,7 @@ public class LDAPMessage {
     /**
      * An add request operation.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPMessage.html
-            #ADD_REQUEST">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPMessage.html#ADD_REQUEST">
             com.novell.ldap.LDAPMessage.ADD_REQUEST</a>
      */
     public final static int ADD_REQUEST =
@@ -120,8 +111,7 @@ public class LDAPMessage {
     /**
      * An add response operation.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPMessage.html
-            #ADD_RESPONSE">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPMessage.html#ADD_RESPONSE">
             com.novell.ldap.LDAPMessage.ADD_RESPONSE</a>
      */
     public final static int ADD_RESPONSE =
@@ -130,8 +120,7 @@ public class LDAPMessage {
     /**
      * A delete request operation.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPMessage.html
-            #DEL_REQUEST">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPMessage.html#DEL_REQUEST">
             com.novell.ldap.LDAPMessage.DEL_REQUEST</a>
      */
     public final static int DEL_REQUEST =
@@ -140,8 +129,7 @@ public class LDAPMessage {
     /**
      * A delete response operation.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPMessage.html
-            #DEL_RESPONSE">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPMessage.html#DEL_RESPONSE">
             com.novell.ldap.LDAPMessage.DEL_RESPONSE</a>
      */
     public final static int DEL_RESPONSE =
@@ -150,8 +138,7 @@ public class LDAPMessage {
     /**
      * A modify RDN request operation.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPMessage.html
-            #MODIFY_RDN_REQUEST">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPMessage.html#MODIFY_RDN_REQUEST">
             com.novell.ldap.LDAPMessage.MODIFY_RDN_REQUEST</a>
      */
     public final static int MODIFY_RDN_REQUEST =
@@ -160,8 +147,7 @@ public class LDAPMessage {
     /**
      * A modify RDN response operation.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPMessage.html
-            #MODIFY_RDN_RESPONSE">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPMessage.html#MODIFY_RDN_RESPONSE">
             com.novell.ldap.LDAPMessage.MODIFY_RDN_RESPONSE</a>
      */
     public final static int MODIFY_RDN_RESPONSE =
@@ -170,8 +156,7 @@ public class LDAPMessage {
     /**
      * A compare result operation.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPMessage.html
-            #COMPARE_REQUEST">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPMessage.html#COMPARE_REQUEST">
             com.novell.ldap.LDAPMessage.COMPARE_REQUEST</a>
      */
     public final static int COMPARE_REQUEST =
@@ -180,8 +165,7 @@ public class LDAPMessage {
     /**
      * A compare response operation.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPMessage.html
-            #COMPARE_RESPONSE">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPMessage.html#COMPARE_RESPONSE">
             com.novell.ldap.LDAPMessage.COMPARE_RESPONSE</a>
      */
     public final static int COMPARE_RESPONSE =
@@ -190,8 +174,7 @@ public class LDAPMessage {
     /**
      * An abandon request operation.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPMessage.html
-            #ABANDON_REQUEST">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPMessage.html#ABANDON_REQUEST">
             com.novell.ldap.LDAPMessage.ABANDON_REQUEST</a>
      */
     public final static int ABANDON_REQUEST =
@@ -201,8 +184,7 @@ public class LDAPMessage {
     /**
      * A search result reference operation.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPMessage.html
-            #SEARCH_RESULT_REFERENCE">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPMessage.html#SEARCH_RESULT_REFERENCE">
             com.novell.ldap.LDAPMessage.SEARCH_RESULT_REFERENCE</a>
      */
     public final static int SEARCH_RESULT_REFERENCE = 
@@ -211,8 +193,7 @@ public class LDAPMessage {
     /**
      * An extended request operation.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPMessage.html
-            #EXTENDED_REQUEST">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPMessage.html#EXTENDED_REQUEST">
             com.novell.ldap.LDAPMessage.EXTENDED_REQUEST</a>
      */
     public final static int EXTENDED_REQUEST =
@@ -221,8 +202,7 @@ public class LDAPMessage {
     /**
      * An extended response operation.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPMessage.html
-            #EXTENDED_RESPONSE">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPMessage.html#EXTENDED_RESPONSE">
             com.novell.ldap.LDAPMessage.EXTENDED_RESPONSE</a>
      */
     public final static int EXTENDED_RESPONSE =
@@ -239,8 +219,7 @@ public class LDAPMessage {
     /**
      * Returns any controls in the message.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPMessage.html
-            #getControls()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPMessage.html#getControls()">
             com.novell.ldap.LDAPMessage.getControls()</a>
      */
     public LDAPControl[] getControls()
@@ -261,8 +240,7 @@ public class LDAPMessage {
     /**
      * Returns the message ID.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPMessage.html
-            #getMessageID()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPMessage.html#getMessageID()">
             com.novell.ldap.LDAPMessage.getMessageID()</a>
      */
     public int getMessageID() {
@@ -272,8 +250,7 @@ public class LDAPMessage {
     /**
      * Returns the LDAP operation type of the message.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPMessage.html
-            #getType()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPMessage.html#getType()">
             com.novell.ldap.LDAPMessage.getType()</a>
      */
     public int getType()

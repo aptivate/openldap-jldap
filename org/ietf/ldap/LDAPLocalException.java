@@ -18,7 +18,7 @@ package org.ietf.ldap;
 /**
  *  Represents an LDAP exception that is not a result of a server response.
  *
- * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html">
+ * @see <a href="../../../../api/com/novell/ldap/LDAPException.html">
             com.novell.ldap.LDAPException</a>
  */
 
@@ -27,8 +27,7 @@ public class LDAPLocalException extends LDAPException
     /**
      * Constructs a default local exception with no specific error information.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPLocalException.html
-            #LDAPLocalException()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPLocalException.html#LDAPLocalException()">
             com.novell.ldap.LDAPException.LDAPLocalException()</a>
      */
     public LDAPLocalException()
@@ -51,8 +50,7 @@ public class LDAPLocalException extends LDAPException
      * Constructs an exception with a detailed message
      * String and the result code.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPLocalException.html
-            #LDAPLocalException(java.lang.String, int)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPLocalException.html#LDAPLocalException(java.lang.String, int)">
             com.novell.ldap.LDAPLocalException.LDAPLocalException(String, int)</a>
      */
     public LDAPLocalException( String message,
@@ -66,8 +64,7 @@ public class LDAPLocalException extends LDAPException
      * Constructs an exception with a detailed message String, the
      * result code, and the root exception.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPLocalException.html
-            #LDAPLocalException(java.lang.String, int, java.lang.Throwable)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPLocalException.html#LDAPLocalException(java.lang.String, int, java.lang.Throwable)">
             com.novell.ldap.LDAPLocalException.LDAPLocalException(String, int,
             Throwable)</a>
      */

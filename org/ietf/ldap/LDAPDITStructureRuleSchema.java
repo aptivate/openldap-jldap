@@ -18,7 +18,7 @@ package org.ietf.ldap;
  * Represents the definition of a specific DIT (Directory Information Tree)
  * structure rule in the directory schema.
  *
- * @see <a href="../../../../doc/com/novell/ldap/LDAPDITStructureRuleSchema.html">
+ * @see <a href="../../../../api/com/novell/ldap/LDAPDITStructureRuleSchema.html">
             com.novell.ldap.LDAPDITStructureRuleSchema</a>
  */
 
@@ -42,8 +42,7 @@ public class LDAPDITStructureRuleSchema
     /**  Constructs a DIT structure rule for adding to or deleting from the
      *   schema.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPDITStructureRuleSchema.html
-            #LDAPDITStructureRuleSchema(java.lang.String[], int, java.lang.String,
+     * @see <a href="../../../../api/com/novell/ldap/LDAPDITStructureRuleSchema.html#LDAPDITStructureRuleSchema(java.lang.String[], int, java.lang.String,
             boolean, java.lang.String, java.lang.String[])">
             com.novell.ldap.LDAPDITStructureRuleSchema.LDAPDITStructureRuleSchema(
             String[], int, boolean, String, String[])</a>
@@ -71,8 +70,7 @@ public class LDAPDITStructureRuleSchema
      * Constructs a DIT structure rule from the raw string value returned from
      * a schema query for dITStructureRules.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPDITStructureRuleSchema.html
-            #LDAPDITStructureRuleSchema(java.lang.String)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPDITStructureRuleSchema.html#LDAPDITStructureRuleSchema(java.lang.String)">
             com.novell.ldap.LDAPDITStructureRuleSchema.LDAPDITStructureRuleSchema(
             String)</a>
      */
@@ -86,8 +84,7 @@ public class LDAPDITStructureRuleSchema
     /**
      * Returns the rule ID for this structure rule.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPDITStructureRuleSchema.html
-            #getRuleID()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPDITStructureRuleSchema.html#getRuleID()">
             com.novell.ldap.LDAPDITStructureRuleSchema.getRuleID()</a>
      */
 
@@ -99,8 +96,7 @@ public class LDAPDITStructureRuleSchema
     /**
      * Returns the NameForm that this structure rule controls.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPDITStructureRuleSchema.html
-            #getNameForm()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPDITStructureRuleSchema.html#getNameForm()">
             com.novell.ldap.LDAPDITStructureRuleSchema.getNameForm()</a>
      */
     public String getNameForm()
@@ -112,8 +108,7 @@ public class LDAPDITStructureRuleSchema
      * Returns a list of all structure rules that are superior to this
      * structure rule.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPDITStructureRuleSchema.html
-            #getSuperiors()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPDITStructureRuleSchema.html#getSuperiors()">
             com.novell.ldap.LDAPDITStructureRuleSchema.getSuperiors()</a>
      */
     public String[] getSuperiors()

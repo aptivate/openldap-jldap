@@ -18,7 +18,7 @@ package org.ietf.ldap;
 /**
  * Represents a single add, delete, or replace operation to an LDAPAttribute.
  *
- * @see <a href="../../../../doc/com/novell/ldap/LDAPModification.html">
+ * @see <a href="../../../../api/com/novell/ldap/LDAPModification.html">
             com.novell.ldap.LDAPModification</a>
  */
 public class LDAPModification
@@ -28,8 +28,7 @@ public class LDAPModification
     /**
      * Adds the listed values to the given attribute.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPModification.html
-            #ADD">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPModification.html#ADD">
             com.novell.ldap.LDAPModification.ADD</a>
      */
     public static final int ADD = 0;
@@ -37,8 +36,7 @@ public class LDAPModification
     /**
      * Deletes the listed values from the given attribute.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPModification.html
-            #DELETE">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPModification.html#DELETE">
             com.novell.ldap.LDAPModification.DELETE</a>
      */
     public static final int DELETE = 1;
@@ -47,8 +45,7 @@ public class LDAPModification
      * Replaces all existing values of the given attribute
      * with the new values listed.
      * 
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPModification.html
-            #REPLACE">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPModification.html#REPLACE">
             com.novell.ldap.LDAPModification.REPLACE</a>
      */
     public static final int REPLACE = 2;
@@ -66,8 +63,7 @@ public class LDAPModification
     /**
      * Specifies a modification to be made to an attribute.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPModification.html
-            #LDAPModification(int, com.novell.ldap.LDAPAttribute)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPModification.html#LDAPModification(int, com.novell.ldap.LDAPAttribute)">
             com.novell.ldap.LDAPModification.LDAPModification(int,
             LDAPAttribute)</a>
      */
@@ -89,8 +85,7 @@ public class LDAPModification
     /**
      * Returns the attribute to modify, with any existing values.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPModification.html
-            #getAttribute()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPModification.html#getAttribute()">
             com.novell.ldap.LDAPModification.getAttribute()</a>
      */
     public LDAPAttribute getAttribute()
@@ -105,8 +100,7 @@ public class LDAPModification
     /**
      * Returns the type of modification specified by this object.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPModification.html
-            #getOp()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPModification.html#getOp()">
             com.novell.ldap.LDAPModification.getOp()</a>
      */
     public int getOp()

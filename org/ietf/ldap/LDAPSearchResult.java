@@ -19,7 +19,7 @@ package org.ietf.ldap;
  *  Encapsulates a single search result that is in response to an asynchronous
  *  search operation.
  *
- *  @see <a href="../../../../doc/com/novell/ldap/LDAPSearchResult.html">
+ *  @see <a href="../../../../api/com/novell/ldap/LDAPSearchResult.html">
             com.novell.ldap.LDAPSearchResult</a>
  */
 public class LDAPSearchResult extends LDAPMessage
@@ -40,8 +40,7 @@ public class LDAPSearchResult extends LDAPMessage
     /**
      * Returns the entry of a server's search response.
      *
-    * @see <a href="../../../../doc/com/novell/ldap/LDAPSearchResult.html
-            #getEntry()">
+    * @see <a href="../../../../api/com/novell/ldap/LDAPSearchResult.html#getEntry()">
             com.novell.ldap.LDAPSearchResult.getEntry()</a>
      */
     public LDAPEntry getEntry()

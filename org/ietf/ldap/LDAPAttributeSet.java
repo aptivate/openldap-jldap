@@ -25,7 +25,7 @@ import java.util.Iterator;
  * operation. <code>LDAPAttributeSet</code> may be also used to contruct an entry
  * to be added to a directory.
  *
- * @see <a href="../../../../doc/com/novell/ldap/LDAPAttributeSet.html">
+ * @see <a href="../../../../api/com/novell/ldap/LDAPAttributeSet.html">
             com.novell.ldap.LDAPAttributeSet</a>
  */
 public class LDAPAttributeSet implements java.lang.Cloneable,
@@ -46,8 +46,7 @@ public class LDAPAttributeSet implements java.lang.Cloneable,
     /**
      * Constructs an empty set of attributes.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttributeSet.html
-            #LDAPAttributeSet()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPAttributeSet.html#LDAPAttributeSet()">
             com.novell.ldap.LDAPAttributeSet.LDAPAttributeSet()</a>
      */
     public LDAPAttributeSet()
@@ -68,8 +67,7 @@ public class LDAPAttributeSet implements java.lang.Cloneable,
     /**
      * Returns a deep copy of this attribute set.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttributeSet.html
-            #clone()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPAttributeSet.html#clone()">
             com.novell.ldap.LDAPAttributeSet.clone()</a>
      */
     public Object clone()
@@ -87,8 +85,7 @@ public class LDAPAttributeSet implements java.lang.Cloneable,
     /**
      * Returns the attribute matching the specified attrName.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttributeSet.html
-            #getAttribute(java.lang.String)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPAttributeSet.html#getAttribute(java.lang.String)">
             com.novell.ldap.LDAPAttributeSet.getAttribute(String)</a>
      */
     public LDAPAttribute getAttribute(String attrName)
@@ -104,8 +101,7 @@ public class LDAPAttributeSet implements java.lang.Cloneable,
      * Returns a single best-match attribute, or null if no match is
      * available in the entry.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttributeSet.html
-            #getAttribute(java.lang.String, java.lang.String)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPAttributeSet.html#getAttribute(java.lang.String, java.lang.String)">
             com.novell.ldap.LDAPAttributeSet.getAttribute(String, String)</a>
      */
     public LDAPAttribute getAttribute(String attrName, String lang)
@@ -121,8 +117,7 @@ public class LDAPAttributeSet implements java.lang.Cloneable,
      * Creates a new attribute set containing only the attributes that have
      * the specified subtypes.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttributeSet.html
-            #getSubset(java.lang.String)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPAttributeSet.html#getSubset(java.lang.String)">
             com.novell.ldap.LDAPAttributeSet.getSubset(String)</a>
      */
     public LDAPAttributeSet getSubset(String subtype)
@@ -135,8 +130,7 @@ public class LDAPAttributeSet implements java.lang.Cloneable,
     /**
      * Adds the specified attribute to this attribute set.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttributeSet.html
-            #add(java.lang.Object)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPAttributeSet.html#add(java.lang.Object)">
             com.novell.ldap.LDAPAttributeSet.add(Object)</a>
      */
     public boolean add(Object attr)
@@ -164,8 +158,7 @@ public class LDAPAttributeSet implements java.lang.Cloneable,
     /**
      * Adds all the specified attributes to this attribute set.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttributeSet.html
-            #addAll(java.util.Collection)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPAttributeSet.html#addAll(java.util.Collection)">
             com.novell.ldap.LDAPAttributeSet.addAll(Collection)</a>
      */
     public boolean addAll(java.util.Collection attrs)
@@ -176,8 +169,7 @@ public class LDAPAttributeSet implements java.lang.Cloneable,
     /**
      * Removes all the attributes from this attribute set.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttributeSet.html
-            #clear()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPAttributeSet.html#clear()">
             com.novell.ldap.LDAPAttributeSet.clear()</a>
      */
     public void clear()
@@ -189,8 +181,7 @@ public class LDAPAttributeSet implements java.lang.Cloneable,
     /**
      * Returns true if this AttributeSet contains the specified Attribute.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttributeSet.html
-            #contains(java.lang.Object)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPAttributeSet.html#contains(java.lang.Object)">
             com.novell.ldap.LDAPAttributeSet.contains(Object)</a>
      */
     public boolean contains(Object attr)
@@ -230,8 +221,7 @@ public class LDAPAttributeSet implements java.lang.Cloneable,
     /**
      * Returns true if there are no elements in this set.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttributeSet.html
-            #isEmpty()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPAttributeSet.html#isEmpty()">
             com.novell.ldap.LDAPAttributeSet.isEmpty()</a>
      */
     public boolean isEmpty()
@@ -242,8 +232,7 @@ public class LDAPAttributeSet implements java.lang.Cloneable,
     /**
      * Returns an iterator over the elements of this set.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttributeSet.html
-            #iterator()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPAttributeSet.html#iterator()">
             com.novell.ldap.LDAPAttributeSet.iterator()</a>
      */
     public Iterator iterator() {
@@ -253,8 +242,7 @@ public class LDAPAttributeSet implements java.lang.Cloneable,
     /**
      * Removes the specified LDAPAttribute object from the set.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttributeSet.html
-            #remove(java.lang.Object)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPAttributeSet.html#remove(java.lang.Object)">
             com.novell.ldap.LDAPAttributeSet.remove(Object)</a>
      */
     public boolean remove(Object obj)
@@ -286,8 +274,7 @@ public class LDAPAttributeSet implements java.lang.Cloneable,
     /**
      * Returns the number of attributes in this set.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttributeSet.html
-            #size()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPAttributeSet.html#size()">
             com.novell.ldap.LDAPAttributeSet.size()</a>
      */
     public int size()

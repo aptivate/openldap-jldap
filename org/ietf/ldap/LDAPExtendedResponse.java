@@ -20,7 +20,7 @@ package org.ietf.ldap;
  *  Encapsulates the response returned by an LDAP server on an
  *  asynchronous extended operation request.
  *
- * @see <a href="../../../../doc/com/novell/ldap/LDAPExtendedResponse.html">
+ * @see <a href="../../../../api/com/novell/ldap/LDAPExtendedResponse.html">
             com.novell.ldap.LDAPExtendedResponse</a>
  */
 public class LDAPExtendedResponse extends LDAPResponse {
@@ -50,8 +50,7 @@ public class LDAPExtendedResponse extends LDAPResponse {
     /**
      * Returns the message identifier of the response.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPExtendedResponse.html
-            #getID()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPExtendedResponse.html#getID()">
             com.novell.ldap.LDAPExtendedResponse.getID()</a>
      */
     public String getID()
@@ -62,8 +61,7 @@ public class LDAPExtendedResponse extends LDAPResponse {
     /**
      * Returns the value part of the response in raw bytes.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPExtendedResponse.html
-            #getValue()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPExtendedResponse.html#getValue()">
             com.novell.ldap.LDAPExtendedResponse.getValue()</a>
      */
     public byte[] getValue()

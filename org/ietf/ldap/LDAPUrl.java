@@ -22,7 +22,7 @@ import java.util.Enumeration;
  *
  * Encapsulates parameters of an LDAP URL query as defined in RFC2255.
  *
- *  @see <a href="../../../../doc/com/novell/ldap/LDAPUrl.html">
+ *  @see <a href="../../../../api/com/novell/ldap/LDAPUrl.html">
             com.novell.ldap.LDAPUrl</a>
  */
 public class LDAPUrl implements Cloneable {
@@ -32,8 +32,7 @@ public class LDAPUrl implements Cloneable {
     /**
      * Constructs a URL object with the specified string as the URL.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPUrl.html
-            #LDAPUrl(java.lang.String)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPUrl.html#LDAPUrl(java.lang.String)">
             com.novell.ldap.LDAPUrl.LDAPUrl(String)</a>
      */
     public LDAPUrl(String url) throws MalformedURLException
@@ -46,8 +45,7 @@ public class LDAPUrl implements Cloneable {
     /**
      * Constructs a URL object with the specified host, port, and DN.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPUrl.html
-            #LDAPUrl(java.lang.String, int, java.lang.String)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPUrl.html#LDAPUrl(java.lang.String, int, java.lang.String)">
             com.novell.ldap.LDAPUrl.LDAPUrl(String, int, String)</a>
      */
     public LDAPUrl(String host, int port, String dn)
@@ -60,9 +58,7 @@ public class LDAPUrl implements Cloneable {
      * Constructs an LDAP URL with all fields explicitly assigned, to
      * specify an LDAP search operation.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPUrl.html
-     * #LDAPUrl(java.lang.String, int, java.lang.String,
-     * java.lang.String[], int, java.lang.String, java.lang.String[])">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPUrl.html#LDAPUrl(java.lang.String, int, java.lang.String, java.lang.String[], int, java.lang.String, java.lang.String[])">
             com.novell.ldap.LDAPUrl.LDAPUrl(String, int, String,
             String[], int, String, String[])</a>
      */
@@ -84,8 +80,7 @@ public class LDAPUrl implements Cloneable {
      *
      * @return clone of this URL object.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPUrl.html
-            #clone()">com.novell.ldap.LDAPUrl.clone()</a>
+     * @see <a href="../../../../api/com/novell/ldap/LDAPUrl.html#clone()">com.novell.ldap.LDAPUrl.clone()</a>
      */
     public Object clone()
     {
@@ -118,8 +113,7 @@ public class LDAPUrl implements Cloneable {
     /**
      * Decodes a URL-encoded string.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPUrl.html
-            #decode(java.lang.String)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPUrl.html#decode(java.lang.String)">
             com.novell.ldap.LDAPUrl.decode(String)</a>
      */
     public static String decode(String URLEncoded)
@@ -131,8 +125,7 @@ public class LDAPUrl implements Cloneable {
     /**
      * Encodes an arbitrary string using the URL encoding rules.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPUrl.html
-            #encode(java.lang.String)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPUrl.html#encode(java.lang.String)">
             com.novell.ldap.LDAPUrl.encode(String)</a>
      */
     public static String encode(String toEncode)
@@ -143,8 +136,7 @@ public class LDAPUrl implements Cloneable {
     /**
      * Returns an array of attribute names specified in the URL.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPUrl.html
-            #getAttributeArray()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPUrl.html#getAttributeArray()">
             com.novell.ldap.LDAPUrl.getAttributeArray()</a>
      */
     public String[] getAttributeArray() {
@@ -154,8 +146,7 @@ public class LDAPUrl implements Cloneable {
     /**
      * Returns an enumerator for the attribute names specified in the URL.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPUrl.html
-            #getAttributes()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPUrl.html#getAttributes()">
             com.novell.ldap.LDAPUrl.getAttributes()</a>
      */
     public Enumeration getAttributes() {
@@ -165,8 +156,7 @@ public class LDAPUrl implements Cloneable {
     /**
      * Returns the distinguished name encapsulated in the URL.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPUrl.html
-            #getDN()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPUrl.html#getDN()">
             com.novell.ldap.LDAPUrl.getDN()</a>
      */
     public String getDN() {
@@ -177,8 +167,7 @@ public class LDAPUrl implements Cloneable {
      * Returns any LDAP URL extensions specified, or null if none are
      * specified.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPUrl.html
-            #getExtensions()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPUrl.html#getExtensions()">
             com.novell.ldap.LDAPUrl.getExtensions()</a>
      */
     public String[] getExtensions() {
@@ -189,8 +178,7 @@ public class LDAPUrl implements Cloneable {
      * Returns the search filter or the default filter
      * (objectclass=*) if none was specified.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPUrl.html
-            #getFilter()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPUrl.html#getFilter()">
             com.novell.ldap.LDAPUrl.getFilter()</a>
      */
     public String getFilter() {
@@ -200,8 +188,7 @@ public class LDAPUrl implements Cloneable {
     /**
      * Returns the name of the LDAP server in the URL.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPUrl.html
-            #getHost()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPUrl.html#getHost()">
             com.novell.ldap.LDAPUrl.getHost()</a>
      */
     public String getHost() {
@@ -211,8 +198,7 @@ public class LDAPUrl implements Cloneable {
     /**
      * Returns the port number of the LDAP server in the URL.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPUrl.html
-            #getPort()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPUrl.html#getPort()">
             com.novell.ldap.LDAPUrl.getPort()</a>
      */
     public int getPort()
@@ -223,8 +209,7 @@ public class LDAPUrl implements Cloneable {
     /**
      * Returns the depth of search.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPUrl.html
-            #getScope()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPUrl.html#getScope()">
             com.novell.ldap.LDAPUrl.getScope()</a>
      */
     public int getScope()
@@ -235,8 +220,7 @@ public class LDAPUrl implements Cloneable {
     /**
      * Returns a valid string representation of this LDAP URL.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPUrl.html
-            #toString()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPUrl.html#toString()">
             com.novell.ldap.LDAPUrl.toString()</a>
      */
     public String toString()

@@ -20,7 +20,7 @@ import java.util.Enumeration;
 /**
  * Represents the name and values of one attribute of a directory entry.
  *
- * @see <a href="../../../../doc/com/novell/ldap/LDAPAttribute.html">
+ * @see <a href="../../../../api/com/novell/ldap/LDAPAttribute.html">
             com.novell.ldap.LDAPAttribute</a>
  */
 public class LDAPAttribute implements java.lang.Cloneable,
@@ -46,8 +46,7 @@ public class LDAPAttribute implements java.lang.Cloneable,
      * Constructs an attribute with copies of all values of the input
      * attribute.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttribute.html
-            #LDAPAttribute(com.novell.ldap.LDAPAttribute)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPAttribute.html#LDAPAttribute(com.novell.ldap.LDAPAttribute)">
             com.novell.ldap.LDAPAttribute.LDAPAttribute(LDAPAttribute)</a>
      */
     public LDAPAttribute(LDAPAttribute attr)
@@ -63,8 +62,7 @@ public class LDAPAttribute implements java.lang.Cloneable,
     /**
      * Constructs an attribute with no values.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttribute.html
-            #LDAPAttribute(java.lang.String)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPAttribute.html#LDAPAttribute(java.lang.String)">
             com.novell.ldap.LDAPAttribute.LDAPAttribute(String)</a>
      */
     public LDAPAttribute(String attrName)
@@ -76,8 +74,7 @@ public class LDAPAttribute implements java.lang.Cloneable,
     /**
      * Constructs an attribute with a byte-formatted value.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttribute.html
-            #LDAPAttribute(java.lang.String, byte[])">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPAttribute.html#LDAPAttribute(java.lang.String, byte[])">
             com.novell.ldap.LDAPAttribute.LDAPAttribute(String, byte[])</a>
      */
     public LDAPAttribute(String attrName, byte[] attrBytes)
@@ -89,8 +86,7 @@ public class LDAPAttribute implements java.lang.Cloneable,
     /**
      * Constructs an attribute that has a single string value.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttribute.html
-            #LDAPAttribute(java.lang.String, java.lang.String)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPAttribute.html#LDAPAttribute(java.lang.String, java.lang.String)">
             com.novell.ldap.LDAPAttribute.LDAPAttribute(String, String)</a>
      */
     public LDAPAttribute(String attrName, String attrString)
@@ -102,8 +98,7 @@ public class LDAPAttribute implements java.lang.Cloneable,
     /**
      * Constructs an attribute that has an array of string values.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttribute.html
-            #LDAPAttribute(java.lang.String, java.lang.String[])">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPAttribute.html#LDAPAttribute(java.lang.String, java.lang.String[])">
             com.novell.ldap.LDAPAttribute.LDAPAttribute(String, String[])</a>
      */
     public LDAPAttribute(String attrName, String[] attrStrings)
@@ -126,8 +121,7 @@ public class LDAPAttribute implements java.lang.Cloneable,
     /**
      * Adds a string value to the attribute.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttribute.html
-            #addValue(java.lang.String)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPAttribute.html#addValue(java.lang.String)">
             com.novell.ldap.LDAPAttribute.addValue(String)</a>
      */
     public void addValue(String attrString)
@@ -139,8 +133,7 @@ public class LDAPAttribute implements java.lang.Cloneable,
     /**
      * Adds a byte-formatted value to the attribute.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttribute.html
-            #addValue(byte[])">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPAttribute.html#addValue(byte[])">
             com.novell.ldap.LDAPAttribute.addValue(byte[])</a>
      */
     public void addValue(byte[] attrBytes)
@@ -153,8 +146,7 @@ public class LDAPAttribute implements java.lang.Cloneable,
      * Returns an enumerator for the values of the attribute in byte
      * format.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttribute.html
-            #getByteValues()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPAttribute.html#getByteValues()">
             com.novell.ldap.LDAPAttribute.getByteValues()</a>
      */
     public Enumeration getByteValues()
@@ -165,8 +157,7 @@ public class LDAPAttribute implements java.lang.Cloneable,
     /**
      * Returns an enumerator for the string values of an attribute.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttribute.html
-            #getStringValues()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPAttribute.html#getStringValues()">
             com.novell.ldap.LDAPAttribute.getStringValues()</a>
      */
     public Enumeration getStringValues()
@@ -177,8 +168,7 @@ public class LDAPAttribute implements java.lang.Cloneable,
     /**
      * Returns the values of the attribute as an array of bytes.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttribute.html
-            #getByteValueArray()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPAttribute.html#getByteValueArray()">
             com.novell.ldap.LDAPAttribute.getByteValueArray()</a>
      */
     public byte[][] getByteValueArray()
@@ -189,8 +179,7 @@ public class LDAPAttribute implements java.lang.Cloneable,
     /**
      * Returns the values of the attribute as an array of strings.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttribute.html
-            #getStringValueArray()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPAttribute.html#getStringValueArray()">
             com.novell.ldap.LDAPAttribute.getStringValueArray()</a>
      */
     public String[] getStringValueArray()
@@ -201,8 +190,7 @@ public class LDAPAttribute implements java.lang.Cloneable,
     /**
      * Returns the language subtype of the attribute, if any.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttribute.html
-            #getLangSubtype()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPAttribute.html#getLangSubtype()">
             com.novell.ldap.LDAPAttribute.getLangSubtype()</a>
      */
     public String getLangSubtype()
@@ -213,8 +201,7 @@ public class LDAPAttribute implements java.lang.Cloneable,
     /**
      * Returns the base name of the attribute.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttribute.html
-            #getBaseName()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPAttribute.html#getBaseName()">
             com.novell.ldap.LDAPAttribute.getBaseName()</a>
      */
     public String getBaseName()
@@ -225,8 +212,7 @@ public class LDAPAttribute implements java.lang.Cloneable,
     /**
      * Returns the base name of the specified attribute.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttribute.html
-            #getBaseName(java.lang.String)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPAttribute.html#getBaseName(java.lang.String)">
             com.novell.ldap.LDAPAttribute.getBaseName(String)</a>
      */
     public static String getBaseName(String attrName)
@@ -237,8 +223,7 @@ public class LDAPAttribute implements java.lang.Cloneable,
     /**
      * Returns the name of the attribute.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttribute.html
-            #getName()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPAttribute.html#getName()">
             com.novell.ldap.LDAPAttribute.getName()</a>
      */
     public String getName()
@@ -249,8 +234,7 @@ public class LDAPAttribute implements java.lang.Cloneable,
     /**
      * Extracts the subtypes from the attribute name.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttribute.html
-            #getSubtypes()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPAttribute.html#getSubtypes()">
             com.novell.ldap.LDAPAttribute.getSubtypes()</a>
      */
     public String[] getSubtypes()
@@ -261,8 +245,7 @@ public class LDAPAttribute implements java.lang.Cloneable,
     /**
      * Extracts the subtypes from the specified attribute name.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttribute.html
-            #getSubtypes(java.lang.String)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPAttribute.html#getSubtypes(java.lang.String)">
             com.novell.ldap.LDAPAttribute.getSubtypes(String)</a>
      */
     public static String[] getSubtypes(String attrName)
@@ -273,8 +256,7 @@ public class LDAPAttribute implements java.lang.Cloneable,
     /**
      * Reports if the attribute name contains the specified subtype.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttribute.html
-            #hasSubtype(java.lang.String)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPAttribute.html#hasSubtype(java.lang.String)">
             com.novell.ldap.LDAPAttribute.hasSubtype(String)</a>
      */
     public boolean hasSubtype(String subtype)
@@ -285,8 +267,7 @@ public class LDAPAttribute implements java.lang.Cloneable,
     /**
      * Reports if the attribute name contains all the specified subtypes.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttribute.html
-            #hasSubtypes(java.lang.String[])">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPAttribute.html#hasSubtypes(java.lang.String[])">
             com.novell.ldap.LDAPAttribute.hasSubtypes(String[])</a>
      */
     public boolean hasSubtypes(String[] subtypes)
@@ -297,8 +278,7 @@ public class LDAPAttribute implements java.lang.Cloneable,
     /**
      * Removes a string value from the attribute.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttribute.html
-            #removeValue(java.lang.String)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPAttribute.html#removeValue(java.lang.String)">
             com.novell.ldap.LDAPAttribute.removeValue(String)</a>
      */
     public void removeValue(String attrString)
@@ -310,8 +290,7 @@ public class LDAPAttribute implements java.lang.Cloneable,
     /**
      * Removes a byte-formatted value from the attribute.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttribute.html
-            #removeValue(byte[])">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPAttribute.html#removeValue(byte[])">
             com.novell.ldap.LDAPAttribute.removeValue(byte[])</a>
      */
     public void removeValue(byte[] attrBytes)
@@ -323,8 +302,7 @@ public class LDAPAttribute implements java.lang.Cloneable,
     /**
      * Returns the number of values in the attribute.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttribute.html
-            #size()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPAttribute.html#size()">
             com.novell.ldap.LDAPAttribute.size()</a>
      */
     public int size()
@@ -335,8 +313,7 @@ public class LDAPAttribute implements java.lang.Cloneable,
     /**
      * Compares this object with the specified object for order.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttribute.html
-            #compareTo(java.lang.Object)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPAttribute.html#compareTo(java.lang.Object)">
             com.novell.ldap.LDAPAttribute.compareTo(Object)</a>
      */
     public int compareTo(Object attribute)
@@ -348,8 +325,7 @@ public class LDAPAttribute implements java.lang.Cloneable,
     /**
      * Returns a clone of this object
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttribute.html
-            #clone()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPAttribute.html#clone()">
             com.novell.ldap.LDAPAttribute.clone()</a>
      */
     public Object clone()

@@ -19,7 +19,7 @@ package org.ietf.ldap;
  *  Represents a single entry in a directory, consisting of
  *  a distinguished name (DN) and zero or more attributes.
  *
- * @see <a href="../../../../doc/com/novell/ldap/LDAPEntry.html">
+ * @see <a href="../../../../api/com/novell/ldap/LDAPEntry.html">
             com.novell.ldap.LDAPEntry</a>
  */
 public class LDAPEntry implements java.lang.Comparable
@@ -38,8 +38,7 @@ public class LDAPEntry implements java.lang.Comparable
     /**
      * Constructs an empty entry.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPEntry.html
-            #LDAPEntry()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPEntry.html#LDAPEntry()">
             com.novell.ldap.LDAPEntry.LDAPEntry()</a>
      */
     public LDAPEntry()
@@ -52,8 +51,7 @@ public class LDAPEntry implements java.lang.Comparable
      * Constructs a new entry with the specified distinguished name and with
      * an empty attribute set.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPEntry.html
-            #LDAPEntry(java.lang.String)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPEntry.html#LDAPEntry(java.lang.String)">
             com.novell.ldap.LDAPEntry.LDAPEntry(String)</a>
      */
     public LDAPEntry(String dn)
@@ -66,8 +64,7 @@ public class LDAPEntry implements java.lang.Comparable
      * Constructs a new entry with the specified distinguished name and set
      * of attributes.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPEntry.html
-            #LDAPEntry(java.lang.String, com.novell.ldap.LDAPAttributeSet)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPEntry.html#LDAPEntry(java.lang.String, com.novell.ldap.LDAPAttributeSet)">
             com.novell.ldap.LDAPEntry.LDAPEntry(String, LDAPAttributeSet)</a>
      */
     public LDAPEntry(String dn, LDAPAttributeSet attrs)
@@ -91,8 +88,7 @@ public class LDAPEntry implements java.lang.Comparable
     /**
      * Returns the attributes matching the specified attrName.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPEntry.html
-            #getAttribute(java.lang.String)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPEntry.html#getAttribute(java.lang.String)">
             com.novell.ldap.LDAPEntry.getAttribute(String)</a>
      */
     public LDAPAttribute getAttribute(String attrName)
@@ -107,8 +103,7 @@ public class LDAPEntry implements java.lang.Comparable
     /**
      * Returns the attribute set of the entry.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPEntry.html
-            #getAttributeSet()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPEntry.html#getAttributeSet()">
             com.novell.ldap.LDAPEntry.getAttributeSet()</a>
      */
     public LDAPAttributeSet getAttributeSet()
@@ -121,8 +116,7 @@ public class LDAPEntry implements java.lang.Comparable
      * Returns an attribute set from the entry, consisting of only those
      * attributes matching the specified subtypes.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPEntry.html
-            #getAttributeSet(java.lang.String)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPEntry.html#getAttributeSet(java.lang.String)">
             com.novell.ldap.LDAPEntry.getAttributeSet(String)</a>
      */
     public LDAPAttributeSet getAttributeSet(String subtype)
@@ -133,8 +127,7 @@ public class LDAPEntry implements java.lang.Comparable
     /**
      * Returns the distinguished name of the entry.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPEntry.html
-            #getDN()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPEntry.html#getDN()">
             com.novell.ldap.LDAPEntry.getDN()</a>
      */
     public String getDN()
@@ -145,8 +138,7 @@ public class LDAPEntry implements java.lang.Comparable
     /**
      * Compares this object to the specified object for order.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPEntry.html
-            #compareTo(java.lang.Object)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPEntry.html#compareTo(java.lang.Object)">
             com.novell.ldap.LDAPEntry.compareTo(Object)</a>
      */
     public int compareTo(Object entry){

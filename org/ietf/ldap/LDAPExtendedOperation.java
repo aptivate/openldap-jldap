@@ -19,7 +19,7 @@ package org.ietf.ldap;
  *  Encapsulates an ID which uniquely identifies a particular extended
  *  operation.
  *
- * @see <a href="../../../../doc/com/novell/ldap/LDAPExtendedOperation.html">
+ * @see <a href="../../../../api/com/novell/ldap/LDAPExtendedOperation.html">
             com.novell.ldap.LDAPExtendedOperation</a>
  */
 public class LDAPExtendedOperation implements Cloneable
@@ -38,8 +38,7 @@ public class LDAPExtendedOperation implements Cloneable
     /**
      * Constructs a new object with the specified object ID and data.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPExtendedOperation.html
-            #LDAPExtendedOperation(java.lang.String, byte[])">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPExtendedOperation.html#LDAPExtendedOperation(java.lang.String, byte[])">
             com.novell.ldap.LDAPExtendedOperation.LDAPExtendedOperation(String,
             byte[])</a>
      */
@@ -54,8 +53,7 @@ public class LDAPExtendedOperation implements Cloneable
      *
      * @return a clone of this object
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPExtendedOperation.html
-            #clone()">com.novell.ldap.LDAPExtendedOperation.clone()</a>
+     * @see <a href="../../../../api/com/novell/ldap/LDAPExtendedOperation.html#clone()">com.novell.ldap.LDAPExtendedOperation.clone()</a>
      */
     public Object clone()
     {
@@ -71,8 +69,7 @@ public class LDAPExtendedOperation implements Cloneable
     /**
      * Returns the unique identifier of the operation.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPExtendedOperation.html
-            #getID()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPExtendedOperation.html#getID()">
             com.novell.ldap.LDAPExtendedOperation.getID()</a>
      */
     public String getID() {
@@ -82,8 +79,7 @@ public class LDAPExtendedOperation implements Cloneable
     /**
      * Returns a reference to the operation-specific data.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPExtendedOperation.html
-            #getValue()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPExtendedOperation.html#getValue()">
             com.novell.ldap.LDAPExtendedOperation.getValue()</a>
      */
     public byte[] getValue() {
@@ -93,8 +89,7 @@ public class LDAPExtendedOperation implements Cloneable
     /**
      *  Sets the value for the operation-specific data.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPExtendedOperation.html
-            #setValue(byte[])">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPExtendedOperation.html#setValue(byte[])">
             com.novell.ldap.LDAPExtendedOperation.setValue(byte[])</a>
      */
     protected void setValue(byte[] newVals) {

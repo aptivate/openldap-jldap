@@ -25,7 +25,7 @@ import java.util.Map;
  *  Represents the central class that encapsulates the connection
  *  to a directory server through the LDAP protocol.
  *
- *  @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html">
+ *  @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html">
             com.novell.ldap.LDAPLDAPConnection</a>
  */
 public class LDAPConnection implements Cloneable
@@ -36,8 +36,7 @@ public class LDAPConnection implements Cloneable
      * Used with search to specify that the scope of entrys to search is to
      * search only the base obect.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #SCOPE_BASE">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#SCOPE_BASE">
             com.novell.ldap.LDAPConnection.SCOPE_BASE</a>
      */
     public static final int SCOPE_BASE =
@@ -47,8 +46,7 @@ public class LDAPConnection implements Cloneable
      * Used with search to specify that the scope of entrys to search is to
      * search only the immediate subordinates of the base obect.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #SCOPE_ONE">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#SCOPE_ONE">
             com.novell.ldap.LDAPConnection.SCOPE_ONE</a>
      */
     public static final int SCOPE_ONE =
@@ -59,8 +57,7 @@ public class LDAPConnection implements Cloneable
      * Used with search to specify that the scope of entrys to search is to
      * search the base object and all entries within its subtree.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #SCOPE_SUB">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#SCOPE_SUB">
             com.novell.ldap.LDAPConnection.SCOPE_SUB</a>
      */
     public static final int SCOPE_SUB =
@@ -70,8 +67,7 @@ public class LDAPConnection implements Cloneable
      * Used with search instead of an attribute list to indicate that no
      * attributes are to be returned.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #NO_ATTRS">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#NO_ATTRS">
             com.novell.ldap.LDAPConnection.NO_ATTRS</a>
      */
     public static final String NO_ATTRS =
@@ -81,8 +77,7 @@ public class LDAPConnection implements Cloneable
      * Used with search instead of an attribute list to indicate that all
      * attributes are to be returned.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #ALL_USER_ATTRS">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#ALL_USER_ATTRS">
             com.novell.ldap.LDAPConnection.ALL_USER_ATTRS</a>
      */
     public static final String ALL_USER_ATTRS =
@@ -91,8 +86,7 @@ public class LDAPConnection implements Cloneable
     /**
      * The default port number for LDAP servers.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #DEFAULT_PORT">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#DEFAULT_PORT">
             com.novell.ldap.LDAPConnection.DEFAULT_PORT</a>
      */
     public static final int DEFAULT_PORT =
@@ -101,8 +95,7 @@ public class LDAPConnection implements Cloneable
     /**
      * A string that can be passed in to the getProperty method.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #LDAP_PROPERTY_SDK">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#LDAP_PROPERTY_SDK">
             com.novell.ldap.LDAPConnection.LDAP_PROPERTY_SDK</a>
      */
     public static final String LDAP_PROPERTY_SDK =
@@ -111,8 +104,7 @@ public class LDAPConnection implements Cloneable
     /**
      * A string that can be passed in to the getProperty method.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #LDAP_PROPERTY_PROTOCOL">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#LDAP_PROPERTY_PROTOCOL">
             com.novell.ldap.LDAPConnection.LDAP_PROPERTY_PROTOCOL</a>
      */
     public static final String LDAP_PROPERTY_PROTOCOL =
@@ -121,8 +113,7 @@ public class LDAPConnection implements Cloneable
     /**
      * A string that can be passed in to the getProperty method.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #LDAP_PROPERTY_SECURITY">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#LDAP_PROPERTY_SECURITY">
             com.novell.ldap.LDAPConnection.LDAP_PROPERTY_SECURITY</a>
      */
     public static final String LDAP_PROPERTY_SECURITY =
@@ -132,8 +123,7 @@ public class LDAPConnection implements Cloneable
      * Constructs a new LDAPConnection object, which represents a connection
      * to an LDAP server.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #LDAPConnection()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#LDAPConnection()">
             com.novell.ldap.LDAPConnection.LDAPConnection()</a>
      */
     public LDAPConnection()
@@ -214,8 +204,7 @@ public class LDAPConnection implements Cloneable
      * class factory to construct a socket connection during
      * LDAPConnection.connect method.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #LDAPConnection(com.novell.ldap.LDAPSocketFactory)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#LDAPConnection(com.novell.ldap.LDAPSocketFactory)">
             com.novell.ldap.LDAPConnection.LDAPConnection(LDAPSocketFactory)</a>
      */
     public LDAPConnection(LDAPSocketFactory factory)
@@ -234,8 +223,7 @@ public class LDAPConnection implements Cloneable
      * Returns a copy of the object with a private context, but sharing the
      * network connection if there is one.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #clone()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#clone()">
             com.novell.ldap.LDAPConnection.clone()</a>
      */
     public Object clone()
@@ -254,8 +242,7 @@ public class LDAPConnection implements Cloneable
      * Closes the connection, if open, and releases any other resources held
      * by the object.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #finalize()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#finalize()">
             com.novell.ldap.LDAPConnection.finalize()</a>
      */
     protected void finalize()
@@ -272,8 +259,7 @@ public class LDAPConnection implements Cloneable
     /**
      * Returns the protocol version uses to authenticate
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #getProtocolVersion()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#getProtocolVersion()">
             com.novell.ldap.LDAPConnection.getProtocolVersion()</a>
      */
     public int getProtocolVersion()
@@ -285,8 +271,7 @@ public class LDAPConnection implements Cloneable
      * Returns the distinguished name (DN) used for authentication by this
      * object.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #getAuthenticationDN()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#getAuthenticationDN()">
             com.novell.ldap.LDAPConnection.getAuthenticationDN()</a>
      */
     public String getAuthenticationDN()
@@ -297,8 +282,7 @@ public class LDAPConnection implements Cloneable
     /**
      * Returns the method used to authenticate the connection.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #getAuthenticationMethod()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#getAuthenticationMethod()">
             com.novell.ldap.LDAPConnection.getAuthenticationMethod()</a>
      */
     public String getAuthenticationMethod()
@@ -310,8 +294,7 @@ public class LDAPConnection implements Cloneable
      * Returns the properties if any specified on binding with a
      * SASL mechanism.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #getSaslBindProperties()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#getSaslBindProperties()">
             com.novell.ldap.LDAPConnection.getSaslBindProperties()</a>
      */
     public Map getSaslBindProperties()
@@ -323,8 +306,7 @@ public class LDAPConnection implements Cloneable
      * Returns the call back handler if any specified on binding with a
      * SASL mechanism.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #getSaslBindCallbackHandler()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#getSaslBindCallbackHandler()">
             com.novell.ldap.LDAPConnection.getSaslBindCallbackHandler()</a>
      */
     public Object /* javax.security.auth.callback.CallbackHandler */
@@ -337,8 +319,7 @@ public class LDAPConnection implements Cloneable
      * Returns a copy of the set of constraints associated with this
      * connection.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #getConstraints()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#getConstraints()">
             com.novell.ldap.LDAPConnection.getConstraints()</a>
      */
     public LDAPConstraints getConstraints()
@@ -350,8 +331,7 @@ public class LDAPConnection implements Cloneable
      * Returns the host name of the LDAP server to which the object is or
      * was last connected, in the format originally specified.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #getHost()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#getHost()">
             com.novell.ldap.LDAPConnection.getHost()</a>
      */
     public String getHost()
@@ -363,8 +343,7 @@ public class LDAPConnection implements Cloneable
      * Returns the port number of the LDAP server to which the object is or
      * was last connected.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #getPort()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#getPort()">
             com.novell.ldap.LDAPConnection.getPort()</a>
      */
     public int getPort()
@@ -375,8 +354,7 @@ public class LDAPConnection implements Cloneable
     /**
      * Returns a property of a connection object.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #getProperty(java.lang.String)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#getProperty(java.lang.String)">
             com.novell.ldap.LDAPConnection.getProperty(String)</a>
      */
     public Object getProperty(String name)
@@ -388,8 +366,7 @@ public class LDAPConnection implements Cloneable
      * Returns a copy of the set of search constraints associated with this
      * connection.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #getSearchConstraints()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#getSearchConstraints()">
             com.novell.ldap.LDAPConnection.getSearchConstraints()</a>
      */
     public LDAPSearchConstraints getSearchConstraints()
@@ -400,8 +377,7 @@ public class LDAPConnection implements Cloneable
     /**
      * Returns the LDAPSocketFactory used to establish this server connection.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #getSocketFactory()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#getSocketFactory()">
             com.novell.ldap.LDAPConnection.getSocketFactory()</a>
      */
     public LDAPSocketFactory getSocketFactory()
@@ -421,8 +397,7 @@ public class LDAPConnection implements Cloneable
      * Indicates whether the object has authenticated to the connected LDAP
      * server.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #isBound()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#isBound()">
             com.novell.ldap.LDAPConnection.isBound()</a>
      */
     public boolean isBound()
@@ -434,8 +409,7 @@ public class LDAPConnection implements Cloneable
      * Indicates whether the connection represented by this object is open
      * at this time.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #isConnected()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#isConnected()">
             com.novell.ldap.LDAPConnection.isConnected()</a>
      */
     public boolean isConnected()
@@ -446,8 +420,7 @@ public class LDAPConnection implements Cloneable
     /**
      * Indicates if the connection uses TLS.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #isTLS()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#isTLS()">
             com.novell.ldap.LDAPConnection.isTLS()</a>
      */
     public boolean isTLS()
@@ -459,8 +432,7 @@ public class LDAPConnection implements Cloneable
      * Sets the constraints that apply to all operations performed through
      * this connection.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #setConstraints(com.novell.ldap.LDAPConstraints)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#setConstraints(com.novell.ldap.LDAPConstraints)">
             com.novell.ldap.LDAPConnection.setConstraints(LDAPConstraints)</a>
      */
     public void setConstraints(LDAPConstraints cons)
@@ -473,8 +445,7 @@ public class LDAPConnection implements Cloneable
      * Establishes the default LDAPSocketFactory used when
      * LDAPConnection objects are constructed.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #setSocketFactory(com.novell.ldap.LDAPSocketFactory)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#setSocketFactory(com.novell.ldap.LDAPSocketFactory)">
             com.novell.ldap.LDAPConnection.setSocketFactory(LDAPSocketFactory)</a>
      */
     public static void setSocketFactory( LDAPSocketFactory factory)
@@ -494,8 +465,7 @@ public class LDAPConnection implements Cloneable
      * Registers an object to be notified on arrival of an unsolicited
      * message from a server.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #addUnsolicitedNotificationListener(com.novell.ldap.LDAPUnsolicitedNotificationListener)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#addUnsolicitedNotificationListener(com.novell.ldap.LDAPUnsolicitedNotificationListener)">
             com.novell.ldap.LDAPConnection.addUnsolicitedNotificationListener(
                 LDAPUnsolicitedNotificationListener)</a>
      */
@@ -544,8 +514,7 @@ public class LDAPConnection implements Cloneable
      * Deregisters an object so that it will no longer be notified on
      * arrival of an unsolicited message from a server.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #removeUnsolicitedNotificationListener(com.novell.ldap.LDAPUnsolicitedNotificationListener)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#removeUnsolicitedNotificationListener(com.novell.ldap.LDAPUnsolicitedNotificationListener)">
             com.novell.ldap.LDAPConnection.removeUnsolicitedNotificationListener(
             LDAPUnsolicitedNotificationListener)</a>
      */
@@ -575,8 +544,7 @@ public class LDAPConnection implements Cloneable
      * Starts Transport Layer Security (TLS) protocol on this connection
      * to enable session privacy.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #startTLS()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#startTLS()">
             com.novell.ldap.LDAPConnection.startTLS()</a>
      */
     public void startTLS() throws LDAPException
@@ -592,8 +560,7 @@ public class LDAPConnection implements Cloneable
     /**
      * Stops Transport Layer Security (TLS) protocol on this connection.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #stopTLS()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#stopTLS()">
             com.novell.ldap.LDAPConnection.stopTLS()</a>
      */
     public void stopTLS() throws LDAPException
@@ -611,8 +578,7 @@ public class LDAPConnection implements Cloneable
      * this LDAPSearchResults object, and discards any results already
      * received.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #abandon(com.novell.ldap.LDAPSearchResults)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#abandon(com.novell.ldap.LDAPSearchResults)">
             com.novell.ldap.LDAPConnection.abandon(LDAPSearchResults)</a>
      */
     public void abandon(LDAPSearchResults results)
@@ -635,8 +601,7 @@ public class LDAPConnection implements Cloneable
      * this LDAPSearchResults object, and discards any results already
      * received.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #abandon(com.novell.ldap.LDAPSearchResults,
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#abandon(com.novell.ldap.LDAPSearchResults,
             com.novell.ldap.LDAPConstraints)">
             com.novell.ldap.LDAPConnection.abandon(LDAPSearchResults,
             LDAPConstraints)</a>
@@ -662,8 +627,7 @@ public class LDAPConnection implements Cloneable
      *
      *  Abandons an asynchronous operation.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #abandon(int)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#abandon(int)">
             com.novell.ldap.LDAPConnection.abandon(int)</a>
      */
     public void abandon(int id)
@@ -681,8 +645,7 @@ public class LDAPConnection implements Cloneable
      *  Abandons a search operation for a queue, using the specified
      *  constraints.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #abandon(int, com.novell.ldap.LDAPConstraints)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#abandon(int, com.novell.ldap.LDAPConstraints)">
             com.novell.ldap.LDAPConnection.abandon(int, LDAPConstraints)</a>
      */
     public void abandon(int id, LDAPConstraints cons)
@@ -700,8 +663,7 @@ public class LDAPConnection implements Cloneable
     /**
      * Abandons all search operations for a queue.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #abandon(com.novell.ldap.LDAPMessageQueue)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#abandon(com.novell.ldap.LDAPMessageQueue)">
             com.novell.ldap.LDAPConnection.abandon(LDAPMessageQueue)</a>
      */
     public void abandon( LDAPMessageQueue queue)
@@ -723,8 +685,7 @@ public class LDAPConnection implements Cloneable
     /**
      * Abandons all search operations for a queue.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #abandon(com.novell.ldap.LDAPMessageQueue,
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#abandon(com.novell.ldap.LDAPMessageQueue,
             com.novell.ldap.LDAPConstraints)">
             com.novell.ldap.LDAPConnection.abandon(LDAPMessageQueue,
             LDAPConstraints)</a>
@@ -750,8 +711,7 @@ public class LDAPConnection implements Cloneable
     /**
      * Synchronously adds an entry to the directory.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #add(com.novell.ldap.LDAPEntry)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#add(com.novell.ldap.LDAPEntry)">
             com.novell.ldap.LDAPConnection.add(LDAPEntry)</a>
      */
     public void add(LDAPEntry entry)
@@ -774,8 +734,7 @@ public class LDAPConnection implements Cloneable
      * Synchronously adds an entry to the directory, using the specified
      * constraints.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #add(com.novell.ldap.LDAPEntry, com.novell.ldap.LDAPConstraints)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#add(com.novell.ldap.LDAPEntry, com.novell.ldap.LDAPConstraints)">
             com.novell.ldap.LDAPConnection.add(LDAPEntry, LDAPConstraints)</a>
      */
     public void add(LDAPEntry entry,
@@ -799,8 +758,7 @@ public class LDAPConnection implements Cloneable
     /**
      * Asynchronously adds an entry to the directory.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #add(com.novell.ldap.LDAPEntry,
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#add(com.novell.ldap.LDAPEntry,
             com.novell.ldap.LDAPResponseQueue)">
             com.novell.ldap.LDAPConnection.add(LDAPEntry,
             LDAPResponseQueue)</a>
@@ -827,8 +785,7 @@ public class LDAPConnection implements Cloneable
      * Asynchronously adds an entry to the directory, using the specified
      * constraints.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #add(com.novell.ldap.LDAPEntry,
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#add(com.novell.ldap.LDAPEntry,
             com.novell.ldap.LDAPResponseQueue,
             com.novell.ldap.LDAPConstraints)">
             com.novell.ldap.LDAPConnection.add(LDAPEntry, LDAPResponseQueue,
@@ -859,8 +816,7 @@ public class LDAPConnection implements Cloneable
      * Authenticates to the LDAP server (that the object is currently
      * connected to) using the specified name, password, and LDAP version.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #bind(int, java.lang.String, byte[])">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#bind(int, java.lang.String, byte[])">
             com.novell.ldap.LDAPConnection.bind(int, String, byte[])</a>
      */
     public void bind(int version,
@@ -887,8 +843,7 @@ public class LDAPConnection implements Cloneable
      * connected to) using the specified name, password, LDAP version,
      * and constraints.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #bind(int, java.lang.String, byte[],
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#bind(int, java.lang.String, byte[],
             com.novell.ldap.LDAPConstraints)">
             com.novell.ldap.LDAPConnection.bind(int, String, byte[],
             LDAPConstraints)</a>
@@ -919,8 +874,7 @@ public class LDAPConnection implements Cloneable
      * currently connected to) using the specified name, password, LDAP
      * version, and queue.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #bind(int, java.lang.String, byte[],
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#bind(int, java.lang.String, byte[],
             com.novell.ldap.LDAPResponseQueue)">
             com.novell.ldap.LDAPConnection.bind(int, String, byte[],
             LDAPResponseQueue)</a>
@@ -950,8 +904,7 @@ public class LDAPConnection implements Cloneable
      * currently connected to) using the specified name, password, LDAP
      * version, queue, and constraints.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #bind(int, java.lang.String, byte[],
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#bind(int, java.lang.String, byte[],
             com.novell.ldap.LDAPResponseQueue,
             com.novell.ldap.LDAPConstraints)">
             com.novell.ldap.LDAPConnection.bind(int, String, String,
@@ -986,8 +939,7 @@ public class LDAPConnection implements Cloneable
      * connected to) using the specified name and the specified set of
      * mechanisms.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #bind(java.lang.String, java.lang.String, java.util.Map,
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#bind(java.lang.String, java.lang.String, java.util.Map,
             java.lang.Object)">
             com.novell.ldap.LDAPConnection.bind(String, String, Map, Object)</a>
      */
@@ -1015,8 +967,7 @@ public class LDAPConnection implements Cloneable
      * connected to) using the specified name and the specified set of
      * mechanisms.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #bind(java.lang.String, java.lang.String, java.util.Map,
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#bind(java.lang.String, java.lang.String, java.util.Map,
             java.lang.Object,
             com.novell.ldap.LDAPConstraints)">
             com.novell.ldap.LDAPConnection.bind(String, String, Map, Object,
@@ -1048,8 +999,7 @@ public class LDAPConnection implements Cloneable
      * connected to) using the specified name and the specified set of
      * mechanisms.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #bind(java.lang.String, java.lang.String, java.lang.String[],
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#bind(java.lang.String, java.lang.String, java.lang.String[],
             java.util.Map, java.lang.Object)">
             com.novell.ldap.LDAPConnection.bind(String, String, String[], Map,
             Object)</a>
@@ -1079,8 +1029,7 @@ public class LDAPConnection implements Cloneable
      * connected to) using the specified name and the specified set of
      * mechanisms.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #bind(java.lang.String, java.lang.String, java.lang.String[],
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#bind(java.lang.String, java.lang.String, java.lang.String[],
             java.util.Map, java.lang.Object, com.novell.ldap.LDAPConstraints)">
             com.novell.ldap.LDAPConnection.bind(String, String, String[], Map,
             Object, LDAPConstraints)</a>
@@ -1112,8 +1061,7 @@ public class LDAPConnection implements Cloneable
      * Synchronously checks to see if an entry contains an attribute
      * with a specified value.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #compare(java.lang.String, com.novell.ldap.LDAPAttribute)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#compare(java.lang.String, com.novell.ldap.LDAPAttribute)">
             com.novell.ldap.LDAPConnection.compare(String, LDAPAttribute)</a>
      */
     public boolean compare(String dn,
@@ -1136,8 +1084,7 @@ public class LDAPConnection implements Cloneable
      * Checks to see if an entry contains an attribute with a specified
      * value, using the specified constraints.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #compare(java.lang.String, com.novell.ldap.LDAPAttribute,
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#compare(java.lang.String, com.novell.ldap.LDAPAttribute,
             com.novell.ldap.LDAPConstraints)">
             com.novell.ldap.LDAPConnection.compare(String, LDAPAttribute,
             LDAPConstraints)</a>
@@ -1165,8 +1112,7 @@ public class LDAPConnection implements Cloneable
      * Asynchronously compares an attribute value with one in the directory,
      * using the specified queue.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #compare(java.lang.String, com.novell.ldap.LDAPAttribute,
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#compare(java.lang.String, com.novell.ldap.LDAPAttribute,
             com.novell.ldap.LDAPResponseQueue)">
             com.novell.ldap.LDAPConnection.compare(String, LDAPAttribute,
             LDAPResponseQueue)</a>
@@ -1195,8 +1141,7 @@ public class LDAPConnection implements Cloneable
      * Asynchronously compares an attribute value with one in the directory,
      * using the specified queue and contraints.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #compare(java.lang.String, com.novell.ldap.LDAPAttribute,
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#compare(java.lang.String, com.novell.ldap.LDAPAttribute,
             com.novell.ldap.LDAPResponseQueue,
             com.novell.ldap.LDAPConstraints)">
             com.novell.ldap.LDAPConnection.compare(String, LDAPAttribute,
@@ -1228,8 +1173,7 @@ public class LDAPConnection implements Cloneable
      *
      * Connects to the specified host and port
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #connect(java.lang.String, int)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#connect(java.lang.String, int)">
             com.novell.ldap.LDAPConnection.connect(String, int)</a>
      */
     public void connect(String host, int port)
@@ -1247,8 +1191,7 @@ public class LDAPConnection implements Cloneable
      * Synchronously deletes the entry with the specified distinguished name
      * from the directory.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #delete(java.lang.String)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#delete(java.lang.String)">
             com.novell.ldap.LDAPConnection.delete(String)</a>
      */
     public void delete(String dn)
@@ -1272,8 +1215,7 @@ public class LDAPConnection implements Cloneable
      * Synchronously deletes the entry with the specified distinguished name
      * from the directory, using the specified constraints.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #delete(java.lang.String, com.novell.ldap.LDAPConstraints)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#delete(java.lang.String, com.novell.ldap.LDAPConstraints)">
             com.novell.ldap.LDAPConnection.delete(String, LDAPConstraints)</a>
      */
     public void delete(String dn, LDAPConstraints cons)
@@ -1297,8 +1239,7 @@ public class LDAPConnection implements Cloneable
      * Asynchronously deletes the entry with the specified distinguished name
      * from the directory and returns the results to the specified queue.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #delete(java.lang.String, com.novell.ldap.LDAPResponseQueue)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#delete(java.lang.String, com.novell.ldap.LDAPResponseQueue)">
             com.novell.ldap.LDAPConnection.delete(String,
             LDAPResponseQueue)</a>
      */
@@ -1324,8 +1265,7 @@ public class LDAPConnection implements Cloneable
      * Asynchronously deletes the entry with the specified distinguished name
      * from the directory, using the specified contraints and queue.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #delete(java.lang.String, com.novell.ldap.LDAPResponseQueue,
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#delete(java.lang.String, com.novell.ldap.LDAPResponseQueue,
             com.novell.ldap.LDAPConstraints)">
             com.novell.ldap.LDAPConnection.delete(String, LDAPResponseQueue,
             LDAPConstraints)</a>
@@ -1353,8 +1293,7 @@ public class LDAPConnection implements Cloneable
     /**
      * Synchronously disconnects from the LDAP server.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #disconnect()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#disconnect()">
             com.novell.ldap.LDAPConnection.disconnect()</a>
      */
     public void disconnect()
@@ -1372,8 +1311,7 @@ public class LDAPConnection implements Cloneable
      * Synchronously disconnects from the LDAP server, including
      * constraints to send with the unbind request.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #disconnect(com.novell.ldap.LDAPConstraints)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#disconnect(com.novell.ldap.LDAPConstraints)">
             com.novell.ldap.LDAPConnection.disconnect(LDAPConstraints)</a>
      */
     public void disconnect( LDAPConstraints cons)
@@ -1391,8 +1329,7 @@ public class LDAPConnection implements Cloneable
      * Provides a synchronous means to access extended, non-mandatory
      * operations offered by a particular LDAPv3 compliant server.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #extendedOperation(com.novell.ldap.LDAPExtendedOperation)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#extendedOperation(com.novell.ldap.LDAPExtendedOperation)">
             com.novell.ldap.LDAPConnection.extendedOperation(
             LDAPExtendedOperation)</a>
      */
@@ -1416,8 +1353,7 @@ public class LDAPConnection implements Cloneable
      * Provides a synchronous means to access extended, non-mandatory
      * operations offered by a particular LDAPv3 compliant server.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #extendedOperation(com.novell.ldap.LDAPExtendedOperation,
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#extendedOperation(com.novell.ldap.LDAPExtendedOperation,
             com.novell.ldap.LDAPSearchConstraints)">
             com.novell.ldap.LDAPConnection.extendedOperation(
             LDAPExtendedOperation, LDAPSearchConstraints)</a>
@@ -1445,8 +1381,7 @@ public class LDAPConnection implements Cloneable
      * Provides an asynchronous means to access extended, non-mandatory
      * operations offered by a particular LDAPv3 compliant server.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #extendedOperation(com.novell.ldap.LDAPExtendedOperation,
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#extendedOperation(com.novell.ldap.LDAPExtendedOperation,
             com.novell.ldap.LDAPResponseQueue)">
             com.novell.ldap.LDAPConnection.extendedOperation(
             LDAPExtendedOperation, LDAPResponseQueue)</a>
@@ -1475,8 +1410,7 @@ public class LDAPConnection implements Cloneable
      * Provides an asynchronous means to access extended, non-mandatory
      * operations offered by a particular LDAPv3 compliant server.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #extendedOperation(com.novell.ldap.LDAPExtendedOperation,
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#extendedOperation(com.novell.ldap.LDAPExtendedOperation,
             com.novell.ldap.LDAPSearchConstraints,
             com.novell.ldap.LDAPResponseQueue)">
             com.novell.ldap.LDAPConnection.extendedOperation(
@@ -1508,8 +1442,7 @@ public class LDAPConnection implements Cloneable
      *  Returns the Server Controls associated with the most recent response to
      *  a synchronous request on this connection object.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #getResponseControls()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#getResponseControls()">
             com.novell.ldap.LDAPConnection.getResponseControls()</a>
      */
     public LDAPControl[] getResponseControls()
@@ -1531,8 +1464,7 @@ public class LDAPConnection implements Cloneable
      * Synchronously makes a single change to an existing entry in the
      * directory.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #modify(java.lang.String, com.novell.ldap.LDAPModification)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#modify(java.lang.String, com.novell.ldap.LDAPModification)">
             com.novell.ldap.LDAPConnection.modify(String, LDAPModification)</a>
      */
     public void modify(String dn, LDAPModification mod)
@@ -1556,8 +1488,7 @@ public class LDAPConnection implements Cloneable
      * Synchronously makes a single change to an existing entry in the
      * directory, using the specified constraints.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #modify(java.lang.String, com.novell.ldap.LDAPModification,
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#modify(java.lang.String, com.novell.ldap.LDAPModification,
             com.novell.ldap.LDAPConstraints)">
             com.novell.ldap.LDAPConnection.modify(String, LDAPModification,
             LDAPConstraints)</a>
@@ -1587,8 +1518,7 @@ public class LDAPConnection implements Cloneable
      * Synchronously makes a set of changes to an existing entry in the
      * directory.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #modify(java.lang.String, com.novell.ldap.LDAPModification[]">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#modify(java.lang.String, com.novell.ldap.LDAPModification[]">
             com.novell.ldap.LDAPConnection.modify(String,
             LDAPModification[])</a>
      */
@@ -1617,8 +1547,7 @@ public class LDAPConnection implements Cloneable
      * Synchronously makes a set of changes to an existing entry in the
      * directory, using the specified constraints.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #modify(java.lang.String, com.novell.ldap.LDAPModification[],
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#modify(java.lang.String, com.novell.ldap.LDAPModification[],
             com.novell.ldap.LDAPConstraints)">
             com.novell.ldap.LDAPConnection.modify(String, LDAPModification[],
             LDAPConstraints)</a>
@@ -1652,8 +1581,7 @@ public class LDAPConnection implements Cloneable
      * Asynchronously makes a single change to an existing entry in the
      * directory.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #modify(java.lang.String, com.novell.ldap.LDAPModification,
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#modify(java.lang.String, com.novell.ldap.LDAPModification,
             com.novell.ldap.LDAPResponseQueue)">
             com.novell.ldap.LDAPConnection.modify(String, LDAPModification,
             LDAPResponseQueue)</a>
@@ -1682,8 +1610,7 @@ public class LDAPConnection implements Cloneable
      * Asynchronously makes a single change to an existing entry in the
      * directory, using the specified constraints and queue.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #modify(java.lang.String, com.novell.ldap.LDAPModification,
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#modify(java.lang.String, com.novell.ldap.LDAPModification,
             com.novell.ldap.LDAPResponseQueue,
             com.novell.ldap.LDAPConstraints)">
             com.novell.ldap.LDAPConnection.modify(String, LDAPModification,
@@ -1715,8 +1642,7 @@ public class LDAPConnection implements Cloneable
      * Asynchronously makes a set of changes to an existing entry in the
      * directory.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #modify(java.lang.String, com.novell.ldap.LDAPModification[],
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#modify(java.lang.String, com.novell.ldap.LDAPModification[],
             com.novell.ldap.LDAPResponseQueue)">
             com.novell.ldap.LDAPConnection.modify(String, LDAPModification[],
             LDAPResponseQueue)</a>
@@ -1748,8 +1674,7 @@ public class LDAPConnection implements Cloneable
      * Asynchronously makes a set of changes to an existing entry in the
      * directory, using the specified constraints and queue.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #modify(java.lang.String, com.novell.ldap.LDAPModification[],
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#modify(java.lang.String, com.novell.ldap.LDAPModification[],
             com.novell.ldap.LDAPResponseQueue,
             com.novell.ldap.LDAPConstraints)">
             com.novell.ldap.LDAPConnection.modify(String, LDAPModification[],
@@ -1786,8 +1711,7 @@ public class LDAPConnection implements Cloneable
      * Synchronously reads the entry for the specified distiguished name (DN)
      * and retrieves all attributes for the entry.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #read(java.lang.String)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#read(java.lang.String)">
             com.novell.ldap.LDAPConnection.read(String)</a>
      */
     public LDAPEntry read(String dn)
@@ -1810,8 +1734,7 @@ public class LDAPConnection implements Cloneable
      * using the specified constraints, and retrieves all attributes for the
      * entry.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #read(java.lang.String, com.novell.ldap.LDAPSearchConstraints)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#read(java.lang.String, com.novell.ldap.LDAPSearchConstraints)">
             com.novell.ldap.LDAPConnection.read(String,
             LDAPSearchConstraints)</a>
      */
@@ -1836,8 +1759,7 @@ public class LDAPConnection implements Cloneable
      * Synchronously reads the entry for the specified distinguished name (DN)
      * and retrieves only the specified attributes from the entry.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #read(java.lang.String, java.lang.String[])">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#read(java.lang.String, java.lang.String[])">
             com.novell.ldap.LDAPConnection.read(String, String[])</a>
      */
     public LDAPEntry read(String dn,
@@ -1862,8 +1784,7 @@ public class LDAPConnection implements Cloneable
      * using the specified constraints, and retrieves only the specified
      * attributes from the entry.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #read(java.lang.String, java.lang.String[],
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#read(java.lang.String, java.lang.String[],
             com.novell.ldap.LDAPSearchConstraints)">
             com.novell.ldap.LDAPConnection.read(String, String[],
             LDAPSearchConstraints)</a>
@@ -1890,8 +1811,7 @@ public class LDAPConnection implements Cloneable
      * Synchronously reads the entry specified by the LDAP URL.
      *
 
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #read(com.novell.ldap.LDAPUrl)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#read(com.novell.ldap.LDAPUrl)">
             com.novell.ldap.LDAPConnection.read(LDAPUrl)</a>
      */
     public static LDAPEntry read(LDAPUrl toGet)
@@ -1914,8 +1834,7 @@ public class LDAPConnection implements Cloneable
      * Synchronously reads the entry specified by the LDAP URL, using the
      * specified constraints.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #read(com.novell.ldap.LDAPUrl,
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#read(com.novell.ldap.LDAPUrl,
             com.novell.ldap.LDAPSearchConstraints)">
             com.novell.ldap.LDAPConnection.read(LDAPUrl,
             LDAPSearchConstraints)</a>
@@ -1942,8 +1861,7 @@ public class LDAPConnection implements Cloneable
     /**
      * Synchronously renames an existing entry in the directory.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #rename(java.lang.String, java.lang.String, boolean)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#rename(java.lang.String, java.lang.String, boolean)">
             com.novell.ldap.LDAPConnection.rename(String, String, boolean)</a>
      */
     public void rename(String dn,
@@ -1969,8 +1887,7 @@ public class LDAPConnection implements Cloneable
      * Synchronously renames an existing entry in the directory, using the
      * specified constraints.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #rename(java.lang.String, java.lang.String, boolean,
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#rename(java.lang.String, java.lang.String, boolean,
             com.novell.ldap.LDAPConstraints)">
             com.novell.ldap.LDAPConnection.rename(String, String, boolean,
             LDAPConstraints)</a>
@@ -1999,8 +1916,7 @@ public class LDAPConnection implements Cloneable
      * Synchronously renames an existing entry in the directory, possibly
      * repositioning the entry in the directory tree.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #rename(java.lang.String, java.lang.String, java.lang.String, boolean)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#rename(java.lang.String, java.lang.String, java.lang.String, boolean)">
             com.novell.ldap.LDAPConnection.rename(String, String, String,
             boolean)</a>
      */
@@ -2029,8 +1945,7 @@ public class LDAPConnection implements Cloneable
      * specified constraints and possibly repositioning the entry in the
      * directory tree.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #rename(java.lang.String, java.lang.String, java.lang.String,
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#rename(java.lang.String, java.lang.String, java.lang.String,
             boolean, com.novell.ldap.LDAPConstraints)">
             com.novell.ldap.LDAPConnection.rename(String, String, String,
             boolean, LDAPConstraints)</a>
@@ -2059,8 +1974,7 @@ public class LDAPConnection implements Cloneable
     /**
      * Asynchronously renames an existing entry in the directory.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #rename(java.lang.String, java.lang.String, boolean,
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#rename(java.lang.String, java.lang.String, boolean,
             com.novell.ldap.LDAPResponseQueue)">
             com.novell.ldap.LDAPConnection.rename(String, String, boolean,
             LDAPResponseQueue)</a>
@@ -2091,8 +2005,7 @@ public class LDAPConnection implements Cloneable
      * Asynchronously renames an existing entry in the directory, using the
      * specified constraints.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #rename(java.lang.String, java.lang.String, boolean,
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#rename(java.lang.String, java.lang.String, boolean,
             com.novell.ldap.LDAPResponseQueue,
             com.novell.ldap.LDAPConstraints)">
             com.novell.ldap.LDAPConnection.rename(String, String, boolean,
@@ -2126,8 +2039,7 @@ public class LDAPConnection implements Cloneable
      * Asynchronously renames an existing entry in the directory, possibly
      * repositioning the entry in the directory.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #rename(java.lang.String, java.lang.String, java.lang.String,
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#rename(java.lang.String, java.lang.String, java.lang.String,
             boolean, com.novell.ldap.LDAPResponseQueue)">
             com.novell.ldap.LDAPConnection.rename(String, String, String,
             boolean, LDAPResponseQueue)</a>
@@ -2161,8 +2073,7 @@ public class LDAPConnection implements Cloneable
      * specified constraints and possibily repositioning the entry in the
      * directory.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #rename(java.lang.String, java.lang.String, java.lang.String,
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#rename(java.lang.String, java.lang.String, java.lang.String,
             boolean, com.novell.ldap.LDAPResponseQueue,
             com.novell.ldap.LDAPConstraints)">
             com.novell.ldap.LDAPConnection.rename(String, String, String,
@@ -2197,8 +2108,7 @@ public class LDAPConnection implements Cloneable
     /**
      * Synchronously performs the search specified by the parameters.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #search(java.lang.String, int, java.lang.String,
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#search(java.lang.String, int, java.lang.String,
             java.lang.String[], boolean)">
             com.novell.ldap.LDAPConnection.search(String, int, String,
             String[], boolean)</a>
@@ -2231,8 +2141,7 @@ public class LDAPConnection implements Cloneable
      * Synchronously performs the search specified by the parameters,
      * using the specified search constraints.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #search(java.lang.String, int, java.lang.String,
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#search(java.lang.String, int, java.lang.String,
             java.lang.String[], boolean,
             com.novell.ldap.LDAPSearchConstraints)">
             com.novell.ldap.LDAPConnection.search(String, int, String,
@@ -2267,8 +2176,7 @@ public class LDAPConnection implements Cloneable
     /**
      * Asynchronously performs the search specified by the parameters.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #search(java.lang.String, int, java.lang.String,
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#search(java.lang.String, int, java.lang.String,
             java.lang.String[], boolean, com.novell.ldap.LDAPSearchQueue)">
             com.novell.ldap.LDAPConnection.search(String, int, String,
             String[], boolean, LDAPSearchQueue)</a>
@@ -2303,8 +2211,7 @@ public class LDAPConnection implements Cloneable
      * Asynchronously performs the search specified by the parameters,
      * also allowing specification of constraints for the search.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #search(java.lang.String, int, java.lang.String,
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#search(java.lang.String, int, java.lang.String,
             java.lang.String[], boolean, com.novell.ldap.LDAPSearchQueue,
             com.novell.ldap.LDAPSearchConstraints)">
             com.novell.ldap.LDAPConnection.search(String, int, String,
@@ -2342,8 +2249,7 @@ public class LDAPConnection implements Cloneable
      * Synchronously performs the search specified by the LDAP URL, returning
      * an enumerable LDAPSearchResults object.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #search(com.novell.ldap.LDAPUrl)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#search(com.novell.ldap.LDAPUrl)">
             com.novell.ldap.LDAPConnection.search(LDAPUrl)</a>
      */
     public static LDAPSearchResults search(LDAPUrl toGet)
@@ -2367,8 +2273,7 @@ public class LDAPConnection implements Cloneable
      * Synchronously perfoms the search specified by the LDAP URL, using
      * the specified search constraints.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #search(com.novell.ldap.LDAPUrl,
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#search(com.novell.ldap.LDAPUrl,
             com.novell.ldap.LDAPSearchConstraints)">
             com.novell.ldap.LDAPConnection.search(LDAPUrl,
             LDAPSearchConstraints)</a>
@@ -2396,8 +2301,7 @@ public class LDAPConnection implements Cloneable
      * Retrieves the schema associated with a particular schema DN in the
      * Directory server.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #fetchSchema(java.lang.String)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#fetchSchema(java.lang.String)">
             com.novell.ldap.LDAPConnection.fetchSchema(String)</a>
      */
     public LDAPSchema fetchSchema(String schemaDN) throws LDAPException {
@@ -2411,8 +2315,7 @@ public class LDAPConnection implements Cloneable
 
     /**
      * Retrieves the DN for the schema at the root DSE of the Directory Server.
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #getSchemaDN()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#getSchemaDN()">
             com.novell.ldap.LDAPConnection.getSchemaDN()</a>
      */
     public String getSchemaDN()
@@ -2429,8 +2332,7 @@ public class LDAPConnection implements Cloneable
     /**
      * Retrieves the DN of the schema associated with a particular entry in
      * the directory.
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #getSchemaDN(java.lang.String)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPConnection.html#getSchemaDN(java.lang.String)">
             com.novell.ldap.LDAPConnection.getSchemaDN(String)</a>
      */
     public String getSchemaDN(String entryDN)

@@ -19,7 +19,7 @@ package org.ietf.ldap;
  *  Encapsulates additional optional parameters for an
  *  LDAP operation, either on the server or on the client.
  *
- * @see <a href="../../../../doc/com/novell/ldap/LDAPControl.html">
+ * @see <a href="../../../../api/com/novell/ldap/LDAPControl.html">
             com.novell.ldap.LDAPControl</a>
  */
 public class LDAPControl
@@ -38,8 +38,7 @@ public class LDAPControl
     /**
      * Constructs a new LDAPControl object using the specified values.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPControl.html
-            #LDAPControl(java.lang.String, boolean, byte[])">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPControl.html#LDAPControl(java.lang.String, boolean, byte[])">
             com.novell.ldap.LDAPControl.LDAPControl(String, boolean, byte[])</a>
      */
     public LDAPControl(String id, boolean critical, byte[] vals)
@@ -53,8 +52,7 @@ public class LDAPControl
      *
      * @return a clone of this object
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPControl.html
-            #clone()">com.novell.ldap.LDAPControl.clone()</a>
+     * @see <a href="../../../../api/com/novell/ldap/LDAPControl.html#clone()">com.novell.ldap.LDAPControl.clone()</a>
      */
     public Object clone()
     {
@@ -64,8 +62,7 @@ public class LDAPControl
     /**
      * Sets the control-specific data of the object.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPControl.html
-            #setValue(byte[])">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPControl.html#setValue(byte[])">
             com.novell.ldap.LDAPControl.setValue(byte[])</a>
      */
     protected void setValue(byte[] controlValue)

@@ -23,7 +23,7 @@ import java.net.UnknownHostException;
  *
  *  Used to construct a socket connection for use in an LDAPConnection.
  *
- *  @see <a href="../../../../doc/com/novell/ldap/LDAPSocketFactory.html">
+ *  @see <a href="../../../../api/com/novell/ldap/LDAPSocketFactory.html">
             com.novell.ldap.LDAPSocketFactory</a>
  */
 public interface LDAPSocketFactory
@@ -32,8 +32,7 @@ public interface LDAPSocketFactory
      * Returns a socket connected using the provided host name and port
      * number.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPSocketFactory.html
-            #createSocket(java.lang.String, int)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPSocketFactory.html#createSocket(java.lang.String, int)">
             com.novell.ldap.LDAPSocketFactory.createSocket(String, int)</a>
      */
     public Socket createSocket(String host, int port)

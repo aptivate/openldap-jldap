@@ -19,7 +19,7 @@ package org.ietf.ldap;
  *  Represents ia specific DIT (Directory Information Tree) content rule
  *  in the directory schema.
  *
- * @see <a href="../../../../doc/com/novell/ldap/LDAPDITContentRuleSchema.html">
+ * @see <a href="../../../../api/com/novell/ldap/LDAPDITContentRuleSchema.html">
             com.novell.ldap.LDAPDITContentRuleSchema</a>
  */
 public class LDAPDITContentRuleSchema
@@ -42,8 +42,7 @@ public class LDAPDITContentRuleSchema
      * Constructs a DIT content rule for adding to or deleting from the
      * schema.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPDITContentRuleSchema.html
-            #LDAPDITContentRuleSchema(java.lang.String[], java.lang.String,
+     * @see <a href="../../../../api/com/novell/ldap/LDAPDITContentRuleSchema.html#LDAPDITContentRuleSchema(java.lang.String[], java.lang.String,
             java.lang.String, boolean, java.lang.String[], java.lang.String[],
             java.lang.String[], java.lang.String[])">
             com.novell.ldap.LDAPDITContentRuleSchema.LDAPDITContentRuleSchema(
@@ -75,8 +74,7 @@ public class LDAPDITContentRuleSchema
      * Constructs a DIT content rule from the raw string value returned from a
      * schema query for DITContentRules.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPDITContentRuleSchema.html
-            #LDAPDITContentRuleSchema(java.lang.String)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPDITContentRuleSchema.html#LDAPDITContentRuleSchema(java.lang.String)">
             com.novell.ldap.LDAPDITContentRuleSchema.LDAPDITContentRuleSchema(
             String)</a>
      */
@@ -90,8 +88,7 @@ public class LDAPDITContentRuleSchema
     /**
      * Returns the list of allowed auxiliary classes.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPDITContentRuleSchema.html
-            #getAuxiliaryClasses()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPDITContentRuleSchema.html#getAuxiliaryClasses()">
             com.novell.ldap.LDAPDITContentRuleSchema.getAuxiliaryClasses()</a>
      */
     public String[] getAuxiliaryClasses()
@@ -103,8 +100,7 @@ public class LDAPDITContentRuleSchema
      * Returns the list of additional required attributes for an entry
      * controlled by this content rule.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPDITContentRuleSchema.html
-            #getRequiredAttributes()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPDITContentRuleSchema.html#getRequiredAttributes()">
             com.novell.ldap.LDAPDITContentRuleSchema.getRequiredAttributes()</a>
      */
     public String[] getRequiredAttributes()
@@ -116,8 +112,7 @@ public class LDAPDITContentRuleSchema
      * Returns the list of additional optional attributes for an entry
      * controlled by this content rule.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPDITContentRuleSchema.html
-            #getOptionalAttributes()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPDITContentRuleSchema.html#getOptionalAttributes()">
             com.novell.ldap.LDAPDITContentRuleSchema.getOptionalAttributes()</a>
      */
     public String[] getOptionalAttributes()
@@ -129,8 +124,7 @@ public class LDAPDITContentRuleSchema
      * Returns the list of precluded attributes for an entry controlled by
      * this content rule.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPDITContentRuleSchema.html
-            #getPrecludedAttributes()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPDITContentRuleSchema.html#getPrecludedAttributes()">
             com.novell.ldap.LDAPDITContentRuleSchema.getPrecludedAttributes()</a>
      */
     public String[] getPrecludedAttributes()

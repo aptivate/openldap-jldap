@@ -19,7 +19,7 @@ package org.ietf.ldap;
  *  A mechanism for queuing asynchronous search results
  *  and references received from a server.
  *
- *  @see <a href="../../../../doc/com/novell/ldap/LDAPSearchQueue.html">
+ *  @see <a href="../../../../api/com/novell/ldap/LDAPSearchQueue.html">
             com.novell.ldap.LDAPSearchQueue</a>
  */
 public class LDAPSearchQueue implements LDAPMessageQueue
@@ -48,8 +48,7 @@ public class LDAPSearchQueue implements LDAPMessageQueue
    /**
     * Returns the message IDs for all outstanding requests.
     *
-    * @see <a href="../../../../doc/com/novell/ldap/LDAPSearchQueue.html
-            #getMessageIDs()">
+    * @see <a href="../../../../api/com/novell/ldap/LDAPSearchQueue.html#getMessageIDs()">
             com.novell.ldap.LDAPSearchQueue.getMessageIDs()</a>
     */
     public int[] getMessageIDs()
@@ -61,8 +60,7 @@ public class LDAPSearchQueue implements LDAPMessageQueue
     * Reports whether a response has been received from the server and
     * not yet retrieved with getResponse.
     *
-    * @see <a href="../../../../doc/com/novell/ldap/LDAPSearchQueue.html
-            #isResponseReceived()">
+    * @see <a href="../../../../api/com/novell/ldap/LDAPSearchQueue.html#isResponseReceived()">
             com.novell.ldap.LDAPSearchQueue.isResponseReceived()</a>
     */
     public boolean isResponseReceived()
@@ -74,8 +72,7 @@ public class LDAPSearchQueue implements LDAPMessageQueue
     * Reports whether a response has been received from the server and
     * not yet retrieved with getResponse.
     *
-    * @see <a href="../../../../doc/com/novell/ldap/LDAPSearchQueue.html
-            #isResponseReceived(int)">
+    * @see <a href="../../../../api/com/novell/ldap/LDAPSearchQueue.html#isResponseReceived(int)">
             com.novell.ldap.LDAPSearchQueue.isResponseReceived(int)</a>
     */
     public boolean isResponseReceived(int msgid)
@@ -87,8 +84,7 @@ public class LDAPSearchQueue implements LDAPMessageQueue
     * Merges two response queues by moving the contents from another
     * queue to this one.
     *
-    * @see <a href="../../../../doc/com/novell/ldap/LDAPSearchQueue.html
-            #merge(com.novell.ldap.LDAPMessagequeue)">
+    * @see <a href="../../../../api/com/novell/ldap/LDAPSearchQueue.html#merge(com.novell.ldap.LDAPMessagequeue)">
             com.novell.ldap.LDAPSearchQueue.merge(
             LDAPResponsequeue)</a>
     */
@@ -109,8 +105,7 @@ public class LDAPSearchQueue implements LDAPMessageQueue
      * Reports true if all results have been received for a particular
      * message id.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPSearchQueue.html
-            #isComplete(int)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPSearchQueue.html#isComplete(int)">
             com.novell.ldap.LDAPSearchQueue.isComplete(int)</a>
      */
     public boolean isComplete( int msgid )
@@ -123,8 +118,7 @@ public class LDAPSearchQueue implements LDAPMessageQueue
      * associated with the object have completed or been canceled, and
      * returns the response.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPSearchQueue.html
-            #getResponse()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPSearchQueue.html#getResponse()">
             com.novell.ldap.LDAPSearchQueue.getResponse()</a>
      */
     public LDAPMessage getResponse()
@@ -148,8 +142,7 @@ public class LDAPSearchQueue implements LDAPMessageQueue
      * associated with the object have completed or been canceled, and
      * returns the response.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPSearchQueue.html
-            #getResponse(int)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPSearchQueue.html#getResponse(int)">
             com.novell.ldap.LDAPSearchQueue.getResponse(int)</a>
      */
     public LDAPMessage getResponse(int msgid)

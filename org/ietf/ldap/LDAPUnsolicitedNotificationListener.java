@@ -20,7 +20,7 @@ package org.ietf.ldap;
  * An object that implements this interface can be notified when
  * unsolicited messages arrive from the server.
  *
- *  @see <a href="../../../../doc/com/novell/ldap/LDAPUnsolicitedNotificationListener.html">
+ *  @see <a href="../../../../api/com/novell/ldap/LDAPUnsolicitedNotificationListener.html">
             com.novell.ldap.LDAPUnsolicitedNotificatonListener</a>
  */
 public interface LDAPUnsolicitedNotificationListener
@@ -29,8 +29,7 @@ public interface LDAPUnsolicitedNotificationListener
     /**
      * The method is called when an unsolicited message arrives from a server.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPUnsolicitedNotificationListener.html
-            #messageReceived(com.novell.ldap.LDAPExtendedResponse)">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPUnsolicitedNotificationListener.html#messageReceived(com.novell.ldap.LDAPExtendedResponse)">
             com.novell.ldap.LDAPUnsolicitedNotificationListener.messageReceived(
             LDAPExtendedResponse)</a>
      */

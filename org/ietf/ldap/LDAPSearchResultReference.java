@@ -18,7 +18,7 @@ package org.ietf.ldap;
 /**
  *  Encapsulates a continuation reference from an asynchronous search operation.
  *
- *  @see <a href="../../../../doc/com/novell/ldap/LDAPSearchResultReference.html">
+ *  @see <a href="../../../../api/com/novell/ldap/LDAPSearchResultReference.html">
             com.novell.ldap.LDAPSearchResultReference</a>
  */
 public class LDAPSearchResultReference extends LDAPMessage {
@@ -39,8 +39,7 @@ public class LDAPSearchResultReference extends LDAPMessage {
     /**
      * Returns any URLs in the object.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPSearchResultReference.html
-            #getReferrals()">
+     * @see <a href="../../../../api/com/novell/ldap/LDAPSearchResultReference.html#getReferrals()">
             com.novell.ldap.LDAPSearchResultReference.getReferrals()</a>
      */
     public String[] getReferrals()
