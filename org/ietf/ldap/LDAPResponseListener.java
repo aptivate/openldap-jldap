@@ -19,7 +19,8 @@ package org.ietf.ldap;
  *  Encapsulates a low-level mechanism for processing asynchronous messages
  *  received from a server.
  *
- * @see com.novell.ldap.LDAPResponseListener
+ *  @see <a href="../../../../doc/com/novell/ldap/LDAPResponseListener.html">
+            com.novell.ldap.LDAPResponseListener</a>
  */
 public class LDAPResponseListener implements LDAPListener
 {
@@ -47,7 +48,9 @@ public class LDAPResponseListener implements LDAPListener
     /**
      * Returns the message IDs for all outstanding requests.
      *
-     * @see com.novell.ldap.LDAPResponseListener#getMessageIDs()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPResponseListener.html
+            #getMessageIDs()">
+            com.novell.ldap.LDAPResponse.getMessageIDs()</a>
      */
      public int[] getMessageIDs()
      {
@@ -57,7 +60,9 @@ public class LDAPResponseListener implements LDAPListener
     /**
      * Reports whether a response has been received from the server.
      *
-     * @see com.novell.ldap.LDAPResponseListener#isResponseReceived()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPResponseListener.html
+            #isResponseReceived()">
+            com.novell.ldap.LDAPResponse.isResponseReceived()</a>
      */
      public boolean isResponseReceived()
      {
@@ -68,7 +73,9 @@ public class LDAPResponseListener implements LDAPListener
      * Reports whether a response has been received from the server for a
      * particular message id.
      *
-     * @see com.novell.ldap.LDAPResponseListener#isResponseReceived(int)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPResponseListener.html
+            #isResponseReceived(int)">
+            com.novell.ldap.LDAPResponse.isResponseReceived(int)</a>
      */
      public boolean isResponseReceived(int msgid)
      {
@@ -79,7 +86,9 @@ public class LDAPResponseListener implements LDAPListener
      * Merges two response listeners by moving the contents from another
      * listener to this one.
      *
-     * @see com.novell.ldap.LDAPResponseListener#merge(LDAPResponseListener)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPResponseListener.html
+            #merge(com.novell.ldap.LDAPResponseListener)">
+            com.novell.ldap.LDAPResponse.merge(LDAPResponseListener)</a>
      */
      public void merge(LDAPResponseListener listener2)
      {
@@ -93,7 +102,9 @@ public class LDAPResponseListener implements LDAPListener
     /**
      * Returns the response.
      *
-     * @see com.novell.ldap.LDAPResponseListener#getResponse()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPResponseListener.html
+            #getResponse()">
+            com.novell.ldap.LDAPResponse.getResponse()</a>
      */
     public LDAPMessage getResponse()
         throws LDAPException
@@ -113,7 +124,9 @@ public class LDAPResponseListener implements LDAPListener
     /**
      * Returns the response for a particular message id.
      *
-     * @see com.novell.ldap.LDAPResponseListener#getResponse(int)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPResponseListener.html
+            #getResponse(int)">
+            com.novell.ldap.LDAPResponse.getResponse(int)</a>
      */
     public LDAPMessage getResponse(int msgid)
         throws LDAPException
