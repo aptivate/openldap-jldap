@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPResponse.java,v 1.10 2000/09/11 22:47:50 judy Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPResponse.java,v 1.11 2000/09/13 16:15:40 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -20,6 +20,7 @@ import java.util.Vector;
 
 import com.novell.ldap.asn1.*;
 import com.novell.ldap.protocol.*;
+import com.novell.ldap.client.Debug;
 
 /**
  *  Represents the response to an LDAP protocol operation.
@@ -98,72 +99,80 @@ public class LDAPResponse extends LDAPMessage {
     */
    /* package */ void chkResultCode() throws LDAPException {
       switch(getResultCode()) {
-         case LDAPException.SUCCESS:
-            break;
-         case LDAPException.OPERATIONS_ERROR:
-         case LDAPException.PROTOCOL_ERROR:
-         case LDAPException.TIME_LIMIT_EXCEEDED:
-			case LDAPException.SIZE_LIMIT_EXCEEDED:
-			case LDAPException.AUTH_METHOD_NOT_SUPPORTED:
-			case LDAPException.STRONG_AUTH_REQUIRED:
-			case LDAPException.LDAP_PARTIAL_RESULTS:
-			case LDAPException.ADMIN_LIMIT_EXCEEDED:
-			case LDAPException.UNAVAILABLE_CRITICAL_EXTENSION:
-			case LDAPException.CONFIDENTIALITY_REQUIRED:
-			case LDAPException.SASL_BIND_IN_PROGRESS:
-			case LDAPException.NO_SUCH_ATTRIBUTE:
-			case LDAPException.UNDEFINED_ATTRIBUTE_TYPE:
-			case LDAPException.INAPPROPRIATE_MATCHING:
-			case LDAPException.CONSTRAINT_VIOLATION:
-			case LDAPException.ATTRIBUTE_OR_VALUE_EXISTS:
-			case LDAPException.INVALID_ATTRIBUTE_SYNTAX:
-			case LDAPException.NO_SUCH_OBJECT:
-			case LDAPException.ALIAS_PROBLEM:
-			case LDAPException.INVALID_DN_SYNTAX:
-			case LDAPException.IS_LEAF:
-			case LDAPException.ALIAS_DEREFERENCING_PROBLEM:
-			case LDAPException.INAPPROPRIATE_AUTHENTICATION:
-			case LDAPException.INVALID_CREDENTIALS:
-			case LDAPException.INSUFFICIENT_ACCESS_RIGHTS:
-			case LDAPException.BUSY:
-			case LDAPException.UNAVAILABLE:
-			case LDAPException.UNWILLING_TO_PERFORM:
-			case LDAPException.LOOP_DETECT:
-			case LDAPException.NAMING_VIOLATION:
-			case LDAPException.OBJECT_CLASS_VIOLATION:
-			case LDAPException.NOT_ALLOWED_ON_NONLEAF:
-			case LDAPException.NOT_ALLOWED_ON_RDN:
-			case LDAPException.ENTRY_ALREADY_EXISTS:
-			case LDAPException.OBJECT_CLASS_MODS_PROHIBITED:
-			case LDAPException.AFFECTS_MULTIPLE_DSAS:
-			case LDAPException.OTHER:
-			case LDAPException.SERVER_DOWN:
-			case LDAPException.LOCAL_ERROR:
-			case LDAPException.ENCODING_ERROR:
-			case LDAPException.DECODING_ERROR:
-			case LDAPException.LDAP_TIMEOUT:
-			case LDAPException.AUTH_UNKNOWN:
-			case LDAPException.FILTER_ERROR:
-			case LDAPException.USER_CANCELLED:
-			case LDAPException.PARAM_ERROR:
-			case LDAPException.NO_MEMORY:
-			case LDAPException.CONNECT_ERROR:
-			case LDAPException.LDAP_NOT_SUPPORTED:
-			case LDAPException.CONTROL_NOT_FOUND:
-			case LDAPException.NO_RESULTS_RETURNED:
-			case LDAPException.MORE_RESULTS_TO_RETURN:
-			case LDAPException.CLIENT_LOOP:
-            throw new LDAPException(getErrorMessage(), getMatchedDN(),
-					                     getResultCode());
-			case LDAPException.REFERRAL_LIMIT_EXCEEDED:
-         case LDAPException.REFERRAL:
-            // only throw this if automatic referral handling has not been
-            // enabled.
-            throw new LDAPReferralException();
-         default: // unknown
-            throw new LDAPException(getErrorMessage(), getMatchedDN(), -1);
-      }
-   }
-
+        case LDAPException.SUCCESS:
+        	break;
+        case LDAPException.OPERATIONS_ERROR:
+        case LDAPException.PROTOCOL_ERROR:
+        case LDAPException.TIME_LIMIT_EXCEEDED:
+		case LDAPException.SIZE_LIMIT_EXCEEDED:
+		case LDAPException.AUTH_METHOD_NOT_SUPPORTED:
+		case LDAPException.STRONG_AUTH_REQUIRED:
+		case LDAPException.LDAP_PARTIAL_RESULTS:
+		case LDAPException.ADMIN_LIMIT_EXCEEDED:
+		case LDAPException.UNAVAILABLE_CRITICAL_EXTENSION:
+		case LDAPException.CONFIDENTIALITY_REQUIRED:
+		case LDAPException.SASL_BIND_IN_PROGRESS:
+		case LDAPException.NO_SUCH_ATTRIBUTE:
+		case LDAPException.UNDEFINED_ATTRIBUTE_TYPE:
+		case LDAPException.INAPPROPRIATE_MATCHING:
+		case LDAPException.CONSTRAINT_VIOLATION:
+		case LDAPException.ATTRIBUTE_OR_VALUE_EXISTS:
+		case LDAPException.INVALID_ATTRIBUTE_SYNTAX:
+		case LDAPException.NO_SUCH_OBJECT:
+		case LDAPException.ALIAS_PROBLEM:
+		case LDAPException.INVALID_DN_SYNTAX:
+		case LDAPException.IS_LEAF:
+		case LDAPException.ALIAS_DEREFERENCING_PROBLEM:
+		case LDAPException.INAPPROPRIATE_AUTHENTICATION:
+		case LDAPException.INVALID_CREDENTIALS:
+		case LDAPException.INSUFFICIENT_ACCESS_RIGHTS:
+		case LDAPException.BUSY:
+		case LDAPException.UNAVAILABLE:
+		case LDAPException.UNWILLING_TO_PERFORM:
+		case LDAPException.LOOP_DETECT:
+		case LDAPException.NAMING_VIOLATION:
+		case LDAPException.OBJECT_CLASS_VIOLATION:
+		case LDAPException.NOT_ALLOWED_ON_NONLEAF:
+		case LDAPException.NOT_ALLOWED_ON_RDN:
+		case LDAPException.ENTRY_ALREADY_EXISTS:
+		case LDAPException.OBJECT_CLASS_MODS_PROHIBITED:
+		case LDAPException.AFFECTS_MULTIPLE_DSAS:
+		case LDAPException.OTHER:
+		case LDAPException.SERVER_DOWN:
+		case LDAPException.LOCAL_ERROR:
+		case LDAPException.ENCODING_ERROR:
+		case LDAPException.DECODING_ERROR:
+		case LDAPException.LDAP_TIMEOUT:
+		case LDAPException.AUTH_UNKNOWN:
+		case LDAPException.FILTER_ERROR:
+		case LDAPException.USER_CANCELLED:
+		case LDAPException.PARAM_ERROR:
+		case LDAPException.NO_MEMORY:
+		case LDAPException.CONNECT_ERROR:
+		case LDAPException.LDAP_NOT_SUPPORTED:
+		case LDAPException.CONTROL_NOT_FOUND:
+		case LDAPException.NO_RESULTS_RETURNED:
+		case LDAPException.MORE_RESULTS_TO_RETURN:
+		case LDAPException.CLIENT_LOOP:
+		case LDAPException.REFERRAL_LIMIT_EXCEEDED:
+			throw new LDAPException(getErrorMessage(), getMatchedDN(),
+				getResultCode());
+            case LDAPException.REFERRAL:
+	            // only throw this if automatic referral handling has not been
+	            // enabled.
+				String[] refs = getReferrals();
+				if( Debug.LDAP_DEBUG ) {
+					if( Debug.trace( "referrals" )) {
+						Debug.trace( "referrals", "LDAPResponse: Generating Referral Exception");
+						for( int i = 0; i < refs.length; i++) {
+							Debug.trace( "referrals", "LDAPResponse: \t" + refs[i]);
+						}
+					}
+				}
+	            throw new LDAPReferralException(getErrorMessage(), LDAPException.REFERRAL, refs);
+            default: // unknown
+	            throw new LDAPException(getErrorMessage(), getMatchedDN(),
+            		getResultCode());
+		}
+	}
 }
-

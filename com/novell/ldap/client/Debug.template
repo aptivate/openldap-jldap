@@ -1,4 +1,4 @@
-// $Novell$
+// $Novell: /ldap/src/jldap/com/novell/ldap/client/Debug.template,v 1.1 2000/09/14 19:56:37 vtag Exp $
 
 package com.novell.ldap.client;
 
@@ -25,7 +25,7 @@ import java.util.StringTokenizer;
  * <li><b><code>VMtraceInstructions</code></b> - Enables instruction trace</u>
  * <li><b><code>VMtraceMethodCalls</code></b> - Enables method call trace</u>
  * <li><b><code>trace</code></b> - Displays a string if the named property is set</u>
- * <li><b><code>dumpBuffers</code></b> - Displays raw buffer dumps</u>
+ * <li><b><code>dumpBuffer</code></b> - Displays raw buffer dumps</u>
  * <li><b><code>dumpObject</code></b> - Displays information about an object.
  * The following property values can limit the information displayed. If
  * dumpObject is selected, all those listed below are also selected</u>
@@ -48,7 +48,7 @@ import java.util.StringTokenizer;
  * </ul>
  *
  * @author Steven F. Sonntag
- * @version $Id$
+ * @version $Id: Debug.template,v 1.1 2000/09/14 19:56:37 vtag Exp $
  */
 
 public abstract class Debug {
@@ -59,7 +59,7 @@ public abstract class Debug {
      */
     public static final boolean LDAP_DEBUG = @COMPILE_DEBUG@;
 
-    private static boolean dumpBuffers = false;
+    private static boolean dumpBuffer = false;
     private static boolean dumpObject = false;
     private static boolean dumpObjectHierarchy = false;
     private static boolean dumpObjectConstructors = false;
@@ -117,8 +117,8 @@ public abstract class Debug {
                 /*
                  * Properties that turn on object dump methods
                  */
-                } else if( tn.equalsIgnoreCase("DumpBuffers")) {
-                    dumpBuffers = true;
+                } else if( tn.equalsIgnoreCase("DumpBuffer")) {
+                    dumpBuffer = true;
                 } else if( tn.equalsIgnoreCase("DumpObject")) {
                     dumpObject = true;
                     dumpObjectHierarchy = true;
@@ -342,10 +342,15 @@ public abstract class Debug {
      * Turns on or off debug dumpObject
      * @param val The boolean value to enable or disable <code>dumpObject</code>.
      */
-    public static void setdumpObject( boolean val)
+    public static void setDumpObject( boolean val)
     {
         if( LDAP_DEBUG) {
             dumpObject = val;
+            dumpObject = true;
+            dumpObjectHierarchy = true;
+            dumpObjectConstructors = true;
+            dumpObjectFields = true;
+            dumpObjectMethods = true;
         }
         return;
     }
@@ -360,9 +365,10 @@ public abstract class Debug {
      * Turns on or off debug dumpObjectHierarchy
      * @param val The boolean value to enable or disable <code>dumpObjectHierarchy</code>.
      */
-    public static void setdumpObjectHierarchy( boolean val)
+    public static void setDumpObjectHierarchy( boolean val)
     {
         if( LDAP_DEBUG) {
+            dumpObject = val;
             dumpObjectHierarchy = val;
         }
         return;
@@ -379,15 +385,16 @@ public abstract class Debug {
      * Turns on or off debug dumpObjectConstructors
      * @param val The boolean value to enable or disable <code>dumpObjectConstructors</code>.
      */
-    public static void setdumpObjectConstructors( boolean val)
+    public static void setDumpObjectConstructors( boolean val)
     {
         if( LDAP_DEBUG) {
+            dumpObject = val;
             dumpObjectConstructors = val;
         }
         return;
     }
     /**
-     * Returns <code>true</code> if <code>dumpObectFields</code> is enabled
+     * Returns <code>true</code> if <code>dumpObjectFields</code> is enabled
      */
     public static final boolean dumpObjectFields()
     {
@@ -397,10 +404,11 @@ public abstract class Debug {
      * Turns on or off debug dumpObjectFields
      * @param val The boolean value to enable or disable <code>dumpObjectFields</code>.
      */
-    public static void setdumpObjectFields( boolean val)
+    public static void setDumpObjectFields( boolean val)
     {
         if( LDAP_DEBUG) {
-            dumpObjectConstructors = val;
+            dumpObject = val;
+            dumpObjectFields = val;
         }
         return;
     }
@@ -415,10 +423,11 @@ public abstract class Debug {
      * Turns on or off debug dumpObjectMethods
      * @param val The boolean value to enable or disable <code>dumpObjectMethods</code>.
      */
-    public static void setdumpObjectMethods( boolean val)
+    public static void setDumpObjectMethods( boolean val)
     {
         if( LDAP_DEBUG) {
-            dumpObjectConstructors = val;
+            dumpObject = val;
+            dumpObjectMethods = val;
         }
         return;
     }
@@ -633,18 +642,18 @@ public abstract class Debug {
     /**
      * Returns <code>true</code> if <code>dumpBuffer</code> is enabled
      */
-    public static final boolean dumpBuffers()
+    public static final boolean dumpBuffer()
     {
-        return dumpBuffers;
+        return dumpBuffer;
     }
     /**
-     * Turns on or off debug dumpBuffers
-     * @param val The boolean value to enable or disable <code>dumpBuffers</code>.
+     * Turns on or off debug dumpBuffer
+     * @param val The boolean value to enable or disable <code>dumpBuffer</code>.
      */
-    public static void setdumpBuffers( boolean val)
+    public static void setDumpBuffer( boolean val)
     {
         if( LDAP_DEBUG) {
-            dumpBuffers = val;
+            dumpBuffer = val;
         }
         return;
     }
@@ -667,7 +676,7 @@ public abstract class Debug {
             boolean matchTstLine = false;    // Current line matches test line
             boolean matchLastLine = false;    // Previous line matches test line
 
-            if( !dumpBuffers)
+            if( !dumpBuffer)
                 return;
             System.err.println( msg);
             while( byteCnt < length) {
