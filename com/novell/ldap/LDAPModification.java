@@ -24,7 +24,12 @@ package com.novell.ldap;
  * value.  Multiple modifications are expressed as an array of modifications,
  * viz. <code>LDAPModification[]</code>.</p>
  *
- *  <p>Sample Code: <a href="http://developer.novell.com/ndk/doc/samplecode/jldap_sample/jldap_sample/ModifyAttrs.java.html">ModifyAttrs.java</p>
+ *  <p>Sample Code:
+ *     <DT>Adding, replacing, or deleting individual attribute values
+ *     <DD><a href="http://developer.novell.com/ndk/doc/samplecode/jldap_sample/jldap_sample/ModifyAttrs.java.html">ModifyAttrs.java</a></DD></DT></p>
+ *
+ *     <p><DT>Deleting an attribute
+ *     <DD><a href="http://developer.novell.com/ndk/doc/samplecode/jldap_sample/jldap_sample/DeleteAttribute.java.html">DeleteAttribute.java</a></DD></DT></p>
  *
  * @see LDAPConnection#modify
  * @see LDAPAttribute
