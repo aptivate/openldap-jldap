@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPObjectClassSchema.java,v 1.9 2000/10/02 19:46:52 judy Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPObjectClassSchema.java,v 1.10 2000/10/09 19:11:24 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -127,6 +127,7 @@ public class LDAPObjectClassSchema extends LDAPSchemaElement{
     *                  query for "objectClasses".
     */
    public LDAPObjectClassSchema(String raw) {
+      throw new RuntimeException("Constructor LDAPObjectClassSchema(String raw) not implemented");
    }
 
    /*
