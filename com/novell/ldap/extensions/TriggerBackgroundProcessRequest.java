@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: TriggerBackgroundProcessRequest.java,v 1.3 2001/02/13 18:36:54 cmorris Exp $
+ * $Id: TriggerBackgroundProcessRequest.java,v 1.4 2001/03/01 00:30:13 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -16,6 +16,7 @@ package com.novell.ldap.extensions;
 
 import com.novell.ldap.*;
 import com.novell.ldap.asn1.*;
+import com.novell.ldap.resources.*;
 import java.io.*;
 
 /**
@@ -84,7 +85,7 @@ public class TriggerBackgroundProcessRequest extends LDAPExtendedOperation {
 			setID(NamingContextConstants.TRIGGER_PART_PURGE_REQ);
 			break;
 		default:
-			throw new LDAPException(LDAPExceptionMessageResource.PARAM_ERROR,
+			throw new LDAPException(ExceptionMessages.PARAM_ERROR,
                           LDAPException.PARAM_ERROR);
 
 		}

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPExceptionMessageResource.java,v 1.14 2001/04/19 18:40:33 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/resources/ExceptionMessages.java,v 1.15 2001/05/03 18:17:49 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -13,9 +13,15 @@
  * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
  ******************************************************************************/
 
-package com.novell.ldap;
+package com.novell.ldap.resources;
 
-public class LDAPExceptionMessageResource extends java.util.ListResourceBundle {
+/**
+ * This class contains strings that may be associated with Exceptions generated
+ * by the LDAP API libraries.
+ * Two entries are made for each message, a String identifier, and the
+ * actual error string.  Parameters are identified as {0}, {1}, etc.
+ */
+public class ExceptionMessages extends java.util.ListResourceBundle {
   public Object[][] getContents() {
       return contents;
   }
@@ -67,6 +73,7 @@ public class LDAPExceptionMessageResource extends java.util.ListResourceBundle {
   public final static String NO_MEMORY            = "NO_MEMORY";
   public final static String SERVER_SHUTDOWN_REQ  = "SERVER_SHUTDOWN_REQ";
   public final static String INVALID_ADDRESS      = "INVALID_ADDRESS";
+  public final static String UNKNOWN_RESULT       = "UNKNOWN_RESULT";
 
   //End constants
 
@@ -116,7 +123,8 @@ public class LDAPExceptionMessageResource extends java.util.ListResourceBundle {
       {"MISSING_EQUAL","Attribute type and name must be separated by an equal symbol, '='"},
       {"NO_MEMORY","All results could not be stored in memory, sort failed"},
 	  {"SERVER_SHUTDOWN_REQ","Received unsolicited notification from server to shutdown"},
-      {"INVALID_ADDRESS","Invalid syntax for address with port; {0}"}
+      {"INVALID_ADDRESS","Invalid syntax for address with port; {0}"},
+      {"UNKNOWN_RESULT","Unknown LDAP result code {0}"}
   // END OF MATERIAL TO LOCALIZE
   };
-}//End LDAPExceptionMessageResource
+}//End ExceptionMessages

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: ExtResponseFactory.java,v 1.3 2001/02/13 18:36:50 cmorris Exp $
+ * $Id: ExtResponseFactory.java,v 1.4 2001/03/01 00:30:05 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -17,6 +17,7 @@ package com.novell.ldap.client;
 import com.novell.ldap.*;
 import com.novell.ldap.extensions.*;
 import com.novell.ldap.rfc2251.*;
+import com.novell.ldap.resources.*;
 import java.io.IOException;
 /**
  *
@@ -82,7 +83,7 @@ public class ExtResponseFactory {
 
         catch(IOException ioe) {
 			throw new LDAPException(
-                          LDAPExceptionMessageResource.DECODING_ERROR,
+                          ExceptionMessages.DECODING_ERROR,
                           LDAPException.DECODING_ERROR);
 		}
     }

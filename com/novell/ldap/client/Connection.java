@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.54 2001/06/15 15:14:05 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.55 2001/06/22 19:55:56 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -23,6 +23,7 @@ import com.novell.ldap.*;
 import com.novell.ldap.rfc2251.*;
 import com.novell.ldap.asn1.*;
 import com.novell.ldap.client.*;
+import com.novell.ldap.resources.*;
 
 /**
  * A thread that creates a connection to an LDAP server. After the
@@ -271,7 +272,7 @@ public final class Connection implements Runnable
                     deadReader = null;
                     // Reader thread terminated
                     throw new LDAPException(
-				        LDAPExceptionMessageResource.CONNECTION_READER,
+				        ExceptionMessages.CONNECTION_READER,
                         LDAPException.CONNECT_ERROR, lex);
                 }
                 synchronized( this) {
@@ -346,7 +347,7 @@ public final class Connection implements Runnable
             // Unable to connect to server host:port
             freeBindSemaphore(semId);
             throw new LDAPException(
-                  LDAPExceptionMessageResource.CONNECTION_ERROR,
+                  ExceptionMessages.CONNECTION_ERROR,
                   new Object[] { host, new Integer(port) },
                   LDAPException.CONNECT_ERROR, ioe);
         }
@@ -452,8 +453,8 @@ public final class Connection implements Runnable
                  * from an API call or from the objecting being finalized.
                  */
                 LocalException notify = new LocalException(
-                    (how ? LDAPExceptionMessageResource.CONNECTION_CLOSED :
-                           LDAPExceptionMessageResource.CONNECTION_FINALIZED),
+                    (how ? ExceptionMessages.CONNECTION_CLOSED :
+                           ExceptionMessages.CONNECTION_FINALIZED),
                            new Object[] { host, new Integer(port)},
                            LDAPException.CONNECT_ERROR, null, null);
 
@@ -564,14 +565,14 @@ public final class Connection implements Runnable
 			// a message.  Since this shutdown request is going to be an infrequent
 			// occurence we check for it only when we get an IOException
 			if (serverShutdownNotification) {
-				throw new LDAPException( LDAPExceptionMessageResource.SERVER_SHUTDOWN_REQ,
+				throw new LDAPException( ExceptionMessages.SERVER_SHUTDOWN_REQ,
 					null,
 					LDAPException.CONNECT_ERROR,
 					ioe);
 			}
 
             // Other I/O Exception on host:port get reported as is
-            throw new LDAPException(LDAPExceptionMessageResource.IO_EXCEPTION,
+            throw new LDAPException(ExceptionMessages.IO_EXCEPTION,
                 new Object[] {host, new Integer(port)},
                 LDAPException.CONNECT_ERROR, ioe);
         } finally {
@@ -897,7 +898,7 @@ public final class Connection implements Runnable
 						// we are OK.
 						if (serverShutdownNotification) {
 							notify = new LocalException(
-								LDAPExceptionMessageResource.SERVER_SHUTDOWN_REQ,
+								ExceptionMessages.SERVER_SHUTDOWN_REQ,
 								null,
 								LDAPException.CONNECT_ERROR,
 								null, null);
@@ -929,7 +930,7 @@ public final class Connection implements Runnable
 			if( ! shutdown) {
                 // Connection lost waiting for results from host:port
                 notify = new LocalException(
-                    LDAPExceptionMessageResource.CONNECTION_WAIT,
+                    ExceptionMessages.CONNECTION_WAIT,
                             new Object[] { host, new Integer(port)},
                             LDAPException.CONNECT_ERROR,
                             ioe, info);

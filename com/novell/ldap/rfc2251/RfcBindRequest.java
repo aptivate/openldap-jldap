@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/rfc2251/RfcBindRequest.java,v 1.11 2001/03/01 18:11:25 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/rfc2251/RfcBindRequest.java,v 1.12 2001/06/11 21:04:52 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -16,6 +16,7 @@ package com.novell.ldap.rfc2251;
 
 import com.novell.ldap.asn1.*;
 import com.novell.ldap.*;
+import com.novell.ldap.resources.*;
 
 /**
  *       BindRequest ::= [APPLICATION 0] SEQUENCE {
@@ -119,7 +120,7 @@ public class RfcBindRequest extends ASN1Sequence implements RfcRequest {
             throws LDAPException
     {
         throw new LDAPException(
-                    LDAPExceptionMessageResource.NO_DUP_REQUEST,
+                    ExceptionMessages.NO_DUP_REQUEST,
                     new Object[] { "bind" },
                     LDAPException.LDAP_NOT_SUPPORTED);
     }

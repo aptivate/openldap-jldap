@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResults.java,v 1.44 2001/05/30 17:07:04 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResults.java,v 1.45 2001/06/13 17:51:06 jhammons Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -18,8 +18,8 @@ package com.novell.ldap;
 import com.novell.ldap.client.ArrayList;    // Make sure we get the right one
 import com.novell.ldap.LDAPEntry;
 import com.novell.ldap.LDAPException;
-import com.novell.ldap.LDAPExceptionMessageResource;
 import com.novell.ldap.client.*;
+import com.novell.ldap.resources.*;
 import java.util.*;
 import java.io.*;
 
@@ -214,7 +214,7 @@ public class LDAPSearchResults implements Enumeration
                 }
             }
             LDAPReferralException rex = new LDAPReferralException(
-                LDAPExceptionMessageResource.REFERENCE_NOFOLLOW);
+                ExceptionMessages.REFERENCE_NOFOLLOW);
             rex.setReferrals( refs);
             throw rex;
         } else
@@ -241,7 +241,7 @@ public class LDAPSearchResults implements Enumeration
                     if( ri != null) {
                         // Error attempting to follow a search continuation reference
                         LDAPReferralException rex = new LDAPReferralException(
-                            LDAPExceptionMessageResource.REFERENCE_ERROR,
+                            ExceptionMessages.REFERENCE_ERROR,
                             lr.getException());
                         rex.setReferrals(ri.getReferralList());
                         rex.setFailedReferral( ri.getReferralUrl().getUrl());
@@ -271,7 +271,7 @@ public class LDAPSearchResults implements Enumeration
             }
             // LDAPSearchResults.next(): No entry found & request is not complete
             throw new LDAPException(
-                LDAPExceptionMessageResource.REFERRAL_LOCAL,
+                ExceptionMessages.REFERRAL_LOCAL,
                 new Object[] { "next" },
                 LDAPException.LOCAL_ERROR);
         }
@@ -313,7 +313,7 @@ public class LDAPSearchResults implements Enumeration
             }
             // Search result reference received and referral following is off
             element = new LDAPReferralException(
-                LDAPExceptionMessageResource.REFERENCE_NOFOLLOW);
+                ExceptionMessages.REFERENCE_NOFOLLOW);
             ((LDAPReferralException)element).setReferrals( refs);
         } else
         if( entryIndex < entryCount ) {
@@ -348,7 +348,7 @@ public class LDAPSearchResults implements Enumeration
                     ", referCnt " + referenceCount );
             }
             element = new LDAPException(
-                LDAPExceptionMessageResource.REFERRAL_LOCAL,
+                ExceptionMessages.REFERRAL_LOCAL,
                 new Object[] { "nextElement" },
                 LDAPException.LOCAL_ERROR);
         }

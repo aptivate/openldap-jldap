@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/rfc2251/RfcAbandonRequest.java,v 1.8 2001/03/01 00:30:13 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/rfc2251/RfcAbandonRequest.java,v 1.9 2001/03/01 18:11:25 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -16,6 +16,7 @@ package com.novell.ldap.rfc2251;
 
 import com.novell.ldap.asn1.*;
 import com.novell.ldap.*;
+import com.novell.ldap.resources.*;
 
 /**
  *       AbandonRequest ::= [APPLICATION 16] MessageID
@@ -57,7 +58,7 @@ public class RfcAbandonRequest extends RfcMessageID implements RfcRequest {
             throws LDAPException
     {
         throw new LDAPException(
-                    LDAPExceptionMessageResource.NO_DUP_REQUEST,
+                    ExceptionMessages.NO_DUP_REQUEST,
                     new Object[] { "abandon" },
                     LDAPException.LDAP_NOT_SUPPORTED);
     }

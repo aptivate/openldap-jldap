@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell$
+ * $Novell: /ldap/src/jldap/com/novell/ldap/resources/ResultCodeMessages.java,v 1.3 2001/03/01 00:29:50 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -12,9 +12,14 @@
  * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
  * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
  ******************************************************************************/
-package com.novell.ldap;
+package com.novell.ldap.resources;
 
-public class LDAPExceptionErrorCodeResource extends java.util.ListResourceBundle {
+/**
+ * This class contains strings corresponding to LDAP Result Codes.
+ * The resources are accessed by the String representation of the result code.
+ */
+
+public class ResultCodeMessages extends java.util.ListResourceBundle {
   public Object[][] getContents() {
       return contents;
   }
@@ -85,4 +90,4 @@ public class LDAPExceptionErrorCodeResource extends java.util.ListResourceBundle
       {"112", "TLS not supported"}
   // END OF MATERIAL TO LOCALIZE
   };
-}//End LDAPExceptionErrorCodeResource
+}//End ResultCodeMessages

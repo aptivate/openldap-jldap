@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.101 2001/06/13 17:51:06 jhammons Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.102 2001/06/22 15:58:43 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -25,6 +25,7 @@ import com.novell.ldap.*;
 import com.novell.ldap.client.*;
 import com.novell.ldap.asn1.*;
 import com.novell.ldap.rfc2251.*;
+import com.novell.ldap.resources.*;
 
 /**
  * The central class that encapsulates the connection
@@ -501,7 +502,7 @@ public class LDAPConnection implements Cloneable
             return conn.security;
         else {
             // Requested property not available.
-            throw new LDAPException(LDAPExceptionMessageResource.NO_PROPERTY,
+            throw new LDAPException(ExceptionMessages.NO_PROPERTY,
                     LDAPException.PARAM_ERROR);
         }
     }
@@ -677,7 +678,7 @@ public class LDAPConnection implements Cloneable
         throws LDAPException
     {
         // Requested property is not supported
-        throw new LDAPException(LDAPExceptionMessageResource.NO_SUP_PROPERTY,
+        throw new LDAPException(ExceptionMessages.NO_SUP_PROPERTY,
                 LDAPException.PARAM_ERROR);
     }
 
@@ -782,7 +783,7 @@ public class LDAPConnection implements Cloneable
             Debug.trace( Debug.apiRequests, name +
             "startTLS()");
         }
-        throw new LDAPException(LDAPExceptionMessageResource.NOT_IMPLEMENTED,
+        throw new LDAPException(ExceptionMessages.NOT_IMPLEMENTED,
                                 new Object[] {"LDAPConnection.startTLS"},
                                 LDAPException.LDAP_NOT_SUPPORTED);
                         //"Method LDAPConnection.startTLS not implemented"
@@ -1053,7 +1054,7 @@ public class LDAPConnection implements Cloneable
         if(entry == null || entry.getDN() == null) {
             // Invalid Entry parameter
             throw new LDAPException(
-                    LDAPExceptionMessageResource.ENTRY_PARAM_ERROR,
+                    ExceptionMessages.ENTRY_PARAM_ERROR,
                     LDAPException.PARAM_ERROR);
         }
 
@@ -1505,7 +1506,7 @@ public class LDAPConnection implements Cloneable
                      LDAPConstraints cons)
                      throws LDAPException
     {
-        throw new LDAPException(LDAPExceptionMessageResource.NOT_IMPLEMENTED,
+        throw new LDAPException(ExceptionMessages.NOT_IMPLEMENTED,
                 new Object[] {"LDAPConnection.bind(with mechanisms)"},
                 LDAPException.LDAP_NOT_SUPPORTED);
         //"LDAPConnection.bind(with mechanisms) is not Implemented."
@@ -1607,7 +1608,7 @@ public class LDAPConnection implements Cloneable
             }
             bind( LDAP_V3, dn, password, defSearchCons);
         } else {
-            throw new LDAPException(LDAPExceptionMessageResource.NOT_IMPLEMENTED,
+            throw new LDAPException(ExceptionMessages.NOT_IMPLEMENTED,
                 new Object[] {"LDAPConnection.bind(with mechanisms)"},
                 LDAPException.LDAP_NOT_SUPPORTED);
             //"LDAPConnection.bind(with mechanisms) is not Implemented."
@@ -1776,7 +1777,7 @@ public class LDAPConnection implements Cloneable
 
         if(dn == null || type == null || value == null) {
             // Invalid parameter
-            throw new LDAPException(LDAPExceptionMessageResource.PARAM_ERROR,
+            throw new LDAPException(ExceptionMessages.PARAM_ERROR,
                                     LDAPException.PARAM_ERROR);
         }
 
@@ -1851,7 +1852,7 @@ public class LDAPConnection implements Cloneable
                         address =   address.substring(0, colonIndex);
                     }catch (Exception e){
                         throw new LDAPException(
-                                LDAPExceptionMessageResource.INVALID_ADDRESS,
+                                ExceptionMessages.INVALID_ADDRESS,
                                 new Object[] { address },
                                 LDAPException.PARAM_ERROR);
                     }
@@ -1968,7 +1969,7 @@ public class LDAPConnection implements Cloneable
         }
         if(dn == null) {
             // Invalid DN parameter
-            throw new LDAPException(LDAPExceptionMessageResource.DN_PARAM_ERROR,
+            throw new LDAPException(ExceptionMessages.DN_PARAM_ERROR,
                                     LDAPException.PARAM_ERROR);
         }
 
@@ -2194,7 +2195,7 @@ public class LDAPConnection implements Cloneable
         // error check the parameters
         if (op.getID() == null) {
             // Invalid extended operation parameter, no OID specified
-            throw new LDAPException(LDAPExceptionMessageResource.OP_PARAM_ERROR,
+            throw new LDAPException(ExceptionMessages.OP_PARAM_ERROR,
                                     LDAPException.PARAM_ERROR);
         }
 
@@ -2503,7 +2504,7 @@ public class LDAPConnection implements Cloneable
         }
         if(dn == null) {
             // Invalid DN parameter
-            throw new LDAPException(LDAPExceptionMessageResource.DN_PARAM_ERROR,
+            throw new LDAPException(ExceptionMessages.DN_PARAM_ERROR,
                                     LDAPException.PARAM_ERROR);
         }
 
@@ -2978,7 +2979,7 @@ public class LDAPConnection implements Cloneable
     {
         if(dn == null || newRdn == null) {
             // Invalid DN or RDN parameter
-            throw new LDAPException(LDAPExceptionMessageResource.RDN_PARAM_ERROR,
+            throw new LDAPException(ExceptionMessages.RDN_PARAM_ERROR,
                                     LDAPException.PARAM_ERROR);
         }
 
@@ -3432,7 +3433,7 @@ public class LDAPConnection implements Cloneable
                 rconn = ((LDAPBind)rh).bind( referrals, this);
                 if( rconn == null) {
                     LDAPReferralException rex = new LDAPReferralException(
-                        LDAPExceptionMessageResource.REFERRAL_ERROR);
+                        ExceptionMessages.REFERRAL_ERROR);
                     rex.setReferrals( referrals);
                     throw rex;
                 }
@@ -3466,7 +3467,7 @@ public class LDAPConnection implements Cloneable
                     }
                     // Could not match LDAPBind.bind() connecction with URL list
                     ex = new LDAPException(
-                            LDAPExceptionMessageResource.REFERRAL_BIND_MATCH,
+                            ExceptionMessages.REFERRAL_BIND_MATCH,
                             LDAPException.CONNECT_ERROR);
                 }
             } catch( Throwable lex) {
@@ -3490,13 +3491,13 @@ public class LDAPConnection implements Cloneable
                 ldapex = (LDAPException)ex;
             } else {
                 ldapex = new LDAPException(
-                    LDAPExceptionMessageResource.SERVER_CONNECT_ERROR,
+                    ExceptionMessages.SERVER_CONNECT_ERROR,
                     new Object[] { conn.getHost() },
                     LDAPException.CONNECT_ERROR, ex);
             }
             // Error attempting to follow a referral
             LDAPReferralException rex = new LDAPReferralException(
-                    LDAPExceptionMessageResource.REFERRAL_ERROR,
+                    ExceptionMessages.REFERRAL_ERROR,
                     ldapex);
             rex.setReferrals(referrals);
             // Use last URL string for the failed referral
@@ -3558,7 +3559,7 @@ public class LDAPConnection implements Cloneable
                     // If referral following is off, should never get here
                     // LDAPCOnnection: checkForReferral: internal error
                     throw new LDAPReferralException(
-                        LDAPExceptionMessageResource.REFERRAL_INTERNAL,
+                        ExceptionMessages.REFERRAL_INTERNAL,
                         LDAPException.LOCAL_ERROR, null);
                 }
             }
@@ -3637,7 +3638,7 @@ public class LDAPConnection implements Cloneable
                 } catch(LocalException ex) {
                     // Error ending request to referred server
                     LDAPReferralException rex = new LDAPReferralException(
-                         LDAPExceptionMessageResource.REFERRAL_SEND,
+                         ExceptionMessages.REFERRAL_SEND,
                          LDAPException.CONNECT_ERROR, null, ex);
                     rex.setReferrals( searchReferral);
                     ReferralInfo ref = rconn.getConnection().getActiveReferral();
@@ -3668,7 +3669,7 @@ public class LDAPConnection implements Cloneable
 
                     // Connecting to referred server
                     LDAPReferralException rex = new LDAPReferralException(
-                        LDAPExceptionMessageResource.REFERRAL_ERROR, ex);
+                        ExceptionMessages.REFERRAL_ERROR, ex);
                     rex.setReferrals( refs);
                     if( rinfo != null) {
                         rex.setFailedReferral( rinfo.getReferralUrl().getUrl());
@@ -3730,7 +3731,7 @@ public class LDAPConnection implements Cloneable
             default:
                 throw new LDAPException(
                      // "Referral doesn't make sense for command"
-                    LDAPExceptionMessageResource.IMPROPER_REFERRAL,
+                    ExceptionMessages.IMPROPER_REFERRAL,
                     new Object[] {
                         new Integer(rfcMsg.getProtocolOp().getIdentifier().getTag())
                     },

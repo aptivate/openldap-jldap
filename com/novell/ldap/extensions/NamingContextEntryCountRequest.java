@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: NamingContextEntryCountRequest.java,v 1.13 2001/02/13 18:36:52 cmorris Exp $
+ * $Id: NamingContextEntryCountRequest.java,v 1.14 2001/03/01 00:30:11 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -16,6 +16,7 @@ package com.novell.ldap.extensions;
 
 import com.novell.ldap.*;
 import com.novell.ldap.asn1.*;
+import com.novell.ldap.resources.*;
 import java.io.*;
 
 /**
@@ -60,7 +61,7 @@ import java.io.*;
         try {
 
             if ( (dn == null) )
-                throw new LDAPException(LDAPExceptionMessageResource.PARAM_ERROR,
+                throw new LDAPException(ExceptionMessages.PARAM_ERROR,
                                     LDAPException.PARAM_ERROR);
 
             ByteArrayOutputStream encodedData = new ByteArrayOutputStream();
@@ -74,7 +75,7 @@ import java.io.*;
 
         }
       catch(IOException ioe) {
-         throw new LDAPException(LDAPExceptionMessageResource.ENCODING_ERROR,
+         throw new LDAPException(ExceptionMessages.ENCODING_ERROR,
                                  LDAPException.ENCODING_ERROR);
       }
      }

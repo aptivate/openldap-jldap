@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/rfc2251/RfcUnbindRequest.java,v 1.8 2001/03/01 00:30:21 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/rfc2251/RfcUnbindRequest.java,v 1.9 2001/03/01 18:11:26 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -17,6 +17,7 @@ package com.novell.ldap.rfc2251;
 
 import com.novell.ldap.asn1.*;
 import com.novell.ldap.*;
+import com.novell.ldap.resources.*;
 
 /**
  *       UnbindRequest ::= [APPLICATION 2] NULL
@@ -54,7 +55,7 @@ public class RfcUnbindRequest extends ASN1Null implements RfcRequest {
             throws LDAPException
     {
         throw new LDAPException(
-                    LDAPExceptionMessageResource.NO_DUP_REQUEST,
+                    ExceptionMessages.NO_DUP_REQUEST,
                     new Object[] { "unbind" },
                     LDAPException.LDAP_NOT_SUPPORTED);
     }

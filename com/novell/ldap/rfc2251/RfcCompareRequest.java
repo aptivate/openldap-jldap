@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/rfc2251/RfcCompareRequest.java,v 1.9 2001/03/01 00:30:15 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/rfc2251/RfcCompareRequest.java,v 1.10 2001/03/01 18:11:25 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -16,6 +16,7 @@ package com.novell.ldap.rfc2251;
 
 import com.novell.ldap.asn1.*;
 import com.novell.ldap.*;
+import com.novell.ldap.resources.*;
 
 /**
  *       CompareRequest ::= [APPLICATION 14] SEQUENCE {
@@ -55,7 +56,7 @@ public class RfcCompareRequest extends ASN1Sequence implements RfcRequest {
             throws LDAPException
     {
         throw new LDAPException(
-                    LDAPExceptionMessageResource.NO_DUP_REQUEST,
+                    ExceptionMessages.NO_DUP_REQUEST,
                     new Object[] { "compare" },
                     LDAPException.LDAP_NOT_SUPPORTED);
     }

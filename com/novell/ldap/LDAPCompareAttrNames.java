@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPCompareAttrNames.java,v 1.21 2001/04/19 18:55:52 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPCompareAttrNames.java,v 1.22 2001/06/13 17:51:06 jhammons Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -19,6 +19,7 @@ import java.util.Locale;
 import java.text.Collator;
 import java.lang.RuntimeException;
 import com.novell.ldap.*;
+import com.novell.ldap.resources.*;
 
 
 /**
@@ -119,7 +120,7 @@ public class LDAPCompareAttrNames implements LDAPEntryComparator {
                                boolean[] ascendingFlags)
                                throws LDAPException {
       if (attrNames.length != ascendingFlags.length){
-         throw new LDAPException( LDAPExceptionMessageResource.UNEQUAL_LENGTHS,
+         throw new LDAPException( ExceptionMessages.UNEQUAL_LENGTHS,
               LDAPException.INAPPROPRIATE_MATCHING);
          //"Length of attribute Name array does not equal length of Flags array"
       }

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPMatchingRuleSchema.java,v 1.17 2001/04/23 21:09:30 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPMatchingRuleSchema.java,v 1.18 2001/06/13 17:51:06 jhammons Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -15,6 +15,7 @@
 
 package com.novell.ldap;
 import com.novell.ldap.client.SchemaParser;
+import com.novell.ldap.resources.*;
 import java.util.Enumeration;
 import java.io.IOException;
 /**
@@ -334,7 +335,7 @@ public class LDAPMatchingRuleSchema extends LDAPSchemaElement {
 
   public void modify(LDAPConnection ld, LDAPSchemaElement newValue, String dn) throws LDAPException {
     if( newValue instanceof LDAPMatchingRuleSchema != true ){
-        throw new LDAPException(LDAPExceptionMessageResource.NOT_A_RULESCHEMA, //"Schema element is not an LDAPMatchingRuleSchema object",
+        throw new LDAPException(ExceptionMessages.NOT_A_RULESCHEMA, //"Schema element is not an LDAPMatchingRuleSchema object",
                 LDAPException.INVALID_ATTRIBUTE_SYNTAX);
     }
 

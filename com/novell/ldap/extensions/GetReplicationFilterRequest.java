@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: GetReplicationFilterRequest.java,v 1.2 2001/02/13 18:36:51 cmorris Exp $
+ * $Id: GetReplicationFilterRequest.java,v 1.3 2001/03/01 00:30:10 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -16,6 +16,7 @@ package com.novell.ldap.extensions;
 
 import com.novell.ldap.*;
 import com.novell.ldap.asn1.*;
+import com.novell.ldap.resources.*;
 import java.io.*;
 
 /**
@@ -57,7 +58,7 @@ public class GetReplicationFilterRequest extends LDAPExtendedOperation {
         try {
 
             if (serverDN == null)
-                throw new LDAPException(LDAPExceptionMessageResource.PARAM_ERROR,
+                throw new LDAPException(ExceptionMessages.PARAM_ERROR,
                   LDAPException.PARAM_ERROR);
 
             ByteArrayOutputStream encodedData = new ByteArrayOutputStream();
@@ -70,7 +71,7 @@ public class GetReplicationFilterRequest extends LDAPExtendedOperation {
             setValue(encodedData.toByteArray());
 		}
       catch(IOException ioe) {
-         throw new LDAPException(LDAPExceptionMessageResource.ENCODING_ERROR,
+         throw new LDAPException(ExceptionMessages.ENCODING_ERROR,
                                  LDAPException.ENCODING_ERROR);
       }
    }

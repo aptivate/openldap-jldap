@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPDN.java,v 1.18 2001/04/21 00:24:18 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPDN.java,v 1.19 2001/04/23 20:29:40 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -25,6 +25,12 @@ import com.novell.ldap.util.RDN;
  *  and a relative distinguished name (RDN).</p>
  */
 public class LDAPDN {
+   
+   // Don't allow any instances of this class
+   private LDAPDN()
+   {
+       return;
+   }
 
    /**
     * Compares the two strings per the distinguishedNameMatch equality matching
