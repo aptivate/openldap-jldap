@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPMessage.java,v 1.19 2001/01/25 20:29:58 javed Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPMessage.java,v 1.20 2001/01/26 23:13:18 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -226,22 +226,20 @@ public class LDAPMessage {
 		        // At this point we have an RfcControl which needs to be
 		        // converted to the appropriate Response Control.  This requires calling
 		        // the newInstance static method defined in LDAPControl class in the
-		        // draft.  The problem is that this method takes a byte [] corresponding
-		        // to the encoded control as a parameter.  But we have already parsed that
-		        // out and do not have a pointer to the byte [].  This forces our
-		        // implementation to encode this decoded RfcControl and then call
-		        // the newInstance method.  Question: Why did we not call the newInstance
+		        // draft.  The newInstance method will search the list of registered
+		        // controls and if a match is found will call the constructor for that
+		        // child LDAPControl.   Otherwise it will return a regular LDAPControl
+		        // object. 
+		        // Question: Why did we not call the newInstance
 		        // method when we were parsing the control. Answer: By the time the
 		        // login in the code realizes that we have a control it is already
 		        // too late. 
 		        RfcControl tempRfcControl = (RfcControl)asn1Ctrls.get(i);
-		        LBEREncoder encoder  = new LBEREncoder();
-		        byte [] encodedControl = tempRfcControl.getEncoding(encoder);
 		        
 		        // Return from this call should return either an LDAPControl or a 
 		        // child of LDAPControl corresponding to the appropriate registered
 		        // response control
-		        controls[i] = LDAPControl.newInstance(encodedControl);
+		        controls[i] = LDAPControl.newInstance(tempRfcControl);
 		    }
 	    }
 	    return controls;

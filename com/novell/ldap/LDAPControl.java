@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPControl.java,v 1.22 2001/01/25 23:05:52 javed Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPControl.java,v 1.23 2001/01/26 20:17:44 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -79,7 +79,7 @@ public class LDAPControl implements Cloneable {
     /**
      * Create an LDAPControl from an existing control.
      */
-    /*package*/ LDAPControl(RfcControl control)
+    protected LDAPControl(RfcControl control)
     {
         this.control = control;
 
@@ -146,41 +146,30 @@ public class LDAPControl implements Cloneable {
     }
 
     /**
-     * Instantiates a control, given the raw data representing it in an LDAP
-     * message.
+     * Instantiates an LDAPControl.  We search through our list of 
+     * registered controls.  If we find a matchiing OID we instantiate
+     * that control by calling its contructor.  Otherwise we default to
+     * returning a regular LDAPControl object
      *
-     * @param data An array of data bytes for the control.
+     * @depreacted.  Not to be used by application programs.
+     *
+     * @param data A RfcControl object that encodes the returned control.
      */
-    public static LDAPControl newInstance(byte[] data)
+    public static LDAPControl newInstance(RfcControl rfcCtl)
     {
-        RfcControl tempRfcControl;
-        
-        /* Parse data to get the OID, criticality, controlData  */
-        LBERDecoder decoder = new LBERDecoder();
-        ByteArrayInputStream buf = new ByteArrayInputStream(data);
-        
-        try {
-            ASN1Sequence extraASN1 = new ASN1Sequence(decoder, buf, data.length);
-            tempRfcControl = new RfcControl((ASN1Sequence)extraASN1.get(0));
-        } catch (IOException ex) {
-            // This should never happen because the data passed in has to 
-            // be a valid RfcControl
-            return null;
-        }
-        
-        String oid = tempRfcControl.getControlType().getString();
-        boolean criticality = tempRfcControl.getCriticality().getContent();
-        byte [] value = tempRfcControl.getControlValue().getContent();
+        String oid = rfcCtl.getControlType().getString();
         
         try {
             /* search through the registered extension list to find the response control class */
             Class responseControlClass = registeredControls.findResponseControl(oid);
+            
+            // Did not find a match so return default LDAPControl
             if ( responseControlClass == null)
-                return new LDAPControl(oid, criticality, value);
+                return new LDAPControl(rfcCtl);
         
-            /* If found get default 3 parameter LDAPControl constructor */
-            Class[] ArgsClass = new Class[] {oid.getClass(), boolean.class, value.getClass()};
-            Object[] Args = new Object[] {oid, new Boolean(criticality), value};
+            /* If found get default 1 parameter LDAPControl constructor */
+            Class[] ArgsClass = new Class[] {rfcCtl.getClass()};
+            Object[] Args = new Object[] {rfcCtl};
             try {
                 Constructor defaultConstructor = responseControlClass.getConstructor(ArgsClass);
             
@@ -199,7 +188,7 @@ public class LDAPControl implements Cloneable {
                     ;
                 } catch (InvocationTargetException e) {
                     ;
-                }
+                } 
             } catch (NoSuchMethodException e) {
                 // bad class was specified, fall through and return a
                 // default LDAPControl object
@@ -218,7 +207,7 @@ public class LDAPControl implements Cloneable {
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.controls, "Could not instantiate child LDAPControl. Returning default LDAPControl class");
         }
-        return new LDAPControl(oid, criticality, value);
+        return new LDAPControl(rfcCtl);
     }
 
     /**
