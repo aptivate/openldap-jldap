@@ -79,6 +79,7 @@ public class ExceptionMessages extends java.util.ListResourceBundle {
   public final static String NO_TLS_FACTORY         = "NO_TLS_FACTORY";
   public final static String NO_STARTTLS            = "NO_STARTTLS";
   public final static String STOPTLS_ERROR          = "STOPTLS_ERROR";
+  public final static String READ_MULTIPLE          = "READ_MULTIPLE";
 
   //End constants
 
@@ -135,7 +136,8 @@ public class ExceptionMessages extends java.util.ListResourceBundle {
       {"WRONG_FACTORY", "StartTLS cannot use the set socket factory because it does not implement LDAPTLSSocketFactory"},
       {"NO_TLS_FACTORY", "StartTLS failed because no LDAPTLSSocketFactory has been set for this Connection" },
       {"NO_STARTTLS", "An attempt to stopTLS on a connection where startTLS had not been called"},
-      {"STOPTLS_ERROR", "Error stopping TLS: Error getting input & output streams from the original socket"}
+      {"STOPTLS_ERROR", "Error stopping TLS: Error getting input & output streams from the original socket"},
+      {"READ_MULTIPLE", "Read response is ambiguous, multiple entries returned"}
   // END OF MATERIAL TO LOCALIZE
   };
 }//End ExceptionMessages

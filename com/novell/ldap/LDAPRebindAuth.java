@@ -16,6 +16,11 @@
 package com.novell.ldap;
 
 /**
+ *  @deprecated replaced by {@link LDAPAuthProvider}.  This interface
+ *  has been renamed to LDAPAuthProvider in IETF draft 17 of the Java LDAP API
+ *  (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
+ *  in fall of 2003.
+ *
  *  An implementation of LDAPRebind must be able to provide an LDAPRebindAuth
  *  object at the time of a referral.  The class encapsulates reauthentiation
  *  credentials for the specified host and port.
@@ -23,6 +28,7 @@ package com.novell.ldap;
  *  @see LDAPRebind
  *  @see LDAPBind
  *  @see LDAPConstraints#setReferralFollowing(boolean)
+ *  @deprecated replaced by {@link LDAPAuthProvider}
  */
 public class LDAPRebindAuth {
 

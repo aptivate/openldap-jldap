@@ -99,6 +99,21 @@ public class LDAPSearchConstraints extends LDAPConstraints
         cons = (com.novell.ldap.LDAPSearchConstraints)super.getWrappedObject();
         return;
     }
+    
+    /**
+     * Constructs an LDAPSearchConstraints object using the values from
+     * an existing Constraints object.
+     *
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPSearchConstraints.html
+            #LDAPSearchConstraints(com.novell.ldap.LDAPConstraints)">
+            com.novell.ldap.LDAPSearchConstraints.LDAPSearchConstraints(LDAPConstraints)</a>
+     */
+    public LDAPSearchConstraints( LDAPConstraints cons)
+    {
+        super( new com.novell.ldap.LDAPSearchConstraints( cons.getWrappedObject()));
+        this.cons = (com.novell.ldap.LDAPSearchConstraints)super.getWrappedObject();
+        return;
+    }
 
     /**
      * Constructs a new LDAPSearchConstraints object and allows specifying

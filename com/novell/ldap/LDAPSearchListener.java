@@ -21,35 +21,40 @@ import java.util.Vector;
 import com.novell.ldap.rfc2251.*;
 
 /**
- *  A low-level mechanism for queuing asynchronous search results
+ *  @deprecated replaced by {@link LDAPSearchQueue}.  This class
+ *  has been renamed to LDAPSearchQueue in IETF draft 17 of the Java LDAP API
+ *  (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
+ *  in fall of 2003.
+ *
+ *  A mechanism for queuing asynchronous search results
  *  and references received from a server.
  *
  * @see LDAPConnection#search
  */
-public class LDAPSearchListener implements LDAPListener
+public class LDAPSearchListener implements LDAPMessageQueue
 {
 
     // Connection number & name used only for debug
     private static Object nameLock = new Object(); // protect connNum
-    private static int sListenNum = 0;
+    private static int sQueueNum = 0;
     private String name = "";
 
    /**
-    * The client listener object
+    * The client message agent
     */
     private MessageAgent agent;
 
     /**
-     * Constructs a response listener using a specific client listener
+     * Constructs a response queue using a specific message agent
      *
-     *  @param listen The client listener to associate with this listener
+     *  @param agent The message agent to associate with this queue
      */
     /* package */
     LDAPSearchListener(MessageAgent agent)
     {
         if( Debug.LDAP_DEBUG) {
             synchronized(nameLock) {
-                name = "LDAPSearchListener(" + ++sListenNum + "): ";
+                name = "LDAPSearchListener(" + ++sQueueNum + "): ";
             }
             Debug.trace( Debug.messages, name + "Created");
         }
@@ -69,9 +74,9 @@ public class LDAPSearchListener implements LDAPListener
     }
 
    /**
-    * Returns the internal client listener object
+    * Returns the internal client message agent
     *
-    * @return The internal client listener object
+    * @return The internal client message agent
     */
     /* package */
     MessageAgent getMessageAgent()
@@ -79,61 +84,38 @@ public class LDAPSearchListener implements LDAPListener
         return agent;
     }
 
-   /**
-    * Returns the message IDs for all outstanding requests, i.e. requests
-    * for which a response has not been received from the server or which
-    * still have messages to be retrieved with getResponse. The last ID in
-    * the array is the messageID of the latest submitted request.
-    *
-    * @return The message IDs for all outstanding requests.
-    */
     public int[] getMessageIDs()
     {
         return agent.getMessageIDs();
     }
 
-   /**
-    * Reports whether a response has been received from the server and
-    * not yet retrieved with getResponse. If getResponse has been used to
-    * retrieve all messages received to this point, then isResponseReceived
-    * returns false.
-    *
-    * @return True if a response has been received from the server; false if
-    *         a response has not been received.
-    */
     public boolean isResponseReceived()
     {
         return agent.isResponseReceived();
     }
 
-   /**
-    * Reports whether a response has been received from the server and
-    * not yet retrieved with getResponse. If getResponse has been used to
-    * retrieve all messages received to this point, then isResponseReceived
-    * returns false.
-    *
-    * @return True if a response has been received from the server; false if
-    *         a response has not been received.
-    */
     public boolean isResponseReceived(int msgid)
     {
         return agent.isResponseReceived(msgid);
     }
 
-   /**
-    * Merges two response listeners by moving the contents from another
-    * listener to this one.
-    *
-    * @param listener2 The listener that receives the contents from the
-    *                  other listener.
-    */
-    public void merge(LDAPResponseListener listener2)
+    public void merge(LDAPListener queue2)
     {
-        if( Debug.LDAP_DEBUG) {
-            Debug.trace( Debug.apiRequests, name +
-                "merge " + listener2.getDebugName());
+        if( queue2 instanceof LDAPResponseQueue) {
+            LDAPResponseQueue q = (LDAPResponseQueue)queue2;
+            if( Debug.LDAP_DEBUG) {
+                Debug.trace( Debug.apiRequests, name +
+                    "merge " + q.getDebugName());
+            }
+            agent.merge( q.getMessageAgent());
+        } else {
+            LDAPSearchQueue q = (LDAPSearchQueue)queue2;
+            if( Debug.LDAP_DEBUG) {
+                Debug.trace( Debug.apiRequests, name +
+                    "merge " + q.getDebugName());
+            }
+            agent.merge( q.getMessageAgent());
         }
-        agent.merge( listener2.getMessageAgent());
         return;
     }
 
@@ -148,49 +130,12 @@ public class LDAPSearchListener implements LDAPListener
         return agent.isComplete( msgid);
      }
 
-   /**
-    * Blocks until a response is available, or until all operations
-    * associated with the object have completed or been canceled, and
-    * returns the response.
-    *
-    * <p>The response may be a search result, a search
-    * reference, a search response, or null (if there are no more
-    * outstanding requests). LDAPException is thrown on network errors.</p>
-    *
-    * <p>The only time this method should return a null is if there is no
-    * response in the message queue and there are no message IDs pending.</p>
-    *
-    * @return The response (a search result, search reference, or search response)or
-    *         null if there are no more outstanding requests.
-    *
-    * @exception LDAPException A general exception which includes an error
-    *                          message and an LDAP error code.
-    */
    public LDAPMessage getResponse()
       throws LDAPException
    {
       return getResp( null );
    }
 
-   /**
-    * Blocks until a response is available for a particular message id,
-    * or until all operations
-    * associated with the object have completed or been canceled, and
-    * returns the response.
-    *
-    * <p>The response may be a search result, a search
-    * reference, a search response, or null (if there are no more
-    * outstanding requests). LDAPException is thrown on network errors.</p>
-    *
-    * <p>The only time this method should return a null is if there is no
-    * response in the message queue and there are no message IDs pending.</p>
-    *
-    * @return The response (a search result, search reference, or search response)or
-    *         null if there are no more outstanding requests.
-    *
-    * @exception LDAPException A general exception which includes an error
-    *                          message and an LDAP error code.
-    */
    public LDAPMessage getResponse(int msgid)
       throws LDAPException
    {

@@ -16,6 +16,10 @@
 package com.novell.ldap;
 
 /**
+ *  @deprecated replaced by {@link LDAPAuthHandler}.  This interface
+ *  has been renamed to LDAPReferralHandler in IETF draft 17 of the Java LDAP
+ *  API (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
+ *  in fall of 2003.
  *
  *  Used to provide credentials for reauthentication when processing a
  *  referral.

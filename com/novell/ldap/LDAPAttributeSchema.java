@@ -271,7 +271,10 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
     * @return False if the attribute is read-only; true if the attribute
     *         is read-write.
     *
-    * @deprecated replaced by {@link #isUserModifiable}
+    * @deprecated replaced by {@link #isUserModifiable} This method
+    * has been renamed to isUserModifiable in IETF draft 17 of the Java LDAP
+    * API (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
+    * in fall of 2003.
     */
 
    public boolean isModifiable() {
@@ -282,8 +285,8 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
     * Returns the usage of the attribute.
     *
     * @return One of the following values: USER_APPLICATIONS,
-	  *		  DIRECTORY_OPERATION, DISTRIBUTED_OPERATION or
-	  *		  DSA_OPERATION.
+	*		  DIRECTORY_OPERATION, DISTRIBUTED_OPERATION or
+	*		  DSA_OPERATION.
     */
 
    public int getUsage() {

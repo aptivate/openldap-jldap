@@ -16,16 +16,12 @@
 package com.novell.ldap;
 
 /**
- *  @deprecated replaced by {@link LDAPBindHandler}.  This interface
- *  has been renamed to LDAPBindHandler in IETF draft 17 of the Java LDAP API
- *  (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
- *  in fall of 2003.
  *
  *  Used to do explicit bind processing on a referral.
  *
  *  <p>This interface allows a programmer to override the default
  *  authentication and reauthentication behavior when automatically
- *  following referrals. It is typically used to control the
+ *  following referrals and search references. It is used to control the
  *  authentication mechanism used on automatic referral following.</p>
  *
  *  <p>A client can specify an instance of this class to be used
@@ -36,10 +32,10 @@ package com.novell.ldap;
  *  <p>Sample Code: <a href="http://developer.novell.com/ndk/doc/samplecode/
  *jldap_sample/jldap_sample/SearchUtil.java.html">SearchUtil.java</p>
  *
- *  @see LDAPRebind
+ *  @see LDAPAuthHandler
  *  @see LDAPConstraints#setReferralFollowing(boolean)
  */
-public interface LDAPBind extends LDAPReferralHandler
+public interface LDAPBindHandler extends LDAPReferralHandler
 {
 
    /**

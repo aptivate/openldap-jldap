@@ -19,90 +19,94 @@ package org.ietf.ldap;
  *  Encapsulates a low-level mechanism for processing asynchronous messages
  *  received from a server.
  *
- *  @see <a href="../../../../doc/com/novell/ldap/LDAPResponseListener.html">
-            com.novell.ldap.LDAPResponseListener</a>
+ *  @see <a href="../../../../doc/com/novell/ldap/LDAPResponseQueue.html">
+            com.novell.ldap.LDAPResponseQueue</a>
  */
-public class LDAPResponseListener implements LDAPListener
+public class LDAPResponseQueue implements LDAPMessageQueue
 {
-    private com.novell.ldap.LDAPResponseListener listener;
+    private com.novell.ldap.LDAPResponseQueue queue;
 
     /**
-     * Constructs a response listener from com.novell.ldap.LDAPResponseListener
+     * Constructs a response queue from com.novell.ldap.LDAPResponseQueue
      */
     /* package */
-    LDAPResponseListener(com.novell.ldap.LDAPResponseListener listener)
+    LDAPResponseQueue(com.novell.ldap.LDAPResponseQueue queue)
     {
-        this.listener = listener;
+        this.queue = queue;
         return;
     }
 
     /**
-     * Returns the com.novell.ldap.LDAPResponseListener object
+     * Returns the com.novell.ldap.LDAPResponseQueue object
      */
     /* package */
-    com.novell.ldap.LDAPResponseListener getWrappedObject()
+    com.novell.ldap.LDAPResponseQueue getWrappedObject()
     {
-        return listener;
+        return queue;
     }
 
     /**
      * Returns the message IDs for all outstanding requests.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPResponseListener.html
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPResponseQueue.html
             #getMessageIDs()">
             com.novell.ldap.LDAPResponse.getMessageIDs()</a>
      */
      public int[] getMessageIDs()
      {
-        return listener.getMessageIDs();
+        return queue.getMessageIDs();
      }
 
     /**
      * Reports whether a response has been received from the server.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPResponseListener.html
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPResponseQueue.html
             #isResponseReceived()">
             com.novell.ldap.LDAPResponse.isResponseReceived()</a>
      */
      public boolean isResponseReceived()
      {
-        return listener.isResponseReceived();
+        return queue.isResponseReceived();
      }
 
     /**
      * Reports whether a response has been received from the server for a
      * particular message id.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPResponseListener.html
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPResponseQueue.html
             #isResponseReceived(int)">
             com.novell.ldap.LDAPResponse.isResponseReceived(int)</a>
      */
      public boolean isResponseReceived(int msgid)
      {
-        return listener.isResponseReceived( msgid);
+        return queue.isResponseReceived( msgid);
      }
 
     /**
-     * Merges two response listeners by moving the contents from another
-     * listener to this one.
+     * Merges two response queues by moving the contents from another
+     * queue to this one.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPResponseListener.html
-            #merge(com.novell.ldap.LDAPResponseListener)">
-            com.novell.ldap.LDAPResponse.merge(LDAPResponseListener)</a>
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPMessageQueue.html
+            #merge(com.novell.ldap.LDAPResponseQueue)">
+            com.novell.ldap.LDAPResponse.merge(LDAPMessageQueue)</a>
      */
-     public void merge(LDAPResponseListener listener2)
+     public void merge(LDAPMessageQueue queue2)
      {
-        if( listener2 == null) {
-            listener.merge( (com.novell.ldap.LDAPResponseListener)null);
+        if( queue2 == null) {
+            queue.merge( (com.novell.ldap.LDAPMessageQueue)null);
         }
-        listener.merge( listener2.getWrappedObject() );
+        if( queue2 instanceof LDAPResponseQueue) {
+            queue.merge( ((LDAPResponseQueue)queue2).getWrappedObject() );
+        } else {
+            queue.merge( ((LDAPSearchQueue)queue2).getWrappedObject() );
+        }
         return;
      }
 
     /**
      * Returns the response.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPResponseListener.html
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPResponseQueue.html
             #getResponse()">
             com.novell.ldap.LDAPResponse.getResponse()</a>
      */
@@ -110,7 +114,7 @@ public class LDAPResponseListener implements LDAPListener
         throws LDAPException
     {
         try {
-            return new LDAPMessage(listener.getResponse());
+            return new LDAPMessage(queue.getResponse());
         } catch( com.novell.ldap.LDAPException ex) {
             if( ex instanceof com.novell.ldap.LDAPReferralException) {
                 throw new LDAPReferralException(
@@ -124,7 +128,7 @@ public class LDAPResponseListener implements LDAPListener
     /**
      * Returns the response for a particular message id.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPResponseListener.html
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPResponseQueue.html
             #getResponse(int)">
             com.novell.ldap.LDAPResponse.getResponse(int)</a>
      */
@@ -132,7 +136,7 @@ public class LDAPResponseListener implements LDAPListener
         throws LDAPException
     {
         try {
-            return new LDAPMessage(listener.getResponse(msgid));
+            return new LDAPMessage(queue.getResponse(msgid));
         } catch( com.novell.ldap.LDAPException ex) {
             if( ex instanceof com.novell.ldap.LDAPReferralException) {
                 throw new LDAPReferralException(

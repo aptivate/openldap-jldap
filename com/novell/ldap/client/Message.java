@@ -27,7 +27,7 @@ public class Message
     private LDAPMessage msg;             // msg request sent to server
     private Connection conn;             // Connection object where msg sent
     private MessageAgent agent;          // MessageAgent handling this request
-    private LDAPListener listen;         // Application listener
+    private LDAPMessageQueue queue;      // Application message queue
     private int mslimit;                 // client time limit in milliseconds
     private Thread timer = null;         // Timeout thread
     // Note: MessageVector is synchronized
@@ -50,20 +50,20 @@ public class Message
      *<br><br>
      * @param agent     the MessageAgent handling this message.
      *<br><br>
-     * @param listen    the application LDAPListener for this message
+     * @param queue     the application LDAPMessageQueue for this message
      */
     public Message(
-                        LDAPMessage    msg,
-                        int            mslimit,
-                        Connection     conn,
-                        MessageAgent   agent,
-                        LDAPListener   listen,
-                        BindProperties bindprops)
+                        LDAPMessage      msg,
+                        int              mslimit,
+                        Connection       conn,
+                        MessageAgent     agent,
+                        LDAPMessageQueue queue,
+                        BindProperties   bindprops)
     {
         this.msg = msg;
         this.conn = conn;
         this.agent = agent;
-        this.listen = listen;
+        this.queue = queue;
         this.mslimit = mslimit;
         this.msgId = msg.getMessageID();
         this.bindprops = bindprops;
@@ -518,7 +518,7 @@ public class Message
         conn = null;
         msg = null;
         // agent = null;  // leave this reference
-        listen = null;
+        queue = null;
         //replies = null; //leave this since we use it as a semaphore
         bindprops = null;
         return;

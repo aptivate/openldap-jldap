@@ -256,20 +256,20 @@ public class MessageAgent
      *<br><br>
      * @param timeOut the interval to wait for the message to complete or
      * <code>null</code> if infinite.
-     * @param listen the LDAPListener associated with this request.
+     * @param queue the LDAPMessageQueue associated with this request.
      */
     public void sendMessage(
-                            Connection      conn,
-                            LDAPMessage     msg,
-                            int             timeOut,
-                            LDAPListener    listen,
-                            BindProperties  bindProps)
+                            Connection       conn,
+                            LDAPMessage      msg,
+                            int              timeOut,
+                            LDAPMessageQueue queue,
+                            BindProperties   bindProps)
             throws LDAPException
     {
         // creating a messageInfo causes the message to be sent
         // and a timer to be started if needed.
         Message message = new Message( msg, timeOut, conn,
-                                    this, listen, bindProps);
+                                    this, queue, bindProps);
         messages.addElement( message);
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.messages, name +

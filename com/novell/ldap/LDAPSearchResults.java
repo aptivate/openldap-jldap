@@ -46,7 +46,7 @@ public class LDAPSearchResults implements Enumeration
     private boolean completed = false;  // All entries received
     private int count = 0;              // Number of entries read
     private LDAPControl[] controls = null; // Last set of controls
-    private LDAPSearchListener listener;
+    private LDAPSearchQueue queue;
     private static Object nameLock = new Object(); // protect resultsNum
     private static int resultsNum = 0;  // used for debug
     private String name;                // used for debug
@@ -55,17 +55,17 @@ public class LDAPSearchResults implements Enumeration
     private ArrayList referralConn = null;// Referral Connections
 
     /**
-     * Constructs a listener object for search results.
+     * Constructs a queue object for search results.
      *
      * @param  conn The LDAPConnection which initiated the search
      *<br><br>
-     * @param listener The listener for the search results.
+     * @param queue The queue for the search results.
      *<br><br>
      * @param cons The LDAPSearchConstraints associated with this search
      */
     /* package */
     LDAPSearchResults(  LDAPConnection conn,
-                        LDAPSearchListener listener,
+                        LDAPSearchQueue queue,
                         LDAPSearchConstraints cons)
     {
         // setup entry Vector
@@ -82,7 +82,7 @@ public class LDAPSearchResults implements Enumeration
         referenceCount = 0;
         referenceIndex = 0;
 
-        this.listener = listener;
+        this.queue = queue;
         this.batchSize = (batchSize == 0) ? Integer.MAX_VALUE : batchSize;
 
         if( Debug.LDAP_DEBUG ) {
@@ -468,7 +468,7 @@ public class LDAPSearchResults implements Enumeration
     /**
      * @internal
      *
-     * Will collect batchSize elements from an LDAPSearchListener message
+     * Will collect batchSize elements from an LDAPSearchQueue message
      * queue and place them in a Vector. If the last message from the server,
      * the result message, contains an error, it will be stored in the Vector
      * for nextElement to process. (although it does not increment the search
@@ -485,7 +485,7 @@ public class LDAPSearchResults implements Enumeration
         // <=batchSize so that we can pick up the result-done message
         for(int i=0; i<=batchSize; ) {
             try {
-                if((msg = listener.getResponse()) != null) {
+                if((msg = queue.getResponse()) != null) {
                     // Only save controls if there are some
                     LDAPControl[] ctls = msg.getControls();
                     if( ctls != null ) {
@@ -525,7 +525,7 @@ public class LDAPSearchResults implements Enumeration
 
                         if( cons.getReferralFollowing() ) {
                            referralConn = conn.checkForReferral(
-                                    listener, cons, msg, refs,
+                                    queue, cons, msg, refs,
                                     0, true, referralConn);
                         } else {
                             references.addElement( refs );
@@ -558,7 +558,7 @@ public class LDAPSearchResults implements Enumeration
                                     "following referrals");
                             }
                             referralConn = conn.checkForReferral(
-                                        listener, cons, resp,
+                                        queue, cons, resp,
                                         resp.getReferrals(), 0,
                                         false, referralConn);
                         } else
@@ -578,7 +578,7 @@ public class LDAPSearchResults implements Enumeration
                         }
                         // We are done only when we have read all messages
                         // including those received from following referrals
-                        int[] msgIDs = listener.getMessageIDs();
+                        int[] msgIDs = queue.getMessageIDs();
                         if( msgIDs.length == 0) {
                             if( Debug.LDAP_DEBUG ) {
                                 Debug.trace( Debug.messages, name +
@@ -630,7 +630,7 @@ public class LDAPSearchResults implements Enumeration
             Debug.trace( Debug.messages, name + "abandon: Entry");
         }
         // first, remove message ID and timer and any responses in the queue
-        listener.getMessageAgent().abandonAll();
+        queue.getMessageAgent().abandonAll();
 
         // next, clear out enumeration
         resetVectors();

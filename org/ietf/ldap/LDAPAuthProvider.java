@@ -16,45 +16,45 @@
 package org.ietf.ldap;
 
 /**
- *  This class encapsulates reauthentiation credentials for the specified
+ *  This class encapsulates authentiation credentials for the specified
  *  host and port.
  *
- *  @see <a href="../../../../doc/com/novell/ldap/LDAPRebindAuth.html">
-            com.novell.ldap.LDAPRebindAuth</a>
+ *  @see <a href="../../../../doc/com/novell/ldap/LDAPAuthProvider.html">
+            com.novell.ldap.LDAPAuthProvider</a>
  */
-public class LDAPRebindAuth
+public class LDAPAuthProvider
 {
-    com.novell.ldap.LDAPRebindAuth auth; 
+    com.novell.ldap.LDAPAuthProvider auth; 
     /**
      * Constructs information that is used by the client for authentication
      * when following referrals automatically.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPRebindAuth.html
-            #LDAPRebindAuth(java.lang.String, java.lang.String)">
-            com.novell.ldap.LDAPRebindAuth.LDAPRebindAuth( String, String)</a>
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPAuthProvider.html
+            #LDAPAuthProvider(java.lang.String, java.lang.String)">
+            com.novell.ldap.LDAPAuthProvider.LDAPAuthProvider( String, String)</a>
      */
-    public LDAPRebindAuth ( String dn, String password )
+    public LDAPAuthProvider ( String dn, byte[] password )
     {
-        auth = new com.novell.ldap.LDAPRebindAuth( dn, password);
+        auth = new com.novell.ldap.LDAPAuthProvider( dn, password);
         return;
     }
 
     /**
-     * Returns the com.novell.ldap.LDAPRebindAuth object
+     * Returns the com.novell.ldap.LDAPAuthProvider object
      */
     /* package */
-    com.novell.ldap.LDAPRebindAuth getWrappedObject()
+    com.novell.ldap.LDAPAuthProvider getWrappedObject()
     {
         return auth;
     }
  
     /**
-     * Returns the distinguished name to be used for reauthentication on
+     * Returns the distinguished name to be used for authentication on
      * automatic referral following.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPRebindAuth.html
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPAuthProvider.html
             #getDN()">
-            com.novell.ldap.LDAPRebindAuth.getDN()</a>
+            com.novell.ldap.LDAPAuthProvider.getDN()</a>
      */
     public String getDN()
     {
@@ -62,14 +62,14 @@ public class LDAPRebindAuth
     }
  
     /**
-     * Returns the password to be used for reauthentication on automatic
+     * Returns the password to be used for authentication on automatic
      * referral following.
      *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPRebindAuth.html
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPAuthProvider.html
             #getPassword()">
-            com.novell.ldap.LDAPRebindAuth.getPassword()</a>
+            com.novell.ldap.LDAPAuthProvider.getPassword()</a>
      */
-    public String getPassword()
+    public byte[] getPassword()
     {
         return auth.getPassword();
     }

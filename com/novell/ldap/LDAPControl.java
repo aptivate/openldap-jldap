@@ -21,19 +21,16 @@ import com.novell.ldap.asn1.*;
 import com.novell.ldap.rfc2251.*;
 
 /**
- *  Encapsulates optional additional parameters or constraints for an
- *  LDAP operation, either on the server or on the client.
+ *  Encapsulates optional additional parameters or constraints to be applied to
+ *  an LDAP operation.
  *
- * <p>If set as a server control, it is sent to the server along with the operation
- * request. If set as a client control, it is not sent to the server, but
- * rather interpreted locally by the client. LDAPControl is an LDAPv3 extension,
- * and is not supported in an LDAPv2 environment.</p>
+ * <p>When included with LDAPConstraints or LDAPSearchConstraints
+ * on an LDAPConnection or with a specific operation request, it is
+ * sent to the server along with operation requests.</p>
  *
  * @see LDAPConnection#getResponseControls
- * @see LDAPSearchConstraints#getClientControls
- * @see LDAPSearchConstraints#getServerControls
- * @see LDAPSearchConstraints#setClientControls
- * @see LDAPSearchConstraints#setServerControls 
+ * @see LDAPSearchConstraints#getControls
+ * @see LDAPSearchConstraints#setControls
  */
 public class LDAPControl implements Cloneable {
 

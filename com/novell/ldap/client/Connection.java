@@ -123,8 +123,8 @@ public final class Connection implements Runnable
     // method in LDAPConnection.  Future releases might require
     // these to be local variables that can be modified using
     // the setProperty method.
-    public static Float sdk = new Float(1.7);
-    public static Float protocol = new Float(3.0);
+    public static String sdk = new String("1.7");
+    public static Integer protocol = new Integer(3);
     public static String security = "simple";
 
     /**
@@ -474,7 +474,7 @@ public final class Connection implements Runnable
                 /*
                  * Either the application has called disconnect or connect
                  * resulting in the current connection being closed. If the
-                 * application has any listeners waiting on messages, we
+                 * application has any queues waiting on messages, we
                  * need wake these up so the application does not hang.
                  * The boolean flag indicates whether the close came
                  * from an API call or from the objecting being finalized.
@@ -1011,7 +1011,6 @@ public final class Connection implements Runnable
                 // Find the message which requested this response.
                 // It is possible to receive a response for a request which
                 // has been abandoned. If abandoned, throw it away
-                //??               int cnt = ldapListeners.size();
                 try {
                     info = messages.findMessageById( msgId);
                     if( Debug.LDAP_DEBUG ) {

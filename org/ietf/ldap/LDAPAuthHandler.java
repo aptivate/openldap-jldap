@@ -16,22 +16,22 @@
 package org.ietf.ldap;
 
 /**
+ *  Used to provide authentication credentials when processing a
+ *  referral.
  *
- *  Used to do explicit bind processing on a referral.
- *
- * @see <a href="../../../../doc/com/novell/ldap/LDAPBind.html">
-            com.novell.ldap.LDAPBind</a>
+ *  @see <a href="../../../../doc/com/novell/ldap/LDAPAuthHandler.html">
+            com.novell.ldap.LDAPAuthHandler</a>
  */
-public interface LDAPBind extends LDAPReferralHandler
+public interface LDAPAuthHandler extends LDAPReferralHandler
 {
-
-    /**
-     * Called by LDAPConnection when a referral is received.
-     *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPBind.html
-            #bind(java.lang.String[], com.novell.ldap.LDAPConnection)">
-            com.novell.ldap.LDAPBind.bind(String[], LDAPConnection)</a>
-     */
-    public LDAPConnection bind (String[] ldapurl, LDAPConnection conn)
-            throws LDAPReferralException;
+   /**
+    * Returns an object which can provide authentication credentials to
+    * a server at the specified host and port.
+    *
+    * @see <a href="../../../../doc/com/novell/ldap/LDAPAuthHandler.html
+            #getRebindAuthentication(java.lang.String, int)">
+            com.novell.ldap.LDAPAuthHandler.getRebindAuthentication(
+            String, int)</a>
+    */
+   public LDAPAuthProvider getAuthProvider(String host, int port);
 }

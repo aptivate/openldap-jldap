@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Hashtable;
+import java.util.Map;
 
 /**
  *  Represents the central class that encapsulates the connection
@@ -32,7 +33,7 @@ import java.util.Hashtable;
 public class LDAPConnection implements Cloneable
 {
     private com.novell.ldap.LDAPConnection conn;
-    private java.util.Hashtable listeners = new Hashtable();
+    private java.util.Hashtable listenerQueues = new Hashtable();
     /**
      * Used with search to specify that the scope of entrys to search is to
      * search only the base obect.
@@ -308,7 +309,7 @@ public class LDAPConnection implements Cloneable
             #getSaslBindProperties()">
             com.novell.ldap.LDAPConnection.getSaslBindProperties()</a>
      */
-    public Hashtable getSaslBindProperties()
+    public Map getSaslBindProperties()
     {
         return conn.getSaslBindProperties();
     }
@@ -400,13 +401,8 @@ public class LDAPConnection implements Cloneable
             com.novell.ldap.LDAPConnection.getProperty(String)</a>
      */
     public Object getProperty(String name)
-        throws LDAPException
     {
-        try {
-            return conn.getProperty( name);
-        } catch( com.novell.ldap.LDAPException ex) {
-            throw new LDAPException( ex);
-        }
+        return conn.getProperty( name);
     }
 
     /**
@@ -503,8 +499,13 @@ public class LDAPConnection implements Cloneable
             com.novell.ldap.LDAPConnection.setInputStream(InputStream)</a>
      */
     public void setInputStream(InputStream stream)
+                throws LDAPException
     {
-        conn.setInputStream(stream);
+        try {
+            conn.setInputStream(stream);
+        } catch( com.novell.ldap.LDAPException ex) {
+            throw new LDAPException( ex);
+        }
         return;
     }
 
@@ -517,25 +518,12 @@ public class LDAPConnection implements Cloneable
             com.novell.ldap.LDAPConnection.setOutputStream(OutputStream)</a>
      */
     public void setOutputStream(OutputStream stream)
-    {
-        conn.setOutputStream(stream);
-        return;
-    }
-
-    /**
-     * Sets a property of a connection object.
-     *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #setProperty(java.lang.String, java.lang.Object)">
-            com.novell.ldap.LDAPConnection.setProperty(String, Object)</a>
-     */
-    public void setProperty(String name, Object value)
-        throws LDAPException
+                throws LDAPException
     {
         try {
-            conn.setProperty( name, value);
+            conn.setOutputStream(stream);
         } catch( com.novell.ldap.LDAPException ex) {
-            throw new LDAPException(ex);
+            throw new LDAPException( ex);
         }
         return;
     }
@@ -571,10 +559,10 @@ public class LDAPConnection implements Cloneable
                 LDAPUnsolicitedNotificationListener)</a>
      */
     public void addUnsolicitedNotificationListener(
-            LDAPUnsolicitedNotificationListener listener)
+            LDAPUnsolicitedNotificationListener listen)
     {
-        if (listener != null) {
-            conn.addUnsolicitedNotificationListener( new UnsolImpl(listener));
+        if (listen != null) {
+            conn.addUnsolicitedNotificationListener( new UnsolImpl(listen));
         }
         return;
     }
@@ -585,21 +573,21 @@ public class LDAPConnection implements Cloneable
     private class UnsolImpl
             implements com.novell.ldap.LDAPUnsolicitedNotificationListener
     {
-        org.ietf.ldap.LDAPUnsolicitedNotificationListener listener;
+        org.ietf.ldap.LDAPUnsolicitedNotificationListener listen;
 
         private UnsolImpl( org.ietf.ldap.LDAPUnsolicitedNotificationListener ul)
         {
-            listener = ul;
+            listen = ul;
             // Remember this association so we can do remove properly
-            synchronized( listeners) {
-                listeners.put( ul, this);
+            synchronized( listenerQueues) {
+                listenerQueues.put( ul, this);
             }
             return;
         }
 
         public void messageReceived( com.novell.ldap.LDAPExtendedResponse msg)
         {
-            listener.messageReceived(
+            listen.messageReceived(
                     new LDAPExtendedResponse( msg));
             return;
         }
@@ -607,7 +595,7 @@ public class LDAPConnection implements Cloneable
         private
         org.ietf.ldap.LDAPUnsolicitedNotificationListener getWrappedObject()
         {
-            return listener;
+            return listen;
         }
     }
 
@@ -621,15 +609,15 @@ public class LDAPConnection implements Cloneable
             LDAPUnsolicitedNotificationListener)</a>
      */
     public void removeUnsolicitedNotificationListener(
-                        LDAPUnsolicitedNotificationListener listener)
+                        LDAPUnsolicitedNotificationListener queue)
     {
 
         com.novell.ldap.LDAPUnsolicitedNotificationListener ul = null;
 
-        if (listener != null) {
-            synchronized( listeners) {
+        if (queue != null) {
+            synchronized( listenerQueues) {
                 ul = (com.novell.ldap.LDAPUnsolicitedNotificationListener)
-                        listeners.remove( listener);
+                        listenerQueues.remove( queue);
             }
             if( ul != null) {
                 conn.removeUnsolicitedNotificationListener( ul);
@@ -654,6 +642,23 @@ public class LDAPConnection implements Cloneable
     {
         try {
             conn.startTLS();
+        } catch( com.novell.ldap.LDAPException ex) {
+            throw new LDAPException( ex);
+        }
+        return;
+    }
+
+    /**
+     * Stops Transport Layer Security (TLS) protocol on this connection.
+     *
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
+            #stopTLS()">
+            com.novell.ldap.LDAPConnection.stopTLS()</a>
+     */
+    public void stopTLS() throws LDAPException
+    {
+        try {
+            conn.stopTLS();
         } catch( com.novell.ldap.LDAPException ex) {
             throw new LDAPException( ex);
         }
@@ -732,7 +737,7 @@ public class LDAPConnection implements Cloneable
     }
 
     /**
-     *  Abandons a search operation for a listener, using the specified
+     *  Abandons a search operation for a queue, using the specified
      *  constraints.
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
@@ -752,21 +757,21 @@ public class LDAPConnection implements Cloneable
     }
 
     /**
-     * Abandons all search operations for a listener.
+     * Abandons all search operations for a queue.
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #abandon(com.novell.ldap.LDAPListener)">
-            com.novell.ldap.LDAPConnection.abandon(LDAPListener)</a>
+            #abandon(com.novell.ldap.LDAPMessageQueue)">
+            com.novell.ldap.LDAPConnection.abandon(LDAPMessageQueue)</a>
      */
-    public void abandon( LDAPListener listener)
+    public void abandon( LDAPMessageQueue queue)
         throws LDAPException
     {
         try {
-            if( listener instanceof LDAPResponseListener) {
-              conn.abandon(((LDAPResponseListener)listener).getWrappedObject());
+            if( queue instanceof LDAPResponseQueue) {
+              conn.abandon(((LDAPResponseQueue)queue).getWrappedObject());
             } else
-            if( listener instanceof LDAPSearchListener) {
-              conn.abandon(((LDAPSearchListener)listener).getWrappedObject());
+            if( queue instanceof LDAPSearchQueue) {
+              conn.abandon(((LDAPSearchQueue)queue).getWrappedObject());
             }
         } catch( com.novell.ldap.LDAPException ex) {
             throw new LDAPException( ex);
@@ -775,24 +780,24 @@ public class LDAPConnection implements Cloneable
     }
 
     /**
-     * Abandons all search operations for a listener.
+     * Abandons all search operations for a queue.
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #abandon(com.novell.ldap.LDAPListener,
+            #abandon(com.novell.ldap.LDAPMessageQueue,
             com.novell.ldap.LDAPConstraints)">
-            com.novell.ldap.LDAPConnection.abandon(LDAPListener,
+            com.novell.ldap.LDAPConnection.abandon(LDAPMessageQueue,
             LDAPConstraints)</a>
      */
-    public void abandon( LDAPListener listener, LDAPConstraints cons)
+    public void abandon( LDAPMessageQueue queue, LDAPConstraints cons)
         throws LDAPException
     {
         try {
-            if( listener instanceof LDAPResponseListener) {
-              conn.abandon(((LDAPResponseListener)listener).getWrappedObject(),
+            if( queue instanceof LDAPResponseQueue) {
+              conn.abandon(((LDAPResponseQueue)queue).getWrappedObject(),
                         cons.getWrappedObject());
             } else
-            if( listener instanceof LDAPSearchListener) {
-              conn.abandon(((LDAPSearchListener)listener).getWrappedObject(),
+            if( queue instanceof LDAPSearchQueue) {
+              conn.abandon(((LDAPSearchQueue)queue).getWrappedObject(),
                         cons.getWrappedObject());
             }
         } catch( com.novell.ldap.LDAPException ex) {
@@ -855,18 +860,18 @@ public class LDAPConnection implements Cloneable
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
             #add(com.novell.ldap.LDAPEntry,
-            com.novell.ldap.LDAPResponseListener)">
+            com.novell.ldap.LDAPResponseQueue)">
             com.novell.ldap.LDAPConnection.add(LDAPEntry,
-            LDAPResponseListener)</a>
+            LDAPResponseQueue)</a>
      */
-    public LDAPResponseListener add(LDAPEntry entry,
-                                    LDAPResponseListener listener)
+    public LDAPResponseQueue add(LDAPEntry entry,
+                                 LDAPResponseQueue queue)
         throws LDAPException
     {
         try {
-            return new LDAPResponseListener(
+            return new LDAPResponseQueue(
                  conn.add( entry.getWrappedObject(),
-                           listener.getWrappedObject()));
+                           queue.getWrappedObject()));
         } catch( com.novell.ldap.LDAPException ex) {
             if( ex instanceof com.novell.ldap.LDAPReferralException) {
                 throw new LDAPReferralException(
@@ -883,20 +888,20 @@ public class LDAPConnection implements Cloneable
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
             #add(com.novell.ldap.LDAPEntry,
-            com.novell.ldap.LDAPResponseListener,
+            com.novell.ldap.LDAPResponseQueue,
             com.novell.ldap.LDAPConstraints)">
-            com.novell.ldap.LDAPConnection.add(LDAPEntry, LDAPResponseListener,
+            com.novell.ldap.LDAPConnection.add(LDAPEntry, LDAPResponseQueue,
             LDAPConstraints)</a>
      */
-    public LDAPResponseListener add(LDAPEntry entry,
-                                    LDAPResponseListener listener,
-                                    LDAPConstraints cons)
+    public LDAPResponseQueue add(LDAPEntry entry,
+                                 LDAPResponseQueue queue,
+                                 LDAPConstraints cons)
         throws LDAPException
     {
         try {
-            return new LDAPResponseListener(
+            return new LDAPResponseQueue(
                    conn.add( entry.getWrappedObject(),
-                             listener.getWrappedObject(),
+                             queue.getWrappedObject(),
                              cons.getWrappedObject()));
         } catch( com.novell.ldap.LDAPException ex) {
             if( ex instanceof com.novell.ldap.LDAPReferralException) {
@@ -914,12 +919,12 @@ public class LDAPConnection implements Cloneable
      * connected to) using the specified name, password, and LDAP version.
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #bind(int, java.lang.String, java.lang.String)">
-            com.novell.ldap.LDAPConnection.bind(int, String, String)</a>
+            #bind(int, java.lang.String, byte[])">
+            com.novell.ldap.LDAPConnection.bind(int, String, byte[])</a>
      */
     public void bind(int version,
                      String dn,
-                     String passwd)
+                     byte[] passwd)
         throws LDAPException
     {
         try {
@@ -942,14 +947,14 @@ public class LDAPConnection implements Cloneable
      * and constraints.
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #bind(int, java.lang.String, java.lang.String,
+            #bind(int, java.lang.String, byte[],
             com.novell.ldap.LDAPConstraints)">
-            com.novell.ldap.LDAPConnection.bind(int, String, String,
+            com.novell.ldap.LDAPConnection.bind(int, String, byte[],
             LDAPConstraints)</a>
      */
     public void bind(int version,
                      String dn,
-                     String passwd,
+                     byte[] passwd,
                      LDAPConstraints cons)
         throws LDAPException
     {
@@ -971,24 +976,24 @@ public class LDAPConnection implements Cloneable
      *
      * Asynchronously authenticates to the LDAP server (that the object is
      * currently connected to) using the specified name, password, LDAP
-     * version, and listener.
+     * version, and queue.
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #bind(int, java.lang.String, java.lang.String,
-            com.novell.ldap.LDAPResponseListener)">
-            com.novell.ldap.LDAPConnection.bind(int, String, String,
-            LDAPResponseListener)</a>
+            #bind(int, java.lang.String, byte[],
+            com.novell.ldap.LDAPResponseQueue)">
+            com.novell.ldap.LDAPConnection.bind(int, String, byte[],
+            LDAPResponseQueue)</a>
      */
-    public LDAPResponseListener bind(int version,
-                                     String dn,
-                                     String passwd,
-                                     LDAPResponseListener listener)
+    public LDAPResponseQueue bind(int version,
+                                  String dn,
+                                  byte[] passwd,
+                                  LDAPResponseQueue queue)
         throws LDAPException
     {
         try {
-            return new LDAPResponseListener(
+            return new LDAPResponseQueue(
                 conn.bind( version, dn, passwd,
-                           listener.getWrappedObject()));
+                           queue.getWrappedObject()));
         } catch( com.novell.ldap.LDAPException ex) {
             if( ex instanceof com.novell.ldap.LDAPReferralException) {
                 throw new LDAPReferralException(
@@ -1002,28 +1007,28 @@ public class LDAPConnection implements Cloneable
     /**
      * Asynchronously authenticates to the LDAP server (that the object is
      * currently connected to) using the specified name, password, LDAP
-     * version, listener, and constraints.
+     * version, queue, and constraints.
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #bind(int, java.lang.String, java.lang.String,
-            com.novell.ldap.LDAPResponseListener,
+            #bind(int, java.lang.String, byte[],
+            com.novell.ldap.LDAPResponseQueue,
             com.novell.ldap.LDAPConstraints)">
             com.novell.ldap.LDAPConnection.bind(int, String, String,
-            LDAPResponseListener, LDAPConstraints)</a>
+            LDAPResponseQueue, LDAPConstraints)</a>
      */
-    public LDAPResponseListener bind(int version,
-                                     String dn,
-                                     String passwd,
-                                     LDAPResponseListener listener,
-                                     LDAPConstraints cons)
+    public LDAPResponseQueue bind(int version,
+                                  String dn,
+                                  byte[] passwd,
+                                  LDAPResponseQueue queue,
+                                  LDAPConstraints cons)
         throws LDAPException
     {
         try {
-            return new LDAPResponseListener(
+            return new LDAPResponseQueue(
                  conn.bind( version,
                             dn,
                             passwd,
-                            listener.getWrappedObject(),
+                            queue.getWrappedObject(),
                             cons.getWrappedObject()));
         } catch( com.novell.ldap.LDAPException ex) {
             if( ex instanceof com.novell.ldap.LDAPReferralException) {
@@ -1041,16 +1046,18 @@ public class LDAPConnection implements Cloneable
      * mechanisms.
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #bind(java.lang.String, java.util.Hashtable, java.lang.Object)">
-            com.novell.ldap.LDAPConnection.bind(String, Hashtable, Object)</a>
+            #bind(java.lang.String, java.lang.String, java.util.Map,
+            java.lang.Object)">
+            com.novell.ldap.LDAPConnection.bind(String, String, Map, Object)</a>
      */
     public void bind(String dn,
-                     Hashtable props,
-                     /*javax.security.auth.callback.CallbackHandler*/ Object cbh)
+                     String authzid,
+                     Map props,
+                     Object cbh)/*javax.security.auth.callback.CallbackHandler*/
                      throws LDAPException
     {
         try {
-            conn.bind( dn, props, cbh);
+            conn.bind( dn, authzid, props, cbh);
         } catch( com.novell.ldap.LDAPException ex) {
             if( ex instanceof com.novell.ldap.LDAPReferralException) {
                 throw new LDAPReferralException(
@@ -1068,19 +1075,21 @@ public class LDAPConnection implements Cloneable
      * mechanisms.
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #bind(java.lang.String, java.util.Hashtable, java.lang.Object,
+            #bind(java.lang.String, java.lang.String, java.util.Map,
+            java.lang.Object,
             com.novell.ldap.LDAPConstraints)">
-            com.novell.ldap.LDAPConnection.bind(String, Hashtable, Object,
+            com.novell.ldap.LDAPConnection.bind(String, String, Map, Object,
             LDAPConstraints)</a>
      */
     public void bind(String dn,
-                     Hashtable props,
-                     /*javax.security.auth.callback.CallbackHandler*/ Object cbh,
+                     String authzid,
+                     Map props,
+                     Object cbh,/*javax.security.auth.callback.CallbackHandler*/
                      LDAPConstraints cons)
                      throws LDAPException
     {
         try {
-            conn.bind( dn, props, cbh,
+            conn.bind( dn, authzid, props, cbh,
                        cons.getWrappedObject());
         } catch( com.novell.ldap.LDAPException ex) {
             if( ex instanceof com.novell.ldap.LDAPReferralException) {
@@ -1099,20 +1108,21 @@ public class LDAPConnection implements Cloneable
      * mechanisms.
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #bind(java.lang.String, java.lang.String[], java.util.Hashtable,
-            java.lang.Object)">
-            com.novell.ldap.LDAPConnection.bind(String, String[], Hashtable,
+            #bind(java.lang.String, java.lang.String, java.lang.String[],
+            java.util.Map, java.lang.Object)">
+            com.novell.ldap.LDAPConnection.bind(String, String, String[], Map,
             Object)</a>
      */
     public void bind(String dn,
+                     String authzid,
                      String[] mechanisms,
-                     Hashtable props,
-                     /*javax.security.auth.callback.CallbackHandler*/ Object cbh)
+                     Map props,
+                     Object cbh)/*javax.security.auth.callback.CallbackHandler*/
 
                      throws LDAPException
     {
         try {
-            conn.bind( dn, mechanisms, props, cbh);
+            conn.bind( dn, authzid, mechanisms, props, cbh);
         } catch( com.novell.ldap.LDAPException ex) {
             if( ex instanceof com.novell.ldap.LDAPReferralException) {
                 throw new LDAPReferralException(
@@ -1129,20 +1139,22 @@ public class LDAPConnection implements Cloneable
      * mechanisms.
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #bind(java.lang.String, java.lang.String[], java.util.Hashtable,
-            java.lang.Object, com.novell.ldap.LDAPConstraints)">
-            com.novell.ldap.LDAPConnection.bind(String, String[], Hashtable,
+            #bind(java.lang.String, java.lang.String, java.lang.String[],
+            java.util.Map, java.lang.Object, com.novell.ldap.LDAPConstraints)">
+            com.novell.ldap.LDAPConnection.bind(String, String, String[], Map,
             Object, LDAPConstraints)</a>
      */
     public void bind(String dn,
+                     String authzid,
                      String[] mechanisms,
-                     Hashtable props,
-                     /*javax.security.auth.callback.CallbackHandler*/ Object cbh,
+                     Map props,
+                     Object cbh,/*javax.security.auth.callback.CallbackHandler*/
                      LDAPConstraints cons)
                      throws LDAPException
     {
         try {
-            conn.bind( dn, mechanisms, props, cbh, cons.getWrappedObject());
+            conn.bind( dn, authzid, mechanisms, props, cbh,
+                                                    cons.getWrappedObject());
         } catch( com.novell.ldap.LDAPException ex) {
             if( ex instanceof com.novell.ldap.LDAPReferralException) {
                 throw new LDAPReferralException(
@@ -1210,24 +1222,24 @@ public class LDAPConnection implements Cloneable
 
     /**
      * Asynchronously compares an attribute value with one in the directory,
-     * using the specified listener.
+     * using the specified queue.
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
             #compare(java.lang.String, com.novell.ldap.LDAPAttribute,
-            com.novell.ldap.LDAPResponseListener)">
+            com.novell.ldap.LDAPResponseQueue)">
             com.novell.ldap.LDAPConnection.compare(String, LDAPAttribute,
-            LDAPResponseListener)</a>
+            LDAPResponseQueue)</a>
      */
-    public LDAPResponseListener compare(String dn,
-                                        LDAPAttribute attr,
-                                        LDAPResponseListener listener)
+    public LDAPResponseQueue compare(String dn,
+                                     LDAPAttribute attr,
+                                     LDAPResponseQueue queue)
         throws LDAPException
     {
         try {
-            return new LDAPResponseListener(
+            return new LDAPResponseQueue(
              conn.compare( dn,
                            attr.getWrappedObject(),
-                           listener.getWrappedObject()));
+                           queue.getWrappedObject()));
         } catch( com.novell.ldap.LDAPException ex) {
             if( ex instanceof com.novell.ldap.LDAPReferralException) {
                 throw new LDAPReferralException(
@@ -1240,26 +1252,26 @@ public class LDAPConnection implements Cloneable
 
     /**
      * Asynchronously compares an attribute value with one in the directory,
-     * using the specified listener and contraints.
+     * using the specified queue and contraints.
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
             #compare(java.lang.String, com.novell.ldap.LDAPAttribute,
-            com.novell.ldap.LDAPResponseListener,
+            com.novell.ldap.LDAPResponseQueue,
             com.novell.ldap.LDAPConstraints)">
             com.novell.ldap.LDAPConnection.compare(String, LDAPAttribute,
-            LDAPResponseListener, LDAPConstraints)</a>
+            LDAPResponseQueue, LDAPConstraints)</a>
      */
-    public LDAPResponseListener compare(String dn,
-                                        LDAPAttribute attr,
-                                        LDAPResponseListener listener,
-                                        LDAPConstraints cons)
+    public LDAPResponseQueue compare(String dn,
+                                     LDAPAttribute attr,
+                                     LDAPResponseQueue queue,
+                                     LDAPConstraints cons)
         throws LDAPException
     {
         try {
-            return new LDAPResponseListener(
+            return new LDAPResponseQueue(
                conn.compare( dn,
                              attr.getWrappedObject(),
-                             listener.getWrappedObject(),
+                             queue.getWrappedObject(),
                              cons.getWrappedObject()));
         } catch( com.novell.ldap.LDAPException ex) {
             if( ex instanceof com.novell.ldap.LDAPReferralException) {
@@ -1342,21 +1354,21 @@ public class LDAPConnection implements Cloneable
     /**
      *
      * Asynchronously deletes the entry with the specified distinguished name
-     * from the directory and returns the results to the specified listener.
+     * from the directory and returns the results to the specified queue.
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #delete(java.lang.String, com.novell.ldap.LDAPResponseListener)">
+            #delete(java.lang.String, com.novell.ldap.LDAPResponseQueue)">
             com.novell.ldap.LDAPConnection.delete(String,
-            LDAPResponseListener)</a>
+            LDAPResponseQueue)</a>
      */
-    public LDAPResponseListener delete(String dn,
-                                       LDAPResponseListener listener)
+    public LDAPResponseQueue delete(String dn,
+                                    LDAPResponseQueue queue)
         throws LDAPException
     {
         try {
-            return new LDAPResponseListener(
+            return new LDAPResponseQueue(
               conn.delete( dn,
-                           listener.getWrappedObject()));
+                           queue.getWrappedObject()));
         } catch( com.novell.ldap.LDAPException ex) {
             if( ex instanceof com.novell.ldap.LDAPReferralException) {
                 throw new LDAPReferralException(
@@ -1369,23 +1381,23 @@ public class LDAPConnection implements Cloneable
 
     /**
      * Asynchronously deletes the entry with the specified distinguished name
-     * from the directory, using the specified contraints and listener.
+     * from the directory, using the specified contraints and queue.
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #delete(java.lang.String, com.novell.ldap.LDAPResponseListener,
+            #delete(java.lang.String, com.novell.ldap.LDAPResponseQueue,
             com.novell.ldap.LDAPConstraints)">
-            com.novell.ldap.LDAPConnection.delete(String, LDAPResponseListener,
+            com.novell.ldap.LDAPConnection.delete(String, LDAPResponseQueue,
             LDAPConstraints)</a>
      */
-    public LDAPResponseListener delete(String dn,
-                                       LDAPResponseListener listener,
-                                       LDAPConstraints cons)
+    public LDAPResponseQueue delete(String dn,
+                                    LDAPResponseQueue queue,
+                                    LDAPConstraints cons)
         throws LDAPException
     {
         try {
-            return new LDAPResponseListener(
+            return new LDAPResponseQueue(
                 conn.delete( dn,
-                             listener.getWrappedObject(),
+                             queue.getWrappedObject(),
                              cons.getWrappedObject()));
         } catch( com.novell.ldap.LDAPException ex) {
             if( ex instanceof com.novell.ldap.LDAPReferralException) {
@@ -1471,7 +1483,7 @@ public class LDAPConnection implements Cloneable
      */
 
     public LDAPExtendedResponse extendedOperation(LDAPExtendedOperation op,
-                                                   LDAPSearchConstraints cons)
+                                                  LDAPSearchConstraints cons)
         throws LDAPException
     {
         try {
@@ -1494,20 +1506,20 @@ public class LDAPConnection implements Cloneable
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
             #extendedOperation(com.novell.ldap.LDAPExtendedOperation,
-            com.novell.ldap.LDAPResponseListener)">
+            com.novell.ldap.LDAPResponseQueue)">
             com.novell.ldap.LDAPConnection.extendedOperation(
-            LDAPExtendedOperation, LDAPResponseListener)</a>
+            LDAPExtendedOperation, LDAPResponseQueue)</a>
      */
 
-    public LDAPResponseListener extendedOperation(LDAPExtendedOperation op,
-                                     LDAPResponseListener listener)
+    public LDAPResponseQueue extendedOperation(LDAPExtendedOperation op,
+                                     LDAPResponseQueue queue)
         throws LDAPException
     {
         try {
-            return new LDAPResponseListener(
+            return new LDAPResponseQueue(
                     conn.extendedOperation(
                         op.getWrappedObject(),
-                        listener.getWrappedObject()));
+                        queue.getWrappedObject()));
         } catch( com.novell.ldap.LDAPException ex) {
             if( ex instanceof com.novell.ldap.LDAPReferralException) {
                 throw new LDAPReferralException(
@@ -1525,22 +1537,22 @@ public class LDAPConnection implements Cloneable
      * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
             #extendedOperation(com.novell.ldap.LDAPExtendedOperation,
             com.novell.ldap.LDAPSearchConstraints,
-            com.novell.ldap.LDAPResponseListener)">
+            com.novell.ldap.LDAPResponseQueue)">
             com.novell.ldap.LDAPConnection.extendedOperation(
             LDAPExtendedOperation, LDAPSearchConstraints,
-            LDAPResponseListener)</a>
+            LDAPResponseQueue)</a>
      */
 
-    public LDAPResponseListener extendedOperation(LDAPExtendedOperation op,
-                                                  LDAPSearchConstraints cons,
-                                                  LDAPResponseListener listener)
+    public LDAPResponseQueue extendedOperation(LDAPExtendedOperation op,
+                                               LDAPSearchConstraints cons,
+                                               LDAPResponseQueue queue)
         throws LDAPException
     {
         try {
-            return new LDAPResponseListener(
+            return new LDAPResponseQueue(
               conn.extendedOperation( op.getWrappedObject(),
                                       cons.getWrappedSearchObject(),
-                                      listener.getWrappedObject()));
+                                      queue.getWrappedObject()));
         } catch( com.novell.ldap.LDAPException ex) {
             if( ex instanceof com.novell.ldap.LDAPReferralException) {
                 throw new LDAPReferralException(
@@ -1635,7 +1647,7 @@ public class LDAPConnection implements Cloneable
      * directory.
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #modify(java.lang.String, com.novell.ldap.LDAPModificationSet)">
+            #modify(java.lang.String, com.novell.ldap.LDAPModificationSet">
             com.novell.ldap.LDAPConnection.modify(String,
             LDAPModificationSet)</a>
      */
@@ -1693,20 +1705,20 @@ public class LDAPConnection implements Cloneable
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
             #modify(java.lang.String, com.novell.ldap.LDAPModification,
-            com.novell.ldap.LDAPResponseListener)">
+            com.novell.ldap.LDAPResponseQueue)">
             com.novell.ldap.LDAPConnection.modify(String, LDAPModification,
-            LDAPResponseListener)</a>
+            LDAPResponseQueue)</a>
      */
-    public LDAPResponseListener modify(String dn,
-                                       LDAPModification mod,
-                                       LDAPResponseListener listener)
+    public LDAPResponseQueue modify(String dn,
+                                    LDAPModification mod,
+                                    LDAPResponseQueue queue)
         throws LDAPException
     {
         try {
-            return new LDAPResponseListener(
+            return new LDAPResponseQueue(
                    conn.modify( dn,
                                 mod.getWrappedObject(),
-                                listener.getWrappedObject()));
+                                queue.getWrappedObject()));
         } catch( com.novell.ldap.LDAPException ex) {
             if( ex instanceof com.novell.ldap.LDAPReferralException) {
                 throw new LDAPReferralException(
@@ -1719,26 +1731,26 @@ public class LDAPConnection implements Cloneable
 
     /**
      * Asynchronously makes a single change to an existing entry in the
-     * directory, using the specified constraints and listener.
+     * directory, using the specified constraints and queue.
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
             #modify(java.lang.String, com.novell.ldap.LDAPModification,
-            com.novell.ldap.LDAPResponseListener,
+            com.novell.ldap.LDAPResponseQueue,
             com.novell.ldap.LDAPConstraints)">
             com.novell.ldap.LDAPConnection.modify(String, LDAPModification,
-            LDAPResponseListener. LDAPConstraints)</a>
+            LDAPResponseQueue. LDAPConstraints)</a>
      */
-    public LDAPResponseListener modify(String dn,
-                                       LDAPModification mod,
-                                       LDAPResponseListener listener,
-                                       LDAPConstraints cons)
+    public LDAPResponseQueue modify(String dn,
+                                    LDAPModification mod,
+                                    LDAPResponseQueue queue,
+                                    LDAPConstraints cons)
         throws LDAPException
     {
         try {
-            return new LDAPResponseListener(
+            return new LDAPResponseQueue(
                    conn.modify( dn,
                                 mod.getWrappedObject(),
-                                listener.getWrappedObject(),
+                                queue.getWrappedObject(),
                                 cons.getWrappedObject()));
         } catch( com.novell.ldap.LDAPException ex) {
             if( ex instanceof com.novell.ldap.LDAPReferralException) {
@@ -1756,20 +1768,20 @@ public class LDAPConnection implements Cloneable
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
             #modify(java.lang.String, com.novell.ldap.LDAPModificationSet,
-            com.novell.ldap.LDAPResponseListener)">
+            com.novell.ldap.LDAPResponseQueue)">
             com.novell.ldap.LDAPConnection.modify(String, LDAPModificationSet,
-            LDAPResponseListener)</a>
+            LDAPResponseQueue)</a>
      */
-    public LDAPResponseListener modify(String dn,
-                                       LDAPModificationSet mods,
-                                       LDAPResponseListener listener)
+    public LDAPResponseQueue modify(String dn,
+                                    LDAPModificationSet mods,
+                                    LDAPResponseQueue queue)
         throws LDAPException
     {
         try {
-            return new LDAPResponseListener(
+            return new LDAPResponseQueue(
                    conn.modify( dn,
                                 mods.getWrappedObject(),
-                                listener.getWrappedObject()));
+                                queue.getWrappedObject()));
         } catch( com.novell.ldap.LDAPException ex) {
             if( ex instanceof com.novell.ldap.LDAPReferralException) {
                 throw new LDAPReferralException(
@@ -1782,26 +1794,26 @@ public class LDAPConnection implements Cloneable
 
     /**
      * Asynchronously makes a set of changes to an existing entry in the
-     * directory, using the specified constraints and listener.
+     * directory, using the specified constraints and queue.
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
             #modify(java.lang.String, com.novell.ldap.LDAPModificationSet,
-            com.novell.ldap.LDAPResponseListener,
+            com.novell.ldap.LDAPResponseQueue,
             com.novell.ldap.LDAPConstraints)">
             com.novell.ldap.LDAPConnection.modify(String, LDAPModificationSet,
-            LDAPResponseListener, LDAPConstraints)</a>
+            LDAPResponseQueue, LDAPConstraints)</a>
      */
-    public LDAPResponseListener modify(String dn,
+    public LDAPResponseQueue modify(String dn,
                                        LDAPModificationSet mods,
-                                       LDAPResponseListener listener,
+                                       LDAPResponseQueue queue,
                                        LDAPConstraints cons)
         throws LDAPException
     {
         try {
-            return new LDAPResponseListener(
+            return new LDAPResponseQueue(
                    conn.modify( dn,
                                 mods.getWrappedObject(),
-                                listener.getWrappedObject(),
+                                queue.getWrappedObject(),
                                 cons.getWrappedObject()));
         } catch( com.novell.ldap.LDAPException ex) {
             if( ex instanceof com.novell.ldap.LDAPReferralException) {
@@ -2092,22 +2104,22 @@ public class LDAPConnection implements Cloneable
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
             #rename(java.lang.String, java.lang.String, boolean,
-            com.novell.ldap.LDAPResponseListener)">
+            com.novell.ldap.LDAPResponseQueue)">
             com.novell.ldap.LDAPConnection.rename(String, String, boolean,
-            LDAPResponseListener)</a>
+            LDAPResponseQueue)</a>
      */
-    public LDAPResponseListener rename(String dn,
-                                       String newRdn,
-                                       boolean deleteOldRdn,
-                                       LDAPResponseListener listener)
+    public LDAPResponseQueue rename(String dn,
+                                    String newRdn,
+                                    boolean deleteOldRdn,
+                                    LDAPResponseQueue queue)
         throws LDAPException
     {
         try {
-            return new LDAPResponseListener(
+            return new LDAPResponseQueue(
                    conn.rename( dn,
                                 newRdn,
                                 deleteOldRdn,
-                                listener.getWrappedObject()));
+                                queue.getWrappedObject()));
         } catch( com.novell.ldap.LDAPException ex) {
             if( ex instanceof com.novell.ldap.LDAPReferralException) {
                 throw new LDAPReferralException(
@@ -2124,24 +2136,24 @@ public class LDAPConnection implements Cloneable
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
             #rename(java.lang.String, java.lang.String, boolean,
-            com.novell.ldap.LDAPResponseListener,
+            com.novell.ldap.LDAPResponseQueue,
             com.novell.ldap.LDAPConstraints)">
             com.novell.ldap.LDAPConnection.rename(String, String, boolean,
-            LDAPResponseListener, LDAPConstraints)</a>
+            LDAPResponseQueue, LDAPConstraints)</a>
      */
-    public LDAPResponseListener rename(String dn,
-                                       String newRdn,
-                                       boolean deleteOldRdn,
-                                       LDAPResponseListener listener,
-                                       LDAPConstraints cons)
+    public LDAPResponseQueue rename(String dn,
+                                    String newRdn,
+                                    boolean deleteOldRdn,
+                                    LDAPResponseQueue queue,
+                                    LDAPConstraints cons)
         throws LDAPException
     {
         try {
-            return new LDAPResponseListener(
+            return new LDAPResponseQueue(
                    conn.rename( dn,
                                 newRdn,
                                 deleteOldRdn,
-                                listener.getWrappedObject(),
+                                queue.getWrappedObject(),
                                 cons.getWrappedObject()));
         } catch( com.novell.ldap.LDAPException ex) {
             if( ex instanceof com.novell.ldap.LDAPReferralException) {
@@ -2159,24 +2171,24 @@ public class LDAPConnection implements Cloneable
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
             #rename(java.lang.String, java.lang.String, java.lang.String,
-            boolean, com.novell.ldap.LDAPResponseListener)">
+            boolean, com.novell.ldap.LDAPResponseQueue)">
             com.novell.ldap.LDAPConnection.rename(String, String, String,
-            boolean, LDAPResponseListener)</a>
+            boolean, LDAPResponseQueue)</a>
      */
-    public LDAPResponseListener rename(String dn,
-                                       String newRdn,
-                                       String newParentdn,
-                                       boolean deleteOldRdn,
-                                       LDAPResponseListener listener)
+    public LDAPResponseQueue rename(String dn,
+                                    String newRdn,
+                                    String newParentdn,
+                                    boolean deleteOldRdn,
+                                    LDAPResponseQueue queue)
         throws LDAPException
     {
         try {
-            return new LDAPResponseListener(
+            return new LDAPResponseQueue(
                    conn.rename( dn,
                                 newRdn,
                                 newParentdn,
                                 deleteOldRdn,
-                                listener.getWrappedObject()));
+                                queue.getWrappedObject()));
         } catch( com.novell.ldap.LDAPException ex) {
             if( ex instanceof com.novell.ldap.LDAPReferralException) {
                 throw new LDAPReferralException(
@@ -2194,26 +2206,26 @@ public class LDAPConnection implements Cloneable
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
             #rename(java.lang.String, java.lang.String, java.lang.String,
-            boolean, com.novell.ldap.LDAPResponseListener,
+            boolean, com.novell.ldap.LDAPResponseQueue,
             com.novell.ldap.LDAPConstraints)">
             com.novell.ldap.LDAPConnection.rename(String, String, String,
-            boolean, LDAPResponseListener, LDAPConstraints)</a>
+            boolean, LDAPResponseQueue, LDAPConstraints)</a>
      */
-    public LDAPResponseListener rename(String dn,
-                                       String newRdn,
-                                       String newParentdn,
-                                       boolean deleteOldRdn,
-                                       LDAPResponseListener listener,
-                                       LDAPConstraints cons)
+    public LDAPResponseQueue rename(String dn,
+                                    String newRdn,
+                                    String newParentdn,
+                                    boolean deleteOldRdn,
+                                    LDAPResponseQueue queue,
+                                    LDAPConstraints cons)
         throws LDAPException
     {
         try {
-            return new LDAPResponseListener(
+            return new LDAPResponseQueue(
                    conn.rename( dn,
                                 newRdn,
                                 newParentdn,
                                 deleteOldRdn,
-                                listener.getWrappedObject(),
+                                queue.getWrappedObject(),
                                 cons.getWrappedObject()));
         } catch( com.novell.ldap.LDAPException ex) {
             if( ex instanceof com.novell.ldap.LDAPReferralException) {
@@ -2300,26 +2312,26 @@ public class LDAPConnection implements Cloneable
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
             #search(java.lang.String, int, java.lang.String,
-            java.lang.String[], boolean, com.novell.ldap.LDAPSearchListener)">
+            java.lang.String[], boolean, com.novell.ldap.LDAPSearchQueue)">
             com.novell.ldap.LDAPConnection.search(String, int, String,
-            String[], boolean, LDAPSearchListener)</a>
+            String[], boolean, LDAPSearchQueue)</a>
      */
-    public LDAPSearchListener search(String base,
-                                     int scope,
-                                     String filter,
-                                     String[] attrs,
-                                     boolean typesOnly,
-                                     LDAPSearchListener listener)
+    public LDAPSearchQueue search(String base,
+                                  int scope,
+                                  String filter,
+                                  String[] attrs,
+                                  boolean typesOnly,
+                                  LDAPSearchQueue queue)
         throws LDAPException
     {
         try {
-            return new LDAPSearchListener(
+            return new LDAPSearchQueue(
                             conn.search( base,
                                          scope,
                                          filter,
                                          attrs,
                                          typesOnly,
-                                         listener.getWrappedObject()));
+                                         queue.getWrappedObject()));
         } catch( com.novell.ldap.LDAPException ex) {
             if( ex instanceof com.novell.ldap.LDAPReferralException) {
                 throw new LDAPReferralException(
@@ -2336,28 +2348,28 @@ public class LDAPConnection implements Cloneable
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
             #search(java.lang.String, int, java.lang.String,
-            java.lang.String[], boolean, com.novell.ldap.LDAPSearchListener,
+            java.lang.String[], boolean, com.novell.ldap.LDAPSearchQueue,
             com.novell.ldap.LDAPSearchConstraints)">
             com.novell.ldap.LDAPConnection.search(String, int, String,
-            String[], boolean, LDAPSearchListener, LDAPSearchConstraints)</a>
+            String[], boolean, LDAPSearchQueue, LDAPSearchConstraints)</a>
      */
-    public LDAPSearchListener search(String base,
-                                     int scope,
-                                     String filter,
-                                     String[] attrs,
-                                     boolean typesOnly,
-                                     LDAPSearchListener listener,
-                                     LDAPSearchConstraints cons)
+    public LDAPSearchQueue search(String base,
+                                  int scope,
+                                  String filter,
+                                  String[] attrs,
+                                  boolean typesOnly,
+                                  LDAPSearchQueue queue,
+                                  LDAPSearchConstraints cons)
         throws LDAPException
     {
         try {
-            return new LDAPSearchListener(
+            return new LDAPSearchQueue(
                             conn.search( base,
                                          scope,
                                          filter,
                                          attrs,
                                          typesOnly,
-                                         listener.getWrappedObject(),
+                                         queue.getWrappedObject(),
                                          cons.getWrappedSearchObject()));
         } catch( com.novell.ldap.LDAPException ex) {
             if( ex instanceof com.novell.ldap.LDAPReferralException) {

@@ -81,7 +81,7 @@ public class LDAPConstraints
 
     /**
      * Constructs a new LDAPConstraints object, using the specified
-     * operational constraints for waiting, referrals, LDAPBind
+     * operational constraints for waiting, referrals, LDAPBindHandler
      * object, and hop limit.
      *
      * @see com.novell.ldap.LDAPConstraints#LDAPConstraints(
@@ -93,9 +93,9 @@ public class LDAPConstraints
             LDAPReferralHandler, int)</a>
      */
     public LDAPConstraints(int msLimit,
-                      boolean doReferrals,
-                      LDAPReferralHandler binder,
-                      int hop_limit)
+                           boolean doReferrals,
+                           LDAPReferralHandler handler,
+                           int hop_limit)
     {
         // Set defaults for search parameters
         this.cons = new com.novell.ldap.LDAPSearchConstraints();
@@ -103,18 +103,18 @@ public class LDAPConstraints
         this.cons.setTimeLimit( msLimit);
         this.cons.setReferralFollowing( doReferrals);
         this.cons.setHopLimit( hop_limit);
-        setReferralHandler( binder);
+        setReferralHandler( handler);
         return;
     }
 
     /**
-     * Wrapper object for LDAPBind LDAPReferralHandler
+     * Wrapper object for LDAPBindHandler LDAPReferralHandler
      */
-    private class BindImpl implements com.novell.ldap.LDAPBind
+    private class BindHandlerImpl implements com.novell.ldap.LDAPBindHandler
     {
-        LDAPBind ref;
+        LDAPBindHandler ref;
 
-        private BindImpl( LDAPBind ref)
+        private BindHandlerImpl( LDAPBindHandler ref)
         {
             this.ref = ref;
             return;
@@ -143,26 +143,26 @@ public class LDAPConstraints
     }
 
     /**
-     * Wrapper object for LDAPReBind LDAPReferralHandler
+     * Wrapper object for LDAPAuthHandler LDAPReferralHandler
      */
-    private class RebindImpl implements com.novell.ldap.LDAPRebind
+    private class AuthHandlerImpl implements com.novell.ldap.LDAPAuthHandler
     {
-        LDAPRebind ref;
+        LDAPAuthHandler ref;
 
-        private RebindImpl( LDAPRebind ref)
+        private AuthHandlerImpl( LDAPAuthHandler ref)
         {
             this.ref = ref;
             return;
         }
 
-        public com.novell.ldap.LDAPRebindAuth getRebindAuthentication(
+        public com.novell.ldap.LDAPAuthProvider getAuthProvider(
                                                         String host,
                                                         int port)
         {
-            LDAPRebindAuth auth;
-            auth =  ref.getRebindAuthentication(host,port);
+            LDAPAuthProvider auth;
+            auth = ref.getAuthProvider(host,port);
             if( auth == null) {
-                return (com.novell.ldap.LDAPRebindAuth)null;
+                return (com.novell.ldap.LDAPAuthProvider)null;
             }
             return auth.getWrappedObject();
         }
@@ -188,6 +188,19 @@ public class LDAPConstraints
     public int getHopLimit()
     {
         return cons.getHopLimit();
+    }
+
+    /**
+     * Returns a properties constraints objects which has been assigned with
+     * set property.
+     *
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPConstraints.html
+            #getProperty(java.lang.String)">
+            com.novell.ldap.LDAPConstraints.getProperty(String)</a>
+     */
+    public Object getProperty(String name)
+    {
+        return cons.getProperty(name);
     }
 
     /**
@@ -237,22 +250,22 @@ public class LDAPConstraints
             com.novell.ldap.LDAPConstraints.setReferralHandler(
             LDAPReferralHandler)</a>
      */
-    public void setReferralHandler(LDAPReferralHandler binder)
+    public void setReferralHandler(LDAPReferralHandler handler)
     {
-        if( binder == null) {
+        if( handler == null) {
             cons.setReferralHandler((com.novell.ldap.LDAPReferralHandler)null);
             refHandler = null;
         } else
-        if( binder instanceof LDAPBind) {
-            refHandler = new BindImpl( (LDAPBind)binder);
+        if( handler instanceof LDAPBindHandler) {
+            refHandler = new BindHandlerImpl( (LDAPBindHandler)handler);
             cons.setReferralHandler( refHandler);
         } else
-        if( binder instanceof LDAPRebind) {
-            refHandler = new RebindImpl( (LDAPRebind)binder);
+        if( handler instanceof LDAPAuthHandler) {
+            refHandler = new AuthHandlerImpl( (LDAPAuthHandler)handler);
             cons.setReferralHandler( refHandler);
         } else {
             throw new IllegalArgumentException(
-                "LDAPReferralHandler must be either LDAPBind or LDAPRebind");
+                "LDAPReferralHandler object must be either LDAPAuthHandler or LDAPBindHandler");
         }
         return;
     }
@@ -265,6 +278,7 @@ public class LDAPConstraints
     {
         return refHandler;
     }
+    
     /**
      * Specifies whether referrals are followed automatically or whether
      * referrals throw an LDAPReferralException.
@@ -294,15 +308,15 @@ public class LDAPConstraints
     }
 
     /**
-     * Returns the client controls to be used by the interface.
+     * Returns the controls to be sent to the server.
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPConstraints.html
-            #getClientControla()">
-            com.novell.ldap.LDAPConstraints.getClientControla()</a>
+            #getControls()">
+            com.novell.ldap.LDAPConstraints.getControls()</a>
      */
-    public LDAPControl[] getClientControls()
+    public LDAPControl[] getControls()
     {
-        com.novell.ldap.LDAPControl[] controls = cons.getClientControls();
+        com.novell.ldap.LDAPControl[] controls = cons.getControls();
         if( controls == null) {
             return null;
         }
@@ -316,76 +330,46 @@ public class LDAPConstraints
     }
 
     /**
-     * Returns the server controls to be sent to the server.
+     * Sets a control to be sent to the server.
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPConstraints.html
-            #getServerControls()">
-            com.novell.ldap.LDAPConstraints.getServerControls()</a>
+            #setControls(com.novell.ldap.LDAPControl)">
+            com.novell.ldap.LDAPConstraints.setControls(LDAPControl)</a>
      */
-    public LDAPControl[] getServerControls()
+    public void setControls(LDAPControl control)
     {
-        com.novell.ldap.LDAPControl[] controls = cons.getServerControls();
-        if( controls == null) {
-            return null;
+        cons.setControls( control);
+        return;
+    }
+
+    /**
+     * Sets an array of controls to be sent to the server.
+     *
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPConstraints.html
+            #setControls(com.novell.ldap.LDAPControl[])">
+            com.novell.ldap.LDAPConstraints.setControls(LDAPControl[])</a>
+     */
+    public void setControls(LDAPControl[] controls)
+    {
+        cons.setControls( controls);
+        return;
+    }
+
+    /**
+     * Sets a property of the constraints object.
+     *
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPConstraints.html
+            #setProperty(java.lang.String, java.lang.Object)">
+            com.novell.ldap.LDAPConstraints.setProperty(String, Object)</a>
+     */
+    public void setProperty( String name, Object value)
+                throws LDAPException
+    {
+        try {
+            cons.setProperty( name, value);
+        } catch( com.novell.ldap.LDAPException rex) {
+            throw new LDAPException( rex);
         }
-
-        LDAPControl[] ietfControls = new LDAPControl[controls.length];
-
-        for( int i=0; i < controls.length; i++) {
-            ietfControls[i] = new LDAPControl( controls[i]);
-        }
-        return ietfControls;
-    }
-
-    /**
-     * Sets a client control for use by the interface.
-     *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConstraints.html
-            #setServerControls(com.novell.ldap.LDAPControl)">
-            com.novell.ldap.LDAPConstraints.setServerControls(LDAPControl)</a>
-     */
-    public void setClientControls(LDAPControl control)
-    {
-        cons.setClientControls( control);
-        return;
-    }
-
-    /**
-     * Sets an array of client controls for use by the interface.
-     *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConstraints.html
-            #setClientControls(com.novell.ldap.LDAPControl[])">
-            com.novell.ldap.LDAPConstraints.setClientControls(LDAPControl[])</a>
-     */
-    public void setClientControls(LDAPControl[] controls)
-    {
-        cons.setClientControls( controls);
-        return;
-    }
-
-    /**
-     * Sets a server control to be sent to the server.
-     *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConstraints.html
-            #setServerControls(com.novell.ldap.LDAPControl)">
-            com.novell.ldap.LDAPConstraints.setServerControls(LDAPControl)</a>
-     */
-    public void setServerControls(LDAPControl control)
-    {
-        cons.setServerControls( control);
-        return;
-    }
-
-    /**
-     * Sets an array of server controls to be sent to the server.
-     *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConstraints.html
-            #setServerControls(com.novell.ldap.LDAPControl[])">
-            com.novell.ldap.LDAPConstraints.setServerControls(LDAPControl[])</a>
-     */
-    public void setServerControls(LDAPControl[] controls)
-    {
-        cons.setServerControls( controls);
         return;
     }
 }

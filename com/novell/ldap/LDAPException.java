@@ -598,6 +598,7 @@ public class LDAPException extends Exception
    * <p>PARAM_ERROR = 89</p>
    *
    * @deprecated No longer used - invalid parameters generate a RuntimeException
+   * This parameter will be removed in fall of 2003.
    */
    public final static int PARAM_ERROR = 89;
 
