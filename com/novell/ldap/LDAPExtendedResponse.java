@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPExtendedResponse.java,v 1.11 2000/08/21 18:35:41 vtag Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPExtendedResponse.java,v 1.12 2000/08/28 22:18:56 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -22,22 +22,26 @@ import com.novell.asn1.ldap.*;
 //import com.novell.ldap.client.protocol.lber.*;
 
 
-/**
+/*
  * 4.2 public class LDAPExtendedResponse extends LDAPResponse
+ */
+ 
+/**
  *
- *  An LDAPExtendedResponse object encapsulates a server response to an
- *  extended operation request.
+ *  Encapsulates a server response to an extended operation request.
+ *  
+ *  The repsonse can contain the OID of the extension, an octet string
+ *  with the operation's data, both, or neither.
  *
- *  Extended Response ::= [APPLICATION 24] SEQUENCE {
- *      COMPONENTS OF LDAPResult,
- *      reponseName [10]    LDAPOID OPTIONAL
- *      response    [11]    OCTET STRING OPTIONAL }
  */
 public class LDAPExtendedResponse extends LDAPResponse {
 
 	 /**
-	  * Creates a Java-API LDAPExtendedResponse (which is an Java-API
-	  * LDAPMessage) when receiving an RFC 2251 LDAPMessage from a server.
+	  * Creates a Java-API LDAPExtendedResponse (which is a Java-API
+	  * LDAPMessage) when receiving an LDAPMessage from a server.
+      *
+      * @param message  The LDAPMessage to convert to a Java-API
+      *                 LDAPExtendedResponse
 	  */
 	 public LDAPExtendedResponse(com.novell.asn1.ldap.LDAPMessage message)
 	 {
@@ -65,6 +69,8 @@ public class LDAPExtendedResponse extends LDAPResponse {
 
    /**
     * Returns the OID of the response.
+    *
+    * @return OID of the response.
     */
    public String getID() {
 		return ((ExtendedResponse)message.getProtocolOp()).getResponseName().getString();
@@ -76,6 +82,8 @@ public class LDAPExtendedResponse extends LDAPResponse {
 
    /**
     * Returns the raw bytes of the value part of the response.
+    *
+    * @return The value of the response.
     */
    public byte[] getValue() {
 		return ((ExtendedResponse)message.getProtocolOp()).getResponse().getContent();

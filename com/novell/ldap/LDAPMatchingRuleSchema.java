@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPMatchingRuleSchema.java,v 1.3 2000/08/03 22:06:16 smerrill Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPMatchingRuleSchema.java,v 1.4 2000/08/28 22:18:56 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -15,14 +15,16 @@
  
 package com.novell.ldap;
  
-/**
+/*
  * 4.14 public class LDAPMatchingRuleSchema
  *                 extends LDAPSchemaElement
+ */
+ 
+/**
  *
- *  The LDAPMatchingRuleSchema class represents the definition of a
- *  matching rule. It is used to query matching rule syntax, and to add
- *  or delete a matching rule definition in a Directory. See [2] for a
- *  description of matching rule representation in LDAP.
+ *  Represents the definition of a matching rule. It is used to query
+ *  matching rule syntax, and to add or delete a matching rule definition 
+ *  in a directory. 
  */
 public class LDAPMatchingRuleSchema extends LDAPSchemaElement {
 
@@ -32,23 +34,21 @@ public class LDAPMatchingRuleSchema extends LDAPSchemaElement {
 
    /**
     * Constructs a matching rule definition for adding to or deleting from
-    * a Directory.
+    * a directory.
     *
-    * Parameters are:
-    *
-    *  name               Name of the attribute.
-    *
-    *  oid                Unique Object Identifer of the attribute - in
+    *  @param name        Name of the attribute.
+    *<br><br>
+    *  @param oid         Unique object identifer of the attribute, in
     *                     dotted numerical format.
-    *
-    *  description        Optional description of the attribute.
-    *
-    *  attributes         OIDs of attributes to which the rule applies.
-    *
-    *  syntaxString       Unique Object Identifer of the syntax of the
-    *                     attribute - in dotted numerical format.
-    *
-    *  aliases            Optional list of additional names by which the
+    *<br><br>
+    *  @param description    Optional description of the attribute.
+    *<br><br>
+    *  @param attributes     OIDs of attributes to which the rule applies.
+    *<br><br>
+    *  @param syntaxString   Unique object identifer of the syntax of the
+    *                        attribute, in dotted numerical format.
+    *<br><br>
+    *  @param aliases     Optional list of additional names by which the
     *                     matching rule may be known; null if there are
     *                     no aliases.
     */
@@ -62,19 +62,16 @@ public class LDAPMatchingRuleSchema extends LDAPSchemaElement {
 
 
    /**
-    * Constructs a matching rule definition from the raw String values
-    * returned on a Directory query for "matchingRule" and for
+    * Constructs a matching rule definition from the raw string values
+    * returned on a directory query for "matchingRule" and for
     * "matchingRuleUse" for the same rule.
     *
-    * Parameters are:
-    *
-    *  rawMatchingRule    The raw String value returned on a Directory
-    *                     query for "matchingRule".
-    *
-    *
-    *  rawMatchingRuleUse The raw String value returned on a Directory
-    *                     query for "matchingRuleUse".
-    */
+    *  @param rawMatchingRule    The raw string value returned on a directory
+    *                            query for "matchingRule".
+    *<br><br>
+    *  @param rawMatchingRuleUse  The raw string value returned on a directory
+    *                             query for "matchingRuleUse".
+    */ 
    public LDAPMatchingRuleSchema(String rawMatchingRule,
                                  String rawMatchingRuleUse) {
    }
@@ -85,6 +82,8 @@ public class LDAPMatchingRuleSchema extends LDAPSchemaElement {
 
    /**
     * Returns the OIDs of the attributes to which this rule applies.
+    *
+    *@return The OIDs of the attributes to which this matching rule applies.
     */
    public String[] getAttributes() {
       return null;

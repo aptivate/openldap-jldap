@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPModification.java,v 1.3 2000/08/03 22:06:16 smerrill Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPModification.java,v 1.4 2000/08/28 22:18:57 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -15,11 +15,14 @@
  
 package com.novell.ldap;
  
-/**
+/*
  * 4.15 public class LDAPModification
+ */
+ 
+/**
  *
- *  A single change specification for an LDAPAttribute.
- * see sec 4.6 of RFC 2251
+ *  Represents a change specification for a single attribute.
+ * 
  */
 public class LDAPModification {
 
@@ -27,25 +30,27 @@ public class LDAPModification {
    private LDAPAttribute _attr;
 
    /**
-    * Add values listed to the given attribute, creating
-    * the attribute if necessary;
+    * Adds the listed values to the given attribute, creating
+    * the attribute if necessary.
     */
    public static final int ADD = 0;
 
    /**
-    * Delete values listed from the given attribute,
-    * removing the entire attribute if no values are listed, or
-    * if all current values of the attribute are listed for
-    * deletion;
+    * Deletes the listed values from the given attribute,
+    * removing the entire attribute (1)if no values are listed or
+    * (2)if all current values of the attribute are listed for
+    * deletion.
     */
    public static final int DELETE = 1;
 
    /**
-    * Replace all existing values of the given attribute
+    * Replaces all existing values of the given attribute
     * with the new values listed, creating the attribute if it
-    * did not already exist.  A replace with no value will delete
-    * the entire attribute if it exists, and is ignored if the
-    * attribute does not exist.
+    * did not already exist. 
+    *
+    * <p> A replace with no value deletes the entire attribute if it 
+    *  exists, and is ignored if the attribute does not exist. </p>
+    * 
     */
    public static final int REPLACE = 2;
 
@@ -56,23 +61,21 @@ public class LDAPModification {
    /**
     * Specifies a modification to be made to an attribute.
     *
-    * Parameters are:
-    *
-    *  op             The type of modification to make, which can be
+    *  @param op       The type of modification to make, which can be
     *                  one of the following:
+    *<ul>
+    *         <li>LDAPModification.ADD - The value should be added to
+    *                                    the attribute</li>
     *
-    *           LDAPModification.ADD     The value should be added to
-    *                                    the attribute
+    *         <li>LDAPModification.DELETE - The value should be removed
+    *                                       from the attribute </li>
     *
-    *           LDAPModification.DELETE  The value should be removed
-    *                                    from the attribute
-    *
-    *           LDAPModification.REPLACE The value should replace all
-    *                                    existing values of the
-    *                                    attribute
-    *
-    *  attr           The attribute (possibly with values) to be
-    *                  modified.
+    *         <li>LDAPModification.REPLACE - The value should replace all
+    *                                        existing values of the
+    *                                        attribute </li>
+    *</ul><br><br>
+    *  @param attr     The attribute to modify.
+    *                  
     */
    public LDAPModification(int op, LDAPAttribute attr) {
       _op = op;
@@ -84,7 +87,9 @@ public class LDAPModification {
     */
 
    /**
-    * Returns the attribute (possibly with values) to be modified.
+    * Returns the attribute (possibly with values) to modify.
+    *
+    * @return The attribute to modify.
     */
    public LDAPAttribute getAttribute() {
       return _attr;
@@ -96,6 +101,8 @@ public class LDAPModification {
 
    /**
     * Returns the type of modification specified by this object.
+    *
+    * @return The type of modification specified by this object.
     */
    public int getOp() {
       return _op;

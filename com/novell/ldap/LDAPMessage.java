@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPMessage.java,v 1.7 2000/08/22 01:47:26 smerrill Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPMessage.java,v 1.8 2000/08/28 22:18:57 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -19,35 +19,117 @@ package com.novell.ldap;
 import com.novell.asn1.ldap.*;
 
 /**
- *  Base class for LDAP request and response messages.
+ *  Base class for asynchronous LDAP request and response messages.
  */
 public class LDAPMessage {
 
 	protected com.novell.asn1.ldap.LDAPMessage message;
 
+  /**
+   * A bind request operation.
+   */
    public final static int BIND_REQUEST            = 0;
+   
+  /**
+   * A bind response operation.
+   */
    public final static int BIND_RESPONSE           = 1;
+   
+  /**
+   * An unbind request operation.
+   */
    public final static int UNBIND_REQUEST          = 2;
+   
+  /**
+   * A search request operation.
+   */
    public final static int SEARCH_REQUEST          = 3;
+   
+  /**
+   * A search response operation.
+   */
    public final static int SEARCH_RESPONSE         = 4;
+   
+  /**
+   * A search result message operation.
+   */
    public final static int SEARCH_RESULT           = 5;
+   
+  /**
+   * A modify request operation.
+   */
    public final static int MODIFY_REQUEST          = 6;
+   
+  /**
+   * A modify response operation.
+   */
    public final static int MODIFY_RESPONSE         = 7;
+   
+  /**
+   * An add request operation.
+   */
    public final static int ADD_REQUEST             = 8;
+   
+  /**
+   * An add response operation.
+   */
    public final static int ADD_RESPONSE            = 9;
+   
+  /**
+   * A delete request operation.
+   */
    public final static int DEL_REQUEST             = 10;
+   
+  /**
+   * A delete response operation.
+   */
    public final static int DEL_RESPONSE            = 11;
+   
+  /**
+   * A modify RDN request operation.
+   */
    public final static int MODIFY_RDN_REQUEST      = 12;
+   
+  /**
+   * A modify RDN response operation.
+   */
    public final static int MODIFY_RDN_RESPONSE     = 13;
+   
+  /**
+   * A compare result operation.
+   */
    public final static int COMPARE_REQUEST         = 14;
+   
+  /**
+   * A compare response operation.
+   */
    public final static int COMPARE_RESPONSE        = 15;
+   
+  /**
+   * An abandon request operation.
+   */
    public final static int ABANDON_REQUEST         = 16;
+   
+   
+  /**
+   * A search result reference operation.
+   */
    public final static int SEARCH_RESULT_REFERENCE = 19;
+   
+  /**
+   * An extended request operation.
+   */
    public final static int EXTENDED_REQUEST        = 23;
+   
+  /**
+   * An extended response operation.
+   */
    public final static int EXTENDED_RESPONSE       = 24;
 
 	/**
-	 * Creates an LDAPMessage when sending a Protocol Operation.
+	 * Creates an LDAPMessage when sending a protocol operation.
+     *
+     * @param op The operation type of message.
 	 */
 	public LDAPMessage(Request op)
 	{
@@ -55,8 +137,12 @@ public class LDAPMessage {
 	}
 
 	/**
-	 * Creates an LDAPMessage when sending a Protocol Operation along with
-	 * some optional controls.
+	 * Creates an LDAPMessage when sending a protocol operation and sends
+	 * some optional controls with the message.
+     *
+     * @param op The operation type of message.
+     *<br><br>
+     * @param controls The controls to use with the operation.
 	 */
 	public LDAPMessage(Request op, LDAPControl[] controls)
 	{
@@ -77,6 +163,8 @@ public class LDAPMessage {
 	/**
 	 * Creates an LDAPMessage when receiving an RFC 2251 LDAPMessage from a
 	 * server.
+     *
+     * @param message An RFC 2251 LDAPMessage
 	 */
 	public LDAPMessage(com.novell.asn1.ldap.LDAPMessage message)
 	{
@@ -123,29 +211,33 @@ public class LDAPMessage {
    }
 
    /**
-    * Returns the LDAP operation type of the message. The type is one of
-    * the following:
-    * 
-    *   BIND_REQUEST            = 0;
-    *   BIND_RESPONSE           = 1;
-    *   UNBIND_REQUEST          = 2;
-    *   SEARCH_REQUEST          = 3;
-    *   SEARCH_RESPONSE         = 4;
-    *   SEARCH_RESULT           = 5;
-    *   MODIFY_REQUEST          = 6;
-    *   MODIFY_RESPONSE         = 7;
-    *   ADD_REQUEST             = 8;
-    *   ADD_RESPONSE            = 9;
-    *   DEL_REQUEST             = 10;
-    *   DEL_RESPONSE            = 11;
-    *   MODIFY_RDN_REQUEST      = 12;
-    *   MODIFY_RDN_RESPONSE     = 13;
-    *   COMPARE_REQUEST         = 14;
-    *   COMPARE_RESPONSE        = 15;
-    *   ABANDON_REQUEST         = 16;
-    *   SEARCH_RESULT_REFERENCE = 19;
-    *   EXTENDED_REQUEST        = 23;
-    *   EXTENDED_RESPONSE       = 24;
+    * Returns the LDAP operation type of the message. 
+    *
+    * <p>The type is one of the following:</p>
+    * <ul>
+    *   <li>BIND_REQUEST            = 0;</li>
+    *   <li>BIND_RESPONSE           = 1;</li>
+    *   <li>UNBIND_REQUEST          = 2;</li>
+    *   <li>SEARCH_REQUEST          = 3;</li>
+    *   <li>SEARCH_RESPONSE         = 4;</li>
+    *   <li>SEARCH_RESULT           = 5;</li>
+    *   <li>MODIFY_REQUEST          = 6;</li>
+    *   <li>MODIFY_RESPONSE         = 7;</li>
+    *   <li>ADD_REQUEST             = 8;</li>
+    *   <li>ADD_RESPONSE            = 9;</li>
+    *   <li>DEL_REQUEST             = 10;</li>
+    *   <li>DEL_RESPONSE            = 11;</li>
+    *   <li>MODIFY_RDN_REQUEST      = 12;</li>
+    *   <li>MODIFY_RDN_RESPONSE     = 13;</li>
+    *   <li>COMPARE_REQUEST         = 14;</li>
+    *   <li>COMPARE_RESPONSE        = 15;</li>
+    *   <li>ABANDON_REQUEST         = 16;</li>
+    *   <li>SEARCH_RESULT_REFERENCE = 19;</li>
+    *   <li>EXTENDED_REQUEST        = 23;</li>
+    *   <li>EXTENDED_RESPONSE       = 24;</li>
+    * </ul>
+    *
+    *@return The operation type of the message.
     */
    public int getType()
 	{

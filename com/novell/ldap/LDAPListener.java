@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPListener.java,v 1.7 2000/08/21 18:35:42 vtag Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPListener.java,v 1.8 2000/08/28 22:18:56 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -22,21 +22,39 @@ import com.novell.asn1.ldap.*;
 import com.novell.ldap.client.*;
 //import com.novell.ldap.client.protocol.AbandonRequest;
 
-/**
+/*
  * Not in the draft.
+ */
+ 
+/**
  *
  * Represents the message queue associated with a particular LDAP
  * operation or operations.
  */
 public abstract class LDAPListener implements TimerListener {
-
+    
+   /**
+    * Manages the listener's connection to the server.
+    */
 	protected Connection conn;
+
+   /**
+    * Specifies the associated message queue for the listener.
+    */
 	protected LDAPMessageQueue queue;
+
+   /**
+    * Specifies the associated vector for the listener's exceptions.
+    */
 	protected Vector exceptions;
 
    /**
-    * Returns the message IDs for all outstanding requests. The last ID in
-    * the array is the messageID of the latest submitted request.
+    * Returns the message IDs for all outstanding requests. 
+    *
+    * <p>The last ID in the array is the messageID of the 
+    * latest submitted request.</p>
+    *
+    * @return The message IDs for all outstanding requests.
     */
    public int[] getMessageIDs()
 	{
@@ -45,7 +63,13 @@ public abstract class LDAPListener implements TimerListener {
 
 	/**
 	 * Returns a boolean value indicating whether or not the specified
-	 * message id exists in the message id list.
+	 * message ID exists in the message ID list.
+     *
+     * @param msgId The message ID to check.
+     *
+     * @return True if the message ID exists in the list; false if the 
+     *         message ID is not in the list.
+     *         
 	 */
 	protected boolean messageIDExists(int msgId)
 	{
@@ -53,7 +77,9 @@ public abstract class LDAPListener implements TimerListener {
 	}
 
    /**
-    * Reports true if a response has been received from the server.
+    * Reports whether a response has been received from the server.
+    *
+    * @return True if a response has been received from the server. 
     */
    public boolean isResponseReceived()
 	{
@@ -61,7 +87,9 @@ public abstract class LDAPListener implements TimerListener {
    }
 
 	/**
-	 *
+	 * Removes the specified response from the queue.
+     *
+     * @param msgId  The message to remove.
 	 */
 	public void removeResponses(int msgId)
 	{
@@ -69,16 +97,24 @@ public abstract class LDAPListener implements TimerListener {
 	}
 
    /**
-    * Merges two response listeners. Moves/appends the content from another
+    * Merges two response listeners by moving the contents from another
     * listener to this one.
+    *
+    * @param listener2 The listener that receives the contents from the
+    *                  other listener.
     */
    public void merge(LDAPResponseListener listener2)
 	{
    }
 
 	/**
-	 * Will write the message and start the timer (if any) for the client
-	 * side timeout.
+	 * Writes the message and starts the timer (if any) for the 
+	 * client-side timeout.
+     *
+     * @param msg The message to write.
+     * <br><br>
+     * @param msLimit  The client-side timeout, or null if the client 
+     *                 has no time limit.
 	 */
 	public void writeMessage(LDAPMessage msg, int msLimit)
 		throws IOException
@@ -96,7 +132,7 @@ public abstract class LDAPListener implements TimerListener {
 	}
 
 	/**
-	 * @internal
+	 * @exclude
 	 * Called by Timer when the timer for a given messageID has expired.
 	 */
 	public void timedOut(int msgId)
@@ -118,7 +154,7 @@ public abstract class LDAPListener implements TimerListener {
 	}
 
 	/**
-	 * @internal
+	 * @exclude
 	 * called by LDAPSearchResults
 	 * Will abandon all message IDs for this LDAPListener.
 	 */
@@ -140,31 +176,46 @@ public abstract class LDAPListener implements TimerListener {
 	}
 	
 	/**
-	 *
+	 * Adds an LDAPMessage to the listener's queue.
 	 */
 	public void addLDAPMessage(com.novell.asn1.ldap.LDAPMessage message)
 	{
 		queue.addLDAPMessage(message);
 	}
 
-	public com.novell.asn1.ldap.LDAPMessage getLDAPMessage()
+   /**
+    * Returns the next message in the queue.
+    *
+    * @return The next message in the queue.
+    */
+    public com.novell.asn1.ldap.LDAPMessage getLDAPMessage()
 	{
 		return queue.getLDAPMessage();
 	}
 
+   /**
+    * Removes the specified message ID.
+    *
+    * @param msgId The message to remove.
+    */
 	protected void removeMessageID(int msgId) { // does this need to be synchronized !!!!
 		queue.removeMessageID(msgId);
 	}
 
 	/**
-	 * In the event of an abandon, we want to remove the message id and notify
+	 * In the event of an abandon, removes the message ID and notifies
 	 * in case a thread is waiting for a response.
+     *
+     * @param id The message ID to remove from the list.
 	 */ 
 	public void removeMessageIDAndNotify(int id)
 	{
 		queue.removeMessageIDAndNotify(id);
 	}
-
+    
+   /**
+    * Cleans up the listener's resources when the object goes out of scope.
+    */
 	public void finalize()
 	{
 		conn.removeLDAPListener(this);
