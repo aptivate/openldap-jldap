@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/rfc2251/RfcDelRequest.java,v 1.9 2001/02/28 21:23:53 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/rfc2251/RfcDelRequest.java,v 1.10 2001/03/01 00:30:16 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -50,7 +50,7 @@ public class RfcDelRequest extends RfcLDAPDN implements RfcRequest {
                                 RfcProtocolOp.DEL_REQUEST);
    }
 
-    public RfcRequest dupRequest(String base, String filter, Integer scope)
+    public RfcRequest dupRequest(String base, String filter, boolean request)
             throws LDAPException
     {
         throw new LDAPException(

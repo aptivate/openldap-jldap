@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.79 2001/02/27 22:53:13 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.80 2001/03/01 00:29:46 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -3518,24 +3518,22 @@ public class LDAPConnection implements Cloneable
 
         String dn = url.getDN(); // new base
         String filter = null;
-        Integer scope = null;
 
         switch( id.getTag()) {
             case RfcProtocolOp.SEARCH_REQUEST:
                 if( reference) {
                     filter = url.getFilter();
                 }
-                // scope ??????? Fix scope here
                 break;
+            // We are allowed to get a referral for the following
             case RfcProtocolOp.MODIFY_REQUEST:
             case RfcProtocolOp.ADD_REQUEST:
             case RfcProtocolOp.DEL_REQUEST:
             case RfcProtocolOp.MODIFY_DN_REQUEST:
             case RfcProtocolOp.COMPARE_REQUEST:
-                break;
             case RfcProtocolOp.EXTENDED_REQUEST:
-                dn = null;  // base doesn't make sense here
                 break;
+            // Does a referral even make sense for the following?
             case RfcProtocolOp.ABANDON_REQUEST:
             case RfcProtocolOp.BIND_REQUEST:
             case RfcProtocolOp.UNBIND_REQUEST:
@@ -3549,7 +3547,8 @@ public class LDAPConnection implements Cloneable
                     LDAPException.LOCAL_ERROR);
         }
 
-        RfcLDAPMessage newRfcMsg = (RfcLDAPMessage)rfcMsg.dupMessage( dn, filter, scope);
+        RfcLDAPMessage newRfcMsg =
+                (RfcLDAPMessage)rfcMsg.dupMessage( dn, filter, reference);
 
         return new LDAPMessage( newRfcMsg);
     }

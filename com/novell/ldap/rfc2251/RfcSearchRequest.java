@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell$
+ * $Novell: /ldap/src/jldap/com/novell/ldap/rfc2251/RfcSearchRequest.java,v 1.8 2001/03/01 00:30:20 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -15,6 +15,7 @@
 package com.novell.ldap.rfc2251;
 
 import com.novell.ldap.LDAPException;
+import com.novell.ldap.LDAPConnection;
 import com.novell.ldap.asn1.*;
 import com.novell.ldap.client.ArrayList;
 
@@ -69,21 +70,29 @@ public class RfcSearchRequest extends ASN1Sequence implements RfcRequest {
     RfcSearchRequest(   ArrayList origRequest,
                         String base,
                         String filter,
-                        Integer scope)
+                        boolean request)
             throws LDAPException
     {
         super(origRequest.size());
         for(int i=0; i < origRequest.size(); i++) {
             content.add(origRequest.get(i));
         }
+        // Replace the base if specified, otherwise keep original base
         if( base != null) {
             content.set(0, new RfcLDAPDN(base));
         }
+        // If this is a reencode as a result of a search continuation reference
+        // and if original scope was one-level, we need to change the scope to
+        // base so we don't return objects a level deeper than requested
+        if( request ) {
+            int scope = ((Long)origRequest.get(1)).intValue();
+            if( scope == LDAPConnection.SCOPE_ONE) {
+                content.set(1, new ASN1Enumerated( LDAPConnection.SCOPE_BASE));
+            }
+        }
+        // Replace the filter if specified, otherwise keep original filter
         if( filter != null) {
             content.set(6, new RfcFilter(filter));
-        }
-        if( scope != null) {
-            content.set(1, new ASN1Enumerated(scope.intValue()));
         }
         return;
     }
@@ -103,9 +112,9 @@ public class RfcSearchRequest extends ASN1Sequence implements RfcRequest {
 			                       RfcProtocolOp.SEARCH_REQUEST);
 	}
 
-    public RfcRequest dupRequest(String base, String filter, Integer scope)
+    public RfcRequest dupRequest(String base, String filter, boolean request)
             throws LDAPException
     {
-        return new RfcSearchRequest( content, base, filter, scope);
+        return new RfcSearchRequest( content, base, filter, request);
     }
 }

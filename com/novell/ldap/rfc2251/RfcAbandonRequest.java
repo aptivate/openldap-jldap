@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell$
+ * $Novell: /ldap/src/jldap/com/novell/ldap/rfc2251/RfcAbandonRequest.java,v 1.8 2001/03/01 00:30:13 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -53,7 +53,7 @@ public class RfcAbandonRequest extends RfcMessageID implements RfcRequest {
 			                       RfcProtocolOp.ABANDON_REQUEST);
 	}
 
-    public RfcRequest dupRequest(String base, String filter, Integer scope)
+    public RfcRequest dupRequest(String base, String filter, boolean reference)
             throws LDAPException
     {
         throw new LDAPException(

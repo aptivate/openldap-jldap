@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/rfc2251/RfcLDAPMessage.java,v 1.20 2001/02/28 01:46:34 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/rfc2251/RfcLDAPMessage.java,v 1.21 2001/03/01 00:30:17 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -95,7 +95,7 @@ public class RfcLDAPMessage extends ASN1Sequence
                     RfcRequest origRequest,
                     String dn,
                     String filter,
-                    Integer scope)
+                    boolean reference)
             throws LDAPException
     {
         super( origContent.size());
@@ -103,7 +103,7 @@ public class RfcLDAPMessage extends ASN1Sequence
         content.add(new RfcMessageID()); // MessageID has static counter
 
         RfcRequest req = (RfcRequest)origContent.get(1);
-        RfcRequest newreq = req.dupRequest(dn, filter, scope);
+        RfcRequest newreq = req.dupRequest(dn, filter, reference);
         op = newreq;
         content.add( newreq);
 
@@ -114,7 +114,7 @@ public class RfcLDAPMessage extends ASN1Sequence
             Debug.trace( Debug.referrals,
                 "RfcLDAPMessage created copy of msg with new id " +
                     getMessageID() + ",dn=" + dn + ", filter=" + filter +
-                    ", scope=" + scope);
+                    ", reference=" + reference);
         }
         return;
     }
@@ -255,7 +255,7 @@ public class RfcLDAPMessage extends ASN1Sequence
      *
      * @return the object representing the new message
      */
-    public Object dupMessage( String dn, String filter, Integer scope)
+    public Object dupMessage( String dn, String filter, boolean reference)
         throws LDAPException
     {
         if( (op == null)) {
@@ -270,7 +270,7 @@ public class RfcLDAPMessage extends ASN1Sequence
                                                     (RfcRequest)content.get(1),
                                                     dn,
                                                     filter,
-                                                    scope);
+                                                    reference);
         return newMsg;
     }
 

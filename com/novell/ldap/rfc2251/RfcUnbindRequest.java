@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell$
+ * $Novell: /ldap/src/jldap/com/novell/ldap/rfc2251/RfcUnbindRequest.java,v 1.8 2001/03/01 00:30:21 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -50,7 +50,7 @@ public class RfcUnbindRequest extends ASN1Null implements RfcRequest {
 			                       RfcProtocolOp.UNBIND_REQUEST);
 	}
 
-    public RfcRequest dupRequest(String base, String filter, Integer scope)
+    public RfcRequest dupRequest(String base, String filter, boolean request)
             throws LDAPException
     {
         throw new LDAPException(

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Enumerated.java,v 1.6 2000/09/11 21:05:52 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Enumerated.java,v 1.7 2001/03/01 00:29:59 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -81,6 +81,4 @@ public class ASN1Enumerated extends ASN1Numeric {
    {
       return super.toString() + "ENUMERATED: " + content;
    }
-
 }
-

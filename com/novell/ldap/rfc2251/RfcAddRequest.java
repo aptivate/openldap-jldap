@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell$
+ * $Novell: /ldap/src/jldap/com/novell/ldap/rfc2251/RfcAddRequest.java,v 1.9 2001/03/01 00:30:14 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -73,7 +73,7 @@ public class RfcAddRequest extends ASN1Sequence implements RfcRequest {
 			                       RfcProtocolOp.ADD_REQUEST);
 	}
 
-    public RfcRequest dupRequest(String base, String filter, Integer scope)
+    public RfcRequest dupRequest(String base, String filter, boolean request)
             throws LDAPException
     {
         throw new LDAPException(

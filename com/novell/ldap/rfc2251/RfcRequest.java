@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell$
+ * $Novell: /ldap/src/jldap/com/novell/ldap/rfc2251/RfcRequest.java,v 1.7 2001/03/01 00:30:20 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -25,6 +25,6 @@ public interface RfcRequest {
     /**
      * Builds a new request using the data from the this object.
      */
-    public RfcRequest dupRequest(String base, String filter, Integer scope)
+    public RfcRequest dupRequest(String base, String filter, boolean reference)
         throws LDAPException;
 }
