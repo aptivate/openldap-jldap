@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.97 2001/05/03 18:17:48 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.98 2001/05/08 18:49:13 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -2188,6 +2188,14 @@ public class LDAPConnection implements Cloneable
      */
     public LDAPControl[] getResponseControls()
     {
+        if( responseCtls == null) {
+            if( Debug.LDAP_DEBUG) {
+                Debug.trace( Debug.apiRequests, name +
+                "getResponseControls() returns null");
+            }
+            return null;
+        }
+
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.apiRequests, name +
             "getResponseControls()");
