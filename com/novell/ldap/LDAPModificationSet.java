@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPModificationSet.java,v 1.7 2000/09/28 21:15:06 smerrill Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPModificationSet.java,v 1.8 2000/09/29 15:17:14 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -65,7 +65,7 @@ public class LDAPModificationSet {
      *</ul><br>
      *  @param attr     The attribute to modify.
      */
-    public synchronized void add(int op, LDAPAttribute attr)
+    public void add(int op, LDAPAttribute attr)
     {
         modSet.addElement(new LDAPModification(op, attr));
     }
@@ -79,7 +79,7 @@ public class LDAPModificationSet {
     *
     * @param mod The LDAPModification object to add to the set.
     */
-    public synchronized void add(LDAPModification mod)
+    public void add(LDAPModification mod)
     {
         modSet.addElement(mod);
     }
@@ -113,7 +113,7 @@ public class LDAPModificationSet {
      *
      *  @param name    Name of the attribute to remove.
      */
-    public synchronized void remove(String name)
+    public void remove(String name)
     {
         for(int i=0; i<modSet.size(); i++) {
             LDAPModification mod = (LDAPModification)modSet.elementAt(i);

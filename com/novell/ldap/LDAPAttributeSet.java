@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttributeSet.java,v 1.11 2000/10/09 19:11:22 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttributeSet.java,v 1.12 2000/10/18 17:24:09 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -50,7 +50,7 @@ public class LDAPAttributeSet implements Cloneable {
     *
     * @param attr Attribute to add to this set.
     */
-   public synchronized void add(LDAPAttribute attr) {
+   public void add(LDAPAttribute attr) {
       attrs.addElement(attr);
    }
 
@@ -259,7 +259,7 @@ public class LDAPAttributeSet implements Cloneable {
     * @param name  Name of the attribute to remove from this set. 
     *              
     */
-   public synchronized void remove(String name) {
+   public void remove(String name) {
        for(int i=0; i<attrs.size(); i++) {
            LDAPAttribute attr = (LDAPAttribute)attrs.elementAt(i);
            if(attr.getName().equals(name)) {
