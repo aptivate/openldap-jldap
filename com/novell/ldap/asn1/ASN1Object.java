@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Object.java,v 1.5 2001/01/31 20:54:50 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Object.java,v 1.6 2001/03/01 00:30:01 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -59,7 +59,10 @@ public abstract class ASN1Object implements Serializable {
         try {
             encode(enc, out);
         }
-        catch(IOException ioe) {
+        catch(IOException e) {
+            // Should never happen
+            throw new RuntimeException(
+                "IOException while encoding to byte array: " + e.toString());
         }
         return out.toByteArray();
     }
