@@ -7,7 +7,7 @@ import com.novell.ldap.asn1.*;
 /**
  *      CompareResponse ::= [APPLICATION 15] LDAPResult
  */
-public class CompareResponse extends LDAPResult {
+public class CompareResponse extends RfcLDAPResult {
 
 	//*************************************************************************
 	// Constructor for CompareResponse

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/src/com/novell/ldap/protocol/DelRequest.java,v 1.3 2000/09/03 06:43:09 smerrill Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/protocol/DelRequest.java,v 1.4 2000/09/11 21:06:00 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  ***************************************************************************/
@@ -11,7 +11,7 @@ import com.novell.ldap.asn1.*;
 /**
  *       DelRequest ::= [APPLICATION 10] LDAPDN
  */
-public class DelRequest extends LDAPDN implements Request {
+public class DelRequest extends RfcLDAPDN implements Request {
 
    //*************************************************************************
    // Constructor for DelRequest

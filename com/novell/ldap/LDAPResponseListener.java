@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPResponseListener.java,v 1.17 2000/11/03 22:23:01 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPResponseListener.java,v 1.18 2000/11/08 22:41:32 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -123,7 +123,7 @@ public class LDAPResponseListener implements LDAPListener
         throws LDAPException
     {
         LDAPResponse response;
-        com.novell.ldap.protocol.LDAPMessage message = listen.getLDAPMessage();
+        RfcLDAPMessage message = listen.getLDAPMessage();
         if(message.getProtocolOp() instanceof ExtendedResponse)
             response = new LDAPExtendedResponse(message);
         else

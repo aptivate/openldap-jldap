@@ -7,7 +7,7 @@ import com.novell.ldap.asn1.*;
 /**
  *       DelResponse ::= [APPLICATION 11] LDAPResult
  */
-public class DelResponse extends LDAPResult {
+public class DelResponse extends RfcLDAPResult {
 
 	//*************************************************************************
 	// Constructors for DelResponse

@@ -4,9 +4,9 @@ package com.novell.ldap.protocol;
 import com.novell.ldap.asn1.*;
 
 /**
- * This interface represents LDAPMessages that contain responses from a
- * server. If the protocol operation of the LDAPMessage is of this type,
- * it contains at least an LDAPResult.
+ * This interface represents RfcLDAPMessages that contain responses from a
+ * server. If the protocol operation of the RfcLDAPMessage is of this type,
+ * it contains at least an RfcLDAPResult.
  */
 public interface Response {
 
@@ -18,12 +18,12 @@ public interface Response {
 	/**
 	 *
 	 */
-	public LDAPDN getMatchedDN();
+	public RfcLDAPDN getMatchedDN();
 
 	/**
 	 *
 	 */
-	public LDAPString getErrorMessage();
+	public RfcLDAPString getErrorMessage();
 
 	/**
 	 *

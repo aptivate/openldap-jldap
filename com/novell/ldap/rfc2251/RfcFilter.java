@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/protocol/Filter.java,v 1.14 2000/09/11 21:06:01 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/protocol/Filter.java,v 1.15 2000/09/21 16:24:13 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  ***************************************************************************/
@@ -202,13 +202,13 @@ public class Filter extends ASN1Choice {
                         cnt++;
                         if(subTok.equals("*")) { // delimiter
                         }
-                        else { // value (LDAPString)
+                        else { // value (RfcLDAPString)
                            if(cnt == 1) { // initial
                               seq.add(
                                  new ASN1Tagged(
                                     new ASN1Identifier(ASN1Identifier.CONTEXT,
                                                        false, INITIAL),
-                                    new LDAPString(escaped2unicode(subTok)),
+                                    new RfcLDAPString(escaped2unicode(subTok)),
                                     false));
                            }
                            else if(cnt < tokCnt) { // any
@@ -216,7 +216,7 @@ public class Filter extends ASN1Choice {
                                  new ASN1Tagged(
                                     new ASN1Identifier(ASN1Identifier.CONTEXT,
                                                        false, ANY),
-                                    new LDAPString(escaped2unicode(subTok)),
+                                    new RfcLDAPString(escaped2unicode(subTok)),
                                     false));
                            }
                            else { // final
@@ -224,7 +224,7 @@ public class Filter extends ASN1Choice {
                                  new ASN1Tagged(
                                     new ASN1Identifier(ASN1Identifier.CONTEXT,
                                                        false, FINAL),
-                                    new LDAPString(escaped2unicode(subTok)),
+                                    new RfcLDAPString(escaped2unicode(subTok)),
                                     false));
                            }
                         }

@@ -30,7 +30,7 @@ public class SearchRequest extends ASN1Sequence implements Request {
 	/**
 	 *
 	 */
-	public SearchRequest(LDAPDN baseObject, ASN1Enumerated scope,
+	public SearchRequest(RfcLDAPDN baseObject, ASN1Enumerated scope,
 		                  ASN1Enumerated derefAliases, ASN1Integer sizeLimit,
 		                  ASN1Integer timeLimit, ASN1Boolean typesOnly,
 		                  Filter filter, AttributeDescriptionList attributes)

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResultReference.java,v 1.12 2000/10/31 23:52:25 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResultReference.java,v 1.13 2000/11/03 23:26:29 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -35,7 +35,7 @@ public class LDAPSearchResultReference extends LDAPMessage {
      * 
      * @param message The LDAPMessage with a search reference.
 	 */
-	/*package*/ LDAPSearchResultReference(com.novell.ldap.protocol.LDAPMessage message)
+	/*package*/ LDAPSearchResultReference(RfcLDAPMessage message)
 	{
         super(message);
         return;

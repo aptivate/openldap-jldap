@@ -45,7 +45,7 @@ public class ExtendedResponse extends ASN1Sequence implements Response {
 				ASN1Tagged obj = (ASN1Tagged)get(i);
 				ASN1Identifier id = obj.getIdentifier();
 				switch(id.getTag()) {
-					case LDAPResult.REFERRAL:
+					case RfcLDAPResult.REFERRAL:
 						byte[] content =
 							((ASN1OctetString)obj.getContent()).getContent();
 						ByteArrayInputStream bais = 
@@ -54,7 +54,7 @@ public class ExtendedResponse extends ASN1Sequence implements Response {
 						referralIndex = i;
 						break;
 					case RESPONSE_NAME:
-						set(i, new LDAPOID(
+						set(i, new RfcLDAPOID(
 							((ASN1OctetString)obj.getContent()).getContent()));
 						responseNameIndex = i;
 						break;
@@ -83,17 +83,17 @@ public class ExtendedResponse extends ASN1Sequence implements Response {
 	/**
 	 *
 	 */
-	public LDAPDN getMatchedDN()
+	public RfcLDAPDN getMatchedDN()
 	{
-		return new LDAPDN(((ASN1OctetString)get(1)).getContent());
+		return new RfcLDAPDN(((ASN1OctetString)get(1)).getContent());
 	}
 
 	/**
 	 *
 	 */
-	public LDAPString getErrorMessage()
+	public RfcLDAPString getErrorMessage()
 	{
-		return new LDAPString(((ASN1OctetString)get(2)).getContent());
+		return new RfcLDAPString(((ASN1OctetString)get(2)).getContent());
 	}
 
 	/**
@@ -107,9 +107,9 @@ public class ExtendedResponse extends ASN1Sequence implements Response {
 	/**
 	 *
 	 */
-	public LDAPOID getResponseName()
+	public RfcLDAPOID getResponseName()
 	{
-		return (responseNameIndex != 0) ? (LDAPOID)get(responseNameIndex)
+		return (responseNameIndex != 0) ? (RfcLDAPOID)get(responseNameIndex)
 		                                : null;
 	}
 

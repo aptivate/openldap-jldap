@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/protocol/Control.java,v 1.7 2000/11/08 00:49:13 javed Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/protocol/Control.java,v 1.8 2000/11/08 17:40:49 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  ***************************************************************************/
@@ -24,7 +24,7 @@ public class Control extends ASN1Sequence {
 	/**
 	 *
 	 */
-	public Control(LDAPOID controlType)
+	public Control(RfcLDAPOID controlType)
 	{
 		this(controlType, new ASN1Boolean(false), null);
 	}
@@ -32,7 +32,7 @@ public class Control extends ASN1Sequence {
 	/**
 	 *
 	 */
-	public Control(LDAPOID controlType, ASN1Boolean criticality)
+	public Control(RfcLDAPOID controlType, ASN1Boolean criticality)
 	{
 		this(controlType, criticality, null);
 	}
@@ -43,7 +43,7 @@ public class Control extends ASN1Sequence {
 	 *       (4): If a value of a type is its default value, it MUST be
 	 *       absent.
 	 */
-	public Control(LDAPOID controlType, ASN1Boolean criticality,
+	public Control(RfcLDAPOID controlType, ASN1Boolean criticality,
 		            ASN1OctetString controlValue)
 	{
 		super(3);

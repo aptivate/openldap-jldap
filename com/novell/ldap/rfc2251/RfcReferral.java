@@ -15,14 +15,14 @@ public class Referral extends ASN1SequenceOf {
 
 	/**
 	 * The only time a Referral object is constructed, is when we are
-	 * decoding an LDAPResult or COMPONENTS OF LDAPResult.
+	 * decoding an RfcLDAPResult or COMPONENTS OF RfcLDAPResult.
 	 */
 	public Referral(ASN1Decoder dec, InputStream in, int len)
 		throws IOException
 	{
 		super(dec, in, len);
 
-		//convert from ASN1OctetString to LDAPURL here (then look at
+		//convert from ASN1OctetString to RfcLDAPURL here (then look at
 		// LDAPResponse.getReferrals())
 	}
 

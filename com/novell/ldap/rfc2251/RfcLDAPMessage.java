@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/protocol/LDAPMessage.java,v 1.9 2000/09/11 21:06:01 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/protocol/RfcLDAPMessage.java,v 1.10 2000/11/08 22:41:34 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  ***************************************************************************/
@@ -37,26 +37,26 @@ import com.novell.ldap.client.Debug;
  *                controls       [0] Controls OPTIONAL }
  *
  * Note: The creation of a MessageID should be hidden within the creation of
- *       an LDAPMessage. The MessageID needs to be in sequence, and has an
+ *       an RfcLDAPMessage. The MessageID needs to be in sequence, and has an
  *       upper and lower limit. There is never a case when a user should be
- *       able to specify the MessageID for an LDAPMessage. The MessageID()
+ *       able to specify the MessageID for an RfcLDAPMessage. The MessageID()
  *       constructor should be package protected. (So the MessageID value
  *       isn't arbitrarily run up.)
  */
-public class LDAPMessage extends ASN1Sequence {
+public class RfcLDAPMessage extends ASN1Sequence {
 
    /**
-    * Create an LDAPMessage using the specified LDAP Request Protocol Op.
+    * Create an RfcLDAPMessage using the specified LDAP Request Protocol Op.
     */
-   public LDAPMessage(Request op)
+   public RfcLDAPMessage(Request op)
    {
       this(op, null);
    }
 
    /**
-    * Create an LDAPMessage from input parameters.
+    * Create an RfcLDAPMessage from input parameters.
     */
-   public LDAPMessage(Request op, Controls controls)
+   public RfcLDAPMessage(Request op, Controls controls)
    {
       super(3);
 
@@ -67,9 +67,9 @@ public class LDAPMessage extends ASN1Sequence {
    }
 
    /**
-    * Will decode an LDAPMessage directly from an InputStream.
+    * Will decode an RfcLDAPMessage directly from an InputStream.
     */
-   public LDAPMessage(ASN1Decoder dec, InputStream in, int len)
+   public RfcLDAPMessage(ASN1Decoder dec, InputStream in, int len)
       throws IOException
    {
       super(dec, in, len);
@@ -87,7 +87,7 @@ public class LDAPMessage extends ASN1Sequence {
       bais = new ByteArrayInputStream(content);
 
       if( Debug.LDAP_DEBUG ) {
-          Debug.trace( Debug.messages, "protocol/LDAPMessage: input message tag " +
+          Debug.trace( Debug.messages, "protocol/RfcLDAPMessage: input message tag " +
             protocolOpId.getTag());
       }
       switch(protocolOpId.getTag()) {
@@ -142,7 +142,7 @@ public class LDAPMessage extends ASN1Sequence {
    //*************************************************************************
 
    /**
-    * Returns this LDAPMessage's messageID as an int.
+    * Returns this RfcLDAPMessage's messageID as an int.
     */
    public int getMessageID()
    {
@@ -150,7 +150,7 @@ public class LDAPMessage extends ASN1Sequence {
    }
 
    /**
-    * Returns the Protocol Operation for this LDAPMessage.
+    * Returns the Protocol Operation for this RfcLDAPMessage.
     */
    public ASN1Object getProtocolOp()
    {
@@ -158,7 +158,7 @@ public class LDAPMessage extends ASN1Sequence {
    }
 
    /**
-    * Returns the optional Controls for this LDAPMessage.
+    * Returns the optional Controls for this RfcLDAPMessage.
     */
    public Controls getControls()
    {

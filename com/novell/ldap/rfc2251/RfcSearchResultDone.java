@@ -7,7 +7,7 @@ import com.novell.ldap.asn1.*;
 /**
  *       SearchResultDone ::= [APPLICATION 5] LDAPResult
  */
-public class SearchResultDone extends LDAPResult {
+public class SearchResultDone extends RfcLDAPResult {
 
    //*************************************************************************
    // Constructors for SearchResultDone

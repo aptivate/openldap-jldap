@@ -17,7 +17,7 @@ public class CompareRequest extends ASN1Sequence implements Request {
 	/**
 	 *
 	 */
-	public CompareRequest(LDAPDN entry, AttributeValueAssertion ava)
+	public CompareRequest(RfcLDAPDN entry, AttributeValueAssertion ava)
 	{
 		super(2);
 		add(entry);

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: MessageQueue.java,v 1.7 2000/10/31 00:45:11 vtag Exp $
+ * $Id: MessageQueue.java,v 1.8 2000/11/08 22:41:34 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -21,7 +21,7 @@ import com.novell.ldap.LDAPException;
 
 public class MessageQueue {
 
-	private Vector responses  = new Vector(20); // vector of LDAPMessages
+	private Vector responses  = new Vector(20); // vector of RfcLDAPMessages
 	private Vector messageIDs = new Vector(1);  // preserve fifo order
 
    /*
@@ -75,7 +75,7 @@ public class MessageQueue {
 	public void removeResponses(int msgId)
 	{
 		for(int i=responses.size()-1; i>=0; i--) {
-			LDAPMessage message = (LDAPMessage)responses.elementAt(i);
+			RfcLDAPMessage message = (RfcLDAPMessage)responses.elementAt(i);
 			if(message.getMessageID() == msgId) {
 				responses.removeElementAt(i);
 			}
@@ -85,7 +85,7 @@ public class MessageQueue {
 	/**
 	 * Add a message to the application queue
 	 */
-	public synchronized void addLDAPMessage(LDAPMessage message)
+	public synchronized void addLDAPMessage(RfcLDAPMessage message)
 	{
 		responses.addElement(message);
 		notify(); //notifyAll() ???
@@ -100,7 +100,7 @@ public class MessageQueue {
 		notify(); //notifyAll() ???
 	}
 
-	public synchronized LDAPMessage getLDAPMessage()
+	public synchronized RfcLDAPMessage getLDAPMessage()
             throws LDAPException
 	{
 		Object message = null;
@@ -113,7 +113,7 @@ public class MessageQueue {
 			}
 
 			if(!responses.isEmpty()) {
-                message = (LDAPMessage)responses.firstElement();
+                message = (RfcLDAPMessage)responses.firstElement();
                 if( message instanceof LDAPException ) {
                     throw (LDAPException)message;
                 }
@@ -123,7 +123,7 @@ public class MessageQueue {
 		catch(InterruptedException e) {
 		}
 
-		return (LDAPMessage)message;
+		return (RfcLDAPMessage)message;
 	}
 
 	/**

@@ -22,7 +22,7 @@ public class ModifyRequest extends ASN1Sequence implements Request {
 	/**
 	 *
 	 */
-	public ModifyRequest(LDAPDN object, ASN1SequenceOf modification)
+	public ModifyRequest(RfcLDAPDN object, ASN1SequenceOf modification)
 	{
 		super(2);
 		add(object);

@@ -18,7 +18,7 @@ public class BindRequest extends ASN1Sequence implements Request {
 	/**
 	 *
 	 */
-	public BindRequest(ASN1Integer version, LDAPDN name,
+	public BindRequest(ASN1Integer version, RfcLDAPDN name,
 		                AuthenticationChoice auth)
 	{
 		super(3);
@@ -42,7 +42,7 @@ public class BindRequest extends ASN1Sequence implements Request {
 	/**
 	 *
 	 */
-	public void setName(LDAPDN name)
+	public void setName(RfcLDAPDN name)
 	{
 		set(1, name);
 	}
@@ -70,9 +70,9 @@ public class BindRequest extends ASN1Sequence implements Request {
 	/**
 	 *
 	 */
-	public LDAPDN getName()
+	public RfcLDAPDN getName()
 	{
-		return (LDAPDN)get(1);
+		return (RfcLDAPDN)get(1);
 	}
 
 	/**

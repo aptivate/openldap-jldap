@@ -7,7 +7,7 @@ import com.novell.ldap.asn1.*;
 /**
  *
  */
-public class AttributeDescription extends LDAPString {
+public class AttributeDescription extends RfcLDAPString {
 
 	/**
 	 *

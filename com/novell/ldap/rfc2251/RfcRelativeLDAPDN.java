@@ -6,7 +6,7 @@ import com.novell.ldap.asn1.*;
 /**
  *
  */
-public class RelativeLDAPDN extends LDAPString {
+public class RelativeLDAPDN extends RfcLDAPString {
 
 	/**
 	 *

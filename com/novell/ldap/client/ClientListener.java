@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/client/ClientListener.java,v 1.2 2000/10/31 00:45:10 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/client/ClientListener.java,v 1.3 2000/11/08 22:41:33 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -145,7 +145,7 @@ public class ClientListener implements TimerListener {
      * @param msLimit  The client-side timeout, or null if the client 
      *                 has no time limit.
      */
-    public void writeMessage(com.novell.ldap.LDAPMessage msg, int msLimit)
+    public void writeMessage(LDAPMessage msg, int msLimit)
         throws IOException
     {
         int messageID = msg.getMessageID();
@@ -169,7 +169,7 @@ public class ClientListener implements TimerListener {
             new LDAPException("Client timeout", LDAPException.LDAP_TIMEOUT));
         queue.removeTimer(msgId); // timer thread does not need to be stopped.
         try {
-            conn.writeMessage(new com.novell.ldap.LDAPMessage(new AbandonRequest(msgId)));
+            conn.writeMessage(new LDAPMessage(new AbandonRequest(msgId)));
 //                new AbandonRequest(conn.getMessageID(), msgId,
 //                                         (LDAPControl[])null, true
 //                                        ).getLber());
@@ -190,7 +190,7 @@ public class ClientListener implements TimerListener {
         int[] ids = queue.getMessageIDs();
         try {
             for(int i=0; i<ids.length; i++) {
-                conn.writeMessage(new com.novell.ldap.LDAPMessage(new AbandonRequest(ids[i])));
+                conn.writeMessage(new LDAPMessage(new AbandonRequest(ids[i])));
 //                conn.writeMessage(
 //                    new AbandonRequest(conn.getMessageID(), ids[i],
 //                                             (LDAPControl[])null, true
@@ -203,9 +203,9 @@ public class ClientListener implements TimerListener {
     }
     
     /**
-     * Adds an LDAPMessage to the listener's queue.
+     * Adds an RfcLDAPMessage to the listener's queue.
      */
-    public void addLDAPMessage(com.novell.ldap.protocol.LDAPMessage message)
+    public void addLDAPMessage(RfcLDAPMessage message)
     {
         queue.addLDAPMessage(message);
     }
@@ -223,7 +223,7 @@ public class ClientListener implements TimerListener {
     *
     * @return The next message in the queue.
     */
-    public com.novell.ldap.protocol.LDAPMessage getLDAPMessage()
+    public RfcLDAPMessage getLDAPMessage()
             throws com.novell.ldap.LDAPException
     {
         return queue.getLDAPMessage();

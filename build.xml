@@ -1,4 +1,4 @@
-<!-- $Novell: /ldap/src/jldap/build.xml,v 1.21 2000/10/21 18:45:11 vtag Exp $ -->
+<!-- $Novell: /ldap/src/jldap/build.xml,v 1.22 2000/10/23 16:33:41 vtag Exp $ -->
 <!-- ======================================================================= -->
 <!-- TOP level build file                                                -->
 <!-- ======================================================================= -->
@@ -170,7 +170,7 @@
 
 		<echo message="DEBUG compile tests" />
 		<ant dir="tests" target="all">
-			<property name="build" value="${build.samples}"/>
+			<property name="build" value="${build.tests}"/>
 			<property name="lib" value="${lib.debug}"/>
 			<property name="ldap" value="${ldap}"/>
 			<property name="debug" value="on"/>

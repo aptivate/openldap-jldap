@@ -6,16 +6,16 @@ import com.novell.ldap.asn1.*;
 /**
  *        LDAPDN ::= LDAPString
  */
-public class LDAPDN extends LDAPString {
+public class RfcLDAPDN extends RfcLDAPString {
 
    //*************************************************************************
-   // Constructors for LDAPDN
+   // Constructors for RfcLDAPDN
    //*************************************************************************
 
    /**
     *
     */
-   public LDAPDN(String s)
+   public RfcLDAPDN(String s)
    {
       super(s);
    }
@@ -23,7 +23,7 @@ public class LDAPDN extends LDAPString {
    /**
     *
     */
-   public LDAPDN(byte[] s)
+   public RfcLDAPDN(byte[] s)
    {
       super(s);
    }

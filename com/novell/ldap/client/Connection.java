@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.18 2000/10/31 00:45:10 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.19 2000/11/08 22:41:33 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -20,6 +20,7 @@ import java.net.Socket;
 import java.util.Vector;
 
 import com.novell.ldap.*;
+import com.novell.ldap.protocol.RfcLDAPMessage;
 import com.novell.ldap.asn1.*;
 import com.novell.ldap.protocol.UnbindRequest;
 import com.novell.ldap.client.Debug;
@@ -99,7 +100,7 @@ public final class Connection implements Runnable {
    /**
     * Writes an LDAPMessage to the LDAP server over a socket.
     */
-   public void writeMessage(com.novell.ldap.LDAPMessage msg)
+   public void writeMessage(LDAPMessage msg)
       throws IOException
    {
       byte[] ber = msg.getASN1Object().getEncoding(encoder);
@@ -218,7 +219,7 @@ public final class Connection implements Runnable {
 
 
    /**
-    * The thread that decodes and processes LDAPMessage's from the server.
+    * The thread that decodes and processes RfcLDAPMessage's from the server.
     *
     * Note: This thread needs a graceful shutdown implementation.
     */
@@ -226,7 +227,7 @@ public final class Connection implements Runnable {
       try {
          for(;;) {
             // ------------------------------------------------------------
-            // Decode an LDAPMessage directly from the socket.
+            // Decode an RfcLDAPMessage directly from the socket.
             // ------------------------------------------------------------
             ASN1Identifier asn1ID = new ASN1Identifier(in);
             int tag = asn1ID.getTag();
@@ -235,17 +236,17 @@ public final class Connection implements Runnable {
                     Debug.trace( Debug.messages,
                         "client/Connection: discarding message with tag " + tag);
                 }
-                continue; // loop looking for an LDAPMessage identifier
+                continue; // loop looking for an RfcLDAPMessage identifier
             }
 
             ASN1Length asn1Len = new ASN1Length(in);
 
-            com.novell.ldap.protocol.LDAPMessage msg =
-                new com.novell.ldap.protocol.LDAPMessage(
+            RfcLDAPMessage msg =
+                new RfcLDAPMessage(
                    decoder, in, asn1Len.getLength());
 
             // ------------------------------------------------------------
-            // Process the decoded LDAPMessage.
+            // Process the decoded RfcLDAPMessage.
             // ------------------------------------------------------------
             int msgId = msg.getMessageID();
 

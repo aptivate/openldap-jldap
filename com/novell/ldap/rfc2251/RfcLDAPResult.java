@@ -60,7 +60,7 @@ import com.novell.ldap.asn1.*;
  *               referral        [3] Referral OPTIONAL }
  *
  */
-public class LDAPResult extends ASN1Sequence implements Response {
+public class RfcLDAPResult extends ASN1Sequence implements Response {
 
    /**
     * Context-specific TAG for optional Referral.
@@ -68,14 +68,14 @@ public class LDAPResult extends ASN1Sequence implements Response {
    public final static int REFERRAL = 3;
 
    //*************************************************************************
-   // Constructors for LDAPResult
+   // Constructors for RfcLDAPResult
    //*************************************************************************
 
    /**
     *
     */
-//   public LDAPResult(ASN1Enumerated resultCode, LDAPDN matchedDN,
-//                     LDAPString errorMessage)
+//   public RfcLDAPResult(ASN1Enumerated resultCode, RfcLDAPDN matchedDN,
+//                     RfcLDAPString errorMessage)
 //  {
 //     this(resultCode, matchedDN, errorMessage, null);
 //   }
@@ -83,8 +83,8 @@ public class LDAPResult extends ASN1Sequence implements Response {
    /**
     *
     */
-//   public LDAPResult(ASN1Enumerated resultCode, LDAPDN matchedDN,
-//                     LDAPString errorMessage, Referral referral)
+//   public RfcLDAPResult(ASN1Enumerated resultCode, RfcLDAPDN matchedDN,
+//                     RfcLDAPString errorMessage, Referral referral)
 //   {
 //      super(4);
 //      setResultCode(resultCode);
@@ -97,7 +97,7 @@ public class LDAPResult extends ASN1Sequence implements Response {
    /**
     *
     */
-   public LDAPResult(ASN1Decoder dec, InputStream in, int len)
+   public RfcLDAPResult(ASN1Decoder dec, InputStream in, int len)
       throws IOException
    {
       super(dec, in, len);
@@ -106,7 +106,7 @@ public class LDAPResult extends ASN1Sequence implements Response {
       if(size() > 3) {
          ASN1Tagged obj = (ASN1Tagged)get(3);
          ASN1Identifier id = obj.getIdentifier();
-         if(id.getTag() == LDAPResult.REFERRAL) {
+         if(id.getTag() == RfcLDAPResult.REFERRAL) {
             byte[] content =
                ((ASN1OctetString)obj.getContent()).getContent();
             ByteArrayInputStream bais = new ByteArrayInputStream(content);
@@ -130,7 +130,7 @@ public class LDAPResult extends ASN1Sequence implements Response {
    /**
     *
     */
-//   public void setMatchedDN(LDAPDN matchedDN)
+//   public void setMatchedDN(RfcLDAPDN matchedDN)
 //   {
 //      set(1, matchedDN);
 //   }
@@ -138,7 +138,7 @@ public class LDAPResult extends ASN1Sequence implements Response {
    /**
     *
     */
-//   public void setErrorMessage(LDAPString errorMessage)
+//   public void setErrorMessage(RfcLDAPString errorMessage)
 //   {
 //      set(2, errorMessage);
 //   }
@@ -166,17 +166,17 @@ public class LDAPResult extends ASN1Sequence implements Response {
    /**
     *
     */
-   public LDAPDN getMatchedDN()
+   public RfcLDAPDN getMatchedDN()
    {
-		return new LDAPDN(((ASN1OctetString)get(1)).getString());
+		return new RfcLDAPDN(((ASN1OctetString)get(1)).getString());
    }
 
    /**
     *
     */
-   public LDAPString getErrorMessage()
+   public RfcLDAPString getErrorMessage()
    {
-		return new LDAPString(((ASN1OctetString)get(2)).getString());
+		return new RfcLDAPString(((ASN1OctetString)get(2)).getString());
    }
 
    /**

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/src/com/novell/ldap/protocol/MessageID.java,v 1.5 2000/08/22 01:47:26 smerrill Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/protocol/MessageID.java,v 1.6 2000/09/11 21:06:02 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  ***************************************************************************/
@@ -15,9 +15,9 @@ import com.novell.ldap.asn1.*;
  *       maxInt INTEGER ::= 2147483647 -- (2^^31 - 1) --
  *
  * Note: The creation of a MessageID should be hidden within the creation of
- *       an LDAPMessage. The MessageID needs to be in sequence, and has an
+ *       an RfcLDAPMessage. The MessageID needs to be in sequence, and has an
  *       upper and lower limit. There is never a case when a user should be
- *       able to specify the MessageID for an LDAPMessage. The MessageID()
+ *       able to specify the MessageID for an RfcLDAPMessage. The MessageID()
  *       class should be package protected. (So the MessageID value isn't
  *       arbitrarily run up.)
  */

@@ -17,7 +17,7 @@ public class SaslCredentials extends ASN1Sequence {
 	/**
 	 *
 	 */
-	public SaslCredentials(LDAPString mechanism)
+	public SaslCredentials(RfcLDAPString mechanism)
 	{
 		this(mechanism, null);
 	}
@@ -25,7 +25,7 @@ public class SaslCredentials extends ASN1Sequence {
 	/**
 	 *
 	 */
-	public SaslCredentials(LDAPString mechanism, ASN1OctetString credentials)
+	public SaslCredentials(RfcLDAPString mechanism, ASN1OctetString credentials)
 	{
 		super(2);
 		add(mechanism);

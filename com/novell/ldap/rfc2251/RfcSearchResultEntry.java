@@ -25,7 +25,7 @@ public class SearchResultEntry extends ASN1Sequence {
       super(dec, in, len);
 
       // Decode objectName
-//      set(0, new LDAPDN(((ASN1OctetString)get(0)).getContent()));
+//      set(0, new RfcLDAPDN(((ASN1OctetString)get(0)).getContent()));
 
       // Create PartitalAttributeList. This does not need to be decoded, only
       // typecast.

@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.52 2000/11/03 21:16:56 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.53 2000/11/06 22:29:47 vtag Exp $
 *
 * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
 * 
@@ -914,7 +914,7 @@ public class LDAPConnection implements Cloneable
       LDAPMessage msg =
             new LDAPMessage(
                 new AddRequest(
-                    new com.novell.ldap.protocol.LDAPDN(entry.getDN()),
+                    new RfcLDAPDN(entry.getDN()),
                     attrList),
                 cons.getServerControls());
 
@@ -1273,7 +1273,7 @@ public class LDAPConnection implements Cloneable
             new LDAPMessage(
                 new BindRequest(
                     new ASN1Integer(version),
-                    new com.novell.ldap.protocol.LDAPDN(dn),
+                    new RfcLDAPDN(dn),
                     new AuthenticationChoice(
                         new ASN1Tagged(
                             new ASN1Identifier(ASN1Identifier.CONTEXT, false, 0),
@@ -1616,7 +1616,7 @@ public class LDAPConnection implements Cloneable
       LDAPMessage msg =
             new LDAPMessage(
                 new CompareRequest(
-                    new com.novell.ldap.protocol.LDAPDN(dn),
+                    new RfcLDAPDN(dn),
                     new AttributeValueAssertion(
                         new AttributeDescription(type),
                         new AssertionValue(value))),
@@ -2010,7 +2010,7 @@ public class LDAPConnection implements Cloneable
       ASN1OctetString value = 
          (op.getValue() != null) ? new ASN1OctetString(op.getValue()) : null;
 
-      ExtendedRequest er = new ExtendedRequest(new LDAPOID(op.getID()),
+      ExtendedRequest er = new ExtendedRequest(new RfcLDAPOID(op.getID()),
                                                value);
 
       LDAPMessage msg = new LDAPMessage(er, cons.getServerControls());
@@ -2315,7 +2315,7 @@ public class LDAPConnection implements Cloneable
       LDAPMessage msg =
             new LDAPMessage(
                 new ModifyRequest(
-                    new com.novell.ldap.protocol.LDAPDN(dn),
+                    new RfcLDAPDN(dn),
                     rfcMods),
                 cons.getServerControls());
 
@@ -2746,11 +2746,11 @@ public class LDAPConnection implements Cloneable
       LDAPMessage msg =
             new LDAPMessage(
                 new ModifyDNRequest(
-                    new com.novell.ldap.protocol.LDAPDN(dn),
+                    new RfcLDAPDN(dn),
                     new RelativeLDAPDN(newRdn),
                     new ASN1Boolean(deleteOldRdn),
                     (newParentdn != null) ?
-                        new com.novell.ldap.protocol.LDAPDN(newParentdn) : null),
+                        new RfcLDAPDN(newParentdn) : null),
                 cons.getServerControls());
 
       if(listener == null) {
@@ -2964,7 +2964,7 @@ public class LDAPConnection implements Cloneable
 
       LDAPMessage msg = new LDAPMessage(
          new SearchRequest(
-            new com.novell.ldap.protocol.LDAPDN(base),
+            new RfcLDAPDN(base),
             new ASN1Enumerated(scope),
             new ASN1Enumerated(cons.getDereference()),
             new ASN1Integer(cons.getMaxResults()),

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPResponse.java,v 1.18 2000/11/03 23:16:31 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPResponse.java,v 1.19 2000/11/06 22:29:49 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -33,9 +33,9 @@ public class LDAPResponse extends LDAPMessage
      * Creates an LDAPMessage when receiving an asynchronous response from a
      * server.
      *
-     *  @param message  The LDAPMessage from a server.
+     *  @param message  The RfcLDAPMessage from a server.
      */
-    /*package*/ LDAPResponse(com.novell.ldap.protocol.LDAPMessage message)
+    /*package*/ LDAPResponse( RfcLDAPMessage message)
     {
         super(message);
     }

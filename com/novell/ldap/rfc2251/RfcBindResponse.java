@@ -32,7 +32,7 @@ public class BindResponse extends ASN1Sequence implements Response {
 		if(size() > 3) {
 			ASN1Tagged obj = (ASN1Tagged)get(3);
 			ASN1Identifier id = obj.getIdentifier();
-			if(id.getTag() == LDAPResult.REFERRAL) {
+			if(id.getTag() == RfcLDAPResult.REFERRAL) {
 				byte[] content =
 					((ASN1OctetString)obj.getContent()).getContent();
 				ByteArrayInputStream bais = new ByteArrayInputStream(content);
@@ -57,17 +57,17 @@ public class BindResponse extends ASN1Sequence implements Response {
 	/**
 	 *
 	 */
-	public LDAPDN getMatchedDN()
+	public RfcLDAPDN getMatchedDN()
 	{
-		return new LDAPDN(((ASN1OctetString)get(1)).getContent());
+		return new RfcLDAPDN(((ASN1OctetString)get(1)).getContent());
 	}
 
 	/**
 	 *
 	 */
-	public LDAPString getErrorMessage()
+	public RfcLDAPString getErrorMessage()
 	{
-		return new LDAPString(((ASN1OctetString)get(2)).getContent());
+		return new RfcLDAPString(((ASN1OctetString)get(2)).getContent());
 	}
 
 	/**

@@ -28,7 +28,7 @@ public class ExtendedRequest extends ASN1Sequence implements Request {
 	 *
 	 * @param requestName The OID for this extended operation.
 	 */
-	public ExtendedRequest(LDAPOID requestName)
+	public ExtendedRequest(RfcLDAPOID requestName)
 	{
 		this(requestName, null);
 	}
@@ -39,7 +39,7 @@ public class ExtendedRequest extends ASN1Sequence implements Request {
 	 * @param requestName The OID for this extended operation.
 	 * @param requestValue An optional request value.
 	 */
-	public ExtendedRequest(LDAPOID requestName, ASN1OctetString requestValue)
+	public ExtendedRequest(RfcLDAPOID requestName, ASN1OctetString requestValue)
 	{
 		super(2);
 		add(new ASN1Tagged(

@@ -6,12 +6,12 @@ import com.novell.ldap.asn1.*;
 /**
  *
  */
-public class LDAPOID extends ASN1OctetString {
+public class RfcLDAPOID extends ASN1OctetString {
 
    /**
     *
     */
-   public LDAPOID(String s)
+   public RfcLDAPOID(String s)
    {
       super(s);
    }
@@ -19,7 +19,7 @@ public class LDAPOID extends ASN1OctetString {
    /**
     *
     */
-   public LDAPOID(byte[] s)
+   public RfcLDAPOID(byte[] s)
    {
       super(s);
    }

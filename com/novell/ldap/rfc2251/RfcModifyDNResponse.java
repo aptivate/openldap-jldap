@@ -7,7 +7,7 @@ import com.novell.ldap.asn1.*;
 /**
  *       ModifyDNResponse ::= [APPLICATION 13] LDAPResult
  */
-public class ModifyDNResponse extends LDAPResult {
+public class ModifyDNResponse extends RfcLDAPResult {
 
 	//*************************************************************************
 	// Constructor for ModifyDNResponse

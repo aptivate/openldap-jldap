@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/src/com/novell/ldap/protocol/LDAPString.java,v 1.4 2000/09/03 06:43:09 smerrill Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/protocol/RfcLDAPString.java,v 1.5 2000/09/11 21:06:01 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  ***************************************************************************/
@@ -12,12 +12,12 @@ import com.novell.ldap.asn1.*;
 /**
  *
  */
-public class LDAPString extends ASN1OctetString {
+public class RfcLDAPString extends ASN1OctetString {
 
    /**
     *
     */
-   public LDAPString(String s)
+   public RfcLDAPString(String s)
    {
       super(s);
    }
@@ -25,7 +25,7 @@ public class LDAPString extends ASN1OctetString {
    /**
     *
     */
-   public LDAPString(byte[] ba)
+   public RfcLDAPString(byte[] ba)
    {
       super(ba);
    }
@@ -33,7 +33,7 @@ public class LDAPString extends ASN1OctetString {
    /**
     *
     */
-   public LDAPString(ASN1Decoder dec, InputStream in, int len)
+   public RfcLDAPString(ASN1Decoder dec, InputStream in, int len)
       throws IOException
    {
       super(dec, in, len);

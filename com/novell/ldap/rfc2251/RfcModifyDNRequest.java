@@ -19,7 +19,7 @@ public class ModifyDNRequest extends ASN1Sequence implements Request {
 	/**
 	 *
 	 */
-	public ModifyDNRequest(LDAPDN entry, RelativeLDAPDN newrdn,
+	public ModifyDNRequest(RfcLDAPDN entry, RelativeLDAPDN newrdn,
 		                    ASN1Boolean deleteoldrdn)
 	{
 		this(entry, newrdn, deleteoldrdn, null);
@@ -28,8 +28,8 @@ public class ModifyDNRequest extends ASN1Sequence implements Request {
 	/**
 	 *
 	 */
-	public ModifyDNRequest(LDAPDN entry, RelativeLDAPDN newrdn,
-		                    ASN1Boolean deleteoldrdn, LDAPDN newSuperior)
+	public ModifyDNRequest(RfcLDAPDN entry, RelativeLDAPDN newrdn,
+		                    ASN1Boolean deleteoldrdn, RfcLDAPDN newSuperior)
 	{
 		super(4);
 		add(entry);

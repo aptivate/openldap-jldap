@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPListener.java,v 1.14 2000/10/31 23:52:22 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPListener.java,v 1.15 2000/11/03 22:23:01 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -85,11 +85,13 @@ public interface LDAPListener
    public boolean isResponseReceived(int msgid);
    
    /**
-    * Merges two response listeners by moving the contents from another
-    * listener to this one.
+    * Merges two response listeners by moving the current and
+    * future contents from another listener to this one.
     *
-    * @param listener2 The listener that receives the contents from the
-    *                  other listener.
+    * @param listener2 The listener that is merged from.  Following
+    *                  the merge, this listener object will no
+    *                  longer receive any data, and calls made
+    *                  to its methods will fail with a RuntimeException.
     */
    public void merge(LDAPResponseListener listener2);
 }

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPControl.java,v 1.14 2000/11/03 21:16:57 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPControl.java,v 1.15 2000/11/03 21:27:00 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -44,7 +44,7 @@ public class LDAPControl implements Cloneable {
      */
     public LDAPControl(String id, boolean critical, byte[] vals)
     {
-        control = new Control(new LDAPOID(id), new ASN1Boolean(critical),
+        control = new Control(new RfcLDAPOID(id), new ASN1Boolean(critical),
                               new ASN1OctetString(vals));
     }
 

@@ -17,7 +17,7 @@ public class AddRequest extends ASN1Sequence implements Request {
 	/**
 	 *
 	 */
-	public AddRequest(LDAPDN entry, AttributeList attributes)
+	public AddRequest(RfcLDAPDN entry, AttributeList attributes)
 	{
 		super(2);
 		add(entry);
@@ -35,9 +35,9 @@ public class AddRequest extends ASN1Sequence implements Request {
 	/**
 	 *
 	 */
-	public LDAPDN getEntry()
+	public RfcLDAPDN getEntry()
 	{
-		return (LDAPDN)get(0);
+		return (RfcLDAPDN)get(0);
 	}
 
 	/**

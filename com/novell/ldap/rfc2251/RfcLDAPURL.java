@@ -6,16 +6,16 @@ import com.novell.ldap.asn1.*;
 /**
  *        LDAPURL ::= LDAPString -- limited to characters permitted in URLs
  */
-public class LDAPURL extends LDAPString {
+public class RfcLDAPURL extends RfcLDAPString {
 
 	//*************************************************************************
-	// Constructor for LDAPURL
+	// Constructor for RfcLDAPURL
 	//*************************************************************************
 
 	/**
 	 *
 	 */
-	public LDAPURL(String s)
+	public RfcLDAPURL(String s)
 	{
 		super(s);
 	}

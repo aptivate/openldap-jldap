@@ -7,7 +7,7 @@ import com.novell.ldap.asn1.*;
 /**
  *       AddResponse ::= [APPLICATION 9] LDAPResult
  */
-public class AddResponse extends LDAPResult {
+public class AddResponse extends RfcLDAPResult {
 
 	//*************************************************************************
 	// Constructors for AddResponse
