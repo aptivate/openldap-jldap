@@ -24,7 +24,7 @@ import java.util.Locale;
  * @see <a href="../../../../doc/com/novell/ldap/LDAPCompareAttrNames.html">
             com.novell.ldap.CompareAttrNames</a>
  */
-public class LDAPCompareAttrNames implements LDAPEntryComparator
+public class LDAPCompareAttrNames implements java.util.Comparator
 {
 
     private com.novell.ldap.LDAPCompareAttrNames comp;
@@ -132,24 +132,29 @@ public class LDAPCompareAttrNames implements LDAPEntryComparator
     }
 
     /**
-     * Returns true if entry1 is to be considered greater than entry2, for
-     * the purpose of sorting, based on the attribute name or names provided
-     * isGreater returns true.
+     * Compares the the attributes of the first LDAPEntry to the second.
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPCompareAttrNames.html
-            #isGreater(com.novell.ldap.LDAPEntry, com.novell.ldap.LDAPEntry)">
-            com.novell.ldap.LDAPCompareAttrNames.isGreater(LDAPEntry, Entry)</a>
+            #compare(java.lang.Object, java.lang.Object)">
+            com.novell.ldap.LDAPCompareAttrNames.Compare(Object, Object)</a>
      */
-    public boolean isGreater (LDAPEntry entry1, LDAPEntry entry2)
+    public int compare (Object entry1, Object entry2)
     {
-        com.novell.ldap.LDAPEntry e1 = null;
-        com.novell.ldap.LDAPEntry e2 = null;
-        if( entry1 != null) {
-            e1 = entry1.getWrappedObject();
+        com.novell.ldap.LDAPEntry e1 = ((LDAPEntry) entry1).getWrappedObject();
+        com.novell.ldap.LDAPEntry e2 = ((LDAPEntry) entry2).getWrappedObject();
+        return comp.compare( e1, e2);
+    }
+
+    /**
+     * Returns true if this comparator is equal to the specified comparator.
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPCompareAttrNames.html
+            #equals(java.lang.Object)">
+            com.novell.ldap.LDAPCompareAttrNames.equals(Object)</a>
+     */
+    public boolean equals (Object comparator){
+        if (!(comparator instanceof LDAPCompareAttrNames)){
+            return false;
         }
-        if( entry2 != null) {
-            e2 = entry2.getWrappedObject();
-        }
-        return comp.isGreater( e1,e2);
+        return comp.equals( ((LDAPEntry)comparator).getWrappedObject() );
     }
 }

@@ -61,12 +61,13 @@ public class LDAPMatchingRuleUseSchema
                                      boolean obsolete,
                                      String[] attributes)
     {
+        super(LDAPSchema.schemaTypeNames[LDAPSchema.MATCHING_USE]);
         super.names = (String[]) names.clone();
         super.oid = oid;
         super.description = description;
         super.obsolete = obsolete;
         this.attributes = (String[]) attributes.clone();
-        super.value = formatString();
+        super.setValue(formatString());
         return;
     }
 
@@ -81,6 +82,7 @@ public class LDAPMatchingRuleUseSchema
      */
     public LDAPMatchingRuleUseSchema(String raw)
     {
+        super(LDAPSchema.schemaTypeNames[LDAPSchema.MATCHING_USE]);    
         try{
             SchemaParser matchParser = new SchemaParser(raw);
             super.names = (String[])matchParser.getNames().clone();
@@ -88,7 +90,7 @@ public class LDAPMatchingRuleUseSchema
             super.description = matchParser.getDescription();
             super.obsolete = matchParser.getObsolete();
             this.attributes = matchParser.getApplies();
-            super.value = formatString();
+            super.setValue(formatString());
         }
         catch( IOException e){
         }

@@ -66,13 +66,14 @@ public class LDAPMatchingRuleSchema extends LDAPSchemaElement
                                  boolean obsolete,
                                  String syntaxString)
    {
+      super(LDAPSchema.schemaTypeNames[LDAPSchema.MATCHING]);   
       super.names = (String[]) names.clone();
       super.oid = oid;
       super.description = description;
       super.obsolete = obsolete;
       this.attributes = (String[]) attributes.clone();
       this.syntaxString = syntaxString;
-      super.value = formatString();
+      super.setValue(formatString());
       return;
    }
 
@@ -90,6 +91,7 @@ public class LDAPMatchingRuleSchema extends LDAPSchemaElement
     */
    public LDAPMatchingRuleSchema(String rawMatchingRule,
                                  String rawMatchingRuleUse) {
+    super(LDAPSchema.schemaTypeNames[LDAPSchema.MATCHING]);                                 
     try{
         SchemaParser matchParser = new SchemaParser(rawMatchingRule);
         super.names = (String[])matchParser.getNames().clone();
@@ -101,7 +103,7 @@ public class LDAPMatchingRuleSchema extends LDAPSchemaElement
             SchemaParser matchUseParser = new SchemaParser(rawMatchingRuleUse);
             this.attributes = matchUseParser.getApplies();
         }
-        super.value = formatString();
+        super.setValue(formatString());
     }
     catch( IOException e){
     }

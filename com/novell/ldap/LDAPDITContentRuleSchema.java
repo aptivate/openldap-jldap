@@ -82,6 +82,7 @@ public class LDAPDITContentRuleSchema
                                     String[] optional,
                                     String[] precluded )
     {
+        super(LDAPSchema.schemaTypeNames[LDAPSchema.DITCONTENT]);        
         super.names = (String[]) names.clone();
         super.oid = oid;
         super.description = description;
@@ -90,7 +91,7 @@ public class LDAPDITContentRuleSchema
         this.required = required;
         this.optional = optional;
         this.precluded = precluded;
-        super.value = formatString();
+        super.setValue(formatString());
         return;
     }
 
@@ -103,6 +104,7 @@ public class LDAPDITContentRuleSchema
      */
     public LDAPDITContentRuleSchema(String raw)
     {
+        super(LDAPSchema.schemaTypeNames[LDAPSchema.DITCONTENT]);            
         super.obsolete = false;
         try{
             SchemaParser parser = new SchemaParser( raw );
@@ -129,7 +131,7 @@ public class LDAPDITContentRuleSchema
                 attrQualifier = (AttributeQualifier) qualifiers.nextElement();
                 setQualifier(attrQualifier.getName(), attrQualifier.getValues());
             }
-            super.value = formatString();
+            super.setValue(formatString());
         }
         catch( IOException e){
         }

@@ -19,113 +19,36 @@ import java.util.Enumeration;
 import java.util.NoSuchElementException;
 
 /**
- *  Represents the schema of a particular directory server.
+ *  Represents the schema controlling one or more entries held by a
+ * Directory Server.
  *
  *  @see <a href="../../../../doc/com/novell/ldap/LDAPSchema.html">
             com.novell.ldap.LDAPSchema</a>
  */
-public class LDAPSchema
+public class LDAPSchema extends LDAPEntry
 {
 
     private com.novell.ldap.LDAPSchema schema;
 
-    /**
-     * Constructs an empty LDAPSchema object.
-     *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPSchema.html
-            #LDAPSchema()">
-            com.novell.ldap.LDAPSchema.LDAPSchema()</a>
-     */
-    public LDAPSchema()
-    {
-        schema = new com.novell.ldap.LDAPSchema();
+    /*package*/
+    LDAPSchema( com.novell.ldap.LDAPSchema novellschema){
+        schema = novellschema;
         return;
     }
 
     /**
-     * Retrieves the entire schema from a directory server.
+     * Constructs an LDAPSchema object from the attributes of an LDAPEntry.
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPSchema.html
-            #fetchSchema(com.novell.ldap.LDAPConnection)">
-            com.novell.ldap.LDAPSchema.fetchSchema(LDAPConnection)</a>
+            #LDAPSchema(com.novell.ldap.LDAPEntry)">
+            com.novell.ldap.LDAPSchema.LDAPSchema(LDAPEntry)</a>
      */
-    public void fetchSchema(LDAPConnection ld) throws LDAPException
+    public LDAPSchema(LDAPEntry entry)
     {
-		try {
-            if( ld == null) {
-			    schema.fetchSchema((com.novell.ldap.LDAPConnection)null);
-            } else {
-			    schema.fetchSchema(ld.getWrappedObject());
-            }
-            return;
-		}
-		catch(com.novell.ldap.LDAPException e) {
-			throw new LDAPException(e);
-		}
+        schema = new com.novell.ldap.LDAPSchema(entry.getWrappedObject());
+        return;
     }
 
-    /**
-     * Retrieves the schema in effect at a particular entry in the directory
-     * server.
-     *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPSchema.html
-             #fetchSchema(com.novell.ldap.LDAPConnection, java.lang.String)">
-             com.novell.ldap.LDAPSchema.fetchSchema(LDAPConnection, String)</a>
-     */
-    public void fetchSchema(LDAPConnection ld,
-                            String dn) throws LDAPException
-    {
-		try {
-            if( ld == null) {
-			    schema.fetchSchema((com.novell.ldap.LDAPConnection)null,dn);
-            } else {
-			    schema.fetchSchema(ld.getWrappedObject(),dn);
-            }
-		}
-		catch(com.novell.ldap.LDAPException e) {
-			throw new LDAPException(e);
-		}
-    }
-
-    /**
-     * Saves any schema changes made to this object to a Directory Server.
-     *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPSchema.html
-             #saveSchema(com.novell.ldap.LDAPConnection)">
-             com.novell.ldap.LDAPSchema.saveSchema(LDAPConnection)</a>
-     */
-    public void saveSchema (LDAPConnection ld) throws LDAPException{
-        try {
-            if ( ld == null ){
-                schema.saveSchema((com.novell.ldap.LDAPConnection)null);
-            } else {
-                schema.saveSchema(ld.getWrappedObject());
-            }
-        }
-        catch( com.novell.ldap.LDAPException e) {
-            throw new LDAPException(e);
-        }
-    }
-
-    /**
-     * Saves any schema changes made to this object to a Directory Server.
-     *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPSchema.html
-             #saveSchema(com.novell.ldap.LDAPConnection, java.lang.String)">
-             com.novell.ldap.LDAPSchema.saveSchema(LDAPConnection, String)</a>
-     */
-    public void saveSchema (LDAPConnection ld, String dn) throws LDAPException{
-        try {
-            if ( ld == null ){
-                schema.saveSchema((com.novell.ldap.LDAPConnection)null, dn);
-            } else {
-                schema.saveSchema(ld.getWrappedObject(), dn);
-            }
-        }
-        catch( com.novell.ldap.LDAPException e) {
-            throw new LDAPException(e);
-        }
-    }
 
     /**
      * Returns a particular attribute definition, or null if not found.
@@ -559,35 +482,5 @@ public class LDAPSchema
     public Enumeration getNameFormNames()
     {
         return schema.getNameFormNames();
-    }
-
-    /**
-     * Adds a schema element definition to the schema object.
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPSchema.html
-            #add(com.novell.ldap.LDAPSchemaElement)">
-            com.novell.ldap.LDAPSchema.add(LDAPSchemaElement)</a>
-     */
-    public void add(LDAPSchemaElement element){
-        schema.add(element.getWrappedObject());
-    }
-
-    /**
-     * Modifies a schema element definition to the schema object.
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPSchema.html
-            #modify(com.novell.ldap.LDAPSchemaElement)">
-            com.novell.ldap.LDAPSchema.modify(LDAPSchemaElement)</a>
-     */
-    public void modify( LDAPSchemaElement element ){
-        schema.modify(element.getWrappedObject());
-    }
-
-    /**
-     * Removes a schema element definition from the schema object.
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPSchema.html
-            #remove(com.novell.ldap.LDAPSchemaElement)">
-            com.novell.ldap.LDAPSchema.remove(LDAPSchemaElement)</a>
-     */
-    public void remove( LDAPSchemaElement element ){
-        schema.remove(element.getWrappedObject());
     }
 }

@@ -23,7 +23,7 @@ import java.util.Enumeration;
  *  @see <a href="../../../../doc/com/novell/ldap/LDAPSchemaElement.html">
             com.novell.ldap.LDAPSchemaElement</a>
  */
-public abstract class LDAPSchemaElement
+public abstract class LDAPSchemaElement extends LDAPAttribute
 {
     /* package */
     com.novell.ldap.LDAPSchemaElement schemaElement;
@@ -34,17 +34,9 @@ public abstract class LDAPSchemaElement
     /* package */
     LDAPSchemaElement( com.novell.ldap.LDAPSchemaElement element)
     {
+        super(element);
         schemaElement = element;
         return;
-    }
-
-    /**
-     * Get the Novell class that implements LDAPSchemaElement
-     */
-    /* package */
-    com.novell.ldap.LDAPSchemaElement getWrappedObject( )
-    {
-        return schemaElement;
     }
 
     /**

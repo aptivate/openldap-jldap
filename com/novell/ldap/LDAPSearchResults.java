@@ -25,8 +25,8 @@ import java.util.Enumeration;
 import java.util.NoSuchElementException;
 
 /**
- * <p>An LDAPSearchResults object is returned from a synchronous search 
- * operation. It provides access to all results received during the 
+ * <p>An LDAPSearchResults object is returned from a synchronous search
+ * operation. It provides access to all results received during the
  * operation (entries and exceptions).</p>
  *
  *  <p>Sample Code: <a href="http://developer.novell.com/ndk/doc/samplecode/
@@ -129,7 +129,7 @@ public class LDAPSearchResults
     /**
      * Reports if there are more search results.
      *
-     * @return true if there are more search results. 
+     * @return true if there are more search results.
      */
     public boolean hasMore()
     {
@@ -193,7 +193,7 @@ public class LDAPSearchResults
      *
      * @exception LDAPException A general exception which includes an error
      *                          message and an LDAP error code.
-     * @exception LDAPReferralException A referral was received and not 
+     * @exception LDAPReferralException A referral was received and not
      *                          followed.
      */
     public LDAPEntry next() throws LDAPException
@@ -453,13 +453,13 @@ public class LDAPSearchResults
         resetVectors();
         completed = true;
     }
-    // ##############################################################    
+    // ##############################################################
     // Deprecated methods follow - to be removed in Sep 2003 NDK
-    // ##############################################################    
-    
+    // ##############################################################
+
     /**
      * Reports if there are more search results in the enumeration.
-     
+
      * @deprecated replaced by {@link #hasMore}.  This method will be
      *  removed in the fall 2003 NDK.
      *
@@ -470,7 +470,7 @@ public class LDAPSearchResults
     {
         return hasMore();
     }
-    
+
     /**
      * Returns the next result in the enumeration as an Object.
      *
@@ -552,34 +552,10 @@ public class LDAPSearchResults
     }
 
     /**
-     * Sorts all entries in the results using the provided comparison
-     * object.
-     *
-     * @deprecated replaced by Collections mechanisms. LDAPEntry now 
+     * @deprecated replaced by Collections mechanisms. LDAPEntry now
      * implements the Comparable interface. See {@link LDAPEntry}.
      * This method will be removed in the fall 2003 NDK.
      *
-     * <p>If the object has been partially or completely enumerated,
-     * only the remaining elements are sorted. Sorting the results requires that
-     * they all be present. This implies that LDAPSearchResults.nextElement
-     * method will always block until all results have been retrieved,
-     * after a sort operation.</p>
-     *
-     * <p>The LDAPCompareAttrNames class is provided to support the common need
-     * to collate by single or multiple attribute values, in ascending or
-     * descending order.  Examples: </p>
-     *<ul>
-     *   <li>res.sort(new LDAPCompareAttrNames("cn"));</li>
-     *
-     *   <li>res.sort(new LDAPCompareAttrNames("cn", false));</li>
-     *
-     *   <li>String[] attrNames = { "sn", "givenname" };
-     *   res.sort(new LDAPCompareAttrNames(attrNames));</li>
-     *</ul>
-     *
-     *  @param comp     An object that implements the LDAPEntryComparator
-     *                  interface to compare two objects of type
-     *                  LDAPEntry.
      */
     public void sort(LDAPEntryComparator comp)
     {
@@ -594,16 +570,15 @@ public class LDAPSearchResults
         if (entryIndex < entries.size())
             mergeSort((Vector)entries.clone(),
                             entries, entryIndex, entries.size(), comp);
-        return;       
+        return;
     }
 
     /**
      * @internal
      *
-     * @deprecated replaced by {@link #hasMore}.  This method will be
-     *  removed in the fall 2003 NDK.
+     * @deprecated This method will be removed in the fall 2003 NDK.
      *
-     * Vector Sort Utility function to aide sort
+     * Vector Sort Utility function to aid sort
      * Sorts the source vector into the destination vector according to
      * LDAPEntryComparator.  This sort is a mergesort for large Vectors and an
      * insertion sort for small Vectors.
@@ -656,8 +631,7 @@ public class LDAPSearchResults
     /**
      * @internal
      *
-     * @deprecated replaced by {@link #hasMore}.  This method will be
-     *  removed in the fall 2003 NDK.
+     * @deprecated This method will be removed in the fall 2003 NDK.
      *
      * Util function used by MergeSort.  Swaps the elements at index A with B
      * in the Vector

@@ -22,7 +22,7 @@ package org.ietf.ldap;
  * @see <a href="../../../../doc/com/novell/ldap/LDAPEntry.html">
             com.novell.ldap.LDAPEntry</a>
  */
-public class LDAPEntry
+public class LDAPEntry implements java.lang.Comparable
 {
     private com.novell.ldap.LDAPEntry entry;
     /**
@@ -136,5 +136,16 @@ public class LDAPEntry
     public String getDN()
     {
         return entry.getDN();
+    }
+
+    /**
+     * Compares this object to the specified object for order.
+     *
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPEntry.html
+            #compareTo(java.lang.Object)">
+            com.novell.ldap.LDAPEntry.compareTo(Object)</a>
+     */
+    public int compareTo(Object entry){
+        return this.entry.compareTo( ((LDAPEntry)entry).getWrappedObject() );
     }
 }

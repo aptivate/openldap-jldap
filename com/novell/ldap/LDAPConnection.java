@@ -17,8 +17,6 @@ package com.novell.ldap;
 
 import com.novell.ldap.client.ArrayList;
 import com.novell.ldap.client.ReferralInfo;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -459,23 +457,6 @@ public class LDAPConnection implements Cloneable
     }
 
     /**
-     * @deprecated Not Implemented.
-     */
-    public InputStream getInputStream() {
-        throw new UnsupportedOperationException(
-             "Method LDAPConnection.getInputStream not implemented");
-
-    }
-
-    /**
-     * @deprecated Not Implemented.
-     */
-    public OutputStream getOutputStream() {
-        throw new UnsupportedOperationException(
-             "Method LDAPConnection.getOutputStream not implemented");
-    }
-
-    /**
      * Returns the port number of the LDAP server to which the object is or
      * was last connected.
      *
@@ -640,26 +621,6 @@ public class LDAPConnection implements Cloneable
         }
         defSearchCons = newCons;
         return;
-    }
-
-    /**
-     * @deprecated Not implemented.
-     */
-    public void setInputStream(InputStream stream)
-                throws LDAPException
-    {
-        throw new UnsupportedOperationException(
-             "Method LDAPConnection.setInputStream not implemented");
-    }
-
-    /**
-     * @deprecated Not implemented.
-     */
-    public void setOutputStream(OutputStream stream)
-                throws LDAPException
-    {
-        throw new UnsupportedOperationException(
-             "Method LDAPConnection.setOutputStream not implemented");
     }
 
     /**
@@ -3995,6 +3956,107 @@ public class LDAPConnection implements Cloneable
         }
         return;
     }
+
+    //*************************************************************************
+    // Schema Related methods
+    //*************************************************************************
+
+    /**
+     * Retrieves the schema associated with a particular schema DN in the
+     * directory server.
+     * <p>The schema DN for a particular entry is obtained by calling the
+     * getSchemaDN method of LDAPConnection</p>
+     *
+     * @param    The schema DN used to fetch the schema.
+     *
+     * @return    An LDAPSchema entry containing schema attributes.  If the
+     * entry contains no schema attributes then the returned LDAPSchema object
+     * will be empty.
+     *
+     * @exception LDAPException     This exception occurs if the schema entry
+     *          cannot be retrieved with this connection.
+     * @see #getSchemaDN()
+     * @see #getSchemaDN(String)
+     */
+    public LDAPSchema fetchSchema ( String schemaDN ) throws LDAPException {
+        /* Read the schema definitions.  If no entry is found an
+         * Exception is thrown */
+        LDAPEntry ent = read(schemaDN, LDAPSchema.schemaTypeNames);
+        return new LDAPSchema(ent);
+    }
+
+    /**
+     * Retrieves the Distiguished Name (DN) for the schema advertised in the
+     * root DSE of the Directory Server.
+     *
+     * <p>The DN can be used with the methods fetchSchema and modify to retreive
+     * and extend schema definitions.  The schema entry is located by reading
+     * subschemaSubentry attribute of the root DSE.  This is equivalent to
+     * calling {@link #getSchemaDN(String) } with the DN parameter as an empty
+     * string: <code>getSchemaDN("")</code>.
+     * </p>
+     *
+     *  @return     Distinguished Name of a schema entry in effect for the
+     *              Directory.
+     *  @exception LDAPException     This exception occurs if the schema DN
+     * cannot be retrieved, or if the subschemaSubentry attribute associated
+     * with the root DSE contains multiple values.
+     *
+     *  @see #fetchSchema
+     *  @see #modify
+     */
+    public String getSchemaDN() throws LDAPException {
+        return getSchemaDN("");
+    }
+
+    /**
+     * Retrieves the Distiguished Name (DN) of the schema associated with a
+     * entry in the Directory
+     *
+     * <p>The DN can be used with the methods fetchSchema and modify to retreive
+     * and extend schema definitions.  Reads the subschemaSubentry of the entry
+     * specified.<p>
+     *
+     * @param dn     Distinguished Name of any entry.  The subschemaSubentry
+     *               attribute is queried from this entry.
+     *
+     * @return      Distinguished Name of a schema entry in effect for the entry
+     *               identified by <code>dn</code>.
+     *
+     * @exception LDAPException     This exception occurs if a null or empty
+     * value is passed as dn, if the subschemasubentry attribute cannot
+     * be retrieved, or the subschemasubentry contains multiple values.
+     *
+     *  @see #fetchSchema
+     *  @see #modify
+     */
+    public String getSchemaDN( String dn )
+        throws LDAPException
+    {
+        String attrSubSchema[] = { "subschemaSubentry" };
+
+        /* Read the entries subschemaSubentry attribute. Throws an exception if
+         * no entries are returned. */
+        LDAPEntry ent = this.read( dn, attrSubSchema );
+
+        String schemaDN;
+        LDAPAttribute attr = ent.getAttribute( attrSubSchema[0] );
+        String values[] = attr.getStringValueArray();
+        if( values == null || values.length < 1 ) {
+            throw new LDAPException(
+                ExceptionMessages.NO_SCHEMA,
+                new Object[] { dn },
+                LDAPException.NO_RESULTS_RETURNED);
+        }
+        else if( values.length > 1 ) {
+            throw new LDAPException(
+                ExceptionMessages.MULTIPLE_SCHEMA,
+                new Object[] { dn },
+                LDAPException.CONSTRAINT_VIOLATION);
+        }
+        return values[0];
+   }
+
 
     //*************************************************************************
     // deprecated methods

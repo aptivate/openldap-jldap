@@ -16,12 +16,10 @@
 package com.novell.ldap;
 
 /**
- * An interface to support arbitrary sorting algorithms for entries returned
- * by a search operation.  
- * 
- * <p>The basic Java LDAP classes include one
- * imiplementaton: LDAPCompareAttrNames, to sort in ascending order based
- * on one or more attribute names.
+ * @deprecated replaced by java.util.Comparator.  This interface
+ * has been removed in IETF draft 18 of the Java LDAP API
+ * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed from the API
+ * in the fall of 2003.
  *
  * @see LDAPCompareAttrNames
  */

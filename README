@@ -4,11 +4,12 @@ January 2002
 
 Table of Contents
      1.0  LDAP Classes for Java
-     2.0  Dependencies
-     3.0  Installation
-     4.0  LDAPv2 and LDAPv3 Support
-     5.0  Java LDAP Documentation
-     6.0  Building JLDAP
+     2.0  Known Issues and Solutions
+     3.0  Dependencies
+     4.0  Installation
+     5.0  LDAPv2 and LDAPv3 Support
+     6.0  Java LDAP Documentation
+     7.0  Building JLDAP
 
 1.0  LDAP Classes for Java
 
@@ -24,14 +25,71 @@ Table of Contents
           write applications to access, manage, update, and
           search for information stored in LDAP-aware directories.
 
-          This version follows the IETF draft 15, a work in progress,
-          of the Java Interface for LDAP.
+          This API is a work-in-progress implementing the IETF draft 18
+          of the Java LDAP API (draft-ietf-ldapext-ldap-java-api-18.txt),
+          and as such, most but not all features in the IETF draft are
+          currently implemented.  For details, see section 2.0.
+          
+2.0 Known Issues and Solutions
 
-2.0  Dependencies
+     -    The Java LDAP API IETF 18 draft Features not yet implemented.
+     
+          Classes do not yet extend Serializable
+          
+          The API does not return the exception LDAPLocalException.
+
+          The class LDAPExtendedResponse has not yet implement the register
+          method.
+          
+          The sasl bind methods are not yet implemented.
+          
+     -    An incompatibility with previous versions exists for applicatons
+          using LDAPSchema.getAtribute() and LDAPSchemaElement.getName().
+		  Both methods were deprecated in the May 2002 NDK. These methods
+		  have been removed in this release of the API to comply with IETF
+		  draft version 18 (draft-ietf-ldapext-ldap-java-api-18.txt).
+		  The reason for this change is described in the following text.
+          
+          LDAPSchema now extends LDAPEntry.  This means that LDAPSchema
+		  inherits the getAttribute method from LDAPEntry which has the same
+		  signature as the getAttribute method of LDAPSchema, but the two
+		  methods differ in functionality.  Thus, the getAttribute method of
+		  LDAPSchema has been removed from the IETF draft and from the API
+          in this release.
+
+          To fix your application, use the getAttributeSchema method of
+          LDAPSchema instead of getAttribute.
+
+          The following error will occur when trying to compile code
+          using this deprecated method:
+                    incompatible types;
+                    found: com.novell.ldap.LDAPAttribute,
+                    required: com.novell.ldap.LDAPSchemaElement
+
+          The following error will occur when trying to run code using this
+          deprecated method:
+                    java.lang.NoSuchMethodError
+
+          LDAPSchemaElement now extends LDAPAttribute.  This means that
+		  LDAPSchemaElement inherits the getName method from LDAPAttribute
+		  which has the same signature as the getName method of
+		  LDAPSchemaElement, but the two methods differ in functionality.
+		  Thus, the getName method of LDAPSchemaElement has been removed
+		  from the IETF draft and from the API in this release.
+
+          To fix your application, use the getNames method of
+          LDAPSchemaElement instead of getName.
+
+          Note: You will not get a compile or runtime error if your code
+          uses this deprecated method.  You may, however, get errors trying
+          to intrepret the data returned.
+
+
+3.0  Dependencies
 
      Building the Java LDAP API is dependent upon the following:
 
-     -    JDK 1.1.7 or higher.
+     -    JDK 1.2 or higher.
 
      -    A Sun compliant JSSE implementation, which you place in the
           directory <javasource_home>/external/jsse/lib.  If you obtain
@@ -63,18 +121,19 @@ Table of Contents
      Running an application that uses the LDAP Classes for
      Java is dependent upon the following:
 
-     -    JRE 1.1.7 or higher.
+     -    JRE 1.2 or higher.
 
-     -    JDK 1.2 Standard Edition or higher. Creating a Keystore
-          file for SSL connections requires JDK 1.2 or higher.
+     -    JDK 1.2 Standard Edition or higher.
 
      -    A Sun compliant implementation of JSSE to create SSL
           connections.
 
-     -    The LDAP extensions for naming context and replica management
-          require Novell eDirectory 8.5.
+     -    The LDAP extensions for partition and replica management
+          require Novell eDirectory 8.5 or higher.
 
 3.0  Installation
+
+4.0  Installation
 
      To install the libraries do the following:
      1. Run the build process outlined below.
@@ -85,7 +144,7 @@ Table of Contents
      3. Add the complete path, including the file name, of the
         ldap.jar file to your CLASSPATH.
 
-4.0  LDAPv2 and LDAPv3 Support
+5.0  LDAPv2 and LDAPv3 Support
 
           This version of the LDAP Classes for Java
           supports LDAPv3. Since the consensus in the LDAP
@@ -93,7 +152,7 @@ Table of Contents
           LDAPv3, there is no attempt to ensure that these
           libraries support LDAPv2 servers.
 
-5.0  Java LDAP Documentation
+6.0  Java LDAP Documentation
 
      Building JLDAP generates javadoc for the Java LDAP Classes.
      There are three directories containing javadoc.  The index.html
@@ -114,7 +173,7 @@ Table of Contents
                     new functionality, or modifying existing functionality
                     in the API.
                     
-6.0  Building JLDAP
+7.0  Building JLDAP
 
 JLDAP is built using a system developed by jakarta.apache.org called ANT.
 
@@ -131,8 +190,8 @@ For Win32
         set ANT_HOME=d:\jldap\external\ant
         PATH %ANT_HOME%\bin;%JAVA_HOME%\bin;%PATH%
 
-    Note that your SYSTEM path variable (which gets prepended to the above path
-    variable) should not already include the javac.exe compiler.
+    Note that your SYSTEM path variable (which gets prepended to the above
+    path variable) should not already include the javac.exe compiler.
 
 For Linux / Unix
     Assuming the following:

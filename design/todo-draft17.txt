@@ -8,8 +8,8 @@ where the change was made.
 
 The [ ] can contain the following
   - (blank) no one working on feature
-r - (any letter except X) - initial of person working of feature
 X - (capitol X) - complete
+# - number 0-9 indicating completion level. 9 = almost complete 0 = nothing done
 
 Package
 com org
@@ -58,12 +58,12 @@ com org
 [X]          15: Deprecate LDAPBind
     [X]      15: Delete LDAPBind
 
-[ ] [ ] 15: LDAPCompareAttrNames
-[ ] [ ]      15: Implements java.util.Comparator instead of LDAPEntryComparator.
+[X] [X] 15: LDAPCompareAttrNames
+[X] [X]      15: Implements java.util.Comparator instead of LDAPEntryComparator.
 
-[ ] [ ] 13: LDAPConnection
-[ ] [ ] 14: LDAPConnection
-[ ] [ ] 15: LDAPConnection
+[X] [X] 13: LDAPConnection
+[X] [X] 14: LDAPConnection
+[9] [9] 15: LDAPConnection
 [X] [X]      13: bind(): Add signatures that take a byte array
 [X] [X]      14: bind(): Add signatures that take byte[] as password parameter,
 [X]          14: bind(): Deprecate signatures which do not take a version parameter
@@ -91,8 +91,8 @@ com org
     [X]      14: setSearchConstraints(): Remove method
 [X] [X]      15: stopTLS(): add method
 
-[ ] [ ] 13: LDAPConstraints
-[ ] [ ] 15: LDAPConstraints
+[X] [X] 13: LDAPConstraints
+[9] [9] 15: LDAPConstraints
 [X] [X]      15: Implements Cloneable.
 [ ] [ ]      15: Implements Serializable
 [X] [X]      13: getReferralHandler(): Remove method
@@ -125,15 +125,15 @@ com org
 [X] [X]      14: delete modify()
 [X] [X]      14: delete remove()
 
-[ ] [ ] 13: LDAPDN
-[ ] [ ]      13: isValid(): new Method
-[ ] [ ]      13: normalize(): new Method
+[X] [X] 13: LDAPDN
+[X] [X]      13: isValid(): new Method
+[X] [X]      13: normalize(): new Method
 
 [ ] [ ] 15: LDAPEntry
 [ ] [ ]      15: Implements Serializable
 
-[ ] [ ] 15: LDAPEntryComparator
-[ ] [ ]      15: Remove class: LDAPCompareAttrNames implements
+[X] [X] 15: LDAPEntryComparator
+[X] [X]      15: Remove class: LDAPCompareAttrNames implements
                  java.util.Comparator instead.
 
 [ ] [ ] 13: LDAPException
@@ -194,8 +194,8 @@ com org
 [ ] [ ] 15: LDAPModification
 [ ] [ ]      15: Implements Serializable
 
-[ ] [ ] 15: LDAPModificationSet
-[X]          15: Deprecate class 
+[X] [X] 15: LDAPModificationSet
+[X]          15: Deprecate class
     [X]      15: Remove class: (replace with LDAPModification[] as parameter
                  where referenced, see LDAPConnection.modify()).
 
@@ -239,7 +239,7 @@ com org
                  the scope rewritten if necessary (for SearchResultReferences on
                  search continuation).
 
-[ ] [ ] 15: LDAPResponseListener
+[X] [X] 15: LDAPResponseListener
 [X] [X]      15: Rename class to LDAPResponseQueue.
 [X]          15: Deprecate class
     [X]      15: Delete class
@@ -248,7 +248,7 @@ com org
 [X]          15: Deprecate class LDAPResponseListener
     [X]      15: Delete class LDAPResponseListener
 
-[ ] [ ] 15: LDAPSchema
+[9] [9] 15: LDAPSchema
 [ ] [ ]      15: Implements Serializable
 [X] [X]      15: add(): Add method
 [X]          15: Deprecate & Rename getAttribute() to getAttributeSchema()
@@ -288,7 +288,7 @@ com org
 [X] [X]      15: saveSchema(): Add method
 [ ]          17: Remove internal usage of LDAPModificationSet
 
-[ ] [ ] 15: LDAPSchemaElement
+[9] [9] 15: LDAPSchemaElement
 [ ] [ ]      15: Implements Serializable
 [X]          15: add(): Remove method, implementation deprecated in subclass
     [X]      15: add(): Remove method
@@ -318,11 +318,13 @@ com org
     [X]      15: Delete class LDAPSearchListener
 
 [ ] [ ] 15: LDAPSearchResults
-[ ] [ ]      15: No longer implements Enumeration.
+[X] [X]      15: No longer implements Enumeration.
 [ ] [ ]      15: Implements Serializable
-[ ] [ ]      15: nextElement():  Remove method
-[ ] [ ]      15: hasMoreElements(): Rename to hasMore().
-[ ] [ ]      15: sort(): Remove method (sorting can now be done wht classes/interfaces
+[X] [X]      15: nextElement():  Remove method
+[X] [X]      15: hasMoreElements(): Rename to hasMore().
+    [X]      15: sort(): Remove method (sorting can now be done wht classes/interfaces
+                 of the Collections framework now that LDAPAttributeSet implements Set)
+[X]          15: sort(): Deprecate method (sorting can now be done by classes/interfaces
                  of the Collections framework now that LDAPAttributeSet implements Set)
 
 [X] [X] 15: LDAPSocketFactory
@@ -341,8 +343,8 @@ com org
     [X]      14: delete remove()
 [ ]          17: Remove internal usage of LDAPModificationSet
 
-[ ] [ ] 13: LDAPUnsolicitedNotificationListener
-[ ] [ ]      13: The argument to messageReceived() is LDAPExtendedResponse
+[X] [X] 13: LDAPUnsolicitedNotificationListener
+[X] [X]      13: The argument to messageReceived() is LDAPExtendedResponse
                  and not LDAPMessage.
 
 [ ] [ ] 14: LDAPUrl
@@ -356,22 +358,23 @@ com org
                  if no filter specified
 [ ] [ ]      15: getUrl(): Rename to toString().
 
-[ ] [ ] 13: Security Considerations
+[ ] [ ] 13: Security Considerations (Doc issue)
 [ ] [ ]      13: Add implementation guidelines
 
-[ ] [ ] 13: General
+[ ] [ ] 13: General (Doc issue)
 [ ] [ ] 14: General
 [ ] [ ]      13: Many clarifications and editorial changes
 [ ] [ ]      14: Clarifications and editorial changes
 [ ] [ ]
-[ ] [ ] 14: Examples
+
+[ ] [ ] 14: Examples (Doc issue)
 [ ] [ ] 16: Examples
 [ ] [ ]      14: ModifyEmail: Use SASL to bind in synchronous
                  example
 [ ] [ ]      14: ModifyEmail: Use TLS in to bind in asynchronous
                  example
 
-[ ] [ ] 13: Implementation Considerations
+[ ] [ ] 13: Implementation Considerations (Doc issue)
 [ ] [ ] 15: Implementation Considerations
 [ ] [ ]      15: Controls: Remove the specification of package name for controls.
                  The package name may be specified in a follow-on document describing
@@ -383,4 +386,27 @@ com org
 [ ] [ ]      15: Move the package name up to section 1.
 
 ---
+Outline of changes needed to move from IETF Java LDAP API draft
+version 17 to version 18.
+
+Package
+com org   Class                  Description
+
+[X] [X]   LDAPAttribute          Implements Comparable
+[X] [X]   LDAPEntry              implements Comparable
+[X] [X]   LDAPCompareAttrNames   Implements java.util.Comparator
+[X] [X]   LDAPEntryComparator    Deprecate Class
+
+[X] [X]   LDAPConnection         FetchSchema()
+[X] [X]   LDAPConnection         getSchemaDN()
+[X] [X]   LDAPSchema             extends LDAPEntry
+[X] [X]   LDAPSchemaElement      extends LDAPAttribute
+
+[X] [X]   LDAPConnection         Remove stream methods
+
+[ ] [ ]   LDAPLocalException     New class for local exceptions
+
+[ ] [ ]   LDAPExtendedResponse   register()
+
+
 $OpenLDAP$

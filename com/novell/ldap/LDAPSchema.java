@@ -17,47 +17,97 @@ package com.novell.ldap;
 
 import com.novell.ldap.client.Debug;
 import java.util.Enumeration;
-import java.util.Hashtable;
+import java.util.HashMap;
 import com.novell.ldap.resources.ExceptionMessages;
+import com.novell.ldap.client.EnumeratedIterator;
 
 /**
- *  Represents a local copy of the schema that controls one or more entries
- *  held by a Directory Server.
+ * Represents a schema entry that controls one or more entries held by a
+ * Directory Server.
  *
- * <p>The fetchSchema method populates this object with a local copy of schema
- * definitions.  The methods add, modify and remove change the local
- * copy of the schema definitions.  These changes are then commited to the
- * directory by calling the method saveSchema.  The methods fetchSchema and
- * saveSchema are the only methods that interact with the Directory Server.</p>
+ * <p><code>LDAPSchema</code> Contains methods to parse schema attributes into
+ * individual schema definitions, represented by subclasses of
+ * {@link LDAPSchemaElement}.  Schema may be retrieved from a Directory server
+ * with the fetchSchema method of LDAPConnection or by creating an LDAPEntry
+ * containing schema attributes.  The following sample code demonstrates how to
+ * retrieve schema elements from LDAPSchema
+
+ * </p>
+ * <pre><code>
+ *      .
+ *      .
+ *      .
+ *      LDAPSchema schema;
+ *      LDAPSchemaElement element;
  *
- * <p>Other methods use the local copy of the schema to retrieve individual
- * schema definitions, represented by subclasses of
- * <code>LDAPSchemaElement</code>.</p>
+ *      // connect to the server
+ *      lc.connect( ldapHost, ldapPort );
+ *      lc.bind( ldapVersion, loginDN, password );
  *
- * <p>Sample Code: <a href="http://developer.novell.com/ndk/doc/samplecode/
- *jldap_sample/jldap_sample/ExtendSchema.java.html">ExtendSchema.java</p>
+ *      // read the schema from the directory
+ *      schema = lc.fetchSchema( lc.getSchemaDN() );
+ *
+ *      // retrieve the definition of common name
+ *      element = schema.getAttributeSchema( "cn" );
+ *      System.out.println("The attribute cn has an oid of " + element.getID());
+ *      .
+ *      .
+ *      .
+ * </code></pre>
+ *
+ * <p><B>Other sample code:</B>
+ * <DL>
+ *     <DT>Adding and deleting Schema.
+ *     <DD><a href="http://developer.novell.com/ndk/doc/samplecode/
+ *jldap_sample/jldap_sample/ExtendSchema.java.html">ExtendSchema.java</a>
+ *
+ *     <DT>Modifing an existing schema element
+ *     <DD><a href="http://developer.novell.com/ndk/doc/samplecode/
+ *jldap_sample/jldap_sample/MakeContainer.java.html">MakeContainer.java</a>
+ *
+ *     <DT>Listing schema in a GUI
+ *     <DD><a href="http://developer.novell.com/ndk/doc/samplecode/jldap_sample/
+ *jldap_sample/ListSchema.java.html">ListSchema.java</a>
+ *     <DD><a href="http://developer.novell.com/ndk/doc/samplecode/jldap_sample/
+ *schema/ListAttributeSchema.java.html">ListAttributeSchema.java</a>
+ *     <DD><a href="http://developer.novell.com/ndk/doc/samplecode/jldap_sample/
+ *schema/ListObjectClassSchema.java.html">ListObjectClassSchema.java</a>
+
+ * </DL>
+ *
+ *
+ *  </p>
  *
  * @see LDAPSchemaElement
+ * @see LDAPConnection#fetchSchema
+ * @see LDAPConnection#getSchemaDN
  */
-public class LDAPSchema {
+public class LDAPSchema extends LDAPEntry {
 
-    LDAPModificationSet schemaChanges;
+    /**
+     *  @deprecated
+     *  Contains all schema changes created by the deprecated methods: add,
+     *  modify, remove.  When these methods are removed this should also be
+     *  removed.
+     */
+    private LDAPModificationSet schemaChanges = new LDAPModificationSet();
 
     /** The idTable hash on the oid (or integer ID for DITStructureRule) and
      *  is used for retrieving enumerations
      */
-    private Hashtable idTable[] = new Hashtable[8];
+    private HashMap idTable[] = new HashMap[8];
 
     /** The nameTable will hash on the names (if available). To insure
      *  case-insensibility, the Keys for this table will be a String cast to
      *  Uppercase.
      */
-    private Hashtable nameTable[] = new Hashtable[8];
+    private HashMap nameTable[] = new HashMap[8];
 
-    /** The following lists the LDAP names of subschema attributes for
-     *  schema definitions:
+    /**
+     * The following lists the LDAP names of subschema attributes for
+     *  schema elements (definitions):
      */
-    private static final String[] schemaTypeNames =
+    /*package*/ static final String[] schemaTypeNames =
     {
                 "attributeTypes",
                 "objectClasses",
@@ -69,95 +119,51 @@ public class LDAPSchema {
                 "matchingRuleUse"
     };
 
-    /** the following are indexes to the above three arrays */
-    private static final int ATTRIBUTE      = 0;
-    private static final int OBJECT_CLASS   = 1;
-    private static final int SYNTAX         = 2;
-    private static final int NAME_FORM      = 3;
-    private static final int DITCONTENT     = 4;
-    private static final int DITSTRUCTURE   = 5;
-    private static final int MATCHING       = 6;
-    private static final int MATCHING_USE   = 7;
+    /** An index into the the arrays schemaTypeNames, idTable, and nameTable */
+    /*package*/
+    static final int ATTRIBUTE      = 0;
+    /** An index into the the arrays schemaTypeNames, idTable, and nameTable */
+    /*package*/
+    static final int OBJECT_CLASS   = 1;
+    /** An index into the the arrays schemaTypeNames, idTable, and nameTable */
+    /*package*/
+    static final int SYNTAX         = 2;
+    /** An index into the the arrays schemaTypeNames, idTable, and nameTable */
+    /*package*/
+    static final int NAME_FORM      = 3;
+    /** An index into the the arrays schemaTypeNames, idTable, and nameTable */
+    /*package*/
+    static final int DITCONTENT     = 4;
+    /** An index into the the arrays schemaTypeNames, idTable, and nameTable */
+    /*package*/
+    static final int DITSTRUCTURE   = 5;
+    /** An index into the the arrays schemaTypeNames, idTable, and nameTable */
+    /*package*/
+    static final int MATCHING       = 6;
+    /** An index into the the arrays schemaTypeNames, idTable, and nameTable */
+    /*package*/
+    static final int MATCHING_USE   = 7;
 
-   /**
-    * Constructs an empty LDAPSchema object.
-    */
-   public LDAPSchema() {
-        for (int i=0; i< schemaTypeNames.length; i++) {
-            idTable[i]  = new Hashtable();
-            nameTable[i] = new Hashtable();
-        }
-        schemaChanges = new LDAPModificationSet();
-        return;
-   }
-
-   /**
-    * Retrieves the entire schema from a directory server and makes a local
-    * copy of the schema definitions.
-    *
-    * <p>The schema entry is located by reading the Root DSE subschemaSubentry
-    * attribute.  This is equivalent to calling
-    * {@link #fetchSchema(LDAPConnection, String) } with the DN parameter as
-    * an empty string: <code>fetchSchema(ld, "")</code>.
-    *
-    *  @param ld       An open connection to a directory server.
-    *
-    *  @exception LDAPException     This exception occurs if more than one
-    *       subschemaSubentry attribute is found. In which case the result code
-    *       will be CONSTRAINT_VIOLATION.
-    *  @exception LDAPException     This exception also occurs in the
-    *       LDAPConnection.read method if the schema cannot be retrieved with
-    *       the specified connection.
-    */
-   public void fetchSchema(LDAPConnection ld) throws LDAPException
-   {
-        fetchSchema(ld,"");
-        return;
-   }
 
     /**
-     * Retrieves the schema in effect at a particular entry in a directory
-     * server and makes a local copy of the schema definitions.
-     *
-     * <p>The subschemaSubentry attribute of the entry identified by the
-     * distinguished name, <code>dn</code>, is queried to find the location of
-     * the schema definitions in effect for that entry.</p>
-     *
-     *  @param ld       An open connection to a directory server.
-     *<br><br>
-     *  @param dn       The distinguished name of the entry from which to
-     *                  identify schema.
-     *
-     *  @exception LDAPException     This exception occurs if more than one
-     *       subschemaSubentry attribute is found. In which case the result
-     *       code will be CONSTRAINT_VIOLATION.
-     *  @exception LDAPException     This exception also occurs in the
-     *       LDAPConnection.read method if the schema cannot be retrieved with
-     *       the specified connection.
+     * Constructs an LDAPSchema object from attributes of an LDAPEntry.
+     * <p>The object is empty if the entry parameter contains no schema
+     * attributes.  The recognized schema attributes are the following: <br>
+     * <pre><code>
+     *          "attributeTypes", "objectClasses", "ldapSyntaxes",
+     *          "nameForms", "dITContentRules", "dITStructureRules",
+     *          "matchingRules","matchingRuleUse"
+     * </code></pre>
+     * @param entry          An LDAPEntry containing schema information.
      */
-    public void fetchSchema(LDAPConnection ld,
-                           String dn) throws LDAPException
-    {
-        if( Debug.LDAP_DEBUG) {
-            Debug.trace( Debug.apiRequests, "LDAPSchema.fetchSchema()");
-        }
-
+    public LDAPSchema(LDAPEntry ent){
+        super(ent.getDN(), ent.getAttributeSet());
         //reset all definitions
         for (int i=0; i< schemaTypeNames.length; i++) {
-            idTable[i].clear();
-            nameTable[i].clear();
+            idTable[i] = new HashMap();
+            nameTable[i] = new HashMap();
         }
-        schemaChanges = new LDAPModificationSet();
-
-        /* get the subschemaSubentry DN from the ld passed in */
-        String schemaDN = getSchemaDN(ld, dn);
-
-        /* Read the schema definitions.  If no entry is found an
-         * Exception is thrown */
-        LDAPEntry ent = ld.read(schemaDN, this.schemaTypeNames);
-
-        LDAPAttributeSet attrSet = ent.getAttributeSet();
-        Enumeration      en = attrSet.getAttributes();
+        Enumeration en = super.getAttributeSet().getAttributes();
 
         while(en.hasMoreElements()) {
             LDAPAttribute attr = (LDAPAttribute) en.nextElement();
@@ -173,7 +179,7 @@ public class LDAPSchema {
                     }
                     catch (Exception e){
                         if( Debug.LDAP_DEBUG) {
-                            Debug.trace( Debug.apiRequests, "fetchSchema could not "+
+                            Debug.trace( Debug.all, "fetchSchema could not "+
                                 "parse the schema definition:" + value);
                         }
                         continue; //Error parsing: do not add this definition
@@ -250,122 +256,18 @@ public class LDAPSchema {
                     addElement( NAME_FORM, nameFormSchema );
                 }
             }
+            //All non schema attributes are ignored.
             continue;
         }
         return;
     }
 
     /**
-     * Saves any schema changes, made to this local copy of schema, to a
-     * Directory Server.
-     *
-     * </p> This is equivalent to calling
-     * {@link #saveSchema(LDAPConnection, String) } with the DN parameter as an
-     * empty string: <code>saveSchema(ld, "")</code>.
-     * saveSchema will use the Root DSE as the entry at which to find the
-     * subschemaSubentry.  </p>
-     *
-     * <p>All changes are submitted as a single transactional
-     * request to the Directory Server.  This will include all changes which
-     * have been made to the object using the {@link #add add},
-     * {@link #modify modify}, or {@link #remove remove} methods since the
-     * object was contructed or since <code>saveSchema</code> last completed
-     * successfully. </p>
-     *
-     * @param   ld  An open connection to a Directory Server.
-     *
-     * @exception LDAPException     Occurs with the result CONTRAINT_VIOLATION
-     *          if more than one subschemaSubentry value is found in the entry.
-     * @exception LDAPException     Occurs if the schema changes cannot be saved
-     */
-    public void saveSchema (LDAPConnection ld) throws LDAPException
-    {
-        saveSchema(ld, "");
-        return;
-    }
-
-    /**
-     * Saves any schema changes, made to this local copy of schema, to a
-     * Directory Server.
-     *
-     * <p>The subschemaSubentry attribute of the entry identified by the
-     * distinguished name, <code>dn</code>, is queried to find the location of
-     * the schema definitions in effect for that entry.</p>
-     *
-     * </p>All changes are submitted as a single transactional
-     * request to the Directory Server.  This will include all changes which
-     * have been made to the object using the {@link #add add},
-     * {@link #modify modify}, or {@link #remove remove} methods since the
-     * object was contructed or since <code>saveSchema</code> last completed
-     * successfully. </p>
-     *
-     * @exception LDAPException     Occurs with the result CONTRAINT_VIOLATION
-     *          if more than one subschemaSubentry value is found in the entry.
-     * @exception LDAPException     Occurs if the schema changes cannot be saved
-     */
-    public void saveSchema (LDAPConnection ld, String dn) throws LDAPException
-    {
-        String schemaDN = getSchemaDN( ld, dn );
-        if( Debug.LDAP_DEBUG) {
-            Debug.trace( Debug.apiRequests, "LDAPSchema.saveSchema(), " +
-                    "subschemaSubentry of \"" + dn + "\" = " + schemaDN );
-        }
-        ld.modify(schemaDN, schemaChanges );
-
-        //clear schemaChanges
-        schemaChanges = new LDAPModificationSet();
-        return;
-    }
-
-    /**
-     * Reads the subschemaSubentry of the entry specified. Used by fetchSchema
-     * and saveSchema.
-     *
-     * @param ld     An open connection to a directory server.
-     *
-     * @param dn     Distinguished name of any entry.  The subschemaSubentry
-     *               attribute is queried from this entry.
-     *
-     * @return      Distinguished Name of a schema entry in effect for the entry
-     *               identified by <code>dn</code>.
-     *
-     * @exception LDAPException     This exception occurs if more than one
-     *       subschemaSubentry attribute is found. In which case the result code
-     *       will be CONSTRAINT_VIOLATION.
-     */
-    private String getSchemaDN( LDAPConnection ld, String dn )
-        throws LDAPException
-    {
-        String attrSubSchema[] = { "subschemaSubentry" };
-
-        /* Read the entries subschemaSubentry attribute. Throws an exception if
-         * no entries are returned. */
-        LDAPEntry ent = ld.read( dn, attrSubSchema );
-
-        String schemaDN;
-        LDAPAttribute attr = ent.getAttribute( attrSubSchema[0] );
-        String values[] = attr.getStringValueArray();
-        if( values == null || values.length < 1 ) {
-            throw new LDAPException(
-                ExceptionMessages.NO_SCHEMA,
-                new Object[] { dn },
-                LDAPException.NO_RESULTS_RETURNED);
-        }
-        else if( values.length > 1 ) {
-            throw new LDAPException(
-                ExceptionMessages.MULTIPLE_SCHEMA,
-                new Object[] { dn },
-                LDAPException.CONSTRAINT_VIOLATION);
-        }
-        return values[0];
-   }
-
-    /**
-     * Adds the schema definition to the idList and nameList hashTables.
+     * Adds the schema definition to the idList and nameList HashMaps.
      * This method is used by the methods fetchSchema and add.
      *
      * Note that the nameTable has all keys cast to Upper-case.  This is so we
-     * can have a case-insensitive HashTable.  The getXXX (String key) methods
+     * can have a case-insensitive HashMap.  The getXXX (String key) methods
      * will also cast to uppercase.
      *
      * @param schemaType    Type of schema definition, use one of the final
@@ -395,7 +297,7 @@ public class LDAPSchema {
      * <code>getXXX(String name)</code> functions.
      *
      * <p>Note that the nameTable has all keys cast to Upper-case.  This is so
-     * we can have a case-insensitive HashTable.  The getXXX (String key)
+     * we can have a case-insensitive HashMap.  The getXXX (String key)
      * methods will also cast to uppercase.</p>
      *
      * <p>The first character of a NAME string can only be an alpha character
@@ -550,7 +452,8 @@ public class LDAPSchema {
      */
     public Enumeration getAttributeSchemas()
     {
-        return idTable[ATTRIBUTE].elements();
+        return new EnumeratedIterator (
+                idTable[ATTRIBUTE].values().iterator());
     }
 
     /**
@@ -560,7 +463,8 @@ public class LDAPSchema {
      */
     public Enumeration getDITContentRuleSchemas()
     {
-        return idTable[DITCONTENT].elements();
+        return new EnumeratedIterator (
+                idTable[DITCONTENT].values().iterator() );
     }
 
     /**
@@ -570,7 +474,8 @@ public class LDAPSchema {
      */
     public Enumeration getDITStructureRuleSchemas()
     {
-        return idTable[DITSTRUCTURE].elements();
+        return new EnumeratedIterator (
+                idTable[DITSTRUCTURE].values().iterator() );
     }
 
     /**
@@ -580,7 +485,8 @@ public class LDAPSchema {
      */
     public Enumeration getMatchingRuleSchemas()
     {
-        return idTable[MATCHING].elements();
+        return new EnumeratedIterator (
+                idTable[MATCHING].values().iterator() );
     }
 
     /**
@@ -590,7 +496,8 @@ public class LDAPSchema {
      */
     public Enumeration getMatchingRuleUseSchemas()
     {
-        return idTable[MATCHING_USE].elements();
+        return new EnumeratedIterator (
+                idTable[MATCHING_USE].values().iterator() );
     }
 
     /**
@@ -600,7 +507,8 @@ public class LDAPSchema {
      */
     public Enumeration getNameFormSchemas()
     {
-        return idTable[NAME_FORM].elements();
+        return new EnumeratedIterator (
+                idTable[NAME_FORM].values().iterator() );
     }
 
     /**
@@ -610,7 +518,8 @@ public class LDAPSchema {
      */
     public Enumeration getObjectClassSchemas()
     {
-        return idTable[OBJECT_CLASS].elements();
+        return new EnumeratedIterator (
+                idTable[OBJECT_CLASS].values().iterator() );
     }
 
     /**
@@ -620,7 +529,8 @@ public class LDAPSchema {
      */
     public Enumeration getSyntaxSchemas()
     {
-        return idTable[SYNTAX].elements();
+        return new EnumeratedIterator (
+                idTable[SYNTAX].values().iterator() );
     }
 
 // #######################################################################
@@ -634,7 +544,8 @@ public class LDAPSchema {
      */
     public Enumeration getAttributeNames()
     {
-        return nameTable[ATTRIBUTE].keys();
+        return new EnumeratedIterator (
+                nameTable[ATTRIBUTE].keySet().iterator() );
     }
 
     /**
@@ -644,7 +555,8 @@ public class LDAPSchema {
      */
     public Enumeration getDITContentRuleNames()
     {
-        return nameTable[DITCONTENT].keys();
+        return new EnumeratedIterator (
+                nameTable[DITCONTENT].keySet().iterator() );
     }
 
     /**
@@ -654,7 +566,8 @@ public class LDAPSchema {
      */
     public Enumeration getDITStructureRuleNames()
     {
-        return nameTable[DITSTRUCTURE].keys();
+        return new EnumeratedIterator (
+                nameTable[DITSTRUCTURE].keySet().iterator() );
     }
 
     /**
@@ -664,7 +577,8 @@ public class LDAPSchema {
      */
     public Enumeration getMatchingRuleNames()
     {
-        return nameTable[MATCHING].keys();
+        return new EnumeratedIterator (
+                nameTable[MATCHING].keySet().iterator() );
     }
 
     /**
@@ -674,7 +588,8 @@ public class LDAPSchema {
      */
     public Enumeration getMatchingRuleUseNames()
     {
-        return nameTable[MATCHING_USE].keys();
+        return new EnumeratedIterator (
+                nameTable[MATCHING_USE].keySet().iterator() );
     }
 
     /**
@@ -684,7 +599,8 @@ public class LDAPSchema {
      */
     public Enumeration getNameFormNames()
     {
-        return nameTable[NAME_FORM].keys();
+        return new EnumeratedIterator (
+                nameTable[NAME_FORM].keySet().iterator() );
     }
 
     /**
@@ -694,129 +610,10 @@ public class LDAPSchema {
      */
     public Enumeration getObjectClassNames()
     {
-        return nameTable[OBJECT_CLASS].keys();
+        return new EnumeratedIterator (
+                nameTable[OBJECT_CLASS].keySet().iterator() );
     }
 
-
-// #######################################################################
-//  The following methods add, modify, and remove schema definitions
-// #######################################################################
-
-    /**
-     * Adds a schema element definition to the local copy of schema in this
-     * object.
-     *
-     * <p>Changes to schema by this and other methods are not commited to a
-     * directory server until the method {@link #saveSchema} is called. </p>
-     *
-     * @param element   Definition of a schema element to be added to this
-     *                  schema object.
-     * @exception IllegalArgumentException
-     *                  if the schema object already contains an element of the
-     *                  same name or OID.
-     * @see #saveSchema
-     */
-    public void add(LDAPSchemaElement element)
-    {
-        if( Debug.LDAP_DEBUG) {
-            Debug.trace( Debug.apiRequests, "LDAPSchema.add()");
-        }
-
-        /* first decide which hashTables to use */
-        int schemaType = getType( element );
-
-        // Check if the names or OID is already used (in that schema type)
-        if( this.idTable[schemaType].containsKey( element.getID() ))
-            throw new IllegalArgumentException(
-                "The ID, "+ element.getID() +", is already in use");
-
-        String names[] = element.getNames();
-        for (int i=0; i<names.length; i++) {
-            if( idTable[schemaType].containsKey( names[i].toUpperCase() ))
-                throw new IllegalArgumentException(
-                        "The name, " + names[i] +", is already in use");
-        }
-
-        /* The element's id and names are unique. Add it to the idTable, and
-            namesTable (via addElement), and add the change to schemaChanges.*/
-        addElement( schemaType, element );
-        LDAPAttribute schemaDef =
-             new LDAPAttribute(schemaTypeNames[schemaType], element.toString());
-        schemaChanges.add( LDAPModification.ADD, schemaDef );
-        return;
-    }
-
-    /**
-     * Modifies a schema element definition to the local copy schema in this
-     * object.
-     *
-     * <p>The element that has the same schema type and OID as
-     * <code>element</code> is replaced by the element specified.  If the
-     * schema object does not contain an element with the schema type and OID
-     * of <code>element,</code> it is added.</p>
-     *
-     * <p>Changes to schema by this and other methods are not commited to a
-     * directory server until the method {@link #saveSchema} is called. </p>
-     *
-     * @param element   A non-null schema definition
-     * @see #saveSchema
-     */
-    public void modify( LDAPSchemaElement element )
-    {
-        if( Debug.LDAP_DEBUG) {
-            Debug.trace( Debug.apiRequests, "LDAPSchema.modify()");
-        }
-        int schemaType = getType( element );
-
-        // Locate the old Definition
-        LDAPSchemaElement oldElement =
-            (LDAPSchemaElement) idTable[schemaType].get( element.getID() );
-
-        if( oldElement != null)
-            remove( oldElement );
-        add ( element );
-        return;
-    }
-
-    /**
-     * Removes a schema element definition from the local copy of schema in
-     * this object.
-     *
-     * <p>If the schema object does not contain an element with the same schema
-     * type and OID as <code>element</code>, nothing happens. </p>
-     *
-     * <p>Changes to schema by this and other methods are not commited to a
-     * directory server until the method {@link #saveSchema} is called. </p>
-     *
-     * @param element   A non-null schema definition
-     * @see #saveSchema
-     */
-    public void remove( LDAPSchemaElement element )
-    {
-        if( Debug.LDAP_DEBUG) {
-            Debug.trace( Debug.apiRequests, "LDAPSchema.remove()");
-        }
-        int schemaType = getType( element );
-
-        // Remove from the ID list
-        if( idTable[schemaType].containsKey( element.getID() )) {
-             idTable[schemaType].remove( element.getID() );
-
-            // Remove from the Names list
-            String names[] = element.getNames();
-            for (int i=0; i< names.length; i++) {
-                if( nameTable[schemaType].containsKey( names[i] )) {
-                    nameTable[schemaType].remove( names[i].toUpperCase() ) ;
-                }
-            }
-            /* Save this deletion to schemaChanges */
-            LDAPAttribute schemaDef =
-                 new LDAPAttribute( schemaTypeNames[schemaType],
-                                    element.toString() );
-            this.schemaChanges.add( LDAPModification.DELETE, schemaDef );
-        }
-        return;
-    }
 
     /**
      * This helper function returns a number that represents the type of schema
@@ -856,17 +653,6 @@ public class LDAPSchema {
 // #######################################################################
 //  The following methods are deprecated and will be removed Fall 2003
 // #######################################################################
-
-    /**
-     *  @deprecated replaced by {@link #getAttributeSchema}.  This method
-     *  has been renamed to getAttributeSchema in IETF draft 17 of the Java LDAP
-     *  API (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-     *  in fall of 2003.
-     */
-    public LDAPAttributeSchema getAttribute(String name)
-    {
-        return this.getAttributeSchema(name);
-    }
 
     /**
      *  @deprecated replaced by {@link #getAttributeSchemas}.  This method
@@ -1030,5 +816,184 @@ public class LDAPSchema {
     public Enumeration getSyntaxes()
     {
         return this.getSyntaxSchemas();
+    }
+
+/***********************changes since draft 17*******************/
+
+    /**
+     *  @deprecated replaced by {@link #LDAPSchema(LDAPEntry)} and
+     *  {@link LDAPConnection#fetchSchema}.  This method
+     *  has been removed in IETF draft 18 of the Java LDAP API
+     *  (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
+     *  in fall of 2003.
+     */
+    public LDAPSchema() {
+        for (int i=0; i< schemaTypeNames.length; i++) {
+            idTable[i]  = new HashMap();
+            nameTable[i] = new HashMap();
+        }
+        return;
+    }
+
+   /**
+     *  @deprecated replaced by {@link LDAPConnection#fetchSchema}.  This method
+     *  has been removed in IETF draft 18 of the Java LDAP API
+     *  (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
+     *  in fall of 2003.
+    */
+   public void fetchSchema(LDAPConnection ld) throws LDAPException
+   {
+        fetchSchema(ld,"");
+        return;
+   }
+
+    /**
+     *  @deprecated replaced by {@link LDAPConnection#fetchSchema}.  This method
+     *  has been removed in IETF draft 18 of the Java LDAP API
+     *  (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
+     *  in fall of 2003.
+     */
+    public void fetchSchema(LDAPConnection ld, String dn) throws LDAPException
+    {
+        if( Debug.LDAP_DEBUG) {
+            Debug.trace( Debug.apiRequests, "LDAPSchema.fetchSchema()");
+        }
+        LDAPSchema newschema = ld.fetchSchema( ld.getSchemaDN(dn) );
+        this.dn = newschema.dn;
+        this.attrs = newschema.attrs;
+        return;
+    }
+    /**
+     *  @deprecated LDAPSchemaElement now extends LDAPAttribute and can be
+     *  used directly with {@link LDAPModification} This method
+     *  has been removed in IETF draft 18 of the Java LDAP API
+     *  (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
+     *  in fall of 2003.
+     */
+    public void saveSchema (LDAPConnection ld) throws LDAPException
+    {
+        saveSchema(ld, "");
+        return;
+    }
+
+    /**
+     *  @deprecated LDAPSchemaElement now extends LDAPAttribute and can be
+     *  used directly with {@link LDAPModification} This method
+     *  has been removed in IETF draft 18 of the Java LDAP API
+     *  (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
+     *  in fall of 2003.
+     */
+    public void saveSchema (LDAPConnection ld, String dn) throws LDAPException
+    {
+        String schemaDN = ld.getSchemaDN( dn );
+        if( Debug.LDAP_DEBUG) {
+            Debug.trace( Debug.apiRequests, "LDAPSchema.saveSchema(), " +
+                    "subschemaSubentry of \"" + dn + "\" = " + schemaDN );
+        }
+        ld.modify(schemaDN, schemaChanges );
+
+        //clear schemaChanges
+        schemaChanges = new LDAPModificationSet();
+        return;
+    }
+
+// #######################################################################
+//  The following methods add, modify, and remove schema definitions
+// ########################################################################
+
+    /**
+     *  @deprecated LDAPSchemaElement now extends LDAPAttribute and can be
+     *  used directly with {@link LDAPModification} This method
+     *  has been removed in IETF draft 18 of the Java LDAP API
+     *  (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
+     *  in fall of 2003.
+     */
+
+    public void add(LDAPSchemaElement element)
+    {
+        if( Debug.LDAP_DEBUG) {
+            Debug.trace( Debug.apiRequests, "LDAPSchema.add()");
+        }
+
+        /* first decide which HashMaps to use */
+        int schemaType = getType( element );
+
+        // Check if the names or OID is already used (in that schema type)
+        if( this.idTable[schemaType].containsKey( element.getID() ))
+            throw new IllegalArgumentException(
+                "The ID, "+ element.getID() +", is already in use");
+
+        String names[] = element.getNames();
+        for (int i=0; i<names.length; i++) {
+            if( idTable[schemaType].containsKey( names[i].toUpperCase() ))
+                throw new IllegalArgumentException(
+                        "The name, " + names[i] +", is already in use");
+        }
+
+        /* The element's id and names are unique. Add it to the idTable, and
+            namesTable (via addElement), and add the change to schemaChanges.*/
+        addElement( schemaType, element );
+        LDAPAttribute schemaDef =
+             new LDAPAttribute(schemaTypeNames[schemaType], element.toString());
+        schemaChanges.add( LDAPModification.ADD, schemaDef );
+        return;
+    }
+
+    /**
+     *  @deprecated LDAPSchemaElement now extends LDAPAttribute and can be
+     *  used directly with {@link LDAPModification} This method
+     *  has been removed in IETF draft 18 of the Java LDAP API
+     *  (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
+     *  in fall of 2003.
+     */
+    public void modify( LDAPSchemaElement element )
+    {
+        if( Debug.LDAP_DEBUG) {
+            Debug.trace( Debug.apiRequests, "LDAPSchema.modify()");
+        }
+        int schemaType = getType( element );
+
+        // Locate the old Definition
+        LDAPSchemaElement oldElement =
+            (LDAPSchemaElement) idTable[schemaType].get( element.getID() );
+
+        if( oldElement != null)
+            remove( oldElement );
+        add ( element );
+        return;
+    }
+
+    /**
+     *  @deprecated LDAPSchemaElement now extends LDAPAttribute and can be
+     *  used directly with {@link LDAPModification} This method
+     *  has been removed in IETF draft 18 of the Java LDAP API
+     *  (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
+     *  in fall of 2003.
+     */
+    public void remove( LDAPSchemaElement element )
+    {
+        if( Debug.LDAP_DEBUG) {
+            Debug.trace( Debug.apiRequests, "LDAPSchema.remove()");
+        }
+        int schemaType = getType( element );
+
+        // Remove from the ID list
+        if( idTable[schemaType].containsKey( element.getID() )) {
+             idTable[schemaType].remove( element.getID() );
+
+            // Remove from the Names list
+            String names[] = element.getNames();
+            for (int i=0; i< names.length; i++) {
+                if( nameTable[schemaType].containsKey( names[i] )) {
+                    nameTable[schemaType].remove( names[i].toUpperCase() ) ;
+                }
+            }
+            /* Save this deletion to schemaChanges */
+            LDAPAttribute schemaDef =
+                 new LDAPAttribute( schemaTypeNames[schemaType],
+                                    element.toString() );
+            this.schemaChanges.add( LDAPModification.DELETE, schemaDef );
+        }
+        return;
     }
 }

@@ -71,6 +71,7 @@ public class LDAPNameFormSchema
                               String[] required,
                               String[] optional)
     {
+        super(LDAPSchema.schemaTypeNames[LDAPSchema.NAME_FORM]);
         super.names = (String[]) names.clone();
         super.oid = oid;
         super.description = description;
@@ -78,7 +79,7 @@ public class LDAPNameFormSchema
         this.objectClass = objectClass;
         this.required = (String[])required.clone();
         this.optional = (String[])optional.clone();
-        super.value = formatString();
+        super.setValue( formatString() );
         return;
     }
 
@@ -94,6 +95,7 @@ public class LDAPNameFormSchema
      */
     public LDAPNameFormSchema(String raw)
     {
+        super(LDAPSchema.schemaTypeNames[LDAPSchema.NAME_FORM]);    
         super.obsolete = false;
         try{
             SchemaParser parser = new SchemaParser( raw );
@@ -117,7 +119,7 @@ public class LDAPNameFormSchema
                 attrQualifier = (AttributeQualifier) qualifiers.nextElement();
                 setQualifier(attrQualifier.getName(), attrQualifier.getValues());
             }
-            super.value = formatString();
+            super.setValue( formatString() );
         }
         catch( IOException e){
         }

@@ -18,8 +18,6 @@ package org.ietf.ldap;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -355,32 +353,6 @@ public class LDAPConnection implements Cloneable
     }
 
     /**
-     * Returns the stream used by the connection object for receiving data
-     * from the LDAP server.
-     *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #getInputStream()">
-            com.novell.ldap.LDAPConnection.getInputStream()</a>
-     */
-    public InputStream getInputStream()
-    {
-        return conn.getInputStream();
-    }
-
-    /**
-     * Returns the stream used by the connection object to send data to the
-     * LDAP server.
-     *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #getOutputStream()">
-            com.novell.ldap.LDAPConnection.getOutputStream()</a>
-     */
-    public OutputStream getOutputStream()
-    {
-        return conn.getOutputStream();
-    }
-
-    /**
      * Returns the port number of the LDAP server to which the object is or
      * was last connected.
      *
@@ -487,44 +459,6 @@ public class LDAPConnection implements Cloneable
     public void setConstraints(LDAPConstraints cons)
     {
         conn.setConstraints( cons.getWrappedObject());
-        return;
-    }
-
-    /**
-     * Sets the stream used by the connection object for receiving data from
-     * the LDAP server.
-     *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #setInputStream(java.io.InputStream)">
-            com.novell.ldap.LDAPConnection.setInputStream(InputStream)</a>
-     */
-    public void setInputStream(InputStream stream)
-                throws LDAPException
-    {
-        try {
-            conn.setInputStream(stream);
-        } catch( com.novell.ldap.LDAPException ex) {
-            throw new LDAPException( ex);
-        }
-        return;
-    }
-
-    /**
-     * Sets the stream used by the connection object to send data to the
-     * LDAP server.
-     *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #setOutputStream(java.io.OutputStream)">
-            com.novell.ldap.LDAPConnection.setOutputStream(OutputStream)</a>
-     */
-    public void setOutputStream(OutputStream stream)
-                throws LDAPException
-    {
-        try {
-            conn.setOutputStream(stream);
-        } catch( com.novell.ldap.LDAPException ex) {
-            throw new LDAPException( ex);
-        }
         return;
     }
 
@@ -1655,7 +1589,7 @@ public class LDAPConnection implements Cloneable
         throws LDAPException
     {
         try {
-            com.novell.ldap.LDAPModification[] lmods = 
+            com.novell.ldap.LDAPModification[] lmods =
                             new com.novell.ldap.LDAPModification[mods.length];
             for( int i = 0; i< mods.length; i++) {
                 lmods[i] = mods[i].getWrappedObject();
@@ -1688,7 +1622,7 @@ public class LDAPConnection implements Cloneable
         throws LDAPException
     {
         try {
-            com.novell.ldap.LDAPModification[] lmods = 
+            com.novell.ldap.LDAPModification[] lmods =
                             new com.novell.ldap.LDAPModification[mods.length];
             for( int i = 0; i< mods.length; i++) {
                 lmods[i] = mods[i].getWrappedObject();
@@ -1786,7 +1720,7 @@ public class LDAPConnection implements Cloneable
         throws LDAPException
     {
         try {
-            com.novell.ldap.LDAPModification[] lmods = 
+            com.novell.ldap.LDAPModification[] lmods =
                             new com.novell.ldap.LDAPModification[mods.length];
             for( int i = 0; i< mods.length; i++) {
                 lmods[i] = mods[i].getWrappedObject();
@@ -1821,7 +1755,7 @@ public class LDAPConnection implements Cloneable
         throws LDAPException
     {
         try {
-            com.novell.ldap.LDAPModification[] lmods = 
+            com.novell.ldap.LDAPModification[] lmods =
                             new com.novell.ldap.LDAPModification[mods.length];
             for( int i = 0; i< mods.length; i++) {
                 lmods[i] = mods[i].getWrappedObject();
@@ -2448,6 +2382,58 @@ public class LDAPConnection implements Cloneable
             } else {
                 throw new LDAPException( ex);
             }
+        }
+    }
+
+    /**
+     * Retrieves the schema associated with a particular schema DN in the
+     * Directory server.
+     *
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
+            #fetchSchema(java.lang.String)">
+            com.novell.ldap.LDAPConnection.fetchSchema(String)</a>
+     */
+    public LDAPSchema fetchSchema(String schemaDN) throws LDAPException {
+        try{
+            return new LDAPSchema( conn.fetchSchema(schemaDN) );
+        }
+        catch (com.novell.ldap.LDAPException novellException){
+            throw new LDAPException(novellException);
+        }
+    }
+
+    /**
+     * Retrieves the DN for the schema at the root DSE of the Directory Server.
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
+            #getSchemaDN()">
+            com.novell.ldap.LDAPConnection.getSchemaDN()</a>
+     */
+    public String getSchemaDN()
+            throws LDAPException
+    {
+        try{
+            return conn.getSchemaDN();
+        }
+        catch (com.novell.ldap.LDAPException novellException){
+            throw new LDAPException(novellException);
+        }
+    }
+
+    /**
+     * Retrieves the DN of the schema associated with a particular entry in
+     * the directory.
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
+            #getSchemaDN(java.lang.String)">
+            com.novell.ldap.LDAPConnection.getSchemaDN(String)</a>
+     */
+    public String getSchemaDN(String entryDN)
+            throws LDAPException
+    {
+        try{
+            return conn.getSchemaDN(entryDN);
+        }
+        catch (com.novell.ldap.LDAPException novellException){
+            throw new LDAPException(novellException);
         }
     }
 }

@@ -89,6 +89,7 @@ public class LDAPObjectClassSchema extends LDAPSchemaElement{
                                 int type,
                                 boolean obsolete)
     {
+        super(LDAPSchema.schemaTypeNames[LDAPSchema.OBJECT_CLASS]);
         super.names = (String[]) names.clone();
         super.oid = oid;
         super.description = description;
@@ -103,7 +104,7 @@ public class LDAPObjectClassSchema extends LDAPSchemaElement{
         if( optional != null){
             this.optional = (String[]) optional.clone();
         }
-        super.value = formatString();
+        super.setValue(formatString());
         return;
    }
 
@@ -118,6 +119,7 @@ public class LDAPObjectClassSchema extends LDAPSchemaElement{
     */
     public LDAPObjectClassSchema(String raw)
     {
+        super(LDAPSchema.schemaTypeNames[LDAPSchema.OBJECT_CLASS]);
         try{
             SchemaParser parser = new SchemaParser( raw );
 
@@ -142,7 +144,7 @@ public class LDAPObjectClassSchema extends LDAPSchemaElement{
                 attrQualifier = (AttributeQualifier) qualifiers.nextElement();
                 setQualifier(attrQualifier.getName(), attrQualifier.getValues());
             }
-            super.value = formatString();
+            super.setValue( formatString() );
         }
         catch( IOException e){
         }
@@ -592,6 +594,7 @@ public class LDAPObjectClassSchema extends LDAPSchemaElement{
                                 String[] aliases,
                                 boolean obsolete)
    {
+      super(LDAPSchema.schemaTypeNames[LDAPSchema.OBJECT_CLASS]);
       int aliasLength = 0;
       if (aliases != null)
         aliasLength = aliases.length;
@@ -623,6 +626,6 @@ public class LDAPObjectClassSchema extends LDAPSchemaElement{
            this.optional[i] = optional[i];
         }
       }
-      super.value = formatString();
+      super.setValue( formatString() );
    }
 }

@@ -17,7 +17,7 @@ package com.novell.ldap;
 
 /**
  * Represents a single entry in a directory, consisting of
- * a distinguished name (DN) and zero or more attributes. 
+ * a distinguished name (DN) and zero or more attributes.
  *
  * <p>An instance of
  * LDAPEntry is created in order to add an entry to a directory, and
@@ -27,10 +27,10 @@ package com.novell.ldap;
  * @see LDAPAttribute
  * @see LDAPAttributeSet
  */
-public class LDAPEntry {
+public class LDAPEntry implements java.lang.Comparable {
 
-   private String dn;
-   private LDAPAttributeSet attrs;
+   protected String dn;
+   protected LDAPAttributeSet attrs;
 
    /**
     * Constructs an empty entry.
@@ -135,4 +135,21 @@ public class LDAPEntry {
       return dn;
    }
 
+   /**
+    * Compares this object with the specified object for order.
+    *
+    * <p>Ordering is determined by comparing normalized DN values
+    * (see {@link LDAPEntry#getDN() } and
+    * {@link LDAPDN#normalize(java.lang.String)}) using the
+    * compareTo method of the String class.  </p>
+    *
+    * @param entry     Entry to compare to
+    *
+    * @return          A negative integer, zero, or a positive integer as this
+    * object is less than, equal to, or greater than the specified object.
+    */
+   public int compareTo(Object entry){
+       return LDAPDN.normalize( this.dn ).compareTo(
+                   LDAPDN.normalize( ((LDAPEntry)entry).dn ) );
+   }
 }

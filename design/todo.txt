@@ -18,20 +18,20 @@ Please read:
 
 Java LDAP API Projects (not in any order)
 ---------------------
-    Implement the startTLS & stopTLS methods in LDAPConnection.
-    
     Implement the sasl bind methods in LDAPConnection.
-    
-    IETF Draft 17 support.  Currently the code is somewhere around
-         draft 14.  For the complete list of draft 17 changes, see
+
+    IETF Draft 18 support.  Currently the code is somewhere close to draft
+         17.  For the complete list of draft 18 changes, see
          the file jldap/design/todo-draft17.txt.
-    
+
     Implement a generalized response factory for LDAP Extended responses.
-       See the register command for LDAPControls as an example.  Right
-       generation of LDAPExtendedResponse classes is hard coded in
+       We need to implement the new register command for LDAPExtendedResponses. 
+       Right now generation of LDAPExtendedResponse classes is hard coded in
        com/novell/ldap/client/ExtResponseFactory.java.
-    
-    Create Utility classes for reading and writing LDIF.
+
+    Create Utility classes for reading and writing LDIF and/or DSML
+
+    Add support for Extended Partial Response
     
 Implementation Notes
 --------------------
@@ -40,12 +40,12 @@ Implementation Notes
     defined the the IETF Java LDAP API draft.  These classes are adapters
     to the com.novell.ldap classes.  We do not deprecate methods and
     classes eliminated by changes to the ITEF draft, we just remove them.
-    
+
     The com.novell.ldap classes implement the functionality defined in
     the LDAP API draft as well as additional functionality we feel is
     useful.  Methods or classes that are removed by changes to the IETF
     draft are deprecated.
-    
+
     Note: All enhancements and updates should include appropriate Javadoc.
 
 ---

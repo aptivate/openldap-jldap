@@ -25,19 +25,21 @@ import com.novell.ldap.resources.*;
 /**
  *  Compares LDAP entries based on attribute name.
  *
- *  An object of this class supports sorting search results by attribute
- *  name, in ascending or descending order. Sorting is by locale-
- *  sensitive Java String comparison, which may not correspond to the
- *  LDAP ordering rules by which an LDAP server would sort them.
+ *  <p>An object of this class defines ordering when sorting LDAPEntries,
+ * usually from search results.  When using this Comparator, LDAPEntry objects
+ * are sorted by the attribute names(s) passed in on the
+ * constructor, in ascending or descending order.  The object is typically
+ * supplied to an implementation of the collection interfaces such as
+ * java.util.TreeSet which performs sorting. </p>
  *
- *  <p>Note: Novell eDirectory LDAP server supports only ascending sort order
- *  (A,B,C ...) and allows sorting only by one attribute. The directory server
- *  must also be configured to index this attribute.</p>
+ *  <p>Comparison is performed via locale-sensitive Java String comparison,
+ * which may not correspond to the LDAP ordering rules by which an LDAP server
+ * would sort them.
  *
- *  @see LDAPEntryComparator
- *  @see LDAPSearchResults#sort
  */
-public class LDAPCompareAttrNames implements LDAPEntryComparator {
+public class LDAPCompareAttrNames
+        implements java.util.Comparator, LDAPEntryComparator
+{
    private String[] sortByNames;        //names to to sort by.
    private boolean[] sortAscending;     //true if sorting ascending
    private Locale location = Locale.getDefault();
@@ -156,19 +158,22 @@ public class LDAPCompareAttrNames implements LDAPEntryComparator {
    }
 
    /**
-    * Returns true if entry1 is to be considered greater than entry2, for
-    * the purpose of sorting, based on the attribute name or names provided
-    * on object construction.  Currently multivalues attributes compare on the
-    * first value only.  If all attributes to be compared to are the same then
-    * isGreater returns true.
+    * Compares the the attributes of the first LDAPEntry to the second.
+    * <p>Only the values of the attributes named at the construction of this
+    * object will be compared.  Multi-valued attributes compare on the first
+    * value only.  </p>
     *
     * @param entry1         Target entry for comparison.
-    *<br><br>
+    *
     * @param entry2         Entry to be compared to.
     *
-    * @return True if entry1 is greater than enter2; otherwise, false.
+    * @return     Negative value if the first entry is less than the second and
+    * positive if the first is greater than the second.  Zero is returned if all
+    * attributes to be compared are the same.
     */
-   public boolean isGreater (LDAPEntry entry1, LDAPEntry entry2) {
+   public int compare (Object object1, Object object2) {
+      LDAPEntry entry1 = (LDAPEntry)object1;
+      LDAPEntry entry2 = (LDAPEntry)object2;
       LDAPAttribute one, two;
       String[] first;   //multivalued attributes are ignored.
       String[] second;  //we just use the first element
@@ -198,14 +203,54 @@ public class LDAPCompareAttrNames implements LDAPEntryComparator {
          i++;
       } while ((compare == 0) && (i < sortByNames.length));
 
-      if (compare > 0){
-         return sortAscending[i-1];
-         //if we sort up then entry1 is greater otherwise it is lesser
+      if (sortAscending[i-1]){
+          // return the normal ascending comparison.
+          return compare;
       }
-      else if (compare < 0){
-         return !sortAscending[i-1];
-         //if we sort up then entry1 is lesser otherwise it is greater
+      else{
+          // negate the comparison for a descending comparison.
+          return - compare;
       }
-      else return false; //trivial ordering
+   }
+
+   /**
+    * Determines if this comparator is equal to the comparator passed in.
+    *
+    * <p> This will return true if the comparator is an instance of
+    * LDAPCompareAttrNames and compares the same attributes names in the same
+    * order.</p>
+    *
+    * @return true the comparators are equal
+    */
+   public boolean equals (Object comparator){
+       if ( !(comparator instanceof LDAPCompareAttrNames)){
+           return false;
+       }
+       LDAPCompareAttrNames comp = (LDAPCompareAttrNames) comparator;
+
+       // Test to see if the attribute to compare are the same length
+       if ((comp.sortByNames.length != this.sortByNames.length) ||
+           (comp.sortAscending.length != this.sortAscending.length)){
+           return false;
+       }
+
+       // Test to see if the attribute names and sorting orders are the same.
+       for (int i=0; i< this.sortByNames.length; i++){
+           if (comp.sortAscending[i] != this.sortAscending[i])
+               return false;
+           if (!comp.sortByNames[i].equalsIgnoreCase(this.sortByNames[i]))
+               return false;
+       }
+       return true;
+   }
+
+   /**
+    *  @deprecated replaced by {@link #compare }.  This method
+    *  has been replaced in IETF draft 18 of the Java LDAP API
+    *  (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
+    *  in fall of 2003.
+    */
+   public boolean isGreater (LDAPEntry entry1, LDAPEntry entry2) {
+       return (compare(entry1, entry2) > 0) ? true : false;
    }
 }

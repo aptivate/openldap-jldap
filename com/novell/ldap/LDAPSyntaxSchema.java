@@ -51,10 +51,11 @@ public class LDAPSyntaxSchema
     public LDAPSyntaxSchema(String oid,
                            String description)
     {
+        super(LDAPSchema.schemaTypeNames[LDAPSchema.SYNTAX]);
         super.oid = oid;
       	super.description = description;
-        super.value = formatString();
-        return;    
+        super.setValue(formatString());
+        return;
     }
 
     /**
@@ -66,6 +67,7 @@ public class LDAPSyntaxSchema
      */
     public LDAPSyntaxSchema(String raw)
     {
+        super(LDAPSchema.schemaTypeNames[LDAPSchema.SYNTAX]);
     	try{
 			SchemaParser parser = new SchemaParser( raw );
 
@@ -79,11 +81,11 @@ public class LDAPSyntaxSchema
         		attrQualifier = (AttributeQualifier) qualifiers.nextElement();
         		setQualifier(attrQualifier.getName(), attrQualifier.getValues());
          	}
-            super.value = formatString();
+            super.setValue( formatString() );
 		}
         catch( IOException e){
         }
-        return;    
+        return;
     }
 
 	/**

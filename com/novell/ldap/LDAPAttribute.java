@@ -37,7 +37,7 @@ import java.io.UnsupportedEncodingException;
  * @see LDAPAttributeSet
  * @see LDAPModification
  */
-public class LDAPAttribute {
+public class LDAPAttribute implements java.lang.Comparable {
     private String name;              // full attribute name
     private String baseName;          // cn of cn;lang-ja;phonetic
     private String[] subTypes = null; // lang-ja of cn;lang-ja
@@ -181,7 +181,7 @@ public class LDAPAttribute {
         } catch( UnsupportedEncodingException ue ) {
             throw new RuntimeException( ue.toString());
         }
-       
+
         return;
     }
 
@@ -572,6 +572,24 @@ public class LDAPAttribute {
     }
 
     /**
+     * Compares this object with the specified object for order.
+     *
+     * <p> Ordering is determined by comparing attribute names (see
+     * {@link #getName() }) using the method compareTo() of the String class.
+     * </p>
+     *
+     * @param attribute   The LDAPAttribute to be compared to this object.
+     *
+     * @return            Returns a negative integer, zero, or a positive
+     * integer as this object is less than, equal to, or greater than the
+     * specified object.
+     */
+    public int compareTo(Object attribute){
+
+        return name.compareTo( ((LDAPAttribute)attribute).name );
+    }
+
+    /**
      * Adds an object to <code>this</code> object's list of attribute values
      *
      * @param   bytes   Ultimately all of this attribute's values are treated
@@ -596,6 +614,21 @@ public class LDAPAttribute {
             tmp[ this.values.length ] = bytes;
             this.values = tmp;
             tmp = null;
+        }
+        return;
+    }
+
+    /**
+     * Replaces all values with the specified value.  This protected method is
+     * used by sub-classes of LDAPSchemaElement because the value cannot be set
+     * with a contructor.
+     */
+    protected void setValue(String value){
+        values = null;
+        try {
+            this.add( value.getBytes( "UTF-8" ) );
+        } catch( UnsupportedEncodingException ue ) {
+            throw new RuntimeException( ue.toString());
         }
         return;
     }

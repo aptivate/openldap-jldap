@@ -15,21 +15,41 @@
 
 package com.novell.ldap;
 
-import java.util.NoSuchElementException;
 import java.util.Enumeration;
-import java.util.Hashtable;
+import java.util.HashMap;
 import com.novell.ldap.client.AttributeQualifier;
 import com.novell.ldap.resources.*;
-import com.novell.ldap.client.ArrayList;
-import com.novell.ldap.client.ArrayEnumeration;
+import com.novell.ldap.client.EnumeratedIterator;
 
 /**
- *  The base class that represents LDAP schema elements.
+ *  The LDAPSchemaElement class is the base class representing schema
+ *  elements (definitions) in LDAP.
  *
+ *  <p>An LDAPSchemaElement is read-only, single-valued LDAPAttribute.
+ *  Therefore, it does not support the addValue and removeValue methods from
+ *  LDAPAttribute.  This class overrides those methods and throws
+ *  <code>UnsupportedOperationException<code> if either of those methods are
+ *  invoked by an application.<p>
+ *
+ * @see LDAPSchema
+ * @see LDAPConnection#fetchSchema
  */
-public abstract class LDAPSchemaElement
-{
+public abstract class LDAPSchemaElement extends LDAPAttribute {
 
+    /**
+     * Creates an LDAPSchemaElement by setting the name of the LDAPAttribute.
+     * Because this is the only constructor, all extended classes are expected
+     * to call this constructor.  The value of the LDAPAttribute must be set
+     * by the setValue method.
+     * @param attrName  The attribute name of the schema definition. Valid
+     *      names are one of the following:
+     *              "attributeTypes", "objectClasses", "ldapSyntaxes",
+     *              "nameForms", "dITContentRules", "dITStructureRules",
+     *              "matchingRules", or "matchingRuleUse"
+     */
+    protected LDAPSchemaElement(String attrName){
+        super(attrName);
+    }
    /**
     * The names of the schema element.
     */
@@ -61,16 +81,10 @@ public abstract class LDAPSchemaElement
 	protected String[] qualifier = {""};
 
    /**
-    * A string value for the schema element in a format that can be used to add
-    * the element to the directory.
-    */
-	protected String value = "";
-
-   /**
    * A hash table that contains the vendor-specific qualifiers (for example,
    * the X-NDS flags).
    */
-    protected Hashtable hashQualifier = new Hashtable();
+    protected HashMap hashQualifier = new HashMap();
 
    /**
     * Returns an array of names for the element, or null if
@@ -142,7 +156,7 @@ public abstract class LDAPSchemaElement
      */
     public Enumeration getQualifierNames()
     {
-        return hashQualifier.keys();
+        return new EnumeratedIterator(hashQualifier.keySet().iterator() );
     }
 
    /**
@@ -165,7 +179,7 @@ public abstract class LDAPSchemaElement
      */
     public String toString()
     {
-        return value;
+        return super.getStringValue();
     }
 
     /**
@@ -187,21 +201,54 @@ public abstract class LDAPSchemaElement
         return;
     }
 
+    /**
+     *  LDAPSchemaElement is read-only and this method is over-ridden to
+     *  throw an exception.
+     *  @throws UnsupportedOperationException always thrown since
+     *          LDAPSchemaElement is read-only
+     */
+    public void addValue(String value){
+        throw new UnsupportedOperationException(
+                "addValue is not supported by LDAPSchemaElement");
+    }
+
+    /**
+     *  LDAPSchemaElement is read-only and this method is over-ridden to
+     *  throw an exception.
+     *  @throws UnsupportedOperationException always thrown since
+     *          LDAPSchemaElement is read-only
+     */
+    public void addValue(Byte[] value){
+        throw new UnsupportedOperationException(
+                "addValue is not supported by LDAPSchemaElement");
+    }
+    /**
+     *  LDAPSchemaElement is read-only and this method is over-ridden to
+     *  throw an exception.
+     *  @throws UnsupportedOperationException always thrown since
+     *          LDAPSchemaElement is read-only
+     */
+    public void removeValue(String value){
+        throw new UnsupportedOperationException(
+                "removeValue is not supported by LDAPSchemaElement");
+    }
+
+    /**
+     *  LDAPSchemaElement is read-only and this method is over-ridden to
+     *  throw an exception.
+     *  @throws UnsupportedOperationException always thrown since
+     *          LDAPSchemaElement is read-only
+     */
+    public void removeValue(Byte[] value){
+        throw new UnsupportedOperationException(
+                "removeValue is not supported by LDAPSchemaElement");
+    }
+
     // #######################################################################
     //   The following are deprecated and will be removed in fall of 2003
     // #######################################################################
 
-    /**
-     *  @deprecated replaced by {@link #getNames}.  This method
-     *  has been renamed to getNames in IETF draft 17 of the Java LDAP API
-     *  (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-     *  in fall of 2003.
-     */
-    public String getName()
-    {
-        return names[0];
-    }
-    /**
+   /**
      *  @deprecated replaced by {@link #getNames}.  This method
      *  has been replaced with getNames in IETF draft 17 of the Java LDAP API
      *  (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed

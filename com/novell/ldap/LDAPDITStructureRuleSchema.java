@@ -69,13 +69,14 @@ public class LDAPDITStructureRuleSchema
                                       String nameForm,
                                       String[] superiorIDs)
     {
+        super(LDAPSchema.schemaTypeNames[LDAPSchema.DITSTRUCTURE]);    
         super.names = (String[]) names.clone();
         this.ruleID = ruleID;
         super.description = description;
         super.obsolete = obsolete;
         this.nameForm = nameForm;
         this.superiorIDs = superiorIDs;
-        super.value = formatString();
+        super.setValue(formatString());
         return;
     }
 
@@ -88,6 +89,7 @@ public class LDAPDITStructureRuleSchema
      */
     public LDAPDITStructureRuleSchema(String raw)
     {
+        super(LDAPSchema.schemaTypeNames[LDAPSchema.DITSTRUCTURE]);        
         super.obsolete = false;
         try{
             SchemaParser parser = new SchemaParser( raw );
@@ -110,7 +112,7 @@ public class LDAPDITStructureRuleSchema
                 attrQualifier = (AttributeQualifier) qualifiers.nextElement();
                 setQualifier(attrQualifier.getName(), attrQualifier.getValues());
             }
-            super.value = formatString();
+            super.setValue(formatString());
         }
         catch( IOException e){
         }

@@ -23,7 +23,7 @@ import java.io.UnsupportedEncodingException;
  * @see <a href="../../../../doc/com/novell/ldap/LDAPAttribute.html">
             com.novell.ldap.LDAPAttribute</a>
  */
-public class LDAPAttribute {
+public class LDAPAttribute implements Comparable {
     private com.novell.ldap.LDAPAttribute attr;
 
     /**
@@ -32,7 +32,7 @@ public class LDAPAttribute {
     /* package */
     LDAPAttribute(com.novell.ldap.LDAPAttribute attr) {
         this.attr = attr;
-        return; 
+        return;
     }
 
     /**
@@ -49,7 +49,7 @@ public class LDAPAttribute {
             at = attr.getWrappedObject();
         }
         this.attr = new com.novell.ldap.LDAPAttribute(at);
-        return; 
+        return;
     }
 
     /**
@@ -301,5 +301,17 @@ public class LDAPAttribute {
      */
     public int size() {
         return attr.size();
+    }
+
+    /**
+     * Compares this object with the specified object for order.
+     *
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttribute.html
+            #compareTo(java.lang.Object)">
+            com.novell.ldap.LDAPAttribute.compareTo(Object)</a>
+     */
+    public int compareTo(Object attribute){
+        return this.attr.compareTo(
+                ((LDAPAttribute)attribute).getWrappedObject() );
     }
 }

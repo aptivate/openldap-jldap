@@ -126,7 +126,7 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
                               boolean collective,
                               boolean isUserModifiable,
                               int usage) {
-
+        super(LDAPSchema.schemaTypeNames[LDAPSchema.ATTRIBUTE]);
         super.names = names;
         super.oid = oid;
         super.description = description;
@@ -139,7 +139,7 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
         this.collective = collective;
         this.userMod = isUserModifiable;
         this.usage = usage;
-        super.value = formatString();
+        super.setValue(formatString());
         return;
    }
 
@@ -153,6 +153,7 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
     *                  query for "attributetypes".
     */
    public LDAPAttributeSchema(String raw) {
+       super(LDAPSchema.schemaTypeNames[LDAPSchema.ATTRIBUTE]);
        try{
             SchemaParser parser = new SchemaParser( raw );
 
@@ -174,11 +175,12 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
                attrQualifier = (AttributeQualifier) qualifiers.nextElement();
                setQualifier(attrQualifier.getName(), attrQualifier.getValues());
            }
-           super.value = formatString();
+           super.setValue(formatString());
        }
        catch( IOException e){
            throw new RuntimeException(e.toString());
        }
+       return;
    }
 
    /**
@@ -644,6 +646,7 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
                               boolean obsolete, String equality, String ordering,
                               String substring, boolean collective, boolean userMod,
                               int usage) {
+        super(LDAPSchema.schemaTypeNames[LDAPSchema.ATTRIBUTE]);
         int aliasLength = 0;
         if (aliases != null)
             aliasLength = aliases.length;
@@ -664,7 +667,7 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
         this.collective = collective;
         this.userMod = userMod;
         this.usage = usage;
-        super.value = formatString();
+        super.setValue(formatString());
         return;
    }
 }
