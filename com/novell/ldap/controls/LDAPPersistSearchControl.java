@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPPersistSearchControl.java,v 1.1 2001/02/14 23:31:14 bgbrown Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPPersistSearchControl.java,v 1.2 2001/03/01 00:30:07 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -68,34 +68,6 @@ public class LDAPPersistSearchControl extends LDAPControl
      * The OID of the persistent search control
      */
     public static java.lang.String OID = "2.16.840.1.113730.3.4.3";
-
-    /* Register the Entry Change control class which is returned by the server
-     * in response to a persistent search request
-     */
-    static
-    {
-        try
-        {
-            // Register LDAPEntryChangeControl
-            LDAPControl.register(LDAPEntryChangeControl.OID,
-             Class.forName("com.novell.ldap.controls.LDAPEntryChangeControl"));
-            if( Debug.LDAP_DEBUG)
-            {
-                Debug.trace( Debug.controls,
-                             "Registered class for Entry Change control.");
-            }
-        }
-        catch (ClassNotFoundException e)
-        {
-            if( Debug.LDAP_DEBUG)
-            {
-                Debug.trace( Debug.controls,
-                 "Could not register class for Entry Change control" +
-                 " - class not found");
-            }
-        }
-
-    } // end static code
 
 
 

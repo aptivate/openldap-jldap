@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPControl.java,v 1.24 2001/01/29 18:56:29 javed Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPControl.java,v 1.25 2001/03/01 00:29:48 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -40,9 +40,10 @@ public class LDAPControl implements Cloneable {
      * of the SDK implements */
     static {
 
-
+		/* Register the Server Sort Control class which is returned by the server
+		 * in response to a Sort Request
+		 */
         try {
-            // Register LDAPSortControl
             Class sortControlName = Class.forName("com.novell.ldap.controls.LDAPSortResponse");
             LDAPControl.register(LDAPSortResponse.OID, sortControlName);
             if( Debug.LDAP_DEBUG) {
@@ -54,6 +55,47 @@ public class LDAPControl implements Cloneable {
                 Debug.trace( Debug.controls, "Could not register Sort Control Response - Class not found");
             }
         }
+
+		/* Register the VLV Sort Control class which is returned by the server
+		 * in response to a VLV Sort Request
+		 */
+		try {
+            Class vlvControlName = Class.forName("com.novell.ldap.controls.LDAPVirtualListResponse");
+            LDAPControl.register(LDAPVirtualListResponse.OID, vlvControlName);
+            if( Debug.LDAP_DEBUG) {
+                Debug.trace( Debug.controls, "Registered VLV Control Response Class");
+            }
+
+        } catch (ClassNotFoundException e) {
+            if( Debug.LDAP_DEBUG) {
+                Debug.trace( Debug.controls, "Could not register VLV Control Response - Class not found");
+            }
+        }
+
+		/* Register the Entry Change control class which is returned by the server
+		 * in response to a persistent search request
+		 */
+		try
+		{
+			// Register LDAPEntryChangeControl
+			LDAPControl.register(LDAPEntryChangeControl.OID,
+			 Class.forName("com.novell.ldap.controls.LDAPEntryChangeControl"));
+			if( Debug.LDAP_DEBUG)
+			{
+				Debug.trace( Debug.controls,
+							 "Registered class for Entry Change control.");
+			}
+		}
+		catch (ClassNotFoundException e)
+		{
+			if( Debug.LDAP_DEBUG)
+			{
+				Debug.trace( Debug.controls,
+				 "Could not register class for Entry Change control" +
+				 " - class not found");
+			}
+		}
+
 
     }
 
