@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPExceptionMessageResource.java,v 1.9 2001/03/02 23:10:28 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPExceptionMessageResource.java,v 1.10 2001/03/07 00:30:03 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -63,6 +63,7 @@ public class LDAPExceptionMessageResource extends java.util.ListResourceBundle {
   public final static String WRONG_MESSAGE_ID     = "WRONG_MESSAGE_ID";
   public final static String MISSING_EQUAL        = "MISSING_EQUAL";
   public final static String NO_MEMORY            = "NO_MEMORY";
+  public final static String SERVER_SHUTDOWN_REQ  = "SERVER_SHUTDOWN_REQ";
   //End constants
 
   static final Object[][] contents = {
@@ -107,7 +108,8 @@ public class LDAPExceptionMessageResource extends java.util.ListResourceBundle {
       {"NOT_IMPLEMENTED","Method LDAPConnection.startTLS not implemented"},
       {"WRONG_MESSAGE_ID","Internal error, wrong messageID on bind"},
       {"MISSING_EQUAL","Attribute type and name must be separated by an equal symbol, '='"},
-      {"NO_MEMORY","All results could not be stored in memory, sort failed"}
+      {"NO_MEMORY","All results could not be stored in memory, sort failed"},
+	  {"SERVER_SHUTDOWN_REQ","Received unsolicited notification from server to shutdown"}
   // END OF MATERIAL TO LOCALIZE
   };
 }//End LDAPExceptionMessageResource
