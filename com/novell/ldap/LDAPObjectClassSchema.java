@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPObjectClassSchema.java,v 1.14 2000/10/18 23:31:13 bgudmundson Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPObjectClassSchema.java,v 1.15 2000/10/23 22:49:13 bgudmundson Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -101,9 +101,9 @@ public class LDAPObjectClassSchema extends LDAPSchemaElement{
                                 int type,
                                 String[] aliases,
                                 boolean obsolete) {
-      super.name = new String(name);
-      super.oid = new String(oid);
-      super.description = new String(description);
+      super.name = name;
+      super.oid = oid;
+      super.description = description;
       this.type = type;
 	  this.obsolete = obsolete;
       if( superiors != null){
