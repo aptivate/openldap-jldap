@@ -697,7 +697,7 @@ public class LDAPUrl implements java.lang.Cloneable,java.io.Serializable
         // Parse out the attributes
         int scopeStart = url.indexOf('?', scanStart);
         if( scopeStart < 0)
-            scopeStart = scanEnd - 1;
+            scopeStart = scanEnd;
         attrs = parseList( url, ',', attrsStart + 1, scopeStart);
         if( Debug.LDAP_DEBUG) {
             if( attrs != null) {
