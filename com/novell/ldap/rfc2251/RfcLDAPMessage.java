@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/rfc2251/RfcLDAPMessage.java,v 1.18 2001/02/26 19:58:28 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/rfc2251/RfcLDAPMessage.java,v 1.19 2001/02/27 22:53:15 vtag Exp $
 *
 * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
 ***************************************************************************/
@@ -94,7 +94,9 @@ public class RfcLDAPMessage extends ASN1Sequence
         content.add(new RfcMessageID()); // MessageID has static counter
         
         RfcRequest req = (RfcRequest)origContent.get(1);
-        content.add( req.dupRequest(dn, filter, scope));
+        RfcRequest newreq = req.dupRequest(dn, filter, scope);
+        op = newreq;
+        content.add( newreq);
         
         for( int i = 2; i < origContent.size(); i++) {
             content.add(origContent.get(i));
