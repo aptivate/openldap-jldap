@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: SetReplicationFilterRequest.java,v 1.8 2000/10/10 16:39:15 judy Exp $
+ * $Id: SetReplicationFilterRequest.java,v 1.1 2000/10/31 23:49:07 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -81,6 +81,7 @@ public class SetReplicationFilterRequest extends LDAPExtendedOperation {
             ASN1SequenceOf asn1_replicationFilter = new ASN1SequenceOf();
             
             if (replicationFilter == null) {
+                asn1_replicationFilter.encode(encoder, encodedData);
                 setValue(encodedData.toByteArray());
                 return;
             }
@@ -89,9 +90,15 @@ public class SetReplicationFilterRequest extends LDAPExtendedOperation {
             // for every element in the array
             while ( (i < replicationFilter.length) && (replicationFilter[i] != null) ) {
                 
-                // Add the classname to the outer sequenceOf object. The first 
-                // element in the class name           
-                asn1_replicationFilter.add(new ASN1OctetString(replicationFilter[i][0]));
+                
+                // The following additional Sequence is not needed
+                // as defined by the ASN1. But the server and the
+                // C client are encoding it. Remove this when server
+                // and C client are fixed to conform to the published ASN1.
+                ASN1Sequence buginASN1Representation = new ASN1Sequence(); 
+            
+                // Add the classname to the sequence -         
+                buginASN1Representation.add(new ASN1OctetString(replicationFilter[i][0]));
                                 
                 // Start a sequenceOF for attributes
                 ASN1SequenceOf asn1_attributeList = new ASN1SequenceOf();
@@ -106,11 +113,13 @@ public class SetReplicationFilterRequest extends LDAPExtendedOperation {
                     j++;
                 }
             
-                // Add the inner sequenceOF to the outer sequenceOF
-                asn1_replicationFilter.add(asn1_attributeList);
+            
+                // Add the attributeList to the sequence - extra add due to bug
+                buginASN1Representation.add(asn1_attributeList);
+                asn1_replicationFilter.add(buginASN1Representation);
                 i++;
             }
-             
+            
             asn1_replicationFilter.encode(encoder, encodedData);
             setValue(encodedData.toByteArray());
             
