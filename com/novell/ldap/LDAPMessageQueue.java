@@ -50,12 +50,12 @@ public abstract class LDAPMessageQueue
      *  @param agent The message agent to associate with this conneciton
      */
     /* package */
-    LDAPMessageQueue(String name, MessageAgent agent)
+    LDAPMessageQueue(String myname, MessageAgent agent)
     {
         // Get a unique connection name for debug
         if( Debug.LDAP_DEBUG) {
             synchronized( nameLock) {
-                name = name + "(" + ++queueNum + "): ";
+                name = myname + "(" + ++queueNum + "): ";
             }
             Debug.trace( Debug.messages, name + "Created");
         }
@@ -247,6 +247,4 @@ public abstract class LDAPMessageQueue
     {
         return agent.isComplete( msgid);
     }
-
-
 }

@@ -205,9 +205,9 @@ class MessageAgent
      *
      * @return an array of integers representing the message ids
      */
-	/* package */
-	final int[] getMessageIDs()
-	{
+    /* package */
+    final int[] getMessageIDs()
+    {
         int size = messages.size();
         int[] ids = new int[size];
         Message info;
@@ -217,16 +217,16 @@ class MessageAgent
             ids[i] = info.getMessageID();
         }
         return ids;
-	}
+    }
 
     /**
      * Indicates whether a specific operation is complete
      *
      * @return true if a specific operation is complete
      */
-	/* package */
-	final boolean isComplete(int msgid)
-	{
+    /* package */
+    final boolean isComplete(int msgid)
+    {
         try {
             Message info = messages.findMessageById( msgid);
             if( ! info.isComplete()) {
@@ -236,7 +236,7 @@ class MessageAgent
             ;   // return true, if no message, it must be complete
         }
         return true;
-	}
+    }
 
     /**
      * Returns the Message object for a given messageID
@@ -369,7 +369,7 @@ class MessageAgent
                           // We got a reply
                           if( Debug.LDAP_DEBUG) {
                              Debug.trace( Debug.messages, name +
-                                 "getLDAPMessage: Return Message(" +
+                                 "getLDAPMessage: Return response to Message(" +
                                  info.getMessageID() + ")");
                              debugDisplayMessages();
                           }
@@ -445,13 +445,14 @@ class MessageAgent
     {
         if( Debug.LDAP_DEBUG) {
             Object[] dbgmsgs = messages.toArray();
+            Debug.trace( Debug.messages, name + "Queue Status");
             if( dbgmsgs.length == 0) {
-                Debug.trace( Debug.messages, "\t" + "No messages queued");
+                Debug.trace( Debug.messages, name + "\t" + "No messages queued");
             }
             for(int i = 0; i < dbgmsgs.length; i++) {
                 Message m = (Message)dbgmsgs[i];
-                Debug.trace( Debug.messages, "\t" + i +
-                    ".: Message(" + m.getMessageID() + ")");
+                Debug.trace( Debug.messages, name +
+                    "\t" + i + ".: Message(" + m.getMessageID() + ")");
             }
         }
         return;

@@ -145,7 +145,7 @@ class Message
             return (size > 0 ? (size -1) : size);
         } else {
             return size;
-        }        
+        }
     }
 
     /**
@@ -314,19 +314,36 @@ class Message
                     Debug.trace( Debug.messages, name + "Bind properties found");
                 }
                 res = ((RfcResponse)message.getResponse()).getResultCode().intValue();
-                if(res == LDAPException.SUCCESS) {
-                    // Set bind properties into connection object
-                    conn.setBindProperties(bindprops);
+                if(res == LDAPException.SASL_BIND_IN_PROGRESS) {
                     if( Debug.LDAP_DEBUG) {
-                        Debug.trace( Debug.messages, name + "Bind status success");
+                        Debug.trace( Debug.messages, name + "Sasl Bind in-progress status");
                     }
                 } else {
-                    if( Debug.LDAP_DEBUG) {
-                        Debug.trace( Debug.messages, name + "Bind status " + res);
+                    // We either have success or failure on the bind
+                    if(res == LDAPException.SUCCESS) {
+                        // Set bind properties into connection object
+                        conn.setBindProperties(bindprops);
+                        if( Debug.LDAP_DEBUG) {
+                            Debug.trace( Debug.messages, name + "Bind status success");
+                        }
+                    } else {
+                        if( Debug.LDAP_DEBUG) {
+                            Debug.trace( Debug.messages, name + "Bind status " + res);
+                        }
                     }
+                    // If not a sasl bind in-progress, release the bind
+                    // semaphore and wake up all waiting threads
+                    int id;
+                    if( conn.isBindSemIdClear()) {
+                        // Semaphore id for normal operations
+                        id = msgId;
+                    } else {
+                        // Semaphore id for sasl bind
+                        id = conn.getBindSemId();
+                        conn.clearBindSemId();
+                    }
+                    conn.freeWriteSemaphore(id);
                 }
-                // release the bind semaphore and wake up all waiting threads
-                conn.freeWriteSemaphore( msgId);
             }
         }
         // wake up waiting threads
@@ -444,14 +461,15 @@ class Message
     /* package */
     void abandon( LDAPConstraints cons, InterThreadException informUserEx)
     {
+        if( ! waitForReply) {
+            Debug.trace( Debug.messages, name + "Abandon request ignored");
+            return;
+        }
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.messages, name + "Abandon request, complete="
                 + complete + ", bind=" + (bindprops != null) +
                 ", informUser=" + (informUserEx != null) +
                 ", waitForReply=" + waitForReply);
-        }
-        if( ! waitForReply) {
-            return;
         }
         acceptReplies = false;  // don't listen to anyone
         waitForReply = false;   // don't let sleeping threads lie
@@ -460,8 +478,18 @@ class Message
                 // If a bind, release bind semaphore & wake up waiting threads
                 // Must do before writing abandon message, otherwise deadlock
                 if( bindprops != null) {
-                    conn.freeWriteSemaphore( msgId);
+                    int id;
+                    if( conn.isBindSemIdClear()) {
+                        // Semaphore id for normal operations
+                        id = msgId;
+                    } else {
+                        // Semaphore id for sasl bind
+                        id = conn.getBindSemId();
+                        conn.clearBindSemId();
+                    }
+                    conn.freeWriteSemaphore(id);
                 }
+
                 if( Debug.LDAP_DEBUG) {
                     Debug.trace( Debug.messages, name + "Sending abandon request");
                 }

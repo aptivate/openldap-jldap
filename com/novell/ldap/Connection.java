@@ -58,8 +58,9 @@ final class Connection
 
     // We need a message number for disconnect to grab the semaphore,
     // but may not have one, so we invent a unique one.
-    private int fakeId = -1;
+    private int ephemeralId = -1;
     private BindProperties bindProperties = null;
+    private int bindSemaphoreId = 0; // 0 is never used by to lock a semaphore
 
     private Thread reader = null; // New thread that reads data from the server.
     private Thread deadReader = null; // Identity of last reader thread
@@ -79,11 +80,11 @@ final class Connection
 
     private InputStream in = null;
     private OutputStream out = null;
-    // When set to true, app is not notified of connection failures
-    private boolean shutdown = false;
+    // When set to true the client connection is up and running
+    private boolean clientActive = true;
 
     // Indicates we have received a server shutdown unsolicited notification
-    private boolean serverShutdownNotification = false;
+    private boolean unsolSvrShutDnNotification = false;
 
     //  LDAP message IDs are all positive numbers so we can use negative
     //  numbers as flags.  This are flags assigned to stopReaderMessageID
@@ -184,7 +185,7 @@ final class Connection
 
     /**
      * Acquire a simple counting semaphore that synchronizes state affecting
-     * bind. This method generates a fake message value (negative number).
+     * bind. This method generates an ephemeral message id (negative number).
      *
      * We bind using the message ID because a different thread may unlock
      * the semaphore than the one that set it.  It is cleared when the
@@ -192,7 +193,7 @@ final class Connection
      *
      * Returns when the semaphore is acquired
      *
-     * @return the fake message value that identifies semaphore's owner
+     * @return the ephemeral message id that identifies semaphore's owner
      */
     /* package */
     final int acquireWriteSemaphore()
@@ -220,9 +221,9 @@ final class Connection
         int id = msgId;
         synchronized( writeSemaphore) {
             if( id == 0) {
-                fakeId =
-                    ((fakeId == Integer.MIN_VALUE) ? (fakeId = -1) : --fakeId);
-                id = fakeId;
+                ephemeralId = ((ephemeralId == Integer.MIN_VALUE)
+                                ? (ephemeralId = -1) : --ephemeralId);
+                id = ephemeralId;
             }
             while( true) {
                 if( writeSemaphoreOwner == 0) {
@@ -248,7 +249,7 @@ final class Connection
         }
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.bindSemaphore, name +
-                "Acquired Bind Semaphore(" + id + ") count " +
+                "Acquired Socket Write Semaphore(" + id + ") count " +
                 writeSemaphoreCount);
         }
         return id;
@@ -266,7 +267,7 @@ final class Connection
     {
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.bindSemaphore, name +
-                "Free'd Bind Semaphore(" + msgId + ") count " +
+                "Free'd Socket Write Semaphore(" + msgId + ") count " +
                 (writeSemaphoreCount - 1));
         }
         synchronized( writeSemaphore) {
@@ -389,7 +390,7 @@ final class Connection
         // Clear the server shutdown notification flag.  This should already
         // be false unless of course we are reusing the same Connection object
         // after a server shutdown notification
-        serverShutdownNotification = false;
+        unsolSvrShutDnNotification = false;
 
         int semId = acquireWriteSemaphore( semaphoreId);
 
@@ -436,7 +437,7 @@ final class Connection
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.messages, name + " connect: setup complete");
         }
-        shutdown = false; // Allow app to be notified of connection failures
+        clientActive = true; // Client is up
         return;
     }
 
@@ -589,6 +590,47 @@ final class Connection
     }
 
     /**
+     * gets the writeSemaphore id used for active bind operation
+     */
+    /* package */
+    int getBindSemId()
+    {
+        return bindSemaphoreId;
+    }
+
+    /**
+     * sets the writeSemaphore id used for active bind operation
+     */
+    /* package */
+    void setBindSemId(int id)
+    {
+        bindSemaphoreId = id;
+        return;
+    }
+
+    /**
+     * clears the writeSemaphore id used for active bind operation
+     */
+    /* package */
+    void clearBindSemId()
+    {
+        bindSemaphoreId = 0;
+        return;
+    }
+
+    /**
+     * checks if the writeSemaphore id used for active bind operation is clear
+     */
+    /* package */
+    boolean isBindSemIdClear()
+    {
+        if( bindSemaphoreId == 0) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Writes an LDAPMessage to the LDAP server over a socket.
      *
      * @param msg the Message containing the message to write.
@@ -617,11 +659,20 @@ final class Connection
     void writeMessage(LDAPMessage msg)
         throws LDAPException
     {
-        int id = msg.getMessageID();
+        int id;
+        // Get the correct semaphore id for bind operations
+        if( bindSemaphoreId == 0) {
+            // Semaphore id for normal operations
+            id = msg.getMessageID();
+        } else {
+            // Semaphore id for sasl bind operations
+            id = bindSemaphoreId;
+        }
         OutputStream myOut = out;
 
         if( Debug.LDAP_DEBUG) {
-            Debug.trace( Debug.messages, name + "Writing Message(" + id + ")");
+            Debug.trace( Debug.messages, name + "Writing Message(" +
+                    msg.getMessageID() + ")");
             Debug.trace( Debug.rawInput, name + "RawWrite: " +
                     msg.getASN1Object().toString());
         }
@@ -641,23 +692,23 @@ final class Connection
             }
 
             /*
-             * This could be due to a server shutdown notification which caused
-             * our Connection to quit.  If so we send back a slightly different
-             * error message.  We could have checked this a little earlier in
-             * the method but that would be an expensive check each time we
-             * send out a message.  Since this shutdown request is going to be
-             * an infrequent occurence we check for it only when we get an
-             * IOException
+             * IOException could be due to a server shutdown notification which
+             * caused our Connection to quit.  If so we send back a slightly
+             * different error message.  We could have checked this a little
+             * earlier in the method but that would be an expensive check each
+             * time we send out a message.  Since this shutdown request is
+             * going to be an infrequent occurence we check for it only when
+             * we get an IOException.  shutdown() will do the cleanup.
              */
-            if( ! shutdown) { // Shutdown taking care of notification
-                if (serverShutdownNotification) {
+            if( clientActive) { // We beliefe the connection was alive
+                if (unsolSvrShutDnNotification) { // got server shutdown
                     throw new LDAPException( ExceptionMessages.SERVER_SHUTDOWN_REQ,
                         new Object[] { host, new Integer(port)},
                         LDAPException.CONNECT_ERROR, null,
                         ioe);
                 }
 
-                // Other I/O Exception on host:port get reported as is
+                // Other I/O Exceptions on host:port are reported as is
                 throw new LDAPException(ExceptionMessages.IO_EXCEPTION,
                     new Object[] {host, new Integer(port)},
                 LDAPException.CONNECT_ERROR, null, ioe);
@@ -701,30 +752,29 @@ final class Connection
     {
         return (in != null);
     }
-    
+
     /**
      * Checks whether a connection is still alive or not by sending data to
      * the server on this connection's socket.If the connection is not alive
-     * the send will generate an IOException and the function will return 
+     * the send will generate an IOException and the function will return
      * false.
      * @return  true    If connection is alive
      *          false   If connection is not alive.
      */
-    final boolean isConnectionAlive() 
+    final boolean isConnectionAlive()
     {
        boolean isConn=false;
        int id;
        LDAPExtendedOperation op=null;
 
        if  ( in!= null )      {
-       	   isConn=true;
-       	   
-           LDAPSearchConstraints cons=new LDAPSearchConstraints();
+              isConn=true;
+
            op= new LDAPExtendedOperation("0.0.0.0",null);
-           LDAPMessage msg =new LDAPExtendedRequest(op, null);       
+           LDAPMessage msg =new LDAPExtendedRequest(op, null);
            id = msg.getMessageID();
            acquireWriteSemaphore(id);
-           OutputStream myOut = out;           
+           OutputStream myOut = out;
            try          {
                if( myOut == null) {
                    throw new IOException("Output stream not initialized");
@@ -738,8 +788,8 @@ final class Connection
                finally {
                    freeWriteSemaphore(id);
                }
-       } 
-       
+       }
+
        return isConn;
    }
 
@@ -786,10 +836,10 @@ final class Connection
     private void shutdown( String reason, int semaphoreId, InterThreadException notifyUser)
     {
         Message info = null;
-        if( shutdown) {
+        if( ! clientActive) {
             if( Debug.LDAP_DEBUG) {
                 Debug.trace( Debug.messages, name +
-                    "shutdown: already shut down - " + reason);
+                    "shutdown: already shutdown - " + reason);
             }
             return;
         }
@@ -797,7 +847,7 @@ final class Connection
             Debug.trace( Debug.messages, name +
                 "shutdown: Shutting down connection - " + reason);
         }
-        shutdown = true;
+        clientActive = false;
         while( true ) {
             // remove messages from connection list and send abandon
             try {
@@ -901,9 +951,16 @@ final class Connection
 
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.TLS, "startTLS: areMessagesComplete? " +
-                    "MessageVector size = " + length);
+                    "MessageVector size = " + length +
+                    ", bindSemaphoreId=" + bindSemaphoreId);
         }
-        if (length == 0){
+        // Check if SASL bind in progress
+        if( bindSemaphoreId != 0) {
+            return false;
+        }
+
+        // Check if any messages queued
+        if(length == 0) {
             return true;
         }
 
@@ -978,12 +1035,12 @@ final class Connection
     {
         if (this.mySocketFactory == null){
             throw new LDAPException( ExceptionMessages.NO_TLS_FACTORY,
-                                     LDAPException.TLS_NOT_SUPPORTED, (String)null);
+                                     LDAPException.TLS_NOT_SUPPORTED, null);
         }
         else
         if ( !(this.mySocketFactory instanceof LDAPTLSSocketFactory )) {
             throw new LDAPException( ExceptionMessages.WRONG_FACTORY,
-                                     LDAPException.TLS_NOT_SUPPORTED, (String)null);
+                                     LDAPException.TLS_NOT_SUPPORTED, null);
         }
 
         try {
@@ -1067,12 +1124,12 @@ final class Connection
         return;
     }
 
-	public class ReaderThread implements Runnable
-	{
-		private ReaderThread()
-		{
+    public class ReaderThread implements Runnable
+    {
+        private ReaderThread()
+        {
             return;
-		}
+        }
 
         /**
          * This thread decodes and processes RfcLDAPMessage's from the server.
@@ -1142,7 +1199,7 @@ final class Connection
                         info = messages.findMessageById( msgId);
                         if( Debug.LDAP_DEBUG ) {
                             Debug.trace( Debug.messages, name +
-                                "reader: queue message(" + msgId + ")");
+                                "reader: queue response to message(" + msgId + ")");
                         }
                         info.putReply( msg);   // queue & wake up waiting thread
                     } catch ( NoSuchFieldException ex) {
@@ -1183,7 +1240,7 @@ final class Connection
                              * first transfer control to the finally clause which
                              * will do the necessary clean up.
                              */
-                            if (serverShutdownNotification) {
+                            if (unsolSvrShutDnNotification) {
                                 notify = new InterThreadException(
                                     ExceptionMessages.SERVER_SHUTDOWN_REQ,
                                     new Object[] {host, new Integer(port)},
@@ -1213,12 +1270,12 @@ final class Connection
                 if( Debug.LDAP_DEBUG ) {
                     Debug.trace( Debug.messages, name +
                         "Connection lost waiting for results from " +
-                        host + ":" + port + ", shutdown=" + shutdown +
-                        "\n\t" + ioe.toString());
+                        host + ":" + port + ", clientActive=" + 
+                        clientActive + "\n\t" + ioe.toString());
                 }
 
                 ioex = ioe;
-                if((stopReaderMessageID != STOP_READING ) && ! shutdown ){
+                if((stopReaderMessageID != STOP_READING ) && clientActive ){
                     // Connection lost waiting for results from host:port
                     notify = new InterThreadException(
                         ExceptionMessages.CONNECTION_WAIT,
@@ -1253,7 +1310,7 @@ final class Connection
                  *      - Indicated by an IOException AND notify is not NULL
                  *      - call Shutdown.
                  */
-                if (shutdown || (notify != null)) {  //#3 & 4
+                if( (! clientActive) || (notify != null)) { //#3 & 4
                     shutdown( reason, 0, notify );
                 } else {
                     stopReaderMessageID = CONTINUE_READING;
@@ -1272,7 +1329,7 @@ final class Connection
             }
             return;
         }
-	} // End class ReaderThread
+    } // End class ReaderThread
 
     /**
      * Sets the current referral active on this connection if created to
@@ -1366,7 +1423,7 @@ final class Connection
                     "Received server shutdown notification!");
             }
 
-            serverShutdownNotification = true;
+            unsolSvrShutDnNotification = true;
         }
 
         int numOfListeners = unsolicitedListeners.size();

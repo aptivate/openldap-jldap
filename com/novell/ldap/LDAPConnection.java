@@ -570,7 +570,7 @@ public class LDAPConnection implements Cloneable
      *
      * @return  True if connection is alive; false if the connection is closed.
      */
-	public boolean isConnectionAlive()
+    public boolean isConnectionAlive()
     {
            return conn.isConnectionAlive();
     }
@@ -968,9 +968,9 @@ public class LDAPConnection implements Cloneable
         if(queue != null) {
             MessageAgent agent;
             if( queue instanceof LDAPSearchQueue) {
-                agent = ((LDAPSearchQueue)queue).getMessageAgent();
+                agent = queue.getMessageAgent();
             } else {
-                agent = ((LDAPResponseQueue)queue).getMessageAgent();
+                agent = queue.getMessageAgent();
             }
             int[] msgIds = agent.getMessageIDs();
             for(int i=0; i<msgIds.length; i++) {
@@ -1250,7 +1250,7 @@ public class LDAPConnection implements Cloneable
      *  @exception LDAPException A general exception which includes an error
      *  message and an LDAP error code.
      *
-     * @deprecated replaced by 
+     * @deprecated replaced by
      * {@link #bind(int, String, byte[], LDAPConstraints)}
      */
     public void bind(int version,
@@ -1268,7 +1268,7 @@ public class LDAPConnection implements Cloneable
                 passwd = null;  // Keep no reference to String object
                 throw new RuntimeException( ex.toString());
             }
-        }    
+        }
         bind(version, dn, pw, cons);
         return;
     }
@@ -1467,7 +1467,7 @@ public class LDAPConnection implements Cloneable
                 conn.connect( conn.getHost(), conn.getPort());
             } else {
                 throw new LDAPException( ExceptionMessages.CONNECTION_IMPOSSIBLE,
-                    LDAPException.CONNECT_ERROR, (String)null);
+                    LDAPException.CONNECT_ERROR, null);
             }
         }
 
@@ -1706,70 +1706,92 @@ public class LDAPConnection implements Cloneable
             {
                 throw new LDAPException(
                       "Unsupported SASL mechanism(s) and/or properties",
-                      LDAPException.AUTH_METHOD_NOT_SUPPORTED,(String) null);
+                      LDAPException.AUTH_METHOD_NOT_SUPPORTED, null);
             }
-            else
-            {
-                byte[]  clientResponse = null;
-                boolean anonymous = false;
-           		BindProperties bindProps = new BindProperties(LDAP_V3,
-           		                                              null,
-           		                                              "sasl",
-           		                                              anonymous,
-           		                                              null,
-           		                                              null);
-                if (saslClient.hasInitialResponse())
-                {
-                    clientResponse = saslClient.evaluateChallenge(new 
-                                                                  byte[0]);
-                }
-                //byte[] replyBuf = null;
-                while(!saslClient.isComplete())
-                {
-                    try
-                    {
-                        byte[] replyBuf = LDAPTransport(
-                                              clientResponse,
-                                              saslClient.getMechanismName(),
-                                              bindProps);
-                                              
-                        if(replyBuf!=null)
-                        {
-                            clientResponse = saslClient.evaluateChallenge(
-                                                                 replyBuf);
-                        }
-                        else
-                        {
-                            clientResponse = saslClient.evaluateChallenge(
-                                                              new byte[0]);
-                        }
-                    }
-                    catch(SaslException e)
-                    {
-                        throw new LDAPException("Unexpected SASL error.",
-                                                 LDAPException.OTHER,
-                                                 e.toString());
-                    }
-                    catch(LDAPException lde)                                   
-                    {
-                    // This call will free the NMASClient thread which is 
-                    // blocked waiting for the transport to finish        
-                        saslClient.dispose();
-                        throw lde;                         
 
+
+            if( Debug.LDAP_DEBUG) {
+                Debug.trace( Debug.saslBind, name +
+                    "saslClient created, mechanism " +
+                    saslClient.getMechanismName());
+            }
+
+            byte[]  clientResponse = null;
+            boolean anonymous = false;
+            BindProperties bindProps = new BindProperties(LDAP_V3,
+                                                         null,
+                                                         "sasl",
+                                                         anonymous,
+                                                         null,
+                                                         null);
+
+            // Acquire the bind semaphore and communicate its value to
+            // the corresponding Connection class.
+            int id = conn.acquireWriteSemaphore();
+            conn.setBindSemId( id);
+
+            if (saslClient.hasInitialResponse())
+            {
+                clientResponse = saslClient.evaluateChallenge(new
+                                                              byte[0]);
+            }
+            while(!saslClient.isComplete())
+            {
+                try
+                {
+                    byte[] replyBuf = LDAPTransport(
+                                          clientResponse,
+                                          saslClient.getMechanismName(),
+                                          bindProps);
+
+                    if(replyBuf!=null)
+                    {
+                        if( Debug.LDAP_DEBUG) {
+                            Debug.trace( Debug.saslBind, name +
+                                "saslClient response " + replyBuf.length +
+                                " bytes");
+                        }
+                        clientResponse = saslClient.evaluateChallenge(
+                                                             replyBuf);
+                    }
+                    else
+                    {
+                        if( Debug.LDAP_DEBUG) {
+                            Debug.trace( Debug.saslBind, name +
+                                "saslClient response empty");
+                        }
+                        clientResponse = saslClient.evaluateChallenge(
+                                                          new byte[0]);
                     }
                 }
+                catch(SaslException e)
+                {
+                    // This call will free any client resources.
+                    saslClient.dispose();
+                    throw new LDAPException("Unexpected SASL error.",
+                                             LDAPException.OTHER, null, e);
+                }
+                catch(LDAPException lde)
+                {
+                    // This call will free any client resources.
+                    saslClient.dispose();
+                    throw lde;
+                }
+            }
+            if( Debug.LDAP_DEBUG) {
+                Debug.trace( Debug.saslBind, name + "saslBind Complete");
             }
         }
         catch (SaslException eSasl)
         {
-            throw new LDAPException("Unexpected SASL error.", 
+            throw new LDAPException("SASL Bind Error.",
                                      LDAPException.OTHER,
-                                     (String)null,
+                                     null,
                                      eSasl.getCause());
         }
 
         //LDAP Bind complete
+        return;
     }
 
     /**
@@ -1778,7 +1800,7 @@ public class LDAPConnection implements Cloneable
      * back to the saslClient
      *
      * @param toWrite   request received from saslClient in a byte array
-     * @param mechanism Name of the saslClient  Mechanism 
+     * @param mechanism Name of the saslClient  Mechanism
      * @param bindProps Bindproperties
      *
      * @return  Response reived from the LDAP server in a byte array
@@ -1787,56 +1809,49 @@ public class LDAPConnection implements Cloneable
      *  message and an LDAP error code.
      */
     private byte[] LDAPTransport( byte[] toWrite,
-                                  String mechanism, 
+                                  String mechanism,
                                   BindProperties bindProps)
             throws LDAPException
-	{
+    {
 
-	    LDAPMessage     msg;
-		int             msgId;
-		RfcBindResponse bindResponse;
-		LDAPConstraints cons;
-		ASN1OctetString serverCreds;
+        LDAPMessage     msg;
+        RfcBindResponse bindResponse;
+        LDAPConstraints cons;
+        ASN1OctetString serverCreds;
 
-		cons = defSearchCons;
-		msg = new LDAPMessage(LDAPMessage.BIND_REQUEST,
-			     			  new RfcBindRequest(LDAP_V3,
-			     			                     "",
-			     			                     mechanism,toWrite),
-							  cons.getControls());
-							  
-		msgId = msg.getMessageID();
-		conn.acquireWriteSemaphore(msgId);
-   		LDAPResponseQueue queue = sendRequestToServer(msg,
-   		                                              cons.getTimeLimit(),
-   		                                              null,
-   		                                              bindProps);
-		LDAPResponse ldapResponse = (LDAPResponse)queue.getResponse();
-		bindResponse = (RfcBindResponse)ldapResponse.getASN1Object().get(1);
-		serverCreds = bindResponse.getServerSaslCreds();
-		int resultCode = ldapResponse.getResultCode();
-		
+        cons = defSearchCons;
+        msg = new LDAPMessage(LDAPMessage.BIND_REQUEST,
+                               new RfcBindRequest(LDAP_V3,
+                                                  "",
+                                                  mechanism,
+                                                  toWrite),
+                               cons.getControls());
+
+        LDAPResponseQueue queue = sendRequestToServer(msg,
+                                                     cons.getTimeLimit(),
+                                                     null,
+                                                     bindProps);
+        LDAPResponse ldapResponse = (LDAPResponse)queue.getResponse();
+        bindResponse = (RfcBindResponse)ldapResponse.getASN1Object().get(1);
+        serverCreds = bindResponse.getServerSaslCreds();
+        int resultCode = ldapResponse.getResultCode();
+
+        byte[] replyBuf = null;
         if ((resultCode == LDAPException.SASL_BIND_IN_PROGRESS) ||
             (resultCode == LDAPException.SUCCESS))
         {
-			if (serverCreds != null)
+            if (serverCreds != null)
             {
-                byte[] replyBuf = serverCreds.byteValue();
-                int actualReplyLength = replyBuf.length;
-                if ( actualReplyLength > 0 )
-                {
-                    return replyBuf;
-                }
+                replyBuf = serverCreds.byteValue();
             }
-            // Otherwise just return null
-            return null;
-            }
-            else{
-               ldapResponse.chkResultCode();
-               throw new LDAPException("Unexpected SASL error.", 
-                                        LDAPException.OTHER,
-                                        (String) null);
-            }
+        }
+        else {
+           ldapResponse.chkResultCode();
+           throw new LDAPException("SASL Bind Error.",
+                                    resultCode,
+                                    null);
+        }
+        return replyBuf;
     }
 
     //*************************************************************************
@@ -3553,8 +3568,8 @@ public class LDAPConnection implements Cloneable
                                          LDAPMessageQueue queue)
             throws LDAPException
     {
-		return sendRequest( request, queue, null);
-	}
+        return sendRequest( request, queue, null);
+    }
 
     /**
      * Sends an LDAP request to a directory server.
@@ -3611,9 +3626,9 @@ public class LDAPConnection implements Cloneable
             }
         } else {
             if( request.getType() == LDAPMessage.SEARCH_REQUEST) {
-                agent = ((LDAPSearchQueue)queue).getMessageAgent();
+                agent = queue.getMessageAgent();
             } else {
-                agent = ((LDAPResponseQueue)queue).getMessageAgent();
+                agent = queue.getMessageAgent();
             }
         }
 
@@ -3691,16 +3706,13 @@ public class LDAPConnection implements Cloneable
      *
      * @param referrals the array of referral strings
      *<br><br>
-     * @param search true if a search operation
-     *<br><br>
      *
      * @return The referralInfo object
      *
      *  @exception LDAPReferralException A general exception which includes
      *  an error message and an LDAP error code.
      */
-    private ReferralInfo getReferralConnection( String[] referrals,
-                                          boolean search)
+    private ReferralInfo getReferralConnection( String[] referrals)
                     throws LDAPReferralException
     {
         ReferralInfo refInfo = null;
@@ -3965,7 +3977,7 @@ public class LDAPConnection implements Cloneable
                     LDAPException.REFERRAL_LIMIT_EXCEEDED);
             }
             // Get a connection to follow the referral
-            rinfo = getReferralConnection( refs, searchReference);
+            rinfo = getReferralConnection( refs);
             rconn = rinfo.getReferralConnection();
             refUrl = rinfo.getReferralUrl();
             connList.add( rconn);
@@ -3991,9 +4003,9 @@ public class LDAPConnection implements Cloneable
             try {
                 MessageAgent agent;
                 if( queue instanceof LDAPResponseQueue) {
-                    agent=((LDAPResponseQueue)queue).getMessageAgent();
+                    agent=queue.getMessageAgent();
                 } else {
-                    agent=((LDAPSearchQueue)queue).getMessageAgent();
+                    agent=queue.getMessageAgent();
                 }
                 agent.sendMessage( rconn.getConnection(), newMsg,
                         defSearchCons.getTimeLimit(), queue, null);
@@ -4242,5 +4254,4 @@ public class LDAPConnection implements Cloneable
         }
         return values[0];
    }
-
 }
