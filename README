@@ -162,6 +162,10 @@ Table of Contents
           applications that use the LDAP extensions for partition and
           replica management.
 
+     -    Applications that use com.novell.ldap.util.DSMLReader requires
+          an XML parser (like xerces.jar) in order to run. This jar file needs
+          to be in classpath of the Application.
+
 
 4.0  Installation
 
@@ -306,6 +310,10 @@ and dsmldom.war. See README.dsml for additional information.
           servlet.jar from your application server (JBroker, tomcat, etc.)
           in the directory <javasource_home>/external/servlet/.
           
+     NOTE: dsmlstream.war requires an XML parser (like xerces.jar) in order 
+           to run. This jar file needs to be in the classpath of the Web 
+           Application Server or Servlet engine running dsmlstream.war.
+                    
      To build dsmlstream.war, invoke ant as follows from the
      top of the source tree:
 
