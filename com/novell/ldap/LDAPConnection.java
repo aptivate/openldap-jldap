@@ -1,7 +1,7 @@
 /* **************************************************************************
  * $OpenLDAP$
  *
- * Copyright (C) 1999 - 2002 Novell, Inc. All Rights Reserved.
+ * Copyright (C) 1999 - 2003 Novell, Inc. All Rights Reserved.
  *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
@@ -344,18 +344,23 @@ public class LDAPConnection implements Cloneable
     }
 
     /**
-     * Returns the distinguished name (DN) used for authentication by this
-     * object. Null is returned if no authentication has been performed.
+     * Returns the distinguished name (DN) used for as the bind name during
+     * the last successful bind operation.  <code>null</code> is returned
+     * if no authentication has been performed or if the bind resulted in
+     * an aonymous connection.
      *
-     * @return The distinguished name if object is authenticated; otherwise,
-     * null.
+     * @return The distinguished name if authenticated; otherwise, null.
      *
      * @see #bind( String, String)
+     * @see #isBound()
      */
     public String getAuthenticationDN()
     {
         BindProperties prop = conn.getBindProperties();
         if( prop == null) {
+            return null;
+        }
+        if( prop.isAnonymous()) {
             return null;
         }
         return prop.getAuthenticationDN();
@@ -1434,8 +1439,11 @@ public class LDAPConnection implements Cloneable
         if(cons == null)
             cons = defSearchCons;
 
-        if(dn == null)
+        if(dn == null) {
             dn = "";
+        } else {
+            dn = dn.trim();
+        }
 
         if(passwd == null)
             passwd = new byte[] {};
@@ -1443,11 +1451,12 @@ public class LDAPConnection implements Cloneable
         boolean anonymous = false;
         if( passwd.length == 0) {
             anonymous = true; // anonymous, passwd length zero with simple bind
+            dn = "";          // set to null if anonymous
         }
         LDAPMessage msg = new LDAPBindRequest( version, dn, passwd, cons.getControls());
 
         msgId = msg.getMessageID();
-        bindProps = new BindProperties( version, dn.trim(),"simple",
+        bindProps = new BindProperties( version, dn, "simple",
                                         anonymous, null, null);
 
         // For bind requests, if not connected, attempt to reconnect
