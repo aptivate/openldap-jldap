@@ -1,4 +1,4 @@
-<!-- $Novell: /ldap/src/jldap/build.xml,v 1.32 2001/03/02 22:42:34 vtag Exp $ -->
+<!-- $Novell: /ldap/src/jldap/build.xml,v 1.33 2001/03/05 18:59:13 vtag Exp $ -->
 <!--
  ******************************************************************************
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
@@ -268,7 +268,7 @@
         	sourcepath="${docsrc}"
             destdir="${pkg.doc}"
             classpath="${lib.debug}/${ldap}.jar;external/ssl/domestic/nssl1.2_dom.jar"
-            packagenames="com.novell.ldap,com.novell.ldap.extensions,com.novell.ldap.controls,com.novell.ldap.asn1"
+            packagenames="com.novell.ldap,com.novell.ldap.extensions,com.novell.ldap.controls,com.novell.ldap.asn1,com.novell.ldap.util"
             overview="overview.html"
             nodeprecated="true"
             nodeprecatedlist="true"
@@ -293,7 +293,7 @@
         <javadoc sourcepath="${docsrc}"
             destdir="${doc.developer}"
             classpath="external/ssl/domestic/nssl1.2_dom.jar"
-            packagenames="com.novell.ldap,com.novell.ldap.asn1,com.novell.ldap.client,com.novell.ldap.rfc2251,com.novell.ldap.extensions,com.novell.ldap.controls"
+            packagenames="com.novell.ldap,com.novell.ldap.asn1,com.novell.ldap.client,com.novell.ldap.rfc2251,com.novell.ldap.extensions,com.novell.ldap.controls,,com.novell.ldap.util"
             Windowtitle="LDAP Classes"
             Splitindex="true"
             Private="true"
