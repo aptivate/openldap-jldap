@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.22 2000/11/10 16:50:04 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/client/MessageVector.java,v 1.1 2000/11/22 22:17:42 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -90,8 +90,8 @@ public class MessageVector extends java.util.Vector
         throw new NoSuchFieldException();
     }
 
-    /* Returns an array containing all of the elements in this MessageVector.
-     * The element returned are in the same order in the array as in the
+    /** Returns an array containing all of the elements in this MessageVector.
+     * The elements returned are in the same order in the array as in the
      * Vector.  The contents of the vector are cleared.
      *
      * @return the array containing all of the elements.
