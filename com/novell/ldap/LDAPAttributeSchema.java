@@ -42,7 +42,6 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
     private String syntaxString;
     private boolean single = false;
     private String superior;
-    private boolean obsolete = false;
     private String equality;
     private String ordering;
     private String substring;
@@ -129,9 +128,9 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
         super.names = names;
         super.oid = oid;
         super.description = description;
+        super.obsolete = obsolete;
         this.syntaxString = syntaxString;
-        this.single = single;
-        this.obsolete = obsolete;
+        this.single = single;        
         this.equality = equality;
         this.ordering = ordering;
         this.substring = substring;
@@ -687,10 +686,11 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
 
         super.oid = oid;
         super.description = description;
+        super.obsolete = obsolete;
         this.syntaxString = syntaxString;
         this.single = single;
         this.superior = superior;
-        this.obsolete = obsolete;
+        
         this.equality = equality;
         this.ordering = ordering;
         this.substring = substring;
