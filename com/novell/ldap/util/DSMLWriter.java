@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: DSMLWriter.java,v 1.21 2002/11/14 17:32:19 $
+ * $Novell: DSMLWriter.java,v 1.22 2002/11/25 23:58:10 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -430,7 +430,7 @@ public class DSMLWriter implements LDAPWriter {
             writeControls(controls, 3);
         }
         newLine(2);
-        out.write("</searchResultEntry>");
+        out.write("</searchResultEntry>");       p
 
         return;
     }
@@ -453,7 +453,7 @@ public class DSMLWriter implements LDAPWriter {
                 out.write(values[i]);
                 out.write("</value>");
             } else {
-                out.write("<value xsi:type=\"base64Binary\"");
+                out.write("<value xsi:type=\"base64Binary\">");
                 out.write(Base64.encode(bytevalues[i]));
                 out.write("</value>");
             }
