@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: DSMLHandler.java,v 1.19 2002/11/12 17:37:28 $
+ * $Novell: DSMLHandler.java,v 1.20 2002/11/12 18:42:54 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -109,6 +109,14 @@ public class DSMLHandler implements ContentHandler, ErrorHandler
     private int valueState;
     private boolean critical;
     private String oid;
+    private String requestID;
+    //Request ID for the entire batch
+    private String batchRequestID;
+    //Indicates that the messages can be processed in parallel
+    private boolean isParallel;
+    //Indicates that the results can be returned unordered
+    private boolean isUnordered;
+    private boolean isResumeOnError;
 
     static {  //Initialize requestTags
         requestTags = new java.util.HashMap(35, (float)0.25);
@@ -163,6 +171,8 @@ public class DSMLHandler implements ContentHandler, ErrorHandler
             if (state != START){  //Ignore tags outside of DSML tags
             throw new SAXException("Element name, \"" + strQName
                                 + "\" not recognized");
+            } else {
+                return;
             }
         }
         int tag = elementTag.intValue();
@@ -179,6 +189,10 @@ public class DSMLHandler implements ContentHandler, ErrorHandler
                 // we can now read a Batch_Request tag or Batch_Response tag
                 if (tag == BATCH_REQUEST || tag == BATCH_RESPONSE){
                     state = tag;
+                    if (tag == BATCH_REQUEST){
+                        parseTagAttributes(tag, attrs);
+                    }
+
                 } else {
                     throw new SAXException("Invalid beginning tag :" +
                             strQName);
@@ -381,6 +395,19 @@ public class DSMLHandler implements ContentHandler, ErrorHandler
     {
 
         switch (tag){
+            case BATCH_REQUEST:
+                batchRequestID = attrs.getValue("requestID");
+                {
+                    String temp = attrs.getValue("processing");
+                    //default is sequential: isParallel=false
+                    isParallel = (temp != null && temp.equals("parallel"));
+                    temp = attrs.getValue("responseOrder");
+                    //default ordering is sequential: isUnordered=false
+                    isUnordered = (temp != null && temp.equals("unordered"));
+                    temp = attrs.getValue("onError");
+                    //default action on error is exit: isResumeOnError=false
+                    isResumeOnError = (temp != null && temp.equals("resume"));
+                }
             case SEARCH_REQUEST:
                 {
                     String temp;
@@ -513,7 +540,9 @@ public class DSMLHandler implements ContentHandler, ErrorHandler
                 break;
             case EXTENDED_REQUEST:
                 break;
+
         }
+        requestID = attrs.getValue("requestID");
         return;
     }
 
@@ -540,6 +569,8 @@ public class DSMLHandler implements ContentHandler, ErrorHandler
             if (state != START){  //Ignore tags outside of DSML tags
                 throw new SAXException("Element name, \"" + strQName
                                 + "\" not recognized");
+            } else {
+                return;
             }
         }
         int tag = elementTag.intValue();
@@ -579,6 +610,9 @@ public class DSMLHandler implements ContentHandler, ErrorHandler
                                 typesOnly,
                                 searchCons.getControls());
                     }
+                    if (requestID != null)
+                        message.setTag(requestID);
+                    requestID = null;
                     queue.add(message);
                     break;
                 case ATTRIBUTES:
@@ -603,6 +637,9 @@ public class DSMLHandler implements ContentHandler, ErrorHandler
                                 (LDAPModification[])modlist.toArray(
                                         new LDAPModification[ modlist.size() ]),
                                 cons);
+                    if (requestID != null)
+                        message.setTag(requestID);
+                    requestID = null;
                     queue.add(message);
                     break;
                 }
@@ -628,6 +665,10 @@ public class DSMLHandler implements ContentHandler, ErrorHandler
                     }
                     message = new LDAPModifyDNRequest( dn, newRDN, newSuperior,
                             deleteOldRDN, cons);
+
+                    if (requestID != null)
+                        message.setTag(requestID);
+                    requestID = null;
                     queue.add(message);
                     break;
                 }
@@ -641,6 +682,9 @@ public class DSMLHandler implements ContentHandler, ErrorHandler
                                         new LDAPControl[controls.size()]);
                     }
                     message = new LDAPAddRequest( entry, cons );
+                    if (requestID != null)
+                        message.setTag(requestID);
+                    requestID = null;
                     queue.add(message);
                     break;
                 }
@@ -653,6 +697,9 @@ public class DSMLHandler implements ContentHandler, ErrorHandler
                                         new LDAPControl[controls.size()]);
                     }
                     message = new LDAPDeleteRequest(dn,cons);
+                    if (requestID != null)
+                        message.setTag(requestID);
+                    requestID = null;
                     queue.add(message);
                     break;
                 }
@@ -672,6 +719,9 @@ public class DSMLHandler implements ContentHandler, ErrorHandler
                         message = new LDAPCompareRequest(dn, attrName,
                                 ((String)compareValue).getBytes("UTF-8"),cons);
                     }
+                    if (requestID != null)
+                        message.setTag(requestID);
+                    requestID = null;
                     queue.add(message);
                     break;
                 }
@@ -709,6 +759,9 @@ public class DSMLHandler implements ContentHandler, ErrorHandler
                     message = new LDAPExtendedRequest(
                             new com.novell.ldap.LDAPExtendedOperation(
                                     requestName, requestValue ), cons);
+                    if (requestID != null)
+                        message.setTag(requestID);
+                    requestID = null;
                     queue.add(message);
                     state = BATCH_REQUEST;
                     break;
@@ -1038,6 +1091,23 @@ public class DSMLHandler implements ContentHandler, ErrorHandler
 	    // no op
         return;
     }
+
+    public String getBatchRequestID() {
+        return this.batchRequestID;
+    }
+
+    public boolean isParallelProcessing() {
+        return this.isParallel;
+    }
+
+    public boolean isResponseUnordered() {
+        return this.isUnordered;
+    }
+
+    public boolean isResumeOnError() {
+        return this.isResumeOnError;
+    }
+
 
 }
 
