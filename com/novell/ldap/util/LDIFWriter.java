@@ -601,11 +601,11 @@ public class LDIFWriter extends LDIF implements LDAPExport {
 
     /**
      * Turn the input comment string into multiple comment lines if it contains
-     * more than 80 characters
+     * more than 80 characters.
      *
      * @param line String object representing a comment line in LDIF file.
      *
-     * @trturn String array object that contain one or more lines
+     * @return String array object that contain one or more lines
      */
     public String[] toCommentLines( String line ) {
 
