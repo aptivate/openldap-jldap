@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: LDIFReader.java,v 1.36 2002/11/13 20:22:35 $
+ * $Novell: LDIFReader.java,v 1.37 2002/11/13 23:37:27 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -30,10 +30,10 @@ import com.novell.ldap.LDAPLocalException;
 import com.novell.ldap.LDAPMessage;
 import com.novell.ldap.LDAPModification;
 import com.novell.ldap.LDAPSearchResult;
-import com.novell.ldap.message.LDAPAddRequest;
-import com.novell.ldap.message.LDAPDeleteRequest;
-import com.novell.ldap.message.LDAPModifyDNRequest;
-import com.novell.ldap.message.LDAPModifyRequest;
+import com.novell.ldap.LDAPAddRequest;
+import com.novell.ldap.LDAPDeleteRequest;
+import com.novell.ldap.LDAPModifyDNRequest;
+import com.novell.ldap.LDAPModifyRequest;
 import com.novell.ldap.util.Base64;
 
 /**

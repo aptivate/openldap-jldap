@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: DSMLHandler.java,v 1.21 2002/11/13 23:52:19 $
+ * $Novell: DSMLHandler.java,v 1.22 2002/11/15 18:36:40 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -16,7 +16,6 @@ package com.novell.ldap.client;
 
 import com.novell.ldap.*;
 import com.novell.ldap.rfc2251.*;
-import com.novell.ldap.message.*;
 import com.novell.ldap.util.Base64;
 import java.util.ArrayList;
 import java.io.UnsupportedEncodingException;

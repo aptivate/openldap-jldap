@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: LDIFWriter.java,v 1.30 2002/10/28 23:16:13 $
+ * $Novell: LDIFWriter.java,v 1.31 2002/11/13 22:54:14 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -29,10 +29,10 @@ import com.novell.ldap.LDAPMessage;
 import com.novell.ldap.LDAPMessageQueue;
 import com.novell.ldap.LDAPModification;
 import com.novell.ldap.LDAPSearchResult;
-import com.novell.ldap.message.LDAPAddRequest;
-import com.novell.ldap.message.LDAPDeleteRequest;
-import com.novell.ldap.message.LDAPModifyDNRequest;
-import com.novell.ldap.message.LDAPModifyRequest;
+import com.novell.ldap.LDAPAddRequest;
+import com.novell.ldap.LDAPDeleteRequest;
+import com.novell.ldap.LDAPModifyDNRequest;
+import com.novell.ldap.LDAPModifyRequest;
 import com.novell.ldap.util.Base64;
 
 /**
@@ -147,10 +147,10 @@ public class LDIFWriter implements LDAPWriter
      * @throws IOException if an I/O error occurs.
      *
      * @see com.novell.ldap.LDAPSearchResults
-     * @see com.novell.ldap.message.LDAPAddRequest
-     * @see com.novell.ldap.message.LDAPDeleteRequest
-     * @see com.novell.ldap.message.LDAPModifyDNRequest
-     * @see com.novell.ldap.message.LDAPModifyRequest
+     * @see com.novell.ldap.LDAPAddRequest
+     * @see com.novell.ldap.LDAPDeleteRequest
+     * @see com.novell.ldap.LDAPModifyDNRequest
+     * @see com.novell.ldap.LDAPModifyRequest
      */
     public void writeMessage(LDAPMessage request)
                 throws IOException
