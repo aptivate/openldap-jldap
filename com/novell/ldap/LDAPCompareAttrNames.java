@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPCompareAttrNames.java,v 1.9 2000/10/09 19:11:22 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPCompareAttrNames.java,v 1.10 2000/10/09 20:15:42 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -24,8 +24,8 @@ import java.util.Locale;
  
 /**
  *
- *  Represents an object that supports sorting search results by attribute
- *  name, in ascending or descending order.
+ *  Represents an object that supports sorting search results by one or more
+ *  attributes, in ascending or descending order.
  *
  * <p>NDS supports only ascending sort order (A,B,C ...) and allows sorting only 
  * by one attribute. The NDS server must be configured to index this attribute.</p>
