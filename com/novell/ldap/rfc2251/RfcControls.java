@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/src/com/novell/ldap/protocol/Controls.java,v 1.3 2000/08/22 01:47:25 smerrill Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/protocol/Controls.java,v 1.4 2000/09/11 21:06:00 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  ***************************************************************************/
@@ -55,7 +55,8 @@ public class Controls extends ASN1SequenceOf {
 	 */
 	public void add(Control control)
 	{
-		add(control);
+		
+		super.add((ASN1Object)control);
 	}
 
 	/**
