@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchListener.java,v 1.26 2001/03/01 00:29:56 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchListener.java,v 1.27 2001/03/06 19:19:12 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -79,10 +79,10 @@ public class LDAPSearchListener implements LDAPListener
     }
 
    /**
-    * Returns the message IDs for all outstanding requests.
-    *
-    * <p>The last ID in the array is the messageID of the
-    * last submitted request.</p>
+    * Returns the message IDs for all outstanding requests, i.e. requests
+    * for which a response has not been received from the server or which
+    * still have messages to be retrieved with getResponse. The last ID in
+    * the array is the messageID of the latest submitted request.
     *
     * @return The message IDs for all outstanding requests.
     */
@@ -92,7 +92,10 @@ public class LDAPSearchListener implements LDAPListener
     }
 
    /**
-    * Reports whether a response has been received from the server.
+    * Reports whether a response has been received from the server and
+    * not yet retrieved with getResponse. If getResponse has been used to
+    * retrieve all messages received to this point, then isResponseReceived
+    * returns false.
     *
     * @return True if a response has been received from the server; false if
     *         a response has not been received.
@@ -103,7 +106,10 @@ public class LDAPSearchListener implements LDAPListener
     }
 
    /**
-    * Reports whether a response has been received from the server.
+    * Reports whether a response has been received from the server and
+    * not yet retrieved with getResponse. If getResponse has been used to
+    * retrieve all messages received to this point, then isResponseReceived
+    * returns false.
     *
     * @return True if a response has been received from the server; false if
     *         a response has not been received.
