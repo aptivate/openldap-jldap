@@ -40,102 +40,142 @@ public class LDAPMessage {
 
   /**
    * A bind request operation.
+   *
+   *<p>BIND_REQUEST = 0</p>
    */
    public final static int BIND_REQUEST            = 0;
 
   /**
    * A bind response operation.
+   *
+   *<p>BIND_RESPONSE = 1</p>
    */
    public final static int BIND_RESPONSE           = 1;
 
   /**
    * An unbind request operation.
+   *
+   *<p>UNBIND_REQUEST = 2</p>
    */
    public final static int UNBIND_REQUEST          = 2;
 
   /**
    * A search request operation.
+   *
+   *<p>SEARCH_REQUEST = 3</p>
    */
    public final static int SEARCH_REQUEST          = 3;
 
   /**
    * A search response containing data.
+   *
+   *<p>SEARCH_RESPONSE = 4</p>
    */
    public final static int SEARCH_RESPONSE         = 4;
 
   /**
    * A search result message - contains search status.
+   *
+   *<p>SEARCH_RESULT = 5</p>
    */
    public final static int SEARCH_RESULT           = 5;
 
   /**
    * A modify request operation.
+   *
+   *<p>MODIFY_REQUEST = 6</p>
    */
    public final static int MODIFY_REQUEST          = 6;
 
   /**
    * A modify response operation.
+   *
+   *<p>MODIFY_RESPONSE = 7</p>
    */
    public final static int MODIFY_RESPONSE         = 7;
 
   /**
    * An add request operation.
+   *
+   *<p>ADD_REQUEST = 8</p>
    */
    public final static int ADD_REQUEST             = 8;
 
   /**
    * An add response operation.
+   *
+   *<p>ADD_RESONSE = 9</p>
    */
    public final static int ADD_RESPONSE            = 9;
 
   /**
    * A delete request operation.
+   *
+   *<p>DEL_REQUEST = 10</p>
    */
    public final static int DEL_REQUEST             = 10;
 
   /**
    * A delete response operation.
+   *
+   *<p>DEL_RESONSE = 11</p>
    */
    public final static int DEL_RESPONSE            = 11;
 
   /**
    * A modify RDN request operation.
+   *
+   *<p>MODIFY_RDN_REQUEST = 12</p>
    */
    public final static int MODIFY_RDN_REQUEST      = 12;
 
   /**
    * A modify RDN response operation.
+   *
+   *<p>MODIFY_RDN_RESPONSE = 13</p>
    */
    public final static int MODIFY_RDN_RESPONSE     = 13;
 
   /**
    * A compare result operation.
+   *
+   *<p>COMPARE_REQUEST = 14</p>
    */
    public final static int COMPARE_REQUEST         = 14;
 
   /**
    * A compare response operation.
+   *
+   *<p>COMPARE_RESPONSE = 15</p>
    */
    public final static int COMPARE_RESPONSE        = 15;
 
   /**
    * An abandon request operation.
+   *
+   *<p>ABANDON_REQUEST = 16</p>
    */
    public final static int ABANDON_REQUEST         = 16;
 
 
   /**
    * A search result reference operation.
+   *
+   *<p>SEARCH_RESULT_REFERENCE = 19</p>
    */
    public final static int SEARCH_RESULT_REFERENCE = 19;
 
   /**
    * An extended request operation.
+   *
+   *<p>EXTENDED_REQUEST = 23</p>
    */
    public final static int EXTENDED_REQUEST        = 23;
 
   /**
    * An extended response operation.
+   *
+   *<p>EXTENDED_RESONSE = 24</p>
    */
    public final static int EXTENDED_RESPONSE       = 24;
 
