@@ -1751,7 +1751,7 @@ public class LDAPConnection implements Cloneable
      *<br><br>
      *  @param attr    An attribute to compare.
      *<br><br>
-     *  @param queue   The handler for messages returned from a server in
+     *  @param queue   The queue for messages returned from a server in
      *                    response to this request. If it is null, a
      *                    queue object is created internally.
      *
@@ -1963,7 +1963,7 @@ public class LDAPConnection implements Cloneable
      *
      *  @param dn      The distinguished name of the entry to modify.
      *<br><br>
-     *  @param queue     The handler for messages returned from a server in
+     *  @param queue     The queue for messages returned from a server in
      *                   response to this request. If it is null, a
      *                   queue object is created internally.
      *
@@ -1986,7 +1986,7 @@ public class LDAPConnection implements Cloneable
      *
      *  @param dn      The distinguished name of the entry to delete.
      *<br><br>
-     *  @param queue      The handler for messages returned from a server in
+     *  @param queue      The queue for messages returned from a server in
      *                    response to this request. If it is null, a
      *                    queue object is created internally.
      *<br><br>
@@ -2169,7 +2169,7 @@ public class LDAPConnection implements Cloneable
      *            operation-specific sequence of octet strings
      *            or BER-encoded values.
      *<br><br>
-     * @param queue     The handler for messages returned from a server in
+     * @param queue     The queue for messages returned from a server in
      *                  response to this request. If it is null, a queue
      *                  object is created internally.
      *
@@ -2202,7 +2202,7 @@ public class LDAPConnection implements Cloneable
      *            server this client is connected to and (2) an operation-
      *         specific sequence of octet strings or BER-encoded values.
      *<br><br>
-     * @param queue     The handler for messages returned from a server in
+     * @param queue     The queue for messages returned from a server in
      *                  response to this request. If it is null, a queue
      *                  object is created internally.
      *<br><br>
@@ -2528,7 +2528,7 @@ public class LDAPConnection implements Cloneable
      *<br><br>
      *  @param mods       The changes to be made to the entry.
      *<br><br>
-     *  @param queue      The handler for messages returned from a server in
+     *  @param queue      The queue for messages returned from a server in
      *                    response to this request. If it is null, a
      *                    queue object is created internally.
      *
@@ -2560,7 +2560,7 @@ public class LDAPConnection implements Cloneable
      *<br><br>
      *  @param mods       The changes to be made to the entry.
      *<br><br>
-     *  @param queue      The handler for messages returned from a server in
+     *  @param queue      The queue for messages returned from a server in
      *                    response to this request. If it is null, a
      *                    queue object is created internally.
      *<br><br>
@@ -2914,7 +2914,7 @@ public class LDAPConnection implements Cloneable
      *                        attribute value. If false, the old name is
      *                        retained as an attribute value.
      *<br><br>
-     *  @param queue          The handler for messages returned from a server in
+     *  @param queue          The queue for messages returned from a server in
      *                        response to this request. If it is null, a
      *                        queue object is created internally.
      *
@@ -2942,7 +2942,7 @@ public class LDAPConnection implements Cloneable
      *                        attribute value. If false, the old name is
      *                        retained as an attribute value.
      *<br><br>
-     *  @param queue          The handler for messages returned from a server in
+     *  @param queue          The queue for messages returned from a server in
      *                        response to this request. If it is null, a
      *                        queue object is created internally.
      *<br><br>
@@ -2976,7 +2976,7 @@ public class LDAPConnection implements Cloneable
      *                        attribute value. If false, the old name is
      *                        retained as an attribute value.
      *<br><br>
-     *  @param queue          The handler for messages returned from a server in
+     *  @param queue          The queue for messages returned from a server in
      *                        response to this request. If it is null, a
      *                        queue object is created internally.
      *
@@ -3014,7 +3014,7 @@ public class LDAPConnection implements Cloneable
      *                        attribute value. If false, the old name is
      *                        retained as an attribute value.
      *<br><br>
-     *  @param queue          The handler for messages returned from a server in
+     *  @param queue          The queue for messages returned from a server in
      *                        response to this request. If it is null, a
      *                        queue object is created internally.
      *<br><br>
@@ -3213,7 +3213,7 @@ public class LDAPConnection implements Cloneable
      *                        the attributes found.  If false, returns the
      *                        names and values for attributes found.
      * <br><br>
-     *  @param queue          The handler for messages returned from a server in
+     *  @param queue          The queue for messages returned from a server in
      *                        response to this request. If it is null, a
      *                        queue object is created internally.
      *<br><br>
@@ -3346,7 +3346,9 @@ public class LDAPConnection implements Cloneable
      * {@link com.novell.ldap.message } package</p>
      *
      * @param request The LDAP request to send to the directory server.
-     * @param queue     The queue to be used for receipt of results
+     * @param queue    The queue for messages returned from a server in
+     *                 response to this request. If it is null, a
+     *                 queue object is created internally.
      * @param cons    The constraints that apply to this request
      * @exception     LDAPException A general exception which includes an error
      *                message and an LDAP error code.
