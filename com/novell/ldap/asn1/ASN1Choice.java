@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Choice.java,v 1.5 2000/09/11 21:05:51 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Choice.java,v 1.6 2001/03/01 00:29:59 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -20,19 +20,22 @@ import java.io.*;
 /**
  * The ASN1Choice object represents the choice of any ASN1Object. All
  * ASN1Object methods are delegated to the object this ASN1Choice contains.
- *
- * Can a CHOICE contain anything BUT a TAGGED Type?
+ */
+ /* Can a CHOICE contain anything BUT a TAGGED Type?
  */
 public class ASN1Choice extends ASN1Object {
 
    private ASN1Object content;
 
-   //*************************************************************************
-   // Constructors for ASN1Choice
-   //*************************************************************************
+   /* Constructors for ASN1Choice
+    */
 
    /**
     * Constructs an ASN1Choice object using an ASN1Object value.
+    *
+    * @param content The ASN1Object that this ASN1Choice will
+    * encode.  Since all ASN1 objects are derived from ASN1Object
+    * any basic type can be passed in.
     */
    public ASN1Choice(ASN1Object content)
    {
@@ -47,12 +50,19 @@ public class ASN1Choice extends ASN1Object {
    {
    }
 
-   //*************************************************************************
-   // ASN1Object implementation
-   //*************************************************************************
+   /* ASN1Object implementation
+    */
+   
 
    /**
-    * Encodes the contents of this ASN1Choice directly to an output stream.
+    * Call this method to encode the contents of this ASN1Choice
+    * instance into the specified output stream using the 
+    * specified encoder object.
+    *
+    * @param enc Encoder object to use when encoding self.<br>
+    *
+    * @param out The output stream onto which the encoded byte 
+    * stream is written.
     */
    public void encode(ASN1Encoder enc, OutputStream out)
       throws IOException
@@ -60,12 +70,12 @@ public class ASN1Choice extends ASN1Object {
       content.encode(enc, out);
    }
 
-   //*************************************************************************
-   // ASN1Choice specific methods
-   //*************************************************************************
+   /* ASN1Choice specific methods
+    */
 
    /**
-    * Returns the CHOICE value stored in this ASN1Choice.
+    * Returns the CHOICE value stored in this ASN1Choice
+    * as an ASN1Object. 
     */
    public ASN1Object getContent()
    {
@@ -74,6 +84,10 @@ public class ASN1Choice extends ASN1Object {
 
    /**
     * Sets the CHOICE value stored in this ASN1Choice.
+    *
+    * @param content The ASN1Object that this ASN1Choice will
+    * encode.  Since all ASN1 objects are derived from ASN1Object
+    * any basic type can be passed in.    
     */
    protected void setContent(ASN1Object content)
    {
@@ -81,7 +95,10 @@ public class ASN1Choice extends ASN1Object {
    }
 
    /**
-    * Override to return the ASN1Identifier of the choice object.
+    * This method will return the ASN1Identifier of the 
+    * encoded ASN1Object.We  override the parent method
+    * as the identifier of an ASN1Choice depends on the 
+    * type of the object encoded by this ASN1Choice.
     */
    public ASN1Identifier getIdentifier()
    {
@@ -89,7 +106,10 @@ public class ASN1Choice extends ASN1Object {
    }
 
    /**
-    * Override to set the ASN1Identifier of the choice object.
+    * Sets the identifier of the contained ASN1Object. We
+    * override the parent method as the identifier of 
+    * an ASN1Choice depends on the type of the object 
+    * encoded by this ASN1Choice.
     */
    public void setIdentifier(ASN1Identifier id)
    {

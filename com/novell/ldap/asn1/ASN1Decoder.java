@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Decoder.java,v 1.7 2001/04/06 17:00:19 javed Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Decoder.java,v 1.8 2001/04/06 19:28:20 javed Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -59,7 +59,7 @@ public interface ASN1Decoder extends Serializable {
     * @param length The decoded components encoded length. This value is
     * handy when decoding structured types. It allows you to accumulate 
     * the number of bytes decoded, so you know when the structured 
-    * type has decoded all of its components.
+    * type has decoded all of its components.<br>
     *
     * @param in An input stream containig the encoded ASN.1 data.
     */
@@ -73,7 +73,7 @@ public interface ASN1Decoder extends Serializable {
     * Decode a BOOLEAN directly from a stream. Call this method when you
     * know that the next ASN.1 encoded element is a BOOLEAN
     *
-    * @param in An input stream containig the encoded ASN.1 data.
+    * @param in An input stream containig the encoded ASN.1 data.<br>
     *
     * @param len Length in bytes
     */
@@ -86,7 +86,7 @@ public interface ASN1Decoder extends Serializable {
     *
     * <p>Can be used to decodes INTEGER and ENUMERATED types.
     *
-    * @param in An input stream containig the encoded ASN.1 data.
+    * @param in An input stream containig the encoded ASN.1 data.<br>
     *
     * @param len Length in bytes    
     */
@@ -112,7 +112,7 @@ public interface ASN1Decoder extends Serializable {
     * Decode an OCTET_STRING directly from a stream. Call this method when you
     * know that the next ASN.1 encoded element is a OCTET_STRING.
     *
-    * @param in An input stream containig the encoded ASN.1 data.
+    * @param in An input stream containig the encoded ASN.1 data.<br>
     *
     * @param len Length in bytes    
     */

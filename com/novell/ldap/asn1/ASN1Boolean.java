@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Boolean.java,v 1.5 2000/09/11 21:05:51 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Boolean.java,v 1.6 2001/03/01 00:29:58 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -18,7 +18,7 @@ package com.novell.ldap.asn1;
 import java.io.*;
 
 /**
- * Represents the ASN.1 BOOLEAN type.
+ * This class encapsulates the ASN.1 BOOLEAN type.
  */
 public class ASN1Boolean extends ASN1Simple {
 
@@ -29,12 +29,15 @@ public class ASN1Boolean extends ASN1Simple {
     */
    public static final int TAG = 0x01;
 
-   //*************************************************************************
-   // Constructors for ASN1Boolean
-   //*************************************************************************
+   /* Constructors for ASN1Boolean
+    */
 
    /**
-    * Constructs an ASN1Boolean object from a boolean value.
+    * Call this constructor to constructs an ASN1Boolean 
+    * object from a boolean value.
+    *
+    * @param context The boolean value to be contained in the
+    * this ASNBoolean object
     */
    public ASN1Boolean(boolean content)
    {
@@ -43,7 +46,15 @@ public class ASN1Boolean extends ASN1Simple {
    }
 
    /**
-    * Constructs an ASN1Boolean object by decoding data from an input stream.
+    * Constructs an ASN1Boolean object by decoding data from an 
+    * input stream.
+    *
+    * @param dec The decoder object to use when decoding the
+    * input stream.  Sometimes a developer might want to pass
+    * in his/her own decoder object<br>
+    *
+    * @param in A byte stream that contains the encoded ASN.1
+    *
     */
    public ASN1Boolean(ASN1Decoder dec, InputStream in, int len)
       throws IOException
@@ -52,12 +63,17 @@ public class ASN1Boolean extends ASN1Simple {
       content = ((Boolean)dec.decodeBoolean(in, len)).booleanValue();
    }
 
-   //*************************************************************************
-   // ASN1Object implementation
-   //*************************************************************************
+   /* ASN1Object implementation 
+    */
 
    /**
-    * Encodes the contents of this ASN1Boolean directly to an output stream.
+    * Call this method to encode the current instance into the 
+    * specified output stream using the specified encoder object.
+    *
+    * @param enc Encoder object to use when encoding self.<br>
+    *
+    * @param out The output stream onto which the encoded byte 
+    * stream is written.
     */
    public void encode(ASN1Encoder enc, OutputStream out)
       throws IOException
@@ -65,10 +81,9 @@ public class ASN1Boolean extends ASN1Simple {
       enc.encode(this, out);
    }
 
-   //*************************************************************************
-   // ASN1Boolean specific methods
-   //*************************************************************************
-
+   /* ASN1Boolean specific methods
+    */
+   
    /**
     * Returns the content of this ASN1Boolean as a boolean.
     */
@@ -78,7 +93,7 @@ public class ASN1Boolean extends ASN1Simple {
    }
 
    /**
-    * Returns a String representation of this ASN1Boolean.
+    * Returns a String representation of this ASN1Boolean object.
     */
    public String toString()
    {
