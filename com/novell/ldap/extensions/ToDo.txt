@@ -1,0 +1,6 @@
+(1) Code, Compile and Test samples for each extension
+(2) JavaDoc samples
+(3) JavaDoc extension classes
+(4) Seperate extension classes into a seperate jar
+(5) Replace ber functions with new ones when available
+(6) ExtendedMessageFactory for converting a reponse to a xyzExtendedResponse
