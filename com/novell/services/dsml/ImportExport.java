@@ -34,7 +34,7 @@ public class ImportExport
 
     /**
      * Processes LDAP requests from an LDAPReader class.
-     * 
+     *
      * <p>Processes requests from an LDAPReader class, submits the requests
      * to an LDAPConnection class (obtained from the connection pool),
      * and writes the responses to an LDAPWriter class.</p>
@@ -42,7 +42,7 @@ public class ImportExport
      * @param reqAuth the class that encapsulates the authentication credentials
      * @param connPool a connection pool used to obtain an connection
      * @param reqDsmlRdr the LDAPReader class that supplies the LDAP requests
-     * @param reqDsmlWtr the LDAPWriter class that accepts the LDAP responses
+     * @param rspDsmlWtr the LDAPWriter class that accepts the LDAP responses
      */
     static public void process(Authorization reqAuth,
                                PoolManager connPool,
@@ -80,13 +80,15 @@ public class ImportExport
             /* LDAP errors are standard DSML errors.  All other errors are
                returned as SOAP faults */
             rspDsmlWtr.writeError(le);
+        } finally {
+            //Finish converting DSML batch response
+            rspDsmlWtr.finish();
         }
         // Free Connection
-        connPool.makeConnectionAvailable(ldapConn);
-        ldapConn = null;
-        
-        //Finish converting DSML batch response
-        rspDsmlWtr.finish();
+        if (ldapConn != null){
+            connPool.makeConnectionAvailable(ldapConn);
+            ldapConn = null;
+        }
         return;
     }
 }
