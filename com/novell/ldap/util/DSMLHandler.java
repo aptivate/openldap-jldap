@@ -15,13 +15,22 @@ class DSMLHandler implements ContentHandler, ErrorHandler
     private LDAPMessage message = null;
     private LDAPEntry entry = null;
     private LDAPAttributeSet attrSet = null;
-    private ArrayList attributes = new ArrayList();
+    /* attribute list is used differently for different operations:
+        - for attribute names (string) In the Compare operation
+        - for attribute values = (string) In multiple <value> attributes */
+    private ArrayList attributeList = new ArrayList();
+    /* modlist is used for modifications in the ModRequest operation */
+    private ArrayList modlist = new ArrayList();
+
+    /* individual variables used to build messages LDAP attributes */
+    private String requestName;
+    private byte[] requestValue;
     private LDAPSearchConstraints searchCons = null;
     private String attrName = null;
-    private String dn, filter;
+    private String dn, filter, newRDN, newSuperior;
     private StringBuffer value;
-    private boolean typesOnly;
-    private int scope;
+    private boolean typesOnly, deleteOldRDN, isBase64;
+    private int scope, operation;
 
     /* The following values are valid states for the parser: tags are in
     comments*/
@@ -50,7 +59,11 @@ class DSMLHandler implements ContentHandler, ErrorHandler
 
     /* miscelaneous tags :*/
     private static final int ADD_ATTRIBUTE = 18;    //<attr>
-    private static final int BATCH_RESPONSE= 19;    //<batchResponse>
+    private static final int MODIFICATION = 19;     //<modification>
+    private static final int X_NAME = 20;           //<requestName>
+    private static final int X_VALUE = 21;          //<requestValue>
+
+    private static final int BATCH_RESPONSE= 22;    //<batchResponse>
     /* The folling are possible states from the BatchResponse state
         .... SearchResponse ...*/
 
@@ -58,10 +71,9 @@ class DSMLHandler implements ContentHandler, ErrorHandler
     private int state = START;
     private static java.util.HashMap requestTags = null;
 
-
     static {  //Initialize requestTags
         if (requestTags == null){
-            requestTags = new java.util.HashMap(20, 9999);
+            requestTags = new java.util.HashMap(23, 9999);
             //High load factor means optimized for lookup time
             requestTags.put("batchRequest", new Integer(BATCH_REQUEST));
             requestTags.put("authRequest",  new Integer(AUTH_REQUEST));
@@ -81,6 +93,9 @@ class DSMLHandler implements ContentHandler, ErrorHandler
             requestTags.put("substrings",   new Integer(SUBSTRINGS));
             requestTags.put("final",        new Integer(FINAL));
             requestTags.put("attr",         new Integer(ADD_ATTRIBUTE));
+            requestTags.put("modification", new Integer(MODIFICATION));
+            requestTags.put("requestName",  new Integer(X_NAME));
+            requestTags.put("requestValue", new Integer(X_VALUE));
         }
     }
 
@@ -113,21 +128,39 @@ class DSMLHandler implements ContentHandler, ErrorHandler
                 if (tag == ADD_REQUEST){
                     attrSet = new LDAPAttributeSet();
                 }
+                if (tag == MODIFY_REQUEST){
+                    modlist.clear();
+                }
                 parseTagAttributes( tag, attrs );
                 break;
             case SEARCH_REQUEST:
                 if (tag == ATTRIBUTES){
-                    this.attributes.clear();
+                    this.attributeList.clear();
                     state = tag;
                 }
+                else //I may not have to check for this if decide to validate
+                    throw new SAXException("incomplete searchRequest tag");
+
                 break;
             case AUTH_REQUEST:
             case MODIFY_REQUEST:
+                if (tag == MODIFICATION){
+                    state = tag;
+                    attributeList.clear();
+                    parseTagAttributes( tag, attrs );
+                }
+                else //I may not have to check for this if decide to validate
+                    throw new SAXException("incomplete modifyRequest tag");
+                break;
             case ADD_REQUEST:
                 if (tag == ADD_ATTRIBUTE){
                     state = tag;
+                    this.attributeList.clear();
                     attrName = attrs.getValue("name");
                 }
+                else //I may not have to check for this if decide to validate
+                    throw new SAXException("incomplete addRequest tag");
+
                 break;
             case DELETE_REQUEST:
                 break;
@@ -141,22 +174,34 @@ class DSMLHandler implements ContentHandler, ErrorHandler
                 else //I may not have to check for this if decide to validate
                     throw new SAXException("incomplete compareRequest tag");
                 break;
+            //Tags with <value> tags embedded:
+            case MODIFICATION:
             case ADD_ATTRIBUTE:
             case ASSERTION:
                 if (tag == VALUE){
                     state = tag;
                     value = new StringBuffer();
+                    String temp = attrs.getValue("type");
+                    if ( temp != null && temp.equals("xsd:base64Binary") ){
+                        isBase64 = true;
+                    } else {
+                        isBase64 = false;
+                    }
                 }
                 else //I may not have to check for this if decide to validate
                     throw new SAXException("incomplete assertion tag");
                 break;
+            //Tags with multiple <value> tags embedded
             case ATTRIBUTES:
                 //list of attribute names
                 if (tag == ATTRIBUTE){
                     //add a search attributes name
-                    attributes.add(attrs.getValue("name"));
+                    attributeList.add(attrs.getValue("name"));
                     state = tag;
                 }
+                else //I may not have to check for this if decide to validate
+                    throw new SAXException("incomplete attributes tag");
+
                 break;
             case FILTER:
                 break;
@@ -165,111 +210,155 @@ class DSMLHandler implements ContentHandler, ErrorHandler
             case FINAL:
                 break;
             case EXTENDED_REQUEST:
+                if (tag == X_NAME || tag == X_VALUE){
+                    state = tag;
+                    value = new StringBuffer();
+                }
+                break;
+            case VALUE_COMPLETE:
+                if (tag == VALUE){
+                    value = new StringBuffer();
+                    state = tag;
+                }
                 break;
         }
         return;
     }
 
-    private void parseTagAttributes( int tag, Attributes attr )
+    private void parseTagAttributes( int tag, Attributes attrs )
             throws SAXException
     {
 
         switch (tag){
             case SEARCH_REQUEST:
-                String temp;
-                int timeLimit, deref, sizeLimit;
+                {
+                    String temp;
+                    int timeLimit, deref, sizeLimit;
 
-                //Get dereferencing Aliases
-                temp = attr.getValue("derefAliases");
-                if (temp == null){
-                    deref = LDAPSearchConstraints.DEREF_ALWAYS;
-                } else if (temp.equals("neverDerefAliases")){
-                    deref = LDAPSearchConstraints.DEREF_NEVER;
-                } else if (temp.equals("derefInSearching")){
-                    deref = LDAPSearchConstraints.DEREF_SEARCHING;
-                } else if (temp.equals("derefFindingBaseObj")){
-                    deref = LDAPSearchConstraints.DEREF_FINDING;
-                } else if (temp.equals("derefAlways")){
-                    deref = LDAPSearchConstraints.DEREF_ALWAYS;
-                } else throw new SAXException (
-                        "unknown attribute in searchRequest, " + temp);
+                    //Get dereferencing Aliases
+                    temp = attrs.getValue("derefAliases");
+                    if (temp == null){
+                        deref = LDAPSearchConstraints.DEREF_ALWAYS;
+                    } else if (temp.equals("neverDerefAliases")){
+                        deref = LDAPSearchConstraints.DEREF_NEVER;
+                    } else if (temp.equals("derefInSearching")){
+                        deref = LDAPSearchConstraints.DEREF_SEARCHING;
+                    } else if (temp.equals("derefFindingBaseObj")){
+                        deref = LDAPSearchConstraints.DEREF_FINDING;
+                    } else if (temp.equals("derefAlways")){
+                        deref = LDAPSearchConstraints.DEREF_ALWAYS;
+                    } else throw new SAXException (
+                            "unknown attribute in searchRequest, " + temp);
 
-                //get timelimit
-                temp = attr.getValue("timelimit");
-                if (temp != null){
-                    timeLimit = Integer.parseInt(temp);
-                } else {
-                    timeLimit = 0;
+                    //get timelimit
+                    temp = attrs.getValue("timelimit");
+                    if (temp != null){
+                        timeLimit = Integer.parseInt(temp);
+                    } else {
+                        timeLimit = 0;
+                    }
+
+                    //get sizeLimit
+                    temp = attrs.getValue("sizeLimit");
+                    if (temp != null){
+                        sizeLimit = Integer.parseInt(temp);
+                    } else {
+                        sizeLimit = 0;
+                    }
+
+                    //put the above fields into a searchConstraints object
+                    searchCons = new LDAPSearchConstraints(
+                            timeLimit,
+                            timeLimit,  //serverTimeLimit
+                            deref,      //dereference int
+                            sizeLimit,  //maxResults
+                            false,      //doReferrals
+                            0,          //batchSize
+                            null, //referralHandler,
+                            0);
+
+                    //the following are parameters to LDAPSearchRequest
+                    dn = attrs.getValue("dn");
+
+                    temp = attrs.getValue("typesOnly");
+                    if (temp == null){
+                        typesOnly = false;
+                    } else if ( new Boolean(temp).booleanValue() == true ){
+                        typesOnly = true;
+                    } else if ( new Boolean(temp).booleanValue() == false){
+                        typesOnly = false;
+                    } else {
+                        throw new SAXException(
+                                "Invalid value for attribute 'typesOnly',"+
+                                temp);
+                    }
+
+                    //Get Scope
+                    temp = attrs.getValue("scope");
+                    if (temp == null){
+                        scope = LDAPConnection.SCOPE_BASE;
+                    } else if (temp.equals("baseObject")){
+                        scope = LDAPConnection.SCOPE_BASE;
+                    } else if (temp.equals("singleLevel")){
+                        scope = LDAPConnection.SCOPE_ONE;
+                    } else if (temp.equals("wholeSubtree")){
+                        scope = LDAPConnection.SCOPE_SUB;
+                    } else throw new SAXException(
+                            "Invalid value for attribute 'scope', "+ temp);
+
+                    filter = null;
                 }
-
-                //get sizeLimit
-                temp = attr.getValue("sizeLimit");
-                if (temp != null){
-                    sizeLimit = Integer.parseInt(temp);
-                } else {
-                    sizeLimit = 0;
-                }
-
-                //put the above fields into a searchConstraints object
-                searchCons = new LDAPSearchConstraints(
-                        timeLimit,
-                        timeLimit,  //serverTimeLimit
-                        deref,      //dereference int
-                        sizeLimit,  //maxResults
-                        false,      //doReferrals
-                        0,          //batchSize
-                        null, //referralHandler,
-                        0);
-
-                //the following are parameters to LDAPSearchRequest
-                dn = attr.getValue("dn");
-
-                temp = attr.getValue("typesOnly");
-                if (temp == null){
-                    typesOnly = false;
-                } else if ( new Boolean(temp).booleanValue() == true ){
-                    typesOnly = true;
-                } else if ( new Boolean(temp).booleanValue() == false){
-                    typesOnly = false;
-                } else {
-                    throw new SAXException(
-                            "Invalid value for attribute 'typesOnly',"+
-                            temp);
-                }
-
-                //Get Scope
-                temp = attr.getValue("scope");
-                if (temp == null){
-                    scope = LDAPConnection.SCOPE_BASE;
-                } else if (temp.equals("baseObject")){
-                    scope = LDAPConnection.SCOPE_BASE;
-                } else if (temp.equals("singleLevel")){
-                    scope = LDAPConnection.SCOPE_ONE;
-                } else if (temp.equals("wholeSubtree")){
-                    scope = LDAPConnection.SCOPE_SUB;
-                } else throw new SAXException(
-                        "Invalid value for attribute 'scope', "+ temp);
-
-                filter = null;
                 break;
             case AUTH_REQUEST:
                 break;
             case MODIFY_REQUEST:
-                dn = attr.getValue("dn");
+                dn = attrs.getValue("dn");
+                break;
+            case MODIFICATION:
+                {
+                    String temp;
+                    attrName = attrs.getValue("name");
+                    temp = attrs.getValue("operation");
+                    if (temp == null || attrName == null){
+                        throw new SAXException(
+                            "Required attribute missing from tag " +"" +
+                            "<modification> (operation or name are required)");
+                    } else if (temp.equals("add")){
+                        operation = LDAPModification.ADD;
+                    } else if (temp.equals("replace")){
+                        operation = LDAPModification.REPLACE;
+                    } else if (temp.equals("delete")){
+                        operation = LDAPModification.DELETE;
+                    } else {
+                        throw new SAXException(
+                            "Invalid value for attribute 'operation': "+ temp);
+                    }
+                }
                 break;
             case ADD_REQUEST:
-                dn = attr.getValue("dn");
+                dn = attrs.getValue("dn");
                 break;
             case DELETE_REQUEST:
-                dn = attr.getValue("dn");
+                dn = attrs.getValue("dn");
                 break;
             case MODIFY_DN_REQUEST:
-                dn = attr.getValue("dn");
+                {
+                    String temp;
+                    dn = attrs.getValue("dn");
+                    newRDN = attrs.getValue("newrdn");
+                    temp = attrs.getValue("deleteOldRDN");
+                    if ( temp!=null && temp.equals("false")){
+                        deleteOldRDN = false;
+                    } else {
+                        deleteOldRDN = true;
+                    }
+                    newSuperior = attrs.getValue("newSuperior");
+                }
                 break;
             case COMPARE_REQUEST:
                 /* We cannot create a CompareRequest until we have the value
                  assestion, which is another state */
-                dn = attr.getValue("dn");
+                dn = attrs.getValue("dn");
                 break;
             case EXTENDED_REQUEST:
                 break;
@@ -284,6 +373,8 @@ class DSMLHandler implements ContentHandler, ErrorHandler
                            int l)
     {
         switch (state){
+            case X_NAME:
+            case X_VALUE:
             case VALUE:
                 value.append(a, s, l);
                 break;
@@ -314,8 +405,8 @@ class DSMLHandler implements ContentHandler, ErrorHandler
                     //queue up search
                     state = BATCH_REQUEST;
                     message = new LDAPSearchRequest(dn, scope, filter,
-                                (String[]) attributes.toArray(
-                                        new String[ attributes.size() ] ),
+                                (String[]) attributeList.toArray(
+                                        new String[ attributeList.size() ] ),
                                 typesOnly, searchCons );
                     queue.add(message);
                     break;
@@ -332,6 +423,31 @@ class DSMLHandler implements ContentHandler, ErrorHandler
                 case MODIFY_REQUEST:
                     //queue up modify
                     state = BATCH_REQUEST;
+                    message = new LDAPModifyRequest(
+                                dn,
+                                (LDAPModification[])modlist.toArray(
+                                        new LDAPModification[ modlist.size() ]),
+                                null);
+                    queue.add(message);
+                    break;
+                case MODIFICATION:
+                    //store each modify in 'list'
+                    {
+                        state = MODIFY_REQUEST;
+                        LDAPModification mod =
+                            new LDAPModification( operation,
+                                new LDAPAttribute(attrName,
+                                (String[]) attributeList.toArray(
+                                        new String[ attributeList.size()])));
+                        modlist.add(mod);
+                    }
+                    break;
+                case MODIFY_DN_REQUEST:
+                    //queue up modify
+                    state = BATCH_REQUEST;
+                    message = new LDAPModifyDNRequest( dn, newRDN, newSuperior,
+                            deleteOldRDN, null);
+                    queue.add(message);
                     break;
                 case ADD_REQUEST:
                     //queue up add
@@ -346,18 +462,21 @@ class DSMLHandler implements ContentHandler, ErrorHandler
                     message = new LDAPDeleteRequest(dn, null);
                     queue.add(message);
                     break;
-                case MODIFY_DN_REQUEST:
-                    //queue up modify
-                    state = BATCH_REQUEST;
-                    break;
                 case COMPARE_REQUEST:
                     //queue up compare
                     state = BATCH_REQUEST;
                     try {
+                        if (isBase64){
+                            Base64Decoder decode = new Base64Decoder();
+                            message = new LDAPCompareRequest(dn, attrName,
+                                    decode.decoder(value, 0, value.length()),
+                                    null);
+                        }
                         message = new LDAPCompareRequest(dn, attrName,
                                 value.toString().getBytes("UTF8"), null);
                     } catch (UnsupportedEncodingException e) {
-                        throw new RuntimeException("UTF8 not supported by JVM");
+                        throw new RuntimeException(
+                                "UTF8 not supported by JVM: " + e);
                     }
                     queue.add(message);
                     break;
@@ -367,15 +486,26 @@ class DSMLHandler implements ContentHandler, ErrorHandler
                     break;
                 case ADD_ATTRIBUTE:
                     {
+                        byte[] byteValue;
+                        if (isBase64){
+                            Base64Decoder decode = new Base64Decoder();
+                            byteValue = decode.decoder(value, 0, value.length());
+                        } else {
+                            try {
+                                byteValue = value.toString().getBytes("UTF8");
+                            } catch (UnsupportedEncodingException e) {
+                                throw new RuntimeException(
+                                        "UTF8 encoding not supported:" + e );
+                            }
+                        }
                         state = ADD_REQUEST;
                         LDAPAttribute attr = attrSet.getAttribute(attrName);
                         if (attr == null){
                             //create a new attribute
-                            attr = new LDAPAttribute(attrName,
-                                    value.toString());
+                            attr = new LDAPAttribute(attrName, byteValue);
                             attrSet.add(attr);
                         } else {
-                            attr.addValue(value.toString());
+                            attr.addValue(byteValue);
                         }
                     }
                     break;
@@ -385,10 +515,27 @@ class DSMLHandler implements ContentHandler, ErrorHandler
                     break;
                 case EXTENDED_REQUEST:
                     //queue up x-operation
+                    message = new LDAPExtendedRequest(
+                            new com.novell.ldap.LDAPExtendedOperation(
+                                    requestName, requestValue ),
+                            null);
+                    queue.add(message);
                     state = BATCH_REQUEST;
                     break;
+                case X_NAME:
+                    state = EXTENDED_REQUEST;
+                    requestName = value.toString();
+                    break;
+                case X_VALUE:
+                    {
+                        state = EXTENDED_REQUEST;
+                        Base64Decoder decode = new Base64Decoder();
+                        requestValue = decode.decoder(value, 0, value.length());
+                        break;
+                    }
                 case VALUE:
                     state = VALUE_COMPLETE;
+                    attributeList.add(value.toString());
                     break;
             }
         } catch (LDAPException e) {
