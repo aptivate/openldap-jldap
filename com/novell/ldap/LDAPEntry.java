@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPEntry.java,v 1.3 2000/08/03 22:06:15 smerrill Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPEntry.java,v 1.4 2000/08/28 22:18:56 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -15,13 +15,16 @@
  
 package com.novell.ldap;
  
-/**
+/*
  * 4.10 public class LDAPEntry
+ */
+ 
+/**
  *
- *  An LDAPEntry represents a single entry in a directory, consisting of
+ *  Represents a single entry in a directory, consisting of
  *  a distinguished name (DN) and zero or more attributes. An instance of
- *  LDAPEntry is created in order to add an entry to a Directory, and
- *  instances are returned on a search by enumerating an
+ *  LDAPEntry is created in order to add an entry to a directory, and
+ *  instances of LDAPEntry are returned on a search by enumerating an
  *  LDAPSearchResults.
  */
 public class LDAPEntry {
@@ -42,6 +45,11 @@ public class LDAPEntry {
    /**
     * Constructs a new entry with the specified distinguished name and with
     * an empty attribute set.
+    *
+    *  @param dn  The distinguished name of the entry. The
+    *                  value is not validated. An invalid distinguished
+    *                  name will cause operations using this entry to fail.
+    *
     */
    public LDAPEntry(String dn) {
       this.dn = dn;
@@ -51,14 +59,11 @@ public class LDAPEntry {
     * Constructs a new entry with the specified distinguished name and set
     * of attributes.
     *
-    * Parameters are:
-    *
-    *  dn             The distinguished name of the new entry. The
+    *  @param dn       The distinguished name of the new entry. The
     *                  value is not validated. An invalid distinguished
-    *                  name will cause adding of the entry to a
-    *                  directory to fail.
-    *
-    *  attrs          The initial set of attributes assigned to the
+    *                  name will cause operations using this entry to fail.
+    *<br><br>
+    *  @param attrs    The initial set of attributes assigned to the
     *                  entry.
     */
    public LDAPEntry(String dn, LDAPAttributeSet attrs) {
@@ -70,8 +75,7 @@ public class LDAPEntry {
     * Returns the attributes matching the specified attrName.
     * 
     * @param attrName The name of the attribute or attributes to return.
-    *                 See 4.3.5 for the syntax and semantics relevant to this
-    *                 parameter.
+    * <br><br>               
     * @return An array of LDAPAttribute objects.
     */
    public LDAPAttribute[] getAttribute(String attrName) {
@@ -83,9 +87,13 @@ public class LDAPEntry {
     */
 
    /**
-    * Returns the attribute set of the entry. All base and subtype variants
-    * of all attributes are returned. The LDAPAttributeSet returned may be
-    * empty if there are no attributes in the entry.
+    * Returns the attribute set of the entry. 
+    *
+    * <p>All base and subtype variants of all attributes are
+    * returned. The LDAPAttributeSet returned may be
+    * empty if there are no attributes in the entry. </p>
+    *
+    * @return The attribute set of the entry.
     */
    public LDAPAttributeSet getAttributeSet() {
       return attrs;
@@ -94,20 +102,24 @@ public class LDAPEntry {
 
    /**
     * Returns an attribute set from the entry, consisting of only those
-    * attributes matching the specified subtype(s). This may be used to
-    * extract only a particular language variant subtype of each attribute,
-    * if it exists. "subtype" may be, for example, "lang-ja", "binary", or
-    * "lang-ja;phonetic". If more than one subtype is specified, separated
+    * attributes matching the specified subtypes. 
+    *
+    * <p>The getAttributeSet method can be used to extract only 
+    * a particular language variant subtype of each attribute,
+    * if it exists. The "subtype" may be, for example, "lang-ja", "binary", 
+    * or "lang-ja;phonetic". If more than one subtype is specified, separated
     * with a semicolon, only those attributes with all of the named
-    * subtypes will be returned.  The LDAPAttributeSet returned may be
-    * empty if there are no matching attributes in the entry.
+    * subtypes will be returned. The LDAPAttributeSet returned may be
+    * empty if there are no matching attributes in the entry. </p>
     *
-    * Parameters are:
-    *
-    *  subtype        One or more subtype specification(s), separated
-    *                  with semicolons.  "lang-ja" and
+    *  @param subtype  One or more subtype specification(s), separated
+    *                  with semicolons. The "lang-ja" and
     *                  "lang-en;phonetic" are valid subtype
     *                  specifications.
+    *
+    * @return An attribute set from the entry with the attributes that
+    *         match the specified subtypes or an empty set if no attributes
+    *         match.
     */
    public LDAPAttributeSet getAttributeSet(String subtype) {
       return null;

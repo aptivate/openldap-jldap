@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPEntryComparator.java,v 1.3 2000/08/03 22:06:15 smerrill Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPEntryComparator.java,v 1.4 2000/08/28 22:18:56 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -15,10 +15,13 @@
  
 package com.novell.ldap;
  
-/**
+/*
  * 4.12 public interface LDAPEntryComparator
+ */
+ 
+/**
  *
- *  An object of this class can implement arbitrary sorting algorithms
+ *  Implements an arbitrary sorting algorithm
  *  for search results.
  */
 public interface LDAPEntryComparator {
@@ -31,11 +34,12 @@ public interface LDAPEntryComparator {
     * Returns true if entry1 is to be considered greater than or equal to
     * entry2, for the purpose of sorting.
     *
-    * Parameters are:
+    *  @param entry1         Target entry for comparison.
+    *<br><br>
+    *  @param entry2         Entry to be compared to.
     *
-    *  entry1         Target entry for comparison.
-    *
-    *  entry2         Entry to be compared to.
+    * @return True if entry1 is greather than or equal to entry2; false, if
+    *          entry2 is greater than entry1.
     */
    public boolean isGreater(LDAPEntry entry1, LDAPEntry entry2);
 
