@@ -52,7 +52,7 @@ public class LDAPAttribute {
     public LDAPAttribute( LDAPAttribute attr )
     {
         if( attr == null) {
-            throw new RuntimeException("LDAPAttribute class must be specified");
+            throw new IllegalArgumentException("LDAPAttribute class cannot be null");
         }
         // Do a deep copy of the LDAPAttribute template
         this.name = attr.name;
@@ -76,7 +76,7 @@ public class LDAPAttribute {
     public LDAPAttribute( String attrName )
     {
         if( attrName == null) {
-            throw new RuntimeException("Attribute name must be specified");
+            throw new IllegalArgumentException("Attribute name cannot be null");
         }
         this.name = attrName;
         this.baseName = this.getBaseName( attrName );
@@ -96,6 +96,9 @@ public class LDAPAttribute {
     public LDAPAttribute( String attrName, byte[] attrBytes )
     {
         this( attrName );
+        if( attrBytes == null) {
+            throw new IllegalArgumentException("Attribute value cannot be null");
+        }
         // Make our own copy of the byte array to prevent app from changing it
         byte[] tmp = new byte[attrBytes.length];
         System.arraycopy( attrBytes, 0, tmp, 0, attrBytes.length );
@@ -113,12 +116,13 @@ public class LDAPAttribute {
     public LDAPAttribute(String attrName, String attrString)
     {
         this( attrName );
-        if( null != attrString ) {
-            try {
-                this.add( attrString.getBytes( "UTF-8" ) );
-            } catch( UnsupportedEncodingException e ){
-                throw new RuntimeException( e.toString());
-            }
+        if( attrString == null) {
+            throw new IllegalArgumentException("Attribute value cannot be null");
+        }
+        try {
+            this.add( attrString.getBytes( "UTF-8" ) );
+        } catch( UnsupportedEncodingException e ){
+            throw new RuntimeException( e.toString());
         }
         return;
     }
@@ -134,13 +138,18 @@ public class LDAPAttribute {
     public LDAPAttribute(String attrName, String[] attrStrings)
     {
         this( attrName );
-        if( attrStrings != null) {
-            for( int i = 0, u = attrStrings.length; i < u; i++) {
-                try {
-                    this.add( attrStrings[ i ].getBytes( "UTF-8" ) );
-                } catch( UnsupportedEncodingException e ){
-                    throw new RuntimeException( e.toString());
+        if( attrStrings == null) {
+            throw new IllegalArgumentException("Attribute values array cannot be null");
+        }
+        for( int i = 0, u = attrStrings.length; i < u; i++) {
+            try {
+                if( attrStrings[ i ] == null) {
+                    throw new IllegalArgumentException("Attribute value " +
+                    "at array index " + i + " cannot be null");
                 }
+                this.add( attrStrings[ i ].getBytes( "UTF-8" ) );
+            } catch( UnsupportedEncodingException e ){
+                throw new RuntimeException( e.toString());
             }
         }
         return;
@@ -153,14 +162,15 @@ public class LDAPAttribute {
      */
     public void addValue(String attrString)
     {
-        if( null != attrString )
-        {
-            try
-            {
-                this.add( attrString.getBytes( "UTF-8" ) );
-            }
-            catch( UnsupportedEncodingException ue ){}
+        if( attrString == null) {
+            throw new IllegalArgumentException("Attribute value cannot be null");
         }
+        try {
+            this.add( attrString.getBytes( "UTF-8" ) );
+        } catch( UnsupportedEncodingException ue ) {
+            throw new RuntimeException( ue.toString());
+        }
+       
         return;
     }
 
@@ -173,6 +183,9 @@ public class LDAPAttribute {
      */
     public void addValue(byte[] attrBytes)
     {
+        if( attrBytes == null) {
+            throw new IllegalArgumentException("Attribute value cannot be null");
+        }
         if( null != attrBytes) {
             this.add(attrBytes);
         }
@@ -506,23 +519,53 @@ public class LDAPAttribute {
      */
     private void add( byte[] bytes )
     {
-        if( null != bytes ) {
-            if( null == this.values ) {
-                this.values = new Object[]{ bytes };
-            else {
-                // Duplicate attribute values not allowed
-                for( int i = 0; i < this.values.length; i++ ) {
-                    if( Arrays.equals( bytes, (byte[])this.values[i] ) ) {
-                        return; // Duplicate
-                    }
+        if( null == this.values ) {
+            this.values = new Object[]{ bytes };
+        } else {
+            // Duplicate attribute values not allowed
+            for( int i = 0; i < this.values.length; i++ ) {
+                if( Arrays.equals( bytes, (byte[])this.values[i] ) ) {
+                    return; // Duplicate
                 }
-                Object[] tmp = new Object[ this.values.length + 1 ];
-                System.arraycopy( this.values, 0, tmp, 0, this.values.length );
-                tmp[ this.values.length ] = bytes;
-                this.values = tmp;
-                tmp = null;
             }
+            Object[] tmp = new Object[ this.values.length + 1 ];
+            System.arraycopy( this.values, 0, tmp, 0, this.values.length );
+            tmp[ this.values.length ] = bytes;
+            this.values = tmp;
+            tmp = null;
         }
         return;
+    }
+
+   /**
+     * Returns true if the two specified arrays of bytes are equal to each
+     * another.  Matches the logic of Arrays.equals which is not available
+     * in jdk 1.1.x.
+     *
+     * @param e1 the first array to be tested
+     * @param e2 the second array to be tested
+     * @return true if the two arrays are equal
+     */
+    private boolean equals(byte[] e1, byte[] e2) {
+        // If same object, they compare true
+        if (e1==e2)
+            return true;
+
+        // If either but not both are null, they compare false
+        if (e1==null || e2==null)
+            return false;
+
+        // If arrays have different length, they compare false
+        int length = e1.length;
+        if (e2.length != length)
+            return false;
+
+        // If any of the bytes are different, they compare false
+        for (int i=0; i<length; i++) {
+            if (e1[i] != e2[i])
+                return false;
+        }
+
+        return true;
     }
 }
