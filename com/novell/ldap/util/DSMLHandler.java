@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: DSMLHandler.java,v 1.18 2002/10/29 21:11:57 $
+ * $Novell: DSMLHandler.java,v 1.19 2002/11/12 17:37:28 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -167,6 +167,9 @@ public class DSMLHandler implements ContentHandler, ErrorHandler
         }
         int tag = elementTag.intValue();
         if (tag == CONTROL) {
+            if (state != CONTROL){
+                controls.clear();
+            }
             handleControl(attrs);
             state = CONTROL;
         }
@@ -550,6 +553,13 @@ public class DSMLHandler implements ContentHandler, ErrorHandler
                 case SEARCH_REQUEST:
                     //queue up search
                     state = BATCH_REQUEST;
+                    //Add normal controls to specific search constraints.
+                    if (controls != null && controls.size() >0){
+                        searchCons.setControls(
+                                (LDAPControl[])controls.toArray(
+                                        new LDAPControl[controls.size()]));
+                    }
+
                     if (filter == null){
                         message = new LDAPSearchRequest(dn, scope, "",
                                 (String[]) attributeNames.toArray(
@@ -581,16 +591,21 @@ public class DSMLHandler implements ContentHandler, ErrorHandler
                     //bind
                     state = BATCH_REQUEST;
                     break;
-                case MODIFY_REQUEST:
+                case MODIFY_REQUEST:{
                     //queue up modify
                     state = BATCH_REQUEST;
-                    message = new LDAPModifyRequest(
-                                dn,
+                    LDAPControl [] cons=null;
+                    if (controls!=null && controls.size()>0){
+                        cons = (LDAPControl[])controls.toArray(
+                                        new LDAPControl[controls.size()]);
+                    }
+                    message = new LDAPModifyRequest( dn,
                                 (LDAPModification[])modlist.toArray(
                                         new LDAPModification[ modlist.size() ]),
-                                null);
+                                cons);
                     queue.add(message);
                     break;
+                }
                 case MODIFICATION:
                     //store each modify in 'list'
                     {
@@ -603,38 +618,63 @@ public class DSMLHandler implements ContentHandler, ErrorHandler
                         modlist.add(mod);
                     }
                     break;
-                case MODIFY_DN_REQUEST:
+                case MODIFY_DN_REQUEST:{
                     //queue up modify
                     state = BATCH_REQUEST;
+                    LDAPControl [] cons=null;
+                    if (controls!=null && controls.size()>0){
+                        cons = (LDAPControl[])controls.toArray(
+                                        new LDAPControl[controls.size()]);
+                    }
                     message = new LDAPModifyDNRequest( dn, newRDN, newSuperior,
-                            deleteOldRDN, null);
+                            deleteOldRDN, cons);
                     queue.add(message);
                     break;
-                case ADD_REQUEST:
+                }
+                case ADD_REQUEST: {
                     //queue up add
                     state = BATCH_REQUEST;
                     entry = new LDAPEntry(dn, attrSet);
-                    message = new LDAPAddRequest( entry, null );
+                    LDAPControl [] cons=null;
+                    if (controls!=null && controls.size()>0){
+                        cons = (LDAPControl[])controls.toArray(
+                                        new LDAPControl[controls.size()]);
+                    }
+                    message = new LDAPAddRequest( entry, cons );
                     queue.add(message);
                     break;
-                case DELETE_REQUEST:
+                }
+                case DELETE_REQUEST:{
                     //queue up delete
                     state = BATCH_REQUEST;
-                    message = new LDAPDeleteRequest(dn, null);
+                    LDAPControl [] cons=null;
+                    if (controls!=null && controls.size()>0){
+                        cons = (LDAPControl[])controls.toArray(
+                                        new LDAPControl[controls.size()]);
+                    }
+                    message = new LDAPDeleteRequest(dn,cons);
                     queue.add(message);
                     break;
-                case COMPARE_REQUEST:
+                }
+                case COMPARE_REQUEST:{
                     //queue up compare
                     state = BATCH_REQUEST;
-                    if (isBase64){
-                        message = new LDAPCompareRequest(dn, attrName,
-                                Base64.decode(value, 0, value.length()),
-                                null);
+                    LDAPControl [] cons=null;
+                    if (controls!=null && controls.size()>0){
+                        cons = (LDAPControl[])controls.toArray(
+                                        new LDAPControl[controls.size()]);
                     }
-                    message = new LDAPCompareRequest(dn, attrName,
-                            value.toString().getBytes("UTF-8"), null);
+                    Object compareValue = attributeValues.get(0);
+                    if (compareValue instanceof byte[]){
+                        message = new LDAPCompareRequest(dn, attrName,
+                                (byte[])compareValue, cons);
+                    } else {
+                        message = new LDAPCompareRequest(dn, attrName,
+                                ((String)compareValue).getBytes("UTF-8"),cons);
+                    }
                     queue.add(message);
                     break;
+                }
                 case ASSERTION:
                     //attrs is already complete.
                     state = COMPARE_REQUEST;
@@ -642,10 +682,11 @@ public class DSMLHandler implements ContentHandler, ErrorHandler
                 case ADD_ATTRIBUTE:
                     {
                         byte[] byteValue;
-                        if (isBase64){
-                            byteValue = Base64.decode(value, 0, value.length());
+                        Object addValue = attributeValues.get(0);
+                        if (addValue instanceof byte[]){
+                            byteValue = (byte[])addValue;
                         } else {
-                            byteValue = value.toString().getBytes("UTF8");
+                            byteValue = ((String)addValue).getBytes("UTF8");
                         }
                         state = ADD_REQUEST;
                         LDAPAttribute attr = attrSet.getAttribute(attrName);
@@ -658,15 +699,20 @@ public class DSMLHandler implements ContentHandler, ErrorHandler
                         }
                     }
                     break;
-                case EXTENDED_REQUEST:
+                case EXTENDED_REQUEST:{
                     //queue up x-operation
+                    LDAPControl [] cons=null;
+                    if (controls!=null && controls.size()>0){
+                        cons = (LDAPControl[])controls.toArray(
+                                        new LDAPControl[controls.size()]);
+                    }
                     message = new LDAPExtendedRequest(
                             new com.novell.ldap.LDAPExtendedOperation(
-                                    requestName, requestValue ),
-                            null);
+                                    requestName, requestValue ), cons);
                     queue.add(message);
                     state = BATCH_REQUEST;
                     break;
+                }
                 case X_NAME:
                     state = EXTENDED_REQUEST;
                     requestName = value.toString();
