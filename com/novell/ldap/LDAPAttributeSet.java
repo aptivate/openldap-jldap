@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttributeSet.java,v 1.12 2000/10/18 17:24:09 smerrill Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttributeSet.java,v 1.13 2000/10/24 20:38:22 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -183,7 +183,7 @@ public class LDAPAttributeSet implements Cloneable {
     * found in the entry.
     *     
     */
-   public LDAPAttribute[] getAttribute(String attrName, String lang) {
+   public LDAPAttribute getAttribute(String attrName, String lang) {
       throw new RuntimeException("Method LDAPAttributeSet.getAttribute not implemented");
    }
 
