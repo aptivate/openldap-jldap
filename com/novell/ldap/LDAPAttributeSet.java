@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttributeSet.java,v 1.20 2001/03/28 22:33:01 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttributeSet.java,v 1.21 2001/04/19 16:58:05 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -178,17 +178,17 @@ public class LDAPAttributeSet implements Cloneable {
 	      attrib = (LDAPAttribute) arrayAttr[i];
 
           // Find a matching attribute
-          if(attrib.getName().equals(attrName)){
+          if(attrib.getName().equalsIgnoreCase(attrName)){
 
 			// Get the lang subtype for this attribute
 			String attribSubType = attrib.getLangSubtype();
 
 			// Return this attribute if this is a full match.
-			if (attribSubType.equals(lang))
+			if (attribSubType.equalsIgnoreCase(lang))
 				return attrib;
 
 			// Save this attribute off if we have a partial match
-			if (lang.startsWith(attribSubType)) {
+			if (lang.toLowerCase().startsWith(attribSubType.toLowerCase())) {
 
 				// Get the length of the partial string that matched the subtype
 				int matchedLen = attribSubType.length();
