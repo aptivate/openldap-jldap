@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id$
+ * $Id: LDAPExtendedResponse.java,v 1.3 2000/03/14 18:17:27 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -18,7 +18,8 @@ package com.novell.ldap;
 import java.io.IOException;
 
 import com.novell.ldap.LDAPResponse;
-import com.novell.ldap.client.protocol.lber.LberDecoder;
+import com.novell.ldap.client.protocol.lber.*;
+
 
 /**
  * 4.2 public class LDAPExtendedResponse extends LDAPResponse
@@ -28,13 +29,18 @@ import com.novell.ldap.client.protocol.lber.LberDecoder;
  */
 public class LDAPExtendedResponse extends LDAPResponse {
 
+    private String oid;
+    private byte[] vals;
+
 	public LDAPExtendedResponse(int messageID, LberDecoder lber,
 		                         boolean isLdapv3)
 		throws IOException
 	{
 		super(messageID, EXTENDED_RESPONSE, lber, isLdapv3);
 
-		// now, parse the extension oid and value
+		this.oid = lber.parseStringWithTag(Lber.ASN_EXOP_RESP_OID, true, null);
+		this.vals = lber.parseOctetString(Lber.ASN_EXOP_RESP_VALUE, null);
+
 	}
 
    /*
@@ -45,7 +51,7 @@ public class LDAPExtendedResponse extends LDAPResponse {
     * Returns the OID of the response.
     */
    public String getID() {
-      return null;
+      return oid;
    }
 
    /*
@@ -56,7 +62,7 @@ public class LDAPExtendedResponse extends LDAPResponse {
     * Returns the raw bytes of the value part of the response.
     */
    public byte[] getValue() {
-      return null;
+      return vals;
    }
 
 }
