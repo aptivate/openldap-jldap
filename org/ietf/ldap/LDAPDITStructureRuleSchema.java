@@ -25,7 +25,7 @@ package org.ietf.ldap;
 public class LDAPDITStructureRuleSchema
                 extends LDAPSchemaElement
 {
-	private com.novell.ldap.LDAPDITStructureRuleSchema schema;
+    private com.novell.ldap.LDAPDITStructureRuleSchema schema;
 
     /**
      * Constructs LDAPAttributeSchema from com.novell.ldap.LDAPAttributeSchema
@@ -43,30 +43,28 @@ public class LDAPDITStructureRuleSchema
      *   schema.
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPDITStructureRuleSchema.html
-            #LDAPDITStructureRuleSchema(java.lang.String, int, java.lang.String, 
-            boolean, java.lang.String, java.lang.String[], java.lang.String[])">
+            #LDAPDITStructureRuleSchema(java.lang.String[], int, java.lang.String,
+            boolean, java.lang.String, java.lang.String[])">
             com.novell.ldap.LDAPDITStructureRuleSchema.LDAPDITStructureRuleSchema(
-            String, int, boolean, String, String[], String[])</a>
+            String[], int, boolean, String, String[])</a>
      *
      */
-    public LDAPDITStructureRuleSchema(String name,
+    public LDAPDITStructureRuleSchema(String[] names,
                                       int ruleID,
                                       String description,
                                       boolean obsolete,
                                       String nameForm,
-                                      String[] superiorIDs,
-                                      String[] aliases)
+                                      String[] superiorIDs)
     {
 
-        super( new com.novell.ldap.LDAPDITStructureRuleSchema( name,
+        super( new com.novell.ldap.LDAPDITStructureRuleSchema( names,
                                                                ruleID,
                                                                description,
                                                                obsolete,
                                                                nameForm,
-                                                               superiorIDs,
-                                                               aliases));
+                                                               superiorIDs));
         schema = (com.novell.ldap.LDAPDITStructureRuleSchema)getWrappedObject();
-		return;
+        return;
     }
 
     /**

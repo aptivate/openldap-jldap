@@ -44,7 +44,7 @@ public class LDAPAttributeSchema extends LDAPSchemaElement
             #DIRECTORY_OPERATION">
             com.novell.ldap.LDAPAttributeSchema.DIRECTORY_OPERATION</a>
      */
-    public final static int DIRECTORY_OPERATION = 
+    public final static int DIRECTORY_OPERATION =
             com.novell.ldap.LDAPAttributeSchema.DIRECTORY_OPERATION;
     /**
      * Indicates that the attribute usage is for distributed operational
@@ -55,7 +55,7 @@ public class LDAPAttributeSchema extends LDAPSchemaElement
             #DISTRIBUTED_OPERATION">
             com.novell.ldap.LDAPAttributeSchema.DISTRIBUTED_OPERATION</a>
      */
-    public final static int DISTRIBUTED_OPERATION = 
+    public final static int DISTRIBUTED_OPERATION =
             com.novell.ldap.LDAPAttributeSchema.DISTRIBUTED_OPERATION;
     /**
      * Indicates that the attribute usage is for local operational attributes.
@@ -65,7 +65,7 @@ public class LDAPAttributeSchema extends LDAPSchemaElement
             #DSA_OPERATION">
             com.novell.ldap.LDAPAttributeSchema.DSA_OPERATION</a>
      */
-    public final static int DSA_OPERATION = 
+    public final static int DSA_OPERATION =
             com.novell.ldap.LDAPAttributeSchema.DSA_OPERATION;
 
     /**
@@ -84,23 +84,23 @@ public class LDAPAttributeSchema extends LDAPSchemaElement
      * directory's schema.
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPAttributeSchema.html
-            #LDAPAttributeSchema(java.lang.string, java.lang.String, 
-            java.lang.String, java.lang.String, boolean, java.lang.String, 
-            java.lang.String[], boolean, java.lang.String, java.lang.String, 
+            #LDAPAttributeSchema(java.lang.string[], java.lang.String,
+            java.lang.String, java.lang.String, boolean, java.lang.String,
+            boolean, java.lang.String, java.lang.String,
             java.lang.String, boolean, boolean, int)">
             com.novell.ldap.LDAPAttributeSchema.LDAPAttributeSchema(
-                  String, String, String, String, boolean, String, String[],
+                  String[], String, String, String, boolean, String
                   boolean, String, String, String, boolean, boolean, int)</a>
      */
-    public LDAPAttributeSchema(String name, String oid, String description,
+    public LDAPAttributeSchema(String[] names, String oid, String description,
                   String syntaxString, boolean single,
-                  String superior, String[] aliases,
+                  String superior,
                   boolean obsolete, String equality, String ordering,
                   String substring, boolean collective, boolean userMod,
                   int usage)
     {
-        super( new com.novell.ldap.LDAPAttributeSchema(name, oid, description,
-               syntaxString, single, superior, aliases, obsolete,
+        super( new com.novell.ldap.LDAPAttributeSchema(names, oid, description,
+               syntaxString, single, superior, obsolete,
                equality, ordering, substring, collective, userMod, usage));
         schema = (com.novell.ldap.LDAPAttributeSchema)getWrappedObject();
         return;
@@ -178,7 +178,6 @@ public class LDAPAttributeSchema extends LDAPSchemaElement
             #getOrderingMatchingRule()">
             com.novell.ldap.LDAPAttributeSchema.getOrderingMatchingRule()</a>
      */
-
     public String getOrderingMatchingRule()
     {
         return schema.getOrderingMatchingRule();
@@ -191,7 +190,6 @@ public class LDAPAttributeSchema extends LDAPSchemaElement
             #getSubstringMatchingRule()">
             com.novell.ldap.LDAPAttributeSchema.getSubstringMatchingRule()</a>
      */
-
     public String getSubstringMatchingRule()
     {
         return schema.getSubstringMatchingRule();
@@ -204,7 +202,6 @@ public class LDAPAttributeSchema extends LDAPSchemaElement
             #isCollective()">
             com.novell.ldap.LDAPAttributeSchema.isCollective()</a>
      */
-
     public boolean isCollective()
     {
         return schema.isCollective();
@@ -214,10 +211,9 @@ public class LDAPAttributeSchema extends LDAPSchemaElement
      * Returns false if the attribute is read-only.
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPAttributeSchema.html
-            #isUserMOdifiable()">
-            com.novell.ldap.LDAPAttributeSchema.isUserMOdifiable()</a>
+            #isUserModifiable()">
+            com.novell.ldap.LDAPAttributeSchema.isUserModifiable()</a>
      */
-
     public boolean isUserModifiable()
     {
         return schema.isUserModifiable();
@@ -230,7 +226,6 @@ public class LDAPAttributeSchema extends LDAPSchemaElement
             #getUsage()">
             com.novell.ldap.LDAPAttributeSchema.getUsage()</a>
      */
-
     public int getUsage()
     {
         return schema.getUsage();

@@ -29,7 +29,7 @@ import java.io.IOException;
  * RFC 2252, "Lightweight Directory Access Protocol (v3):
  * Attribute Syntax Definitions" contains a description
  * of the information on the LDAP representation of schema.
- * Draft-sermerseim-nds-ldap-schema-01, "LDAP Schema for NDS"
+ * draft-sermerseim-nds-ldap-schema-02, "LDAP Schema for NDS"
  * defines the schema descriptions and non-standard syntaxes
  * used by Novell eDirectory.
  *
@@ -77,7 +77,7 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
     * Constructs an attribute definition for adding to or deleting from a
     * directory's schema.
     *
-    * @param name  Name of the attribute.
+    * @param names Names of the attribute.
     *<br><br>
     * @param oid   Object identifer of the attribute, in
     *              dotted numerical format.
@@ -93,57 +93,57 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
     *              attribute type derives from; null if there is no
     *              superior attribute type.
     *<br><br>
-    * @param aliases   Optional list of additional names by which the
-    *              attribute may be known; null if there are no
-    *              aliases.
-	  *<br><br>
     * @param obsolete  True if the attribute is obsolete.
     *<br><br>
     * @param equality  Optional matching rule name; null if there is not
-	  *				an equality matching rule for this attribute.
-	  *<br><br>
-    * @param ordering	Optional matching rule name; null if there is not
-	  *				an ordering matching rule for this attribute.
-  	*<br><br>
-    * @param substring	Optional matching rule name; null if there is not
-  	*				a substring matching rule for this attribute.
-  	*<br><br>
-    * @param collective	True of this attribute is a collective attribute
-  	*<br><br>
-    * @param userMod	False if this attribute is a read-only attribute
-  	*<br><br>
-    * @param useage		Describes what the attribute is used for. Must be
-  	*				one of the following: USER_APPLICATIONS,
-  	*				DIRECTORY_OPERATION, DISTRIBUTED_OPERATION or
-  	*				DSA_OPERATION.
+    *               an equality matching rule for this attribute.
+    *<br><br>
+    * @param ordering Optional matching rule name; null if there is not
+    *               an ordering matching rule for this attribute.
+    *<br><br>
+    * @param substring    Optional matching rule name; null if there is not
+    *                a substring matching rule for this attribute.
+    *<br><br>
+    * @param collective    True of this attribute is a collective attribute
+    *<br><br>
+    * @param isUserModifiable  False if this attribute is a read-only attribute
+    *<br><br>
+    * @param useage        Describes what the attribute is used for. Must be
+    *                one of the following: USER_APPLICATIONS,
+    *                DIRECTORY_OPERATION, DISTRIBUTED_OPERATION or
+    *                DSA_OPERATION.
     */
-   public LDAPAttributeSchema(String name, String oid, String description,
-                              String syntaxString, boolean single,
-                              String superior, String[] aliases,
-                              boolean obsolete, String equality, String ordering,
-                              String substring, boolean collective, boolean userMod,
+   public LDAPAttributeSchema(String[] names,
+                              String oid,
+                              String description,
+                              String syntaxString,
+                              boolean single,
+                              String superior,
+                              boolean obsolete,
+                              String equality,
+                              String ordering,
+                              String substring,
+                              boolean collective,
+                              boolean isUserModifiable,
                               int usage) {
 
-		super.name = name;
-		super.oid = oid;
-		super.description = description;
-		this.syntaxString = syntaxString;
-		this.single = single;
-		this.superior = superior;
-        if( aliases != null){
-            super.aliases = new String[aliases.length];
-		    for( int i = 0; i < super.aliases.length; i++ ){
-	  	        super.aliases[i] = aliases[i];
-		    }
-        }
+        super.names = names;
+        super.oid = oid;
+        super.description = description;
+        this.syntaxString = syntaxString;
+        this.single = single;
         this.obsolete = obsolete;
         this.equality = equality;
         this.ordering = ordering;
         this.substring = substring;
         this.collective = collective;
-        this.userMod = userMod;
+        this.userMod = isUserModifiable;
         this.usage = usage;
+        super.value = formatString();
+        return;
    }
+
+
 
    /**
     * Constructs an attribute definition from the raw string value returned
@@ -153,32 +153,32 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
     *                  query for "attributetypes".
     */
    public LDAPAttributeSchema(String raw) {
-    try{
-	    SchemaParser parser = new SchemaParser( raw );
+       try{
+            SchemaParser parser = new SchemaParser( raw );
 
-        if( parser.getName() != null)
-		    super.name = new String(parser.getName());
-        super.aliases = parser.getAliases();
-        if( parser.getID() != null)
-            super.oid = new String(parser.getID());
-        if( parser.getDescription() != null)
-            super.description = new String(parser.getDescription());
-        if( parser.getSyntax() != null)
-            syntaxString = new String(parser.getSyntax());
-        if( parser.getSuperior() != null)
-            syntaxString = new String(parser.getSuperior());
-        single = parser.getSingle();
-        super.obsolete = parser.getObsolete();
-        Enumeration qualifiers = parser.getQualifiers();
-        AttributeQualifier attrQualifier;
-        while(qualifiers.hasMoreElements()){
-            attrQualifier = (AttributeQualifier) qualifiers.nextElement();
-            setQualifier(attrQualifier.getName(), attrQualifier.getValues());
-        }
-    }
-    catch( IOException e){
-        throw new RuntimeException(e.toString());
-    }
+           if( parser.getNames() != null)
+               super.names = parser.getNames();
+           if( parser.getID() != null)
+               super.oid = parser.getID();
+           if( parser.getDescription() != null)
+               super.description = parser.getDescription();
+           if( parser.getSyntax() != null)
+               syntaxString = parser.getSyntax();
+           if( parser.getSuperior() != null)
+               syntaxString = parser.getSuperior();
+           single = parser.getSingle();
+           super.obsolete = parser.getObsolete();
+           Enumeration qualifiers = parser.getQualifiers();
+           AttributeQualifier attrQualifier;
+           while(qualifiers.hasMoreElements()){
+               attrQualifier = (AttributeQualifier) qualifiers.nextElement();
+               setQualifier(attrQualifier.getName(), attrQualifier.getValues());
+           }
+           super.value = formatString();
+       }
+       catch( IOException e){
+           throw new RuntimeException(e.toString());
+       }
    }
 
    /**
@@ -188,7 +188,7 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
     * @return The object identifer of the attribute's syntax.
     */
    public String getSyntaxString() {
-		return syntaxString;
+        return syntaxString;
    }
 
    /**
@@ -215,7 +215,7 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
     * Returns the matching rule for this attribute.
     *
     * @return The attribute's equality matching rule; null if it has no equality
-    *		  matching rule.
+    *          matching rule.
     */
    public String getEqualityMatchingRule() {
       return equality;
@@ -225,20 +225,18 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
     * Returns the ordering matching rule for this attribute.
     *
     * @return The attribute's ordering matching rule; null if it has no ordering
-    *		  matching rule.
+    *          matching rule.
     */
-
    public String getOrderingMatchingRule() {
       return ordering;
    }
 
   /**
-    * Returns the substring matching rule for this attribute.
-    *
-    * @return The attribute's substring matching rule; null if it has no substring
-    *		  matching rule.
-    */
-
+   * Returns the substring matching rule for this attribute.
+   *
+   * @return The attribute's substring matching rule; null if it has no substring
+   *          matching rule.
+   */
    public String getSubstringMatchingRule() {
       return substring;
    }
@@ -249,7 +247,6 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
     * @return True if the attribute is a collective; false if the attribute
     *         is not a collective attribute.
     */
-
    public boolean isCollective() {
       return collective;
    }
@@ -260,24 +257,7 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
     * @return False if the attribute is read-only; true if the attribute
     *         is read-write.
     */
-
    public boolean isUserModifiable() {
-      return userMod;
-   }
-
-   /**
-    * Returns false if the attribute is read-only.
-    *
-    * @return False if the attribute is read-only; true if the attribute
-    *         is read-write.
-    *
-    * @deprecated replaced by {@link #isUserModifiable} This method
-    * has been renamed to isUserModifiable in IETF draft 17 of the Java LDAP
-    * API (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-    * in fall of 2003.
-    */
-
-   public boolean isModifiable() {
       return userMod;
    }
 
@@ -285,10 +265,9 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
     * Returns the usage of the attribute.
     *
     * @return One of the following values: USER_APPLICATIONS,
-	*		  DIRECTORY_OPERATION, DISTRIBUTED_OPERATION or
-	*		  DSA_OPERATION.
+    *          DIRECTORY_OPERATION, DISTRIBUTED_OPERATION or
+    *          DSA_OPERATION.
     */
-
    public int getUsage() {
       return usage;
    }
@@ -299,7 +278,7 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
     *
     * @return A string representation of the attribute's definition.
     */
-   public String getValue() {
+   protected String formatString() {
 
       StringBuffer valueBuffer = new StringBuffer("( ");
       String token;
@@ -308,18 +287,19 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
       if( (token = getID()) != null){
         valueBuffer.append(token);
       }
-      strArray = getAliases();
-      if( (token = getName()) != null){
+      strArray = getNames();
+      if( strArray != null){
         valueBuffer.append(" NAME ");
-        if(strArray != null){
-          valueBuffer.append("( ");
+        if (strArray.length == 1){
+            valueBuffer.append("'" + strArray[0] + "'");
         }
-        valueBuffer.append("'" + token + "'");
-        if(strArray != null){
-          for( int i = 0; i < strArray.length; i++ ){
-            valueBuffer.append(" '" + strArray[i] + "'");
-          }
-          valueBuffer.append(" )");
+        else {
+           valueBuffer.append("( ");
+
+           for( int i = 0; i < strArray.length; i++ ){
+               valueBuffer.append(" '" + strArray[i] + "'");
+           }
+           valueBuffer.append(" )");
         }
       }
       if( (token = getDescription()) != null){
@@ -361,17 +341,17 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
       int useType;
       if( (useType = getUsage()) != USER_APPLICATIONS ){
         switch( useType){
-        	case DIRECTORY_OPERATION :
-           		valueBuffer.append( " USAGE directoryOperation" );
-           		break;
-          	case DISTRIBUTED_OPERATION :
-           		valueBuffer.append( " USAGE distributedOperation" );
-           		break;
-        	case DSA_OPERATION :
-         		valueBuffer.append( " USAGE dSAOperation" );
-           		break;
-             	default:
-              		break;
+            case DIRECTORY_OPERATION :
+                   valueBuffer.append( " USAGE directoryOperation" );
+                   break;
+              case DISTRIBUTED_OPERATION :
+                   valueBuffer.append( " USAGE distributedOperation" );
+                   break;
+            case DSA_OPERATION :
+                 valueBuffer.append( " USAGE dSAOperation" );
+                   break;
+                 default:
+                      break;
         }
       }
       Enumeration en = getQualifierNames();
@@ -382,12 +362,12 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
           strArray = getQualifier(token);
           if(strArray != null){
             if(strArray.length > 1)
-            	valueBuffer.append("(");
+                valueBuffer.append("(");
             for( int i = 0; i < strArray.length; i++ ){
               valueBuffer.append(" '" + strArray[i] + "'");
             }
             if(strArray.length > 1)
-            	valueBuffer.append(" )");
+                valueBuffer.append(" )");
           }
         }
       }
@@ -395,56 +375,73 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
       return valueBuffer.toString();
    }
 
-  public void add(LDAPConnection ld) throws LDAPException {
-    try{
-        add(ld,"");
-    }
-    catch(LDAPException e){
-        throw e;
-    }
-  }
+
+/*#######################################################################
+   The following are deprecated and will be removed in fall of 2003
+ ########################################################################*/
+
+   /**
+    * @deprecated replaced by {@link LDAPSchema#add}.  This method
+    * has been move to the object LDAPSchema in IETF draft 17 of the Java LDAP
+    * API (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
+    *  in fall of 2003.
+    */
+   public void add(LDAPConnection ld) throws LDAPException {
+       try {
+           add(ld,"");
+       } catch(LDAPException e){
+           throw e;
+       }
+   }
+
+   /**
+    * @deprecated replaced by {@link LDAPSchema#add}.  This method
+    * has been move to the object LDAPSchema in IETF draft 17 of the Java LDAP
+    * API (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
+    *  in fall of 2003.
+    */
   public void add(LDAPConnection ld, String dn) throws LDAPException {
     try{
         String attrSubSchema[] = { "subschemaSubentry" };
         LDAPSearchResults sr = ld.search( dn, LDAPConnection.SCOPE_BASE,
-					                    "objectclass=*", attrSubSchema,
-					                    false);
-	    if(sr != null && sr.hasMoreElements()){
+                                        "objectclass=*", attrSubSchema,
+                                        false);
+        if(sr != null && sr.hasMoreElements()){
             String schemaDN;
-	        LDAPEntry ent = sr.next();
-	        LDAPAttributeSet attrSet = ent.getAttributeSet();
-	        Enumeration en = attrSet.getAttributes();
-	        LDAPAttribute attr;
-	        if(en.hasMoreElements()){
-	            attr = (LDAPAttribute) en.nextElement();
-	            Enumeration enumString = attr.getStringValues();
-	            if(enumString.hasMoreElements()){
+            LDAPEntry ent = sr.next();
+            LDAPAttributeSet attrSet = ent.getAttributeSet();
+            Enumeration en = attrSet.getAttributes();
+            LDAPAttribute attr;
+            if(en.hasMoreElements()){
+                attr = (LDAPAttribute) en.nextElement();
+                Enumeration enumString = attr.getStringValues();
+                if(enumString.hasMoreElements()){
                     schemaDN = (String) enumString.nextElement();
                     String[] attrSearchName= { "attributeTypes" };
-	                sr = ld.search( schemaDN,
-	                        LDAPConnection.SCOPE_BASE,
-	                        "objectclass=*",
-			                attrSearchName,
-			                false);
-	                String attrName;
-	                if(sr != null && sr.hasMoreElements()){
-	                    ent = sr.next();
-		                attrSet = ent.getAttributeSet();
-		                en = attrSet.getAttributes();
-		                while(en.hasMoreElements()){
-		                    attr = (LDAPAttribute) en.nextElement();
+                    sr = ld.search( schemaDN,
+                            LDAPConnection.SCOPE_BASE,
+                            "objectclass=*",
+                            attrSearchName,
+                            false);
+                    String attrName;
+                    if(sr != null && sr.hasMoreElements()){
+                        ent = sr.next();
+                        attrSet = ent.getAttributeSet();
+                        en = attrSet.getAttributes();
+                        while(en.hasMoreElements()){
+                            attr = (LDAPAttribute) en.nextElement();
                             attrName = attr.getName();
-		                    if(attrName.equalsIgnoreCase("attributeTypes")){
+                            if(attrName.equalsIgnoreCase("attributeTypes")){
                                 // add the value to the attributes values
                                 LDAPAttribute newValue = new LDAPAttribute(
                                         "attributeTypes",getValue());
                                 LDAPModification lModify = new LDAPModification(
                                     LDAPModification.ADD,newValue);
                                 ld.modify(schemaDN,lModify);
-		                    }
-		                    continue;
+                            }
+                            continue;
                         }
-	                }
+                    }
                 }
             }
         }
@@ -455,6 +452,12 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
     }
   }
 
+  /**
+    * @deprecated replaced by {@link LDAPSchema#remove}.  This method
+    * has been move to the object LDAPSchema in IETF draft 17 of the Java LDAP
+    * API (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
+    *  in fall of 2003.
+    */
   public void remove(LDAPConnection ld) throws LDAPException {
     try{
         remove(ld,"");
@@ -464,38 +467,44 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
     }
   }
 
+  /**
+    * @deprecated replaced by {@link LDAPSchema#remove}.  This method
+    * has been move to the object LDAPSchema in IETF draft 17 of the Java LDAP
+    * API (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
+    *  in fall of 2003.
+    */
   public void remove(LDAPConnection ld, String dn) throws LDAPException {
     try{
         String attrSubSchema[] = { "subschemaSubentry" };
         LDAPSearchResults sr = ld.search( dn,
-	                                LDAPConnection.SCOPE_BASE, "objectclass=*",
-					                attrSubSchema, false);
-	    if(sr != null && sr.hasMoreElements()){
+                                    LDAPConnection.SCOPE_BASE, "objectclass=*",
+                                    attrSubSchema, false);
+        if(sr != null && sr.hasMoreElements()){
             String schemaDN;
-	        LDAPEntry ent = sr.next();
-	        LDAPAttributeSet attrSet = ent.getAttributeSet();
-	        Enumeration en = attrSet.getAttributes();
-	        LDAPAttribute attr;
-	        if(en.hasMoreElements()){
-	            attr = (LDAPAttribute) en.nextElement();
-	            Enumeration enumString = attr.getStringValues();
-	            if(enumString.hasMoreElements()){
+            LDAPEntry ent = sr.next();
+            LDAPAttributeSet attrSet = ent.getAttributeSet();
+            Enumeration en = attrSet.getAttributes();
+            LDAPAttribute attr;
+            if(en.hasMoreElements()){
+                attr = (LDAPAttribute) en.nextElement();
+                Enumeration enumString = attr.getStringValues();
+                if(enumString.hasMoreElements()){
                     schemaDN = (String) enumString.nextElement();
                     String[] attrSearchName= { "attributeTypes" };
-	                sr = ld.search( schemaDN,
-	                        LDAPConnection.SCOPE_BASE,
-	                        "objectclass=*",
-			                attrSearchName,
-			                false);
-	                String attrName;
-	                if(sr != null && sr.hasMoreElements()){
-	                    ent = sr.next();
-		                attrSet = ent.getAttributeSet();
-		                en = attrSet.getAttributes();
-		                while(en.hasMoreElements()){
-		                attr = (LDAPAttribute) en.nextElement();
+                    sr = ld.search( schemaDN,
+                            LDAPConnection.SCOPE_BASE,
+                            "objectclass=*",
+                            attrSearchName,
+                            false);
+                    String attrName;
+                    if(sr != null && sr.hasMoreElements()){
+                        ent = sr.next();
+                        attrSet = ent.getAttributeSet();
+                        en = attrSet.getAttributes();
+                        while(en.hasMoreElements()){
+                        attr = (LDAPAttribute) en.nextElement();
                         attrName = attr.getName();
-		                if(attrName.equalsIgnoreCase("attributeTypes")){
+                        if(attrName.equalsIgnoreCase("attributeTypes")){
                         // remove the value from the attributes values
                             LDAPAttribute newValue = new LDAPAttribute(
                                 "attributeTypes",getValue());
@@ -503,12 +512,12 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
                                 LDAPModification.DELETE,newValue);
                             ld.modify(schemaDN,lModify);
                         }
-		                continue;
+                        continue;
                     }
-	            }
-	        }
+                }
+            }
         }
-	}
+    }
   }
 
     catch( LDAPException e){
@@ -516,6 +525,12 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
     }
   }
 
+  /**
+    * @deprecated replaced by {@link LDAPSchema#modify}.  This method
+    * has been move to the object LDAPSchema in IETF draft 17 of the Java LDAP
+    * API (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
+    *  in fall of 2003.
+    */
   public void modify(LDAPConnection ld, LDAPSchemaElement newValue) throws LDAPException {
     try{
         modify(ld, newValue, "");
@@ -525,6 +540,12 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
     }
   }
 
+  /**
+    * @deprecated replaced by {@link LDAPSchema#modify}.  This method
+    * has been move to the object LDAPSchema in IETF draft 17 of the Java LDAP
+    * API (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
+    *  in fall of 2003.
+    */
   public void modify(LDAPConnection ld, LDAPSchemaElement newValue, String dn) throws LDAPException {
     if( newValue instanceof LDAPAttributeSchema != true ){
         throw new LDAPException(ExceptionMessages.NOT_AN_ATTRIBUTE, //"Schema element is not an LDAPAttributeSchema object",
@@ -534,52 +555,116 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
     try{
         String attrSubSchema[] = { "subschemaSubentry" };
         LDAPSearchResults sr = ld.search( dn,
-	                                LDAPConnection.SCOPE_BASE, "objectclass=*",
-					                attrSubSchema, false);
-	    if(sr != null && sr.hasMoreElements()){
+                                    LDAPConnection.SCOPE_BASE, "objectclass=*",
+                                    attrSubSchema, false);
+        if(sr != null && sr.hasMoreElements()){
             String schemaDN;
-	        LDAPEntry ent = sr.next();
-	        LDAPAttributeSet attrSet = ent.getAttributeSet();
-	        Enumeration en = attrSet.getAttributes();
-	        LDAPAttribute attr;
-	        if(en.hasMoreElements()){
-	            attr = (LDAPAttribute) en.nextElement();
-	            Enumeration enumString = attr.getStringValues();
-	            if(enumString.hasMoreElements()){
+            LDAPEntry ent = sr.next();
+            LDAPAttributeSet attrSet = ent.getAttributeSet();
+            Enumeration en = attrSet.getAttributes();
+            LDAPAttribute attr;
+            if(en.hasMoreElements()){
+                attr = (LDAPAttribute) en.nextElement();
+                Enumeration enumString = attr.getStringValues();
+                if(enumString.hasMoreElements()){
                     schemaDN = (String) enumString.nextElement();
                     String[] attrSearchName= { "attributeTypes" };
-	                sr = ld.search( schemaDN,
-	                        LDAPConnection.SCOPE_BASE,
-	                        "objectclass=*",
-			                attrSearchName,
-			                false);
-	                String attrName;
-	                if(sr != null && sr.hasMoreElements()){
-	                    ent = sr.next();
-		                attrSet = ent.getAttributeSet();
-		                en = attrSet.getAttributes();
-		                while(en.hasMoreElements()){
-		                    attr = (LDAPAttribute) en.nextElement();
+                    sr = ld.search( schemaDN,
+                            LDAPConnection.SCOPE_BASE,
+                            "objectclass=*",
+                            attrSearchName,
+                            false);
+                    String attrName;
+                    if(sr != null && sr.hasMoreElements()){
+                        ent = sr.next();
+                        attrSet = ent.getAttributeSet();
+                        en = attrSet.getAttributes();
+                        while(en.hasMoreElements()){
+                            attr = (LDAPAttribute) en.nextElement();
                             attrName = attr.getName();
-		                    if(attrName.equalsIgnoreCase("attributeTypes")){
+                            if(attrName.equalsIgnoreCase("attributeTypes")){
                             // modify the attribute
                             LDAPAttribute modValue = new LDAPAttribute(
                                         "attributeTypes", newValue.getValue());
                             LDAPModificationSet mods = new LDAPModificationSet();
                             mods.add(LDAPModification.DELETE, modValue);
-							mods.add(LDAPModification.ADD, modValue);
+                            mods.add(LDAPModification.ADD, modValue);
                             ld.modify(schemaDN,mods);
                         }
-		                continue;
+                        continue;
                   }
-	            }
-	        }
+               }
+            }
           }
-	    }
+        }
       }
-
         catch( LDAPException e){
             throw e;
         }
     }
+
+   /**
+    *  @deprecated replaced by {@link #toString}.  This method
+    *  has been renamed to toString in IETF draft 17 of the Java LDAP API
+    *  (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
+    *  in fall of 2003.
+    */
+   public String getValue(){
+        return toString();
+   }
+
+   /**
+    *  @deprecated replaced by {@link #isUserModifiable}.  This method
+    *  has been renamed to isUserModifiable in IETF draft 17 of the Java LDAP
+    *  API (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
+    *  in fall of 2003.
+    */
+   public boolean isModifiable() {
+      return isUserModifiable();
+   }
+
+   /**
+    *  @deprecated replaced by {@link #LDAPAttributeSchema( String[], String,
+    *       String, String, boolean, String, boolean, String, String, String,
+    *       boolean, boolean, int) LDAPAttributeSchema}.  This contructor
+    *  has been changed in IETF draft 17 of the Java LDAP API
+    *  (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
+    *  in fall of 2003.
+    *
+    * Constructs an attribute definition for adding to or deleting from a
+    * directory's schema.
+    *
+    * @param aliases   Optional list of additional names by which the
+    *              attribute may be known; null if there are no
+    *              aliases.
+    */
+   public LDAPAttributeSchema(String name, String oid, String description,
+                              String syntaxString, boolean single,
+                              String superior, String[] aliases,
+                              boolean obsolete, String equality, String ordering,
+                              String substring, boolean collective, boolean userMod,
+                              int usage) {
+        int aliasLength = 0;
+        if (aliases != null)
+            aliasLength = aliases.length;
+        super.names = new String[aliasLength + 1];
+        super.names[0] = name;
+        for(int i=0; i<aliasLength ;i++)
+            super.names[i+1] = aliases[i];
+
+        super.oid = oid;
+        super.description = description;
+        this.syntaxString = syntaxString;
+        this.single = single;
+        this.superior = superior;
+        this.obsolete = obsolete;
+        this.equality = equality;
+        this.ordering = ordering;
+        this.substring = substring;
+        this.collective = collective;
+        this.userMod = userMod;
+        this.usage = usage;
+        super.value = formatString();
+        return;
+   }
 }

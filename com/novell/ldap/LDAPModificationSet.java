@@ -21,7 +21,7 @@ import com.novell.ldap.client.ArrayList;
  * A set of {@link LDAPModification} objects.
  *
  * @see LDAPModification
- * @see LDAPConnection#modify
+ * @see LDAPConnection#modify(String, LDAPModificationSet)
  */
 public class LDAPModificationSet {
 

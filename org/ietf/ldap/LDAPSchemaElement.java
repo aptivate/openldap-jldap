@@ -48,16 +48,16 @@ public abstract class LDAPSchemaElement
     }
 
     /**
-     * Returns an array of alternative names for the element, or null if
+     * Returns an array of names for the element, or null if
      * none is found.
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPSchemaElement.html
-            #getAliases()">
-            com.novell.ldap.LDAPSchemaElement.getAliases()</a>
+            #getNames()">
+            com.novell.ldap.LDAPSchemaElement.getNames()</a>
      */
-    public String[] getAliases()
+    public String[] getNames()
     {
-        return schemaElement.getAliases();
+        return schemaElement.getNames();
     }
 
     /**
@@ -70,18 +70,6 @@ public abstract class LDAPSchemaElement
     public String getDescription()
     {
         return schemaElement.getDescription();
-    }
-
-    /**
-     * Returns the name of the element.
-     *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPSchemaElement.html
-            #getName()">
-            com.novell.ldap.LDAPSchemaElement.getName()</a>
-     */
-    public String getName()
-    {
-        return schemaElement.getName();
     }
 
     /**
@@ -102,7 +90,7 @@ public abstract class LDAPSchemaElement
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPSchemaElement.html
             #getQualifier(java.lang.String)">
-            com.novell.ldap.LDAPSchemaElement.getID(String)</a>
+            com.novell.ldap.LDAPSchemaElement.getID(java.lang.String)</a>
      */
     public String[] getQualifier(String name)
     {
@@ -140,12 +128,12 @@ public abstract class LDAPSchemaElement
      * directory, as a value of the particular schema element.
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPSchemaElement.html
-            #getValue()">
-            com.novell.ldap.LDAPSchemaElement.getValue()</a>
+            #toString()">
+            com.novell.ldap.LDAPSchemaElement.toString()</a>
      */
-    public String getValue()
+    public String toString()
     {
-        return schemaElement.getValue();
+        return schemaElement.toString();
     }
 
     /**
@@ -154,188 +142,12 @@ public abstract class LDAPSchemaElement
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPSchemaElement.html
             #setQualifier(java.lang.String, java.lang.String[])">
-            com.novell.ldap.LDAPSchemaElement.setQualifier(String, String[])</a>
+            com.novell.ldap.LDAPSchemaElement.setQualifier( java.lang.String,
+            java.lang.String[])</a>
      */
     public void setQualifier(String name, String[] values)
     {
         schemaElement.setQualifier( name, values);
-        return;
-    }
-
-    /**
-     * Adds the definition to a directory. An exception is thrown if the
-     * definition cannot be added.
-     *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPSchemaElement.html
-            #add(com.novell.ldap.LDAPConnection)">
-            com.novell.ldap.LDAPSchemaElement.add(LDAPConnection)</a>
-     */
-    public void add(LDAPConnection ld) throws LDAPException
-    {
-        com.novell.ldap.LDAPConnection l = null;
-        if( ld != null) {
-            l = ld.getWrappedObject();
-        }
-        try {
-            schemaElement.add( l);
-        } catch( com.novell.ldap.LDAPException ex) {
-            if( ex instanceof com.novell.ldap.LDAPReferralException) {
-                throw new LDAPReferralException(
-                        (com.novell.ldap.LDAPReferralException)ex);
-            } else {
-                throw new LDAPException( ex);
-            }
-        }
-        return;
-    }
-
-    /**
-     * Adds the definition to a directory, at a specified location. An exception
-     * is thrown if the definition cannot be added.
-     *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPSchemaElement.html
-            #add(com.novell.ldap.LDAPConnection, java.lang.String)">
-            com.novell.ldap.LDAPSchemaElement.add(LDAPConnection, String)</a>
-     */
-    public void add(LDAPConnection ld, String dn) throws LDAPException
-    {
-        com.novell.ldap.LDAPConnection l = null;
-        if( ld != null) {
-            l = ld.getWrappedObject();
-        }
-        try {
-            schemaElement.add( l, dn);
-        } catch( com.novell.ldap.LDAPException ex) {
-            if( ex instanceof com.novell.ldap.LDAPReferralException) {
-                throw new LDAPReferralException(
-                        (com.novell.ldap.LDAPReferralException)ex);
-            } else {
-                throw new LDAPException( ex);
-            }
-        }
-        return;
-    }
-
-    /**
-     * Removes the definition from a directory. An exception is thrown if
-     * the definition cannot be removed.
-     *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPSchemaElement.html
-            #remove(com.novell.ldap.LDAPConnection)">
-            com.novell.ldap.LDAPSchemaElement.remove(LDAPConnection)</a>
-     */
-    public void remove(LDAPConnection ld) throws LDAPException
-    {
-        com.novell.ldap.LDAPConnection l = null;
-        if( ld != null) {
-            l = ld.getWrappedObject();
-        }
-        try {
-            schemaElement.remove( l);
-        } catch( com.novell.ldap.LDAPException ex) {
-            if( ex instanceof com.novell.ldap.LDAPReferralException) {
-                throw new LDAPReferralException(
-                        (com.novell.ldap.LDAPReferralException)ex);
-            } else {
-                throw new LDAPException( ex);
-            }
-        }
-        return;
-    }
-
-    /**
-     * Removes the definition from a directory, at a specified location.
-     * An exception is thrown if the definition cannot be removed.
-     *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPSchemaElement.html
-            #remove(com.novell.ldap.LDAPConnection, java.lang.String)">
-            com.novell.ldap.LDAPSchemaElement.remove(LDAPConnection, String)</a>
-     */
-    public void remove(LDAPConnection ld, String dn) throws LDAPException
-    {
-        com.novell.ldap.LDAPConnection l = null;
-        if( ld != null) {
-            l = ld.getWrappedObject();
-        }
-        try {
-            schemaElement.remove( l, dn);
-        } catch( com.novell.ldap.LDAPException ex) {
-            if( ex instanceof com.novell.ldap.LDAPReferralException) {
-                throw new LDAPReferralException(
-                        (com.novell.ldap.LDAPReferralException)ex);
-            } else {
-                throw new LDAPException( ex);
-            }
-        }
-        return;
-    }
-
-    /**
-     * Replaces a single value of the schema element definition in the
-     * schema. An exception is thrown if the definition cannot be modified.
-     *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPSchemaElement.html
-            #modify(com.novell.ldap.LDAPConnection, 
-            com.novell.ldap.LDAPSchemaElement)">
-            com.novell.ldap.LDAPSchemaElement.modify(LDAPConnection,
-            LDAPSchemaElement)</a>
-     */
-    public void modify(LDAPConnection ld, LDAPSchemaElement newValue)
-                    throws LDAPException
-    {
-        com.novell.ldap.LDAPConnection l = null;
-        com.novell.ldap.LDAPSchemaElement e = null;
-        if( ld != null) {
-            l = ld.getWrappedObject();
-        }
-        if( newValue != null) {
-            e = newValue.getWrappedObject();
-        }
-        try {
-            schemaElement.modify( l, e);
-        } catch( com.novell.ldap.LDAPException ex) {
-            if( ex instanceof com.novell.ldap.LDAPReferralException) {
-                throw new LDAPReferralException(
-                        (com.novell.ldap.LDAPReferralException)ex);
-            } else {
-                throw new LDAPException( ex);
-            }
-        }
-        return;
-    }
-
-    /**
-     * Replaces a single value of the schema element definition in the
-     * schema, at a specified location in the directory. An exception is thrown
-     * if the definition cannot be modified.
-     *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPSchemaElement.html
-            #modify(com.novell.ldap.LDAPConnection, 
-            com.novell.ldap.LDAPSchemaElement, java.lang.String)">
-            com.novell.ldap.LDAPSchemaElement.modify(LDAPConnection,
-            LDAPSchemaElement, String)</a>
-     */
-    public void modify(LDAPConnection ld, LDAPSchemaElement newValue, String dn)
-                    throws LDAPException
-    {
-        com.novell.ldap.LDAPConnection l = null;
-        com.novell.ldap.LDAPSchemaElement e = null;
-        if( ld != null) {
-            l = ld.getWrappedObject();
-        }
-        if( newValue != null) {
-            e = newValue.getWrappedObject();
-        }
-        try {
-            schemaElement.modify( l, e, dn);
-        } catch( com.novell.ldap.LDAPException ex) {
-            if( ex instanceof com.novell.ldap.LDAPReferralException) {
-                throw new LDAPReferralException(
-                        (com.novell.ldap.LDAPReferralException)ex);
-            } else {
-                throw new LDAPException( ex);
-            }
-        }
         return;
     }
 }

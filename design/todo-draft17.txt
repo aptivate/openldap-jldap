@@ -17,11 +17,21 @@ com org
 [ ] [ ]      15: Implements Cloneable.
 [ ] [ ]      15: Implements Serializable
 
-[ ] [ ] 14: LDAPAttributeSchema
-[ ] [ ] 15: LDAPAttributeSchema
-[ ] [ ]      15: Constructor takes "String[] names" instead of "String name"
-                 and "String[] aliases".
-[ ] [ ]      14: isModifiable(): Change to isUserModifiable()
+[X] [X] 14: LDAPAttributeSchema
+[X] [X] 15: LDAPAttributeSchema
+[X]          15: Deprecate Constructor that takes "String name" and "String[] aliases".
+    [X]      15: Remove Constructor that takes "String name" and "String[] aliases".
+[X] [X]      15: Add Constructor that takes "String[] names, and no aliases"
+[X]          14: isModifiable(): Deprecate & Rename to isUserModifiable()
+    [ ]      14: isModifiable(): Delete method
+[X]          14: deprecate getValue(): use superclass toString()
+    [X]      14: delete getValue()
+[X]          14: deprecate add()
+    [X]      14: delete add()
+[X]          14: deprecate modify()
+    [X]      14: delete modify()
+[X]          14: deprecate remove()
+    [X]      14: delete remove()
 
 [ ] [ ] 15: LDAPAttributeSet
 [ ] [ ]      15: Implements Cloneable.
@@ -97,13 +107,21 @@ com org
 [ ] [ ]      15: Implements Serializable
 [X] [X]      15: Remove all references to "client controls".
 
-[ ] [ ] 15: LDAPDITContentRuleSchema
-[ ] [ ]      15: Constructor takes "String[] names" instead of
-                 "String name" and "String[] aliases".
+[X] [X] 15: LDAPDITContentRuleSchema
+[X] [X]      15: Remove Constructor that takes "String name" and "String[] aliases".
+[X] [X]      15: Add Constructor that takes "String[] names, and no aliases"
+[X] [X]      14: delete getValue()
+[X] [X]      14: delete add()
+[X] [X]      14: delete modify()
+[X] [X]      14: delete remove()
 
-[ ] [ ] 15: LDAPDITStructureRuleSchema
-[ ] [ ]      15: Constructor takes "String[] names" instead of
-                 " and "String[] aliases".
+[X] [X] 15: LDAPDITStructureRuleSchema
+[X] [X]      15: Remove Constructor that takes "String name" and "String[] aliases".
+[X] [X]      15: Add Constructor that takes "String[] names, and no aliases"
+[X] [X]      14: delete getValue()
+[X] [X]      14: delete add()
+[X] [X]      14: delete modify()
+[X] [X]      14: delete remove()
 
 [ ] [ ] 13: LDAPDN
 [ ] [ ]      13: isValid(): new Method
@@ -142,17 +160,26 @@ com org
 [X]          15: Depredate class LDAPListener
     [X]      15: Delete class LDAPListener
 
-[ ] [ ] 14: LDAPMatchingRuleSchema
-[ ] [ ] 15: LDAPMatchingRuleSchema
-[ ] [ ]      15: Constructor: Combine the two constructors with explicit
+[X] [X] 14: LDAPMatchingRuleSchema
+[X] [X] 15: LDAPMatchingRuleSchema
+[X] [X]      15: Constructor: Combine the two constructors with explicit
                  field parameters.
-[ ] [ ]      15: Constructor: takes "String[] names" instead of "String name"
                  and "String[] aliases".
-[ ] [ ]      14: getSyntaxString(): returns String instead of String[]
+[X] [X]      14: getSyntaxString(): returns String instead of String[]
+[X] [X]      15: Remove Constructor that takes "String name" and "String[] aliases".
+[X] [X]      15: Add Constructor that takes "String[] names, and no aliases"
+[X] [X]      14: delete getValue()
+[X] [X]      14: delete add()
+[X] [X]      14: delete modify()
+[X] [X]      14: delete remove()
 
-[ ] [ ] 15: LDAPMatchingRuleUseSchema
-[ ] [ ]      15: Constructor: takes "String[] names" instead of "String name"
-                 and "String[] aliases".
+[X] [X] 15: LDAPMatchingRuleUseSchema
+[X] [X]      15: Remove Constructor that takes "String name" and "String[] aliases".
+[X] [X]      15: Add Constructor that takes "String[] names, and no aliases"
+[X] [X]      14: delete getValue()
+[X] [X]      14: delete add()
+[X] [X]      14: delete modify()
+[X] [X]      14: delete remove()
 
 [ ] [ ] 15: LDAPMessage
              15: Implements Serializable
@@ -169,13 +196,27 @@ com org
 [ ] [ ]      15: Remove class: (replace with LDAPModification[] as parameter
                  where referenced, see LDAPConnection.modify()).
 
-[ ] [ ] 15: LDAPNameFormSchema
-[ ] [ ]      15: Constructor: takes "String[] names" instead of "String name"
-                 and "String[] aliases".
+[X] [X] 15: LDAPNameFormSchema
+[X] [X]      15: Remove Constructor that takes "String name" and "String[] aliases".
+[X] [X]      15: Add Constructor that takes "String[] names, and no aliases"
+[X] [X]      14: isModifiable(): Deprecate & Rename to isUserModifiable()
+[X] [X]      14: delete getValue()
+[X] [X]      14: delete add()
+[X] [X]      14: delete modify()
+[X] [X]      14: delete remove()
 
-[ ] [ ] 15: LDAPObjectClassSchema
-[ ] [ ]      15: Constructor: takes "String[] names" instead of "String name"
-                 and "String[] aliases".
+[X] [X] 15: LDAPObjectClassSchema
+[X]          15: Deprecate Constructor that takes "String name" and "String[] aliases".
+    [X]      15: Remove Constructor that takes "String name" and "String[] aliases".
+[X] [X]      15: Add Constructor that takes "String[] names, and no aliases"
+[X]          14: deprecate getValue(): use superclass toString()
+    [X]      14: delete getValue()
+[X]          14: deprecate add()
+    [X]      14: delete add()
+[X]          14: deprecate modify()
+    [X]      14: delete modify()
+[X]          14: deprecate remove()
+    [X]      14: delete remove()
 
 [X] [X] 15: LDAPRebind
 [X] [X]      15: Rename class to LDAPAuthHandler.
@@ -205,34 +246,57 @@ com org
 
 [ ] [ ] 15: LDAPSchema
 [ ] [ ]      15: Implements Serializable
-[ ] [ ]      15: add(): Add method
-[ ] [ ]      15: Rename getAttribute() to getAttributeSchema()
-[ ] [ ]      15: Rename getAttributes() to getAttributeSchemas()
-[ ] [ ]      15: Rename getDITContentRule () to getDITContentRuleSchema()
-[ ] [ ]      15: Rename getDITContentRules() to getDITContentRuleSchemas()
-[ ] [ ]      15: Rename getDITStructureRule() to getDITStructureRuleSchema()
-[ ] [ ]      15: Rename getDITStructureRules() to getDITStructureRuleSchemas()
-[ ] [ ]      15: Rename getMatchingRule() to getMatchingRuleSchema()
-[ ] [ ]      15: Rename getMatchingRules() to getMatchingRuleSchemas()
-[ ] [ ]      15: Rename getMatchingRuleUse() to getMatchingRuleUseSchema()
-[ ] [ ]      15: Rename getMatchingRuleUses() to getMatchingRuleUseSchemas()
-[ ] [ ]      15: Rename getNameForm() to getNameFormSchema()
-[ ] [ ]      15: Rename getNameForms() to getNameFormSchemas()
-[ ] [ ]      15: Rename getObjectClass() to getObjectClassSchema()
-[ ] [ ]      15: Rename getSyntax() to getSyntaxSchema()
-[ ] [ ]      15: Rename getSyntaxes() to getSyntaxSchemas()
-[ ] [ ]      15: modify(): Add method
-[ ] [ ]      15: remove(): Add method
-[ ] [ ]      15: saveSchema(): Add method
+[X] [X]      15: add(): Add method
+[X]          15: Deprecate & Rename getAttribute() to getAttributeSchema()
+    [X]      15: Rename getAttribute() to getAttributeSchema()
+[X]          15: Deprecate & Rename getAttributes() to getAttributeSchemas()
+    [X]      15: Rename getAttributes() to getAttributeSchemas()
+[X]          15: Deprecate & Rename getDITContentRule() to getDITContentRuleSchema()
+    [X]      15: Rename getDITContentRule() to getDITContentRuleSchema()
+[X]          15: Deprecate & Rename getDITContentRules() to getDITContentRuleSchemas()
+    [X]      15: Rename getDITContentRules() to getDITContentRuleSchemas()
+[X]          15: Deprecate & Rename getDITStructureRule() to getDITStructureRuleSchema()
+    [X]      15: Rename getDITStructureRule() to getDITStructureRuleSchema()
+[X]          15: Deprecate & Rename getDITStructureRules() to getDITStructureRuleSchemas()
+    [X]      15: Rename getDITStructureRules() to getDITStructureRuleSchemas()
+[X]          15: Deprecate & Rename getMatchingRule() to getMatchingRuleSchema()
+    [X]      15: Rename getMatchingRule() to getMatchingRuleSchema()
+[X]          15: Deprecate & Rename getMatchingRules() to getMatchingRuleSchemas()
+    [X]      15: Rename getMatchingRules() to getMatchingRuleSchemas()
+[X]          15: Deprecate & Rename getMatchingRuleUse() to getMatchingRuleUseSchema()
+    [X]      15: Rename getMatchingRuleUse() to getMatchingRuleUseSchema()
+[X]          15: Deprecate & Rename getMatchingRuleUses() to getMatchingRuleUseSchemas()
+    [X]      15: Rename getMatchingRuleUses() to getMatchingRuleUseSchemas()
+[X]          15: Deprecate & Rename getNameForm() to getNameFormSchema()
+    [X]      15: Rename getNameForm() to getNameFormSchema()
+[X]          15: Deprecate & Rename getNameForms() to getNameFormSchemas()
+    [X]      15: Rename getNameForms() to getNameFormSchemas()
+[X]          15: Deprecate & Rename getObjectClass() to getObjectClassSchema()
+    [X]      15: Rename getObjectClass() to getObjectClassSchema()
+[X]          15: Deprecate & Rename getObjectClasss() to getObjectClassSchemas()
+    [X]      15: Rename getObjectClasss() to getObjectClassSchemas()
+[X]          15: Deprecate & Rename getSyntax() to getSyntaxSchema()
+    [X]      15: Rename getSyntax() to getSyntaxSchema()
+[X]          15: Deprecate & Rename getSyntaxes() to getSyntaxSchemas()
+    [X]      15: Rename getSyntaxes() to getSyntaxSchemas()
+[X] [X]      15: modify(): Add method
+[X] [X]      15: remove(): Add method
+[X] [X]      15: saveSchema(): Add method
 
 [ ] [ ] 15: LDAPSchemaElement
 [ ] [ ]      15: Implements Serializable
-[ ] [ ]      15: add(): Remove method
-[ ] [ ]      15: getAliases(): Remove method
-[ ] [ ]      15: getName(): Rename to getNames()
-[ ] [ ]      15: getValue(): Rename to toString()
-[ ] [ ]      15: modify(): Remove method
-[ ] [ ]      15: remove(): Remove method
+[X]          15: add(): Remove method, implementation deprecated in subclass
+    [X]      15: add(): Remove method
+[X]          15: getAliases(): Deprecate method
+    [X]      15: getAliases(): Remove method
+[X]          15: getName(): Deprecate & rename to getNames()
+    [X]      15: getName(): Rename to getNames()
+[X]          15: getValue(): Deprecate & rename to toString()
+    [X]      15: getValue(): Rename to toString()
+[X]          15: modify(): Remove method, implementation deprecated in subclass
+    [X]      15: modify(): Remove method
+[X]          15: remove(): Remove method, implementation deprecated in subclass
+    [X]      15: remove(): Remove method
 
 [X] [X] 15: LDAPSearchConstraints
 [X] [X]      15: constructor: add constructor that takes LDAPConstraints as parameter.
@@ -261,9 +325,15 @@ com org
 [X]          15: makeSocket(): Deprecate
     [X]      15: makeSocket(): Delete
 
-[ ] [ ] 15: LDAPSyntaxSchema
-[ ] [ ]      15: Constructor takes "String[] names" instead of "String name" and
-                 "String[] aliases".
+[X] [X] 15: LDAPSyntaxSchema
+[X]          14: deprecate getValue(): use superclass toString()
+    [X]      14: delete getValue()
+[X]          14: deprecate add()
+    [X]      14: delete add()
+[X]          14: deprecate modify()
+    [X]      14: delete modify()
+[X]          14: deprecate remove()
+    [X]      14: delete remove()
 
 [ ] [ ] 13: LDAPUnsolicitedNotificationListener
 [ ] [ ]      13: The argument to messageReceived() is LDAPExtendedResponse

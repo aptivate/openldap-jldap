@@ -2691,8 +2691,9 @@ public class LDAPConnection implements Cloneable
      *
      *  @param dn        The distinguished name of the entry to retrieve.
      *
-     *  @exception LDAPException A general exception which includes an error
-     *                           message and an LDAP error code.
+     *  @return the LDAPEntry read from the server.  
+     *
+     *  @exception LDAPException if the object was not found
      */
     public LDAPEntry read(String dn)
         throws LDAPException
@@ -2711,8 +2712,9 @@ public class LDAPConnection implements Cloneable
      *<br><br>
      *  @param cons       The constraints specific to the operation.
      *
-     *  @exception LDAPException A general exception which includes an error
-     *  message and an LDAP error code.
+     *  @return the LDAPEntry read from the server
+     *
+     *  @exception LDAPException if the object was not found
      */
     public LDAPEntry read(String dn,
                           LDAPSearchConstraints cons)
@@ -2730,8 +2732,9 @@ public class LDAPConnection implements Cloneable
      *<br><br>
      *  @param attrs      The names of the attributes to retrieve.
      *
-     *  @exception LDAPException A general exception which includes an error
-     *                            message and an LDAP error code.
+     *  @return the LDAPEntry read from the server
+     *
+     *  @exception LDAPException if the object was not found
      */
     public LDAPEntry read(String dn,
                           String[] attrs)
@@ -2741,7 +2744,6 @@ public class LDAPConnection implements Cloneable
     }
 
     /**
-     *
      * Synchronously reads the entry for the specified distinguished name (DN),
      * using the specified constraints, and retrieves only the specified
      * attributes from the entry.
@@ -2752,8 +2754,9 @@ public class LDAPConnection implements Cloneable
      *<br><br>
      *  @param cons     The constraints specific to the operation.
      *
-     *  @exception LDAPException A general exception which includes an error
-     *                           message and an LDAP error code.
+     *  @return the LDAPEntry read from the server
+     *
+     *  @exception LDAPException if the object was not found
      */
     public LDAPEntry read(String dn,
                           String[] attrs,
@@ -2797,8 +2800,7 @@ public class LDAPConnection implements Cloneable
      *
      *  @return The entry specified by the base DN.
      *
-     *  @exception LDAPException A general exception which includes an error
-     *  message and an LDAP error code.
+     *  @exception LDAPException if the object was not found
      */
     public static LDAPEntry read(LDAPUrl toGet)
         throws LDAPException
@@ -2836,8 +2838,7 @@ public class LDAPConnection implements Cloneable
      *<br><br>
      * @param cons       Constraints specific to the operation.
      *
-     * @exception LDAPException A general exception which includes an error
-     * message and an LDAP error code.
+     *  @exception LDAPException if the object was not found
      */
     public static LDAPEntry read(LDAPUrl toGet,
                                  LDAPSearchConstraints cons)

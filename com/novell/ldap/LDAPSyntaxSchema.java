@@ -19,20 +19,17 @@ import com.novell.ldap.client.AttributeQualifier;
 import java.util.Enumeration;
 import java.io.IOException;
 
-/* public class LDAPSyntaxSchema
- *              extends LDAPSchemaElement
- */
-
 /**
- * Represents a specific syntax definition in the directory schema.
+ * Represents a syntax definition in the directory schema.
  *
- * <p>The LDAPSyntaxSchema class is used to discover the known set of syntaxes
- * in effect for the subschema. </p>
+ * <p>The LDAPSyntaxSchema class represents the definition of a syntax.  It is
+ * used to discover the known set of syntaxes in effect for the subschema. </p>
  *
  * <p>Although this extends LDAPSchemaElement, it does not use the name or
  * obsolete members. Therefore, calls to the getName method always return
  * null and to the isObsolete method always returns false. There is also no
- * matching getSyntaxNames method in LDAPSchema. </p>
+ * matching getSyntaxNames method in LDAPSchema. Note also that adding and
+ * removing syntaxes is not typically a supported feature of LDAP servers.</p>
  */
 
 public class LDAPSyntaxSchema
@@ -56,6 +53,8 @@ public class LDAPSyntaxSchema
     {
         super.oid = oid;
       	super.description = description;
+        super.value = formatString();
+        return;    
     }
 
     /**
@@ -71,27 +70,29 @@ public class LDAPSyntaxSchema
 			SchemaParser parser = new SchemaParser( raw );
 
     		if( parser.getID() != null)
-        		super.oid = new String(parser.getID());
+        		super.oid = parser.getID();
         	if( parser.getDescription() != null)
-        		super.description = new String(parser.getDescription());
+        		super.description = parser.getDescription();
         	Enumeration qualifiers = parser.getQualifiers();
         	AttributeQualifier attrQualifier;
         	while(qualifiers.hasMoreElements()){
         		attrQualifier = (AttributeQualifier) qualifiers.nextElement();
         		setQualifier(attrQualifier.getName(), attrQualifier.getValues());
          	}
-
+            super.value = formatString();
 		}
         catch( IOException e){
         }
+        return;    
     }
+
 	/**
     * Returns a string in a format suitable for directly adding to a
     * directory, as a value of the particular schema element class.
     *
     * @return A string representation of the syntax's definition.
     */
-   public String getValue() {
+   protected String formatString() {
 
       StringBuffer valueBuffer = new StringBuffer("( ");
       String token;
@@ -130,6 +131,26 @@ public class LDAPSyntaxSchema
 
    }
 
+/*#######################################################################
+   The following are deprecated and will be removed in fall of 2003
+ ########################################################################*/
+
+   /**
+    * @deprecated replaced by {@link #toString}.  This method
+    * has been renamed to toString in IETF draft 17 of the Java LDAP
+    * API (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
+    *  in fall of 2003.
+    */
+    public String getValue() {
+        return this.toString();
+    }
+
+   /**
+    * @deprecated replaced by {@link LDAPSchema#add}.  This method
+    * has been move to the object LDAPSchema in IETF draft 17 of the Java LDAP
+    * API (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
+    *  in fall of 2003.
+    */
   public void add(LDAPConnection ld) throws LDAPException {
     try{
         add(ld,"");
@@ -138,6 +159,13 @@ public class LDAPSyntaxSchema
         throw e;
     }
   }
+
+   /**
+    * @deprecated replaced by {@link LDAPSchema#add}.  This method
+    * has been move to the object LDAPSchema in IETF draft 17 of the Java LDAP
+    * API (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
+    *  in fall of 2003.
+    */
   public void add(LDAPConnection ld, String dn) throws LDAPException {
     try{
         String attrSubSchema[] = { "subschemaSubentry" };
@@ -192,6 +220,12 @@ public class LDAPSyntaxSchema
     }
   }
 
+  /**
+    * @deprecated replaced by {@link LDAPSchema#remove}.  This method
+    * has been move to the object LDAPSchema in IETF draft 17 of the Java LDAP
+    * API (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
+    *  in fall of 2003.
+    */
   public void remove(LDAPConnection ld) throws LDAPException {
     try{
         remove(ld,"");
@@ -200,7 +234,12 @@ public class LDAPSyntaxSchema
         throw e;
     }
   }
-
+  /**
+    * @deprecated replaced by {@link LDAPSchema#remove}.  This method
+    * has been move to the object LDAPSchema in IETF draft 17 of the Java LDAP
+    * API (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
+    *  in fall of 2003.
+    */
   public void remove(LDAPConnection ld, String dn) throws LDAPException {
     try{
         String attrSubSchema[] = { "subschemaSubentry" };
@@ -251,6 +290,12 @@ public class LDAPSyntaxSchema
       }
   }
 
+  /**
+    * @deprecated replaced by {@link LDAPSchema#modify}.  This method
+    * has been move to the object LDAPSchema in IETF draft 17 of the Java LDAP
+    * API (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
+    *  in fall of 2003.
+    */
   public void modify(LDAPConnection ld, LDAPSchemaElement newValue) throws LDAPException {
     try{
         modify(ld, newValue, "");
@@ -260,6 +305,12 @@ public class LDAPSyntaxSchema
     }
   }
 
+  /**
+    * @deprecated replaced by {@link LDAPSchema#modify}.  This method
+    * has been move to the object LDAPSchema in IETF draft 17 of the Java LDAP
+    * API (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
+    *  in fall of 2003.
+    */
   public void modify(LDAPConnection ld, LDAPSchemaElement newValue, String dn) throws LDAPException {
     try{
         String attrSubSchema[] = { "subschemaSubentry" };

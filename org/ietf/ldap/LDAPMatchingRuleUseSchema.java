@@ -44,24 +44,22 @@ public class LDAPMatchingRuleUseSchema
      * from the schema.
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPMatchingRuleUseSchema.html
-            #LDAPMatchingRuleUseSchema(java.lang.String, java.lang.String, 
+            #LDAPMatchingRuleUseSchema(java.lang.String[], java.lang.String,
             java.lang.String, boolean, java.lang.String[], java.lang.String[])">
             com.novell.ldap.LDAPMatchingRuleUseSchema.LDAPMatchingRuleUseSchema(
-            String, String, String, boolean, String[], String[])</a>
+            String[], String, String, boolean, String[] )</a>
      */
-    public LDAPMatchingRuleUseSchema(String name,
+    public LDAPMatchingRuleUseSchema(String[] names,
                                      String oid,
                                      String description,
                                      boolean obsolete,
-                                     String[] attributes,
-                                     String[] aliases)
+                                     String[] attributes)
     {
-        super( new com.novell.ldap.LDAPMatchingRuleUseSchema( name,
+        super( new com.novell.ldap.LDAPMatchingRuleUseSchema( names,
                                                               oid,
                                                               description,
                                                               obsolete,
-                                                              attributes,
-                                                              aliases));
+                                                              attributes));
         schema = (com.novell.ldap.LDAPMatchingRuleUseSchema)getWrappedObject();
         return;
     }

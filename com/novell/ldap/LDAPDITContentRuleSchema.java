@@ -21,19 +21,17 @@ import java.util.Enumeration;
 import java.io.IOException;
 
 /**
- *  A specific DIT (Directory Information Tree) content rule
- *  in the directory schema.
+ *  Represents a DIT (Directory Information Tree) content rule
+ *  in a directory schema.
  *
- *  <p>The LDAPDITContentRuleSchema class is used to discover or modify additional
- *  auxiliary classes, mandatory and optional attributes, and restricted attributes
- *  in effect for an object class. </p>
+ *  <p>The LDAPDITContentRuleSchema class is used to discover or modify
+ *  additional auxiliary classes, mandatory and optional attributes, and
+ *  restricted attributes in effect for an object class.</p>
  */
-
-
 public class LDAPDITContentRuleSchema
                 extends LDAPSchemaElement
 {
-	private String[] auxiliary = {""};
+    private String[] auxiliary = {""};
     private String[] required = {""};
     private String[] optional = {""};
     private String[] precluded = {""};
@@ -42,7 +40,7 @@ public class LDAPDITContentRuleSchema
      * Constructs a DIT content rule for adding to or deleting from the
      * schema.
      *
-     * @param name        The name of the content rule.
+     * @param names        The names of the content rule.
      *<br><br>
      * @param oid         The unique object identifier of the content rule -
      *                    in dotted numerical format.
@@ -74,31 +72,26 @@ public class LDAPDITContentRuleSchema
      *                    from an entry to which this content rule
      *                    applies. These may be specified by either name
      *                    or numeric oid.
-     *<br><br>
-     * @param aliases     An optional list of additional names by which the
-     *                    content rule may be known; null if there are
-     *                    no aliases.
      */
-    public LDAPDITContentRuleSchema(String name,
+    public LDAPDITContentRuleSchema(String[] names,
                                     String oid,
                                     String description,
                                     boolean obsolete,
                                     String[] auxiliary,
                                     String[] required,
                                     String[] optional,
-                                    String[] precluded,
-                                    String[] aliases)
+                                    String[] precluded )
     {
-        super.name = name;
-		super.oid = oid;
-		super.description = description;
-		super.obsolete = obsolete;
-		this.auxiliary = auxiliary;
-		this.required = required;
-		this.optional = optional;
-		this.precluded = precluded;
-		super.aliases = aliases;
-
+        super.names = (String[]) names.clone();
+        super.oid = oid;
+        super.description = description;
+        super.obsolete = obsolete;
+        this.auxiliary = auxiliary;
+        this.required = required;
+        this.optional = optional;
+        this.precluded = precluded;
+        super.value = formatString();
+        return;
     }
 
     /**
@@ -110,35 +103,37 @@ public class LDAPDITContentRuleSchema
      */
     public LDAPDITContentRuleSchema(String raw)
     {
-		super.obsolete = false;
+        super.obsolete = false;
         try{
-		    SchemaParser parser = new SchemaParser( raw );
+            SchemaParser parser = new SchemaParser( raw );
 
-	        if( parser.getName() != null)
-			    super.name = new String(parser.getName());
-	        super.aliases = parser.getAliases();
-	        if( parser.getID() != null)
-	            super.oid = new String(parser.getID());
-	        if( parser.getDescription() != null)
-	            super.description = new String(parser.getDescription());
-	        if( parser.getAuxiliary() != null)
-	            auxiliary = (String[])parser.getAuxiliary().clone();
-	        if( parser.getRequired() != null)
-	            required = (String[])parser.getRequired().clone();
-	        if( parser.getOptional() != null)
-	            optional = (String[])parser.getOptional().clone();
-			if( parser.getPrecluded() != null)
-	            precluded = (String[])parser.getPrecluded().clone();
-	        super.obsolete = parser.getObsolete();
-	        Enumeration qualifiers = parser.getQualifiers();
-	        AttributeQualifier attrQualifier;
-	        while(qualifiers.hasMoreElements()){
-	            attrQualifier = (AttributeQualifier) qualifiers.nextElement();
-	            setQualifier(attrQualifier.getName(), attrQualifier.getValues());
-        	}
-    	}
-    	catch( IOException e){
-    	}
+            if( parser.getNames() != null)
+                super.names = (String[])parser.getNames().clone();
+
+            if( parser.getID() != null)
+                super.oid = parser.getID();
+            if( parser.getDescription() != null)
+                super.description = parser.getDescription();
+            if( parser.getAuxiliary() != null)
+                auxiliary = (String[])parser.getAuxiliary().clone();
+            if( parser.getRequired() != null)
+                required = (String[])parser.getRequired().clone();
+            if( parser.getOptional() != null)
+                optional = (String[])parser.getOptional().clone();
+            if( parser.getPrecluded() != null)
+                precluded = (String[])parser.getPrecluded().clone();
+            super.obsolete = parser.getObsolete();
+            Enumeration qualifiers = parser.getQualifiers();
+            AttributeQualifier attrQualifier;
+            while(qualifiers.hasMoreElements()){
+                attrQualifier = (AttributeQualifier) qualifiers.nextElement();
+                setQualifier(attrQualifier.getName(), attrQualifier.getValues());
+            }
+            super.value = formatString();
+        }
+        catch( IOException e){
+        }
+        return;
     }
 
     /**
@@ -184,13 +179,14 @@ public class LDAPDITContentRuleSchema
         return precluded;
     }
 
-	/**
+    /**
     * Returns a string in a format suitable for directly adding to a
     * directory, as a value of the particular schema element class.
     *
     * @return A string representation of the class' definition.
     */
-   public String getValue() {
+   protected String formatString()
+   {
 
       StringBuffer valueBuffer = new StringBuffer("( ");
       String token;
@@ -199,18 +195,19 @@ public class LDAPDITContentRuleSchema
       if( (token = getID()) != null){
         valueBuffer.append(token);
       }
-      strArray = getAliases();
-      if( (token = getName()) != null){
+      strArray = getNames();
+      if( strArray != null){
         valueBuffer.append(" NAME ");
-        if(strArray != null){
-          valueBuffer.append("( ");
+        if (strArray.length == 1){
+            valueBuffer.append("'" + strArray[0] + "'");
         }
-        valueBuffer.append("'" + token + "'");
-        if(strArray != null){
-          for( int i = 0; i < strArray.length; i++ ){
-            valueBuffer.append(" '" + strArray[i] + "'");
-          }
-          valueBuffer.append(" )");
+        else {
+           valueBuffer.append("( ");
+
+           for( int i = 0; i < strArray.length; i++ ){
+               valueBuffer.append(" '" + strArray[i] + "'");
+           }
+           valueBuffer.append(" )");
         }
       }
       if( (token = getDescription()) != null){
@@ -221,255 +218,75 @@ public class LDAPDITContentRuleSchema
         valueBuffer.append(" OBSOLETE");
       }
       if( (strArray = getAuxiliaryClasses()) != null){
-      	valueBuffer.append(" AUX ");
-      	if( strArray.length > 1)
-       		valueBuffer.append("( ");
+          valueBuffer.append(" AUX ");
+          if( strArray.length > 1)
+               valueBuffer.append("( ");
         for(int i = 0; i < strArray.length; i++){
-      		if( i > 0)
-        		valueBuffer.append(" $ ");
-          	valueBuffer.append(strArray[i]);
+              if( i > 0)
+                valueBuffer.append(" $ ");
+              valueBuffer.append(strArray[i]);
         }
         if( strArray.length > 1)
-      		valueBuffer.append(" )");
+              valueBuffer.append(" )");
       }
       if( (strArray = getRequiredAttributes()) != null){
-      	valueBuffer.append(" MUST ");
-       	if( strArray.length > 1)
-        	valueBuffer.append("( ");
+          valueBuffer.append(" MUST ");
+           if( strArray.length > 1)
+            valueBuffer.append("( ");
         for( int i =0; i < strArray.length; i++){
-        	if( i > 0)
-         		valueBuffer.append(" $ ");
-           	valueBuffer.append(strArray[i]);
+            if( i > 0)
+                 valueBuffer.append(" $ ");
+               valueBuffer.append(strArray[i]);
         }
         if( strArray.length > 1)
-        	valueBuffer.append(" )");
+            valueBuffer.append(" )");
       }
       if( (strArray = getOptionalAttributes()) != null){
-      	valueBuffer.append(" MAY ");
-      	if( strArray.length > 1)
-       		valueBuffer.append("( ");
+          valueBuffer.append(" MAY ");
+          if( strArray.length > 1)
+               valueBuffer.append("( ");
         for( int i =0; i < strArray.length; i++){
-        	if( i > 0)
-         		valueBuffer.append(" $ ");
-           	valueBuffer.append(strArray[i]);
+            if( i > 0)
+                 valueBuffer.append(" $ ");
+               valueBuffer.append(strArray[i]);
         }
         if( strArray.length > 1)
-        	valueBuffer.append(" )");
+            valueBuffer.append(" )");
       }
-	  if( (strArray = getPrecludedAttributes()) != null){
-      	valueBuffer.append(" NOT ");
-      	if( strArray.length > 1)
-       		valueBuffer.append("( ");
+      if( (strArray = getPrecludedAttributes()) != null){
+          valueBuffer.append(" NOT ");
+          if( strArray.length > 1)
+               valueBuffer.append("( ");
         for( int i =0; i < strArray.length; i++){
-        	if( i > 0)
-         		valueBuffer.append(" $ ");
-           	valueBuffer.append(strArray[i]);
+            if( i > 0)
+                 valueBuffer.append(" $ ");
+               valueBuffer.append(strArray[i]);
         }
         if( strArray.length > 1)
-        	valueBuffer.append(" )");
+            valueBuffer.append(" )");
       }
       Enumeration en;
       if( (en = getQualifierNames()) != null){
-      	String qualName;
-       	String[] qualValue;
-      	while( en.hasMoreElements() ) {
-       		qualName = (String)en.nextElement();
-         	valueBuffer.append( " " + qualName + " ");
-          	if((qualValue = getQualifier( qualName )) != null){
-           		if( qualValue.length > 1)
-             			valueBuffer.append("( ");
-                       	for(int i = 0; i < qualValue.length; i++ ){
-                          	if( i > 0 )
-                           		valueBuffer.append(" ");
-                        	valueBuffer.append( "'" + qualValue[i] + "'");
-                      	}
+          String qualName;
+           String[] qualValue;
+          while( en.hasMoreElements() ) {
+               qualName = (String)en.nextElement();
+             valueBuffer.append( " " + qualName + " ");
+              if((qualValue = getQualifier( qualName )) != null){
+                   if( qualValue.length > 1)
+                         valueBuffer.append("( ");
+                           for(int i = 0; i < qualValue.length; i++ ){
+                              if( i > 0 )
+                                   valueBuffer.append(" ");
+                            valueBuffer.append( "'" + qualValue[i] + "'");
+                          }
                        if( qualValue.length > 1)
-                       	valueBuffer.append(" )");
-            	}
-      	}
+                           valueBuffer.append(" )");
+                }
+          }
       }
       valueBuffer.append(" )");
       return valueBuffer.toString();
 
    }
-
-  public void add(LDAPConnection ld) throws LDAPException {
-    try{
-        add(ld,"");
-    }
-    catch(LDAPException e){
-        throw e;
-    }
-  }
-  public void add(LDAPConnection ld, String dn) throws LDAPException {
-    try{
-        String attrSubSchema[] = { "subschemaSubentry" };
-        LDAPSearchResults sr = ld.search( dn,
-	                  LDAPConnection.SCOPE_BASE,
-					  "objectclass=*",
-					  attrSubSchema,
-					  false);
-        if(sr != null && sr.hasMoreElements()){
-            String schemaDN;
-	        LDAPEntry ent = sr.next();
-	        LDAPAttributeSet attrSet = ent.getAttributeSet();
-	        Enumeration en = attrSet.getAttributes();
-	        LDAPAttribute attr;
-	        if(en.hasMoreElements()){
-	            attr = (LDAPAttribute) en.nextElement();
-	            Enumeration enumString = attr.getStringValues();
-	            if(enumString.hasMoreElements()){
-                    schemaDN = (String) enumString.nextElement();
-                    String[] attrSearchName= { "dITContentRules" };
-	                sr = ld.search( schemaDN,
-	                        LDAPConnection.SCOPE_BASE,
-	                        "objectclass=*",
-			                attrSearchName,
-			                false);
-	                String attrName;
-	                if(sr != null && sr.hasMoreElements()){
-	                    ent = sr.next();
-		                attrSet = ent.getAttributeSet();
-		                en = attrSet.getAttributes();
-		                while(en.hasMoreElements()){
-		                    attr = (LDAPAttribute) en.nextElement();
-                            attrName = attr.getName();
-		                    if(attrName.equalsIgnoreCase("dITContentRules")){
-                            // add the value to the object class values
-							LDAPAttribute newValue = new LDAPAttribute(
-                                        "dITContentRules",getValue());
-                            LDAPModification lModify = new LDAPModification(
-                                LDAPModification.ADD,newValue);
-                            ld.modify(schemaDN,lModify);
-                        }
-		                continue;
-                    }
-	            }
-	        }
-          }
-	    }
-      }
-
-    catch( LDAPException e){
-      throw e;
-    }
-  }
-
-  public void remove(LDAPConnection ld) throws LDAPException {
-    try{
-        remove(ld,"");
-    }
-    catch(LDAPException e){
-        throw e;
-    }
-  }
-
-  public void remove(LDAPConnection ld, String dn) throws LDAPException {
-    try{
-        String attrSubSchema[] = { "subschemaSubentry" };
-        LDAPSearchResults sr = ld.search( dn,
-	                            LDAPConnection.SCOPE_BASE, "objectclass=*",
-					            attrSubSchema, false);
-	    if(sr != null && sr.hasMoreElements()){
-            String schemaDN;
-	        LDAPEntry ent = sr.next();
-	        LDAPAttributeSet attrSet = ent.getAttributeSet();
-	        Enumeration en = attrSet.getAttributes();
-	        LDAPAttribute attr;
-	        if(en.hasMoreElements()){
-	            attr = (LDAPAttribute) en.nextElement();
-	            Enumeration enumString = attr.getStringValues();
-	            if(enumString.hasMoreElements()){
-                    schemaDN = (String) enumString.nextElement();
-                    String[] attrSearchName= { "dITContentRules" };
-	                sr = ld.search( schemaDN,
-	                        LDAPConnection.SCOPE_BASE, "objectclass=*",
-			                attrSearchName, false);
-	                String attrName;
-	                if(sr != null && sr.hasMoreElements()){
-	                    ent = sr.next();
-		                attrSet = ent.getAttributeSet();
-		                en = attrSet.getAttributes();
-		                while(en.hasMoreElements()){
-		                    attr = (LDAPAttribute) en.nextElement();
-                            attrName = attr.getName();
-		                    if(attrName.equalsIgnoreCase("dITContentRules")){
-                                // remove the value from the attributes values
-                                LDAPAttribute newValue = new LDAPAttribute(
-                                	"dITContentRules",getValue());
-                            	LDAPModification lModify = new LDAPModification(
-                                	LDAPModification.DELETE,newValue);
-                            	ld.modify(schemaDN,lModify);
-                            }
-		                    continue;
-                      }
-	                }
-	            }
-            }
-	    }
-      }
-
-      catch( LDAPException e){
-        throw e;
-      }
-  }
-
-  public void modify(LDAPConnection ld, LDAPSchemaElement newValue) throws LDAPException {
-    try{
-        modify(ld, newValue, "");
-    }
-    catch(LDAPException e){
-        throw e;
-    }
-  }
-
-  public void modify(LDAPConnection ld, LDAPSchemaElement newValue, String dn) throws LDAPException {
-    try{
-        String attrSubSchema[] = { "subschemaSubentry" };
-        LDAPSearchResults sr = ld.search( dn,
-	                            LDAPConnection.SCOPE_BASE, "objectclass=*",
-					            attrSubSchema, false);
-	    if(sr != null && sr.hasMoreElements()){
-            String schemaDN;
-	        LDAPEntry ent = sr.next();
-	        LDAPAttributeSet attrSet = ent.getAttributeSet();
-	        Enumeration en = attrSet.getAttributes();
-	        LDAPAttribute attr;
-	        if(en.hasMoreElements()){
-	            attr = (LDAPAttribute) en.nextElement();
-	            Enumeration enumString = attr.getStringValues();
-	            if(enumString.hasMoreElements()){
-                    schemaDN = (String) enumString.nextElement();
-                    String[] attrSearchName= { "dITContentRules" };
-	                sr = ld.search( schemaDN, LDAPConnection.SCOPE_BASE,
-	                      "objectclass=*", attrSearchName, false);
-	                String attrName;
-	                if(sr != null && sr.hasMoreElements()){
-	                    ent = sr.next();
-		                attrSet = ent.getAttributeSet();
-		                en = attrSet.getAttributes();
-		            while(en.hasMoreElements()){
-		                attr = (LDAPAttribute) en.nextElement();
-                        attrName = attr.getName();
-		                if(attrName.equalsIgnoreCase("dITContentRules")){
-                        	// modify the attribute
-                            LDAPAttribute modValue = new LDAPAttribute(
-                                        "dITContentRules", newValue.getValue());
-							LDAPModificationSet mods = new LDAPModificationSet();
-                            mods.add(LDAPModification.DELETE, modValue);
-							mods.add(LDAPModification.ADD, modValue);
-                            ld.modify(schemaDN,mods);
-                    }
-		            continue;
-              }
-	         }
-	        }
-          }
-	    }
-    }
-
-    catch( LDAPException e){
-      throw e;
-    }
-  }
 }

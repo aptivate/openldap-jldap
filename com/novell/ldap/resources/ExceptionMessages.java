@@ -79,6 +79,8 @@ public class ExceptionMessages extends java.util.ListResourceBundle {
   public final static String NO_TLS_FACTORY         = "NO_TLS_FACTORY";
   public final static String NO_STARTTLS            = "NO_STARTTLS";
   public final static String STOPTLS_ERROR          = "STOPTLS_ERROR";
+  public final static String MULTIPLE_SCHEMA        = "MULTIPLE_SCHEMA";
+  public final static String NO_SCHEMA              = "NO_SCHEMA";
   public final static String READ_MULTIPLE          = "READ_MULTIPLE";
 
   //End constants
@@ -137,6 +139,8 @@ public class ExceptionMessages extends java.util.ListResourceBundle {
       {"NO_TLS_FACTORY", "StartTLS failed because no LDAPTLSSocketFactory has been set for this Connection" },
       {"NO_STARTTLS", "An attempt to stopTLS on a connection where startTLS had not been called"},
       {"STOPTLS_ERROR", "Error stopping TLS: Error getting input & output streams from the original socket"},
+      {"MULTIPLE_SCHEMA", "Multiple schema found when reading the subschemaSubentry for {0}"}, //the 0th parameter is a String DN
+      {"NO_SCHEMA", "No schema found when reading the subschemaSubentry for {0}"}, //the 0th parameter is a String DN
       {"READ_MULTIPLE", "Read response is ambiguous, multiple entries returned"}
   // END OF MATERIAL TO LOCALIZE
   };

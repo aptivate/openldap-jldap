@@ -35,7 +35,7 @@ public class LDAPObjectClassSchema extends LDAPSchemaElement
      */
      public final static int ABSTRACT =
                 com.novell.ldap.LDAPObjectClassSchema.ABSTRACT;
-   
+
     /**
      * This class definition defines a structural schema class.
      *
@@ -45,7 +45,7 @@ public class LDAPObjectClassSchema extends LDAPSchemaElement
      */
      public final static int STRUCTURAL =
                 com.novell.ldap.LDAPObjectClassSchema.STRUCTURAL;
-   
+
     /**
      * This class definition defines an auxiliary schema class.
      *
@@ -55,37 +55,35 @@ public class LDAPObjectClassSchema extends LDAPSchemaElement
      */
      public final static int AUXILIARY =
                 com.novell.ldap.LDAPObjectClassSchema.AUXILIARY;
-   
+
     /**
      * Constructs an object class definition for adding to or deleting from
      * a directory's schema.
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPObjectClassSchema.html
-            #LDAPObjectClassSchema(java.lang.String, java.lang.String, 
-            java.lang.String[], java.lang.String, java.lang.String[], 
-            java.lang.String[], int, java.lang.String[], boolean)">
+            #LDAPObjectClassSchema(java.lang.String[], java.lang.String,
+            java.lang.String[], java.lang.String, java.lang.String[],
+            java.lang.String[], int, boolean)">
             com.novell.ldap.LDAPObjectClassSchema.LDAPObjectClassSchema(
-            String, String, String[], String, String[], String[], int, String[],
-            boolean)</a>
+            String, String, String[], String, String[], String[], int, boolean)
+            </a>
      */
-    public LDAPObjectClassSchema(String name,
+    public LDAPObjectClassSchema(String[] names,
                                  String oid,
                                  String[] superiors,
                                  String description,
                                  String[] required,
                                  String[] optional,
                                  int type,
-                                 String[] aliases,
                                  boolean obsolete)
     {
-        super( new com.novell.ldap.LDAPObjectClassSchema( name,
+        super( new com.novell.ldap.LDAPObjectClassSchema( names,
                                                           oid,
                                                           superiors,
                                                           description,
                                                           required,
                                                           optional,
                                                           type,
-                                                          aliases,
                                                           obsolete));
         schema = (com.novell.ldap.LDAPObjectClassSchema)getWrappedObject();
         return;
@@ -163,7 +161,8 @@ public class LDAPObjectClassSchema extends LDAPSchemaElement
             #getType()">
             com.novell.ldap.LDAPObjectClassSchema.getType()</a>
      */
-    public int getType() {
+    public int getType()
+    {
         return schema.getType();
     }
 }

@@ -17,31 +17,48 @@ package com.novell.ldap.client;
 
 import com.novell.ldap.client.ArrayList;
 
+/**
+ * Encapsulates a qualifier in a Schema definition.  Definitions that are not
+ * in rfc2252.  Begins with 'X-'
+ */
 public class AttributeQualifier{
-   String name;
-   ArrayList values;
+    String name;
+    ArrayList values;
 
-   public AttributeQualifier( String name ){
-     this.name = name;
-     values = new ArrayList(5);
-     return;
-   }
-   public void addValue( String value ){
-     values.add( value );
-     return;
-   }
-   public String getName(){
-     return name;
-   }
-   public String[] getValues(){
-     String[] strValues = null;
-     if( values.size() > 0 ){
-      strValues = new String[values.size()];
-      for(int i = 0; i < values.size(); i++ ){
-        strValues[i] = (String) values.get(i);
-       }
+    public AttributeQualifier( String name, String[] value )
+    {
+        if ( name == null || value == null ) {
+            throw new java.lang.IllegalArgumentException(
+                "A null name or value " +
+                "was passed in for a schema definition qualifier");
+        }
+        this.name = name;
+        values = new ArrayList(5);
+        for( int i=0; i < value.length; i++) {
+            values.add( value[i] );
+        }
+        return;
     }
-    return strValues;
-   }
- }
-
+    /*
+    public void addValue( String value )
+    {
+        values.add( value );
+        return;
+    }
+    */
+    public String getName()
+    {
+        return name;
+    }
+    public String[] getValues()
+    {
+        String[] strValues = null;
+        if( values.size() > 0 ) {
+            strValues = new String[values.size()];
+            for(int i = 0; i < values.size(); i++ ){
+                strValues[i] = (String) values.get(i);
+            }
+        }
+        return strValues;
+    }
+}

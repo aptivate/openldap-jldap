@@ -41,29 +41,27 @@ public class LDAPNameFormSchema
      * Constructs a name form for adding to or deleting from the schema.
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPNameFormSchema.html
-            #LDAPNameFormSchema(java.lang.String, java.lang.String, 
-            java.lang.String, boolean, java.lang.String, java.lang.String[], 
-            java.lang.String[], java.lang.String[])">
+            #LDAPNameFormSchema(java.lang.String[], java.lang.String,
+            java.lang.String, boolean, java.lang.String, java.lang.String[],
+            java.lang.String[])">
             com.novell.ldap.LDAPNameFormSchema.LDAPNameFormSchema(
-            String,String,String,boolean,String,String[],String[],String[])</a>
+            String,String,String,boolean,String,String[],String[])</a>
      */
-    public LDAPNameFormSchema(String name,
+    public LDAPNameFormSchema(String[] names,
                               String oid,
                               String description,
                               boolean obsolete,
                               String objectClass,
                               String[] required,
-                              String[] optional,
-                              String[] aliases)
+                              String[] optional)
     {
-        super( new com.novell.ldap.LDAPNameFormSchema( name,
+        super( new com.novell.ldap.LDAPNameFormSchema( names,
                                                        oid,
                                                        description,
                                                        obsolete,
                                                        objectClass,
                                                        required,
-                                                       optional,
-                                                       aliases));
+                                                       optional));
         schema = (com.novell.ldap.LDAPNameFormSchema)getWrappedObject();
         return;
     }

@@ -43,56 +43,27 @@ public class LDAPMatchingRuleSchema extends LDAPSchemaElement
      * a directory.
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPMatchingRuleSchema.html
-            #LDAPMatchingRuleSchema(java.lang.String, java.lang.String, 
-            java.lang.String, java.lang.String[], java.lang.String, 
-            java.lang.String[])">
+            #LDAPMatchingRuleSchema(java.lang.String[], java.lang.String,
+            java.lang.String, java.lang.String[], boolean, java.lang.String)">
             com.novell.ldap.LDAPMatchingRuleSchema.LDAPMatchingRuleSchema(
-            String, String, String, String[], String, String[])</a>
+            String[], String, String, String[], boolean, String)</a>
      */
-    public LDAPMatchingRuleSchema(String name,
+    public LDAPMatchingRuleSchema(String names[],
                                   String oid,
                                   String description,
                                   String[] attributes,
-                                  String syntaxString,
-                                  String[] aliases)
+                                  boolean obsolete,
+                                  String syntaxString)
     {
-        super( new com.novell.ldap.LDAPMatchingRuleSchema( name,
+        super( new com.novell.ldap.LDAPMatchingRuleSchema( names,
                                                            oid,
                                                            description,
                                                            attributes,
-                                                           syntaxString,
-                                                           aliases));
-        schema = (com.novell.ldap.LDAPMatchingRuleSchema)getWrappedObject();
-        return;
-    }
-
-    /**
-     * Constructs a matching rule definition for adding to or deleting from
-     * a directory.
-     *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPMatchingRuleSchema.html
-            #LDAPMatchingRuleSchema(java.lang.String, java.lang.String, 
-            java.lang.String, boolean, java.lang.String, java.lang.String[])">
-            com.novell.ldap.LDAPMatchingRuleSchema.LDAPMatchingRuleSchema(
-            String, String, String, boolean, String, String[])</a>
-     */
-    public LDAPMatchingRuleSchema(String name,
-                                 String oid,
-                                 String description,
-                                 boolean obsolete,
-                                 String syntaxString,
-                                 String[] aliases)
-    {
-        super( new com.novell.ldap.LDAPMatchingRuleSchema( name,
-                                                           oid,
-                                                           description,
                                                            obsolete,
-                                                           syntaxString,
-                                                           aliases));
+                                                           syntaxString));
         schema = (com.novell.ldap.LDAPMatchingRuleSchema)getWrappedObject();
         return;
     }
-
 
     /**
      * Constructs a matching rule definition from the raw string values

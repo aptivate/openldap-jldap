@@ -28,8 +28,7 @@ import com.novell.ldap.LDAPAttributeSchema;
 public class SchemaParser{
 
 	String rawString;
-	String name;
-        String aliases[] = null;
+	String names[] = null;
 	String id;
 	String description;
         String syntax;
@@ -79,19 +78,18 @@ public class SchemaParser{
                     if(st2.ttype == StreamTokenizer.TT_WORD ){
                       if(st2.sval.equalsIgnoreCase("NAME")){
                         if(st2.nextToken() == '\'' ){
-                          name = st2.sval;
+                            names = new String[1];
+                            names[0] = st2.sval;
                         }
                         else if(st2.ttype == '(' ){
-                          if(st2.nextToken() == '\'' ){
-                           name = st2.sval;
-                          }
-                          ArrayList names = new ArrayList();
+                          ArrayList nameList = new ArrayList();
                           while( st2.nextToken() == '\''){
-                            names.add(st2.sval);
+                            if ( st2.sval != null )
+                                nameList.add( st2.sval );
                           }
-                          if(names.size() > 0){
-                            aliases = new String[names.size()];
-                            names.toArray(aliases);
+                          if(nameList.size() > 0){
+                            names = new String[nameList.size()];
+                            nameList.toArray(names);
                           }
                         }
                         continue;
@@ -277,13 +275,15 @@ public class SchemaParser{
                           if( currName.equalsIgnoreCase("directoryOperation")){
                               usage = LDAPAttributeSchema.DIRECTORY_OPERATION;
                           }
-                          else if( currName.equalsIgnoreCase("distributedOperation")){
+                          else if( currName.equalsIgnoreCase(
+                                    "distributedOperation")){
                               usage = LDAPAttributeSchema.DISTRIBUTED_OPERATION;
                           }
                           else if( currName.equalsIgnoreCase("dSAOperation")){
                               usage = LDAPAttributeSchema.DSA_OPERATION;
                           }
-                          else if( currName.equalsIgnoreCase("userApplications")){
+                          else if( currName.equalsIgnoreCase(
+                                    "userApplications")){
                               usage = LDAPAttributeSchema.USER_APPLICATIONS;
                           }
                         }
@@ -332,24 +332,14 @@ public class SchemaParser{
 		return rawString;
 	}
 
-	public String getName(){
-		return name;
+	public String[] getNames(){
+		return names;
 	}
 
     public Enumeration getQualifiers(){
         return new ArrayEnumeration(qualifiers.toArray());
     }
 
-    public String[] getAliases() {
-        String[] retVal = null;
-        if( aliases != null ){
-            retVal = new String[aliases.length];
-            for(int i = 0; i < aliases.length; i++ ){
-              retVal[i] = aliases[i];
-            }
-        }
-        return retVal;
-    }
     public String getID() {
 		return id;
 	}
@@ -414,22 +404,24 @@ public class SchemaParser{
         return nameForm;
     }
 
-    private AttributeQualifier parseQualifier( StreamTokenizer st, String name ) throws IOException {
-        AttributeQualifier qualifier = new AttributeQualifier(name);
-
+    private AttributeQualifier parseQualifier( StreamTokenizer st, String name )
+            throws IOException
+    {
+        com.novell.ldap.client.ArrayList values =
+                new com.novell.ldap.client.ArrayList(5);
         try{
             if(st.nextToken() == '\'' ){
-          		qualifier.addValue(st.sval);
+                values.add(st.sval);
            	}
            	else if(st.ttype == '(' ){
            		while(st.nextToken() == '\'' ){
-           			qualifier.addValue(st.sval);
-             		}
+           		    values.add(st.sval);
+                }
            	}
         }
         catch(IOException e){
             throw e;
         }
-        return qualifier;
+        return new AttributeQualifier(name, (String[])values.toArray() );
     }
 }

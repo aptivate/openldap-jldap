@@ -43,32 +43,30 @@ public class LDAPDITContentRuleSchema
      * schema.
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPDITContentRuleSchema.html
-            #LDAPDITContentRuleSchema(java.lang.String, java.lang.String, 
-            java.lang.String, boolean, java.lang.String[], java.lang.String[], 
-            java.lang.String[], java.lang.String[], java.lang.String[])">
+            #LDAPDITContentRuleSchema(java.lang.String[], java.lang.String,
+            java.lang.String, boolean, java.lang.String[], java.lang.String[],
+            java.lang.String[], java.lang.String[])">
             com.novell.ldap.LDAPDITContentRuleSchema.LDAPDITContentRuleSchema(
-            String, boolean, String, boolean, String[], String[], String[],
-            String[], String[])</a>
+            String[], boolean, String, boolean, String[], String[], String[],
+            String[])</a>
      */
-    public LDAPDITContentRuleSchema(String name,
+    public LDAPDITContentRuleSchema(String[] names,
                                     String oid,
                                     String description,
                                     boolean obsolete,
                                     String[] auxiliary,
                                     String[] required,
                                     String[] optional,
-                                    String[] precluded,
-                                    String[] aliases)
+                                    String[] precluded)
     {
-        super( new com.novell.ldap.LDAPDITContentRuleSchema( name,
+        super( new com.novell.ldap.LDAPDITContentRuleSchema( names,
                                                           oid,
                                                           description,
                                                           obsolete,
                                                           auxiliary,
                                                           required,
                                                           optional,
-                                                          precluded,
-                                                          aliases));
+                                                          precluded));
         schema = (com.novell.ldap.LDAPDITContentRuleSchema)getWrappedObject();
         return;
     }
