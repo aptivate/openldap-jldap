@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttribute.java,v 1.13 2000/10/26 18:02:35 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttribute.java,v 1.14 2000/10/31 23:52:18 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -315,10 +315,12 @@ public class LDAPAttribute {
      *         false, if it doesn't have all the subtypes.
      */
     public boolean hasSubtypes(String[] subtypes) {
+        gotSubType:
         for(int i=0; i<subtypes.length; i++) {
             for(int j=0; j<subTypes.length; j++) {
-                if(subTypes[j].equalsIgnoreCase(subtypes[i]))
-                    continue;
+                if(subTypes[j].equalsIgnoreCase(subtypes[i])) {
+                    continue gotSubType;
+                }
             }
             return false;
         }
