@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: DOMWriter.java,v 1.2 2002/10/30 16:16:03 $
+ * $Novell: DOMWriter.java,v 1.3 2002/10/30 23:23:47 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -46,7 +46,7 @@ public class DOMWriter implements LDAPWriter
     private Element searchNode;
 
     /**
-     * Initializes the DOMWriter
+     * Initializes the DOMWriter.
      * @throws ParserConfigurationException
      *  Occurs if a parser could not be found or is misconfigured.
      */
@@ -58,8 +58,8 @@ public class DOMWriter implements LDAPWriter
     }
 
     /**
-     * Retrieves the version of DSML being written.
-     * Currently only 2.0 is supported.
+     * Retrieves the version of DSML being written, currently only 2.0 is
+     * supported.
      *  @return Version of DSML being used.
      */
     public String getVersion() {
@@ -83,8 +83,8 @@ public class DOMWriter implements LDAPWriter
     }
 
     /**
-     * Converts the message to a DOM element and adds the message to the DOM
-     * structure.
+     * Writes the LDAPMessage into the DOMStructure.
+     *
      * @param message  LDAPMessage to write
      * @throws LDAPLocalException Occurs when a message is written out of
      * sequence, i.e. a response is written into a batchRequest.
@@ -110,7 +110,7 @@ public class DOMWriter implements LDAPWriter
     }
 
     /**
-     * Utility method to convert an LDAPMessage to a DSML DOM element .
+     * Utility method to convert an LDAPMessage to a DSML DOM element.
      * @param message  An LDAPMessage to be converted to a DSML DOM element.
      * @return element A DOM element representing either a response or a
      * request in DSML.
@@ -213,8 +213,16 @@ public class DOMWriter implements LDAPWriter
         return e;
     }
 
-    private Element writeResult(Element e, LDAPResponse message){
-        LDAPResponse r = (LDAPResponse) message;
+    /**
+     * Writes the specified LDAPResponse into the specified element.
+     * <p>Possible information written to the element is a Result code with a
+     * description, a server response, and a matched DN.  Controls and referrals
+     * should also be written - and will be in the future.<p>
+     * @param e  Element to insert response info into.
+     * @param response  Response message to write.
+     */
+    private void writeResult(Element e, LDAPResponse response){
+        LDAPResponse r = (LDAPResponse) response;
 
         Element resultCode = doc.createElement("resultCode");
         int result = r.getResultCode();
@@ -239,9 +247,13 @@ public class DOMWriter implements LDAPWriter
             matched.appendChild(text);
             e.appendChild(matched);
         }
-        return e;
     }
 
+    /**
+     * Any LDAPException can be written in DSML with this method, via the
+     * <errorResponse> tag.
+     * @param e  LDAPException to be written in DSML.
+     */
     public void writeError(LDAPException e) throws IOException, LDAPLocalException
     {
         //check if we are in a response, if not set the state and write DSML tag
@@ -329,6 +341,11 @@ public class DOMWriter implements LDAPWriter
         return;
     }
 
+    /**
+     * Retrieves the batchRequest or batchResponse element populated with this
+     * writer.
+     * @return A batchRequest or batchResponse element.
+     */
     public Element getRootElement() {
         return root;
     }
