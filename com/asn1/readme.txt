@@ -4,3 +4,6 @@ implemented.  These classes are not used anywhere else
 in the SDK.  But we anticipate customers using our ASN1
 SDK to ask for these classes.  These classes will be 
 moved to the com.novell.ldap.asn1 package once implemented.
+
+Note:  This location was chosen as everything else under 
+com.novell gets compiled and jarred to the deliverable.
