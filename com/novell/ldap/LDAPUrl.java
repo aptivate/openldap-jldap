@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPUrl.java,v 1.28 2001/06/05 22:22:14 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPUrl.java,v 1.29 2001/06/13 17:51:06 jhammons Exp $
 *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -449,6 +449,13 @@ public class LDAPUrl {
 		return url.toString();
     }
 
+    /**
+     * Returns the URL in a displayable form
+     *
+     * @return the URL as a String
+     *
+     * @see #getUrl()
+     */
     public String toString()
     {
         return "com.novell.ldap.LDAPUrl:" + getUrl();
