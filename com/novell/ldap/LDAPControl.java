@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPControl.java,v 1.21 2001/01/25 20:29:58 javed Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPControl.java,v 1.22 2001/01/25 23:05:52 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -40,14 +40,19 @@ public class LDAPControl implements Cloneable {
      * of the SDK implements */
     static {
         
-        // Register LDAPSortControl
+        
         try {
-            
-            Class sortControlName = Class.forName("LDAPSortResponse"); 
+            // Register LDAPSortControl
+            Class sortControlName = Class.forName("com.novell.ldap.controls.LDAPSortResponse"); 
             LDAPControl.register(LDAPSortResponse.OID, sortControlName);
+            if( Debug.LDAP_DEBUG) {
+                Debug.trace( Debug.controls, "Registered Sort Control Response Class");
+            }
         
         } catch (ClassNotFoundException e) {
-            ; // Need to issue some kind of warning
+            if( Debug.LDAP_DEBUG) {
+                Debug.trace( Debug.controls, "Could not register Sort Control Response - Class not found");
+            }
         }
         
     }
@@ -155,7 +160,8 @@ public class LDAPControl implements Cloneable {
         ByteArrayInputStream buf = new ByteArrayInputStream(data);
         
         try {
-            tempRfcControl = new RfcControl(decoder, buf, data.length);
+            ASN1Sequence extraASN1 = new ASN1Sequence(decoder, buf, data.length);
+            tempRfcControl = new RfcControl((ASN1Sequence)extraASN1.get(0));
         } catch (IOException ex) {
             // This should never happen because the data passed in has to 
             // be a valid RfcControl
@@ -169,6 +175,8 @@ public class LDAPControl implements Cloneable {
         try {
             /* search through the registered extension list to find the response control class */
             Class responseControlClass = registeredControls.findResponseControl(oid);
+            if ( responseControlClass == null)
+                return new LDAPControl(oid, criticality, value);
         
             /* If found get default 3 parameter LDAPControl constructor */
             Class[] ArgsClass = new Class[] {oid.getClass(), boolean.class, value.getClass()};
@@ -193,17 +201,23 @@ public class LDAPControl implements Cloneable {
                     ;
                 }
             } catch (NoSuchMethodException e) {
-                    ;// bad class was specified, fall through and return a
-                    // default LDAPControl object
+                // bad class was specified, fall through and return a
+                // default LDAPControl object
+                if( Debug.LDAP_DEBUG) {
+                    Debug.trace( Debug.controls, "Could not find default constructor in registered LDAPControl class");
+                }
+                    
             }
         
         } catch (NoSuchFieldException ex) {
             ; // Do nothing. Fall through and construct a default LDAPControl object.
             
-        }
-     
+        }  
         // If we get here we did not have a registered response control
         // for this oid.  Return a default LDAPControl object.
+        if( Debug.LDAP_DEBUG) {
+            Debug.trace( Debug.controls, "Could not instantiate child LDAPControl. Returning default LDAPControl class");
+        }
         return new LDAPControl(oid, criticality, value);
     }
 
