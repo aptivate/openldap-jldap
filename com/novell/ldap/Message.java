@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/client/Message.java,v 1.3 2000/11/27 22:56:35 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/client/Message.java,v 1.4 2000/12/06 19:30:06 vtag Exp $
 *
 * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
 * 
@@ -229,15 +229,14 @@ public class Message extends Thread
     /* package */
     void putReply( RfcLDAPMessage message)
     {
-        if( Debug.LDAP_DEBUG) {
-            Debug.trace( Debug.messages, name + "Queuing message");
-        }
         stopTimer();
         replies.addElement( message); 
         if( message.getProtocolOp() instanceof RfcResponse) {
+            int res;
             if( Debug.LDAP_DEBUG) {
+                res = ((RfcResponse)message.getProtocolOp()).getResultCode().getInt();
                 Debug.trace( Debug.messages, name +
-                    "Queuing LDAPResult, message complete");
+                    "Queuing LDAPResult, message complete, status " + res);
             }
             complete = true;
             conn.removeMessage(this);   // Accept no more results for this msg
@@ -245,7 +244,7 @@ public class Message extends Thread
                 if( Debug.LDAP_DEBUG) {
                     Debug.trace( Debug.messages, name + "Bind properties found");
                 }
-                int res = ((RfcResponse)message.getProtocolOp()).getResultCode().getInt();
+                res = ((RfcResponse)message.getProtocolOp()).getResultCode().getInt();
                 if(res == LDAPException.SUCCESS) {
                     // Set bind properties into connection object
                     conn.setBindProperties(bindprops);
@@ -259,6 +258,10 @@ public class Message extends Thread
                 }
                 // release the bind semaphore and wake up all waiting threads
                 conn.freeBindSemaphore( msgId);
+            }
+        } else {
+            if( Debug.LDAP_DEBUG) {
+                Debug.trace( Debug.messages, name + "Queuing Reply");
             }
         }
         // wake up waiting threads
@@ -445,7 +448,10 @@ public class Message extends Thread
             super.finalize();
             acceptReplies = false;
             conn.removeMessage( this );
-            replies.remove(0);
+            // Empty out any accumuluated replies
+            while( ! replies.isEmpty()) {
+                replies.remove(0);
+            }
         } catch ( Throwable ex ) {
             if( Debug.LDAP_DEBUG) {
                 Debug.trace( Debug.messages, name +

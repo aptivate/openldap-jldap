@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/client/MessageAgent.java,v 1.2 2000/11/27 22:56:35 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/client/MessageAgent.java,v 1.3 2000/12/06 19:30:07 vtag Exp $
 *
 * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
 * 
@@ -144,8 +144,7 @@ public class MessageAgent
             // Send abandon request and remove from connection list
             info = messages.findMessageById( msgId);
             info.abandon( cons );
-            // Remove message from my list
-            removeMessage( info);
+            // Message class has already removed message from my queue
             if( Debug.LDAP_DEBUG) {
                 Debug.trace( Debug.messages, name +
                 "Abandoned Message(" + info.getMessageID() + ")");
@@ -171,8 +170,7 @@ public class MessageAgent
         for( int i = 0; i < size; i++ ) {
             info = (Message)messages.elementAt(i);
             info.abandon( null );
-            // Remove message from my list
-            removeMessage( info);
+            // Message class has already removed message from my queue
             if( Debug.LDAP_DEBUG) {
                 Debug.trace( Debug.messages, name +
                 "Abandoned Message(" + info.getMessageID() + ")");
