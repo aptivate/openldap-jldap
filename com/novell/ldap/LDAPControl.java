@@ -56,10 +56,13 @@ public class LDAPControl implements Cloneable {
             throw new IllegalArgumentException("An OID must be specified");
         }
         if( values == null) {
-            values = new byte[]{};
+            control = new RfcControl( new RfcLDAPOID(oid),
+                                      new ASN1Boolean(critical));
+        } else {
+            control = new RfcControl( new RfcLDAPOID(oid),
+                                      new ASN1Boolean(critical),
+                                      new ASN1OctetString(values));
         }
-        control = new RfcControl(new RfcLDAPOID(oid), new ASN1Boolean(critical),
-                              new ASN1OctetString(values));
         return;
     }
 
@@ -80,12 +83,17 @@ public class LDAPControl implements Cloneable {
     public Object clone()
     {
        byte[] vals = this.getValue();
-       byte[] twin = new byte[vals.length];
-       for(int i = 0; i < vals.length; i++){
-         twin[i]=vals[i];
-       }//is this necessary?  Yes even though the contructor above allocates a
-       //new ASN1OctetString.  vals in that constuctor is only copied by reference
-
+       byte[] twin = null;
+       if( vals != null) {
+           //is this necessary?
+           // Yes even though the contructor above allocates a
+           // new ASN1OctetString, vals in that constuctor
+           // is only copied by reference
+           twin = new byte[vals.length];
+           for(int i = 0; i < vals.length; i++){
+             twin[i]=vals[i];
+           }
+       }
        return (Object)( new LDAPControl(this.getID(), this.isCritical(), twin));
     }
 
@@ -102,17 +110,23 @@ public class LDAPControl implements Cloneable {
     /**
      * Returns the control-specific data of the object.
      *
-     * @return The control-specific data of the object as a byte array.
+     * @return The control-specific data of the object as a byte array,
+     * or null if the control has no data.
      */
     public byte[] getValue()
     {
-        return control.getControlValue().getContent();
+        byte[] result = null;
+        ASN1OctetString val = control.getControlValue();
+        if( val != null) {
+            result = val.getContent();
+        }
+        return result;
     }
 
 
     /**
      * Sets the control-specific data of the object.  This method is for
-     * use by extension of LDAPControl.
+     * use by an extension of LDAPControl.
      */
     protected void setValue(byte[] controlValue)
     {
