@@ -4,5 +4,5 @@ package com.novell.ldap.ldif_dsml;
 
 public class DSMLReader implements LDAPImport {
     
-    public final static LDAPOperation currentChange = null;
+    public final static LDAPRequest currentChange = null;
 }

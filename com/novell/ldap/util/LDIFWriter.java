@@ -31,7 +31,7 @@ import com.novell.ldap.LDAPControl;
 import com.novell.ldap.LDAPEntry;
 import com.novell.ldap.LDAPException;
 import com.novell.ldap.LDAPModification;
-import com.novell.ldap.ldif_dsml.LDAPOperation;
+import com.novell.ldap.ldif_dsml.LDAPRequest;
 import com.novell.ldap.ldif_dsml.Base64Encoder;
 
 /**
@@ -40,7 +40,7 @@ import com.novell.ldap.ldif_dsml.Base64Encoder;
  *
  * <p>The object of the class is used to generate LDIF content record or LDIF
  * change record lines. toRecordLines() methods have different signatures to
- * convert <tt> LDAPEntry</tt> objects, delete dn, <tt>ModInfo</tt> object, or
+ * convert <tt> LDAPEntry</tt> objects, delete dn, modify information, or
  * <tt>LDAPModification</tt> array objects into LDIF record lines.</p>
  */
 
@@ -56,7 +56,7 @@ public class LDIFWriter extends LDIF implements LDAPExport {
     private BufferedWriter bufWriter;
     private LDAPControl[]  currentControls;
     private LDAPEntry      currentEntry = null;
-    private LDAPOperation  currentChange = null;
+    private LDAPRequest    currentChange = null;
 
 
     /**
@@ -205,7 +205,7 @@ public class LDIFWriter extends LDIF implements LDAPExport {
     public void writeContent(LDAPEntry entry, LDAPControl[] ctrls)
     throws IOException {
 
-        if( ! isContent()) {
+        if( !isRequest()) {
             throw new RuntimeException(
                  "com.novell.ldap.ldif_dsml.LDAIWriter: "
                       + "Cannot write change to LDIF content file");
@@ -245,11 +245,11 @@ public class LDIFWriter extends LDIF implements LDAPExport {
      * @see LDAPModDN
      * @see LDAPModify
      *
-     * @param change LDAPOperation object
+     * @param change LDAPRequest object
      *
      * @throws IOException if an I/O error occurs.
      */
-    public void writeChange(LDAPOperation change) throws IOException  {
+    public void writeChange(LDAPRequest change) throws IOException  {
 
         this.dn = change.getDN();
         this.currentControls = change.getControls();
@@ -260,7 +260,7 @@ public class LDIFWriter extends LDIF implements LDAPExport {
 
         if ( change instanceof LDAPAdd) {
 
-            this.currentEntry = ((LDAPAdd)change).getEntry();
+            this.currentEntry = (LDAPEntry)change.getRequestInfo();
             toRecordLines(this.currentEntry, this.currentControls);
 
         }
@@ -271,13 +271,13 @@ public class LDIFWriter extends LDIF implements LDAPExport {
         }
         else if ( change instanceof LDAPModDN ) {
 
-            modInfo = ((LDAPModDN)change).getModInfo();
+            modInfo = (String[])change.getRequestInfo();
             toRecordLines( dn, modInfo, this.currentControls );
 
         }
         else if ( change instanceof LDAPModify) {
 
-            mods = ((LDAPModify)change).getModifications();
+            mods = (LDAPModification[])change.getRequestInfo();
             toRecordLines( dn, mods, this.currentControls );
 
         }
@@ -300,7 +300,7 @@ public class LDIFWriter extends LDIF implements LDAPExport {
      *
      * @throws IOException if an I/O error occurs.
      */
-    public void writeChanges(LDAPOperation[] changes) throws IOException  {
+    public void writeChanges(LDAPRequest[] changes) throws IOException  {
 
         for ( int i = 0; i < changes.length; i++ ) {
             writeChange( changes[i] );
@@ -359,7 +359,7 @@ public class LDIFWriter extends LDIF implements LDAPExport {
             addControlsToRecordFields( ctrls );
         }
 
-        if ( !isContent() ) {
+        if ( isRequest() ) {
             this.rFields.add("changetype: " + new String("add"));
         }
 
@@ -488,12 +488,12 @@ public class LDIFWriter extends LDIF implements LDAPExport {
     /**
      * Used to generate LDIF change/moddn reocrd lines.
      *
-     * <p>Turn entry DN and ModInfo into LDIF change/modify record lines</p>
+     * <p>Turn entry DN and moddn information into LDIF change/modify
+     * record lines</p>
      *
      * @param dn      String object representing entry DN
-     * @param modInfo ModInfo object
+     * @param modInfo String array object contains modify info
      *
-     * @see ModInfo
      */
     public void toRecordLines( String dn, String[] modInfo )
     throws UnsupportedEncodingException {
@@ -505,13 +505,13 @@ public class LDIFWriter extends LDIF implements LDAPExport {
     /**
      * Used to generate LDIF change/moddn reocrd lines.
      *
-     * <p>Turn entry DN and ModInfo into LDIF change/modify record lines</p>
+     * <p>Turn entry DN and moddn information into LDIF change/modify 
+     * record lines</p>
      *
      * @param dn      String object representing entry DN
      * @param modInfo ModInfo object
      * @param ctrls   LDAPControl array object
      *
-     * @see ModInfo
      */
     public void toRecordLines( String dn, String[] modInfo,
     LDAPControl[] ctrls ) throws UnsupportedEncodingException {

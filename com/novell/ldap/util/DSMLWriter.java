@@ -4,5 +4,5 @@ package com.novell.ldap.ldif_dsml;
 
 public class DSMLWriter implements LDAPExport {
     
-    public final static LDAPOperation currentChange = null;
+    public final static LDAPRequest currentChange = null;
 }
