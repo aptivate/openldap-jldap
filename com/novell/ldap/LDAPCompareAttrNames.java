@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPCompareAttrNames.java,v 1.14 2000/11/29 21:00:51 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPCompareAttrNames.java,v 1.15 2000/12/08 23:34:29 cmorris Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -16,8 +16,10 @@
 package com.novell.ldap;
 
 import java.util.Locale;
+import java.text.Collator;
 import java.lang.RuntimeException;
 import com.novell.ldap.*;
+
 
 /**
  *
@@ -32,7 +34,9 @@ import com.novell.ldap.*;
 public class LDAPCompareAttrNames implements LDAPEntryComparator {
    private String[] sortByNames;  //names to to sort by.
    private boolean[] sortAscending; //true if sorting ascending
-   private Locale location = null;
+   private Locale location = Locale.getDefault();
+   private Collator collator = Collator.getInstance();
+
    /**
     * Constructs an object that sorts results by a single attribute, in
     * ascending order.
@@ -133,7 +137,7 @@ public class LDAPCompareAttrNames implements LDAPEntryComparator {
     */
    public Locale getLocale () {
       //currently supports only English local.
-      return null;
+      return location;
    }
 
    /**
@@ -142,9 +146,8 @@ public class LDAPCompareAttrNames implements LDAPEntryComparator {
     * @param locale   The locale to be used for sorting.
     */
    public void setLocale (Locale locale) {
-      if (locale != null){
-         throw new RuntimeException("Currently supports only English local (null)");
-      }
+    collator = Collator.getInstance(locale);
+    location = locale;
    }
 
    /**
@@ -165,6 +168,10 @@ public class LDAPCompareAttrNames implements LDAPEntryComparator {
       String[] first;   //these are arrays because of multivalued attributes, which are ignored.
       String[] second;
       int compare,i=0;
+      if (collator == null){ //using default locale
+         collator = Collator.getInstance();
+         //compare = first[0].compareToIgnoreCase(second[0]);
+      }
 
       //throw new RuntimeException("isGreater is not implemented yet");
       do {//while first and second are equal
@@ -173,13 +180,8 @@ public class LDAPCompareAttrNames implements LDAPEntryComparator {
          if ((one != null) && (two != null)){
            first = one.getStringValueArray();
            second= two.getStringValueArray();
-           if (location == null){
-              compare = first[0].compareToIgnoreCase(second[0]);
-           }//We could also use the other multivalued attributes to break ties and such.
-           else{
-              throw new RuntimeException("Currently supports only English local (null)");
-           }
-         }
+           compare = collator.compare(first[0], second[0]);
+         }//We could also use the other multivalued attributes to break ties and such.
          else //one of the entries was null
          {
             if (one != null)
