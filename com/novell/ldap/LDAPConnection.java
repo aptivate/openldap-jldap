@@ -511,8 +511,8 @@ public class LDAPConnection implements Cloneable
      *  <p>A deep copy of the property is provided where applicable; a
      *  client does not need to clone the object received.</p>
      *
-     *  @return The requested property, or null if the property is not
-     *  available.
+     *  @return The object associated with the requested property,
+     *  or null if the property is not defined.
      *
      * @see LDAPConstraints#getProperty(String)
      * @see LDAPConstraints#setProperty(String, Object)

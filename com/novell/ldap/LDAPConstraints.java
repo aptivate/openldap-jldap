@@ -159,9 +159,11 @@ public class LDAPConstraints implements Cloneable {
     /**
      * Gets a property of the constraints object which has been
      * assigned with {@link #setProperty(String, Object)}.  
-     * A value of <code>null</code> is returned if the property is not defined.
      *
      * @param name   Name of the property to be returned.
+     *
+     * @return the object associated with the property,
+     * or <code>null</code> if the property is not set.
      *
      * @see #setProperty(String, Object)
      * @see LDAPConnection#getProperty(String)
@@ -177,7 +179,7 @@ public class LDAPConstraints implements Cloneable {
     /**
      * Gets all the properties of the constraints object which has been
      * assigned with {@link #setProperty(String, Object)}.  
-     * A value of <code>null</code> is returned if the property is not defined.
+     * A value of <code>null</code> is returned if no properties are defined.
      *
      * @see #setProperty(String, Object)
      * @see LDAPConnection#getProperty(String)
@@ -282,7 +284,7 @@ public class LDAPConstraints implements Cloneable {
     }
 
     /**
-     * Sets a property of the connection object.
+     * Sets a property of the constraints object.
      *
      * <p>No property names have been defined at this time, but the
      * mechanism is in place in order to support revisional as well as
