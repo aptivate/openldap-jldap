@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.92 2001/04/19 18:40:32 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.93 2001/04/20 20:59:05 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -290,7 +290,11 @@ public class LDAPConnection implements Cloneable
      */
     public int getProtocolVersion()
     {
-        return conn.getBindProperties().getProtocolVersion();
+        BindProperties prop = conn.getBindProperties();
+        if( prop == null) {
+            return LDAP_V3;
+        }
+        return prop.getProtocolVersion();
     }
 
     /**
@@ -304,6 +308,10 @@ public class LDAPConnection implements Cloneable
      */
     public String getAuthenticationDN()
     {
+        BindProperties prop = conn.getBindProperties();
+        if( prop == null) {
+            return "";
+        }
         return conn.getBindProperties().getAuthenticationDN();
     }
 
@@ -325,6 +333,10 @@ public class LDAPConnection implements Cloneable
      */
     public String getAuthenticationMethod()
     {
+        BindProperties prop = conn.getBindProperties();
+        if( prop == null) {
+            return "simple";
+        }
         return conn.getBindProperties().getAuthenticationMethod();
     }
 
@@ -343,6 +355,10 @@ public class LDAPConnection implements Cloneable
      */
     public Hashtable getSaslBindProperties()
     {
+        BindProperties prop = conn.getBindProperties();
+        if( prop == null) {
+            return null;
+        }
         return conn.getBindProperties().getSaslBindProperties();
     }
 
@@ -361,6 +377,10 @@ public class LDAPConnection implements Cloneable
     public Object /* javax.security.auth.callback.CallbackHandler */
                      getSaslBindCallbackHandler()
     {
+        BindProperties prop = conn.getBindProperties();
+        if( prop == null) {
+            return null;
+        }
         return conn.getBindProperties().getSaslCallbackHandler();
     }
 
@@ -3377,7 +3397,7 @@ public class LDAPConnection implements Cloneable
                         LDAPUrl url = new LDAPUrl( referrals[idx]);
                         if( Debug.LDAP_DEBUG) {
                             Debug.trace( Debug.referrals, name +
-                                        "Compare host port " +
+                                        "getReferralConnection: Compare host port " +
                                         url.getHost() + "-" + rconn.getHost() +
                                         " & " +
                                         url.getPort() + "-" + rconn.getPort());
