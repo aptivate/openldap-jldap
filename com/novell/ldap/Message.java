@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/client/Message.java,v 1.17 2001/04/19 22:25:20 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/client/Message.java,v 1.18 2001/04/20 17:40:20 vtag Exp $
 *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -513,14 +513,16 @@ public class Message
                 conn.removeMessage( this );
             }
             // Empty out any accumuluated replies
-            if( Debug.LDAP_DEBUG) {
-                if( ! replies.isEmpty()) {
-                    Debug.trace( Debug.messages, name +
-                        "cleanup: remove " + replies.size() + " replies");
+            if( replies != null) {
+                if( Debug.LDAP_DEBUG) {
+                    if( ! replies.isEmpty()) {
+                        Debug.trace( Debug.messages, name +
+                            "cleanup: remove " + replies.size() + " replies");
+                    }
                 }
-            }
-            while( (replies != null) && (! replies.isEmpty())) {
-                replies.remove(0);
+                while( ! replies.isEmpty()) {
+                    replies.remove(0);
+                }
             }
         } catch ( Throwable ex ) {
             if( Debug.LDAP_DEBUG) {
@@ -529,13 +531,12 @@ public class Message
             }
             ;// nothing
         }
-        // Let GC clean up this stuff
+        // Let GC clean up this stuff, leave name in case finalized is called
         conn = null;
         msg = null;
         agent = null;
         listen = null;
         replies = null;
-        name = null;
         bindprops = null;
         return;
     }
@@ -555,8 +556,10 @@ public class Message
      */
     protected void finalize() throws Throwable
     {
+        if( Debug.LDAP_DEBUG) {
+            Debug.trace( Debug.messages, name + "finalize");
+        }
         super.finalize();
-
         cleanup();
         return;
     }
