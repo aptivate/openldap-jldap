@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: GetEffectivePrivilegesResponse.java,v 1.10 2000/10/04 22:39:33 judy Exp $
+ * $Id: GetEffectivePrivilegesResponse.java,v 1.11 2000/10/10 16:39:15 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -16,6 +16,7 @@ package com.novell.ldap.extensions;
 
 import com.novell.ldap.*;
 import com.novell.ldap.asn1.*;
+import com.novell.ldap.rfc2251.*;
 import java.io.*;
  
 /**
@@ -28,7 +29,7 @@ import java.io.*;
  *  &nbsp;&nbsp;&nbsp;2.16.840.1.113719.1.27.100.34</p>
  *
  */
-public class GetEffectivePrivilegesResponse implements ParsedExtendedResponse {
+public class GetEffectivePrivilegesResponse extends LDAPExtendedResponse {
    
    // Identity returned by the server
    private int privileges;
@@ -44,11 +45,13 @@ public class GetEffectivePrivilegesResponse implements ParsedExtendedResponse {
     *
     * @exception IOException The responseValue could not be decoded.
     */   
-   public GetEffectivePrivilegesResponse (LDAPExtendedResponse r) 
+   public GetEffectivePrivilegesResponse (RfcLDAPMessage rfcMessage) 
          throws IOException {
         
+        super(rfcMessage);
+        
         // parse the contents of the reply
-        byte [] returnedValue = r.getValue();
+        byte [] returnedValue = this.getValue();
         if (returnedValue == null)
             throw new IOException("No returned value");
         

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: GetReplicationFilterResponse.java,v 1.1 2000/11/06 21:09:04 javed Exp $
+ * $Id: GetReplicationFilterResponse.java,v 1.2 2000/11/07 20:24:03 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -16,6 +16,7 @@ package com.novell.ldap.extensions;
 
 import com.novell.ldap.*;
 import com.novell.ldap.asn1.*;
+import com.novell.ldap.rfc2251.*;
 import java.io.*;
  
 /**
@@ -28,7 +29,7 @@ import java.io.*;
  *  &nbsp;&nbsp;&nbsp;2.16.840.1.113719.1.27.100.38</p>
  *
  */
-public class GetReplicationFilterResponse implements ParsedExtendedResponse {
+public class GetReplicationFilterResponse extends LDAPExtendedResponse {
    
 
    		
@@ -51,11 +52,13 @@ public class GetReplicationFilterResponse implements ParsedExtendedResponse {
     *
     * @exception IOException The responseValue could not be decoded.
     */   
-   public GetReplicationFilterResponse (LDAPExtendedResponse r) 
+   public GetReplicationFilterResponse (RfcLDAPMessage rfcMessage) 
          throws IOException {
         
+        super(rfcMessage);
+        
         // parse the contents of the reply
-        byte [] returnedValue = r.getValue();
+        byte [] returnedValue = this.getValue();
         if (returnedValue == null)
             throw new IOException("No returned value");
         

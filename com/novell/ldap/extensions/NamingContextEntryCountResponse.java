@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: NamingContextEntryCountResponse.java,v 1.10 2000/10/04 22:39:34 judy Exp $
+ * $Id: NamingContextEntryCountResponse.java,v 1.11 2000/10/10 19:17:31 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -16,6 +16,7 @@ package com.novell.ldap.extensions;
 
 import com.novell.ldap.*;
 import com.novell.ldap.asn1.*;
+import com.novell.ldap.rfc2251.*;
 import java.io.*;
  
 /**
@@ -29,7 +30,7 @@ import java.io.*;
  * &nbsp;&nbsp;&nbsp;2.16.840.1.113719.1.27.100.14</p>
  *
  */
-public class NamingContextEntryCountResponse implements ParsedExtendedResponse {
+public class NamingContextEntryCountResponse extends LDAPExtendedResponse {
    
    //The count of the objects returned by the server is saved here
     
@@ -45,11 +46,13 @@ public class NamingContextEntryCountResponse implements ParsedExtendedResponse {
     *
     * @exception IOException  The response value could not be decoded.
     */   
-   public NamingContextEntryCountResponse (LDAPExtendedResponse r) 
+   public NamingContextEntryCountResponse (RfcLDAPMessage rfcMessage) 
          throws IOException {
         
+        super(rfcMessage);
+        
         // parse the contents of the reply
-        byte [] returnedValue = r.getValue();
+        byte [] returnedValue = this.getValue();
         if (returnedValue == null)
             throw new IOException("No returned value");
         

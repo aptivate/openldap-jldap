@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPExtendedResponse.java,v 1.20 2000/11/09 23:50:38 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPExtendedResponse.java,v 1.21 2000/11/10 16:50:02 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -37,7 +37,7 @@ public class LDAPExtendedResponse extends LDAPResponse {
      * @param message  The RfcLDAPMessage to convert to an 
      *                 LDAPExtendedResponse object.
      */
-    /*package*/ LDAPExtendedResponse(RfcLDAPMessage message)
+    public LDAPExtendedResponse(RfcLDAPMessage message)
     {
         super(message);
     }

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: ExtendedResponseFactory.java,v 1.13 2000/10/10 16:39:14 judy Exp $
+ * $Id: ExtResponseFactory.java,v 1.14 2000/11/07 20:24:03 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -12,9 +12,11 @@
  * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
  * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY. 
  ***************************************************************************/
-package com.novell.ldap.extensions; 
+package com.novell.ldap.client; 
 
 import com.novell.ldap.*;
+import com.novell.ldap.extensions.*;
+import com.novell.ldap.rfc2251.*;
 import java.io.IOException; 
 /**
  *
@@ -28,16 +30,16 @@ import java.io.IOException;
  *  ParsedExtendedResponse.
  *
  */
-public class ExtendedResponseFactory {
+public class ExtResponseFactory {
     
     /**
-     * Converts an LDAPExtendedResponse object to the appropriate
-     * ParsedExtendedResponse object depending on the operation being performed.
+     * Used to Convert an RfcLDAPMessage object to the appropriate
+     * LDAPExtendedResponse object depending on the operation being performed.
      *
      * @param inResponse   The LDAPExtendedReponse object as returned by the 
      *                     extendedOperation method in the LDAPConnection object.
      * <br><br>
-     * @return An object of base class ParsedExtendedReponse.  The actual child 
+     * @return An object of base class LDAPExtendedResponse.  The actual child 
      *         class of this returned object depends on the operation being 
      *         performed.
      *  
@@ -45,12 +47,16 @@ public class ExtendedResponseFactory {
      *                          and an LDAP error code.
      */
  
-    static public ParsedExtendedResponse parseExtendedResponse(LDAPExtendedResponse inResponse) 
+    static public LDAPExtendedResponse convertToExtendedResponse(RfcLDAPMessage inResponse) 
             throws LDAPException {
-                
-        // Get the oid stored in the Extended response
-        String inOID = inResponse.getID();
         
+        LDAPExtendedResponse tempResponse = new LDAPExtendedResponse(inResponse);
+        
+        // Get the oid stored in the Extended response
+        String inOID = tempResponse.getID();
+        
+        // Is this an OID we support, if yes then build the 
+        // detailed LDAPExtendedResponse object
         try {
             if (inOID.equals(NamingContextConstants.NAMING_CONTEXT_COUNT_RES)) {
                 return new NamingContextEntryCountResponse(inResponse);
@@ -71,8 +77,7 @@ public class ExtendedResponseFactory {
                 return new GetReplicationFilterResponse(inResponse);
             }
             else
-                throw new LDAPException("Unsupported OID in LDAPResponse", 
-                    LDAPException.DECODING_ERROR);
+                return tempResponse;
         }
         
         catch(IOException ioe) {

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: GetReplicaInfoResponse.java,v 1.7 2000/10/04 22:39:34 judy Exp $
+ * $Id: GetReplicaInfoResponse.java,v 1.8 2000/10/10 16:39:15 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -16,6 +16,7 @@ package com.novell.ldap.extensions;
 
 import com.novell.ldap.*;
 import com.novell.ldap.asn1.*;
+import com.novell.ldap.rfc2251.*;
 import java.io.*;
  
 /**
@@ -28,7 +29,7 @@ import java.io.*;
  *  &nbsp;&nbsp;&nbsp;2.16.840.1.113719.1.27.100.18</p>
  *
  */
-public class GetReplicaInfoResponse implements ParsedExtendedResponse {
+public class GetReplicaInfoResponse extends LDAPExtendedResponse {
    
    // Other info as returned by the server
    private int partitionID;
@@ -58,11 +59,13 @@ public class GetReplicaInfoResponse implements ParsedExtendedResponse {
     *
     * @exception IOException The response value could not be decoded.
     */   
-   public GetReplicaInfoResponse (LDAPExtendedResponse r) 
+   public GetReplicaInfoResponse (RfcLDAPMessage rfcMessage) 
          throws IOException {
         
+        super(rfcMessage);
+        
         // parse the contents of the reply
-        byte [] returnedValue = r.getValue();
+        byte [] returnedValue = this.getValue();
         if (returnedValue == null)
             throw new IOException("No returned value");
         
