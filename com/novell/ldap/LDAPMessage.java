@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPMessage.java,v 1.17 2000/11/10 16:50:02 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPMessage.java,v 1.18 2001/01/04 20:14:47 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -206,18 +206,37 @@ public class LDAPMessage {
     * Returns any controls in the message.
     */
    public LDAPControl[] getControls() {
-		LDAPControl[] controls = null;
-	 RfcControls asn1Ctrls = message.getControls();
-
-		// convert from RFC 2251 Controls to LDAPControl[].
-		if(asn1Ctrls != null) {
-			controls = new LDAPControl[asn1Ctrls.size()];
-			for(int i=0; i<asn1Ctrls.size(); i++) {
-			    controls[i] = new LDAPControl((RfcControl)asn1Ctrls.get(i));
-			}
-		}
-
-		return controls;
+        
+        LDAPControl[] controls = null;
+        RfcControls asn1Ctrls = message.getControls();
+        
+        // convert from RFC 2251 Controls to LDAPControl[].
+	    if(asn1Ctrls != null) {
+		    controls = new LDAPControl[asn1Ctrls.size()];
+		    for(int i=0; i<asn1Ctrls.size(); i++) {
+    			    
+		        // At this point we have an RfcControl which needs to be
+		        // converted to the appropriate Response Control.  This requires calling
+		        // the newInstance static method defined in LDAPControl class in the
+		        // draft.  The problem is that this method takes a byte [] corresponding
+		        // to the encoded control as a parameter.  But we have already parsed that
+		        // out and do not have a pointer to the byte [].  This forces our
+		        // implementation to encode this decoded RfcControl and then call
+		        // the newInstance method.  Question: Why did we not call the newInstance
+		        // method when we were parsing the control. Answer: By the time the
+		        // login in the code realizes that we have a control it is already
+		        // too late. 
+		        RfcControl tempRfcControl = (RfcControl)asn1Ctrls.get(i);
+		        LBEREncoder encoder  = new LBEREncoder();
+		        byte [] encodedControl = tempRfcControl.getEncoding(encoder);
+		        
+		        // Return from this call should return either an LDAPControl or a 
+		        // child of LDAPControl corresponding to the appropriate registered
+		        // response control
+		        controls[i] = LDAPControl.newInstance(encodedControl);
+		    }
+	    }
+	    return controls;
    }
 
    /**

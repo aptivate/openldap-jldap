@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPControl.java,v 1.19 2000/11/27 22:39:38 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPControl.java,v 1.20 2001/01/24 22:13:29 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -15,6 +15,8 @@
 
 package com.novell.ldap;
 
+import java.io.*;
+import java.lang.reflect.*;
 import com.novell.ldap.client.*;
 import com.novell.ldap.asn1.*;
 import com.novell.ldap.rfc2251.*;
@@ -56,6 +58,7 @@ public class LDAPControl implements Cloneable {
     /*package*/ LDAPControl(RfcControl control)
     {
         this.control = control;
+
     }
 
     /**
@@ -126,17 +129,63 @@ public class LDAPControl implements Cloneable {
      */
     public static LDAPControl newInstance(byte[] data)
     {
+        RfcControl tempRfcControl;
+        
         /* Parse data to get the OID, criticality, controlData  */
+        LBERDecoder decoder = new LBERDecoder();
+        ByteArrayInputStream buf = new ByteArrayInputStream(data);
         
-        /* search through the registered extension list to find the response control class */
+        try {
+            tempRfcControl = new RfcControl(decoder, buf, data.length);
+        } catch (IOException ex) {
+            // This should never happen because the data passed in has to 
+            // be a valid RfcControl
+            return null;
+        }
         
-        /* If found get default 3 parameter LDAPControl constructor */
+        String oid = tempRfcControl.getControlType().getString();
+        boolean criticality = tempRfcControl.getCriticality().getContent();
+        byte [] value = tempRfcControl.getControlValue().getContent();
         
-            /* Call sort control class default constructor */
+        try {
+            /* search through the registered extension list to find the response control class */
+            Class responseControlClass = registeredControls.findResponseControl(oid);
         
-        /* else return a default LDAPControl object */
+            /* If found get default 3 parameter LDAPControl constructor */
+            Class[] ArgsClass = new Class[] {oid.getClass(), boolean.class, value.getClass()};
+            Object[] Args = new Object[] {oid, new Boolean(criticality), value};
+            try {
+                Constructor defaultConstructor = responseControlClass.getConstructor(ArgsClass);
+            
+                try { 
+                    /* Call the default constructor for registered Class*/
+                    Object ctl = null;
+                    ctl = defaultConstructor.newInstance(Args);
+                    return (LDAPControl) ctl;
+                } 
+                // Could not create the ResponseControl object
+                // All possible exceptions are ignored. We fall through
+                // and create a default LDAPControl object
+                catch (InstantiationException e) {
+                    ;
+                } catch (IllegalAccessException e) {
+                    ;
+                } catch (InvocationTargetException e) {
+                    ;
+                }
+            } catch (NoSuchMethodException e) {
+                    ;// bad class was specified, fall through and return a
+                    // default LDAPControl object
+            }
         
-        throw new RuntimeException("Method LDAPControl.newInstance not implemented");
+        } catch (NoSuchFieldException ex) {
+            ; // Do nothing. Fall through and construct a default LDAPControl object.
+            
+        }
+     
+        // If we get here we did not have a registered response control
+        // for this oid.  Return a default LDAPControl object.
+        return new LDAPControl(oid, criticality, value);
     }
 
     /**
