@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSchema.java,v 1.22 2001/04/23 21:09:31 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSchema.java,v 1.23 2001/06/13 17:51:06 jhammons Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -129,6 +129,7 @@ public class LDAPSchema {
 				LDAPAttributeSet attrSet = ent.getAttributeSet();
 				Enumeration en = attrSet.getAttributes();
 				LDAPAttribute attr;
+				String[] attrNames = {"*","+"};
 				if(en.hasMoreElements())
 				{
 					attr = (LDAPAttribute) en.nextElement();
@@ -139,7 +140,7 @@ public class LDAPSchema {
 						sr = ld.search( schemaDN,
 									LDAPConnection.SCOPE_BASE,
 									"objectclass=*",
-									null,
+									attrNames,
 									false);
 
 						String attrName;
