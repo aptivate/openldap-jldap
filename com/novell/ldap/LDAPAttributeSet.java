@@ -352,42 +352,6 @@ public class LDAPAttributeSet
         return setChanged;
     }
 
-// --- deprecated methods ---
-
-    /**
-     * This method is removed in the IETF draft 18 of the
-     * Java LDAP API (draft-ietf-ldapext-ldap-java-api-xx.txt), and will
-     * be removed from the LDAP Classes for Java API in the fall of 2003.
-     * @deprecated replaced by {@link #iterator}.
-     */
-    public java.util.Enumeration getAttributes() {
-        return new com.novell.ldap.client.EnumeratedIterator(
-                this.iterator());
-    }
-
-    /**
-     * This method is removed in the IETF draft 18 of the
-     * Java LDAP API (draft-ietf-ldapext-ldap-java-api-xx.txt), and will
-     * be removed from the LDAP Classes for Java API in the fall of 2003.
-     * @deprecated replaced by {@link #iterator}.
-     */
-    public LDAPAttribute elementAt(int index)
-            throws ArrayIndexOutOfBoundsException {
-        return (LDAPAttribute) this.toArray()[index];
-    }
-
-    /**
-     * This method is removed in the IETF draft 18 of the
-     * Java LDAP API (draft-ietf-ldapext-ldap-java-api-xx.txt), and will
-     * be removed from the LDAP Classes for Java API in the fall of 2003.
-     * @deprecated replaced by {@link #remove}.
-     */
-    public void removeElementAt(int index)
-            throws ArrayIndexOutOfBoundsException {
-        this.remove(this.elementAt(index));
-        return;
-    }
-
     /**
      * Returns a string representation of this LDAPAttributeSet
      *
