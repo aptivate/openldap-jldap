@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: LDIFReader.java,v 1.27 2002/10/15 20:07:47 $
+ * $Novell: LDIFReader.java,v 1.26 2002/10/15 18:16:18 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -28,7 +28,10 @@ import com.novell.ldap.LDAPAttributeSet;
 import com.novell.ldap.LDAPModification;
 import com.novell.ldap.LDAPException;
 import com.novell.ldap.LDAPLocalException;
-import com.novell.ldap.util.Base64;
+import com.novell.ldap.ldif_dsml.LDAPAdd;
+import com.novell.ldap.ldif_dsml.LDAPDelete;
+import com.novell.ldap.ldif_dsml.LDAPModDN;
+import com.novell.ldap.ldif_dsml.LDAPModify;
 
 /**
  * The class to process the inputStream object to read an LDIF file.
@@ -119,8 +122,6 @@ public class LDIFReader extends LDIF implements LDAPReader {
 
         // already reaches the end of file
         if ( line == null ) {
-            //throw new RuntimeException( "com.novell.ldap.ldif_dsml.LDIFReader:"
-            //          + " The file contains no LDIF info" ) ;
             throw new LDAPLocalException(
                 "com.novell.ldap.ldif_dsml.LDIFReader:"
                     + " The file contains no LDIF info",
@@ -252,17 +253,10 @@ public class LDIFReader extends LDIF implements LDAPReader {
 
         switch( this.reqType ) {
             case LDAPRequest.LDAP_ADD :
-                if (this.controls == null)
-                    this.currentRequest = new LDAPAdd(currentEntry);
-                else
-                    this.currentRequest = new LDAPAdd(currentEntry, controls);
+                this.currentRequest = new LDAPAdd(currentEntry, this.controls);
                 break;
             case LDAPRequest.LDAP_DELETE :
-                if (this.controls == null)
-                    this.currentRequest = new LDAPDelete(this.entryDN);
-                else
-                    this.currentRequest =
-                          new LDAPDelete(this.entryDN, controls);
+                this.currentRequest=new LDAPDelete(this.entryDN, this.controls);
                 break;
             case LDAPRequest.LDAP_MODDN :
                 boolean  delOldRdn;
@@ -274,39 +268,20 @@ public class LDIFReader extends LDIF implements LDAPReader {
                     delOldRdn = false;
                 }
 
-                if (this.controls == null) {
-                    if( modInfo[2].length() == 0 ) {
-                        this.currentRequest = new LDAPModDN( this.entryDN,
-                                                   this.modInfo[0], delOldRdn);
-                    }
-                    else {
-                        this.currentRequest = new LDAPModDN( this.entryDN,
-                                       this.modInfo[0], delOldRdn, modInfo[2]);
-                    }
+               if((modInfo[2].length())==0 ) {
+                   this.currentRequest = new LDAPModDN( this.entryDN,
+                                    this.modInfo[0], delOldRdn, this.controls);
                 }
                 else {
-                    if((modInfo[2].length())==0 ) {
-                        this.currentRequest = new LDAPModDN( this.entryDN,
-                                         this.modInfo[0], delOldRdn, controls);
-                    }
-                    else {
-                        this.currentRequest = new LDAPModDN(this.entryDN,
-                             this.modInfo[0], delOldRdn, modInfo[2], controls);
-                    }
+                    this.currentRequest = new LDAPModDN(this.entryDN,
+                        this.modInfo[0], delOldRdn, modInfo[2], this.controls);
                 }
                 break;
             case LDAPRequest.LDAP_MODIFY :
-                if (this.controls == null) {
-                    this.currentRequest = new LDAPModify(this.entryDN, mods);
-                }
-                else {
-                    this.currentRequest =
-                          new LDAPModify(this.entryDN, mods, controls);
-                }
+                this.currentRequest = new LDAPModify(this.entryDN, this.mods,
+                                                                this.controls);
                 break;
-            default: // unknown request type
-                throw new IOException("com.novell.ldap.ldif_dsml."
-                                  + "LDIFReader: Unknown request type");
+            default:
         }
 
         return this.currentRequest;
@@ -314,13 +289,15 @@ public class LDIFReader extends LDIF implements LDAPReader {
 
 
     /**
-     * Reads all lines in the current record, convert record lines to
+     * Read all lines in the current record, convert record lines to
      * the record fields, and trim off extra spaces in record fields.
      */
     private void  readRecordFields() throws IOException, LDAPLocalException {
 
         String line;
-        StringBuffer bLine = new StringBuffer();
+        StringBuffer bLine = new StringBuffer(80);
+
+        // clean rFields
         this.rFields.clear();
 
         // skip empty and comment lines and read the first dn
@@ -348,79 +325,81 @@ public class LDIFReader extends LDIF implements LDAPReader {
             // save the first dn line
             bLine.append(line);
 
-            // read the rest lines of the record except comment lines.
+            // read rest lines of the record except comment lines.
             // read stops at an empty line which is used to separate
             // the current record with the next
             while ((line = bufReader.readLine())!=null && line.length()!=0 ) {
-                if ( !line.startsWith("#") ) { // skip comment line
-                    if ( line.startsWith(" ") ) { // continuation line
+                if ( !line.startsWith("#") ) {       // skip comment line
+                    if ( line.startsWith(" ") ) {    // continuation line ?
                         // trim off leading ' ' and append it to previous line
                         bLine.append(line.substring(1, line.length()));
                     }
-                    else { // a new line:
-                        // handle previous field
-                        bLine = trimField(bLine);  // trime the previous field
-                        if(!this.control) {
-                            this.rFields.add(bLine); // save previous field
+                    else { // a new line
+                        // handle pewvious field
+                        bLine = trimField(bLine);    // trime previous field
+                        if(!this.control) {          // save it if it's not
+                            this.rFields.add(bLine); // a control field
                         }
                         // handle new line
-                        bLine = new StringBuffer();
-                        bLine.append(line);
+                        bLine = new StringBuffer(80);// create a new buffer
+                        bLine.append(line);          // to hold new line
                     }
                 }
                 this.lNumber++;
             }
-            // save the last field (assuming it's not a control field)
-            bLine = trimField(bLine);                             // trim the last field
-            this.rFields.add(bLine);            // save the last field
+            // trim and save the last field
+            bLine = trimField(bLine);
+            this.rFields.add(bLine);
+
+            this.lNumber++;                      // increase the line number
             this.fNumber = this.rFields.size();  // get number of fields
-            this.lNumber++;
         }
     }
 
 
     /**
      * Set record properties.
-     * <p>For LDIF content record, LDAPEntry specidied by this record is
+     * <p>For LDIF content record, LDAPEntry specidfied by this record is
      * created</p>
      *
-     * <p>For LDIF change reocrd, depending on the request type, either
+     * <p>For LDIF change record, depending on the request type, either
      * LDAPEntry, modInfo, or LDAPModifiction array along with the controls
      * associated with the request are created</p>
      */
     private void toRecordProperties() throws IOException, LDAPLocalException {
 
-        int index;
+        int i, index;
         String req;
 
         // set entry DN
-        if ( (((StringBuffer)this.rFields.get(0)).charAt(3)) != ':') {
+        StringBuffer dnField = (StringBuffer)this.rFields.get(0);
+        if (dnField.charAt(3) != ':') {
             // commom string value
-            this.entryDN = ((StringBuffer)this.rFields.get(0)).substring( 3,
-                                 ((StringBuffer)this.rFields.get(0)).length());
+            this.entryDN = dnField.substring( 3, dnField.length());
         }
         else {
             // base64 encoded
-            this.bytes = Base64.decode((StringBuffer)this.rFields.get(0),
-                              4, ((StringBuffer)this.rFields.get(0)).length());
+            this.bytes = Base64.decode(dnField, 4, dnField.length());
             this.entryDN = new String(this.bytes, "UTF-8");
         }
 
-        if ( !isRequest() ) {
+        if ( !isRequest() ) {  // is a content LDIF file
             toLDAPEntry();
         }
-        else {
+        else {  // is a change LDIF file
             index = 10; // length of 'changetype'
-            // 1 references to changetype field
-            if( ! ((StringBuffer)this.rFields.get(1))
-                        .substring(0, index).equalsIgnoreCase("changetype")){
+            // ctField - changetype field
+            StringBuffer ctField = (StringBuffer)this.rFields.get(1);
+
+            if(!ctField.substring(0, index).equalsIgnoreCase("changetype")){
                 throw new LDAPLocalException("com.novell.ldap.ldif_dsml."
                     +"LDIFReader: malformed changetype field in record starting"
                         + " on line " + this.dnlNumber + " of the file).",
                             LDAPException.LOCAL_ERROR);
             }
-
-            req = ((StringBuffer)this.rFields.get(1)).substring(index+1);
+            // get request type, eg. 'add', 'delete',
+            // 'moddn', 'modrdn', or 'modify'
+            req = ctField.substring(index+1);
 
             // set request type
             if ( req.equalsIgnoreCase("add") ) {
@@ -444,10 +423,10 @@ public class LDIFReader extends LDIF implements LDAPReader {
             }
             else {
                 throw new LDAPLocalException("com.novell.ldap.ldif_dsml."
-                    + "LDIFReader: unsupported change operation specified in "
-                        + "changetype filed of the record starting on line "
-                            + this.dnlNumber + " of the file.",
-                                LDAPException.LOCAL_ERROR);
+                    + "LDIFReader: unsupported request type '" + req
+                    + "' specified in changetype filed of the record starting "
+                    + "on line " + this.dnlNumber + " of the file.",
+                    LDAPException.LOCAL_ERROR);
             }
 
 
@@ -459,79 +438,63 @@ public class LDIFReader extends LDIF implements LDAPReader {
 
 
     /**
-     * Process LDIF record fields to generate LDAPEntry.
+     * Process LDIF record fields to generate an LDAPEntry.
      */
     private void toLDAPEntry() throws LDAPLocalException {
 
-        int i, index;
-        int startIndex;
-        boolean isEncoded = false;
+        int i, index, fieldIndex;
+        boolean isEncoded;
         String attrName = null, attrValue = null;
+        StringBuffer currentField;
         LDAPAttributeSet attrSet = new LDAPAttributeSet();
 
         if ( !isRequest() ) { // skip dn field
-            startIndex = 1;
+            fieldIndex = 1;
         }
         else { // skip dn, control, and changetype fields
-            startIndex = 2;
+            fieldIndex = 2;
         }
 
-        for ( i=startIndex; i<this.fNumber; i++) {
+        for (isEncoded=false, i=fieldIndex; i<this.fNumber; i++) {
+            currentField = (StringBuffer)this.rFields.get(i);
             // ':' separates attr name and attr value
-            index = IndexOf((StringBuffer)this.rFields.get(i), ':');
+            index = IndexOf(currentField, ':');
             if (index == -1) { // ':' not found
                 throw new LDAPLocalException("com.novell.ldap.ldif_dsml."
-                    + "LDIFReader: malformed attribute field in record "
-                        + "starting on line " + this.dnlNumber + " of the file.",
+                    + "LDIFReader: missing ':' after attribute name in record "
+                        + "starting on line " + this.dnlNumber +" of the file.",
                             LDAPException.LOCAL_ERROR);
             }
-            else {
-                // get attribute name
-                attrName=((StringBuffer)this.rFields.get(i)).substring(0,index);
-                // get attribute value
-                if ((((StringBuffer)this.rFields.get(i)).charAt(index+1)!=
-                     ':') && (((StringBuffer)this.rFields.get(i)).
-                                                   charAt(index+1)!='<')){
-                    // common string value
-                    attrValue = ((StringBuffer)this.rFields.get(i)).substring(
-                        index+1, ((StringBuffer)this.rFields.get(i)).length());
-                }
-                else if (((StringBuffer)this.rFields.get(i)).charAt(index+1)
-                                                                   =='<'){
-                    // a file URL, we are not ready to handle this yet
-                    attrValue = ((StringBuffer)this.rFields.get(i)).substring(
-                        index+2, ((StringBuffer)this.rFields.get(i)).length());
-                }
-                else {  // base64 encoded value
-                    isEncoded = true;
-                    // decode the value
-                    this.bytes = Base64.decode((StringBuffer)this.rFields.
-                                 get(i), index+2,
-                                 ((StringBuffer)this.rFields.get(i)).length());
-                }
 
-                if ( attrSet.getAttribute(attrName) == null ){ // new attr
-                    if ( isEncoded ) {  // add it with decoded bytes
-                        attrSet.add(new LDAPAttribute(attrName,this.bytes));
-                    }
-                    else { // add it with string value
-                        attrSet.add(new LDAPAttribute(attrName, attrValue));
-                    }
-                }
-                else {
-                    // an existing attr, add value to it
-                    if ( isEncoded ) {
-                        attrSet.getAttribute(attrName).addValue(this.bytes);
-                    }
-                    else {
-                        attrSet.getAttribute(attrName).addValue(attrValue);
-                    }
-                }
+            // get attribute name
+            attrName = currentField.substring(0,index);
+
+            // if attrName not existing in attrSet, add it
+            if ( attrSet.getAttribute(attrName) == null ) {
+                // add it to attrSet with no value
+                attrSet.add(new LDAPAttribute(attrName));
             }
-            isEncoded = false;
-            // construct the currentEntry
-            this.currentEntry = new LDAPEntry(this.entryDN, attrSet);
+
+            // add attr value to attr
+            if (currentField.charAt(index+1)==':') {
+                // base64 encoded attribute value
+                attrSet.getAttribute(attrName).addBase64Value(currentField.
+                                                           substring(index+2));
+            }
+            else if (currentField.charAt(index+1)=='<'){
+                // file URL attribute value
+                attrSet.getAttribute(attrName).addBase64Value(currentField.
+                                                           substring(index+2));
+            }
+            else {
+                // string value
+                attrSet.getAttribute(attrName).addValue(currentField.
+                                                           substring(index+1));
+            }
+
         }
+        // construct the currentEntry
+        this.currentEntry = new LDAPEntry(this.entryDN, attrSet);
     }
 
 
@@ -541,82 +504,80 @@ public class LDIFReader extends LDIF implements LDAPReader {
     public void toModInfo()
     throws UnsupportedEncodingException, LDAPLocalException {
 
-        int index;
-        int fieldIndex; // points to ModDN info
+        int index = 6;      // length of "newrdn"
+        int fieldIndex = 2; // reference newrdn field
         this.modInfo = new String[3];
+        StringBuffer currentField = (StringBuffer)this.rFields.get(fieldIndex);
 
-        fieldIndex = 2; // reference newrdn field
-        index = 6;      // length of "newrdn"
 
-        if( ! ((StringBuffer)this.rFields.get(fieldIndex)).substring(0, index+1).
-                                                  equalsIgnoreCase("newrdn:")) {
+
+        if( ! currentField.substring(0, index+1).equalsIgnoreCase("newrdn:")) {
              throw new LDAPLocalException("com.novell.ldap.ldif_dsml.LDIFReader:"
                  + " malformed newrdn field in record starting on line "
-                     + this.dnlNumber + " of the file.",
-                         LDAPException.LOCAL_ERROR);
+                 + this.dnlNumber + " of the file.", LDAPException.LOCAL_ERROR);
         }
 
         // get newrdn
-        if ( (((StringBuffer)this.rFields.get(fieldIndex)).charAt(index+1))
-                                                                 != ':') {
+        if ( currentField.charAt(index+1) != ':') {
             // common string value
-            this.modInfo[0] = ((StringBuffer)this.rFields.get(fieldIndex))
-                                                            .substring(index+1);
+            this.modInfo[0] = currentField.substring(index+1);
         }
         else {
             // decode newrdn
-            this.bytes = Base64.decode(
-                         (StringBuffer)this.rFields.get(fieldIndex),
-                         index+2,
-                         ((StringBuffer)this.rFields.get(fieldIndex)).length());
-            this.modInfo[0] = new String(this.bytes);
+            this.bytes = Base64.decode( currentField, index+2,
+                                                        currentField.length());
+            this.modInfo[0] = new String(this.bytes, "UTF-8");
         }
 
         fieldIndex++;   // reference deleteOleRDN field
-        index = 12;     // length of "deleteoldrdn"
+        index = 13;     // length of "deleteoldrdn"
+        currentField = (StringBuffer)this.rFields.get(fieldIndex);
 
-        if( ! ((StringBuffer)this.rFields.get(fieldIndex)).substring(0, index+1).
-                                           equalsIgnoreCase("deleteoldrdn:") ) {
+        if( ! currentField.substring(0, index).equalsIgnoreCase(
+                                                           "deleteoldrdn:") ) {
             throw new LDAPLocalException("com.novell.ldap.ldif_dsml.LDIFReader:"
                 + " malformed deleteoldrdn field in record starting on line "
-                    + this.dnlNumber + " of the file.",
-                         LDAPException.LOCAL_ERROR);
+                + this.dnlNumber + " of the file.", LDAPException.LOCAL_ERROR);
         }
 
-        if ( ((StringBuffer)this.rFields.get(fieldIndex)).charAt(index+1)
-                                                                == '1' ) {
+        char c = currentField.charAt(index);
+        if (c == '1') {
             this.modInfo[1] = new String("1");
         }
-        else {
+        else if (c == '1'){
             this.modInfo[1] = new String("0");
+        }
+        else {
+            throw new LDAPLocalException("com.novell.ldap.ldif_dsml.LDIFReader:"
+               + " value for deleteoldrdn field should '0' or '1', found '" + c
+               + "' in the record starting on line " + this.dnlNumber
+               + " of the file.", LDAPException.LOCAL_ERROR);
         }
 
         fieldIndex++;   // reference newsuperior field
+        currentField = (StringBuffer)this.rFields.get(fieldIndex);
+
         if (fieldIndex == this.fNumber) { // no newsuperior spefified
             this.modInfo[2] = new String("");
         }
         else { // there is a newsuperior
-            index = 11;   // length of "newsuperior"
-            if( ! ((StringBuffer)this.rFields.get(fieldIndex)).
-                         substring(0, index+1).equalsIgnoreCase("newsuperior:")) {
-                throw new LDAPLocalException("com.novell.ldap.ldif_dsml.LDIFReader:"
-                + " malformed newsuperior field in record starting on line "
-                    + this.dnlNumber + " of the file.",
-                         LDAPException.LOCAL_ERROR);
+            index = 12;   // length of "newsuperior:"
+            if( ! currentField.substring(0, index).equalsIgnoreCase(
+                                                             "newsuperior:")) {
+                throw new LDAPLocalException("com.novell.ldap.ldif_dsml."
+                    + "LDIFReader: malformed newsuperior field in the record "
+                    + "starting on line " + this.dnlNumber + " of the file.",
+                    LDAPException.LOCAL_ERROR);
             }
 
-            if ( (((StringBuffer)this.rFields.get(fieldIndex)).charAt(index+1))
-                                                                 != ':') {
+            if ( currentField.charAt(index) != ':') {
                 // commom string value
-                this.modInfo[2] = ((StringBuffer)this.rFields.get(fieldIndex))
-                                                           .substring(index+1);
+                this.modInfo[2] = currentField.substring(index);
             }
             else {
                 // base64 encoded value
-                this.bytes = Base64.decode(
-                        (StringBuffer)this.rFields.get(fieldIndex),
-                        index+2,
-                        ((StringBuffer)this.rFields.get(fieldIndex)).length());
+                this.bytes = Base64.decode( currentField, index+1,
+                                                       currentField.length());
                 this.modInfo[2] = new String(this.bytes);;
             }
         }
@@ -628,38 +589,79 @@ public class LDIFReader extends LDIF implements LDAPReader {
     public void toLDAPModifications () throws IOException, LDAPLocalException {
 
         int        i, index;
-        int        j;                       // number of attrs for an Request
-        int        startIndex;              // where to find mod Requests
+        int        j;                 // number of attrs for an Request
+        int        fieldIndex = 2;    // skip dn, control, and changetype field
         String     attrName, opName;
         LDAPAttribute attr = null;
         ArrayList modList = new ArrayList();
 
-        // skip dn, control, and changetype field
-        startIndex = 2;
+        if (!((StringBuffer)this.rFields.get(this.fNumber-1)).toString().
+                                                      equalsIgnoreCase("-") ) {
+            throw new LDAPLocalException("com.novell.ldap.ldif_dsml."
+                  + "LDIFReader: modify record not ends with '-' in the record"
+                  + " starting on line " + this.dnlNumber + " of the file.",
+                    LDAPException.LOCAL_ERROR);
+        }
 
         // populate the LDAPModification array object
-        for (i=startIndex; i<this.fNumber; i+=j+1) {
-            // fined ':' that separate mod operation and attr anme
+        for (i=fieldIndex; i<this.fNumber; i++) {
+            // find ':' that separate mod operation and attr name
             index = IndexOf((StringBuffer)this.rFields.get(i), ':');
             if (index == -1) { // ':' not found
-                throw new RuntimeException("com.novell.ldap.ldif_dsml."
-                    + "LDIFReader: Mal-formatted attribute field");
+                throw new LDAPLocalException("com.novell.ldap.ldif_dsml."
+                   + "LDIFReader: malformed opName:attrName field in the record"
+                   + " starting on line " + this.dnlNumber + " of the file.",
+                    LDAPException.LOCAL_ERROR);
             }
-            else {
-                j=1;
-                opName=((StringBuffer)this.rFields.get(i)).substring(0, index);
-                attrName=((StringBuffer)this.rFields.get(i)).substring(index+1);
 
-                // build each LDAPModification object and add it to modList
-                if (((StringBuffer)this.rFields.get(i+1)).charAt(0)!='-') {
-                    // there is at least one attribute value specified
-                    while (((StringBuffer)this.rFields.get(i+j)).charAt(0) !=
-                                                                    '-') {
-                        // index separate attr name and attr value
-                        index=IndexOf((StringBuffer)this.rFields.get(i+j),
-                                                                     ':');
-                        attr = new LDAPAttribute( attrName, ((StringBuffer)this.
-                                        rFields.get(i+j)).substring(index+1));
+            StringBuffer nextField = (StringBuffer)this.rFields.get(i);
+            opName= nextField.substring(0, index);
+            attrName= nextField.substring(index+1);
+
+            i++; // point to attrName:attrValue field
+            nextField = (StringBuffer)this.rFields.get(i);
+
+            // build each LDAPModification object and add it to modList
+            if (nextField.charAt(0)!='-') {
+                // there is at least one attrName:attrValue field
+                for ( ; nextField.charAt(0)!='-';
+                        i++, nextField = (StringBuffer)this.rFields.get(i)) {
+                    // index separate attr name and attr value
+                    if ((index=IndexOf(nextField, ':')) == -1) {
+                        throw new LDAPLocalException("com.novell.ldap."
+                            + "ldif_dsml.LDIFReader : no ':' found in attrName:"
+                            + "attrValue field in the record starting on line "
+                            + this.dnlNumber + " of the file.",
+                            LDAPException.LOCAL_ERROR);
+                    }
+                    else {
+                        // compare attr names from opName:attrName
+                        // and attrName:attrValue fields
+                        String aName = nextField.substring(0, index);
+                        if (!aName.equalsIgnoreCase(attrName)) {
+                            throw new LDAPLocalException("com.novell.ldap."
+                            + "ldif_dsml.LDIFReader : found attribute name '"
+                            + aName + "', should be '" + attrName
+                            + "' in attrName:attrValue field in the record "
+                            + "starting on line " + this.dnlNumber
+                            + " of the file.", LDAPException.LOCAL_ERROR);
+                        }
+
+                        // create attr and add value to it
+                        attr = new LDAPAttribute(attrName);
+                        if (nextField.charAt(index+1)==':') {
+                            // base64 encoded attribute value
+                            attr.addBase64Value(nextField.substring(index+2));
+                        }
+                        else if (nextField.charAt(index+1)=='<'){
+                            // file URL attribute value
+                            attr.addBase64Value(nextField.substring(index+2));
+                        }
+                        else {
+                            // string value
+                            attr.addValue(nextField.substring(index+1));
+                        }
+
 
                         if ( opName.equalsIgnoreCase("add") ) {
                             modList.add( new LDAPModification(
@@ -676,38 +678,36 @@ public class LDIFReader extends LDIF implements LDAPReader {
                         else {
                             throw new LDAPLocalException("com.novell.ldap."
                                 + "ldif_dsml.LDIFReader : Not supported modify "
-                                    + " request (" + opName + ") specified in record starting "
-                                        + "on line " + this.dnlNumber + " of the file.",
-                                            LDAPException.LOCAL_ERROR);
+                                + " request (" + opName + ") specified in "
+                                + "record starting on line " + this.dnlNumber
+                                + " of the file.", LDAPException.LOCAL_ERROR);
                         }
-                        j++;
-                    }
-                }
-                else {
-                    // there is no attribute value specified; this could be
-                    // true for 'delete' and 'replace' modify operation
-                    attr = new LDAPAttribute(attrName);
-
-                    if ( opName.equalsIgnoreCase("delete") ) {
-                        modList.add( new LDAPModification(
-                                               LDAPModification.DELETE, attr));
-                    }
-                    else if ( opName.equalsIgnoreCase("replace") ) {
-                        modList.add( new LDAPModification(
-                                              LDAPModification.REPLACE, attr));
-                    }
-                    else {
-                        throw new LDAPLocalException("com.novell.ldap.ldif_dsml."
-                            + "LDIFReader: For '" + opName + "', no value "
-                                + "specified for atribute '" + attrName
-                                    + "' in the record starting on line "
-                                        + this.dnlNumber + " of the file.",
-                                             LDAPException.LOCAL_ERROR);
                     }
                 }
             }
-        }
+            else {
+                // there is no attribute value specified; this could be
+                // true for 'delete' and 'replace' modify operation
+                attr = new LDAPAttribute(attrName);
 
+                if ( opName.equalsIgnoreCase("delete") ) {
+                    modList.add( new LDAPModification(
+                                               LDAPModification.DELETE, attr));
+                }
+                else if ( opName.equalsIgnoreCase("replace") ) {
+                    modList.add( new LDAPModification(
+                                              LDAPModification.REPLACE, attr));
+                }
+                else {
+                    throw new LDAPLocalException("com.novell.ldap.ldif_dsml."
+                        + "LDIFReader: For '" + opName + "', no value "
+                        + "specified for atribute '" + attrName
+                        + "' in the record starting on line "
+                        + this.dnlNumber + " of the file.",
+                        LDAPException.LOCAL_ERROR);
+                }
+            }
+        }
         this.mods = new LDAPModification[modList.size()];
         this.mods = (LDAPModification[])modList.toArray(this.mods);
     }
@@ -734,52 +734,127 @@ public class LDIFReader extends LDIF implements LDAPReader {
         return -1;
     }
 
-     /**
+    /**
+     * Returns the index within this StringBuffer object
+     * of the first occurence of the specified character,
+     * starting at tje specified index.
+     *
+     * @param bl  The StringBuffer object
+     * @param ch  The character to look for in the StringBuffer object
+     *
+     * @return The index of the first occurence of the character in the
+     * StringBuffer object, starting at the specified idex.
+     * -1 is returned if the character does not occur.
+     */
+    private int IndexOf(StringBuffer bl, int ch, int si) {
+        if (bl != null && si<bl.length()) {
+            for (int i=si;i<bl.length(); i++) {
+                if(bl.charAt(i) == ch) {
+                    return i;
+                }
+            }
+        }
+        return -1;
+    }
+
+
+    /**
      * <tt>trimField<tt> trims off extra spaces in a field. It also
      * trims confield and constructs control onjects.
      */
     public StringBuffer trimField( StringBuffer line)
     throws UnsupportedEncodingException, LDAPLocalException  {
         int c, lastChar = 0, charIndex = 0;
-        char[] newChars;
-        boolean isEncoded=false, isURL=false;
         char t;
+        char[] newChars;
+        boolean isEncoded=false, isURL=false, criticality = false;
         String oid = null;
-        boolean criticality = false;
 
         if ((line == null)||((c=IndexOf(line,':'))==-1)) {
-            // some fields contain no ':'
+            // not all fields contain ':'
             return line;
         }
 
         // elminate any trailing spaces
         lastChar = line.length() - 1;
-        newChars = new char[lastChar + 1 + 7]; // allow room for criticality
         while( line.charAt(lastChar) == ' ') {
             lastChar--;
         }
 
+        // create newChars, allow room for criticality
+        newChars = new char[lastChar + 1 + 7];
+
         if( (c > 6) && (line.substring(0,c).equals("control"))) {
+            // this is a control field
             this.control = true;
             c++;            // skip past ':'
-            // eliminate any spaces after :
+            // eliminate any spaces after ':'
             while( (c <= lastChar) && (line.charAt(c) == ' ')) {
                 c++;
             }
         }
         else {
+            // this is 'dn', 'changetype', or 'attrName' field
             this.control = false;
-            // copy attrname and ':'
+
+            // copy field name and ':', eg. 'dn:', 'changetype:', or 'attrName:'
             line.getChars(0, c+1, newChars, 0);
+            // skip over copied chars
             charIndex += c + 1;
+            // c points to char right after first ':'
             c++;
         }
 
-        if( this.control) {
-            // Process special values for controls
+        if(!this.control) {  // not a control dield
+            // Check if '::' or ':<'
+            if( c <= lastChar) {
+                t = line.charAt(c);
+                if( t == ':') {
+                    newChars[charIndex++] = ':'; // save the ':' to
+                    c++;                         // point to value
+                }
+                else if( t == '<') {
+                    newChars[charIndex++] = '<'; // save the '<' to
+                    c++;                         // point to value
+                }
+            }
+
+            // eliminate any space(s) after ':' or '<', or already to the end
+            while( (c <= lastChar) && (line.charAt(c) == ' ')) {
+                c++;
+            }
+
+            if( c <= lastChar) {  // thers is a value specified
+                // copy common field value
+                line.getChars(c, lastChar+1, newChars, charIndex);
+
+                charIndex += lastChar - c + 1;
+                // create a new StringBuffer object with capacity of lastChar
+                StringBuffer newBuf = new StringBuffer(lastChar);
+                // copy the filed represented by newChars
+                newBuf.append( newChars, 0, charIndex);
+                // return the field
+                return newBuf;
+            }
+            else {  // there is no value specified
+                throw new LDAPLocalException("com.novell.ldap.ldif_dsml."
+                        + "LDIFReader: a field contains no value after ':'. the "
+                        + "field is in the record starting on line "
+                        + this.dnlNumber + " of the file.",
+                        LDAPException.LOCAL_ERROR);
+            }
+        }
+        else {  // a control field
+            // process values for control. a control field may looks like
+            //    1. control: 1.2.3.4 true: control value
+            //    2. control: 1.2.3.4: control value
+            //    3. control: 1.2.3.4
+            // extra spaces are possible between oid, criticality, and value.
+            // oid is a must, while criticalitty and value can be absent.
+
             // determine length of the oid
             int b = c;
-            while( b <= lastChar) {
+            while(c <= lastChar) {
                 // an oid consists of '.'s and digits
                 t = line.charAt(c);
                 if( (t == '.') || (Character.isDigit(t))) {
@@ -789,142 +864,122 @@ public class LDIFReader extends LDIF implements LDAPReader {
                 break;
             }
 
-            if( b == c) {
-                // control with no oid
+            if( b == c) {  // control with no oid
                 throw new LDAPLocalException("com.novell.ldap.ldif_dsml."
                     + "LDIFReader: Control with no oid in the record "
                         + "starting on line " + this.dnlNumber
                         + " of the file.", LDAPException.LOCAL_ERROR);
             }
+            else {  // control has iod, get local copy of oid
+                char[] chars = new char[c-b];
+                line.getChars(b, c, chars, 0);
+                oid = new String(chars);
+            }
 
-            // has oid, copy it
-            line.getChars(b, c, newChars, charIndex); // not used after return
-            // get local copy of oid
-            char[] chars = new char[c-b];
-            line.getChars(b, c, chars, 0);
-            oid = new String(chars);
-
-            // increase charIndex for next copy
-            charIndex += c - b;
-
-            // check if character after oid is end, space, or ':'
-            if( c <= lastChar) {
-                t = line.charAt(c);
-                if( t == ' ') {
-                    // skip over spaces
-                    while( (c <= lastChar) && (line.charAt(c) == ' ')) {
-                        c++;
-                    }
-                }
-                if(((c + 3) <= lastChar) && (line.substring(c,c+4).
-                                                             equals("true"))) {
-                    // found 'true', copy to buffer
-                    line.getChars(c-1, c+4, newChars, charIndex);
-                    c += 4;
-                    charIndex += 5;
-                    criticality = true;
-                }
-                else if(((c + 4) <= lastChar) && (line.substring(c,c+5).
-                                                            equals("false"))) {
-                    // found 'false', copy to buffer
-                    line.getChars(c-1, c+5, newChars, charIndex);
-                    c += 5;
-                    charIndex += 6;
-                    criticality = false;
-                }
-                else {
-                    if( (t = line.charAt(c)) == ':') {
-                        // found colon(no criticality),
-                        // copy default of 'false' to buffer
-                        " false".getChars(0, 6, newChars, charIndex);
-                        charIndex += 6;
-                        criticality = false;
-                    }
-                    else {
-                        // see control value with no leading ':'
-                        throw new LDAPLocalException("com.novell.ldap.ldif_dsml."
-                            + "LDIFReader: Control value with no leading colon "
-                                + "in the record starting on line "
-                                    + this.dnlNumber + " of the file.",
-                                        LDAPException.LOCAL_ERROR);
-                    }
-                }
-
-                // If we have a ':', we must include it
-                if( (c <= lastChar) && (line.charAt(c) == ':')) {
-                    // found colon add to buffer
-                    newChars[charIndex++] = ':';
+            if ( c > lastChar) {  // to the end of the control field
+                // this control only has an oid.
+                // create LDAPControl object
+                LDAPControl ctrl = new LDAPControl(oid, false, new byte[0]);
+                // add it to cList
+                this.cList.add(ctrl);
+                return null;
+            }
+            // check char after oid,  is it end, space, or ':'
+            t = line.charAt(c);
+            if( t == ' ') {
+                // see a space, skip over any spaces
+                while( (c <= lastChar) && (line.charAt(c) == ' ')) {
                     c++;
                 }
             }
-            else {
-                // OID only, add false
-                " false".getChars(0, 6, newChars, charIndex);
-                charIndex += 6;
+            // what we see now? 'true', 'false', or ':' ?
+            if(((c + 3) <= lastChar)&&(line.substring(c,c+4).equals("true"))) {
+                // found 'true'
+                c += 4;
+                criticality = true;
+            }
+            else if(((c+4)<=lastChar)&&(line.substring(c,c+5).equals("false"))){
+                // found 'false'
+                c += 5;
                 criticality = false;
             }
-        }
-
-        // Positioned at value
-        // Check if :: or :<
-        if( c <= lastChar) {
-            t = line.charAt(c);
-            if( t == ':') {
-                newChars[charIndex++] = ':';
-                isEncoded = true;
-                c++;
-            }
-            else if( t == '<') {
-                newChars[charIndex++] = '<';
-                isURL = true;
-                c++;
-            }
-        }
-
-        // eliminate any spaces after : or <
-        while( (c <= lastChar) && (line.charAt(c) == ' ')) {
-            c++;
-        }
-
-        if( c <= lastChar) {  // there is a value spec specified
-            line.getChars(c, lastChar+1, newChars, charIndex);
-            charIndex += lastChar - c + 1;
-
-            if(this.control) {
-                char[] chars = new char[lastChar+1-c];
-                line.getChars(c, lastChar+1, chars, 0);
-                //charIndex += lastChar - c + 1;
-
-                //if(this.control) {
-                if (isEncoded) {
-                    this.bytes = Base64.decode(chars);
+            else {
+                if( line.charAt(c) == ':') {
+                    // found colon, but no criticality,
+                    // use default value of 'false'
+                    criticality = false;
                 }
                 else {
-                    // if isURL, what to do?
-                    this.bytes = (new String(chars)).getBytes();
+                    // see control value with no leading ':'
+                    throw new LDAPLocalException("com.novell.ldap.ldif_dsml."
+                        + "LDIFReader: Control value with no leading colon "
+                        + "in the record starting on line "
+                        + this.dnlNumber + " of the file.",
+                        LDAPException.LOCAL_ERROR);
+                }
+            }
+
+            if (c > lastChar) {  // to the end of the control field
+                // create LDAPControl object
+                LDAPControl ctrl=new LDAPControl(oid, criticality, new byte[0]);
+                // add it to cList
+                this.cList.add(ctrl);
+                return null;
+            }
+
+            if(line.charAt(c) == ':') {
+                c++;  // found colon, skip over it
+                if (c > lastChar) {
+                    throw new LDAPLocalException("com.novell.ldap.ldif_dsml."
+                        + "LDIFReader: No control value after colon "
+                        + "in the record starting on line "
+                        + this.dnlNumber + " of the file.",
+                        LDAPException.LOCAL_ERROR);
+                }
+
+                // positioned at the first char right after ':'
+                // check if :: or :<
+                t = line.charAt(c);
+                if( t == ':') {
+                    newChars[charIndex++] = ':'; // save the ':' to
+                    isEncoded = true;            // indicate encoded value
+                    c++;                         // point to value
+                }
+                else if( t == '<') {
+                    newChars[charIndex++] = '<'; // save the '<' to
+                    isURL = true;                // indicate file URL value
+                    c++;                         // point to value
+                }
+
+                // eliminate any space(s) after ':' or '<'
+                while((c <= lastChar) && (line.charAt(c) == ' ')) {
+                    c++;
+                }
+
+                if(c <= lastChar) {  // thers is a value spec specified
+                    char[] chars = new char[lastChar+1-c];
+                    line.getChars(c, lastChar+1, chars, 0);
+
+                    if (isEncoded) {
+                        this.bytes = Base64.decode(chars);
+                    }
+                    else if (isURL) {
+                        // if isURL, what to do?
+                        this.bytes = (new String(chars)).getBytes();
+                    }
+                    else {
+                        this.bytes = (new String(chars)).getBytes();
+                    }
                 }
             }
         }
-        else {  // there is no value spec specified
-            if (this.control) {  // for control field, it's ok
-                this.bytes = new byte[0];
-            }
-            else {  // for other field, it's not ok
-                throw new LDAPLocalException("com.novell.ldap.ldif_dsml."
-                    + "LDIFReader: a field contains no value after ':'. the "
-                        + "field is in the record starting on line "
-                            + this.dnlNumber + " of the file.",
-                                        LDAPException.LOCAL_ERROR);
-            }
 
-        }
+        // create LDAPControl object
+        LDAPControl ctrl = new LDAPControl(oid, criticality, this.bytes);
+        // add it to cList
+        this.cList.add(ctrl);
 
-        if (this.control) {
-            LDAPControl ctrl = new LDAPControl(oid, criticality, this.bytes);
-                    this.cList.add(ctrl);
-        }
-        StringBuffer newBuf = new StringBuffer( lastChar + 1);
-        newBuf.append( newChars, 0, charIndex);
-        return newBuf;
+        // this return value has no use
+        return null;
     }
 }
