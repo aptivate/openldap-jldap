@@ -1,11 +1,11 @@
-<!-- $Novell: /ldap/src/jldap/build.xml,v 1.44 2001/07/20 19:51:19 vtag Exp $ -->
+<!-- $OpenLDAP$ -->
 <!--
  ******************************************************************************
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
- * TO VERSION 2.0.7 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
+ * TO VERSION 2.0.1 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
  * AVAILABLE AT HTTP://WWW.OPENLDAP.ORG/LICENSE.HTML OR IN THE FILE "LICENSE"
  * IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
  * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.7 OF THE OPENLDAP
@@ -47,8 +47,6 @@
 
 <property name="build" value="classes"/>
 <property name="build.debug" value="classes_debug"/>
-<property name="build.samples" value="classes_samples"/>
-<property name="build.tests" value="classes_tests"/>
 
 <property name="doc" value="doc"/>
 <property name="doc.developer" value="${doc}"/>
@@ -56,9 +54,7 @@
 <property name="pkg" value="pkg"/>
 <property name="pkg.lib" value="${pkg}/${lib}"/>
 <property name="pkg.lib.debug" value="${pkg}/${lib}_debug"/>
-<property name="pkg.samples" value="${pkg}/samples"/>
 <property name="pkg.doc" value="${pkg}/${doc}"/>
-<property name="pkg.apidoc" value="${pkg}/${doc}/api"/>
 
     <!-- =================================================================== -->
     <!-- Initialization                                                      -->
@@ -70,7 +66,7 @@
     <!-- =================================================================== -->
     <!-- all - clean, build debug, release, dist                             -->
     <!-- =================================================================== -->
-	<target name="all" depends="init, cleanpkg, lib, tests, samples, doc, install" />
+	<target name="all" depends="init, cleanpkg, lib, doc, install" />
 
     <!-- =================================================================== -->
     <!-- clean all files                                                     -->
@@ -89,8 +85,6 @@
             <delete dir="${lib.debug}"/>
             <delete dir="${build}"/>
             <delete dir="${build.debug}"/>
-            <delete dir="${build.samples}"/>
-            <delete dir="${build.tests}"/>
 	</target>
 
     <!-- =================================================================== -->
@@ -110,7 +104,6 @@
 	<target name="cleanpkg" depends="init">
 		<delete dir="${pkg.lib}"/>
 		<delete dir="${pkg.lib.debug}"/>
-		<delete dir="${pkg.samples}"/>
 	</target>
 
     <!-- =================================================================== -->
@@ -171,11 +164,6 @@
 		<mkdir dir="${pkg.lib}"/>
 		<mkdir dir="${pkg.lib.debug}"/>
 		<mkdir dir="${pkg.doc}"/>
-		<mkdir dir="${pkg.samples}"/>
-		<mkdir dir="${pkg.samples}/arguments"/>
-		<mkdir dir="${pkg.samples}/asynchronous"/>
-		<mkdir dir="${pkg.samples}/extensions"/>
-		<mkdir dir="${pkg.samples}/controls"/>
 
 		<copy
 			todir="${pkg.lib}">
@@ -188,50 +176,8 @@
 		</copy>
 
 		<copy
-			todir="${pkg.samples}/arguments">
-			<fileset dir="${src}/samples/arguments"/>
-		</copy>
-
-		<copy
-			todir="${pkg.samples}/asynchronous">
-			<fileset dir="${src}/samples/asynchronous"/>
-		</copy>
-
-		<copy
-			todir="${pkg.samples}">
-			<fileset dir="${src}/samples"/>
-		</copy>
-
-		<copy
-			todir="${pkg.samples}/extensions">
-			<fileset dir="${src}/samples/extensions"/>
-		</copy>
-
-		<copy
-			todir="${pkg.samples}/controls">
-			<fileset dir="${src}/samples/controls"/>
-		</copy>
-
-		<delete file="${pkg.samples}/build.xml"/>
-		<delete file="${pkg.samples}/run.bat"/>
-		<delete file="${pkg.samples}/asynchronous/build.xml"/>
-		<delete file="${pkg.samples}/controls/build.xml"/>
-		<delete file="${pkg.samples}/controls/run.bat"/>
-		<delete file="${pkg.samples}/extensions/build.xml"/>
-		<delete file="${pkg.samples}/extensions/run.bat"/>
-
-		<copy
-			todir="${pkg.doc}">
-			<fileset dir="${src}/ndkdoc"/>
-		</copy>
-
-		<copy
-        	file="README.txt"
-        	tofile="${pkg}/doc/README.txt"
-        />
-		<copy
-        	file="ietf/draft-sermersheim-nds-ldap-schema-02.txt"
-        	tofile="${pkg.doc}/draft-sermersheim-nds-ldap-schema-02.txt"
+        	file="README"
+        	tofile="${pkg}/README.txt"
         />
 	</target>
 
@@ -241,68 +187,21 @@
 	<target name="install" depends="dist"/>
 	<target name="pkg" depends="dist"/>
 
-	<!-- =================================================================== -->
-	<!-- build test classes                                                  -->
-	<!-- =================================================================== -->
-	<target name="tests" depends="debug">
-		<mkdir dir="${build.tests}/extensions"/>
-
-		<echo message="DEBUG compile tests" />
-		<ant dir="tests" target="all">
-			<property name="build" value="${build.tests}"/>
-			<property name="lib" value="${lib.debug}"/>
-			<property name="ldap" value="${ldap}"/>
-			<property name="debug" value="on"/>
-			<property name="optimize" value="off"/>
-		</ant>
-	</target>
-
     <!-- =================================================================== -->
     <!-- create javadoc                                                      -->
     <!-- =================================================================== -->
     <target name="doc" depends="docldap, docdeveloper"/>
 
-	<!-- =================================================================== -->
-	<!-- build Sample classes                                                -->
-	<!-- =================================================================== -->
-    <target name="samples" depends="debug">
-	    <mkdir dir="${build.samples}"/>
-
-        <echo message="DEBUG compile samples" />
-		<ant dir="${basedir}/samples/" target="all">
-			<property name="build" value="${build.samples}"/>
-			<property name="lib" value="${lib.debug}"/>
-			<property name="debug" value="on"/>
-			<property name="optimize" value="off"/>
-		</ant>
-
-        <echo message="DEBUG compile samples/extensions" />
-		<ant dir="${basedir}/samples/extensions/" target="all">
-			<property name="build" value="${build.samples}/extensions"/>
-			<property name="lib" value="${lib.debug}"/>
-			<property name="debug" value="on"/>
-			<property name="optimize" value="off"/>
-		</ant>
-
-        <echo message="DEBUG compile samples/controls" />
-		<ant dir="${basedir}/samples/controls/" target="all">
-			<property name="build" value="${build.samples}/controls"/>
-			<property name="lib" value="${lib.debug}"/>
-			<property name="debug" value="on"/>
-			<property name="optimize" value="off"/>
-		</ant>
-	</target>
-
     <!-- =================================================================== -->
     <!-- create javadoc for IETF ldap classes                                -->
     <!-- =================================================================== -->
     <target name="docldap" depends="init, setupDoc">
-		<delete dir="${pkg.apidoc}"/>
+		<delete dir="${pkg.doc}"/>
         <echo message="Creating distribution ldap javadoc"/>
-        <mkdir dir="${pkg.apidoc}"/>
+        <mkdir dir="${pkg.doc}"/>
         <javadoc
         	sourcepath="${docsrc}"
-            destdir="${pkg.apidoc}"
+            destdir="${pkg.doc}"
             classpath="${lib.debug}/${ldap}.jar;external/ssl/domestic/nssl1.2_dom.jar;external/jsse/lib/jcert.jar;external/jsse/lib/jnet.jar;external/jsse/lib/jsse.jar"
             packagenames="org.ietf.ldap,com.novell.ldap.extensions,com.novell.ldap.controls,com.novell.ldap.asn1,com.novell.ldap.util,com.novell.ldap"
             overview="overview.html"

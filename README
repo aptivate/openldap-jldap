@@ -1,31 +1,111 @@
-    $Novell: /ldap/src/jldap/README,v 1.5 2000/09/07 16:47:57 javed Exp $
- ******************************************************************************
- * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
- *
- * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
- * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
- * TO VERSION 2.0.7 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
- * AVAILABLE AT HTTP://WWW.OPENLDAP.ORG/LICENSE.HTML OR IN THE FILE "LICENSE"
- * IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
- * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.7 OF THE OPENLDAP
- * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
- * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
- ******************************************************************************
 
+LDAP Class Libraries for Java
+September 2001
 
-                              Building JLDAP
+Table of Contents
+     1.0  LDAP Class Libraries for Java
+     2.0  Dependencies
+     3.0  Installation
+     4.0  LDAPv2 and LDAPv3 Support
+     5.0  Building JLDAP
+
+1.0  LDAP Class Libraries for Java
+
+          LDAP (Lightweight Directory Access Protocol) is
+          an emerging Internet standard for accessing directory
+          information, allowing LDAP-enabled applications to
+          access multiple directories. LDAP v3 supports such
+          features as secure connections (through SSL and SASL),
+          entry management, schema management, and LDAP controls
+          and extensions for expanding LDAP's functionality.
+
+          The LDAP Class Libraries for Java enables you to
+          write applications to access, manage, update, and
+          search for information stored in LDAP-aware directories.
+
+          This version follows the IETF draft 15, a work in progress,
+          of the Java Interface for LDAP.
+
+2.0  Dependencies
+
+     Building the Java LDAP API is dependent upon the following:
+
+     -    JDK 1.1.7 or higher.
+
+     -    A Sun compliant JSSE implementation, which you place in the
+          directory <javasource_home>/external/jsse/lib.  If you obtain
+          the libraries from the www.sun.com website, you will place
+          three jar files in the external/jsse/lib directory as follows:
+                  external/jsse/lib/jcert.jar
+                  external/jsse/lib/jnet.jar
+                  external/jsse/lib/jsse.jar
+
+     -    The Ant build tool for Java.  Ant was developed by
+          the jakarta.apache.org project and can be obtained
+          from their web site.  We have build this system using
+          Ant version 1.2 compiled on October 24 2000.
+          The ant tool is placed in the following directory structure
+          under the root of the source.
+                ant/antdoc.html
+                ant/LICENSE
+                ant/bin
+                ant/bin/ant
+                ant/bin/ant.bat
+                ant/bin/antRun
+                ant/bin/antRun.bat
+                ant/bin/lcp.bat
+                ant/bin/runant.pl
+                ant/lib/ant.jar
+                ant/lib/jaxp.jar
+                ant/lib/parser.jar
+
+     Running an application that uses the LDAP Class Libraries for
+     Java is dependent upon the following:
+
+     -    JRE 1.1.7 or higher.
+
+     -    JDK 1.2 Standard Edition or higher. Creating a Keystore
+          file for SSL connections requires JDK 1.2 or higher.
+
+     -    A Sun compliant implementation of JSSE to create SSL
+          connections.
+
+     -    The LDAP extensions for naming context and replica management
+          require NDS eDirectory 8.5.
+
+3.0  Installation
+
+     To install the libraries do the following:
+     1. Run the build process outlined below.
+
+     2. Copy the ldap.jar file (either debug or release) to a directory
+        of your choice on your platform.
+
+     3. Add the complete path, including the file name, of the
+        ldap.jar file to your CLASSPATH.
+
+4.0  LDAPv2 and LDAPv3 Support
+
+          This version of the LDAP Class Libraries for Java
+          supports LDAPv3. Since the consensus in the LDAP
+          community is to encourage everyone to update to
+          LDAPv3, there is no attempt to ensure that these
+          libraries support LDAPv2 servers.
+
+5.0  Building JLDAP
 
 JLDAP is built using a system developed by jakarta.apache.org called ANT.
 
-The build files are all named "build.xml" and are found in key directories.
+The build files are named "build.xml" and "javac.xml" and are found in the
+root directory of the Java LDAP source.
 
 To set up your environment for ANT, do the following:
 
 For Win32
-    Assuming this source directory on win32 is d:/jldap, and java is installed
-    in d:/jdk1.2.2, then you set in your environment:
+    Assuming this source directory on win32 is d:\jldap, and java is installed
+    in d:\jdk1.3 then you set in your environment:
 
-        set JAVA_HOME=d:\jdk1.2.2
+        set JAVA_HOME=d:\jdk1.3
         set ANT_HOME=d:\jldap\ant
         PATH %ANT_HOME%\bin;%JAVA_HOME%\bin;%PATH%
 
@@ -33,12 +113,14 @@ For Win32
     variable) should not already include the javac.exe compiler.
 
 For Linux / Unix
-    If Linux running bourne shell, and this source directory is located
-    in /usr/home/jldap, and if java is installed in /usr/local/jdk1.2.2 then
-    set in your environment:
+    Assuming the following:
+        1) A Linux system running bourne shell
+        2) The source directory is located in /work/jldap
+        3) The Java jdk is installed in /usr/local/jdk1.3
+    then export in your environment:
 
-        ANT_HOME=$PWD/jldap/ant
-        JAVA_HOME=/usr/local/jdk1.2.2
+        ANT_HOME=/work/jldap/ant
+        JAVA_HOME=/usr/local/jdk1.3
         PATH="$ANT_HOME/bin:$PATH"
         export ANT_HOME JAVA_HOME PATH
 
@@ -82,30 +164,17 @@ Targets available int the the diretories containing java files are:
 The following directories are created when "ant all" is run:
 
     Contents of directories in the ldap directory
-        jldap/ldap/classes          /* Classes used to build lib/ldap.jar */
-        jldap/ldap/classes_debug    /* Classes used to build lib_debug/ldap.jar */
-        jldap/ldap/classes_tests    /* Classes for the test programs */
-        jldap/ldap/classes_samples  /* Classes for the sample programs */
-        jldap/ldap/lib              /* Jar file for ldap - optimized, debug off */
-        jldap/ldap/lib_debug        /* Jar file for ldap - not optimized, debug on */
-        jldap/ldap/doc              /* Javadoc for ldap.jar classes */
+        jldap/ldap/classes          # Classes used to build lib/ldap.jar 
+        jldap/ldap/classes_debug    # Classes used to build lib_debug/ldap.jar 
+        jldap/ldap/doc              # Javadoc for all ldap.jar classes 
+        jldap/ldap/lib              # Jar file for ldap - optimized, debug off 
+        jldap/ldap/lib_debug        # Jar file for ldap - not optimized, debug on 
 
-    Contents of directories in the novbp directory
-        jldap/novbp/classes         /* Classes used to build lib/novbp.jar */
-        jldap/novbp/classes_debu    /* Classes used to build lib_debug/novbp.jar */g
-        jldap/novbp/classes_tests   /* Classes for the test programs */
-        jldap/novbp/classes_samples /* Classes for the sample programs */
-        jldap/novbp/lib             /* Jar file for novbp - optimized, debug off */
-        jldap/novbp/lib_debug       /* Jar file for novbp - not optimized, debug on */
-        jldap/novbp/doc             /* Javadoc for novbp.jar classes */
+    Contents of directories in the jldap/pkg directory
+        jldap/pkg                   # Distribution directories and files 
+        jldap/pkg/doc               # Javadoc for the Java LDAP API
+        jldap/pkg/lib               # Jar file for ldap - optimized, debug off 
+        jldap/pkg/lib_debug         # Jar file for ldap - not optimized, debug on 
 
-    Contents of directories in the jldap directory
-        jldap/pkg                   /* Distribution directories and files */
-        jldap/pkg/doc               /* javadoc */
-        jldap/pkg/doc/ldap          /* javadoc for ldap classes */
-        jldap/pkg/doc/novbp         /* javadoc for novbp classes */
-        jldap/pkg/lib               /* Jar file for ldap - optimized, debug off */
-        jldap/pkg/lib_debug         /* Jar file for ldap - not optimized, debug on */
-        jldap/pkg/samples           /* Sample programs */
-        jldap/pkg/samples/ldap      /* Sample programs for ldap.jar classes */
-        jldap/pkg/samples/novbp/ext /* Sample programs for novbp.jar ext classes */
+
+$OpenLDAP$
