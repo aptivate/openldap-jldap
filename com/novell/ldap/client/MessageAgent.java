@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/client/MessageAgent.java,v 1.15 2001/05/02 18:04:03 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/client/MessageAgent.java,v 1.16 2001/05/02 18:51:19 vtag Exp $
 *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -339,35 +339,34 @@ public class MessageAgent
                     if( messages.size() == 0) {
                         return null;
                     }
-                    int size = messages.size();
                     int next = indexLastRead + 1;
                     Message info;
-                    for( int i = 0; i < size; i++) {
-                       if( next >= size ) {
+                    for( int i = 0; i < messages.size(); i++) {
+                       if( next >= messages.size() ) {
                            next = 0;
                        }
                        info = (Message)messages.elementAt(next);
                        indexLastRead = next++;
                        rfcMsg = info.getReply();
+                       // Check this request is complete
+                       if( ! info.acceptsReplies() & ! info.hasReplies()) {
+                          // Message complete & no more replies, remove from id list
+                          if( Debug.LDAP_DEBUG) {
+                             Debug.trace( Debug.messages, name +
+                                 "getLDAPMessage: cleanup Message(" +
+                                 info.getMessageID() + ")");
+                          }
+                          messages.removeElement( info); // remove from list
+                          info.abandon(null, null); // Get rid of resources
+                          i -= -1; // Start loop at next message in new position
+                       }
                        if( rfcMsg != null) {
                           // We got a reply
-                          if( ! info.acceptsReplies() & ! info.hasReplies()) {
-                             // Message complete & no more replies, remove from id list
-                             messages.removeElement( info);
-                             if( Debug.LDAP_DEBUG) {
-                                Debug.trace( Debug.messages, name +
-                                    "getLDAPMessage: Return last Message(" +
-                                    info.getMessageID() + ")");
-                                debugDisplayMessages();
-                             }
-                            info.abandon(null, null); // Get rid of resources
-                          } else {
-                             if( Debug.LDAP_DEBUG) {
-                                Debug.trace( Debug.messages, name +
-                                    "getLDAPMessage: Return Message(" +
-                                    info.getMessageID() + ")");
-                                debugDisplayMessages();
-                             }
+                          if( Debug.LDAP_DEBUG) {
+                             Debug.trace( Debug.messages, name +
+                                 "getLDAPMessage: Return Message(" +
+                                 info.getMessageID() + ")");
+                             debugDisplayMessages();
                           }
                           return rfcMsg;
                        } else {
@@ -377,9 +376,15 @@ public class MessageAgent
                              "getLDAPMessage: no messages queued for Message(" +
                              info.getMessageID() + ")");
                           }
-                          continue;
                        }
+                    } // end for loop */
+
+                    // Messages can be removed in this loop, we we must
+                    // check if any messages left for this agent
+                    if( messages.size() == 0) {
+                        return null;
                     }
+
                     // No data, wait for something to come in.
                     try {
                         if( Debug.LDAP_DEBUG) {
@@ -396,11 +401,9 @@ public class MessageAgent
                            Debug.trace( Debug.messages, name +
                            "getLDAPMessage: interrupted up from wait");
                         }
-                        // Look for any new queued message
-                        continue;
                     }
-                }
-            }
+                } /* end while */
+            } /* end synchronized */
         }
     }
 

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.95 2001/04/23 21:09:29 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.96 2001/05/01 19:17:45 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -1291,13 +1291,6 @@ public class LDAPConnection implements Cloneable
         // There can be only one msgId on this listener, find our Connection object
         // We make sure it is the right one, not one changed by clone/disconnect
         msgId = listener.getMessageIDs()[0];
-        try {
-            conn = listener.getMessageAgent().getMessage( msgId).getConnection();
-        } catch( NoSuchFieldException ex) {
-            throw new LDAPException(LDAPExceptionMessageResource.WRONG_MESSAGE_ID,
-                                    LDAPException.PARAM_ERROR);
-            //"Internal error, wrong messageID on bind");
-        }
         LDAPResponse res = (LDAPResponse)listener.getResponse();
         if( res != null) {
 
@@ -3055,10 +3048,6 @@ public class LDAPConnection implements Cloneable
 
         if( cons == null )
             cons = defSearchCons;
-        if( Debug.LDAP_DEBUG) {
-            Debug.trace( Debug.apiRequests, name +
-                "search cons " + cons + "defSearchCons " + defSearchCons);
-        }
         return new LDAPSearchResults(this, listener, cons);
     }
 
@@ -3204,18 +3193,8 @@ public class LDAPConnection implements Cloneable
     public static LDAPSearchResults search(LDAPUrl toGet)
         throws LDAPException
     {
-        if( Debug.LDAP_DEBUG) {
-            Debug.trace( Debug.apiRequests, "search(" + toGet.toString() + ")");
-        }
-        LDAPConnection conn = new LDAPConnection();
-        conn.connect(toGet.getHost(),toGet.getPort());
-        LDAPSearchResults toReturn = conn.search(toGet.getDN(), toGet.getScope(),
-        toGet.getFilter(), toGet.getAttributeArray(), false);
-        if( Debug.LDAP_DEBUG) {
-            Debug.trace( Debug.apiRequests, "read: disconnect()");
-        }
-        conn.disconnect();
-        return toReturn;
+        // Get a clone of default search constraints, method alters batchSize
+        return search( toGet, null);
     }
 
     /*
@@ -3252,15 +3231,16 @@ public class LDAPConnection implements Cloneable
     {
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.apiRequests,
-                    "LDAPConnection.search(" + toGet.toString() + ")");
+                    "LDAPConnection.search(" + toGet.getUrl() + ")");
         }
         LDAPConnection conn = new LDAPConnection();
         conn.connect(toGet.getHost(),toGet.getPort());
+        if( cons == null) {
+            cons = conn.getSearchConstraints();
+        }
+        cons.setBatchSize(0); // Must wait until all results arrive
         LDAPSearchResults toReturn = conn.search(toGet.getDN(), toGet.getScope(),
             toGet.getFilter(), toGet.getAttributeArray(), false, cons);
-        if( Debug.LDAP_DEBUG) {
-            Debug.trace( Debug.apiRequests, "read: disconnect()");
-        }
         conn.disconnect();
         return toReturn;
     }

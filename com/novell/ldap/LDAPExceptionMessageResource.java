@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPExceptionMessageResource.java,v 1.13 2001/04/17 21:24:29 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPExceptionMessageResource.java,v 1.14 2001/04/19 18:40:33 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -63,7 +63,6 @@ public class LDAPExceptionMessageResource extends java.util.ListResourceBundle {
   public final static String NOT_A_RULESCHEMA     = "NOT_A_RULESCHEMA";
   public final static String NOT_A_RULEUSESHCEMA  = "NOT_A_RULEUSESHCEMA";
   public final static String NOT_IMPLEMENTED      = "NOT_IMPLEMENTED";
-  public final static String WRONG_MESSAGE_ID     = "WRONG_MESSAGE_ID";
   public final static String MISSING_EQUAL        = "MISSING_EQUAL";
   public final static String NO_MEMORY            = "NO_MEMORY";
   public final static String SERVER_SHUTDOWN_REQ  = "SERVER_SHUTDOWN_REQ";
@@ -114,7 +113,6 @@ public class LDAPExceptionMessageResource extends java.util.ListResourceBundle {
       {"NOT_A_RULESCHEMA","Schema element is not an LDAPMatchingRuleSchema object"},
       {"NOT_A_RULEUSESHCEMA","Schema element is not an LDAPMatchingRuleUseSchema object"},
       {"NOT_IMPLEMENTED","Method LDAPConnection.startTLS not implemented"},
-      {"WRONG_MESSAGE_ID","Internal error, wrong messageID on bind"},
       {"MISSING_EQUAL","Attribute type and name must be separated by an equal symbol, '='"},
       {"NO_MEMORY","All results could not be stored in memory, sort failed"},
 	  {"SERVER_SHUTDOWN_REQ","Received unsolicited notification from server to shutdown"},

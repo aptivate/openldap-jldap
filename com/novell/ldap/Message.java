@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/client/Message.java,v 1.22 2001/05/02 18:04:03 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/client/Message.java,v 1.23 2001/05/02 19:33:26 vtag Exp $
 *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -127,6 +127,10 @@ public class Message
     /* package */
     boolean hasReplies()
     {
+        if( replies == null) {
+            // abandoned request
+            return false;
+        }
         return (replies.size() > 0);
     }
 
@@ -193,16 +197,6 @@ public class Message
     }
 
     /**
-     * gets the Connection associated with this message
-     *
-     * @return the Connection associated with this message.
-     */
-    public Connection getConnection()
-    {
-        return conn;
-    }
-
-    /**
      * gets the operation complete status for this message
      *
      * @return the true if the operation is complete, i.e.
@@ -212,17 +206,6 @@ public class Message
     boolean isComplete()
     {
         return complete;
-    }
-
-    /**
-     * gets the LDAPListener associated with this message
-     *
-     * @return the LDAPListener associated with this message
-     */
-    /* package */
-    LDAPListener getLDAPListener()
-    {
-        return listen;
     }
 
     /**
@@ -241,7 +224,8 @@ public class Message
      *
      * @return the LDAPMessage request associated with this message
      */
-    public LDAPMessage getRequest()
+    /*package*/
+    LDAPMessage getRequest()
     {
         return msg;
     }
@@ -265,6 +249,9 @@ public class Message
     /* package */
     int getMessageType()
     {
+        if( msg == null) {
+            return -1;
+        }
         return msg.getType();
     }
 
@@ -339,6 +326,9 @@ public class Message
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.messages, name + "waitForReply()");
         }
+        if( replies == null) {
+            return null;
+        }
         // sync on message so don't confuse with timer thread
         synchronized( replies ) {
             Object msg = null;
@@ -395,6 +385,9 @@ public class Message
     Object getReply()
     {
             Object msg;
+            if( replies == null) {
+                return null;
+            }
             synchronized( replies) {
                 // Test and remove must be atomic
                 if( replies.isEmpty()) {
@@ -527,7 +520,7 @@ public class Message
         // Let GC clean up this stuff, leave name in case finalized is called
         conn = null;
         msg = null;
-        agent = null;
+        // agent = null;  // leave this reference
         listen = null;
         replies = null;
         bindprops = null;
