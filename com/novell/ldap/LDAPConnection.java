@@ -1525,17 +1525,19 @@ public class LDAPConnection implements
 		                                            LDAPSearchConstraints cons)
    throws LDAPException {
 
-	// this is temporary
-	ExtendedRequest temp1 = new ExtendedRequest(op, conn.getMessageID(),
-			                              cons.getClientControls(), ldapv3);
-	return null;
+		// Call asynchronous API and get back handler to reponse listener
+		LDAPResponseListener listener = extendedOperation(op, (LDAPResponseListener)null, cons);
+		
+		listener.getResponse().chkResultCode();
+
+		return null;
 	}
 
 
    /**
     * ASynchronous LDAP extended request 
     */
-   public LDAPExtendedOperation extendedOperation(LDAPExtendedOperation op,
+   public LDAPResponseListener extendedOperation(LDAPExtendedOperation op,
 												LDAPResponseListener listener)
    throws LDAPException {
 
@@ -1545,12 +1547,43 @@ public class LDAPConnection implements
    /**
     *  ASynchronous LDAP extended request with SearchConstraints
     */
-   public LDAPExtendedOperation extendedOperation(LDAPExtendedOperation op,
+   public LDAPResponseListener extendedOperation(LDAPExtendedOperation op,
 													LDAPResponseListener listener,
 		                                            LDAPSearchConstraints cons)
    throws LDAPException {
 
-	return null;
+		// Validate our connection structure
+		validateConn();
+
+		// Use default constraints if none-specified
+		if(cons == null)
+			cons = defSearchCons;
+
+		// error check the parameters
+		if ( (op.getID() == null) || (op.getValue() == null) )
+			throw new LDAPException("Invalid parameter",
+				                     LDAPException.PARAM_ERROR);
+	
+		// Ber encode the request
+		LDAPRequest req = new ExtendedRequest(op, conn.getMessageID(),
+			                              cons.getClientControls(), ldapv3);
+
+		// Create a listener if we do not have one already
+		if(listener == null)
+			listener = new LDAPResponseListener(conn);
+
+		try {
+			// Start timer for message if needed, add messageID to messageID queue,
+			// and then send the message to the server.
+			listener.writeMessage(req, cons.getTimeLimit());
+		}
+		catch(IOException ioe) {
+
+			throw new LDAPException("Communication error.",
+				                     LDAPException.OTHER);
+		}
+
+		return listener;
 	}
 
 
