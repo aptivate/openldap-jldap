@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: MessageQueue.java,v 1.9 2000/11/09 18:27:18 vtag Exp $
+ * $Id: MessageQueue.java,v 1.10 2000/11/10 16:50:04 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -92,7 +92,7 @@ public class MessageQueue {
 	}
 
 	/**
-	 * Add a message to the application queue
+	 * Add an exception to the application queue
 	 */
 	public synchronized void addLDAPException(LDAPException ex)
 	{
@@ -115,6 +115,7 @@ public class MessageQueue {
 			if(!responses.isEmpty()) {
                 message = (RfcLDAPMessage)responses.firstElement();
                 if( message instanceof LDAPException ) {
+                    // Let caller figure out what to do with this exception
                     throw (LDAPException)message;
                 }
 				responses.removeElementAt(0);
