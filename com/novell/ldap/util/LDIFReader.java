@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: LDIFReader.java,v 1.26 2002/10/15 18:16:18 $
+ * $Novell: LDIFReader.java,v 1.27 2002/10/15 20:07:47 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -28,10 +28,7 @@ import com.novell.ldap.LDAPAttributeSet;
 import com.novell.ldap.LDAPModification;
 import com.novell.ldap.LDAPException;
 import com.novell.ldap.LDAPLocalException;
-import com.novell.ldap.ldif_dsml.LDAPAdd;
-import com.novell.ldap.ldif_dsml.LDAPDelete;
-import com.novell.ldap.ldif_dsml.LDAPModDN;
-import com.novell.ldap.ldif_dsml.LDAPModify;
+import com.novell.ldap.util.Base64;
 
 /**
  * The class to process the inputStream object to read an LDIF file.

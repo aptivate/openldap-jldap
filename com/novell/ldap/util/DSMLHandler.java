@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell$
+ * $Novell: DSMLHandler.java,v 1.12 2002/10/15 16:28:40 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -14,7 +14,14 @@
  */
 package com.novell.ldap.ldif_dsml;
 
-import com.novell.ldap.*;
+import com.novell.ldap.LDAPAttribute;
+import com.novell.ldap.LDAPAttributeSet;
+import com.novell.ldap.LDAPConnection;
+import com.novell.ldap.LDAPEntry;
+import com.novell.ldap.LDAPException;
+import com.novell.ldap.LDAPMessage;
+import com.novell.ldap.LDAPModification;
+import com.novell.ldap.LDAPSearchConstraints;
 import com.novell.ldap.rfc2251.RfcFilter;
 import com.novell.ldap.rfc2251.RfcAttributeDescription;
 import com.novell.ldap.rfc2251.RfcAttributeValueAssertion;
@@ -24,6 +31,7 @@ import com.novell.ldap.asn1.ASN1Identifier;
 import com.novell.ldap.asn1.ASN1Tagged;
 import com.novell.ldap.asn1.ASN1Object;
 import com.novell.ldap.message.*;
+import com.novell.ldap.util.Base64;
 import java.util.ArrayList;
 import java.util.Stack;
 import java.io.UnsupportedEncodingException;

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: LDIFWriter.java,v 1.26 2002/10/15 16:28:42 $
+ * $Novell: LDIFWriter.java,v 1.27 2002/10/15 20:07:48 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -26,8 +26,7 @@ import com.novell.ldap.LDAPAttributeSet;
 import com.novell.ldap.LDAPControl;
 import com.novell.ldap.LDAPEntry;
 import com.novell.ldap.LDAPModification;
-import com.novell.ldap.ldif_dsml.LDAPRequest;
-import com.novell.ldap.ldif_dsml.Base64;
+import com.novell.ldap.util.Base64;
 
 /**
  * LDIFWriter is used to write LDIF content records or LDIF change records
