@@ -1,5 +1,5 @@
 <!-- ======================================================================= -->
-<!-- JAVAC build file                                                -->
+<!-- JAVAC build file                                                        -->
 <!-- ======================================================================= -->
 <project name="jldap" default="debug" basedir=".">
 <!-- Targets                                                                 -->
@@ -22,15 +22,6 @@
  ******************************************************************************
 -->
 
-<property name="ldap" value="ldap"/>
-
-<property name="lib" value="lib"/>
-<property name="lib.debug" value="lib_debug"/>
-
-<property name="build" value="classes"/>
-<property name="build.debug" value="classes_debug"/>
-
-
     <!-- =================================================================== -->
     <!-- Initialization                                                      -->
     <!-- =================================================================== -->
@@ -46,22 +37,28 @@
 
         <echo message="DEBUG compile in com/novell"/>
         <mkdir dir="${build.debug}"/>
-        <delete file="com/novell/ldap/client/Debug.java"/>
-        <copyfile src="com/novell/ldap/client/Debug.template" dest="com/novell/ldap/client/Debug.java" filtering="YES"/>
-        <javac srcdir="."
-                                includes="com/novell/**/*.java"
+        <copy
+        		file="com/novell/ldap/client/Debug.template"
+        		tofile="com/novell/ldap/client/Debug.java"
+        		overwrite="YES"
+        		filtering="YES"
+        />
+        <javac
+        		srcdir="."
+                includes="com/novell/**/*.java"
                 destdir="${build.debug}"
                 deprecation="off"
                 debug="on"
                 optimize="off">
-                                <classpath>
-                                        <pathelement location="external/ssl/domestic/nssl1.1_dom.jar"/>
-                                </classpath>
+                <classpath>
+                	<pathelement location="external/ssl/domestic/nssl1.1_dom.jar"/>
+                </classpath>
         </javac>
 
         <echo message="Creating DEBUG ${lib.debug}/${ldap}.jar file"/>
         <mkdir dir="${lib.debug}"/>
-        <jar jarfile="${lib.debug}/${ldap}.jar"
+        <jar
+            jarfile="${lib.debug}/${ldap}.jar"
             basedir="${build.debug}"
         />
     </target>
@@ -74,16 +71,21 @@
         <echo message="RELEASE compile in com/novell"/>
         <mkdir dir="${build}"/>
         <delete file="com/novell/ldap/client/Debug.java"/>
-        <copyfile src="com/novell/ldap/client/Debug.template" dest="com/novell/ldap/client/Debug.java" filtering="YES"/>
+        <copy
+        	file="com/novell/ldap/client/Debug.template"
+        	tofile="com/novell/ldap/client/Debug.java"
+        	filtering="YES"
+			overwrite="YES"
+        />
         <javac srcdir="."
-                                includes="com/novell/**/*.java"
+                includes="com/novell/**/*.java"
                 destdir="${build}"
                 deprecation="off"
                 debug="off"
                 optimize="on">
-                                <classpath>
-                                        <pathelement location="external/ssl/domestic/nssl1.1_dom.jar"/>
-                                </classpath>
+                <classpath>
+                	<pathelement location="external/ssl/domestic/nssl1.1_dom.jar"/>
+                </classpath>
         </javac>
 
         <echo message="Creating RELEASE ${lib}/${ldap}.jar file"/>

@@ -1,4 +1,4 @@
-<!-- $Novell: /ldap/src/jldap/build.xml,v 1.30 2001/01/29 22:41:54 javed Exp $ -->
+<!-- $Novell: /ldap/src/jldap/build.xml,v 1.31 2001/03/02 21:42:31 cmorris Exp $ -->
 <!--
  ******************************************************************************
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
@@ -14,7 +14,7 @@
  ******************************************************************************
 -->
 <!-- ======================================================================= -->
-<!-- TOP level build file                                                -->
+<!-- TOP level build file                                                    -->
 <!-- ======================================================================= -->
 <project name="jldap" default="debug" basedir=".">
 <!-- Targets                                                                 -->
@@ -51,7 +51,7 @@
 <property name="build.tests" value="classes_tests"/>
 
 <property name="doc" value="doc"/>
-<property name="doc.novell" value="${doc}"/>
+<property name="doc.developer" value="${doc}"/>
 
 <property name="pkg" value="pkg"/>
 <property name="pkg.lib" value="${pkg}/${lib}"/>
@@ -60,7 +60,6 @@
 <property name="pkg.doc" value="${pkg}/${doc}"/>
 <property name="pkg.doc.framework" value="${pkg}/${doc}/framework"/>
 <property name="pkg.doc.ldap" value="${pkg}/${doc}/ldap"/>
-
 
     <!-- =================================================================== -->
     <!-- Initialization                                                      -->
@@ -81,19 +80,18 @@
             <echo message="Cleaning files"/>
 	</target>
 
-
     <!-- =================================================================== -->
-    <!-- clean code result files                                                     -->
+    <!-- clean code result files                                             -->
     <!-- =================================================================== -->
 	<target name="cleancode" depends="init">
             <echo message="Cleaning files"/>
 			<delete file="com/novell/ldap/client/Debug.java"/>
-            <deltree dir="${lib}"/>
-            <deltree dir="${lib.debug}"/>
-            <deltree dir="${build}"/>
-            <deltree dir="${build.debug}"/>
-            <deltree dir="${build.samples}"/>
-            <deltree dir="${build.tests}"/>
+            <delete dir="${lib}"/>
+            <delete dir="${lib.debug}"/>
+            <delete dir="${build}"/>
+            <delete dir="${build.debug}"/>
+            <delete dir="${build.samples}"/>
+            <delete dir="${build.tests}"/>
 	</target>
 
     <!-- =================================================================== -->
@@ -101,8 +99,8 @@
     <!-- =================================================================== -->
 	<target name="cleandoc" depends="init">
             <echo message="Cleaning files"/>
-            <deltree dir="${doc}"/>
-            <deltree dir="${pkg.doc}"/>
+            <delete dir="${doc}"/>
+            <delete dir="${pkg.doc}"/>
 	</target>
 
     <!-- =================================================================== -->
@@ -111,23 +109,17 @@
 	<!--             ant doc will rebuild it                                 -->
     <!-- =================================================================== -->
 	<target name="cleanpkg" depends="init">
-		<deltree dir="${pkg.lib}"/>
-		<deltree dir="${pkg.lib.debug}"/>
-		<deltree dir="${pkg.samples}"/>
+		<delete dir="${pkg.lib}"/>
+		<delete dir="${pkg.lib.debug}"/>
+		<delete dir="${pkg.samples}"/>
 	</target>
 
     <!-- =================================================================== -->
     <!-- really clean all files                                              -->
     <!-- =================================================================== -->
 	<target name="reallyclean" depends="clean, cleanpkg">
-		<deltree dir="${pkg}"/>
+		<delete dir="${pkg}"/>
 	</target>
-
-    <!-- =================================================================== -->
-    <!-- create javadoc                                                      -->
-    <!-- =================================================================== -->
-    <!-- target name="doc" depends="docframework, docldap, docnovell" -->
-    <target name="doc" depends="docldap, docnovell"/>
 
     <!-- =================================================================== -->
     <!-- build debug classes                                                 -->
@@ -163,7 +155,7 @@
 	<target name="jar" depends="lib"/>
 
     <!-- =================================================================== -->
-    <!-- Create distribution directory                                       -->
+    <!-- Create and populate the distribution (pkg) directory                -->
     <!-- =================================================================== -->
 	<target name="dist" depends="init">
 		<mkdir dir="${src}/${lib}"/>
@@ -176,14 +168,35 @@
 		<mkdir dir="${pkg.samples}/extensions"/>
 		<mkdir dir="${pkg.samples}/controls"/>
 
-		<copydir src="${src}/${lib}"         dest="${pkg.lib}"/>
+		<copy
+			todir="${pkg.lib}">
+			<fileset dir="${src}/${lib}"/>
+		</copy>
 
-		<copydir src="${src}/${lib.debug}"   dest="${pkg.lib.debug}"/>
+		<copy
+			todir="${pkg.lib.debug}">
+			<fileset dir="${src}/${lib.debug}"/>
+		</copy>
 
-		<copydir src="${src}/samples"  dest="${pkg.samples}"/>
-		<copydir src="${src}/samples/extensions"  dest="${pkg.samples}/extensions"/>
-		<copyfile src="${src}/samples/controls/SortControl.java"  dest="${pkg.samples}/controls/SortControl.java"/>
-        <copyfile src="README.txt" dest="${pkg}/README.txt" />
+		<copy
+			todir="${pkg.samples}">
+			<fileset dir="${src}/samples"/>
+		</copy>
+
+		<copy
+			todir="${pkg.samples}/extensions">
+			<fileset dir="${src}/samples/extensions"/>
+		</copy>
+
+		<copy
+			todir="${pkg.samples}/controls">
+			<fileset dir="${src}/samples/controls"/>
+		</copy>
+
+		<copy
+        	file="README.txt"
+        	tofile="${pkg}/README.txt"
+        />
 	</target>
 
     <!-- =================================================================== -->
@@ -192,9 +205,9 @@
 	<target name="install" depends="dist"/>
 	<target name="pkg" depends="dist"/>
 
-	<!-- ===================================================================== -->
-	<!-- build test classes                                                    -->
-	<!-- ===================================================================== -->
+	<!-- =================================================================== -->
+	<!-- build test classes                                                  -->
+	<!-- =================================================================== -->
 	<target name="tests" depends="debug">
 		<mkdir dir="${build.tests}/extensions"/>
 
@@ -207,6 +220,11 @@
 			<property name="optimize" value="off"/>
 		</ant>
 	</target>
+
+    <!-- =================================================================== -->
+    <!-- create javadoc                                                      --> 
+    <!-- =================================================================== -->
+    <target name="doc" depends="docldap, docdeveloper"/>
 
 	<!-- =================================================================== -->
 	<!-- build Sample classes                                                -->
@@ -242,65 +260,46 @@
     <!-- =================================================================== -->
     <!-- create javadoc for IETF ldap classes                                -->
     <!-- =================================================================== -->
-    <target name="docldap" depends="init">
-                <deltree dir="${pkg.doc}"/>
-        <echo message="Creating IETF ldap javadoc"/>
+    <target name="docldap" depends="init, jar">
+		<delete dir="${pkg.doc}"/>
+        <echo message="Creating distribution ldap javadoc"/>
         <mkdir dir="${pkg.doc}"/>
-        <javadoc sourcepath="${docsrc}"
-                        destdir="${pkg.doc}"
-                        classpath="${lib.debug}/${ldap}.jar;external/ssl/domestic/nssl1.2_dom.jar"
-                        packagenames="com.novell.ldap,com.novell.ldap.extensions,com.novell.ldap.controls,com.novell.ldap.asn1"
-                        overview="overview.html"
-                        nodeprecated="true"
-                        nodeprecatedlist="true"
-                        Windowtitle="LDAP Classes"
-                        Splitindex="true"
-                        Doctitle="LDAP Classes, Controls, Extensions, and ASN.1"
-                        Header="&lt;b>LDAP Classes&lt;/b>&lt;br>&lt;font size=-1>Implements Java LDAP&lt;/font>"
-                        Bottom="&lt;font size=-1>Copyright © 2000 Novell, Inc. All Rights Reserved. &lt;br>Novell, Inc.&lt;br>1800 South Novell Place&lt;br>Provo, Ut 84606&lt;br>Phone: (801) 861-5000&lt;/font>"
+        <javadoc
+        	sourcepath="${docsrc}"
+            destdir="${pkg.doc}"
+            classpath="${lib.debug}/${ldap}.jar;external/ssl/domestic/nssl1.2_dom.jar"
+            packagenames="com.novell.ldap,com.novell.ldap.extensions,com.novell.ldap.controls,com.novell.ldap.asn1"
+            overview="overview.html"
+            nodeprecated="true"
+            nodeprecatedlist="true"
+            Windowtitle="LDAP Classes"
+            Splitindex="true"
+            Doctitle="LDAP Classes, Controls, Extensions, and ASN.1"
+            Header="&lt;b>LDAP Classes&lt;/b>&lt;br>&lt;font size=-1>Implements Java LDAP&lt;/font>"
+            Bottom="&lt;font size=-1>Copyright &#169; 2001 Novell, Inc. All Rights Reserved. &lt;br>Novell, Inc.&lt;br>1800 South Novell Place&lt;br>Provo, Ut 84606&lt;br>Phone: (801) 861-5000&lt;/font>"
         />
     </target>
 
     <!-- =================================================================== -->
-    <!-- create javadoc for LDAP framework classes to                        -->
+    <!-- create javadoc for all LDAP classes for internal developer use only --> 
     <!-- =================================================================== -->
-    <target name="docframework" depends="init">
-                <deltree dir="${pkg.doc.framework}"/>
-        <echo message="Creating framework ldap javadoc"/>
-        <mkdir dir="${pkg.doc.framework}"/>
-        <javadoc sourcepath="${docsrc}"
-                        destdir="${pkg.doc.framework}"
-                        classpath="${lib.debug}/${ldap}.jar;external/ssl/domestic/nssl1.2_dom.jar"
-                        packagenames="com.novell.ldap.asn1,com.novell.ldap"
-                        Windowtitle="LDAP Classes"
-                        Splitindex="true"
-                        Doctitle="Novell, Inc. Java LDAP Framework Classes"
-                        Header="&lt;b>ASN.1 Classes&lt;/b>&lt;br>&lt;font size=-1>Implements ASN.1 Classes&lt;/font>"
-                        Bottom="&lt;font size=-1>Copyright © 2000 Novell, Inc. All Rights Reserved. &lt;br>Novell, Inc.&lt;br>1800 South Novell Place&lt;br>Provo, Ut 84606&lt;br>Phone: (801) 861-5000&lt;/font>"
-        />
-    </target>
-
-    <!-- =================================================================== -->
-    <!-- create javadoc for all LDAP classes for Novell internal use only    -->
-    <!-- =================================================================== -->
-    <target name="docnovell" depends="init">
-                <deltree dir="${doc.novell}"/>
-        <echo message="Creating novell ldap javadoc"/>
-        <mkdir dir="${doc.novell}"/>
+    <target name="docdeveloper" depends="init">
+		<delete dir="${pkg.developer}"/>
+        <echo message="Creating internal developer ldap javadoc"/>
+        <mkdir dir="${doc.developer}"/>
 		<filter token="COMPILE_DEBUG" value="true"/>
 		<delete file="com/novell/ldap/client/Debug.java"/>
-		<copyfile src="com/novell/ldap/client/Debug.template" dest="com/novell/ldap/client/Debug.java" filtering="YES"/>
+		<copy file="com/novell/ldap/client/Debug.template" tofile="com/novell/ldap/client/Debug.java" filtering="YES"/>
         <javadoc sourcepath="${docsrc}"
-                        destdir="${doc.novell}"
-                        classpath="external/ssl/domestic/nssl1.2_dom.jar"
-                        packagenames="com.novell.ldap,com.novell.ldap.asn1,com.novell.ldap.client,com.novell.ldap.rfc2251,com.novell.ldap.extensions,com.novell.ldap.controls"
-                        Windowtitle="LDAP Classes"
-                        Splitindex="true"
-                        Private="true"
-                        Doctitle="Novell, Inc. All Java LDAP Classes for Novell Internal Use"
-                        Header="&lt;b>All LDAP Classes&lt;/b>&lt;br>&lt;font size=-1>Internal LDAP Classes&lt;/font>"
-                        Bottom="&lt;font size=-1>Copyright © 2000 Novell, Inc. All Rights Reserved. &lt;br>Novell, Inc.&lt;br>       1800 South Novell Place&lt;br>        Provo, Ut 84606&lt;br>       Phone: (801) 861-5000&lt;/font>"
+            destdir="${doc.developer}"
+            classpath="external/ssl/domestic/nssl1.2_dom.jar"
+            packagenames="com.novell.ldap,com.novell.ldap.asn1,com.novell.ldap.client,com.novell.ldap.rfc2251,com.novell.ldap.extensions,com.novell.ldap.controls"
+            Windowtitle="LDAP Classes"
+            Splitindex="true"
+            Private="true"
+            Doctitle="Novell, Inc. All Java LDAP Classes for Developer Internal Use"
+            Header="&lt;b>All LDAP Classes&lt;/b>&lt;br>&lt;font size=-1>Internal LDAP Classes&lt;/font>"
+            Bottom="&lt;font size=-1>Copyright &#169; 2001 Novell, Inc. All Rights Reserved. &lt;br>Novell, Inc.&lt;br>       1800 South Novell Place&lt;br>        Provo, Ut 84606&lt;br>       Phone: (801) 861-5000&lt;/font>"
         />
     </target>
-
 </project>
