@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.96 2001/05/01 19:17:45 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.97 2001/05/03 18:17:48 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -3236,7 +3236,11 @@ public class LDAPConnection implements Cloneable
         LDAPConnection conn = new LDAPConnection();
         conn.connect(toGet.getHost(),toGet.getPort());
         if( cons == null) {
+            // This is a clone, so we already have our own copy
             cons = conn.getSearchConstraints();
+        } else {
+            // get our own copy of user's constraints because we modify it
+            cons = (LDAPSearchConstraints)cons.clone();
         }
         cons.setBatchSize(0); // Must wait until all results arrive
         LDAPSearchResults toReturn = conn.search(toGet.getDN(), toGet.getScope(),
