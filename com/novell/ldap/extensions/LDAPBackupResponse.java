@@ -40,25 +40,63 @@ public class LDAPBackupResponse extends LDAPExtendedResponse {
 
 	private int bufferLength; //Represents the length of backup data
 	private String stateInfo; //Represent the state Information of data
+	
 	/*
-	 * The String representing the array of chunk sizes and data returned from server.
+	 * The String representing the number of chunks and each elements in chunk
+	 * array as returned by server.
 	 * Data from server is parsed as follows before sending to any Application::
-	 * no_of_chunks;sizeOf(chunk1);sizeOf(chunk2)…sizeOf(chunkn);returnedBuffer
+	 * no_of_chunks;sizeOf(chunk1);sizeOf(chunk2)…sizeOf(chunkn)
 	 * where
 	 * no_of_chunks => Represents the number of chunks of data returned from server
 	 * sizeOf(chunkn) => Represents the size of data in chunkn
-	 * returnedBuffer => Represents the actual data of returned eDirectoty Object 
 	 */	
-	private String parsedString; 
+	private String chunkSizesString;
 	
+	/*
+	 * Actual data of returned eDirectoty Object in byte[]
+	 */
+	private byte[] returnedBuffer;
+	
+	/**
+    * Constructs an object from the responseValue which contains the backup data.
+    *  <p>The constructor parses the responseValue which has the following
+    *  format:<br>
+    *  responseValue ::=<br>
+	*  <p>databufferLength ::= INTEGER <br>
+	*  mts(modification time stamp) ::= INTEGER<br>
+	*  revision ::= INTEGER<br>
+	*  returnedBuffer ::= OCTET STRING<br>
+	*  dataChunkSizes ::= <br>
+	*  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	*  &nbsp;&nbsp;&nbsp; 
+	*  SEQUENCE{<br>
+	*  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	*  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	*  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	*  noOfChunks INTEGER<br>
+	*  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	*  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	*  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	*  SET of [<br>
+	*  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	*  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	*  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	*  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	*  SEQUENCE of {eachChunksize INTEGER}]<br>
+	*  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	*  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	*  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	*  }</p>
+	* 
+    * @exception IOException The responseValue could not be decoded.
+    */
 	public LDAPBackupResponse(RfcLDAPMessage rfcMessage) throws IOException {
 
 		//Call the super constructor
 		super(rfcMessage);
 		
-		int modificationTime = 0; // Modifaction time stamp of the Object
+		int modificationTime = 0; // Modifaction timestamp of the Object
 		int revision = 0; // Revision number of the Object
-		String returnedBuffer = null; //Actual data of returned eDirectoty Object
 		int chunksSize = 0;
 		int[] chunks = null; //Holds size of each chunks returned from server
 
@@ -113,7 +151,8 @@ public class LDAPBackupResponse extends LDAPExtendedResponse {
 					.decode(currentPtr);
 			if (asn1_returnedBuffer == null)
 				throw new IOException("Decoding error");
-			returnedBuffer = asn1_returnedBuffer.stringValue();
+			returnedBuffer = asn1_returnedBuffer.byteValue();
+		
 			
 			/* 
 			 * Parse chunks array 
@@ -136,7 +175,6 @@ public class LDAPBackupResponse extends LDAPExtendedResponse {
 			chunks = new int[chunksSize];
 			
 			ASN1Set asn1_chunksSet =  (ASN1Set)asn1_chunksSeq.get(1);
-
 			//Iterate through asn1_chunksSet and put each size into chunks array
 			for (int index = 0; index < chunksSize; index++) {
 				ASN1Sequence asn1_eachSeq = (ASN1Sequence)asn1_chunksSet.get(index);
@@ -148,19 +186,21 @@ public class LDAPBackupResponse extends LDAPExtendedResponse {
 			StringBuffer tempBuffer = new StringBuffer();
 			tempBuffer.append(chunksSize);
 			tempBuffer.append(";");
-			for (int i = 0; i < chunksSize; i++) {
+			int i = 0;
+			for (; i < (chunksSize - 1); i++) {
 				tempBuffer.append(chunks[i]);
 				tempBuffer.append(";");
 			}
-			tempBuffer.append(returnedBuffer);
+			tempBuffer.append(chunks[i]);
 
 			//Assign tempBuffer to parsedString to be returned to Application
-			this.parsedString = tempBuffer.toString();
+			this.chunkSizesString = tempBuffer.toString();
 		} else {
 			//Intialize all these if getResultCode() != LDAPException.SUCCESS
 			this.bufferLength = 0;
 			this.stateInfo = null;
-			this.parsedString = null;
+			this.chunkSizesString = null;
+			this.returnedBuffer = null;
 		}
 
 	}
@@ -189,17 +229,24 @@ public class LDAPBackupResponse extends LDAPExtendedResponse {
 
 	/**
      * Returns the data in String as::<br>
-     * no_of_chunks;sizeOf(chunk1);sizeOf(chunk2)…sizeOf(chunkn);returnedBuffer<br>
+     * no_of_chunks;sizeOf(chunk1);sizeOf(chunk2)…sizeOf(chunkn)<br>
      * where<br>
      * no_of_chunks => Represents the number of chunks of data returned from server<br>
 	 * sizeOf(chunkn) => Represents the size of data in chunkn<br>
-	 * returnedBuffer => Represents the actual data of returned eDirectoty Object 
-     * 
-     * @return parsedString as String.
+	 * 
+     * @return chunkSizesString as String.
      */
-	public String getParsedString() {
-				return parsedString;
+	public String getChunkSizesString() {
+				return chunkSizesString;
 	}
 	
+	/**
+     * Returns the data buffer as byte[]
+     *
+     * @return returnedBuffer as byte[].
+     */
+	public byte[] getReturnedBuffer() {
+		return returnedBuffer;
+	}
 	
 }

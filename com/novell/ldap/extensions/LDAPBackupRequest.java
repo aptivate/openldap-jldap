@@ -33,7 +33,8 @@ import com.novell.ldap.asn1.ASN1Integer;
 * but all the DS level attributes associated with the objects.
 *
 * <p>The information available includes such items as  modification timestamp,
-* revision,data blob consisting of backup data of any eDirectory Object
+* revision,data blob consisting of backup data of any eDirectory Object. The API
+* support backing of both non-encrypted and encrypted objects
 * </p>
 *
 * <p>To get information about any eDirectory Object, you must
@@ -49,7 +50,8 @@ import com.novell.ldap.asn1.ASN1Integer;
 * requestValue ::=<br>
 * &nbsp;&nbsp;&nbsp;&nbsp; objectDN&nbsp;&nbsp;&nbsp; 			LDAPDN<br>
 * &nbsp;&nbsp;&nbsp;&nbsp; mts(modification timestamp)         INTEGER<br>
-* &nbsp;&nbsp;&nbsp;&nbsp;	revision&nbsp;&nbsp;&nbsp;			INTEGER</p>
+* &nbsp;&nbsp;&nbsp;&nbsp; revision&nbsp;&nbsp;&nbsp;			INTEGER<br>
+* &nbsp;&nbsp;&nbsp;&nbsp; passwd&nbsp;&nbsp;&nbsp;			OCTET STRING</p>
 */
 public class LDAPBackupRequest extends LDAPExtendedOperation {
 
@@ -76,6 +78,9 @@ public class LDAPBackupRequest extends LDAPExtendedOperation {
 	 *
 	 * @param objectDN 		The DN of the object to be backed up
 	 * <br>
+	 * @param passwd 		The encrypted password required for the object to
+	 * be backed up
+	 * <br>
 	 * @param stateInfo     The state information of the object to backup. 
 	 * This parameter is a String which contains combination of modification 
 	 * timestamp and revision number of object being backed up. The format 
@@ -87,7 +92,7 @@ public class LDAPBackupRequest extends LDAPExtendedOperation {
 	 * @exception LDAPException A general exception which includes an error
 	 *                          message and an LDAP error code.
 	 */
-	public LDAPBackupRequest(String objectDN, String stateInfo)
+	public LDAPBackupRequest(String objectDN, byte[] passwd, String stateInfo)
 			throws LDAPException {
 
 		super(BackupRestoreConstants.NLDAP_LDAP_BACKUP_REQUEST, null);
@@ -100,7 +105,11 @@ public class LDAPBackupRequest extends LDAPExtendedOperation {
 			if (objectDN == null)
 				throw new IllegalArgumentException(
 						ExceptionMessages.PARAM_ERROR);
-
+			
+			//If encrypted password has null reference make it null String
+			if(passwd == null)
+				passwd = "".getBytes("UTF8");
+			
 			if (stateInfo == null) {
 				// If null reference is passed in stateInfo initialize both
 				// mts and revision
@@ -138,10 +147,12 @@ public class LDAPBackupRequest extends LDAPExtendedOperation {
 			ASN1OctetString asn1_objectDN = new ASN1OctetString(objectDN);
 			ASN1Integer asn1_mts = new ASN1Integer(mts);
 			ASN1Integer asn1_revision = new ASN1Integer(revision);
+			ASN1OctetString asn1_passwd = new ASN1OctetString(passwd);
 
 			asn1_objectDN.encode(encoder, encodedData);
 			asn1_mts.encode(encoder, encodedData);
 			asn1_revision.encode(encoder, encodedData);
+			asn1_passwd.encode(encoder, encodedData);
 			
 			// set the value of operation specific data
 			setValue(encodedData.toByteArray());
