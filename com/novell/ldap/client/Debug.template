@@ -1,4 +1,4 @@
-// $Novell: /ldap/src/jldap/com/novell/ldap/client/Debug.template,v 1.1 2000/09/14 19:56:37 vtag Exp $
+// $Novell: /ldap/src/jldap/com/novell/ldap/client/Debug.template,v 1.2 2000/09/21 23:27:35 vtag Exp $
 
 package com.novell.ldap.client;
 
@@ -44,11 +44,11 @@ import java.util.StringTokenizer;
  * The <code>ldap_debug</code> variable allows debug code to be excluded
  * from a compile by codeing something like the following:
  * <ul>
- * <li><code>if( Debug.LDAP_DEBUG) trace("Referrals", "Entering referral code");</code>
+ * <li><code>if( Debug.LDAP_DEBUG) trace(trace.referrals, "Entering referral code");</code>
  * </ul>
  *
  * @author Steven F. Sonntag
- * @version $Id: Debug.template,v 1.1 2000/09/14 19:56:37 vtag Exp $
+ * @version $Id: Debug.template,v 1.2 2000/09/21 23:27:35 vtag Exp $
  */
 
 public abstract class Debug {
@@ -58,6 +58,72 @@ public abstract class Debug {
      *  TRUE = Debug build, FALSE = Release build
      */
     public static final boolean LDAP_DEBUG = @COMPILE_DEBUG@;
+
+    /**
+     * The string value used to enable all debug tracing.
+     */
+	public static final String all = "TraceAll";
+    /**
+     * The string value used to enable debug tracing of raw input.
+     */
+	public static final String rawInput = "RawInput";
+    /**
+     * The string value used to enable debug tracing of Raw Output.
+     */
+	public static final String rawOutput = "RawOutput";
+    /**
+     * The string value used to enable debug tracing of referral processing.
+     */
+	public static final String referrals = "Referrals";
+    /**
+     * The string value used to enable debug tracing of BER Encoding.
+     */
+	public static final String encoding = "Encoding";
+    /**
+     * The string value used to enable debug tracing of Ber Decoding.
+     */
+	public static final String decoding = "Decoding";
+    /**
+     * The string value used to enable debug tracing of LDAP Connections.
+     */
+	public static final String connections = "Connections";
+    /**
+     * The string value used to enable debug tracing of URL parsing.
+     */
+	public static final String urlParse = "UrlParse";
+    /**
+     * The string value used to enable debug display of buffer dumps.
+     */
+	public static final String buffer = "DumpBuffer";
+    /**
+     * The string value used to enable debug display of object dumps.
+	 * Displays hierarchy, constructors, fields, and methods.
+     */
+	public static final String objects = "DumpObject";
+    /**
+     * The string value used to enable debug display of object hierarchy dumps.
+     */
+	public static final String objectHierarchy = "DumpObjectHierarchy";
+    /**
+     * The string value used to enable debug display of object constructor dumps.
+     */
+	public static final String objectConstructors = "DumpObjectConstructors";
+    /**
+     * The string value used to enable debug display of object field dumps.
+     */
+	public static final String objectFields = "DumpObjectFields";
+    /**
+     * The string value used to enable debug display of object methods dumps.
+     */
+	public static final String objectMethods = "DumpObjectMethods";
+    /**
+     * The string value used to enable VM instruction trace.
+     */
+	public static final String traceInstructions = "VMTraceInstructions";
+    /**
+     * The string value used to enable display VM method calls.
+     */
+	public static final String traceMethodCalls = "VMTraceMethodCalls";
 
     private static boolean dumpBuffer = false;
     private static boolean dumpObject = false;
@@ -73,6 +139,7 @@ public abstract class Debug {
     private static boolean traceEncoding = false;
     private static boolean traceDecoding = false;
     private static boolean traceReferrals = false;
+    private static boolean traceUrlParse = false;
     private static boolean traceConnections = false;
     private static Properties objprop = new Properties();
     private static Runtime run = Runtime.getRuntime(); // for trace, etc.
@@ -117,47 +184,50 @@ public abstract class Debug {
                 /*
                  * Properties that turn on object dump methods
                  */
-                } else if( tn.equalsIgnoreCase("DumpBuffer")) {
+                } else if( tn.equalsIgnoreCase(buffer)) {
                     dumpBuffer = true;
-                } else if( tn.equalsIgnoreCase("DumpObject")) {
+                } else if( tn.equalsIgnoreCase(objects)) {
                     dumpObject = true;
                     dumpObjectHierarchy = true;
                     dumpObjectConstructors = true;
                     dumpObjectFields = true;
                     dumpObjectMethods = true;
-                } else if( tn.equalsIgnoreCase("DumpObjectHierarchy")) {
+                } else if( tn.equalsIgnoreCase(objectHierarchy)) {
                     dumpObject = true;
                     dumpObjectHierarchy = true;
-                } else if( tn.equalsIgnoreCase("DumpObjectConstructors")) {
+                } else if( tn.equalsIgnoreCase(objectConstructors)) {
                     dumpObject = true;
                     dumpObjectConstructors = true;
-                } else if( tn.equalsIgnoreCase("DumpObjectFields")) {
+                } else if( tn.equalsIgnoreCase(objectFields)) {
                     dumpObject = true;
                     dumpObjectFields = true;
-                } else if( tn.equalsIgnoreCase("DumpObjectMethods")) {
+                } else if( tn.equalsIgnoreCase(objectMethods)) {
                     dumpObject = true;
                     dumpObjectMethods = true;
                 /*
                  * Properties that turn on debug trace
                  */
-                } else if( tn.equalsIgnoreCase("TraceAll")) {
+                } else if( tn.equalsIgnoreCase(all)) {
                     traceRawInput = true;                
                     traceRawOutput = true;                
                     traceReferrals = true;                
+                    traceUrlParse = true;                
                     traceEncoding = true;                
                     traceDecoding = true;                
                     traceConnections = true;                
-                } else if( tn.equalsIgnoreCase("RawInput")) {
+                } else if( tn.equalsIgnoreCase(rawInput)) {
                     traceRawInput = toggle( traceRawInput);                
-                } else if( tn.equalsIgnoreCase("RawOutput")) {
+                } else if( tn.equalsIgnoreCase(rawOutput)) {
                     traceRawOutput = toggle( traceRawOutput);                
-                } else if( tn.equalsIgnoreCase("Referrals")) {
+                } else if( tn.equalsIgnoreCase(referrals)) {
                     traceReferrals = toggle( traceReferrals);                
-                } else if( tn.equalsIgnoreCase("Encoding")) {
+                } else if( tn.equalsIgnoreCase(urlParse)) {
+                    traceUrlParse = toggle( traceUrlParse);                
+                } else if( tn.equalsIgnoreCase(encoding)) {
                     traceEncoding = toggle( traceEncoding);                
-                } else if( tn.equalsIgnoreCase("Decoding")) {
+                } else if( tn.equalsIgnoreCase(decoding)) {
                     traceDecoding = toggle( traceDecoding);                
-                } else if( tn.equalsIgnoreCase("Connections")) {
+                } else if( tn.equalsIgnoreCase(connections)) {
                     traceConnections = toggle( traceConnections);                
                 }
             }
@@ -171,24 +241,27 @@ public abstract class Debug {
     public static final boolean trace( String type)
     {
         if( LDAP_DEBUG) {
-            if( type.equalsIgnoreCase("TraceAll")) {
-                return (     traceRawInput ||
+            if( type.equalsIgnoreCase(all)) {
+                return (    traceRawInput ||
                             traceRawOutput ||
                             traceReferrals ||
+                            traceUrlParse  ||
                             traceEncoding  ||
                             traceDecoding  ||
                             traceConnections );
-            } else if( type.equalsIgnoreCase("RawInput")) {
+            } else if( type.equalsIgnoreCase(rawInput)) {
                 return(traceRawInput);
-            } else if( type.equalsIgnoreCase("RawOutput")) {
+            } else if( type.equalsIgnoreCase(rawOutput)) {
                 return(traceRawOutput);
-            } else if( type.equalsIgnoreCase("Referrals")) {
+            } else if( type.equalsIgnoreCase(referrals)) {
                 return(traceReferrals);
-            } else if( type.equalsIgnoreCase("Encoding")) {
+            } else if( type.equalsIgnoreCase(urlParse)) {
+                return(traceUrlParse);
+            } else if( type.equalsIgnoreCase(encoding)) {
                 return(traceEncoding);
-            } else if( type.equalsIgnoreCase("Decoding")) {
+            } else if( type.equalsIgnoreCase(decoding)) {
                 return(traceDecoding);
-            } else if( type.equalsIgnoreCase("Connections")) {
+            } else if( type.equalsIgnoreCase(connections)) {
                 return(traceConnections);
             }
             return false;
@@ -204,24 +277,27 @@ public abstract class Debug {
     public static void setTrace( String type, boolean val)
     {
         if( LDAP_DEBUG) {
-            if( type.equalsIgnoreCase("TraceAll")) {
+            if( type.equalsIgnoreCase(all)) {
                 traceRawInput  = val;
                 traceRawOutput = val;
                 traceReferrals = val;
+                traceUrlParse  = val;
                 traceEncoding  = val;
                 traceDecoding  = val;
                 traceConnections = val;
-            } else if( type.equalsIgnoreCase("RawInput")) {
+            } else if( type.equalsIgnoreCase(rawInput)) {
                 traceRawInput = val;
-            } else if( type.equalsIgnoreCase("RawOutput")) {
+            } else if( type.equalsIgnoreCase(rawOutput)) {
                 traceRawOutput = val;
-            } else if( type.equalsIgnoreCase("Referrals")) {
+            } else if( type.equalsIgnoreCase(referrals)) {
                 traceReferrals = val;
-            } else if( type.equalsIgnoreCase("Encoding")) {
+            } else if( type.equalsIgnoreCase(urlParse)) {
+                traceUrlParse = val;
+            } else if( type.equalsIgnoreCase(encoding)) {
                 traceEncoding = val;
-            } else if( type.equalsIgnoreCase("Decoding")) {
+            } else if( type.equalsIgnoreCase(decoding)) {
                 traceDecoding = val;
-            } else if( type.equalsIgnoreCase("Connections")) {
+            } else if( type.equalsIgnoreCase(connections)) {
                 traceConnections = val;
             }
         }
@@ -237,24 +313,27 @@ public abstract class Debug {
     {
         if( LDAP_DEBUG) {
             boolean printit = false;
-            if( type.equalsIgnoreCase("TraceAll")) {
-                printit =      traceRawInput  ||
+            if( type.equalsIgnoreCase(all)) {
+                printit =   traceRawInput  ||
                             traceRawOutput ||
                             traceReferrals ||
+                            traceUrlParse  ||
                             traceEncoding  ||
                             traceDecoding  ||
                             traceConnections;
-            } else if( type.equalsIgnoreCase("RawInput")) {
+            } else if( type.equalsIgnoreCase(rawInput)) {
                 printit = traceRawInput;
-            } else if( type.equalsIgnoreCase("RawOutput")) {
+            } else if( type.equalsIgnoreCase(rawOutput)) {
                 printit = traceRawOutput;
-            } else if( type.equalsIgnoreCase("Referrals")) {
+            } else if( type.equalsIgnoreCase(referrals)) {
                 printit = traceReferrals;
-            } else if( type.equalsIgnoreCase("Encoding")) {
+            } else if( type.equalsIgnoreCase(urlParse)) {
+                printit = traceUrlParse;
+            } else if( type.equalsIgnoreCase(encoding)) {
                 printit = traceEncoding;
-            } else if( type.equalsIgnoreCase("Decoding")) {
+            } else if( type.equalsIgnoreCase(decoding)) {
                 printit = traceDecoding;
-            } else if( type.equalsIgnoreCase("Connections")) {
+            } else if( type.equalsIgnoreCase(connections)) {
                 printit = traceConnections;
             }
             if( printit)

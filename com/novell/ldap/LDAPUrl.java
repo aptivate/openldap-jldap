@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPUrl.java,v 1.8 2000/09/22 22:13:50 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPUrl.java,v 1.9 2000/09/25 14:15:38 vtag Exp $
 *
 * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
 * 
@@ -242,18 +242,16 @@ public class LDAPUrl {
         throw new RuntimeException("LDAPUrl: getUrl() not implemented");
     }
 
-    private String[] parseList(    String listStr,    // input String
+    private String[] parseList( String listStr,    // input String
                                 char delimiter,    // list item delimiter
-                                int listStart,    // start of list
-                                int listEnd)    // end of list + 1
+                                int listStart,     // start of list
+                                int listEnd)       // end of list + 1
     {
         String[] list;
 		if( Debug.LDAP_DEBUG)
-			Debug.trace("Referrals", "parseList(" + listStr.substring(listStart,listEnd) + ")");
+			Debug.trace( Debug.urlParse, "parseList(" + listStr.substring(listStart,listEnd) + ")");
         // Check for and empty string
         if( (listEnd - listStart) <= 2) {
-			if( Debug.LDAP_DEBUG)
-				Debug.trace("Referrals", "parseList:Exit: End - Start = " + (listEnd - listStart));
             return null;
 		}
         // First count how many items are specified
@@ -270,17 +268,17 @@ public class LDAPUrl {
                 break;
             }
 		}
-		if( Debug.LDAP_DEBUG)
-			Debug.trace("Referrals", "parseList: " + itemCount + " items counted");
         // Now fill in the array with the attributes
         itemStart = listStart;
         list = new String[itemCount];
         itemCount = 0;
         while( itemStart > 0 ) {
             itemEnd = listStr.indexOf(delimiter, itemStart);                
-            if( (itemEnd > 0) && (itemStart < itemEnd) ) {
-				if( Debug.LDAP_DEBUG)
-					Debug.trace("Referrals", "parseList: item " + listStr.substring( itemStart, itemEnd) );
+            if( itemStart <= listEnd ) {
+				if (itemEnd < 0 )
+					itemEnd = listEnd;
+				if( itemEnd > listEnd )
+					itemEnd = listEnd;
                 list[itemCount] = listStr.substring( itemStart, itemEnd);
                 itemStart = itemEnd + 1;
 	            itemCount += 1;
@@ -298,7 +296,7 @@ public class LDAPUrl {
         int scanEnd = url.length();
 
         if( Debug.LDAP_DEBUG)
-            Debug.trace( "Referrals", "parseURL(" + url + ")");
+            Debug.trace(  Debug.urlParse, "parseURL(" + url + ")");
         if( url == null)
             throw new MalformedURLException("LDAPURL: URL cannot be null");
 
@@ -310,7 +308,7 @@ public class LDAPUrl {
             scanStart += 1;
             scanEnd -= 1;
             if( Debug.LDAP_DEBUG)
-                Debug.trace( "Referrals", "LDAPURL: parseURL: Url is enclosed");
+                Debug.trace(  Debug.urlParse, "LDAPURL: parseURL: Url is enclosed");
         }
 
         // Determine the URL scheme and set appropriate default port
@@ -330,7 +328,7 @@ public class LDAPUrl {
             throw new MalformedURLException("LDAPURL: URL scheme is not ldap");
         }
         if( Debug.LDAP_DEBUG)
-            Debug.trace( "Referrals", "parseURL: scheme is " + scheme);
+            Debug.trace(  Debug.urlParse, "parseURL: scheme is " + scheme);
 
         // Find where host:port ends and dn begins
         int dnStart = url.indexOf("/", scanStart);
@@ -350,7 +348,7 @@ public class LDAPUrl {
                     hostPortEnd = dnStart;
                     dnStart += 1;
                     if( Debug.LDAP_DEBUG)
-                        Debug.trace( "Referrals", "parseURL: wierd novell syntax found");
+                        Debug.trace(  Debug.urlParse, "parseURL: wierd novell syntax found");
                 } else {
                     dnStart = -1;
                 }
@@ -373,10 +371,10 @@ public class LDAPUrl {
                 // port is specified
                 port = Integer.decode( url.substring(portStart+1, hostPortEnd) ).intValue();
                 if( Debug.LDAP_DEBUG)
-                    Debug.trace( "Referrals", "parseURL: IPV6 host " + host + " port " + port);
+                    Debug.trace(  Debug.urlParse, "parseURL: IPV6 host " + host + " port " + port);
             } else {
                 if( Debug.LDAP_DEBUG)
-                    Debug.trace( "Referrals", "parseURL: IPV6 host " + host + " default port " + port);
+                    Debug.trace(  Debug.urlParse, "parseURL: IPV6 host " + host + " default port " + port);
             }
         } else {
             portStart = url.indexOf(":", scanStart);
@@ -385,13 +383,13 @@ public class LDAPUrl {
                 // no port is specified, we keep the default
                 host = url.substring(scanStart, hostPortEnd);
                 if( Debug.LDAP_DEBUG)
-                    Debug.trace( "Referrals", "parseURL: host " + host + " default port " + port);
+                    Debug.trace(  Debug.urlParse, "parseURL: host " + host + " default port " + port);
             } else {
                 // port specified in URL
                 host = url.substring(scanStart, portStart);
                 port = Integer.decode( url.substring(portStart+1, hostPortEnd) ).intValue();
                 if( Debug.LDAP_DEBUG)
-                    Debug.trace( "Referrals", "parseURL: host " + host + " port " + port);
+                    Debug.trace(  Debug.urlParse, "parseURL: host " + host + " port " + port);
             }
         }
 
@@ -410,7 +408,7 @@ public class LDAPUrl {
         }
 
         if( Debug.LDAP_DEBUG)
-            Debug.trace( "Referrals", "parseURL: dn " + dn);
+            Debug.trace(  Debug.urlParse, "parseURL: dn " + dn);
         scanStart = attrsStart + 1;                    
         if( (scanStart >= scanEnd) || (attrsStart < 0) )
             return;
@@ -422,12 +420,12 @@ public class LDAPUrl {
         attrs = parseList( url, ',', attrsStart + 1, scopeStart);
         if( Debug.LDAP_DEBUG) {
             if( attrs != null) {
-                Debug.trace( "Referrals", "parseURL: " + attrs.length + " attributes" );
+                Debug.trace(  Debug.urlParse, "parseURL: " + attrs.length + " attributes" );
                 for( int i = 0; i < attrs.length; i++) {
-                    Debug.trace( "Referrals", "\t" + attrs[i] );
+                    Debug.trace(  Debug.urlParse, "\t" + attrs[i] );
                 }
             } else {
-                Debug.trace( "Referrals", "parseURL: no attributes");
+                Debug.trace(  Debug.urlParse, "parseURL: no attributes");
             }
         }
 
@@ -461,7 +459,7 @@ public class LDAPUrl {
         }
 
         if( Debug.LDAP_DEBUG)
-            Debug.trace( "Referrals", "parseURL: scope(" + scope + ") " + scopeStr);
+            Debug.trace(  Debug.urlParse, "parseURL: scope(" + scope + ") " + scopeStr);
 
         scanStart = filterStart + 1;
         if( (scanStart >= scanEnd) || (filterStart < 0) )
@@ -482,7 +480,7 @@ public class LDAPUrl {
             filter = filterStr;    // Only modify if not the default filter
         }
         if( Debug.LDAP_DEBUG)
-            Debug.trace( "Referrals", "parseURL: filter " + filter);
+            Debug.trace(  Debug.urlParse, "parseURL: filter " + filter);
 
         scanStart = extStart + 1;                    
         if( (scanStart >= scanEnd) || (extStart < 0) )
@@ -495,12 +493,12 @@ public class LDAPUrl {
         extensions = parseList( url, ',', scanStart, scanEnd);
         if( Debug.LDAP_DEBUG) {
             if( extensions != null) {
-                Debug.trace( "Referrals", "parseURL: " + extensions.length + " extensions" );
+                Debug.trace(  Debug.urlParse, "parseURL: " + extensions.length + " extensions" );
                 for( int i = 0; i < extensions.length; i++) {
-                    Debug.trace( "Referrals", "\t" + extensions[i] );
+                    Debug.trace(  Debug.urlParse, "\t" + extensions[i] );
                 }
             } else {
-                Debug.trace( "Referrals", "parseURL: no extensions");
+                Debug.trace(  Debug.urlParse, "parseURL: no extensions");
             }
         }
 
