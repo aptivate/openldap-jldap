@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResults.java,v 1.17 2000/09/29 22:47:18 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResults.java,v 1.18 2000/10/02 14:58:06 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -205,7 +205,7 @@ public class LDAPSearchResults implements Enumeration
                 }
             }
             throw new LDAPReferralException(
-                LDAPException.errorCodeToString(LDAPException.REFERRAL),
+                null,
                 LDAPException.REFERRAL, refs);
         } else {
             if( Debug.LDAP_DEBUG ) {

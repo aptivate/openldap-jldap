@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPResponse.java,v 1.13 2000/09/28 15:17:41 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPResponse.java,v 1.14 2000/09/29 22:17:40 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -171,7 +171,7 @@ public class LDAPResponse extends LDAPMessage
                         Debug.trace( Debug.messages, "LDAPResponse: \t" + refs[i]);
                     }
                 }
-                throw new LDAPReferralException(getErrorMessage(), LDAPException.REFERRAL, refs);
+                throw new LDAPReferralException(null, LDAPException.REFERRAL, refs);
             default: // unknown
                 throw new LDAPException(getErrorMessage(), getMatchedDN(),
                     getResultCode());
