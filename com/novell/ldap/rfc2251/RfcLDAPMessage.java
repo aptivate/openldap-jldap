@@ -1,8 +1,8 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/rfc2251/RfcLDAPMessage.java,v 1.14 2000/11/22 22:17:43 vtag Exp $
- *
- * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
- ***************************************************************************/
+* $Novell: /ldap/src/jldap/com/novell/ldap/rfc2251/RfcLDAPMessage.java,v 1.15 2001/01/31 20:57:27 vtag Exp $
+*
+* Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
+***************************************************************************/
 
 package com.novell.ldap.rfc2251;
 
@@ -66,129 +66,128 @@ import com.novell.ldap.client.Debug;
  *       constructor should be package protected. (So the MessageID value
  *       isn't arbitrarily run up.)
  */
-public class RfcLDAPMessage extends ASN1Sequence {
+public class RfcLDAPMessage extends ASN1Sequence 
+{
 
-   /**
-    * Create an RfcLDAPMessage using the specified LDAP Request Protocol Op.
-    */
-   public RfcLDAPMessage(RfcRequest op)
-   {
-      this(op, null);
-   }
+    /**
+     * Create an RfcLDAPMessage using the specified LDAP Request Protocol Op.
+     */
+    public RfcLDAPMessage(RfcRequest op)
+    {
+        this(op, null);
+    }
 
-   /**
-    * Create an RfcLDAPMessage from input parameters.
-    */
-   public RfcLDAPMessage(RfcRequest op, RfcControls controls)
-   {
-      super(3);
+    /**
+     * Create an RfcLDAPMessage from input parameters.
+      */
+    public RfcLDAPMessage(RfcRequest op, RfcControls controls)
+    {
+        super(3);
 
-      add(new RfcMessageID()); // MessageID has static counter
-      add((ASN1Object)op);
-      if(controls != null)
-         add(controls);
-   }
+        add(new RfcMessageID()); // MessageID has static counter
+        add((ASN1Object)op);
+        if(controls != null)
+            add(controls);
+    }
 
-   /**
-    * Will decode an RfcLDAPMessage directly from an InputStream.
-    */
-   public RfcLDAPMessage(ASN1Decoder dec, InputStream in, int len)
-      throws IOException
-   {
-      super(dec, in, len);
+    /**
+     * Will decode an RfcLDAPMessage directly from an InputStream.
+     */
+    public RfcLDAPMessage(ASN1Decoder dec, InputStream in, int len)
+            throws IOException
+    {
+        super(dec, in, len);
 
         byte[] content;
         ByteArrayInputStream bais;
 
-      //      set(0, new MessageID(((ASN1Integer)get(0)).getInt()));
+        //      set(0, new MessageID(((ASN1Integer)get(0)).getInt()));
 
-      // Decode implicitly tagged protocol operation from an ASN1Tagged type
-      // to its appropriate application type.
-      ASN1Tagged protocolOp = (ASN1Tagged)get(1);
-      ASN1Identifier protocolOpId = protocolOp.getIdentifier();
-      content = ((ASN1OctetString)protocolOp.getContent()).getContent();
-      bais = new ByteArrayInputStream(content);
+        // Decode implicitly tagged protocol operation from an ASN1Tagged type
+        // to its appropriate application type.
+        ASN1Tagged protocolOp = (ASN1Tagged)get(1);
+        ASN1Identifier protocolOpId = protocolOp.getIdentifier();
+        content = ((ASN1OctetString)protocolOp.getContent()).getContent();
+        bais = new ByteArrayInputStream(content);
 
-      if( Debug.LDAP_DEBUG ) {
-          Debug.trace( Debug.messages, "RfcLDAPMessage: input message w/tag " +
+        if( Debug.LDAP_DEBUG ) {
+            Debug.trace( Debug.messages, "RfcLDAPMessage: input message w/tag " +
             protocolOpId.getTag());
-      }
-      switch(protocolOpId.getTag()) {
-         case RfcProtocolOp.SEARCH_RESULT_ENTRY:
-            set(1, new RfcSearchResultEntry(dec, bais, content.length));
-            break;
-         case RfcProtocolOp.SEARCH_RESULT_DONE:
-            set(1, new RfcSearchResultDone(dec, bais, content.length));
-            break;
-         case RfcProtocolOp.SEARCH_RESULT_REFERENCE:
-            set(1, new RfcSearchResultReference(dec, bais, content.length));
-            break;
-         case RfcProtocolOp.ADD_RESPONSE:
-            set(1, new RfcAddResponse(dec, bais, content.length));
-            break;
-         case RfcProtocolOp.BIND_RESPONSE:
-            set(1, new RfcBindResponse(dec, bais, content.length));
-            break;
-         case RfcProtocolOp.COMPARE_RESPONSE:
-            set(1, new RfcCompareResponse(dec, bais, content.length));
-            break;
-         case RfcProtocolOp.DEL_RESPONSE:
-            set(1, new RfcDelResponse(dec, bais, content.length));
-            break;
-         case RfcProtocolOp.EXTENDED_RESPONSE:
-            set(1, new RfcExtendedResponse(dec, bais, content.length));
-            break;
-         case RfcProtocolOp.MODIFY_RESPONSE:
-            set(1, new RfcModifyResponse(dec, bais, content.length));
-            break;
-         case RfcProtocolOp.MODIFY_DN_RESPONSE:
-            set(1, new RfcModifyDNResponse(dec, bais, content.length));
-            break;
-      }
+        }
+        switch(protocolOpId.getTag()) {
+            case RfcProtocolOp.SEARCH_RESULT_ENTRY:
+                set(1, new RfcSearchResultEntry(dec, bais, content.length));
+                break;
+            case RfcProtocolOp.SEARCH_RESULT_DONE:
+                set(1, new RfcSearchResultDone(dec, bais, content.length));
+                break;
+            case RfcProtocolOp.SEARCH_RESULT_REFERENCE:
+                set(1, new RfcSearchResultReference(dec, bais, content.length));
+                break;
+            case RfcProtocolOp.ADD_RESPONSE:
+                set(1, new RfcAddResponse(dec, bais, content.length));
+                break;
+            case RfcProtocolOp.BIND_RESPONSE:
+                set(1, new RfcBindResponse(dec, bais, content.length));
+                break;
+            case RfcProtocolOp.COMPARE_RESPONSE:
+                set(1, new RfcCompareResponse(dec, bais, content.length));
+                break;
+            case RfcProtocolOp.DEL_RESPONSE:
+                set(1, new RfcDelResponse(dec, bais, content.length));
+                break;
+            case RfcProtocolOp.EXTENDED_RESPONSE:
+                set(1, new RfcExtendedResponse(dec, bais, content.length));
+                break;
+            case RfcProtocolOp.MODIFY_RESPONSE:
+                set(1, new RfcModifyResponse(dec, bais, content.length));
+                break;
+            case RfcProtocolOp.MODIFY_DN_RESPONSE:
+                set(1, new RfcModifyDNResponse(dec, bais, content.length));
+                break;
+        }
 
-      // decode optional implicitly tagged controls from ASN1Tagged type to
-      // to RFC 2251 types.
-      if(size() > 2) {
-         ASN1Tagged controls = (ASN1Tagged)get(2);
-         //   ASN1Identifier controlsId = protocolOp.getIdentifier();
-         // we could check to make sure we have controls here....
+        // decode optional implicitly tagged controls from ASN1Tagged type to
+        // to RFC 2251 types.
+        if(size() > 2) {
+            ASN1Tagged controls = (ASN1Tagged)get(2);
+            //   ASN1Identifier controlsId = protocolOp.getIdentifier();
+            // we could check to make sure we have controls here....
 
-         content = ((ASN1OctetString)controls.getContent()).getContent();
-         bais = new ByteArrayInputStream(content);
-         set(2, new RfcControls(dec, bais, content.length));
-      }
-      return;
-   }
+            content = ((ASN1OctetString)controls.getContent()).getContent();
+            bais = new ByteArrayInputStream(content);
+            set(2, new RfcControls(dec, bais, content.length));
+        }
+        return;
+    }
 
-   //*************************************************************************
-   // Accessors
-   //*************************************************************************
+    //*************************************************************************
+    // Accessors
+    //*************************************************************************
 
-   /**
-    * Returns this RfcLDAPMessage's messageID as an int.
-    */
-   public int getMessageID()
-   {
-      return ((ASN1Integer)get(0)).getInt();
-   }
+    /**
+     * Returns this RfcLDAPMessage's messageID as an int.
+     */
+    public int getMessageID()
+    {
+        return ((ASN1Integer)get(0)).getInt();
+    }
 
-   /**
-    * Returns the Protocol Operation for this RfcLDAPMessage.
-    */
-   public ASN1Object getProtocolOp()
-   {
-      return get(1);
-   }
+    /**
+     * Returns the Protocol Operation for this RfcLDAPMessage.
+     */
+    public ASN1Object getProtocolOp()
+    {
+        return get(1);
+    }
 
-   /**
-    * Returns the optional Controls for this RfcLDAPMessage.
-    */
-   public RfcControls getControls()
-   {
+    /**
+     * Returns the optional Controls for this RfcLDAPMessage.
+     */
+    public RfcControls getControls()
+    {
         if(size() > 2)
             return (RfcControls)get(2);
         return null;
-   }
-
+    }
 }
-
