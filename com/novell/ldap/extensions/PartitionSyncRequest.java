@@ -56,7 +56,7 @@ public class PartitionSyncRequest extends LDAPExtendedOperation {
  public PartitionSyncRequest(String serverName, String partitionRoot, int delay)
                 throws LDAPException {
 
-        super(NamingContextConstants.NAMING_CONTEXT_SYNC_REQ, null);
+        super(ReplicationConstants.NAMING_CONTEXT_SYNC_REQ, null);
 
         try {
 
