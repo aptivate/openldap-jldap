@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPResponse.java,v 1.22 2000/11/10 16:50:03 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPResponse.java,v 1.23 2001/01/03 18:46:21 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -20,7 +20,7 @@ import java.util.Vector;
 
 import com.novell.ldap.asn1.*;
 import com.novell.ldap.rfc2251.*;
-import com.novell.ldap.client.Debug;
+import com.novell.ldap.client.*;
 
 /**
  *  Represents the a message received from an LDAPServer
@@ -28,6 +28,18 @@ import com.novell.ldap.client.Debug;
  */
 public class LDAPResponse extends LDAPMessage
 {
+    private LocalException exception = null;
+
+    /**
+     * Creates an LDAPMessage using an LDAPException
+     *
+     *  @param message  The exception
+     */
+    public LDAPResponse( LocalException ex)
+    {
+        exception = ex;
+        return;
+    }
 
     /**
      * Creates an LDAPMessage when receiving an asynchronous response from a
@@ -38,6 +50,7 @@ public class LDAPResponse extends LDAPMessage
     /*package*/ LDAPResponse( RfcLDAPMessage message)
     {
         super(message);
+        return;
     }
 
     /**
@@ -47,8 +60,10 @@ public class LDAPResponse extends LDAPMessage
      */
     public String getErrorMessage()
     {
-        return
-            ((RfcResponse)message.getProtocolOp()).getErrorMessage().getString();
+        if( exception != null) {
+            return( exception.getLDAPErrorMessage());
+        }
+        return ((RfcResponse)message.getProtocolOp()).getErrorMessage().getString();
     }
 
     /**
@@ -60,6 +75,9 @@ public class LDAPResponse extends LDAPMessage
      */
     public String getMatchedDN()
     {
+        if( exception != null) {
+            return null;
+        }
         return ((RfcResponse)message.getProtocolOp()).getMatchedDN().getString();
     }
 
@@ -70,6 +88,10 @@ public class LDAPResponse extends LDAPMessage
      */
     public String[] getReferrals()
     {
+        if( exception != null) {
+            return null;
+        }
+        
         String[] referrals = null;
         RfcReferral ref = ((RfcResponse)message.getProtocolOp()).getReferral();
         
@@ -81,7 +103,6 @@ public class LDAPResponse extends LDAPMessage
                 referrals[i] = new String(((ASN1OctetString)ref.get(i)).getContent());
             }
         }
-
         return referrals;
    }
 
@@ -94,6 +115,9 @@ public class LDAPResponse extends LDAPMessage
      */
     public int getResultCode()
     {
+        if( exception != null) {
+            return exception.getLDAPResultCode();
+        }
         return ((RfcResponse)message.getProtocolOp()).getResultCode().getInt();
     }
 
@@ -200,5 +224,45 @@ public class LDAPResponse extends LDAPMessage
             break;
         }
         return ex;
+    }
+    
+    /* Methods from LDAPMessage */
+
+    /**
+     * Returns any controls in the message.
+     *
+     * @see com.novell.ldap.LDAPMessage#getControls()
+     */
+    public LDAPControl[] getControls() {
+        if( exception != null) {
+            return null;
+        }
+        return super.getControls();
+    }
+    /**
+     * Returns the message ID.
+     *
+     * @see com.novell.ldap.LDAPMessage#getMessageID()
+     */
+    public int getMessageID() {
+        if( exception != null) {
+            return exception.getMessageID();
+       }
+        return super.getMessageID();
+    }
+    
+    /**
+     * Returns the LDAP operation type of the message. 
+     *
+     * @return The operation type of the message.
+     *
+     * @see com.novell.ldap.LDAPMessage#getType()
+     */
+    public int getType()
+	{
+        if( exception != null) {
+           return exception.getReplyType();
+        }
+		return super.getType();
     }
 }

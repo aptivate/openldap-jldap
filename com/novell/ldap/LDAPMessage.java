@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPMessage.java,v 1.16 2000/11/09 23:50:39 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPMessage.java,v 1.17 2000/11/10 16:50:02 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -50,12 +50,12 @@ public class LDAPMessage {
    public final static int SEARCH_REQUEST          = 3;
    
   /**
-   * A search response operation.
+   * A search response containing data.
    */
    public final static int SEARCH_RESPONSE         = 4;
    
   /**
-   * A search result message.
+   * A search result message - contains search status.
    */
    public final static int SEARCH_RESULT           = 5;
    
@@ -142,6 +142,15 @@ public class LDAPMessage {
 		this(op, null);
 	}
 
+    /**
+     * Dummy constuctor
+     */
+    /* protected */ 
+    LDAPMessage()
+    {
+        return;
+    }
+    
 	/**
 	 * Creates an LDAPMessage when sending a protocol operation and sends
 	 * some optional controls with the message.

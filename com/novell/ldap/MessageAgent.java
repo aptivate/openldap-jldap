@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/client/MessageAgent.java,v 1.5 2000/12/15 22:28:26 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/client/MessageAgent.java,v 1.6 2001/01/02 23:28:31 vtag Exp $
 *
 * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
 * 
@@ -136,19 +136,24 @@ public class MessageAgent
      * @param msgid the message id to abandon
      *<br><br>
      * @param cons constraints associated with this request
+     *<br><br>
+     * @param informUser true if user must be informed of operation
      */
-    public void abandon(int msgId, LDAPConstraints cons)
+    public void abandon(int msgId, LDAPConstraints cons, boolean informUser)
     {
         Message info = null;
         try {
             // Send abandon request and remove from connection list
             info = messages.findMessageById( msgId);
-            info.abandon( cons );
-            // Message complete and no more replies, remove from id list
-            messages.remove( info);
+            info.abandon( cons, informUser );
+            // Don't remove from list only if user requires notification
+            if( informUser) {
+                // Message complete and no more replies, remove from id list
+                messages.remove( info);
+            }
             if( Debug.LDAP_DEBUG) {
                 Debug.trace( Debug.messages, name +
-                "getLDAPMessage: Removed abandoned Message(" + info.getMessageID() + ")");
+                "abandon: Removed abandoned Message(" + info.getMessageID() + ")");
             }
             return;
         } catch( NoSuchFieldException ex ) {
@@ -171,12 +176,12 @@ public class MessageAgent
 
         for( int i = 0; i < size; i++ ) {
             info = (Message)messages.elementAt(i);
-            info.abandon( null );
+            info.abandon( null, false );
             // Message complete and no more replies, remove from id list
             messages.remove( info);
             if( Debug.LDAP_DEBUG) {
                 Debug.trace( Debug.messages, name +
-                "getLDAPMessage: Removed abandoned Message(" + info.getMessageID() + ")");
+                "abandonAll: Removed abandoned Message(" + info.getMessageID() + ")");
             }
         }
         return;        
@@ -263,9 +268,9 @@ public class MessageAgent
      * Returns a response queued, or waits if none queued
      *
      */
-    public RfcLDAPMessage getLDAPMessage( Integer msgId)
+    public Object getLDAPMessage( Integer msgId)
     {
-        RfcLDAPMessage rfcMsg;
+        Object rfcMsg;
         if( msgId != null ) {
             // Request messages for a specific ID
             // If no messages for this agent, just return null
@@ -275,7 +280,7 @@ public class MessageAgent
             try {
                 // Get message for this ID
                 Message info = (Message)messages.findMessageById( msgId.intValue());
-                rfcMsg = (RfcLDAPMessage)info.waitForReply(); // blocks for a response
+                rfcMsg = info.waitForReply(); // blocks for a response
                 if( ! info.acceptsReplies() && ! info.hasReplies()) {
                     // Message complete and no more replies, remove from id list
                     messages.remove( info);
@@ -305,7 +310,7 @@ public class MessageAgent
                        }
                        info = (Message)messages.elementAt(next);
                        try {
-                          rfcMsg = (RfcLDAPMessage)info.getReply();
+                          rfcMsg = info.getReply();
                           indexLastRead = next;
                           if( ! info.acceptsReplies() & ! info.hasReplies()) {
                              // Message complete & no more replies, remove from id list

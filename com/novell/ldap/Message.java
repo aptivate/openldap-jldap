@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/client/Message.java,v 1.7 2001/01/02 23:28:31 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/client/Message.java,v 1.8 2001/01/03 18:46:21 vtag Exp $
 *
 * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
 * 
@@ -78,7 +78,16 @@ public class Message extends Thread
         conn.writeMessage( this );
         // Start the timer thread
         if( mslimit != 0 ) {
-            this.start();   
+            // Don't start the timer thread for abandon or Unbind
+            switch( msg.getType())
+            {
+                case LDAPMessage.ABANDON_REQUEST:
+                case LDAPMessage.UNBIND_REQUEST:
+                    mslimit = 0;
+                    break;
+                default:
+                    this.start();   
+            }
         }
         return;
     }
@@ -162,7 +171,7 @@ public class Message extends Thread
      */
     public Connection getConnection()
     {
-        return( conn );
+        return conn;
     }
 
     /**
@@ -174,7 +183,7 @@ public class Message extends Thread
     /* package */
     boolean isComplete()
     {
-        return( complete );
+        return complete;
     }
 
     /**
@@ -185,7 +194,7 @@ public class Message extends Thread
     /* package */
     LDAPListener getLDAPListener()
     {
-        return( listen );
+        return listen;
     }
 
     /**
@@ -196,7 +205,7 @@ public class Message extends Thread
     /* package */
     MessageAgent getMessageAgent()
     {
-        return( agent );
+        return agent;
     }
 
     /**
@@ -207,7 +216,7 @@ public class Message extends Thread
     /* package */
     LDAPMessage getRequest()
     {
-        return( msg );
+        return msg;
     }
 
     /**
@@ -218,7 +227,18 @@ public class Message extends Thread
     /* package */
     int getMessageID()
     {
-        return( msgId );
+        return msgId;
+    }
+
+    /**
+     * gets the Message Type associated with this message request
+     *
+     * @return the Message Type associated with this message request
+     */
+    /* package */
+    int getMessageType()
+    {
+        return msg.getType();
     }
 
     /**
@@ -277,11 +297,12 @@ public class Message extends Thread
      * @param ex the LDAPException to put on the reply queue.
      */
     /* package */
-    void putException( LDAPException ex)
+    void putException( LocalException ex)
     {
-        replies.addElement( ex); 
+        replies.addElement( new LDAPResponse(ex));
         if( Debug.LDAP_DEBUG) {
-            Debug.trace( Debug.messages, name + "Queuing exception");
+            Debug.trace( Debug.messages, name + "Queuing exception response: " +
+                ex.getLDAPErrorMessage());
         }
         // wake up waiting threads
         sleepersAwake();
@@ -382,9 +403,10 @@ public class Message extends Thread
      *
      * @param cons and LDAPConstraints associated with the abandon.
      *<br><br>
+     * @param informUser true if user must be informed of operation
      */
     /* package */
-    void abandon( LDAPConstraints cons)
+    void abandon( LDAPConstraints cons, boolean informUser)
     {
         if( terminate) {
             return;
@@ -393,7 +415,8 @@ public class Message extends Thread
         terminate = true;       // don't let sleeping threads lie 
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.messages, name + "Abandon request, complete="
-                + complete + ", bind=" + (bindprops != null));
+                + complete + ", bind=" + (bindprops != null) +
+                ", informUser=" + informUser);
         }
         if( ! complete) {
             try {
@@ -409,15 +432,21 @@ public class Message extends Thread
             } catch (IOException ex) {
                 ; // do nothing
             }
-            // remove message id from Connection list
-            conn.removeMessage( this);
             complete = true;
-            agent.abandon( msgId, null); // Make sure agent list is clean
+            // If not informing user, remove message from Connection list & agent
+            if( ! informUser) {
+                conn.removeMessage( this);
+                agent.abandon( msgId, null, false);
+            }
         }
         // Get rid of all replies queued
         cleanup();
-        // Wake up any waiting threads
-        sleepersAwake();
+        if( ! informUser) {
+            // Wake up any waiting threads, so they can terminate.
+            // If informing the user, we wake sleepers after
+            // caller queues dummy response with error status
+            sleepersAwake();
+        }
         return;
     }
     
@@ -437,10 +466,10 @@ public class Message extends Thread
             if( Debug.LDAP_DEBUG) {
                 Debug.trace( Debug.messages, name + "client timed out");
             }
-            putException( new LDAPException("Client timed out operation",
-                LDAPException.LDAP_TIMEOUT));
-            // Note: Clear abandon clears the bind semaphore after failed bind.
-            agent.abandon( msgId, null );
+            // Note: Abandon clears the bind semaphore after failed bind.
+            abandon( null, true);
+            putException( new LocalException("Client timed out operation",
+                LDAPException.LDAP_TIMEOUT, this));
         } catch ( InterruptedException ie ) {
             if( Debug.LDAP_DEBUG) {
                 Debug.trace( Debug.messages, name + "timer stopped");
@@ -451,7 +480,7 @@ public class Message extends Thread
     }
 
     /**
-     * cleanup - release reply messages
+     * Release reply messages
      */
     /* package */
     void cleanup()

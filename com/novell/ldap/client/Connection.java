@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.29 2001/01/03 16:55:37 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.30 2001/01/03 17:13:31 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -608,7 +608,7 @@ public final class Connection implements Runnable
                 }
                 break;
             }
-            info.abandon( null );
+            info.abandon( null, false );
         }
 
         // Now send unbind before closing socket
