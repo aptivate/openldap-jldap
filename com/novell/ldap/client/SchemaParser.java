@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: SchemaParser.java,v 1.4 2000/10/17 22:09:53 bgudmundson Exp $
+ * $Id: SchemaParser.java,v 1.5 2000/12/04 22:59:52 bgudmundson Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -33,9 +33,13 @@ public class SchemaParser{
 	String description;
         String syntax;
         String superior;
+		String nameForm;
+		String objectClass;
         String superiors[];
         String required[];
         String optional[];
+		String auxiliary[];
+		String precluded[];
         String applies[];
         boolean single = false;
         boolean obsolete = false;
@@ -120,6 +124,18 @@ public class SchemaParser{
                         }
                         continue;
                       }
+					  if(st2.sval.equals("FORM")){
+					    if( st2.nextToken() == StreamTokenizer.TT_WORD ){
+                          nameForm = st2.sval;
+                        }
+                        continue;
+                      }
+					  if(st2.sval.equals("OC")){
+					    if( st2.nextToken() == StreamTokenizer.TT_WORD ){
+                          objectClass = st2.sval;
+                        }
+                        continue;
+                      }
                       if(st2.sval.equals("SUP")){
                         Vector values = new Vector();
                         st2.nextToken();
@@ -195,6 +211,46 @@ public class SchemaParser{
                         if(values.size() > 0){
                             optional = new String[values.size()];
                             values.copyInto(optional);
+                          }
+                        continue;
+                      }
+					  if(st2.sval.equals("NOT")){
+                        Vector values = new Vector();
+                        st2.nextToken();
+                        if(st2.ttype == '(' ){
+                          st2.nextToken();
+                          for(int i = 0; st2.ttype != ')'; i++ ){
+                            if(st2.ttype != '$'){
+                            	values.addElement(st2.sval);
+                             }
+                             st2.nextToken();
+                          }
+                        }
+                      	else
+                      		values.addElement(st2.sval);
+                        if(values.size() > 0){
+                            precluded = new String[values.size()];
+                            values.copyInto(precluded);
+                          }
+                        continue;
+                      }
+					  if(st2.sval.equals("AUX")){
+                        Vector values = new Vector();
+                        st2.nextToken();
+                        if(st2.ttype == '(' ){
+                          st2.nextToken();
+                          for(int i = 0; st2.ttype != ')'; i++ ){
+                            if(st2.ttype != '$'){
+                            	values.addElement(st2.sval);
+                             }
+                             st2.nextToken();
+                          }
+                        }
+                      	else
+                      		values.addElement(st2.sval);
+                        if(values.size() > 0){
+                            auxiliary = new String[values.size()];
+                            values.copyInto(auxiliary);
                           }
                         continue;
                       }
@@ -337,9 +393,21 @@ public class SchemaParser{
  	public String[] getOptional() {
 		return optional;
     }
+	public String[] getAuxiliary() {
+		return auxiliary;
+    }
+	public String[] getPrecluded() {
+		return precluded;
+    }
 	public String[] getApplies() {
 		return applies;
 	}
+	public String getNameForm() {
+        return nameForm;
+    }
+	public String getObjectClass() {
+        return nameForm;
+    }
 
     private AttributeQualifier parseQualifier( StreamTokenizer st, String name ) throws IOException {
         AttributeQualifier qualifier = new AttributeQualifier(name);

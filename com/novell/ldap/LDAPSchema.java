@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSchema.java,v 1.18 2000/12/09 00:19:51 bgudmundson Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSchema.java,v 1.19 2000/12/13 23:49:09 bgudmundson Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -35,6 +35,10 @@ public class LDAPSchema {
 	private Hashtable matchingRuleHashtable;
 	private Hashtable matchingRuleUseHashtable;
 	private Hashtable syntaxHashtable;
+	private Hashtable dITContentRuleHashtable;
+	private Hashtable dITStructureRuleHashtable;
+	private Hashtable dITStructureRuleIDHashtable;
+	private Hashtable nameFormHashtable;
 
 	//private static final int objectClass = 0;
     //private static final int attribute = 1;
@@ -49,6 +53,10 @@ public class LDAPSchema {
 		matchingRuleHashtable = new Hashtable();
 		matchingRuleUseHashtable = new Hashtable();
 		syntaxHashtable = new Hashtable();
+		dITContentRuleHashtable = new Hashtable();
+		dITStructureRuleHashtable = new Hashtable();
+		dITStructureRuleIDHashtable = new Hashtable();
+		nameFormHashtable = new Hashtable();
    }
 
    /**
@@ -95,6 +103,11 @@ public class LDAPSchema {
 		attributeHashtable.clear();
 		matchingRuleHashtable.clear();
 		matchingRuleUseHashtable.clear();
+		syntaxHashtable.clear();
+		dITContentRuleHashtable.clear();
+		dITStructureRuleHashtable.clear();
+		dITStructureRuleIDHashtable.clear();
+		nameFormHashtable.clear();
 
 		try{
 
@@ -201,6 +214,40 @@ public class LDAPSchema {
           								syntaxHashtable.put(syntaxSchema.getID(), syntaxSchema );
 									}
 								}
+								else if(attrName.equals("dITContentRules")){
+									enumString = attr.getStringValues();
+									String value;
+									LDAPDITContentRuleSchema dITContentRuleSchema;
+									while(enumString.hasMoreElements())
+									{
+										value = (String) enumString.nextElement();
+										dITContentRuleSchema = new LDAPDITContentRuleSchema( value );
+          								dITContentRuleHashtable.put(dITContentRuleSchema.getName(), dITContentRuleSchema );
+									}
+								}
+								else if(attrName.equals("dITStructureRules")){
+									enumString = attr.getStringValues();
+									String value;
+									LDAPDITStructureRuleSchema dITStructureRuleSchema;
+									while(enumString.hasMoreElements())
+									{
+										value = (String) enumString.nextElement();
+										dITStructureRuleSchema = new LDAPDITStructureRuleSchema( value );
+          								dITStructureRuleHashtable.put(dITStructureRuleSchema.getName(), dITStructureRuleSchema );
+										dITStructureRuleIDHashtable.put(dITStructureRuleSchema.getID(), dITStructureRuleSchema );
+									}
+								}
+								else if(attrName.equals("nameForms")){
+									enumString = attr.getStringValues();
+									String value;
+									LDAPNameFormSchema nameFormSchema;
+									while(enumString.hasMoreElements())
+									{
+										value = (String) enumString.nextElement();
+										nameFormSchema = new LDAPNameFormSchema( value );
+          								nameFormHashtable.put(nameFormSchema.getID(), nameFormSchema );
+									}
+								}
 								else{
 									enumString = attr.getStringValues();
 									String value;
@@ -299,7 +346,9 @@ public class LDAPSchema {
     */
    public LDAPDITStructureRuleSchema getDITStructureRule( String name ) {
 
-      throw new RuntimeException("Method LDAPSchema.getDITStructureRule not implemented");
+      if( dITStructureRuleHashtable.isEmpty() == true || dITStructureRuleHashtable.containsKey(name) == false)
+      	return null;
+      return (LDAPDITStructureRuleSchema) dITStructureRuleHashtable.get(name);
 
    }
 
@@ -313,7 +362,10 @@ public class LDAPSchema {
     */
    public LDAPDITStructureRuleSchema getDITStructureRule( int ID ) {
 
-      throw new RuntimeException("Method LDAPSchema.getDITStructureRule not implemented");
+		Integer IDKey = new Integer(ID);
+      if( dITStructureRuleIDHashtable.isEmpty() == true || dITStructureRuleIDHashtable.containsKey(IDKey) == false)
+      	return null;
+      return (LDAPDITStructureRuleSchema) dITStructureRuleIDHashtable.get(IDKey);
 
    }
 
@@ -327,7 +379,9 @@ public class LDAPSchema {
     */
    public LDAPDITContentRuleSchema getDITContentRule( String name ) {
 
-      throw new RuntimeException("Method LDAPSchema.getDITContentRule not implemented");
+      if( dITContentRuleHashtable.isEmpty() == true || dITContentRuleHashtable.containsKey(name) == false)
+      	return null;
+      return (LDAPDITContentRuleSchema) dITContentRuleHashtable.get(name);
 
    }
 
@@ -341,7 +395,9 @@ public class LDAPSchema {
     */
    public LDAPNameFormSchema getNameForm( String name ) {
 
-      throw new RuntimeException("Method LDAPSchema.getNameForm not implemented");
+      if( nameFormHashtable.isEmpty() == true || nameFormHashtable.containsKey(name) == false)
+      	return null;
+      return (LDAPNameFormSchema) nameFormHashtable.get(name);
 
    }
 
@@ -403,7 +459,7 @@ public class LDAPSchema {
     * @return An enumeration of DIT structure rule definitions.
     */
    public Enumeration getDITStructureRules() {
-      throw new RuntimeException("Method LDAPSchema.getDITStructureRules not implemented");
+      return dITStructureRuleHashtable.elements();
    }
 
    /**
@@ -412,7 +468,7 @@ public class LDAPSchema {
     * @return An enumeration of DIT content rule definitions.
     */
    public Enumeration getDITContentRules() {
-      throw new RuntimeException("Method LDAPSchema.getDITContentRules not implemented");
+      return dITContentRuleHashtable.elements();
    }
    
    /**
@@ -421,7 +477,7 @@ public class LDAPSchema {
     * @return An enumeration of name form definitions.
     */
    public Enumeration getNameForms() {
-      throw new RuntimeException("Method LDAPSchema.getNameForms not implemented");
+      return nameFormHashtable.elements();
    }
    
    /**
@@ -475,7 +531,7 @@ public class LDAPSchema {
     * @return An enumeration of DIT structure rule names.
     */
    public Enumeration getDITStructureRuleNames() {
-      throw new RuntimeException("Method LDAPSchema.getDITStructureRuleNames not implemented");
+      return dITStructureRuleHashtable.keys();
    }
 
   /**
@@ -484,7 +540,7 @@ public class LDAPSchema {
     * @return An enumeration of DIT content rule names.
     */
    public Enumeration getDITContentRuleNames() {
-      throw new RuntimeException("Method LDAPSchema.getDITContentRuleNames not implemented");
+      return dITContentRuleHashtable.keys();
    }
    
   /**
@@ -493,6 +549,6 @@ public class LDAPSchema {
     * @return An enumeration of name form names.
     */
    public Enumeration getNameFormNames() {
-      throw new RuntimeException("Method LDAPSchema.getNameFormNames not implemented");
+      return nameFormHashtable.keys();
    } 	
 }
