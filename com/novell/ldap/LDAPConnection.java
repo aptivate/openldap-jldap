@@ -746,7 +746,7 @@ public class LDAPConnection implements Cloneable
 
             // send tls message
             LDAPResponseQueue queue =
-                    sendRequest(
+                    sendRequestToServer(
                         startTLS,
                         defSearchCons.getTimeLimit(), null, null );
 
@@ -1075,7 +1075,7 @@ public class LDAPConnection implements Cloneable
 
         LDAPMessage msg = new LDAPAddRequest( entry, cons.getControls());
 
-        return sendRequest(msg, cons.getTimeLimit(), queue, null);
+        return sendRequestToServer(msg, cons.getTimeLimit(), queue, null);
     }
 
     //*************************************************************************
@@ -1437,7 +1437,7 @@ public class LDAPConnection implements Cloneable
         // The semaphore is released when the bind response is queued.
         conn.acquireWriteSemaphore( msgId);
 
-        return sendRequest( msg,cons.getTimeLimit(), queue, bindProps);
+        return sendRequestToServer( msg,cons.getTimeLimit(), queue, bindProps);
     }
 
     //*************************************************************************
@@ -1821,7 +1821,7 @@ public class LDAPConnection implements Cloneable
                                                   attr.getByteValue(),
                                                   cons.getControls());
 
-        return sendRequest(msg, cons.getTimeLimit(), queue, null);
+        return sendRequestToServer(msg, cons.getTimeLimit(), queue, null);
     }
 
     //*************************************************************************
@@ -2016,7 +2016,7 @@ public class LDAPConnection implements Cloneable
 
         LDAPMessage msg = new LDAPDeleteRequest( dn, cons.getControls());
 
-        return sendRequest(msg, cons.getTimeLimit(), queue, null);
+        return sendRequestToServer(msg, cons.getTimeLimit(), queue, null);
     }
 
     //*************************************************************************
@@ -2224,7 +2224,7 @@ public class LDAPConnection implements Cloneable
         if(cons == null)
             cons = defSearchCons;
         LDAPMessage msg = makeExtendedOperation(op, cons);
-        return sendRequest(msg, cons.getTimeLimit(), queue, null);
+        return sendRequestToServer(msg, cons.getTimeLimit(), queue, null);
     }
 
     /**
@@ -2590,7 +2590,7 @@ public class LDAPConnection implements Cloneable
 
         LDAPMessage msg = new LDAPModifyRequest( dn, mods, cons.getControls());
 
-        return sendRequest(msg, cons.getTimeLimit(), queue, null);
+        return sendRequestToServer(msg, cons.getTimeLimit(), queue, null);
     }
 
     //*************************************************************************
@@ -3047,7 +3047,7 @@ public class LDAPConnection implements Cloneable
         LDAPMessage msg = new LDAPModifyDNRequest( dn, newRdn, newParentdn,
                                 deleteOldRdn, cons.getControls());
 
-        return sendRequest(msg, cons.getTimeLimit(), queue, null);
+        return sendRequestToServer(msg, cons.getTimeLimit(), queue, null);
     }
 
     //*************************************************************************
@@ -3337,36 +3337,43 @@ public class LDAPConnection implements Cloneable
     }
     
     /**
-     * Apply the LDAP search request indicated by the LDAP request object to a
-     * directory.
+     * Sends an LDAP request to a directory server.
      *
-     * <p>the LDAP requests can be LDAPAdd, LDAPdelete, LDAPModDN,
-     * or LDAPModify</p>
+     * <p>The specified the LDAP request is sent to the directory server
+     * associated with this connection. An LDAP request object is an 
+     * {@link LDAPMessage} with the operation type set to one of the request
+     * types. You can build a request by using the request classes found in the
+     * {@link com.novell.ldap.message } package</p>
      *
-     * @param request   The LDAPMessage to send
+     * @param request The LDAP request to send to the directory server.
      * @param queue     The queue to be used for receipt of results
-     * @param cons      Any constraings to apply to this request
+     * @param cons    The constraints that apply to this request
+     * @exception     LDAPException A general exception which includes an error
+     *                message and an LDAP error code.
      *
-     * @exception    LDAPException A general exception which includes an error
-     *               message and an LDAP error code.
+     * @see LDAPMessage#getType()
+     * @see LDAPMessage#isRequest()
      */
-    public LDAPMessageQueue applyToDIT( LDAPMessage request,
-                            LDAPMessageQueue queue,
-                            LDAPConstraints cons)
+    public LDAPMessageQueue sendRequest( LDAPMessage request,
+                                         LDAPMessageQueue queue,
+                                         LDAPConstraints cons)
             throws LDAPException
     {
 
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.apiRequests, name +
-            "applyToDIT(" + request.toString() + ")");
+            "sendRequest(" + request.toString() + ")");
         }
         
         if( ! request.isRequest() ) {
             throw new RuntimeException( "Object is not a request message");
         }
-        if(cons == null)
+        
+        if(cons == null) {
             cons = defSearchCons;
+        }
 
+        // Get the correct queue for a search request
         MessageAgent agent;
         LDAPMessageQueue myqueue = queue;
         if(myqueue == null) {
@@ -3383,7 +3390,7 @@ public class LDAPConnection implements Cloneable
                 agent = ((LDAPResponseQueue)queue).getMessageAgent();
             }
         }
-
+        
         try {
             agent.sendMessage( conn, request, cons.getTimeLimit(), myqueue, null);
         } catch(LDAPException lex) {
@@ -3393,33 +3400,41 @@ public class LDAPConnection implements Cloneable
     }
 
     /**
-     * Apply the LDAP request indicated by the LDAPRequest object to a
-     * directory.
+     * Sends an LDAP request to a directory server.
      *
-     * <p>the LDAP requests can be LDAPAdd, LDAPdelete, LDAPModDN,
-     * or LDAPModify</p>
+     * <p>The specified the LDAP request is sent to the directory server
+     * associated with this connection. An LDAP request object is an 
+     * {@link LDAPMessage} with the operation type set to one of the request
+     * types. You can build a request by using the request classes found in the
+     * {@link com.novell.ldap.message } package</p>
      *
-     * @param request The LDAPRequest object which represents a specific
-     *               LDAP request
-     * @param cons The constraints to apply to this request
-     * @exception    LDAPException A general exception which includes an error
-     *               message and an LDAP error code.
+     * @param request The LDAP request to send to the directory server.
+     * @param cons    The constraints that apply to this request
+     * @exception     LDAPException A general exception which includes an error
+     *              message and an LDAP error code.
+     *
+     * @see LDAPMessage#getType()
+     * @see LDAPMessage#isRequest()
      */
-    public LDAPResponseQueue applyToDIT( LDAPMessage request,
-                                         LDAPConstraints cons)
+    public LDAPResponseQueue sendRequest( LDAPMessage request,
+                                          LDAPConstraints cons)
             throws LDAPException
     {
-
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.apiRequests, name +
-            "applyToDIT(" + request.toString() + ")");
+            "sendRequest(" + request.toString() + ")");
         }
-        if(cons == null)
-            cons = defSearchCons;
+        
         if( ! request.isRequest() ) {
-            throw new RuntimeException( "Object is not a request message");
+            throw new IllegalArgumentException(
+                        "LDAPMessage object is not a request message");
         }
-        return sendRequest(request, cons.getTimeLimit(), null, null);
+        
+        if(cons == null) {
+            cons = defSearchCons;
+        }
+        
+        return sendRequestToServer(request, cons.getTimeLimit(), null, null);
     }
 
     //*************************************************************************
@@ -3427,11 +3442,12 @@ public class LDAPConnection implements Cloneable
     //*************************************************************************
 
     /**
-     * get an LDAPResponseQueue for this request and send request
+     * Locates the appropriate message agent and sends
+     * the LDAP request to a directory server.
      *
      * @param msg the message to send
      *<br><br>
-     * @param msg the timeout value
+     * @param timeout the timeout value
      *<br><br>
      * @param queue the response queue or null
      *
@@ -3440,7 +3456,7 @@ public class LDAPConnection implements Cloneable
      *  @exception LDAPException A general exception which includes an error
      *  message and an LDAP error code.
      */
-    private LDAPResponseQueue sendRequest( LDAPMessage msg,
+    private LDAPResponseQueue sendRequestToServer( LDAPMessage msg,
                                            int timeout,
                                            LDAPResponseQueue queue,
                                            BindProperties bindProps)

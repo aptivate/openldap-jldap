@@ -604,7 +604,7 @@ public class LDAPMessage
      * <p>To set a value in a server request, for example an 
      * {@link LDAPSearchRequest}, you must create the object,
      * set the tag, and use the
-     * {@link LDAPConnection#applyToDIT LDAPConnection.applyToDIT()}
+     * {@link LDAPConnection#sendRequest LDAPConnection.sendRequest()}
      * method to send it to the server.</p>
      *
      * @param stringTag  the String assigned to identify this message.
