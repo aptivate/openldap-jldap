@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPControl.java,v 1.28 2001/07/20 19:49:39 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPControl.java,v 1.29 2001/07/25 23:42:03 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -40,69 +40,6 @@ import com.novell.ldap.rfc2251.*;
 public class LDAPControl implements Cloneable {
 
     private static RespControlVector registeredControls = new RespControlVector(5, 5);
-
-    /* This is where we register the control responses that this version
-     * of the SDK implements */
-    static {
-
-		/* Register the Server Sort Control class which is returned by the server
-		 * in response to a Sort Request
-		 */
-        try {
-            Class sortControlName = Class.forName("com.novell.ldap.controls.LDAPSortResponse");
-            LDAPControl.register(LDAPSortResponse.OID, sortControlName);
-            if( Debug.LDAP_DEBUG) {
-                Debug.trace( Debug.controls, "Registered Sort Control Response Class");
-            }
-
-        } catch (ClassNotFoundException e) {
-            if( Debug.LDAP_DEBUG) {
-                Debug.trace( Debug.controls, "Could not register Sort Control Response - Class not found");
-            }
-        }
-
-		/* Register the VLV Sort Control class which is returned by the server
-		 * in response to a VLV Sort Request
-		 */
-		try {
-            Class vlvControlName = Class.forName("com.novell.ldap.controls.LDAPVirtualListResponse");
-            LDAPControl.register(LDAPVirtualListResponse.OID, vlvControlName);
-            if( Debug.LDAP_DEBUG) {
-                Debug.trace( Debug.controls, "Registered VLV Control Response Class");
-            }
-
-        } catch (ClassNotFoundException e) {
-            if( Debug.LDAP_DEBUG) {
-                Debug.trace( Debug.controls, "Could not register VLV Control Response - Class not found");
-            }
-        }
-
-		/* Register the Entry Change control class which is returned by the server
-		 * in response to a persistent search request
-		 */
-		try
-		{
-			// Register LDAPEntryChangeControl
-			LDAPControl.register(LDAPEntryChangeControl.OID,
-			 Class.forName("com.novell.ldap.controls.LDAPEntryChangeControl"));
-			if( Debug.LDAP_DEBUG)
-			{
-				Debug.trace( Debug.controls,
-							 "Registered class for Entry Change control.");
-			}
-		}
-		catch (ClassNotFoundException e)
-		{
-			if( Debug.LDAP_DEBUG)
-			{
-				Debug.trace( Debug.controls,
-				 "Could not register class for Entry Change control" +
-				 " - class not found");
-			}
-		}
-
-
-    }
 
     private RfcControl control; // An RFC 2251 Control
 
