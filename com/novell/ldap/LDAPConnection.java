@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.55 2000/11/09 23:50:37 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.56 2000/11/10 16:50:01 vtag Exp $
 *
 * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
 * 
@@ -48,6 +48,7 @@ public class LDAPConnection implements Cloneable
    private String authenticationDN = null;
    private String authenticationMethod = "none";
    private Hashtable authenticationHash = null;
+   private LDAPControl[] responseCtls = null;
 
     /**
      * Used with search to specify that the scope of entrys to search is to 
@@ -2052,7 +2053,7 @@ public class LDAPConnection implements Cloneable
     */
    public LDAPControl[] getResponseControls()
    {
-      throw new RuntimeException("Method LDAPConnection.getResponseControls() not implemented");
+      return responseCtls;
    }
 
     //*************************************************************************
