@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/client/MessageAgent.java,v 1.14 2001/05/01 21:57:14 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/client/MessageAgent.java,v 1.15 2001/05/02 18:04:03 vtag Exp $
 *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -153,8 +153,8 @@ public class MessageAgent
         try {
             // Send abandon request and remove from connection list
             info = messages.findMessageById( msgId);
-            info.abandon( cons, null);
             messages.removeElement( info);  // This message is now dead
+            info.abandon( cons, null);
 
             if( Debug.LDAP_DEBUG) {
                 Debug.trace( Debug.messages, name +
@@ -175,7 +175,6 @@ public class MessageAgent
     /**
      * Abandon all requests on this MessageAgent
      */
-     // ????????? needs synchronization on messages
     public void abandonAll()
     {
         int size = messages.size();
@@ -189,8 +188,8 @@ public class MessageAgent
                 Debug.trace( Debug.messages, name +
                 "abandonAll: Removing abandoned Message(" + info.getMessageID() + ")");
             }
-            info.abandon( null, null);
             messages.removeElement( info);
+            info.abandon( null, null);
         }
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.messages, name +

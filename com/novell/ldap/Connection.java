@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.48 2001/04/18 17:09:29 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.49 2001/04/19 18:40:34 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -435,18 +435,26 @@ public final class Connection implements Runnable
             conn = new Connection( null );
         } else {
             if( in != null) {
-                // Not a clone and connected, destroy old connection
+                // Not a clone and connected
                 if( Debug.LDAP_DEBUG) {
                     Debug.trace( Debug.messages, name +
                         "destroyClone(" + cloneCount + ") destroy old connection");
                 }
-
-                // Connection closed
+                /*
+                 * Either the application has called disconnect or connect
+                 * resulting in the current connection being closed. If the
+                 * application has any listeners waiting on messages, we
+                 * need wake these up so the application does not hang.
+                 * The boolean flag indicates whether the close came
+                 * from an API call or from the objecting being finalized.
+                 */
                 LocalException notify = new LocalException(
                     (how ? LDAPExceptionMessageResource.CONNECTION_CLOSED :
                            LDAPExceptionMessageResource.CONNECTION_FINALIZED),
                            new Object[] { host, new Integer(port)},
                            LDAPException.CONNECT_ERROR, null, null);
+
+                // Destroy old connection
                 shutdown("destroy clone", 0, notify);
             } else {
             }
