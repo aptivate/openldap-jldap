@@ -1,47 +1,47 @@
 package com.novell.ldap;
 
-/** 
+/* 
  * 4.10 public class LDAPDITStructureRuleSchema
  * extends LDAPSchemaElement
  */
 
 /**
- * The LDAPDITStructureRuleSchema class represents the definition of a
- * DIT Structure Rule. It is used to discover or modify which object
- * classes a particular object class may be subordinate to in the DIT.
- * See RFC2252 for a description of DIT structure rule representation in
- * LDAP.
+ * Represents the definition of a DIT Structure Rule.
+ *  
+ * <p>The LDAPDITStructureRuleSchema class is used to discover or modify which 
+ * object classes a particular object class may be subordinate to in the DIT.</p>
+ * 
  */
 
 public class LDAPDITStructureRuleSchema
                 extends LDAPSchemaElement
 {
     /**  Constructs a DIT structure rule for adding to or deleting from the
-     * schema.
+     *   schema.
      *
-     * @parameter name    Name of the structure rule.
-     *
-     * @param ruleID      Unique identifier of the structure rule. NOTE:
+     * @parameter name    The name of the structure rule.
+     *<br><br>
+     * @param ruleID      The unique identifier of the structure rule. NOTE:
      *                    this is an integer, not a dotted numerical
      *                    identifier. Structure rules aren't identified
      *                    by OID.
-     *
-     * @param description Optional description of the structure rule.
-     *
-     * @param obsolete    true if the structure rule is obsolete.
-     *
+     *<br><br>
+     * @param description An optional description of the structure rule.
+     *<br><br>
+     * @param obsolete    True if the structure rule is obsolete.
+     *<br><br>
      * @param nameForm    Either the identifier or name of a name form.
      *                    This is used to indirectly refer to the object
      *                    class that this structure rule applies to.
-     *
-     * @param superiorIDs List of superior structure rules - specified
+     *<br><br>
+     * @param superiorIDs A list of superior structure rules - specified
      *                    by their integer ID. The object class
      *                    specified by this structure rule (via the
      *                    nameForm parameter) may only be subordinate in
      *                    the DIT to object classes of those represented
-     *                    by the structure rules here; may be null.
-     *
-     * @param aliases     Optional list of additional names by which the
+     *                    by the structure rules here; it may be null.
+     *<br><br>
+     * @param aliases     An optional list of additional names by which the
      *                    structure rule may be known; null if there are
      *                    no aliases.
      *
@@ -58,11 +58,11 @@ public class LDAPDITStructureRuleSchema
     }
 
     /** 
-     * Constructs a DIT structure rule from the raw String value returned on
-     * a schema query for "dITStructureRules".
+     * Constructs a DIT structure rule from the raw string value returned from
+     * a schema query for dITStructureRules.
      *
-     * @param raw         The raw String value returned on a Directory
-     *                    query for "dITStructureRules".
+     * @param raw         The raw string value returned from a schema
+     *                    query for dITStructureRules.
      */
     public LDAPDITStructureRuleSchema(String raw)
     {
@@ -70,12 +70,14 @@ public class LDAPDITStructureRuleSchema
     }
 
     /**
-     * Returns the rule ID for this structure rule. Note that this returns
-     * an integer rather than a dotted decimal OID. Objects of this class do
-     * not have an OID, thus getID will return null.
-     * public int getRuleID()
+     * Returns the rule ID for this structure rule. 
      *
-     * @return the rule ID for this structure rule.
+     * <p>The getRuleID method returns an integer rather than a dotted
+     * decimal OID. Objects of this class do not have an OID,
+     * thus getID can return null. </p>
+     * 
+     *
+     * @return The rule ID for this structure rule.
      */
 
     public int getRuleID()
@@ -84,12 +86,12 @@ public class LDAPDITStructureRuleSchema
     }
 
     /**
-     * Returns the NameForm that this structure rule controls. You can get
-     * the actual object class that this structure rule controls by calling
-     * getNameForm().getObjectClass().
-     * public String getNameForm()
+     * Returns the NameForm that this structure rule controls. 
      *
-     * @return the NameForm that this structure rule controls.
+     * <p>You can get the actual object class that this structure rule controls
+     *  by calling the getNameForm.getObjectClass method.</p>
+     *
+     * @return The NameForm that this structure rule controls.
      */
     public String getNameForm()
     {
@@ -98,11 +100,13 @@ public class LDAPDITStructureRuleSchema
 
     /**
      * Returns a list of all structure rules that are superior to this
-     * structure rule. To resolve to an object class, you need to first
-     * resolve the superior id to another structure rule, then call
-     * getNameForm().getObjectClass() on that structure rule.
+     * structure rule. 
      *
-     * @return list of all structure rules that are superior to this structure rule.
+     * <p>To resolve to an object class, you need to first
+     * resolve the superior ID to another structure rule, then call
+     * the getNameForm.getObjectClass method on that structure rule.</p>
+     *
+     * @return A list of all structure rules that are superior to this structure rule.
      */
      public String[] getSuperiors()
      {

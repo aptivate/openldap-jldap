@@ -6,11 +6,11 @@ package com.novell.ldap;
  */
 
 /**
- * The LDAPDITContentRuleSchema class represents the definition of a DIT
- * Content Rule. It is used to discover or modify additional auxiliary
- * classes, mandatory and optional attributes, and restricted attributes
- * in effect for an object class. See RFC2252 for a description of DIT
- * content rule representation in LDAP.
+ *  Represents the definition of a DIT Content Rule.
+ *
+ *  <p>The LDAPDITContentRuleSchema class is used to discover or modify additional 
+ *  auxiliary classes, mandatory and optional attributes, and restricted attributes
+ *  in effect for an object class. </p>
  */
 
 
@@ -21,40 +21,40 @@ public class LDAPDITContentRuleSchema
      * Constructs a DIT content rule for adding to or deleting from the
      * schema.
      *
-     * @param name        Name of the content rule.
-     *
-     * @param oid         Unique Object Identifier of the content rule -
+     * @param name        The name of the content rule.
+     *<br><br>
+     * @param oid         The unique object identifier of the content rule -
      *                    in dotted numerical format.
-     *
-     * @param description Optional description of the content rule.
-     *
-     * @param obsolete    true if the content rule is obsolete.
-     *
+     *<br><br>
+     * @param description The optional description of the content rule.
+     *<br><br>
+     * @param obsolete    True if the content rule is obsolete.
+     *<br><br>
      * @param auxiliary   A list of auxiliary object classes allowed for
      *                    an entry to which this content rule applies.
      *                    These may either be specified by name or
      *                    numeric oid.
-     *
-     * @param required    A list of user attribute types that an entry
+     *<br><br>
+     * @param required    A list of attributes that an entry
      *                    to which this content rule applies must
      *                    contain in addition to its normal set of
-     *                    mandatory attributes. These may either be
-     *                    specified by name or numeric oid.
-     *
-     * @param optional    A list of user attribute types that an entry
+     *                    mandatory attributes. These attributes may be
+     *                    specified by either name or numeric oid.
+     *<br><br>
+     * @param optional    A list of attributes that an entry
      *                    to which this content rule applies may contain
      *                    in addition to its normal set of optional
-     *                    attributes. These may either be specified by
-     *                    name or numeric oid.
-     *
+     *                    attributes. These attributes may be specified by
+     *                    either name or numeric oid.
+     *<br><br>
      * @param precluded   A list, consisting of a subset of the optional
-     *                    user attribute types of the structural and
+     *                    attributes of the structural and
      *                    auxiliary object classes which are precluded
      *                    from an entry to which this content rule
-     *                    applies. These may either be specified by name
+     *                    applies. These may be specified by either name
      *                    or numeric oid.
-     *
-     * @param aliases     Optional list of additional names by which the
+     *<br><br>
+     * @param aliases     An optional list of additional names by which the
      *                    content rule may be known; null if there are
      *                    no aliases.
      */
@@ -72,10 +72,11 @@ public class LDAPDITContentRuleSchema
     }
 
     /**
-     * Constructs a DIT content rule from the raw String value returned on a
-     * schema query for "dITContentRules".
+     * Constructs a DIT content rule from the raw string value returned from a
+     * schema query for dITContentRules.
      *
-     * @param raw         The raw String value returned on a Directory
+     * @param raw         The raw string value returned from a schema query 
+     *                    for content rules.
      */
     public LDAPDITContentRuleSchema(String raw)
     {
@@ -85,7 +86,7 @@ public class LDAPDITContentRuleSchema
     /**
      * Returns the list of allowed auxiliary classes.
      *
-     * @return the list of allowed auxiliary classes.
+     * @return The list of allowed auxiliary classes.
      */
     public String[] getAuxiliaryClasses()
     {
@@ -96,7 +97,7 @@ public class LDAPDITContentRuleSchema
      * Returns the list of additional required attributes for an entry
      * controlled by this content rule.
      *
-     * @return the list of additional required attributes
+     * @return The list of additional required attributes.
      */
     public String[] getRequiredAttributes()
     {
@@ -107,7 +108,7 @@ public class LDAPDITContentRuleSchema
      * Returns the list of additional optional attributes for an entry
      * controlled by this content rule.
      *
-     * @return the list of additional optional attributes
+     * @return The list of additional optional attributes.
      */
     public String[] getOptionalAttributes()
     {
@@ -118,7 +119,7 @@ public class LDAPDITContentRuleSchema
      * Returns the list of precluded attributes for an entry controlled by
      * this content rule.
      *
-     * @return the list of precluded attributes
+     * @return The list of precluded attributes.
      */
     public String[]getPrecludedAttributes()
     {

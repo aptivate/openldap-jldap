@@ -5,14 +5,15 @@ package com.novell.ldap;
  */
 
 /**
- * The LDAPSyntaxSchema class represents the definition of a syntax. It
- * is used to discover the known set of syntaxes in effect for the
- * subschema. See RFC2252 for a description of syntax representation in
- * LDAP.</br></br>
- * Note that though this extends LDAPSchemaElement, it does not use the
- * name or obsolete members, subsequently calls to getName always return
- * null and isObsolete always returns false. There is also no matching
- * getSyntaxNames method in LDAPSchema.
+ * Represents the definition of a syntax. 
+ *
+ * <p>The LDAPSyntaxSchema class is used to discover the known set of syntaxes 
+ * in effect for the subschema. </p>
+ *
+ * <p>Although this extends LDAPSchemaElement, it does not use the name or 
+ * obsolete members. Therefore, calls to the getName method always return
+ * null and to the isObsolete method always returns false. There is also no 
+ * matching getSyntaxNames method in LDAPSchema. </p>
  */
 
 public class LDAPSyntaxSchema
@@ -20,14 +21,16 @@ public class LDAPSyntaxSchema
 {
 
     /**
-     * Constructs a syntax for adding to or deleting from the schema. Note
-     * that adding and removing syntaxes is not typically a supported
-     * feature of LDAP servers.
+     * Constructs a syntax for adding to or deleting from the schema. 
      *
-     * @param oid         Unique Object Identifier of the syntax - in
+     * <p>Adding and removing syntaxes is not typically a supported
+     * feature of LDAP servers. NDS does not allow syntaxes to be added
+     * or removed.</p>
+     *
+     * @param oid         The unique object identifier of the syntax - in
      *                    dotted numerical format.</br></br>
      *
-     * @param description Optional description of the syntax.
+     * @param description An optional description of the syntax.
      */
     public LDAPSyntaxSchema(String oid,
                            String description)
@@ -36,11 +39,11 @@ public class LDAPSyntaxSchema
     }
 
     /**
-     * Constructs a syntax from the raw String value returned on a schema
-     * query for "LDAPSyntaxes".
+     * Constructs a syntax from the raw string value returned on a schema
+     * query for LDAPSyntaxes.
      *
-     * @param raw           The raw String value returned on a Directory
-     *                      query for "ldapSyntaxes".
+     * @param raw           The raw string value returned from a schema
+     *                      query for ldapSyntaxes.
      */
     public LDAPSyntaxSchema(String raw)
     {
