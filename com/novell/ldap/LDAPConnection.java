@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: LDAPConnection.java,v 1.8 2000/04/10 21:21:08 bgudmundson Exp $
+ * $Id: LDAPConnection.java,v 1.10 2000/07/25 20:42:50 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -1528,7 +1528,14 @@ public class LDAPConnection implements
 		// Call asynchronous API and get back handler to reponse listener
 		LDAPResponseListener listener = extendedOperation(op, (LDAPResponseListener)null, cons);
 		
-		listener.getResponse().chkResultCode();
+		LDAPExtendedResponse response = (LDAPExtendedResponse) listener.getResponse();
+
+		if (response != null) {
+			String tempOID = response.getID();
+			byte [] tempVal = response.getValue();
+			LDAPExtendedOperation result = new LDAPExtendedOperation(tempOID, tempVal);
+			return result;
+		}
 
 		return null;
 	}
