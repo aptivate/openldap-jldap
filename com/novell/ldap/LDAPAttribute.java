@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttribute.java,v 1.14 2000/10/31 23:52:18 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttribute.java,v 1.15 2000/11/02 22:31:42 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -85,7 +85,7 @@ public class LDAPAttribute {
      * @param attrName Name of the attribute.<br><br>
      * @param attrStrings Array of values as strings.
      */
-    public LDAPAttribute(String attrName, String attrStrings[]) {
+    public LDAPAttribute(String attrName, String[] attrStrings) {
         name = attrName;
 
         getSubtypes(attrName);
@@ -111,7 +111,7 @@ public class LDAPAttribute {
      *
      * @param attrBytes Value of the attribute as raw bytes.
      */
-    public void addValue(byte attrBytes[]) {
+    public void addValue(byte[] attrBytes) {
         values.addElement(attrBytes);
     }
 
@@ -341,7 +341,7 @@ public class LDAPAttribute {
      *
      * @param attrBytes    Value of the attribute as raw bytes.
      */
-    public void removeValue(byte attrBytes[]) {
+    public void removeValue(byte[] attrBytes) {
         values.removeElement(attrBytes);
     }
 
