@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.84 2001/03/02 23:10:27 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.85 2001/03/05 15:56:18 javed Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -3572,10 +3572,10 @@ public class LDAPConnection implements Cloneable
                 if( ex instanceof LDAPReferralException) {
                     throw (LDAPReferralException)ex;
                 } else {
+                    
                     // Connecting to referred server
                     LDAPReferralException rex = new LDAPReferralException(
-                        LDAPExceptionMessageResource.REFERRAL_ERROR,
-                        (LDAPException)ex);
+                        LDAPExceptionMessageResource.REFERRAL_ERROR, ex);
                     rex.setReferrals( refs);
                     if( rconn != null) {
                         rex.setFailedReferral( rconn.getConnection().getActiveReferral());
