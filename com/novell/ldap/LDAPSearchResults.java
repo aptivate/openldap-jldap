@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResults.java,v 1.8 2000/08/28 22:18:59 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResults.java,v 1.9 2000/09/12 22:50:13 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -19,8 +19,11 @@ import com.novell.ldap.client.*;
 import java.util.*;
 import java.io.*;
 
-/**
+/*
  * 4.35 public class LDAPSearchResults
+ */
+ 
+/**
  *
  *  Implements an enumeration, thereby providing access to all entries
  *  retrieved during the synchronous search operation.
