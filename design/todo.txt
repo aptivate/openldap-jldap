@@ -16,22 +16,43 @@ Please read:
     http://www.OpenLDAP.org/devel/programming.html
     http://www.OpenLDAP.org/devel/contributing.html
 
-Java LDAP API Projects (not in any order)
+Java LDAP API development that needs to be done (not in any order)
 ---------------------
-    Implement the sasl bind methods in LDAPConnection.
+    - IETF Draft 18 support.  Currently the code is very close to draft 18.
+      Functionality not yet implemented from draft 18:
+         
+        - Implement the sasl bind methods in LDAPConnection.
 
-    IETF Draft 18 support.  Currently the code is somewhere close to draft
-         17.  For the complete list of draft 18 changes, see
-         the file jldap/design/todo-draft17.txt.
+        - Object Serialization. The following objects need to implement
+          Serializable.
+              LDAPAttribute 
+              LDAPAttributeSet 
+              LDAPConstraints 
+              LDAPControl 
+              LDAPEntry 
+              LDAPExtendedOperation 
+              LDAPExtendedResponse 
+              LDAPMessage 
+              LDAPModification 
+              LDAPSchema 
+              LDAPSchemaElement 
+              LDAPUrl 
+            
+        - LDAPExtendedResponse.register method
 
-    Implement a generalized response factory for LDAP Extended responses.
-       We need to implement the new register command for LDAPExtendedResponses. 
-       Right now generation of LDAPExtendedResponse classes is hard coded in
-       com/novell/ldap/client/ExtResponseFactory.java.
+          Implement a generalized response factory for LDAP Extended / Partial
+          Responses.  This includes the implementation of the register
+          method for the LDAPExtendedResponse class. In the current code,
+          instantiation of LDAPExtendedResponse sub-classes is hard coded
+          in the file com/novell/ldap/client/ExtResponseFactory.java.
 
-    Create Utility classes for reading and writing LDIF and/or DSML
+    - Create Utility classes for reading and writing LDIF and/or DSML
+            
+      Design currently in progress for this item.
 
-    Add support for Extended Partial Response
+    - Add support for Extended Partial Response.
+    
+      Must be coordinated with LDAPExtendedResonse.register work above.
     
 Implementation Notes
 --------------------
