@@ -1,6 +1,0 @@
-(1) Code, Compile and Test samples for each extension
-(2) JavaDoc samples
-(3) JavaDoc extension classes
-(6) LDAPListReplicas
-(7) LDAPReplicaInfo
-(8) ReplicationFilter
