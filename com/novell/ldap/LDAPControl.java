@@ -1,8 +1,8 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPControl.java,v 1.17 2000/11/09 23:50:38 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPControl.java,v 1.18 2000/11/10 16:50:02 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
- * 
+ *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
  * TO VERSION 2.0.1 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
@@ -10,7 +10,7 @@
  * IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
  * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.1 OF THE OPENLDAP
  * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
- * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY. 
+ * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
  ***************************************************************************/
 
 package com.novell.ldap;
@@ -19,11 +19,11 @@ import com.novell.ldap.asn1.*;
 import com.novell.ldap.rfc2251.*;
 
 /**
- *  Encapsulates additional optional parameters for an 
+ *  Encapsulates additional optional parameters for an
  *  LDAP operation, either on the server or on the client.
  *
  * <p>If set as a server control, it is sent to the server along with the operation
- * request. If set as a client control, it is not sent to the server, but 
+ * request. If set as a client control, it is not sent to the server, but
  * rather interpreted locally by the client. LDAPControl is an LDAPv3 extension,
  * and is not supported in an LDAPv2 environment.</p>
  */
@@ -35,11 +35,11 @@ public class LDAPControl implements Cloneable {
      * Constructs a new LDAPControl object using the specified values.
      *
      *  @param id     The ID of the control, as a dotted string.
-     *<br><br> 
+     *<br><br>
      *  @param critical   True if the LDAP operation should be discarded if
-     *                    the control is not supported. False if 
+     *                    the control is not supported. False if
      *                    the operation can be processed without the control.
-     *<br><br> 
+     *<br><br>
      *  @param vals     The control-specific data.
      */
     public LDAPControl(String id, boolean critical, byte[] vals)
@@ -49,7 +49,7 @@ public class LDAPControl implements Cloneable {
     }
 
     /**
-     * Create an LDAPControl from an existing control. 
+     * Create an LDAPControl from an existing control.
      */
     /*package*/ LDAPControl(RfcControl control)
     {
@@ -63,7 +63,14 @@ public class LDAPControl implements Cloneable {
      */
     public Object clone()
     {
-       throw new RuntimeException("Method LDAPControl.clone not implemented");
+       byte[] vals = this.getValue();
+       byte[] twin = new byte[vals.length];
+       for(int i = 0; i < vals.length; i++){
+         twin[i]=vals[i];
+       }//is this necessary?  Yes even though the contructor above allocates a
+       //new ASN1OctetString.  vals in that constuctor is only copied by reference
+
+       return (Object)( new LDAPControl(this.getID(), this.isCritical(), twin));
     }
 
     /**
@@ -101,7 +108,7 @@ public class LDAPControl implements Cloneable {
      * Returns whether the control is critical for the operation.
      *
      * @return Returns true if the control must be supported for an associated
-     * operation to be executed, and false if the control is not required for 
+     * operation to be executed, and false if the control is not required for
      * the operation.
      */
     public boolean isCritical()
@@ -122,7 +129,7 @@ public class LDAPControl implements Cloneable {
 
     /**
      * Registers a class to be instantiated on receipt of a control with the
-     * given OID. 
+     * given OID.
      *
      * <p>Any previous registration for the OID is overridden. The
      * controlClass must be an extension of LDAPControl.</p>
