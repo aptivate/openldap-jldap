@@ -702,7 +702,7 @@ public class LDAPException extends Exception
     * ResultCodeMessages.properties
     */
 
-   /*
+   /**
     * Constructs a default exception with no specific error information.
     */
    public LDAPException()
