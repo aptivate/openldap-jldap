@@ -22,7 +22,8 @@ import java.util.Enumeration;
  *
  * Encapsulates parameters of an LDAP URL query as defined in RFC2255.
  *
- * @see com.novell.ldap.LDAPUrl
+ *  @see <a href="../../../../doc/com/novell/ldap/LDAPUrl.html">
+            com.novell.ldap.LDAPUrl</a>
  */
 public class LDAPUrl {
 
@@ -31,7 +32,9 @@ public class LDAPUrl {
     /**
      * Constructs a URL object with the specified string as the URL.
      *
-     * @see com.novell.ldap.LDAPUrl#LDAPUrl(String)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPUrl.html
+            #LDAPUrl(java.lang.String)">
+            com.novell.ldap.LDAPUrl.LDAPUrl(String)</a>
      */
     public LDAPUrl(String url) throws MalformedURLException
     {
@@ -43,7 +46,9 @@ public class LDAPUrl {
     /**
      * Constructs a URL object with the specified host, port, and DN.
      *
-     * @see com.novell.ldap.LDAPUrl#LDAPUrl(String,int,String)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPUrl.html
+            #LDAPUrl(java.lang.String, int, java.lang.String)">
+            com.novell.ldap.LDAPUrl.LDAPUrl(String, int, String)</a>
      */
     public LDAPUrl(String host, int port, String dn)
     {
@@ -55,12 +60,16 @@ public class LDAPUrl {
      * Constructs an LDAP URL with all fields explicitly assigned, to
      * specify an LDAP search operation.
      *
-     * @see com.novell.ldap.LDAPUrl#LDAPUrl(String,int,String)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPUrl.html
+            #LDAPUrl(java.lang.String, int, java.lang.String, 
+            java.lang.String[], int, java.lang.String)">
+            com.novell.ldap.LDAPUrl.LDAPUrl(String, int, String,
+            String[], int, String)</a>
      */
     public LDAPUrl(String host,
                    int port,
                    String dn,
-                   String attrNames[],
+                   String[] attrNames,
                    int scope,
                    String filter)
     {
@@ -81,7 +90,9 @@ public class LDAPUrl {
     /**
      * Decodes a URL-encoded string.
      *
-     * @see com.novell.ldap.LDAPUrl#decode(String)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPUrl.html
+            #decode(java.lang.String)">
+            com.novell.ldap.LDAPUrl.decode(String)</a>
      */
     public static String decode(String URLEncoded)
                         throws MalformedURLException
@@ -92,7 +103,9 @@ public class LDAPUrl {
     /**
      * Encodes an arbitrary string using the URL encoding rules.
      *
-     * @see com.novell.ldap.LDAPUrl#encode(String)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPUrl.html
+            #encode(java.lang.String)">
+            com.novell.ldap.LDAPUrl.encode(String)</a>
      */
     public static String encode(String toEncode)
     {
@@ -102,7 +115,9 @@ public class LDAPUrl {
     /**
      * Returns an array of attribute names specified in the URL.
      *
-     * @see com.novell.ldap.LDAPUrl#getAttributeArray()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPUrl.html
+            #getAttributeArray()">
+            com.novell.ldap.LDAPUrl.getAttributeArray()</a>
      */
     public String[] getAttributeArray() {
 		return url.getAttributeArray();
@@ -111,7 +126,9 @@ public class LDAPUrl {
     /**
      * Returns an enumerator for the attribute names specified in the URL.
      *
-     * @see com.novell.ldap.LDAPUrl#getAttributes()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPUrl.html
+            #getAttributes()">
+            com.novell.ldap.LDAPUrl.getAttributes()</a>
      */
     public Enumeration getAttributes() {
 		return url.getAttributes();
@@ -120,7 +137,9 @@ public class LDAPUrl {
     /**
      * Returns the distinguished name encapsulated in the URL.
      *
-     * @see com.novell.ldap.LDAPUrl#getDN()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPUrl.html
+            #getDN()">
+            com.novell.ldap.LDAPUrl.getDN()</a>
      */
     public String getDN() {
 		return url.getDN();
@@ -130,7 +149,9 @@ public class LDAPUrl {
      * Returns any LDAP URL extensions specified, or null if none are
      * specified.
      *
-     * @see com.novell.ldap.LDAPUrl#getExtensions()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPUrl.html
+            #getExtensions()">
+            com.novell.ldap.LDAPUrl.getExtensions()</a>
      */
     public String[] getExtensions() {
 		return url.getExtensions();
@@ -140,7 +161,9 @@ public class LDAPUrl {
      * Returns the search filter or the default filter
      * (objectclass=*) if none was specified.
      *
-     * @see com.novell.ldap.LDAPUrl#getFilter()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPUrl.html
+            #getFilter()">
+            com.novell.ldap.LDAPUrl.getFilter()</a>
      */
     public String getFilter() {
 		return url.getFilter();
@@ -149,7 +172,9 @@ public class LDAPUrl {
     /**
      * Returns the name of the LDAP server in the URL.
      *
-     * @see com.novell.ldap.LDAPUrl#getHost()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPUrl.html
+            #getHost()">
+            com.novell.ldap.LDAPUrl.getHost()</a>
      */
     public String getHost() {
 		return url.getHost();
@@ -158,7 +183,9 @@ public class LDAPUrl {
     /**
      * Returns the port number of the LDAP server in the URL.
      *
-     * @see com.novell.ldap.LDAPUrl#getPort()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPUrl.html
+            #getPort()">
+            com.novell.ldap.LDAPUrl.getPort()</a>
      */
     public int getPort()
     {
@@ -168,7 +195,9 @@ public class LDAPUrl {
     /**
      * Returns the depth of search.
      *
-     * @see com.novell.ldap.LDAPUrl#getScope()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPUrl.html
+            #getScope()">
+            com.novell.ldap.LDAPUrl.getScope()</a>
      */
     public int getScope()
     {
@@ -178,7 +207,9 @@ public class LDAPUrl {
     /**
      * Returns a valid string representation of this LDAP URL.
      *
-     * @see com.novell.ldap.LDAPUrl#toString()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPUrl.html
+            #toString()">
+            com.novell.ldap.LDAPUrl.toString()</a>
      */
     public String toString()
     {
