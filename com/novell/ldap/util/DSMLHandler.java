@@ -468,16 +468,16 @@ class DSMLHandler implements ContentHandler, ErrorHandler
                     state = BATCH_REQUEST;
                     try {
                         if (isBase64){
-                            Base64Decoder decode = new Base64Decoder();
+                            Base64 base64 = new Base64();
                             message = new LDAPCompareRequest(dn, attrName,
-                                    decode.decoder(value, 0, value.length()),
+                                    base64.decoder(value, 0, value.length()),
                                     null);
                         }
                         message = new LDAPCompareRequest(dn, attrName,
-                                value.toString().getBytes("UTF8"), null);
+                                value.toString().getBytes("UTF-8"), null);
                     } catch (UnsupportedEncodingException e) {
                         throw new RuntimeException(
-                                "UTF8 not supported by JVM: " + e);
+                                "UTF-8 not supported by JVM: " + e);
                     }
                     queue.add(message);
                     break;
@@ -489,8 +489,8 @@ class DSMLHandler implements ContentHandler, ErrorHandler
                     {
                         byte[] byteValue;
                         if (isBase64){
-                            Base64Decoder decode = new Base64Decoder();
-                            byteValue = decode.decoder(value, 0, value.length());
+                            Base64 base64 = new Base64();
+                            byteValue = base64.decoder(value, 0, value.length());
                         } else {
                             try {
                                 byteValue = value.toString().getBytes("UTF8");
@@ -530,8 +530,8 @@ class DSMLHandler implements ContentHandler, ErrorHandler
                 case X_VALUE:
                     {
                         state = EXTENDED_REQUEST;
-                        Base64Decoder decode = new Base64Decoder();
-                        requestValue = decode.decoder(value, 0, value.length());
+                        Base64 base64 = new Base64();
+                        requestValue = base64.decoder(value, 0, value.length());
                         break;
                     }
                 case VALUE:
