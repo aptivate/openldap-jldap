@@ -176,7 +176,7 @@ public class LDIFWriter extends LDIF implements LDAPExport {
      * Write a LDAP change record into LDIF file. The change operation may
      * be LDAPAdd, LDAPDelete, LDAPN=ModDN, or LDAPModify.
      *
-     * @see LDAPADD
+     * @see LDAPAdd
      * @see LDAPDelete
      * @see LDAPModDN
      * @see LDAPModify
@@ -228,7 +228,7 @@ public class LDIFWriter extends LDIF implements LDAPExport {
      * Write a number of LDAP change record into LDIF file. The change operation
      * may be LDAPAdd, LDAPDelete, LDAPN=ModDN, or LDAPModify.
      *
-     * @see LDAPADD
+     * @see LDAPAdd
      * @see LDAPDelete
      * @see LDAPModDN
      * @see LDAPModify
