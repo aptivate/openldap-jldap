@@ -18,7 +18,7 @@ import com.novell.ldap.asn1.*;
 import com.novell.ldap.*;
 import com.novell.ldap.resources.*;
 
-/**
+/* 
  *       AbandonRequest ::= [APPLICATION 16] MessageID
  */
 public class RfcAbandonRequest extends RfcMessageID implements RfcRequest {
@@ -61,5 +61,9 @@ public class RfcAbandonRequest extends RfcMessageID implements RfcRequest {
                     ExceptionMessages.NO_DUP_REQUEST,
                     new Object[] { "abandon" },
                     LDAPException.LDAP_NOT_SUPPORTED);
+    }
+    public String getRequestDN()
+    {
+        return null;
     }
 }

@@ -19,7 +19,7 @@ import com.novell.ldap.asn1.*;
 import com.novell.ldap.*;
 import com.novell.ldap.resources.*;
 
-/**
+/* 
  *       DelRequest ::= [APPLICATION 10] LDAPDN
  */
 public class RfcDelRequest extends RfcLDAPDN implements RfcRequest {
@@ -69,5 +69,9 @@ public class RfcDelRequest extends RfcLDAPDN implements RfcRequest {
         } else {
             return new RfcDelRequest( base);
         }
+    }
+    public String getRequestDN()
+    {
+        return super.getString();
     }
 }

@@ -20,7 +20,7 @@ import com.novell.ldap.asn1.*;
 import com.novell.ldap.*;
 import com.novell.ldap.resources.*;
 
-/**
+/* 
  *       ExtendedRequest ::= [APPLICATION 23] SEQUENCE {
  *               requestName      [0] LDAPOID,
  *               requestValue     [1] OCTET STRING OPTIONAL }
@@ -103,5 +103,9 @@ public class RfcExtendedRequest extends ASN1Sequence implements RfcRequest {
     {
         // Just dup the original request
         return new RfcExtendedRequest( getContent());
+    }
+    public String getRequestDN()
+    {
+        return null;
     }
 }

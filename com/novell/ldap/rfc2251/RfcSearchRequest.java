@@ -20,7 +20,7 @@ import com.novell.ldap.asn1.*;
 import com.novell.ldap.client.Debug;
 import java.util.ArrayList;
 
-/**
+/* 
  *       SearchRequest ::= [APPLICATION 3] SEQUENCE {
  *               baseObject      LDAPDN,
  *               scope           ENUMERATED {
@@ -44,7 +44,7 @@ public class RfcSearchRequest extends ASN1Sequence implements RfcRequest {
 	// Constructors for SearchRequest
 	//*************************************************************************
 
-	/**
+	/*
 	 *
 	 */
 	public RfcSearchRequest(RfcLDAPDN baseObject, ASN1Enumerated scope,
@@ -117,5 +117,9 @@ public class RfcSearchRequest extends ASN1Sequence implements RfcRequest {
             throws LDAPException
     {
         return new RfcSearchRequest( content, base, filter, request);
+    }
+    public String getRequestDN()
+    {
+        return ((RfcLDAPDN)getContent().get(0)).getString();
     }
 }

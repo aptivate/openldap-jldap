@@ -20,7 +20,7 @@ import com.novell.ldap.asn1.*;
 import com.novell.ldap.*;
 import com.novell.ldap.resources.*;
 
-/**
+/* 
  *       AddRequest ::= [APPLICATION 8] SEQUENCE {
  *               entry           LDAPDN,
  *               attributes      AttributeList }
@@ -99,5 +99,9 @@ public class RfcAddRequest extends ASN1Sequence implements RfcRequest {
             throws LDAPException
     {
         return new RfcAddRequest( content, base);
+    }
+    public String getRequestDN()
+    {
+        return ((RfcLDAPDN)getContent().get(0)).getString();
     }
 }

@@ -20,7 +20,7 @@ import com.novell.ldap.asn1.*;
 import com.novell.ldap.*;
 import com.novell.ldap.resources.*;
 
-/**
+/* 
  *       CompareRequest ::= [APPLICATION 14] SEQUENCE {
  *               entry           LDAPDN,
  *               ava             AttributeValueAssertion }
@@ -76,5 +76,9 @@ public class RfcCompareRequest extends ASN1Sequence implements RfcRequest {
             throws LDAPException
     {
         return new RfcCompareRequest( content, base);
+    }
+    public String getRequestDN()
+    {
+        return ((RfcLDAPDN)getContent().get(0)).getString();
     }
 }

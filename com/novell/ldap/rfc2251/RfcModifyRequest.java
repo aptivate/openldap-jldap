@@ -20,7 +20,7 @@ import com.novell.ldap.asn1.*;
 import com.novell.ldap.*;
 import com.novell.ldap.resources.*;
 
-/**
+/* 
  *       ModifyRequest ::= [APPLICATION 6] SEQUENCE {
  *               object          LDAPDN,
  *               modification    SEQUENCE OF SEQUENCE {
@@ -81,5 +81,9 @@ public class RfcModifyRequest extends ASN1Sequence implements RfcRequest {
             throws LDAPException
     {
         return new RfcModifyRequest( content, base);
+    }
+    public String getRequestDN()
+    {
+        return ((RfcLDAPDN)getContent().get(0)).getString();
     }
 }

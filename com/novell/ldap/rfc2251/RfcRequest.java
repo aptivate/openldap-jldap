@@ -16,7 +16,7 @@ package com.novell.ldap.rfc2251;
 
 import com.novell.ldap.LDAPException;
 
-/**
+/* 
  * This interface represents Protocol Operations that are requests from a
  * client.
  */
@@ -26,4 +26,9 @@ public interface RfcRequest {
      */
     public RfcRequest dupRequest(String base, String filter, boolean reference)
         throws LDAPException;
+        
+    /**
+     * Builds a new request using the data from the this object.
+     */ 
+    public String getRequestDN();
 }

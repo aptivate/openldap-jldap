@@ -20,7 +20,7 @@ import com.novell.ldap.asn1.*;
 import com.novell.ldap.*;
 import com.novell.ldap.resources.*;
 
-/**
+/*
  *       BindRequest ::= [APPLICATION 0] SEQUENCE {
  *               version                 INTEGER (1 .. 127),
  *               name                    LDAPDN,
@@ -29,8 +29,10 @@ import com.novell.ldap.resources.*;
 public class RfcBindRequest extends ASN1Sequence implements RfcRequest {
 
    /**
-    * ID is added for Optimization. ID needs only be one Value for every instance
-    * Thus we create it only once.
+    * ID is added for Optimization.
+    *
+    * <p>ID needs only be one Value for every instance,
+    * thus we create it only once.<p>
     */
     private static final ASN1Identifier ID =
         new ASN1Identifier(ASN1Identifier.APPLICATION, true, RfcProtocolOp.BIND_REQUEST);
@@ -141,5 +143,9 @@ public class RfcBindRequest extends ASN1Sequence implements RfcRequest {
             throws LDAPException
     {
         return new RfcBindRequest( content, base);
+    }
+    public String getRequestDN()
+    {
+        return ((RfcLDAPDN)getContent().get(1)).getString();
     }
 }
