@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/client/Message.java,v 1.4 2000/12/06 19:30:06 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/client/Message.java,v 1.5 2000/12/14 22:44:29 vtag Exp $
 *
 * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
 * 
@@ -238,8 +238,10 @@ public class Message extends Thread
                 Debug.trace( Debug.messages, name +
                     "Queuing LDAPResult, message complete, status " + res);
             }
+            // Accept no more results for this message
+            // Leave on connection queue so we can abandon if necessary
+            acceptReplies = false;
             complete = true;
-            conn.removeMessage(this);   // Accept no more results for this msg
             if( bindprops != null) {
                 if( Debug.LDAP_DEBUG) {
                     Debug.trace( Debug.messages, name + "Bind properties found");
@@ -310,7 +312,11 @@ public class Message extends Thread
                     msg = replies.remove(0); // Atomic get and remove
                     if( Debug.LDAP_DEBUG) {
                         Debug.trace( Debug.messages, name +
-                            "Get reply from queue");
+                            "Got reply from queue");
+                    }
+                    if( (complete || ! acceptReplies) && replies.isEmpty()) {
+                        // Remove msg from connection queue when last reply read
+                        conn.removeMessage(this);
                     }
                     return msg;
                 } catch( ArrayIndexOutOfBoundsException ex ) {
@@ -352,10 +358,14 @@ public class Message extends Thread
             // it is an atomic get and remove. isEmpty, getFirstElement,
             // and removeElementAt are multiple statements.
             // Another thread could remove the object between statements.
-            msg = replies.remove(0); // Atomic get and remove
             try {
+                msg = replies.remove(0); // Atomic get and remove
                 if( Debug.LDAP_DEBUG) {
                     Debug.trace( Debug.messages, name + "Got reply from queue");
+                }
+                if( (complete || ! acceptReplies) && replies.isEmpty()) {
+                    // Remove msg from connection queue when last reply read
+                    conn.removeMessage(this);
                 }
             } catch( ArrayIndexOutOfBoundsException ex ) {
                 if( Debug.LDAP_DEBUG) {
@@ -385,21 +395,22 @@ public class Message extends Thread
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.messages, name + "Abandon request");
         }
-        try {
-            // Create the abandon message, don't track it. 
-            LDAPMessage msg = new LDAPMessage( new RfcAbandonRequest( msgId));
-            // Send abandon message to server       
-            conn.writeMessage( msg);
-        } catch (IOException ex) {
-            ; // do nothing
+        if( ! complete) {
+            try {
+                // Create the abandon message, but don't track it. 
+                LDAPMessage msg = new LDAPMessage( new RfcAbandonRequest( msgId));
+                // Send abandon message to server       
+                conn.writeMessage( msg);
+            } catch (IOException ex) {
+                ; // do nothing
+            }
+            // remove message id from Connection list
+            conn.removeMessage( this);
+            complete = true;
         }
-        // remove message id from Connection list
-        conn.removeMessage( this);
-        // Remove message id from agent list
-        agent.removeMessage( this);
         // Get rid of all replies queued
         cleanup();
-        // Wake up any waitin threads
+        // Wake up any waiting threads
         sleepersAwake();
         return;
     }
@@ -442,13 +453,21 @@ public class Message extends Thread
     void cleanup()
     {
         if( Debug.LDAP_DEBUG) {
-            Debug.trace( Debug.messages, "Message: Clean up message " + msgId);
+            Debug.trace( Debug.messages, name + "cleanup");
         }
         try {
             super.finalize();
             acceptReplies = false;
-            conn.removeMessage( this );
+            if( ! complete) {
+                conn.removeMessage( this );
+            }
             // Empty out any accumuluated replies
+            if( Debug.LDAP_DEBUG) {
+                if( ! replies.isEmpty()) {
+                    Debug.trace( Debug.messages, name +
+                        "cleanup: remove " + replies.size() + " replies");
+                }
+            }
             while( ! replies.isEmpty()) {
                 replies.remove(0);
             }

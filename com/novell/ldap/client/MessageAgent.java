@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/client/MessageAgent.java,v 1.3 2000/12/06 19:30:07 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/client/MessageAgent.java,v 1.4 2000/12/14 22:44:30 vtag Exp $
 *
 * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
 * 
@@ -144,10 +144,11 @@ public class MessageAgent
             // Send abandon request and remove from connection list
             info = messages.findMessageById( msgId);
             info.abandon( cons );
-            // Message class has already removed message from my queue
+            // Message complete and no more replies, remove from id list
+            messages.remove( info);
             if( Debug.LDAP_DEBUG) {
                 Debug.trace( Debug.messages, name +
-                "Abandoned Message(" + info.getMessageID() + ")");
+                "getLDAPMessage: Removed abandoned Message(" + info.getMessageID() + ")");
             }
             return;
         } catch( NoSuchFieldException ex ) {
@@ -170,10 +171,11 @@ public class MessageAgent
         for( int i = 0; i < size; i++ ) {
             info = (Message)messages.elementAt(i);
             info.abandon( null );
-            // Message class has already removed message from my queue
+            // Message complete and no more replies, remove from id list
+            messages.remove( info);
             if( Debug.LDAP_DEBUG) {
                 Debug.trace( Debug.messages, name +
-                "Abandoned Message(" + info.getMessageID() + ")");
+                "getLDAPMessage: Removed abandoned Message(" + info.getMessageID() + ")");
             }
         }
         return;        
@@ -257,28 +259,6 @@ public class MessageAgent
     }
                             
     /**
-     * Removes the Message class from the agents list
-     *
-     * info the Message class to remove
-     */
-    /* package */
-    void removeMessage( Message info)
-    {
-        if( ! messages.remove( info )) {
-            if( Debug.LDAP_DEBUG) {
-                Debug.trace( Debug.messages, name +
-                "Message(" + info.getMessageID() + ") " + "NOT removed");
-            }
-        } else {
-            if( Debug.LDAP_DEBUG) {
-                Debug.trace( Debug.messages, name +
-                "Message(" + info.getMessageID() + ") " + "removed");
-            }
-        }
-        return;
-    }
-
-    /**
      * Returns a response queued, or waits if none queued
      *
      */
@@ -295,12 +275,12 @@ public class MessageAgent
                 // Get message for this ID
                 Message info = (Message)messages.findMessageById( msgId.intValue());
                 rfcMsg = (RfcLDAPMessage)info.waitForReply(); // blocks for a response
-                if( info.isComplete() & ! info.hasReplies()) {
+                if( ! info.acceptsReplies() && ! info.hasReplies()) {
                     // Message complete and no more replies, remove from id list
                     messages.remove( info);
                     if( Debug.LDAP_DEBUG) {
                         Debug.trace( Debug.messages, name +
-                        "getLDAPMessage: Remove completed Message(" + info.getMessageID() + ")");
+                        "getLDAPMessage: Remove Message(" + info.getMessageID() + ")");
                     }
                 }
                 return rfcMsg;
@@ -326,12 +306,12 @@ public class MessageAgent
                        try {
                           rfcMsg = (RfcLDAPMessage)info.getReply();
                           indexLastRead = next;
-                          if( info.isComplete() & ! info.hasReplies()) {
+                          if( ! info.acceptsReplies() & ! info.hasReplies()) {
                              // Message complete & no more replies, remove from id list
                              messages.remove( info);
                              if( Debug.LDAP_DEBUG) {
                                 Debug.trace( Debug.messages, name +
-                                "getLDAPMessage: Remove completed Message(" +
+                                "getLDAPMessage: Remove Message(" +
                                 info.getMessageID() + ")");
                              }
                           }

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.25 2000/11/28 23:50:42 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.26 2000/12/06 19:30:06 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -171,7 +171,7 @@ public final class Connection implements Runnable
         }
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.bindSemaphore, name +
-                "Acquired Bind Semaphore(" + id + ")");
+                "Acquired Bind Semaphore(" + id + ") count " + bindSemaphoreCount);
         }
         return id;
     }
@@ -203,7 +203,7 @@ public final class Connection implements Runnable
         }
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.bindSemaphore, name +
-                "Free'd Bind Semaphore(" + msgId + ")");
+                "Free'd Bind Semaphore(" + msgId + ") count " + bindSemaphoreCount);
         }
         return;
     }
@@ -523,11 +523,17 @@ public final class Connection implements Runnable
      */
     public void removeMessage( Message info)
     {
+        boolean done = messages.removeElement(info);
         if( Debug.LDAP_DEBUG) {
-            Debug.trace( Debug.messages, name +
-                "Removing message(" + info.getMessageID() + ")");
+            if( done) {
+                Debug.trace( Debug.messages, name +
+                    "Removed Message(" + info.getMessageID() + ")");
+            } else {
+                Debug.trace( Debug.messages, name +
+                    "Removing Message(" + info.getMessageID() + ") - not found");
+            }
         }
-        messages.removeElement(info);
+        return;
     }
 
     /**
@@ -536,6 +542,7 @@ public final class Connection implements Runnable
     protected void finalize()
     {
         shutdown(null,0);
+        return;
     }
     /**
      * Cleans up resources associated with this connection.
@@ -599,6 +606,7 @@ public final class Connection implements Runnable
         out = null;
         socket = null;
         freeBindSemaphore( semId);
+        return;
     }
 
     /**
@@ -671,18 +679,27 @@ public final class Connection implements Runnable
                 //??               int cnt = ldapListeners.size();
                 try {
                     info = messages.findMessageById( msgId);
-                    if( Debug.LDAP_DEBUG ) {
-                        Debug.trace( Debug.messages, name +
-                            "queue message(" + msgId + ")");
-                        Debug.trace( Debug.buffer, name +
-                            "message(" + msgId + ")=" +
-                            msg.toString());
+                    if( info.acceptsReplies()) {
+                        if( Debug.LDAP_DEBUG ) {
+                            Debug.trace( Debug.messages, name +
+                                "queue message(" + msgId + ")");
+                            Debug.trace( Debug.buffer, name +
+                                "message(" + msgId + ")=" +
+                                msg.toString());
+                        }
+                        info.putReply( msg);   // queue & wake up waiting thread
+                    } else {
+                        if( Debug.LDAP_DEBUG ) {
+                            Debug.trace( Debug.messages, name +
+                                "message(" + msgId +
+                                ") not accepting replies, discarding reply");
+                        }        
                     }
-                    info.putReply( msg);   // queue & wake up waiting thread
                 } catch ( NoSuchFieldException ex) {
                     if( Debug.LDAP_DEBUG ) {
                         Debug.trace( Debug.messages, name +
-                            "discarding message(" + msgId + ")");
+                            "message(" + msgId +
+                            ") not found, discarding reply");
                     }        
                 }
             }
@@ -694,5 +711,6 @@ public final class Connection implements Runnable
         finally {
             shutdown(reason, 0);
         }
+        return;
     }
 }

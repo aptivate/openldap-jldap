@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.63 2000/12/14 22:35:01 cmorris Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.64 2000/12/14 23:03:22 cmorris Exp $
 *
 * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
 *
@@ -780,17 +780,21 @@ public class LDAPConnection implements Cloneable
    public void abandon(int id, LDAPConstraints cons)
       throws LDAPException
    {
-      if( Debug.LDAP_DEBUG) {
-         Debug.trace( Debug.apiRequests, name +
-         "abandon(" + id + ")");
-      }
       // We need to inform the Message Agent which owns this messageID to
       // remove it from the queue.
       try {
           MessageAgent agent = conn.getMessageAgent(id);
+          if( Debug.LDAP_DEBUG) {
+             Debug.trace( Debug.apiRequests, name +
+             "abandon(" + id + ")");
+          }
           agent.abandon(id, cons);
           return;
       } catch( NoSuchFieldException ex) {
+          if( Debug.LDAP_DEBUG) {
+             Debug.trace( Debug.apiRequests, name +
+             "abandon(" + id + "), agent not found");
+          }
           return; // Ignore error
       }
    }
