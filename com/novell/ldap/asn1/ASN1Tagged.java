@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Tagged.java,v 1.6 2001/01/30 21:21:15 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Tagged.java,v 1.7 2001/03/01 00:30:03 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -35,12 +35,12 @@ public class ASN1Tagged extends ASN1Object {
    private boolean explicit;
    private ASN1Object content;
 
-   //*************************************************************************
-   // Constructors for ASN1Tagged
-   //*************************************************************************
+   /* Constructors for ASN1Tagged
+    */
 
    /**
-    * Constructs an ASN1Tagged object.
+    * Constructs an ASN1Tagged object using the provided 
+    * AN1Identifier and the ASN1Object.
     *
     * The explicit flag defaults to true as per the spec.
     */
@@ -67,7 +67,15 @@ public class ASN1Tagged extends ASN1Object {
    }
 
    /**
-    * Constructs an ASN1Tagged object by decoding data from an input stream.
+    * Constructs an ASN1Tagged object by decoding data from an 
+    * input stream.
+    *
+    * @param dec The decoder object to use when decoding the
+    * input stream.  Sometimes a developer might want to pass
+    * in his/her own decoder object<br>
+    *
+    * @param in A byte stream that contains the encoded ASN.1
+    *
     */
    public ASN1Tagged(ASN1Decoder dec, InputStream in, int len,
                      ASN1Identifier identifier)
@@ -83,15 +91,17 @@ public class ASN1Tagged extends ASN1Object {
       return;
    }
 
-   //*************************************************************************
-   // ASN1Object implementation
-   //*************************************************************************
+   /* ASN1Object implementation
+    */
 
    /**
-    * Encode this ASN1Tagged directly to a stream.
+    * Call this method to encode the current instance into the 
+    * specified output stream using the specified encoder object.
     *
-    * @param enc The encoder to use to encode this object.
-    * @param out The stream into which the encoding will go.
+    * @param enc Encoder object to use when encoding self.<br>
+    *
+    * @param out The output stream onto which the encoded byte 
+    * stream is written.
     */
    public void encode(ASN1Encoder enc, OutputStream out)
       throws IOException
@@ -99,12 +109,11 @@ public class ASN1Tagged extends ASN1Object {
       enc.encode(this, out);
    }
 
-   //*************************************************************************
-   // ASN1Tagged specific methods
-   //*************************************************************************
+   /* ASN1Tagged specific methods
+    */
 
    /**
-    * Returns the Tagged value stored in this ASN1Tagged.
+    * Returns the ASN1Object stored in this ASN1Tagged object
     */
    public ASN1Object getContent()
    {

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Structured.java,v 1.10 2001/02/26 19:58:26 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Structured.java,v 1.11 2001/03/01 00:30:02 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -21,11 +21,28 @@ import java.util.Enumeration;
 import java.util.NoSuchElementException;
 
 /**
- * Base type for all ASN.1 structured types.
+ * This class serves as the base type for all ASN.1 
+ * structured types.
  */
 public abstract class ASN1Structured extends ASN1Object
 {
 
+   /* An inner class is used to maintain a list of subtypes
+    * that this structured type holds. Note the use of our
+    * own enumeration rather than directly using the 
+    * Vector class.
+    *
+    * We could have used the Vector class but that would
+    * have been inefficient due to synchronization that
+    * Vector class provides but is not really needed here.
+    *
+    * We have our own implementation of Enumeration because
+    * we wanted to be backward compatible with older JDK
+    * revisions that did not have some methods that we
+    * needed. So we implement those here in this inner
+    * class
+    * (javed)
+    */
    class EnumerationImpl implements Enumeration
    {
        private int enumerationIndex = 0;
