@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPv3.java,v 1.6 2000/09/13 20:17:58 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPv3.java,v 1.7 2000/09/14 20:06:15 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -37,7 +37,18 @@ public interface LDAPv3 extends LDAPv2 {
     * Defines (are static and final)
     */
 
+  /**
+   * Specifies that the server controls are to be sent to the server with every 
+   * LDAP operation.
+   */
    public int SERVERCONTROLS  = 0;
+   
+  /**
+   * Specifies that the client controls are to be applied to every LDAP operation.
+   *
+   * <p>These controls are applied before the operation is sent to the server.
+   * Client controls are never sent to the server. </p>
+   */
    public int CLIENTCONTROLS  = 1;
 
   /**

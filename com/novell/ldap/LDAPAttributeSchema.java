@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPAttributeSchema.java,v 1.6 2000/08/28 22:18:54 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttributeSchema.java,v 1.7 2000/08/31 19:48:38 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -26,15 +26,13 @@ import java.io.IOException;
  */
  
 /**
- *  Represents the definition of an attribute. 
+ *  Represents the definition of an attribute in the schema. 
  *
- *  <p>The LDAPAttributeSchema class is used to query attribute syntax, 
- *  and to add or delete an attribute definition in a directory. See 
- *  RFC 2252 for a description of attribute representation in LDAP.</p>
+ *  <p>The LDAPAttributeSchema class is used to query for an attribute's syntax, 
+ *  to add an attribute definition to a directory's schema, and to delete an
+ *  attribute definition from the schema. See RFC 2252 for a description of 
+ *  attribute representation in LDAP.</p>
  *
- *  <p>  M. Wahl, A. Coulbeck, T. Howes, S. Kille, "Lightweight Directory
- *       Access Protocol: Attribute Syntax Definitions",
- *       RFC 2252, December 1997 </p>
  */
 public class LDAPAttributeSchema extends LDAPSchemaElement {
 
@@ -48,7 +46,7 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
 
    /**
     * Constructs an attribute definition for adding to or deleting from a
-    * directory.
+    * directory's schema.
     *
     * @param name  Name of the attribute.
     *<br><br>
@@ -159,6 +157,8 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
    /**
     * Returns the object identifer of the syntax of the attribute, in
     * dotted numerical format.
+    *
+    * @return The object identifer of the attribute's syntax.
     */
    public String getSyntaxString() {
 		return syntaxString;
@@ -171,6 +171,8 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
    /**
     * Returns the name of the attribute type which this attribute derives
     * from, or null if there is no superior attribute.
+    *
+    * @return The attribute's superior attribute, or null if there is none.
     */
    public String getSuperior() {
       return superior;
@@ -182,6 +184,9 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
 
    /**
     * Returns true if the attribute is single-valued.
+    *
+    * @return True if the attribute is single-valued; false if the attribute
+    *         is multi-valued.
     */
    public boolean isSingleValued() {
       return single;
@@ -190,6 +195,8 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
    /**
     * Returns a string in a format suitable for directly adding to a
     * directory, as a value of the particular schema element attribute.
+    *
+    * @return A string representation of the attribute's definition.
     */
    public String getValue() {
 
