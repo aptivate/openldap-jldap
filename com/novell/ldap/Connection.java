@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.28 2001/01/02 23:28:30 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.29 2001/01/03 16:55:37 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -93,9 +93,7 @@ public final class Connection implements Runnable
      */
     public Connection( LDAPSocketFactory factory)
     {
-        if( factory == null) {
-            mySocketFactory = socketFactory;
-        } else {
+        if( factory != null) {
             // save socket factory
             mySocketFactory = factory;
         }
@@ -273,12 +271,12 @@ public final class Connection implements Runnable
 
         try {
             if( (in == null) || (out == null) ) {
-                if(socketFactory != null) {
+                if(mySocketFactory != null) {
                     if( Debug.LDAP_DEBUG) {
                         Debug.trace( Debug.messages, name +
                             "connect(socketFactory specified)");
                     }
-                    socket = socketFactory.makeSocket(host, port);
+                    socket = mySocketFactory.makeSocket(host, port);
                 } else {
                     socket = new Socket(host, port);
                 }
