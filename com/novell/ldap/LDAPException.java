@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPException.java,v 1.25 2001/03/10 00:45:15 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPException.java,v 1.26 2001/03/14 19:25:57 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -1035,6 +1035,9 @@ public class LDAPException extends Exception
                                               Object[] arguments)
     {
       String pattern;
+      if( messageOrKey == null) {
+          messageOrKey = "";
+      }
       try {
         pattern = defaultMessages.getString(messageOrKey);
       }
