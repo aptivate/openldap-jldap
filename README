@@ -1,0 +1,66 @@
+
+                              Building JLDAP
+
+JLDAP is built using a system developed by jakarta.apache.org called ANT.
+
+The build files are all named "build.xml" and are found in key directories.
+
+To set up your environment for ANT, do the following:
+
+For Win32
+    Assuming this source directory on win32 is d:/jldap, and java is installed
+    in d:/jdk1.2.2, then you set in your environment:
+
+        set JAVA_HOME=d:\jdk1.2.2
+        set ANT_HOME=d:\jldap/ant
+        PATH %ANT_HOME%\bin;%PATH%
+
+    for Linux running shell with this source directory in /usr/home/jldap and java
+    is installed in /local/jdk1.2.2 then:
+		JAVA_HOME=/local/jdk1.2.2
+        ANT_HOME=/usr/home/jldap/ant
+	    PATH="${ANT_HOME}/bin;${PATH}
+	    export ANT_HOME PATH JAVA_HOME
+
+To build everything just invoke ant as follows:
+
+	ant all
+
+
+Targets available are from the top of the tree are:
+     clean   - Cleans all generated files and directories in this and    
+               subbordinate directories                                  
+     cleanpkg- Cleans pkg directory                                      
+     doc     - Builds javadoc files                                      
+               Not available at the lowest directory level               
+     debug   - Builds debug classes and jar files                        
+               At the lowest level directory it only compiles java files.
+     release - Builds release classes and jar files                      
+               At the lowest level directory it only compiles java files.
+     lib     - Builds debug & release classes and jar files.             
+               At the lowest level directory it only compiles java files.
+     jar     - Synonym for lib                                           
+     all     - Builds everything possible.  At the top directory level it
+               builds all, doc, & install.  At one directory level below  
+               the top it builds all, & doc. At the lowest directory     
+               level it compiles java files for release and debug.       
+     install - Copies build results from all directories and creates the 
+               pkg directory.  Only available in top makefile            
+     pkt     - Synonym for pkg                                           
+
+Targets available are from the the ldap and novp directories are:
+     clean   - Cleans all generated files and directories in this    
+               and subbordinate directories                          
+     doc     - Builds javadoc files                                  
+     debug   - Builds debug classes and jar files                    
+     release - Builds release classes and jar files                  
+     jar     - Builds debug & release classes and jar files          
+     lib     - Builds debug & release classes and jar files          
+             - Builds everything possible.  Builds all, & doc        
+
+Targets available are from the the diretories containing java files are:
+     clean   - Cleans all generated class files
+     compile - Builds debug classes and jar files
+     all     - Synonym for compile
+
+
