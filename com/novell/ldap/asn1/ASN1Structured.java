@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Structured.java,v 1.6 2000/11/28 19:07:29 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Structured.java,v 1.7 2001/01/30 21:21:15 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  ***************************************************************************/
@@ -19,7 +19,7 @@ public abstract class ASN1Structured extends ASN1Object
 {
 
    protected ArrayList content;
-   private int enumerationIndex = 0;
+   private volatile int enumerationIndex = 0;  // don't serialize
 
    /**
     * Encodes the contents of this ASN1Structured directly to an output
