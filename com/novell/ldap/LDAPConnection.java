@@ -815,10 +815,6 @@ public class LDAPConnection implements Cloneable
         }
         finally {
             conn.freeWriteSemaphore(semaphoreID);
-
-            /* Now that the TLS socket is closed, reset everything.  This next
-            line is temporary until JSSE is fixed to properly handle TLS stop */
-            this.connect(this.getHost(), this.getPort());
         }
         return;
     }
@@ -4254,4 +4250,5 @@ public class LDAPConnection implements Cloneable
         }
         return values[0];
    }
+   
 }

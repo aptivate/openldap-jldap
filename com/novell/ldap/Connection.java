@@ -1093,10 +1093,7 @@ final class Connection
      *  4) reset input and outputstreams
      *  5) start the reader thread by calling startReader
      *
-     *  Note: Sun's JSSE doesn't allow the nonTLSBackup socket to be
-     * used any more, even though autoclose was false: you get an IOException.
-     * IBM's JSSE hangs when you close the JSSE socket.
-     */
+    */
     /* package */
     final void stopTLS() throws LDAPException
     {
@@ -1470,4 +1467,5 @@ final class Connection
     {
         return name;
     }
+
 }
