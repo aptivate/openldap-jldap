@@ -1,4 +1,4 @@
-<!-- $Novell: /ldap/src/jldap/build.xml,v 1.34 2001/03/09 23:15:48 cmorris Exp $ -->
+<!-- $Novell: /ldap/src/jldap/build.xml,v 1.35 2001/04/19 16:49:47 cmorris Exp $ -->
 <!--
  ******************************************************************************
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
@@ -222,7 +222,7 @@
 	</target>
 
     <!-- =================================================================== -->
-    <!-- create javadoc                                                      --> 
+    <!-- create javadoc                                                      -->
     <!-- =================================================================== -->
     <target name="doc" depends="docldap, docdeveloper"/>
 
@@ -267,7 +267,7 @@
         <javadoc
         	sourcepath="${docsrc}"
             destdir="${pkg.doc}"
-            classpath="${lib.debug}/${ldap}.jar;external/ssl/domestic/nssl1.2_dom.jar;external/jsse1.0.2/lib/jcert.jar;external/jsse1.0.2/lib/jnet.jar;external/jsse1.0.2/lib/jsse.jar"
+            classpath="${lib.debug}/${ldap}.jar;external/ssl/domestic/nssl1.2_dom.jar;external/jsse/lib/jcert.jar;external/jsse/lib/jnet.jar;external/jsse/lib/jsse.jar"
             packagenames="com.novell.ldap,com.novell.ldap.extensions,com.novell.ldap.controls,com.novell.ldap.asn1,com.novell.ldap.util"
             overview="overview.html"
             nodeprecated="true"
@@ -281,7 +281,7 @@
     </target>
 
     <!-- =================================================================== -->
-    <!-- create javadoc for all LDAP classes for internal developer use only --> 
+    <!-- create javadoc for all LDAP classes for internal developer use only -->
     <!-- =================================================================== -->
     <target name="docdeveloper" depends="init">
 		<delete dir="${pkg.developer}"/>
@@ -292,7 +292,7 @@
 		<copy file="com/novell/ldap/client/Debug.template" tofile="com/novell/ldap/client/Debug.java" filtering="YES"/>
         <javadoc sourcepath="${docsrc}"
             destdir="${doc.developer}"
-            classpath="external/ssl/domestic/nssl1.2_dom.jar;external/jsse1.0.2/lib/jcert.jar;external/jsse1.0.2/lib/jnet.jar;external/jsse1.0.2/lib/jsse.jar"
+            classpath="external/ssl/domestic/nssl1.2_dom.jar;external/jsse/lib/jcert.jar;external/jsse/lib/jnet.jar;external/jsse/lib/jsse.jar"
             packagenames="com.novell.ldap,com.novell.ldap.asn1,com.novell.ldap.client,com.novell.ldap.rfc2251,com.novell.ldap.extensions,com.novell.ldap.controls,,com.novell.ldap.util"
             Windowtitle="LDAP Classes"
             Splitindex="true"
