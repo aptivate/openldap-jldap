@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/client/ArrayList.java,v 1.4 2001/03/28 22:33:02 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/client/ArrayList.java,v 1.5 2001/03/29 18:58:40 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -61,16 +61,16 @@ public class ArrayList
      * runtime exception.
      */
     private void checkIndex(int index) {
-	    if (index >= items.length || index < 0)
+	    if (index >= size || index < 0)
 	        throw new IndexOutOfBoundsException(
-		            "Index: " + index + ", Size: " + items.length);
+		            "Index: " + index + ", Size: " + size);
         return;
     }
 
     /**
-     * Returns the number of items in this ArrayList.
+     * Returns the number of items added to this ArrayList.
      *
-     * @return  the number of items in this ArrayList.
+     * @return  the number of items added to this ArrayList.
      */
     public int size() {
 	    return size;
@@ -93,15 +93,13 @@ public class ArrayList
      *
      * @param   capacity   the desired capacity.
      */
-    public void ensureCapacity(int capacity) {
+    public void ensureCapacity(int desiredCapacity) {
 	    int origCapacity = items.length;
-	    if( capacity > origCapacity) {
+	    if( desiredCapacity > origCapacity) {
 	        Object oldData[] = items;
-    	    if( origCapacity < capacity) {
-                // Allocate more plus a cushion
-	            items = new Object[capacity + (capacity / 2) + 1];
-	            System.arraycopy(oldData, 0, items, 0, size);
-            }
+            // Allocate more plus a cushion
+	        items = new Object[desiredCapacity + (desiredCapacity / 2) + 1];
+	        System.arraycopy(oldData, 0, items, 0, size);
 	    }
         return;
     }
@@ -121,7 +119,7 @@ public class ArrayList
 
     /**
      * Inserts the specified item at the specified position in this ArrayList.
-     * Moves the item currently at that position (if any) and any subsequent
+     * Moves the item currently at that position and any subsequent
      * items up in the ArrayList, i.e. it adds one to their index.
      *
      * @param index index at which the specified item is to be inserted.
