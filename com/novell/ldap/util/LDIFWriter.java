@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: LDIFWriter.java,v 1.33 2003/01/22 19:32:49 $
+ * $Novell: LDIFWriter.java,v 1.34 2003/01/22 22:30:28 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -18,6 +18,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.BufferedWriter;
+import java.io.BufferedReader;
+import java.io.StringReader;
 import java.util.Iterator;
 
 import com.novell.ldap.*;
@@ -264,30 +266,11 @@ public class LDIFWriter implements LDAPWriter
      */
     public void writeComments (String line) throws IOException
     {
-        if (line != null && line.length() != 0) {
-
-            if (line.length() <= 78) {
-                // short line, write it out
-                bufWriter.write("# " + line, 0, line.length()+2);
-            }
-            else {
-                // berak long line
-                StringBuffer longLine = new StringBuffer();
-                longLine.append(line);
-
-                while(longLine.length() > 78) {
-                    // write "# " and the starting 78 chars
-                    bufWriter.write("# " + longLine, 0, 80);
-                    // start a new line
-                    bufWriter.newLine();
-                    // remove the chars that already been written out
-                    longLine.delete(0, 78);
-                }
-
-                // write the remaining part of the lien out
-                bufWriter.write("# " + longLine, 0, longLine.length()+2);
-            }
-            // start a new line
+        BufferedReader in = new BufferedReader(new StringReader( line));
+        String rline;
+        while( (rline = in.readLine()) != null) {
+            bufWriter.write("# ", 0, 2);
+            bufWriter.write(rline, 0, rline.length());
             bufWriter.newLine();
         }
         return;
