@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: ExtendedResponseFactory.java,v 1.2 2000/07/27 16:35:23 javed Exp $
+ * $Id: ExtendedResponseFactory.java,v 1.1 2000/07/27 17:50:57 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -15,30 +15,38 @@
 package com.novell.ldap.ext; 
 
 import com.novell.ldap.*;
- 
+import java.io.IOException; 
 /**
  * public class ExtendedResponseFactory
  *
  *  This factory class takes an LDAPExtendedResponse and returns 
- *  a childExtendedResponse based on the OID.  You can then call
- *  methods defined in the child class to parse the contents of the
- *  reponse.  The methods available depend on the child class created.
- *  All child classes will inherit from the LDAPExtendedResponse class
- *  to allow access to result codes and OID parameters available in the
- *  parent class.
+ *  an object (that implements the base class ParsedExtendedResponse)
+ *  based on the OID.  You can then call methods defined in the child
+ *  class to parse the contents of the response.  The methods available
+ *  depend on the child class. All child classes inherit from the 
+ *  ParsedExtendedResponse.
  *
  */
 public class ExtendedResponseFactory {
     
-    public LDAPExtendedResponse ExtendedResponseFactory(LDAPExtendedResponse inResponse) {
+    static public ParsedExtendedResponse parseExtendedResponse(LDAPExtendedResponse inResponse) 
+            throws LDAPException {
                 
-        // switch based on OID an instantiate appropriate reponse
+        // Get the oid stored in the Extended response
+        String inOID = inResponse.getID();
         
+        try {
+            if (inOID.equals(NamingContextConstants.NAMING_CONTEXT_COUNT_RES)) {
+                return new NamingContextEntryCountResponse(inResponse);
+            }
+            else
+                throw new LDAPException("Unsupported OID in LDAPResponse", 
+                    LDAPException.DECODING_ERROR);
+        }
         
-        
-        return null;
-        
-    }   
-		
-
+        catch(IOException ioe) {
+			throw new LDAPException("Error Decoding respnseValue", 
+                    LDAPException.DECODING_ERROR);
+		}
+    }
 }
