@@ -19,7 +19,8 @@ package org.ietf.ldap;
  *  Represents a single entry in a directory, consisting of
  *  a distinguished name (DN) and zero or more attributes.
  *
- * @see com.novell.ldap.LDAPEntry
+ * @see <a href="../../../../doc/com/novell/ldap/LDAPEntry.html">
+            com.novell.ldap.LDAPEntry</a>
  */
 public class LDAPEntry
 {
@@ -37,7 +38,9 @@ public class LDAPEntry
     /**
      * Constructs an empty entry.
      *
-     * @see com.novell.ldap.LDAPEntry#LDAPEntry()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPEntry.html
+            #LDAPEntry()">
+            com.novell.ldap.LDAPEntry.LDAPEntry()</a>
      */
     public LDAPEntry()
     {
@@ -49,7 +52,9 @@ public class LDAPEntry
      * Constructs a new entry with the specified distinguished name and with
      * an empty attribute set.
      *
-     * @see com.novell.ldap.LDAPEntry#LDAPEntry(String)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPEntry.html
+            #LDAPEntry(java.lang.String)">
+            com.novell.ldap.LDAPEntry.LDAPEntry(String)</a>
      */
     public LDAPEntry(String dn)
     {
@@ -61,7 +66,9 @@ public class LDAPEntry
      * Constructs a new entry with the specified distinguished name and set
      * of attributes.
      *
-     * @see com.novell.ldap.LDAPEntry#LDAPEntry(String, LDAPAttributeSet)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPEntry.html
+            #LDAPEntry(java.lang.String, com.novell.ldap.LDAPAttributeSet)">
+            com.novell.ldap.LDAPEntry.LDAPEntry(String, LDAPAttributeSet)</a>
      */
     public LDAPEntry(String dn, LDAPAttributeSet attrs)
     {
@@ -84,7 +91,9 @@ public class LDAPEntry
     /**
      * Returns the attributes matching the specified attrName.
      *
-     * @see com.novell.ldap.LDAPEntry#getAttribute(String)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPEntry.html
+            #getAttribute(java.lang.String)">
+            com.novell.ldap.LDAPEntry.getAttribute(String)</a>
      */
     public LDAPAttribute getAttribute(String attrName)
     {
@@ -94,7 +103,9 @@ public class LDAPEntry
     /**
      * Returns the attribute set of the entry.
      *
-     * @see com.novell.ldap.LDAPEntry#getAttributeSet()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPEntry.html
+            #getAttributeSet()">
+            com.novell.ldap.LDAPEntry.getAttributeSet()</a>
      */
     public LDAPAttributeSet getAttributeSet()
     {
@@ -106,7 +117,9 @@ public class LDAPEntry
      * Returns an attribute set from the entry, consisting of only those
      * attributes matching the specified subtypes.
      *
-     * @see com.novell.ldap.LDAPEntry#getAttributeSet(String)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPEntry.html
+            #getAttributeSet(java.lang.String)">
+            com.novell.ldap.LDAPEntry.getAttributeSet(String)</a>
      */
     public LDAPAttributeSet getAttributeSet(String subtype)
     {
@@ -116,7 +129,9 @@ public class LDAPEntry
     /**
      * Returns the distinguished name of the entry.
      *
-     * @see com.novell.ldap.LDAPEntry#getDN()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPEntry.html
+            #getDN()">
+            com.novell.ldap.LDAPEntry.getDN()</a>
      */
     public String getDN()
     {
