@@ -1,3 +1,8 @@
+/* **************************************************************************
+ * $Novell$
+ *
+ * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
+ ***************************************************************************/
 
 package com.novell.asn1.ldap;
 
@@ -20,9 +25,9 @@ public class LDAPString extends ASN1OctetString {
    /**
     *
     */
-   public LDAPString(byte[] s)
+   public LDAPString(byte[] ba)
    {
-      super(s);
+      super(ba);
    }
 
    /**
@@ -33,14 +38,6 @@ public class LDAPString extends ASN1OctetString {
    {
       super(dec, in, len);
    }
-
-   /**
-    * Convert octet string to String.
-    */
-//   public String getString()
-//   {
-//      return new String(getContent()); // UTF8 ???
-//   }
 
 }
 

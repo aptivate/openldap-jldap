@@ -1,70 +1,80 @@
+/* **************************************************************************
+ * $Novell$
+ *
+ * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
+ ***************************************************************************/
 
 package com.novell.asn1;
 
 import java.io.*;
 
 /**
- *
+ * Represents the ASN.1 REAL type.
  */
 public class ASN1Real extends ASN1Simple {
 
-	private Double content;
+   private double content;
 
-	//*************************************************************************
-	// Constructors for ASN1Real
-	//*************************************************************************
+   /**
+    * ASN.1 REAL tag definition.
+    */
+   public static final int TAG = 0x09;
 
-	/**
-	 * Constructs an ASN1Real object using a REAL value.
-	 */
-	public ASN1Real(Double content)
-	{
-		id = new ASN1Identifier(ASN1Identifier.UNIVERSAL, false, REAL);
-		this.content = content;
-	}
+   //*************************************************************************
+   // Constructors for ASN1Real
+   //*************************************************************************
 
-	/**
-	 * Constructs an ASN1Real object by decoding data from an input stream.
-	 */
-	public ASN1Real(ASN1Decoder dec, InputStream in, int len)
-		throws IOException
-	{
-		id = new ASN1Identifier(ASN1Identifier.UNIVERSAL, false, REAL);
-		content = (Double)dec.decodeReal(in, len);
-	}
+   /**
+    * Constructs an ASN1Real object using a REAL value.
+    */
+   public ASN1Real(double content)
+   {
+      id = new ASN1Identifier(ASN1Identifier.UNIVERSAL, false, TAG);
+      this.content = content;
+   }
 
-	//*************************************************************************
-	// ASN1Object implementation
-	//*************************************************************************
+   /**
+    * Constructs an ASN1Real object by decoding data from an input stream.
+    */
+   public ASN1Real(ASN1Decoder dec, InputStream in, int len)
+      throws IOException
+   {
+      id = new ASN1Identifier(ASN1Identifier.UNIVERSAL, false, TAG);
+      content = ((Double)dec.decodeReal(in, len)).doubleValue();
+   }
 
-	/**
-	 * Encodes the contents of this Real directly to an output stream.
-	 */
-	public void encode(ASN1Encoder enc, OutputStream out)
-		throws IOException
-	{
-		enc.encode(this, out);
-	}
+   //*************************************************************************
+   // ASN1Object implementation
+   //*************************************************************************
 
-	//*************************************************************************
-	// ASN1Real specific methods
-	//*************************************************************************
+   /**
+    * Encodes the contents of this Real directly to an output stream.
+    */
+   public void encode(ASN1Encoder enc, OutputStream out)
+      throws IOException
+   {
+      enc.encode(this, out);
+   }
 
-	/**
-	 * Returns an object representing this ASN1Real value.
-	 */
-	public Double getContent()
-	{
-		return content;
-	}
+   //*************************************************************************
+   // ASN1Real specific methods
+   //*************************************************************************
 
-	/**
-	 * Return a String representation of this ASN1Object.
-	 */
-	public String toString()
-	{
-		return super.toString() + "REAL: "; // finish this
-	}
+   /**
+    * Returns the content of this ASN1Real as a double.
+    */
+   public double getContent()
+   {
+      return content;
+   }
+
+   /**
+    * Return a String representation of this ASN1Object.
+    */
+   public String toString()
+   {
+      return super.toString() + "REAL: "; // finish this
+   }
 
 }
 

@@ -1,50 +1,58 @@
+/* **************************************************************************
+ * $Novell$
+ *
+ * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
+ ***************************************************************************/
 
 package com.novell.asn1;
 
 import java.io.*;
 
 /**
- *
+ * Represents the ASN.1 GeneralString type.
  */
 public class ASN1GeneralString extends ASN1CharacterString {
 
-	//*************************************************************************
-	// Constructors for ASN1GeneralString
-	//*************************************************************************
+   /**
+    * ASN.1 GeneralString tag definition.
+    */
+   public static final int TAG = 0x1b;
 
-	/**
-	 * Constructs an ASN1GeneralString object using a String value.
-	 */
-	public ASN1GeneralString(String content)
-	{
-		id = new ASN1Identifier(ASN1Identifier.UNIVERSAL, false,
-			                     GENERAL_STRING);
-		this.content = content;
-	}
+   //*************************************************************************
+   // Constructors for ASN1GeneralString
+   //*************************************************************************
 
-	/**
-	 * Constructs an ASN1GeneralString object by decoding data from an input
-	 * stream.
-	 */
-	public ASN1GeneralString(ASN1Decoder dec, InputStream in, int len)
-		throws IOException
-	{
-		id = new ASN1Identifier(ASN1Identifier.UNIVERSAL, false,
-			                     GENERAL_STRING);
-		content = (String)dec.decodeCharacterString(in, len);
-	}
+   /**
+    * Constructs an ASN1GeneralString object using a String value.
+    */
+   public ASN1GeneralString(String content)
+   {
+      id = new ASN1Identifier(ASN1Identifier.UNIVERSAL, false, TAG);
+      this.content = content;
+   }
 
-	//*************************************************************************
-	// ASN1GeneralString specific methods
-	//*************************************************************************
+   /**
+    * Constructs an ASN1GeneralString object by decoding data from an input
+    * stream.
+    */
+   public ASN1GeneralString(ASN1Decoder dec, InputStream in, int len)
+      throws IOException
+   {
+      id = new ASN1Identifier(ASN1Identifier.UNIVERSAL, false, TAG);
+      content = (String)dec.decodeCharacterString(in, len);
+   }
 
-	/**
-	 * Return a String representation of this ASN1Object.
-	 */
-	public String toString()
-	{
-		return super.toString() + "GeneralString: " + content;
-	}
+   //*************************************************************************
+   // ASN1GeneralString specific methods
+   //*************************************************************************
+
+   /**
+    * Return a String representation of this ASN1GeneralString.
+    */
+   public String toString()
+   {
+      return super.toString() + "GeneralString: " + content;
+   }
 
 }
 

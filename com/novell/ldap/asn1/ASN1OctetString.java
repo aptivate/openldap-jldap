@@ -1,14 +1,24 @@
+/* **************************************************************************
+ * $Novell$
+ *
+ * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
+ ***************************************************************************/
 
 package com.novell.asn1;
 
 import java.io.*;
 
 /**
- *
+ * Represents the ASN.1 OCTET STRING type.
  */
 public class ASN1OctetString extends ASN1Simple {
 
    private byte[] content;
+
+   /**
+    * ASN.1 OCTET STRING tag definition.
+    */
+   public static final int TAG = 0x04;
 
    //*************************************************************************
    // Constructors for ASN1OctetString
@@ -16,24 +26,23 @@ public class ASN1OctetString extends ASN1Simple {
 
    /**
     * Constructs an ASN1OctetString object using a byte array value.
-	 *
-	 * @param content Non-null byte array value.
+    *
+    * @param content Non-null byte array value.
     */
    public ASN1OctetString(byte[] content)
    {
-      id = new ASN1Identifier(ASN1Identifier.UNIVERSAL, false,
-                              OCTET_STRING);
+      id = new ASN1Identifier(ASN1Identifier.UNIVERSAL, false, TAG);
       this.content = content;
    }
 
    /**
     * Constructs an ASN1OctetString object using a String value.
-	 *
-	 * @param content Non-null String value.
+    *
+    * @param content Non-null String value.
     */
    public ASN1OctetString(String content)
    {
-      this(content.getBytes()); // UTF8 ???
+      this(content.getBytes());
    }
 
    /**
@@ -43,8 +52,7 @@ public class ASN1OctetString extends ASN1Simple {
    public ASN1OctetString(ASN1Decoder dec, InputStream in, int len)
       throws IOException
    {
-      id = new ASN1Identifier(ASN1Identifier.UNIVERSAL, false,
-                              OCTET_STRING);
+      id = new ASN1Identifier(ASN1Identifier.UNIVERSAL, false, TAG);
 
       content = (len>0) ? (byte[])dec.decodeOctetString(in, len)
                         : new byte[0];
@@ -69,7 +77,7 @@ public class ASN1OctetString extends ASN1Simple {
    //*************************************************************************
 
    /**
-    * Returns a byte array representation of this ASN1OctetString.
+    * Returns the content of this ASN1OctetString as a byte array.
     */
    public byte[] getContent()
    {
@@ -81,7 +89,13 @@ public class ASN1OctetString extends ASN1Simple {
     */
    public String getString()
    {
-      return new String(content); // UTF8 ???
+      String s = null;
+      try {
+         s = new String(content, "UTF8");
+      }
+      catch(UnsupportedEncodingException uee) {
+      }
+      return s;
    }
 
    /**
@@ -89,7 +103,7 @@ public class ASN1OctetString extends ASN1Simple {
     */
    public String toString()
    {
-      return super.toString() + "OCTET STRING: " + new String(content);
+      return super.toString() + "OCTET STRING: " + getString();
    }
 
 }

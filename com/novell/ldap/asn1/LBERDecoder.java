@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell$
+ * $Novell: /ldap/src/jldap/ldap/src/com/novell/asn1/LBERDecoder.java,v 1.1 2000/09/02 21:03:09 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  ***************************************************************************/
@@ -93,37 +93,37 @@ public class LBERDecoder implements ASN1Decoder {
 
       if(asn1ID.isUniversal()) {
          switch(asn1ID.getTag()) {
-            case ASN1Simple.BOOLEAN:
+            case ASN1Boolean.TAG:
                return new ASN1Boolean(this, in, length);
-            case ASN1Simple.INTEGER:
+            case ASN1Integer.TAG:
                return new ASN1Integer(this, in, length);
-            case ASN1Simple.OCTET_STRING:
+            case ASN1OctetString.TAG:
                return new ASN1OctetString(this, in, length);
-            case ASN1Simple.ENUMERATED:
+            case ASN1Enumerated.TAG:
                return new ASN1Enumerated(this, in, length);
-            case ASN1Simple.NULL:
+            case ASN1Null.TAG:
                return new ASN1Null(); // has no content to decode.
-            case ASN1Simple.BIT_STRING:
+            case ASN1BitString.TAG:
                return new ASN1BitString(this, in, length);
-            case ASN1Simple.OBJECT_IDENTIFIER:
+            case ASN1ObjectIdentifier.TAG:
                return new ASN1ObjectIdentifier(this, in, length);
-            case ASN1Simple.REAL:
+            case ASN1Real.TAG:
                return new ASN1Real(this, in, length);
-            case ASN1Simple.NUMERIC_STRING:
+            case ASN1NumericString.TAG:
                return new ASN1NumericString(this, in, length);
-            case ASN1Simple.PRINTABLE_STRING:
+            case ASN1PrintableString.TAG:
                return new ASN1PrintableString(this, in, length);
-            case ASN1Simple.TELETEX_STRING:
+            case ASN1TeletexString.TAG:
                return new ASN1TeletexString(this, in, length);
-            case ASN1Simple.VIDEOTEX_STRING:
+            case ASN1VideotexString.TAG:
                return new ASN1VideotexString(this, in, length);
-            case ASN1Simple.IA5_STRING:
+            case ASN1IA5String.TAG:
                return new ASN1IA5String(this, in, length);
-            case ASN1Simple.GRAPHIC_STRING:
+            case ASN1GraphicString.TAG:
                return new ASN1GraphicString(this, in, length);
-            case ASN1Simple.VISIBLE_STRING:
+            case ASN1VisibleString.TAG:
                return new ASN1VisibleString(this, in, length);
-            case ASN1Simple.GENERAL_STRING:
+            case ASN1GeneralString.TAG:
                return new ASN1GeneralString(this, in, length);
             case ASN1Structured.SEQUENCE:
                return new ASN1Sequence(this, in, length);

@@ -8,25 +8,25 @@ import com.novell.asn1.*;
  */
 public class LDAPDN extends LDAPString {
 
-	//*************************************************************************
-	// Constructors for LDAPDN
-	//*************************************************************************
+   //*************************************************************************
+   // Constructors for LDAPDN
+   //*************************************************************************
 
-	/**
-	 *
-	 */
-	public LDAPDN(String s)
-	{
-		super(s);
-	}
+   /**
+    *
+    */
+   public LDAPDN(String s)
+   {
+      super(s);
+   }
 
-	/**
-	 *
-	 */
-	public LDAPDN(byte[] s)
-	{
-		super(s);
-	}
+   /**
+    *
+    */
+   public LDAPDN(byte[] s)
+   {
+      super(s);
+   }
 
 }
 

@@ -1,49 +1,59 @@
+/* **************************************************************************
+ * $Novell$
+ *
+ * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
+ ***************************************************************************/
 
 package com.novell.asn1;
 
 import java.io.*;
 
 /**
- *
+ * Represents the ASN.1 NULL type.
  */
 public class ASN1Null extends ASN1Simple {
 
-	//*************************************************************************
-	// Constructors for ASN1Null
-	//*************************************************************************
+   /**
+    * ASN.1 NULL tag definition.
+    */
+   public static final int TAG = 0x05;
 
-	/**
-	 * Constructs an ASN1Null object.
-	 */
-	public ASN1Null()
-	{
-		id = new ASN1Identifier(ASN1Identifier.UNIVERSAL, false, NULL);
-	}
+   //*************************************************************************
+   // Constructor for ASN1Null
+   //*************************************************************************
 
-	//*************************************************************************
-	// ASN1Object implementation
-	//*************************************************************************
+   /**
+    * Constructs an ASN1Null object.
+    */
+   public ASN1Null()
+   {
+      id = new ASN1Identifier(ASN1Identifier.UNIVERSAL, false, TAG);
+   }
 
-	/**
-	 * Encodes this Null directly to an output stream.
-	 */
-	public void encode(ASN1Encoder enc, OutputStream out)
-		throws IOException
-	{
-		enc.encode(this, out);
-	}
+   //*************************************************************************
+   // ASN1Object implementation
+   //*************************************************************************
 
-	//*************************************************************************
-	// ASN1Null specific methods
-	//*************************************************************************
+   /**
+    * Encodes this Null directly to an output stream.
+    */
+   public void encode(ASN1Encoder enc, OutputStream out)
+      throws IOException
+   {
+      enc.encode(this, out);
+   }
 
-	/**
-	 * Return a String representation of this ASN1Object.
-	 */
-	public String toString()
-	{
-		return super.toString() + "NULL: \"\"";
-	}
+   //*************************************************************************
+   // ASN1Null specific methods
+   //*************************************************************************
+
+   /**
+    * Return a String representation of this ASN1Object.
+    */
+   public String toString()
+   {
+      return super.toString() + "NULL: \"\"";
+   }
 
 }
 

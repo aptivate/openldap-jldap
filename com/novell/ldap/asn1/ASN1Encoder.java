@@ -1,10 +1,18 @@
+/* **************************************************************************
+ * $Novell$
+ *
+ * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
+ ***************************************************************************/
 
 package com.novell.asn1;
 
 import java.io.*;
 
 /**
+ * This interface defines the methods for encoding each of the ASN.1 types.
  *
+ * Encoders which implement this interface may be used to encode any of the
+ * ASN1Object data types.
  */
 public interface ASN1Encoder extends Serializable {
 
@@ -89,6 +97,10 @@ public interface ASN1Encoder extends Serializable {
    // Encoder for ASN.1 Identifier
    //*************************************************************************
 
-   public void encodeIdentifier(ASN1Identifier id, OutputStream out)
+   /**
+    * Encode an ASN1Identifier directly to a stream.
+    */
+   public void encode(ASN1Identifier id, OutputStream out)
       throws IOException;
 }
+

@@ -1,50 +1,58 @@
+/* **************************************************************************
+ * $Novell$
+ *
+ * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
+ ***************************************************************************/
 
 package com.novell.asn1;
 
 import java.io.*;
 
 /**
- *
+ * Represents the ASN.1 PrintableString type.
  */
 public class ASN1PrintableString extends ASN1CharacterString {
 
-	//*************************************************************************
-	// Constructors for ASN1PrintableString
-	//*************************************************************************
+   /**
+    * ASN.1 PrintableString tag definition.
+    */
+   public static final int TAG = 0x13;
 
-	/**
-	 * Constructs an ASN1PrintableString object using a String value.
-	 */
-	public ASN1PrintableString(String content)
-	{
-		id = new ASN1Identifier(ASN1Identifier.UNIVERSAL, false,
-			                     PRINTABLE_STRING);
-		this.content = content;
-	}
+   //*************************************************************************
+   // Constructors for ASN1PrintableString
+   //*************************************************************************
 
-	/**
-	 * Constructs an ASN1PrintableString object by decoding data from an input
-	 * stream.
-	 */
-	public ASN1PrintableString(ASN1Decoder dec, InputStream in, int len)
-		throws IOException
-	{
-		id = new ASN1Identifier(ASN1Identifier.UNIVERSAL, false,
-			                     PRINTABLE_STRING);
-		content = (String)dec.decodeCharacterString(in, len);
-	}
+   /**
+    * Constructs an ASN1PrintableString object using a String value.
+    */
+   public ASN1PrintableString(String content)
+   {
+      id = new ASN1Identifier(ASN1Identifier.UNIVERSAL, false, TAG);
+      this.content = content;
+   }
 
-	//*************************************************************************
-	// ASN1PrintableString specific methods
-	//*************************************************************************
+   /**
+    * Constructs an ASN1PrintableString object by decoding data from an input
+    * stream.
+    */
+   public ASN1PrintableString(ASN1Decoder dec, InputStream in, int len)
+      throws IOException
+   {
+      id = new ASN1Identifier(ASN1Identifier.UNIVERSAL, false, TAG);
+      content = (String)dec.decodeCharacterString(in, len);
+   }
 
-	/**
-	 * Return a String representation of this ASN1Object.
-	 */
-	public String toString()
-	{
-		return super.toString() + "PrintableString: " + content;
-	}
+   //*************************************************************************
+   // ASN1PrintableString specific methods
+   //*************************************************************************
+
+   /**
+    * Return a String representation of this ASN1PrintableString.
+    */
+   public String toString()
+   {
+      return super.toString() + "PrintableString: " + content;
+   }
 
 }
 

@@ -1,69 +1,79 @@
+/* **************************************************************************
+ * $Novell$
+ *
+ * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
+ ***************************************************************************/
 
 package com.novell.asn1;
 
 import java.io.*;
 
 /**
- *
+ * Represents the ASN.1 INTEGER type.
  */
 public class ASN1Integer extends ASN1Numeric {
 
-	//*************************************************************************
-	// Constructors for ASN1Integer
-	//*************************************************************************
+   /**
+    * ASN.1 INTEGER tag definition.
+    */
+   public static final int TAG = 0x02;
 
-	/**
-	 * Constructs an ASN1Integer object using an int value.
-	 */
-	public ASN1Integer(int content)
-	{
-		this((long)content);
-	}
+   //*************************************************************************
+   // Constructors for ASN1Integer
+   //*************************************************************************
 
-	/**
-	 * Constructs an ASN1Integer object using a long value.
-	 */
-	public ASN1Integer(long content)
-	{
-		id = new ASN1Identifier(ASN1Identifier.UNIVERSAL, false, INTEGER);
-		this.content = new Long(content);
-	}
+   /**
+    * Constructs an ASN1Integer object using an int value.
+    */
+   public ASN1Integer(int content)
+   {
+      this((long)content);
+   }
 
-	/**
-	 * Constructs an ASN1Integer object by decoding data from an input stream.
-	 */
-	public ASN1Integer(ASN1Decoder dec, InputStream in, int len)
-		throws IOException
-	{
-		id = new ASN1Identifier(ASN1Identifier.UNIVERSAL, false, INTEGER);
-		content = (Long)dec.decodeNumeric(in, len);
-	}
+   /**
+    * Constructs an ASN1Integer object using a long value.
+    */
+   public ASN1Integer(long content)
+   {
+      id = new ASN1Identifier(ASN1Identifier.UNIVERSAL, false, TAG);
+      this.content = new Long(content);
+   }
 
-	//*************************************************************************
-	// ASN1Object implementation
-	//*************************************************************************
+   /**
+    * Constructs an ASN1Integer object by decoding data from an input stream.
+    */
+   public ASN1Integer(ASN1Decoder dec, InputStream in, int len)
+      throws IOException
+   {
+      id = new ASN1Identifier(ASN1Identifier.UNIVERSAL, false, TAG);
+      content = (Long)dec.decodeNumeric(in, len);
+   }
 
-	/**
-	 * Encodes the contents of this ASN1Integer directly to an output
-	 * stream.
-	 */
-	public void encode(ASN1Encoder enc, OutputStream out)
-		throws IOException
-	{
-		enc.encode(this, out);
-	}
+   //*************************************************************************
+   // ASN1Object implementation
+   //*************************************************************************
 
-	//*************************************************************************
-	// ASN1Integer specific methods
-	//*************************************************************************
+   /**
+    * Encodes the contents of this ASN1Integer directly to an output
+    * stream.
+    */
+   public void encode(ASN1Encoder enc, OutputStream out)
+      throws IOException
+   {
+      enc.encode(this, out);
+   }
 
-	/**
-	 * Return a String representation of this ASN1Object.
-	 */
-	public String toString()
-	{
-		return super.toString() + "INTEGER: " + content;
-	}
+   //*************************************************************************
+   // ASN1Integer specific methods
+   //*************************************************************************
+
+   /**
+    * Return a String representation of this ASN1Integer.
+    */
+   public String toString()
+   {
+      return super.toString() + "INTEGER: " + content;
+   }
 
 }
 
