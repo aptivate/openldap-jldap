@@ -10,9 +10,9 @@ import com.novell.ldap.asn1.*;
  *       AttributeDescriptionList ::= SEQUENCE OF
  *               AttributeDescription
  *
- * @see AttributeDescription
+ * @see RfcAttributeDescription
  * @see ASN1SequenceOf
- * @see SearchRequest
+ * @see RfcSearchRequest
  */
 public class RfcAttributeDescriptionList extends ASN1SequenceOf {
 
