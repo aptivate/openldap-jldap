@@ -16,11 +16,13 @@ package com.novell.ldap.rfc2251;
 
 import com.novell.ldap.asn1.*;
 
-/* 
+/**
+ *<pre>
  *        AuthenticationChoice ::= CHOICE {
  *               simple                  [0] OCTET STRING,
  *                                        -- 1 and 2 reserved
  *               sasl                    [3] SaslCredentials }
+ *</pre>
  */
 public class RfcAuthenticationChoice extends ASN1Choice {
 

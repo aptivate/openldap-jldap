@@ -19,7 +19,8 @@ import java.io.InputStream;
 import java.io.ByteArrayInputStream;
 import com.novell.ldap.asn1.*;
 
-/* 
+/** 
+ *<pre>
  *        LDAPResult ::= SEQUENCE {
  *               resultCode      ENUMERATED {
  *                            success                      (0),
@@ -73,6 +74,7 @@ import com.novell.ldap.asn1.*;
  *               matchedDN       LDAPDN,
  *               errorMessage    LDAPString,
  *               referral        [3] Referral OPTIONAL }
+ *</pre>
  *
  */
 public class RfcLDAPResult extends ASN1Sequence implements RfcResponse {

@@ -19,8 +19,10 @@ import com.novell.ldap.asn1.*;
 import com.novell.ldap.*;
 import com.novell.ldap.resources.*;
 
-/* 
+/**
+ *<pre>
  *       UnbindRequest ::= [APPLICATION 2] NULL
+ *</pre>
  */
 public class RfcUnbindRequest extends ASN1Null implements RfcRequest {
 

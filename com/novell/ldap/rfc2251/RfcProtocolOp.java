@@ -16,7 +16,8 @@ package com.novell.ldap.rfc2251;
 
 import com.novell.ldap.asn1.*;
 
-/* 
+/**
+ *<pre>
  *                protocolOp      CHOICE {
  *                       bindRequest     BindRequest,
  *                       bindResponse    BindResponse,
@@ -38,6 +39,7 @@ import com.novell.ldap.asn1.*;
  *                       abandonRequest  AbandonRequest,
  *                       extendedReq     ExtendedRequest,
  *                       extendedResp    ExtendedResponse },
+ *</pre>
  */
 public class RfcProtocolOp extends ASN1Choice {
 

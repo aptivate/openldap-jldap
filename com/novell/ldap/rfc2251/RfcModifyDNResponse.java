@@ -18,8 +18,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import com.novell.ldap.asn1.*;
 
-/* 
+/**
+ *<pre>
  *       ModifyDNResponse ::= [APPLICATION 13] LDAPResult
+ *</pre>
  */
 public class RfcModifyDNResponse extends RfcLDAPResult {
 

@@ -16,11 +16,12 @@ package com.novell.ldap.rfc2251;
 
 import com.novell.ldap.asn1.*;
 
-/* 
+/**
+ *<pre>
  *       AttributeValueAssertion ::= SEQUENCE {
  *               attributeDesc   AttributeDescription,
  *               assertionValue  AssertionValue }
- *
+ *</pre>
  */
 public class RfcAttributeValueAssertion extends ASN1Sequence {
 
@@ -33,6 +34,4 @@ public class RfcAttributeValueAssertion extends ASN1Sequence {
 		add(ad);
 		add(av);
 	}
-
 }
-

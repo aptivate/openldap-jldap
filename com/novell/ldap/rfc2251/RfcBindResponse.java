@@ -19,11 +19,13 @@ import java.io.InputStream;
 import java.io.ByteArrayInputStream;
 import com.novell.ldap.asn1.*;
 
-/* 
+/**
+ *<pre>
  *       BindResponse ::= [APPLICATION 1] SEQUENCE {
  *
  *            COMPONENTS OF LDAPResult,
  *            serverSaslCreds    [7] OCTET STRING OPTIONAL }
+ *</pre>
  */
 public class RfcBindResponse extends ASN1Sequence implements RfcResponse {
 

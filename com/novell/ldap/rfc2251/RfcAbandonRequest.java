@@ -18,8 +18,10 @@ import com.novell.ldap.asn1.*;
 import com.novell.ldap.*;
 import com.novell.ldap.resources.*;
 
-/* 
+/**
+ *<pre>
  *       AbandonRequest ::= [APPLICATION 16] MessageID
+ *</pre>
  */
 public class RfcAbandonRequest extends RfcMessageID implements RfcRequest {
 

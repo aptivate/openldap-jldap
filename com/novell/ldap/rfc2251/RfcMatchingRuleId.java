@@ -15,8 +15,10 @@
 
 package com.novell.ldap.rfc2251;
 
-/*
+/**
+ *<pre>
  *        MatchingRuleId ::= LDAPString
+ *</pre>
  */
 public class RfcMatchingRuleId extends RfcLDAPString {
 

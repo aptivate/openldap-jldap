@@ -16,7 +16,8 @@ package com.novell.ldap.rfc2251;
 
 import com.novell.ldap.asn1.*;
 
-/*
+/**
+ *<pre>
  *       SubstringFilter ::= SEQUENCE {
  *               type            AttributeDescription,
  *               -- at least one must be present
@@ -24,6 +25,7 @@ import com.novell.ldap.asn1.*;
  *                       initial [0] LDAPString,
  *                       any     [1] LDAPString,
  *                       final   [2] LDAPString } }
+ *</pre>
  */
 public class RfcSubstringFilter extends ASN1Sequence {
 

@@ -19,11 +19,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import com.novell.ldap.asn1.*;
 
-/* 
+/**
+ *<pre>
  *        Control ::= SEQUENCE {
  *               controlType             LDAPOID,
  *               criticality             BOOLEAN DEFAULT FALSE,
  *               controlValue            OCTET STRING OPTIONAL }
+ *</pre>
  */
 public class RfcControl extends ASN1Sequence {
 

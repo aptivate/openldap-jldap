@@ -19,8 +19,10 @@ import com.novell.ldap.asn1.*;
 import com.novell.ldap.*;
 import com.novell.ldap.resources.*;
 
-/* 
+/**
+ *<pre>
  *       DelRequest ::= [APPLICATION 10] LDAPDN
+ *</pre>
  */
 public class RfcDelRequest extends RfcLDAPDN implements RfcRequest {
 

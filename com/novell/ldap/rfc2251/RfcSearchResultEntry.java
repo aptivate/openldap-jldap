@@ -19,10 +19,12 @@ import java.io.InputStream;
 import com.novell.ldap.asn1.*;
 import com.novell.ldap.client.Debug;
 
-/*
+/**
+ *<pre>
  *       SearchResultEntry ::= [APPLICATION 4] SEQUENCE {
  *               objectName      LDAPDN,
  *               attributes      PartialAttributeList }
+ *</pre>
  */
 public class RfcSearchResultEntry extends ASN1Sequence {
 

@@ -19,8 +19,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import com.novell.ldap.asn1.*;
 
-/* 
+/** 
+ *</pre>
  *       Controls ::= SEQUENCE OF Control
+ *<pre>
  */
 public class RfcControls extends ASN1SequenceOf {
 

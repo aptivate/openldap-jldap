@@ -16,10 +16,12 @@ package com.novell.ldap.rfc2251;
 
 import com.novell.ldap.asn1.*;
 
-/* 
+/**
+ *<pre>
  *       AttributeTypeAndValues ::= SEQUENCE {
  *               type    AttributeDescription,
  *               vals    SET OF AttributeValue }
+ *</pre>
  */
 public class RfcAttributeTypeAndValues extends ASN1Sequence {
 

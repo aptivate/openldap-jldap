@@ -16,8 +16,10 @@ package com.novell.ldap.rfc2251;
 
 import com.novell.ldap.asn1.*;
 
-/* 
+/** 
+ *<pre>
  *        LDAPDN ::= LDAPString
+ *</pre>
  */
 public class RfcLDAPDN extends RfcLDAPString {
 
