@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttributeSchema.java,v 1.13 2000/10/23 23:28:56 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttributeSchema.java,v 1.14 2000/10/26 00:12:28 bgudmundson Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -26,7 +26,8 @@ import java.io.IOException;
  */
 
 /**
- *  Represents the definition of an attribute in the schema.
+ * Represents the schematic definition of a
+ * particular attribute in a particular Directory Server.
  *
  *  <p>The LDAPAttributeSchema class is used to query for an attribute's syntax,
  *  to add an attribute definition to a directory's schema, and to delete an
