@@ -228,7 +228,10 @@ class DSMLHandler extends DefaultHandler implements
                 if (tag == MODIFICATION){
                     state = tag;
                     attributeValues.clear();
+                    String tempID=requestID;
                     parseTagAttributes( tag, attrs );
+                    requestID=tempID;
+                    tempID=null;
                 }
                 else
                     throw new SAXException("invalid modifyRequest tag: " +
