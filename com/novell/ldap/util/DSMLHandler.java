@@ -212,6 +212,11 @@ class DSMLHandler extends DefaultHandler implements
                 parseTagAttributes( tag, attrs );
                 break;
             case SEARCH_REQUEST:
+                if((isParallel == true && isUnordered == true)
+                   && requestID==null)
+                {
+                    throw new SAXException("requestID not provided");
+                }
                 if (tag == ATTRIBUTES ){
                     this.attributeNames.clear();
                     this.attributeValues.clear();
@@ -225,6 +230,12 @@ class DSMLHandler extends DefaultHandler implements
                 break;
             case AUTH_REQUEST:
             case MODIFY_REQUEST:
+                if((isParallel == true && isUnordered == true)
+                   && requestID==null)
+                {
+                    throw new SAXException("requestID not provided");
+                }
+
                 if (tag == MODIFICATION){
                     state = tag;
                     attributeValues.clear();
@@ -238,6 +249,12 @@ class DSMLHandler extends DefaultHandler implements
                             strSName);
                 break;
             case ADD_REQUEST:
+                if((isParallel == true && isUnordered == true)
+                   && requestID==null)
+                {
+                    throw new SAXException("requestID not provided");
+                }
+            
                 if (tag == ADD_ATTRIBUTE){
                     state = tag;
                     attributeValues.clear();
@@ -248,10 +265,27 @@ class DSMLHandler extends DefaultHandler implements
                             strSName);
                 break;
             case DELETE_REQUEST:
+                if((isParallel == true && isUnordered == true)
+                   && requestID==null)
+                {
+                    throw new SAXException("requestID not provided");
+                }
+            
                 break;
             case MODIFY_DN_REQUEST:
+                if((isParallel == true && isUnordered == true)
+                   && requestID==null)
+                {
+                    throw new SAXException("requestID not provided");
+                }
+            
                 break;
             case COMPARE_REQUEST:
+                if((isParallel == true && isUnordered == true)
+                   && requestID==null)
+                {
+                    throw new SAXException("requestID not provided");
+                }
                 attributeValues.clear();
                 if (tag == ASSERTION) {
                     attrName =  attrs.getValue("name") ;
