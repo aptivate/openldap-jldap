@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPResponse.java,v 1.12 2000/09/21 23:27:35 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPResponse.java,v 1.13 2000/09/28 15:17:41 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -23,13 +23,13 @@ import com.novell.ldap.protocol.*;
 import com.novell.ldap.client.Debug;
 
 /**
- *  Represents the response to an LDAP protocol operation.
+ *  Represents the response to a particular asynchronous LDAP operation.
  */
 public class LDAPResponse extends LDAPMessage
 {
 
     /**
-     * Creates an LDAPMessage when receiving an RFC 2251 LDAPMessage from a
+     * Creates an LDAPMessage when receiving an asynchronous response from a
      * server.
      *
      *  @param message  The LDAPMessage from a server.
@@ -51,7 +51,8 @@ public class LDAPResponse extends LDAPMessage
     }
 
     /**
-     * Returns the partially matched DN field, if any, in a server response.
+     * Returns the partially matched DN field from the server response, 
+     * if the response contains one.
      *
      * @return The partially matched DN field, if the response contains one.
      *         
@@ -62,7 +63,7 @@ public class LDAPResponse extends LDAPMessage
     }
 
     /**
-     * Returns all referrals, if any, in a server response.
+     * Returns all referrals in a server response, if the response contains any.
      *
      * @return All the referrals in the server response.
      */

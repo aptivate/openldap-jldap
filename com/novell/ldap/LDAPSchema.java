@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPSchema.java,v 1.6 2000/08/28 22:18:58 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSchema.java,v 1.7 2000/09/11 22:47:50 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -23,8 +23,12 @@ import java.util.*;
  */
  
 /**
- *  Supports querying a directory server for its schema,
- *  and obtaining definitions of individual schema elements.
+ *  Supports querying a directory server for its schema
+ *  and for definitions of individual schema elements.
+ *
+ * <p>The fetchSchema methods are the only methods that interact with a
+ * directory server. The other methods access information acquired
+ * through fetchSchema.</p>
  */
 public class LDAPSchema {
 
@@ -54,10 +58,13 @@ public class LDAPSchema {
    /**
     * Retrieves the entire schema from a directory server.
     *
+    * <p>An LDAPException is thrown as for LDAPConnection.search method
+    * if the schema cannot be retrieved with the specified connection.</p>
+    *
     *  @param ld       An open connection to a directory server.
     *
     *  @exception LDAPException A general exception which includes an error 
-    *   message and an LDAP error code.
+    *                           message and an LDAP error code.
     */
    public void fetchSchema(LDAPConnection ld) throws LDAPException {
 
@@ -73,11 +80,8 @@ public class LDAPSchema {
     * Retrieves the schema in effect at a particular entry in the directory
     * server.
     *
-    * <p>The fetchSchema methods are the only methods that interact with a
-    * directory server. The other methods access information acquired
-    * through fetchSchema. An LDAPException is thrown as for
-    * LDAPConnection.search method if the schema cannot be retrieved
-    * with the specified connection.</p>
+    * <p>An LDAPException is thrown as for LDAPConnection.search method
+    * if the schema cannot be retrieved with the specified connection.</p>
     *
     *  @param ld       An open connection to a directory server.
     *<br><br>
@@ -251,6 +255,8 @@ public class LDAPSchema {
 
    /**
     * Returns an enumeration of attribute definitions.
+    *
+    * @return An enumeration of attribute definitions.
     */
    public Enumeration getAttributes() {
       return null;
@@ -262,6 +268,8 @@ public class LDAPSchema {
 
    /**
     * Returns an enumeration of object class definitions.
+    *
+    * @return An enumeration of object class definitions.
     */
    public Enumeration getObjectClasses() {
       return null;
@@ -273,6 +281,8 @@ public class LDAPSchema {
 
    /**
     * Returns an enumeration of matching rule definitions.
+    *
+    * @exception An enumeration of matching rule definitions.
     */
    public Enumeration getMatchingRules() {
       return null;
@@ -284,6 +294,8 @@ public class LDAPSchema {
 
    /**
     * Returns an enumeration of attribute names.
+    *
+    * @return An enumeration of attribute names.
     */
    public Enumeration getAttributeNames() {
       return null;
@@ -295,6 +307,8 @@ public class LDAPSchema {
 
    /**
     * Returns an enumeration of object class names.
+    *
+    * @return An enumeration of object class names.
     */
    public Enumeration getObjectClassNames() {
       return null;
@@ -306,6 +320,8 @@ public class LDAPSchema {
 
    /**
     * Returns an enumeration of matching rule names.
+    *
+    * @return An enumeration of matching rule names.
     */
    public Enumeration getMatchingRuleNames() {
       return null;

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSchemaElement.java,v 1.6 2000/09/11 22:47:50 judy Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSchemaElement.java,v 1.7 2000/09/12 22:50:12 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -83,9 +83,9 @@ public abstract class LDAPSchemaElement {
     * Returns an array of alternative names for the element, or null if
     * none is found. 
     *
-    * <p>With respect to the protocol-level schema element
-    * syntax definition, the array consists of all values but the
-    * first of the NAME qualifier. </p>
+    * <p>The getAliases method accesses the NAME qualifier (from the BNF  
+    * descriptions of LDAP schema definitions). The array consists of all 
+    * values but the first value of the NAME qualifier. </p>
     *
     *  @return An array of alternative names for the element, or null if none
     *          is found.
@@ -107,8 +107,8 @@ public abstract class LDAPSchemaElement {
    /**
     * Returns the description of the element. 
     *
-    * <p>With respect to the protocol-level schema element syntax definition,
-    * the value is that of the DESC qualifier.</p>
+    * <p>The getDescription method returns the value of the DESC qualifier  
+    * (from the BNF descriptions of LDAP schema definitions). </p>
     *
     * @return The description of the element.
     * 
@@ -124,8 +124,9 @@ public abstract class LDAPSchemaElement {
    /**
     * Returns the name of the element. 
     *
-    * <p>With respect to the protocol-level schema element syntax definition, 
-    * the value is that of the first NAME qualifier.</p>
+    * <p>The getName method accesses the NAME qualifier (from the BNF  
+    * descriptions of LDAP schema definitions). This method returns the first 
+    * value of the NAME field.</p>
     *
     *  @return The name of the element. 
     */
@@ -175,7 +176,7 @@ public abstract class LDAPSchemaElement {
 
    /**
     * Returns an enumeration of all qualifiers of the element which are 
-    * not standard.
+    * vendor specific (begin with "X-").
     *
     *@return An enumeration of all qualifiers of the element.
     */
@@ -196,7 +197,7 @@ public abstract class LDAPSchemaElement {
     */
 
    /**
-    * Returns true if the element has the OBSOLETE qualifier
+    * Returns whether the element has the OBSOLETE qualifier
     * in its LDAP definition.
     *
     * @return True if the LDAP definition contains the OBSOLETE qualifier; 
@@ -212,7 +213,7 @@ public abstract class LDAPSchemaElement {
 
    /**
     * Returns a string in a format suitable for directly adding to a
-    * directory, as a value of the particular schema element attribute.
+    * directory, as a value of the particular schema element.
     *
     * @return A string that can be used to add the element to the directory.
     */
@@ -264,8 +265,8 @@ public abstract class LDAPSchemaElement {
    }
 
    /**
-    * Adds the definition to a directory. An exception is thrown if the
-    * definition cannot be added.
+    * Adds the definition to a directory, at a specified location. An exception 
+    * is thrown if the definition cannot be added.
     *
     *  @param ld       An open connection to a directory server.
     *                  Typically the connection must have been
@@ -299,8 +300,8 @@ public abstract class LDAPSchemaElement {
    }
 
    /**
-    * Removes the definition from a directory. An exception is thrown if
-    * the definition cannot be removed.
+    * Removes the definition from a directory, at a specified location.  
+    * An exception is thrown if the definition cannot be removed.
     *
     *  @param ld       An open connection to a directory server.
     *                  Typically the connection must have been
@@ -338,7 +339,8 @@ public abstract class LDAPSchemaElement {
 
    /**
     * Replaces a single value of the schema element definition in the
-    * schema. An exception is thrown if the definition cannot be modified.
+    * schema, at a specified location in the directory. An exception is thrown 
+    * if the definition cannot be modified.
     *
     *  @param ld       An open connection to a directory server.
     *                  Typically the connection must have been
