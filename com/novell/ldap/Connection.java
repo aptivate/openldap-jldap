@@ -701,6 +701,47 @@ final class Connection
     {
         return (in != null);
     }
+    
+    /**
+     * Checks whether a connection is still alive or not by sending data to
+     * the server on this connection's socket.If the connection is not alive
+     * the send will generate an IOException and the function will return 
+     * false.
+     * @return  true    If connection is alive
+     *          false   If connection is not alive.
+     */
+    final boolean isConnectionAlive() 
+    {
+       boolean isConn=false;
+       int id;
+       LDAPExtendedOperation op=null;
+
+       if  ( in!= null )      {
+       	   isConn=true;
+       	   
+           LDAPSearchConstraints cons=new LDAPSearchConstraints();
+           op= new LDAPExtendedOperation("0.0.0.0",null);
+           LDAPMessage msg =new LDAPExtendedRequest(op, null);       
+           id = msg.getMessageID();
+           acquireWriteSemaphore(id);
+           OutputStream myOut = out;           
+           try          {
+               if( myOut == null) {
+                   throw new IOException("Output stream not initialized");
+               }
+               byte[] ber = msg.getASN1Object().getEncoding(encoder);
+               myOut.write(ber, 0, ber.length);
+               myOut.flush();
+               } catch( IOException ioe) {
+                   isConn=false;
+               }
+               finally {
+                   freeWriteSemaphore(id);
+               }
+       } 
+       
+       return isConn;
+   }
 
     /**
      * Removes a Message class from the Connection's list
