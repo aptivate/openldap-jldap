@@ -17,6 +17,7 @@ package com.novell.services.dsml.stream;
 import com.novell.ldap.LDAPSocketFactory;
 import com.novell.ldap.LDAPJSSESecureSocketFactory;
 import com.novell.ldap.LDAPConnection;
+import com.novell.ldap.LDAPLocalException;
 import com.novell.ldap.connectionpool.PoolManager;
 import com.novell.ldap.util.DSMLReader;
 import com.novell.ldap.util.DSMLWriter;
@@ -186,8 +187,23 @@ public class DsmlService extends HttpServlet
             respPrtWtr.flush();
             
             status = "Last doPost successful";
-        }
-        catch(Exception e)
+        }catch(LDAPLocalException e){
+                        rsp.setContentType("text/xml; charset=utf-8");
+            // Get response PrintWriter object from HttpServletResponse so we
+            // can write response.
+            respPrtWtr = rsp.getWriter();
+            // Write XML version to response.
+            respPrtWtr.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+            // Write start of soap envelope.
+            respPrtWtr.println("<soap-env:Envelope xmlns:soap-env=\"http://schemas.xmlsoap.org/soap/envelope/\">");
+            // Write start of soap body.
+            respPrtWtr.println("<soap-env:Body>");
+            // Set response PrintWriter object into DSLMLWriter.
+            respDsmlWtr = new DSMLWriter(respPrtWtr);
+            
+            respDsmlWtr.writeError(e);
+            
+        }catch(Exception e)
         {
             rsp.setStatus(rsp.SC_INTERNAL_SERVER_ERROR);
             if(null != respPrtWtr)respPrtWtr.flush();
