@@ -22,6 +22,7 @@ import com.novell.ldap.asn1.ASN1Object;
 import com.novell.ldap.rfc2251.RfcControls;
 import com.novell.ldap.rfc2251.RfcLDAPDN;
 import com.novell.ldap.rfc2251.RfcLDAPMessage;
+import com.novell.ldap.rfc2251.RfcLDAPSuperDN;
 import com.novell.ldap.rfc2251.RfcModifyDNRequest;
 import com.novell.ldap.rfc2251.RfcRelativeLDAPDN;
 import com.novell.ldap.rfc2251.RfcRequest;
@@ -78,7 +79,7 @@ public class LDAPModifyDNRequest extends LDAPMessage
                    new RfcRelativeLDAPDN(newRdn),
                    new ASN1Boolean(deleteOldRdn),
                    (newParentdn != null) ?
-                       new RfcLDAPDN(newParentdn) : null),
+                       new RfcLDAPSuperDN(newParentdn) : null),
                cont);
         return;
     }
@@ -134,7 +135,7 @@ public class LDAPModifyDNRequest extends LDAPMessage
         if( (seq.length < 4)  || (seq[3] == null)) {
             return null;
         }
-        RfcLDAPDN parentDN = (RfcLDAPDN)req.toArray()[3];
+        RfcLDAPSuperDN parentDN = (RfcLDAPSuperDN)req.toArray()[3];
         return parentDN.stringValue();
     }
 
@@ -165,7 +166,7 @@ public class LDAPModifyDNRequest extends LDAPMessage
 		new RfcLDAPDN(dn),
 		new RfcRelativeLDAPDN(newRdn),
 		new ASN1Boolean(deleteOldRdn),
-		(newParentdn != null) ? new RfcLDAPDN(newParentdn) : null);
+		(newParentdn != null) ? new RfcLDAPSuperDN(newParentdn) : null);
 
 		message = new RfcLDAPMessage(operation, asn1Ctrls); 
 //		Garbage collect the readObject from readDSML()..	

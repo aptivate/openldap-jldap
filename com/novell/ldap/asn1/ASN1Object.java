@@ -93,7 +93,7 @@ public abstract class ASN1Object implements Serializable {
     public String toString()
     {
         String[] classTypes = {
-            "[UNIVERSAL ", "[APPLICATION ", "[", "[PRIVATE " };
+            "[UNIVERSAL ", "[APPLICATION ", "[CONTEXT ", "[PRIVATE " };
 
         StringBuffer sb = new StringBuffer();
         ASN1Identifier id = getIdentifier(); // could be overridden.

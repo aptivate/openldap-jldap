@@ -47,7 +47,7 @@ public class RfcModifyDNRequest extends ASN1Sequence implements RfcRequest {
      *
      */
     public RfcModifyDNRequest(RfcLDAPDN entry, RfcRelativeLDAPDN newrdn,
-                            ASN1Boolean deleteoldrdn, RfcLDAPDN newSuperior)
+                            ASN1Boolean deleteoldrdn, RfcLDAPSuperDN newSuperior)
     {
         super(4);
         add(entry);
