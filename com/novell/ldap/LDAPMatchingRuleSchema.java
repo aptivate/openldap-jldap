@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPMatchingRuleSchema.java,v 1.7 2000/10/02 19:46:52 judy Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPMatchingRuleSchema.java,v 1.8 2000/10/09 19:11:24 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -63,6 +63,7 @@ public class LDAPMatchingRuleSchema extends LDAPSchemaElement {
                                  String[] attributes,
                                  String syntaxString,
                                  String[] aliases) {
+      throw new RuntimeException("Class LDAPMatchingRuleSchema not implemented");
    }
 
 
@@ -79,6 +80,7 @@ public class LDAPMatchingRuleSchema extends LDAPSchemaElement {
     */ 
    public LDAPMatchingRuleSchema(String rawMatchingRule,
                                  String rawMatchingRuleUse) {
+      throw new RuntimeException("Class LDAPMatchingRuleSchema not implemented");
    }
 
    /*

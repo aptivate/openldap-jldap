@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPCompareAttrNames.java,v 1.8 2000/09/29 15:17:12 judy Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPCompareAttrNames.java,v 1.9 2000/10/09 19:11:22 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -44,6 +44,7 @@ public class LDAPCompareAttrNames implements LDAPEntryComparator {
     *
     */
    public LDAPCompareAttrNames(String attrName) {
+      throw new RuntimeException("Class LDAPAttrNames not implemented");
    }
 
    /**
@@ -58,6 +59,7 @@ public class LDAPCompareAttrNames implements LDAPEntryComparator {
     *                       descending order.
     */
    public LDAPCompareAttrNames(String attrName, boolean ascendingFlag) {
+      throw new RuntimeException("Class LDAPAttrNames not implemented");
    }
 
 
@@ -72,6 +74,7 @@ public class LDAPCompareAttrNames implements LDAPEntryComparator {
     *
     */
    public LDAPCompareAttrNames(String[] attrNames) {
+      throw new RuntimeException("Class LDAPAttrNames not implemented");
    }
 
    /**
@@ -98,6 +101,7 @@ public class LDAPCompareAttrNames implements LDAPEntryComparator {
    public LDAPCompareAttrNames(String[] attrNames,
                                boolean[] ascendingFlags)
                                throws LDAPException {
+      throw new RuntimeException("Class LDAPAttrNames not implemented");
    }
 
    /*
