@@ -25,6 +25,8 @@ import java.util.NoSuchElementException;
  *  operation.
  *
  * @see com.novell.ldap.LDAPAttributeSet
+ * @see <a href="../../../../doc/com/novell/ldap/LDAPAttributeSet.html">
+            com.novell.ldap.LDAPAttributeSet</a>
  */
 public class LDAPAttributeSet implements Cloneable
 {
@@ -43,7 +45,9 @@ public class LDAPAttributeSet implements Cloneable
     /**
      * Constructs a new set of attributes. This set is initially empty.
      *
-     * @see com.novell.ldap.LDAPAttributeSet#LDAPAttributeSet()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttributeSet.html
+            #LDAPAttributeSet()">
+            com.novell.ldap.LDAPAttributeSet.LDAPAttributeSet()</a>
      */
     public LDAPAttributeSet()
     {
@@ -63,7 +67,9 @@ public class LDAPAttributeSet implements Cloneable
     /**
      * Adds the specified attribute to this attribute set.
      *
-     * @see com.novell.ldap.LDAPAttributeSet#add(com.novell.ldap.LDAPAttribute)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttributeSet.html
+            #add(com.novell.ldap.LDAPAttribute)">
+            com.novell.ldap.LDAPAttributeSet.add(LDAPAttribute)</a>
      */
     public void add(LDAPAttribute attr)
     {
@@ -78,7 +84,9 @@ public class LDAPAttributeSet implements Cloneable
     /**
      * Returns a deep copy of this attribute set.
      *
-     * @see com.novell.ldap.LDAPAttributeSet#clone()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttributeSet.html
+            #clone()">
+            com.novell.ldap.LDAPAttributeSet.clone()</a>
      */
     public Object clone()
     {
@@ -90,7 +98,9 @@ public class LDAPAttributeSet implements Cloneable
      * Returns the attribute at the position specified by the index. The
      * index is 0-based.
      *
-     * @see com.novell.ldap.LDAPAttributeSet#elementAt(int)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttributeSet.html
+            #elementAt(int)">
+            com.novell.ldap.LDAPAttributeSet.elementAt(int)</a>
      */
     public LDAPAttribute elementAt(int index)
             throws ArrayIndexOutOfBoundsException
@@ -101,7 +111,9 @@ public class LDAPAttributeSet implements Cloneable
     /**
      * Returns the attribute matching the specified attrName.
      *
-     * @see com.novell.ldap.LDAPAttributeSet#getAttribute(String)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttributeSet.html
+            #getAttribute(java.lang.String)">
+            com.novell.ldap.LDAPAttributeSet.getAttribute(String)</a>
      */
     public LDAPAttribute getAttribute(String attrName)
     {
@@ -112,7 +124,9 @@ public class LDAPAttributeSet implements Cloneable
      * Returns a single best-match attribute, or null if no match is
      * available in the entry.
      *
-     * @see com.novell.ldap.LDAPAttributeSet#getAttribute(String, String)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttributeSet.html
+            #getAttribute(java.lang.String, java.lang.String)">
+            com.novell.ldap.LDAPAttributeSet.getAttribute(String, String)</a>
      */
     public LDAPAttribute getAttribute(String attrName, String lang)
     {
@@ -122,7 +136,9 @@ public class LDAPAttributeSet implements Cloneable
     /**
      * Returns an enumeration of the attributes in this attribute set.
      *
-     * @see com.novell.ldap.LDAPAttributeSet#getAttributes()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttributeSet.html
+            #getAttributes()">
+            com.novell.ldap.LDAPAttributeSet.getAttributes()</a>
      */
     public Enumeration getAttributes()
     {
@@ -151,7 +167,9 @@ public class LDAPAttributeSet implements Cloneable
      * Creates a new attribute set containing only the attributes that have
      * the specified subtypes.
      *
-     * @see com.novell.ldap.LDAPAttributeSet#getSubset(String)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttributeSet.html
+            #getSubset(java.lang.String)">
+            com.novell.ldap.LDAPAttributeSet.getSubset(String)</a>
      */
     public LDAPAttributeSet getSubset(String subtype)
     {
@@ -162,7 +180,9 @@ public class LDAPAttributeSet implements Cloneable
      * Removes the specified attribute from the set. If the attribute is not
      * a member of the set, nothing happens.
      *
-     * @see com.novell.ldap.LDAPAttributeSet#remove(String)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttributeSet.html
+            #remove(java.lang.String)">
+            com.novell.ldap.LDAPAttributeSet.remove(String)</a>
      */
     public void remove(String name)
     {
@@ -174,7 +194,9 @@ public class LDAPAttributeSet implements Cloneable
      * Removes the attribute at the position specified by the index.  The
      * index is 0-based.
      *
-     * @see com.novell.ldap.LDAPAttributeSet#removeElementAt(int)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttributeSet.html
+            #remove(int)">
+            com.novell.ldap.LDAPAttributeSet.remove(int)</a>
      */
     public void removeElementAt(int index)
     {
@@ -185,7 +207,9 @@ public class LDAPAttributeSet implements Cloneable
     /**
      * Returns the number of attributes in this set.
      *
-     * @see com.novell.ldap.LDAPAttributeSet#size()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttributeSet.html
+            #size()">
+            com.novell.ldap.LDAPAttributeSet.size()</a>
      */
     public int size()
     {
