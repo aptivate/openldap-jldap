@@ -37,6 +37,7 @@
 
         <echo message="DEBUG compile in com/novell"/>
         <mkdir dir="${build.debug}"/>
+        <delete file="com/novell/ldap/client/Debug.java"/>
         <copy
         		file="com/novell/ldap/client/Debug.template"
         		tofile="com/novell/ldap/client/Debug.java"
@@ -45,7 +46,7 @@
         />
         <javac
                 srcdir="."
-                includes="com/novell/**/*.java"
+                includes="com/novell/**/*.java,org/ietf/**/*.java"
                 destdir="${build.debug}"
                 target="1.1"
                 deprecation="off"
@@ -83,7 +84,7 @@
         />
         <javac
                 srcdir="."
-                includes="com/novell/**/*.java"
+                includes="com/novell/**/*.java,org/ietf/**/*.java"
                 destdir="${build}"
                 target="1.1"
                 deprecation="off"

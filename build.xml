@@ -1,4 +1,4 @@
-<!-- $Novell: /ldap/src/jldap/build.xml,v 1.40 2001/05/18 18:39:02 vtag Exp $ -->
+<!-- $Novell: /ldap/src/jldap/build.xml,v 1.41 2001/05/18 21:07:31 vtag Exp $ -->
 <!--
  ******************************************************************************
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
@@ -295,7 +295,7 @@
         	sourcepath="${docsrc}"
             destdir="${pkg.apidoc}"
             classpath="${lib.debug}/${ldap}.jar;external/ssl/domestic/nssl1.2_dom.jar;external/jsse/lib/jcert.jar;external/jsse/lib/jnet.jar;external/jsse/lib/jsse.jar"
-            packagenames="com.novell.ldap,com.novell.ldap.extensions,com.novell.ldap.controls,com.novell.ldap.asn1,com.novell.ldap.util"
+            packagenames="org.ietf.ldap,com.novell.ldap.extensions,com.novell.ldap.controls,com.novell.ldap.asn1,com.novell.ldap.util,com.novell.ldap"
             overview="overview.html"
             nodeprecated="true"
             nodeprecatedlist="true"
@@ -315,12 +315,12 @@
         <echo message="Creating internal developer ldap javadoc"/>
         <mkdir dir="${doc.developer}"/>
 		<filter token="COMPILE_DEBUG" value="true"/>
-		<delete file="com/novell/ldap/client/Debug.java"/>
-		<copy file="com/novell/ldap/client/Debug.template" tofile="com/novell/ldap/client/Debug.java" filtering="YES"/>
+		<delete file="org/ietf/ldap/client/Debug.java"/>
+		<copy file="org/ietf/ldap/client/Debug.template" tofile="org/ietf/ldap/client/Debug.java" filtering="YES"/>
         <javadoc sourcepath="${docsrc}"
             destdir="${doc.developer}"
             classpath="external/ssl/domestic/nssl1.2_dom.jar;external/jsse/lib/jcert.jar;external/jsse/lib/jnet.jar;external/jsse/lib/jsse.jar"
-            packagenames="com.novell.ldap,com.novell.ldap.asn1,com.novell.ldap.client,com.novell.ldap.rfc2251,com.novell.ldap.extensions,com.novell.ldap.controls,,com.novell.ldap.util"
+            packagenames="org.ietf.ldap,com.novell.ldap.asn1,com.novell.ldap.client,com.novell.ldap.rfc2251,com.novell.ldap.extensions,com.novell.ldap.controls,com.novell.ldap.util,com.novell.ldap"
             Windowtitle="LDAP Classes"
             Splitindex="true"
             Private="true"
