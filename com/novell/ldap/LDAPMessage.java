@@ -576,7 +576,7 @@ public class LDAPMessage
      * The application can explicitly set a different value in a
      * response message.</p>
      *
-     * <p>To set a value in a server request, for example an 
+     * <p>To set a value in a server request, for example an
      * {@link LDAPSearchRequest}, you must create the object,
      * set the tag, and use the
      * {@link LDAPConnection#sendRequest LDAPConnection.sendRequest()}
@@ -612,6 +612,9 @@ public class LDAPMessage
     {
         if (this.stringTag != null) {
             return this.stringTag;
+        }
+        if (isRequest()) {
+            return null;
         }
         LDAPMessage m = this.getRequestingMessage();
         if (m == null) {
