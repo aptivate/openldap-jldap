@@ -249,6 +249,7 @@ class DSMLHandler extends DefaultHandler implements
             case MODIFY_DN_REQUEST:
                 break;
             case COMPARE_REQUEST:
+                attributeValues.clear();
                 if (tag == ASSERTION) {
                     attrName =  attrs.getValue("name") ;
                     state = tag;
@@ -287,6 +288,7 @@ class DSMLHandler extends DefaultHandler implements
                 state = tag;
                 break;
             case EXTENDED_REQUEST:
+                attributeValues.clear();
                 if (tag == X_NAME || tag == X_VALUE){
                     state = tag;
                     value = new StringBuffer();
@@ -432,7 +434,7 @@ class DSMLHandler extends DefaultHandler implements
                             "unknown attribute in searchRequest, " + temp);
 
                     //get timelimit
-                    temp = attrs.getValue("timelimit");
+                    temp = attrs.getValue("timeLimit");
                     if (temp != null){
                         timeLimit = Integer.parseInt(temp);
                     } else {
@@ -538,7 +540,7 @@ class DSMLHandler extends DefaultHandler implements
                 break;
             case COMPARE_REQUEST:
                 /* We cannot create a CompareRequest until we have the value
-                 assestion, which is another state */
+                 assertion, which is another state */
                 dn = attrs.getValue("dn");
                 break;
             case EXTENDED_REQUEST:
@@ -776,11 +778,9 @@ class DSMLHandler extends DefaultHandler implements
                     requestName = value.toString();
                     break;
                 case X_VALUE:
-                    {
-                        state = EXTENDED_REQUEST;
-                        requestValue = Base64.decode(value, 0, value.length());
-                        break;
-                    }
+                    state = EXTENDED_REQUEST;
+                    requestValue = Base64.decode(value, 0, value.length());
+                    break;
                 case FILTER:
                     state = SEARCH_REQUEST;
                     break;
@@ -912,7 +912,7 @@ class DSMLHandler extends DefaultHandler implements
         return;
     }
 
-    
+
     public void warning(SAXParseException e) throws SAXException
     {
         System.out.println("warning: " + e.toString());
@@ -924,7 +924,7 @@ class DSMLHandler extends DefaultHandler implements
         System.out.println("error: " + e.toString());
         throw e;
     }
-    
+
     public void fatalError(SAXParseException e) throws SAXException
     {
         System.out.println("fatal error: " + e.toString());
