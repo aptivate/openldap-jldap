@@ -68,30 +68,40 @@ public class LDAPConnection implements Cloneable
     /**
      * Used with search to specify that the scope of entrys to search is to
      * search only the base obect.
+     *
+     *<p>SCOPE_BASE = 0</p>
      */
     public static final int SCOPE_BASE   = 0;
 
     /**
      * Used with search to specify that the scope of entrys to search is to
      * search only the immediate subordinates of the base obect.
+     *
+     *<p>SCOPE_ONE = 1</p>
      */
     public static final int SCOPE_ONE    = 1;
 
     /**
      * Used with search to specify that the scope of entrys to search is to
      * search the base object and all entries within its subtree.
+     *
+     *<p>SCOPE_ONE = 2</p>
      */
     public static final int SCOPE_SUB    = 2;
 
     /**
      * Used with search instead of an attribute list to indicate that no
      * attributes are to be returned.
+     *
+     *<p>NO_ATTRS = "1.1"</p>
      */
     public static final String NO_ATTRS = "1.1";
 
     /**
      * Used with search instead of an attribute list to indicate that all
      * attributes are to be returned.
+     *
+     *<p>ALL_USER_ATTRS = "*"</p>
      */
     public static final String ALL_USER_ATTRS = "*";
 
@@ -101,6 +111,8 @@ public class LDAPConnection implements Cloneable
      * <p>You can use this identifier in the version parameter
      * of the bind method to specify an LDAPv2 bind.
      * The default protocol version is LDAP_V3</p>
+     *
+     *<p>LDAP_V2 = 2</p>
      *
      * @see #bind(int, String, String)
      * @see #bind(int, String, String, LDAPConstraints)
@@ -116,6 +128,8 @@ public class LDAPConnection implements Cloneable
      * of the bind method to specify an LDAPv3 bind.
      * LDAP_V3 is the default protocol version</p>
      *
+     *<p>LDAP_V3 = 3</p>
+     *
      * @see #bind(int, String, String)
      * @see #bind(int, String, String, LDAPConstraints)
      * @see #bind(int, String, String, LDAPResponseListener)
@@ -129,6 +143,8 @@ public class LDAPConnection implements Cloneable
      * <p>You can use this identifier to specify the port when establishing
      * a clear text connection to a server.  This the default port.</p>
      *
+     *<p>DEFAULT_PORT = 389</p>
+     *
      * @see #connect(String, int)
      */
     public static final int DEFAULT_PORT = 389;
@@ -136,6 +152,8 @@ public class LDAPConnection implements Cloneable
 
     /**
      * The default SSL port number for LDAP servers.
+     *
+     *<p>DEFAULT_SSL_PORT = 636</p>
      *
      * <p>You can use this identifier to specify the port when establishing
      * a an SSL connection to a server.</p>.
@@ -145,37 +163,37 @@ public class LDAPConnection implements Cloneable
     /**
      * A string that can be passed in to the getProperty method.
      *
+     *<p>LDAP_PROPERTY_SDK = "version.sdk"</p>
+     *
      * <p>You can use this string to request the version of the SDK</p>.
      */
-
-
     public static final String LDAP_PROPERTY_SDK = "version.sdk";
+    
     /**
      * A string that can be passed in to the getProperty method.
+     *
+     *<p>LDAP_PROPERTY_PROTOCOL = "version.protocol"</p>
      *
      * <p>You can use this string to request the version of the
      * LDAP protocol</p>.
      */
-
-
     public static final String LDAP_PROPERTY_PROTOCOL = "version.protocol";
 
     /**
      * A string that can be passed in to the getProperty method.
      *
+     *<p>LDAP_PROPERTY_SECURITY = "version.security"</p>
+     *
      * <p>You can use this string to request the type of security
      * being used</p>.
      */
-
-
     public static final String LDAP_PROPERTY_SECURITY = "version.security";
-
 
     /**
      * A string that corresponds to the server shutdown notification OID.
      *
+     *<p>SERVER_SHUTDOWN_OID = "1.3.6.1.4.1.1466.20036"
      */
-
     public static final String SERVER_SHUTDOWN_OID = "1.3.6.1.4.1.1466.20036";
 
     /*
@@ -283,7 +301,7 @@ public class LDAPConnection implements Cloneable
      *
      * @see #disconnect
      */
-    public void finalize()
+    protected void finalize()
         throws LDAPException
     {
         // Disconnect did not come from user API call
