@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.39 2001/03/01 00:30:04 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.40 2001/03/06 23:34:48 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -491,24 +491,23 @@ public final class Connection implements Runnable
         throws LDAPException
     {
         int id = msg.getMessageID();
+        OutputStream myOut = out;
+        
+        if( Debug.LDAP_DEBUG) {
+            Debug.trace( Debug.messages, name + "Writing Message(" + id + ")");
+        }
+        acquireBindSemaphore(id);
         try {
-            OutputStream myOut = out;
-            byte[] ber = msg.getASN1Object().getEncoding(encoder);
-            acquireBindSemaphore(id);
             if( myOut == null) {
                 throw new IOException("Output stream not initialized");
             }
-            if( Debug.LDAP_DEBUG) {
-                Debug.trace( Debug.messages, name +
-                    "Writing Message(" + id + ")");
-            }
+            byte[] ber = msg.getASN1Object().getEncoding(encoder);
             myOut.write(ber, 0, ber.length);
             myOut.flush();
         } catch( IOException ioe) {
-            String reason = "I/O Exception on " + host + ":" + port;
             if( Debug.LDAP_DEBUG ) {
                 Debug.trace( Debug.messages, name +
-                    "I/O Excepiton on " + host + ":" + port +
+                    "I/O Exception on host" + host + ":" + port +
                     " " + ioe.toString());
             }
             // I/O Exception on host:port

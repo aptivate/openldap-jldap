@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPExceptionMessageResource.java,v 1.8 2001/03/01 00:29:50 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPExceptionMessageResource.java,v 1.9 2001/03/02 23:10:28 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -91,7 +91,7 @@ public class LDAPExceptionMessageResource extends java.util.ListResourceBundle {
       {"PARAM_ERROR", "Invalid parameter"},
       {"DECODING_ERROR", "Error Decoding responseValue"},
       {"ENCODING_ERROR","Encoding Error"},
-      {"IO_EXCEPTION", "I/O Exception on {0}:{1}"},
+      {"IO_EXCEPTION", "I/O Exception on host {0}, port {1}"},
       {"INVALID_ESCAPE", "Invalid escape value" },
       {"UNEXPECTED_END", "Unexpected end of filter"},
       {"MISSING_LEFT_PAREN", "Missing left paren"},
