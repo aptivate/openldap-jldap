@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Identifier.java,v 1.8 2001/06/08 20:41:19 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Identifier.java,v 1.9 2001/07/20 19:49:42 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -58,7 +58,7 @@ import java.io.EOFException;
  *     1 1 1 1 1 (> 30) multiple octet tag, more octets follow
  *</pre>
  */
-public class ASN1Identifier {
+public class ASN1Identifier extends Object implements Cloneable {
 
    /**
     * Universal tag class
@@ -266,6 +266,15 @@ public class ASN1Identifier {
       return tagClass == PRIVATE;
    }
 
+   /**
+    * Creates a duplicate of this object and returns a reference to the 
+    * duplicate
+    *
+    */
+   public Object clone()
+   {
+      return new ASN1Identifier(this.tagClass, this.constructed, this.tag);
+   }
 
 
 }
