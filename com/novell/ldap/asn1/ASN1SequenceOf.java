@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1SequenceOf.java,v 1.6 2001/03/01 00:30:02 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1SequenceOf.java,v 1.7 2001/04/16 17:47:15 javed Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -45,6 +45,7 @@ public class ASN1SequenceOf extends ASN1Structured {
       return;
    }
 
+
    /**
     * Constructs an ASN1SequenceOf object with the specified
     * number of placeholders for ASN1Objects. However there
@@ -58,6 +59,7 @@ public class ASN1SequenceOf extends ASN1Structured {
       content = new ArrayList(size);
       return;
    }
+
 
    /**
     * A copy constructor which creates an ASN1SequenceOf from an
@@ -80,6 +82,7 @@ public class ASN1SequenceOf extends ASN1Structured {
       return;
    }
 
+
    /**
     * Constructs an ASN1SequenceOf object by decoding data from an 
     * input stream.
@@ -98,6 +101,7 @@ public class ASN1SequenceOf extends ASN1Structured {
       decodeStructured(dec, in, len);
       return;
    }
+
 
    /* ASN1SequenceOf specific methods
     */

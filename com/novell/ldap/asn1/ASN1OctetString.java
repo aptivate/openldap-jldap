@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1OctetString.java,v 1.9 2001/03/01 00:30:01 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1OctetString.java,v 1.10 2001/04/12 17:28:45 javed Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -45,6 +45,7 @@ public class ASN1OctetString extends ASN1Simple {
       this.content = content;
    }
 
+   
    /**
     * Call this constructor to construct an ASN1OctetString 
     * object from a String object.
@@ -64,6 +65,7 @@ public class ASN1OctetString extends ASN1Simple {
       }
    }
 
+  
    /**
     * Constructs an ASN1OctetString object by decoding data from an 
     * input stream.
@@ -84,6 +86,7 @@ public class ASN1OctetString extends ASN1Simple {
                         : new byte[0];
    }
 
+   
    /* ASN1Object implementation
     */
 
@@ -102,6 +105,7 @@ public class ASN1OctetString extends ASN1Simple {
       enc.encode(this, out);
    }
 
+   
    /*ASN1OctetString specific methods
     */
 
@@ -113,6 +117,7 @@ public class ASN1OctetString extends ASN1Simple {
       return content;
    }
 
+   
    /**
     * Returns the content of this ASN1OctetString as a String.
     */
@@ -126,6 +131,7 @@ public class ASN1OctetString extends ASN1Simple {
       }
       return s;
    }
+
 
    /**
     * Return a String representation of this ASN1Object.

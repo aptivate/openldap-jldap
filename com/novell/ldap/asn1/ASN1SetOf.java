@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1SetOf.java,v 1.5 2001/01/30 21:21:15 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1SetOf.java,v 1.6 2001/03/01 00:30:02 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -20,8 +20,9 @@ import com.novell.ldap.client.ArrayList;
 import java.util.Enumeration;
 
 /**
- * The ASN1SetOf class can hold an unordered collection of components with
- * identical type.
+ * The ASN1Set class can hold an unordered collection of components with
+ * identical type. This class inherits from the ASN1Structured class 
+ * which already provides functionality to hold multiple ASN1 components.
  */
 public class ASN1SetOf extends ASN1Structured {
 
@@ -30,12 +31,12 @@ public class ASN1SetOf extends ASN1Structured {
     */
    public static final int TAG = 0x11;
 
-   //*************************************************************************
-   // Constructors for ASN1SetOf
-   //*************************************************************************
+   /* Constructors for ASN1SetOf
+    */
 
    /**
-    * Constructs an ASN1SetOf object.
+    * Constructs an ASN1SetOf object with no actual
+    * ASN1Objects in it. Assumes a default size of 5 elements.
     */
    public ASN1SetOf()
    {
@@ -43,8 +44,11 @@ public class ASN1SetOf extends ASN1Structured {
       return;
    }
 
-   /**
-    * Constructs an ASN1SetOf object.
+ 
+  /**
+    * Constructs an ASN1SetOf object with the specified
+    * number of placeholders for ASN1Objects. However there
+    * are no actual ASN1Objects in this SequenceOf object.
     *
     * @param size Specifies the initial size of the collection.
     */
@@ -55,6 +59,7 @@ public class ASN1SetOf extends ASN1Structured {
       return;
    }
 
+   
    /**
     * A copy constructor which creates an ASN1SetOf from an
     * instance of ASN1Set.
@@ -76,9 +81,8 @@ public class ASN1SetOf extends ASN1Structured {
       return;
    }
 
-   //*************************************************************************
-   // ASN1SetOf specific methods
-   //*************************************************************************
+   /* ASN1SetOf specific methods
+    */
 
    /**
     * Return a String representation of this ASN1SetOf.
