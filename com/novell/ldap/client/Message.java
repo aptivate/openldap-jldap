@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/client/Message.java,v 1.21 2001/05/01 22:35:38 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/client/Message.java,v 1.22 2001/05/02 18:04:03 vtag Exp $
 *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -355,11 +355,12 @@ public class Message
                         }
                         replies.wait();
                     } catch(InterruptedException ir) {
-                        if( waitForReply) {
-                            continue;
-                        } else {
-                            break;
-                        }
+                        ; // do nothing
+                    }
+                    if( waitForReply) {
+                        continue;
+                    } else {
+                        break;
                     }
                 } else {
                     msg = replies.remove(0); // Atomic get and remove
