@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.62 2000/12/06 19:30:04 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.63 2000/12/14 22:35:01 cmorris Exp $
 *
 * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
 *
@@ -2940,7 +2940,12 @@ public class LDAPConnection implements Cloneable
    public static LDAPSearchResults search(LDAPUrl toGet)
       throws LDAPException
    {
-      throw new RuntimeException("Method LDAPConnection.search(LDAPUrl) not implemented");
+      LDAPConnection conn = new LDAPConnection();
+      conn.connect(toGet.getHost(),toGet.getPort());
+      LDAPSearchResults toReturn = conn.search(toGet.getDN(), toGet.getScope(),
+      toGet.getFilter(), toGet.getAttributeArray(), false);
+      conn.disconnect();
+      return toReturn;
    }
 
    /*
@@ -2979,7 +2984,13 @@ public class LDAPConnection implements Cloneable
          Debug.trace( Debug.apiRequests,
          "LDAPConnection.search(" + toGet.toString() + ")");
       }
-      throw new RuntimeException("Method LDAPConnection.search(LDAPUrl) not implemented");
+      LDAPConnection conn = new LDAPConnection();
+      conn.connect(toGet.getHost(),toGet.getPort());
+      LDAPSearchResults toReturn = conn.search(toGet.getDN(), toGet.getScope(),
+          toGet.getFilter(), toGet.getAttributeArray(), false, cons);
+      conn.disconnect();
+      return toReturn;
+
    }
 
     //*************************************************************************
