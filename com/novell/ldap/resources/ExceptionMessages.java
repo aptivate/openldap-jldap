@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/resources/ExceptionMessages.java,v 1.15 2001/05/03 18:17:49 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/resources/ExceptionMessages.java,v 1.16 2001/06/29 21:52:22 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -80,6 +80,7 @@ public class ExceptionMessages extends java.util.ListResourceBundle {
   static final Object[][] contents = {
   // LOCALIZE THIS
       {"TOSTRING", "{0} : ({1}) {2}"},
+      {"CONNECTION_ERROR", "Unable to connect to server {0}:{1}"},
       {"CONNECTION_WAIT", "Connection lost waiting for results from {0}:{1}"},
       {"CONNECTION_FINALIZED", "Connection closed by the application finalizing the object"},
       {"CONNECTION_CLOSED", "Connection closed by the application disconnecting"},
@@ -122,7 +123,7 @@ public class ExceptionMessages extends java.util.ListResourceBundle {
       {"NOT_IMPLEMENTED","Method LDAPConnection.startTLS not implemented"},
       {"MISSING_EQUAL","Attribute type and name must be separated by an equal symbol, '='"},
       {"NO_MEMORY","All results could not be stored in memory, sort failed"},
-	  {"SERVER_SHUTDOWN_REQ","Received unsolicited notification from server to shutdown"},
+	  {"SERVER_SHUTDOWN_REQ","Received unsolicited notification from server {0}:{1} to shutdown"},
       {"INVALID_ADDRESS","Invalid syntax for address with port; {0}"},
       {"UNKNOWN_RESULT","Unknown LDAP result code {0}"}
   // END OF MATERIAL TO LOCALIZE

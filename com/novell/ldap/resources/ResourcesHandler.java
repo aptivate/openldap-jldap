@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPDN.java,v 1.19 2001/04/23 20:29:40 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/resources/ResourcesHandler.java,v 1.1 2001/06/29 21:52:22 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -93,16 +93,14 @@ public class ResourcesHandler
                                      Locale locale)
     {
         String pattern;
-        ResourceBundle messages;
+        ResourceBundle messages = null;
         
         if( messageOrKey == null) {
             messageOrKey = "";
         }
-        System.out.println("getMessage: messageOrKey: " + messageOrKey);
 
         try {
             if( (locale == null) || defaultLocale.equals( locale) ) {
-                System.out.println("getMessage: default locale");
                 locale = defaultLocale;
                 // Default Locale
                 if( defaultMessages == null) {
@@ -115,11 +113,8 @@ public class ResourcesHandler
                     pkg + "ExceptionMessages", locale);
             }
             pattern = messages.getString(messageOrKey);
-            System.out.println("getMessage: pattern 1: " + pattern);
         } catch (MissingResourceException mre){
-            System.out.println("getMessage exception: " + mre.toString());
             pattern = messageOrKey;
-            System.out.println("getMessage: pattern 2: " + pattern);
         }
 
         // Format the message if arguments were passed
@@ -129,7 +124,6 @@ public class ResourcesHandler
             //this needs to be reset with the new local - i18n defect in java
             mf.applyPattern(pattern);
             pattern = mf.format(arguments);
-            System.out.println("getMessage: pattern formatted: " + pattern);
         }
         return pattern;
     }
@@ -163,7 +157,6 @@ public class ResourcesHandler
         ResourceBundle messages;
         String result;
 
-        System.out.println("getResultString: code: " + code);
         try {
             if( (locale == null) || defaultLocale.equals( locale) ) {
                 locale = defaultLocale;
@@ -173,20 +166,15 @@ public class ResourcesHandler
                                 pkg + "ResultCodeMessages", defaultLocale);
                 }
                 messages = defaultResultCodes;
-                System.out.println("getResultString: default locale");
             } else {
                 messages =  ResourceBundle.getBundle(
                         pkg + "ResultCodeMessages", locale);
-                System.out.println("getResultString: another locale");
             }
             result = messages.getString(Integer.toString(code));
-                System.out.println("getResultString: result 1: " + result);
         } catch (MissingResourceException mre){
-                System.out.println("getResultString: Exception: " + mre.toString());
             result = getMessage( ExceptionMessages.UNKNOWN_RESULT,
                                  new Object[] { new Integer(code) },
                                  locale);
-                System.out.println("getResultString: result 2: " + result);
         }
         return result;
     }

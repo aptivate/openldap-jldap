@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.55 2001/06/22 19:55:56 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.56 2001/06/29 21:52:18 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -566,7 +566,7 @@ public final class Connection implements Runnable
 			// occurence we check for it only when we get an IOException
 			if (serverShutdownNotification) {
 				throw new LDAPException( ExceptionMessages.SERVER_SHUTDOWN_REQ,
-					null,
+                    new Object[] { host, new Integer(port)},
 					LDAPException.CONNECT_ERROR,
 					ioe);
 			}
@@ -899,7 +899,7 @@ public final class Connection implements Runnable
 						if (serverShutdownNotification) {
 							notify = new LocalException(
 								ExceptionMessages.SERVER_SHUTDOWN_REQ,
-								null,
+                                new Object[] {host, new Integer(port)},
 								LDAPException.CONNECT_ERROR,
 								null, null);
 
