@@ -43,7 +43,7 @@ import com.novell.ldap.ldif_dsml.LDAPModify;
 
 public class LDIFReader extends LDIF implements LDAPImport {
 
-    private int       version, recordType, changeType;
+    private int       version, changeType;
     private String    dn, changeField, changeOperation;
     private String[]  rFields;                   // record fields
     private String[]  namePairs;                 // attr name and value pairs
@@ -60,11 +60,14 @@ public class LDIFReader extends LDIF implements LDAPImport {
      *
      * In order to determine if this is a LDIF content file or LDIF change file,
      * the lines of the first record in the file are red into memory.
+     *
+     * @param in The   Inputstream object to be processed by LDIFReader
+     * @param version  The version currently used in the LDIF file
      */
-    public LDIFReader(InputStream in) throws IOException, LDAPException {
+    public LDIFReader(InputStream in, int version) throws IOException {
 
         super();
-        super.setVersion( LDIF.LDIF_VERSION_1 );
+        super.setVersion( version );
         InputStreamReader isr = new InputStreamReader(in, "UTF8");
         bufReader = new BufferedReader(isr);
 
@@ -140,10 +143,11 @@ public class LDIFReader extends LDIF implements LDAPImport {
     public LDAPEntry readContent()
     throws UnsupportedEncodingException, LDAPException, IOException {
 
-        this.recordType = LDIF.CONTENT_RECORD;       
 
         if( ! isContent()) {
-            throw new RuntimeException("Cannot read content from LDIF change file");
+            throw new RuntimeException(
+                "com.novell.ldap.ldif_dsml.LDIFReader: "
+                                 + "Cannot read content from LDIF change file");
         }
 
         // read record lines
@@ -177,14 +181,14 @@ public class LDIFReader extends LDIF implements LDAPImport {
      *
      * @see LDAPOperation
      */
-    public LDAPOperation readChange()
+    public LDAPOperation readOperation()
     throws UnsupportedEncodingException, IOException {
 
         if( isContent()) {
             throw new RuntimeException(
                 "Cannot read changes from LDIF content file");
         }
-        
+
         // read record lines
         this.rLines.clear();
         readRecordLines();
@@ -273,8 +277,8 @@ public class LDIFReader extends LDIF implements LDAPImport {
                 }
 
         return currentChange;
-    }     
-   
+    }
+
 
     /**
      * Read the record lines by skipping any empty and comment lines and
@@ -293,7 +297,7 @@ public class LDIFReader extends LDIF implements LDAPImport {
         while( (((line = bufReader.readLine())!= null) && (line.length() == 0))
                 || ( line != null && line.startsWith("#"))) {
         }
-        
+
         if ( line != null ) {
 
             // check if the first dn line starts with 'dn:'
@@ -346,34 +350,49 @@ public class LDIFReader extends LDIF implements LDAPImport {
         this.rFields = toArray( tempList );
 
         // find and decode any Base64 encoded fields
-        decodeRecordFields(this.rFields);
+        decodeRecordFields();
     }
 
 
     /**
-     * Find and decode the Base64 encoded fields.
+     * Find and decode any base64 encoded fields.
      *
-     * @param fields The LDIF record fields.
      */
-    private void decodeRecordFields(String[] fields)
+    private void decodeRecordFields()
                             throws UnsupportedEncodingException, IOException {
 
-        int i, firstColon, len = fields.length;;
+        int i, firstColon, len = this.rFields.length, fromIndex=0;
         String tempString;
         Base64Decoder base64Decoder = new Base64Decoder();
 
         // decode record fields if there is one that is base64 encoded
         for (i=0; i<len; i++) {
-            firstColon = (fields[i]).indexOf((int)':');
-            // is there a Base64 encoded field?
-            if ((fields[i]).charAt(firstColon+1)==(int)':') {
-                // yes, get the spec of this field
-                tempString = ((fields[i]).substring(firstColon+2)).trim();
-                // decode the spec, and
-                tempString = base64Decoder.decoder(tempString);
-                // put it back to the field
-                this.rFields[i] = (fields[i]).substring(0,firstColon+1)
-                                                           + tempString;
+
+            // go through the field to see if there is any base64 encoded
+            // value. a base64 encoded value has a leading "::" part
+            while( true ) {
+                // see a colon ?
+                firstColon = (this.rFields[i]).indexOf((int)':', fromIndex);
+
+                // no, then it's done
+                if (firstColon == -1) {
+                    fromIndex = 0;
+                    break;
+                }
+
+                // yes, what's the next ?
+                if ((this.rFields[i]).charAt(firstColon+1)==(int)':') {
+                    // another colon, it's base64 encoded, get it
+                    tempString = 
+                            ((this.rFields[i]).substring(firstColon+2)).trim();
+                    // decode it and
+                    tempString = base64Decoder.decoder(tempString);
+                    // put it back to the field
+                    this.rFields[i] = 
+                       (this.rFields[i]).substring(0,firstColon+1) + tempString;
+                }
+                // new start index used to search for "::"
+                fromIndex = firstColon + 1;
             }
         }
     }
@@ -394,9 +413,7 @@ public class LDIFReader extends LDIF implements LDAPImport {
         index = this.rFields[0].indexOf((int)':');
         this.dn = (this.rFields[0]).substring(index+1).trim();
 
-        if ( isContent() ) {
-            // this is a content record
-           this.recordType = CONTENT_RECORD;
+        if ( isContent() ) {            
 
            namePairs = new String[len-1];
 
@@ -405,9 +422,7 @@ public class LDIFReader extends LDIF implements LDAPImport {
            }
 
         }
-        else {
-            // this is a change record
-            this.recordType = CHANGE_RECORD;
+        else {            
 
             if ( (this.rFields[1]).startsWith("control:") ) {
                 // a change record with one or more controls
@@ -438,7 +453,8 @@ public class LDIFReader extends LDIF implements LDAPImport {
                 controls = new LDAPControl[controlNumber];
 
                 // control field has th format of
-                // control: 1.2.3.4 true: this is a test control
+                //     control: 1.2.3.4 true: byte values 
+                // or  control: 1.2.3.4 true:: base64 encoded byte values
                 for ( i = 0; i < controlNumber; i++ ) {
                     index = this.cFields[i].indexOf((int)':');
                     tempString = (this.cFields[i]).substring(index+1).trim();
@@ -528,18 +544,19 @@ public class LDIFReader extends LDIF implements LDAPImport {
      * @return LDAPEntry object.
      */
     private LDAPEntry toLDAPEntry() {
-        int i, j, index, len;
-        ArrayList tl  = new ArrayList();
-        String attrName;
-        String attrValue;
-        String[] values = null;
-        LDAPAttribute attr;
+        
+        int              i, j, index, len;
+        ArrayList        tl  = new ArrayList();
+        String           attrName;
+        String           attrValue;
+        String[]         attrValues = null;
+        LDAPAttribute    attr;
         LDAPAttributeSet attrSet = new LDAPAttributeSet();
 
         len = namePairs.length;;
 
         // go through the namePairs to get attribute names and values.
-        for ( i=0; i<len; i++ ) {
+        for ( i = 0; i < len; i++ ) {
             index = (namePairs[i]).indexOf((int)':');
             attrName  = (namePairs[i]).substring(0, index).trim();
             attrValue = (namePairs[i]).substring(index + 1).trim();
@@ -564,9 +581,9 @@ public class LDIFReader extends LDIF implements LDAPImport {
             }
             else {
                 // multi-valued attribute
-                values = toArray( tl );
+                attrValues = toArray( tl );
 
-                attr = new LDAPAttribute(attrName, values);
+                attr = new LDAPAttribute(attrName, attrValues);
             }
 
             // clean to reuse it
