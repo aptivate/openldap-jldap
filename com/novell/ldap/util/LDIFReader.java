@@ -29,6 +29,12 @@ public class LDIFReader extends LDIF implements LDAPImport {
     }
 
     /**
+     * @supplierCardinality 0..*
+     * @clientCardinality 1 
+     */
+    public final static LDAPOperation currentChange = null;
+
+    /**
      * @clientCardinality 1
      * @supplierCardinality 0..*
      */
