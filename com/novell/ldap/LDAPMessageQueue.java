@@ -63,7 +63,7 @@ public abstract class LDAPMessageQueue implements LDAPListener
         this.agent = agent;
         return;
     }
-    
+
     /**
      * Returns the name used for debug
      *
@@ -191,6 +191,7 @@ public abstract class LDAPMessageQueue implements LDAPListener
             case LDAPMessage.EXTENDED_RESPONSE:
                 ExtResponseFactory fac = new ExtResponseFactory();
                 response = fac.convertToExtendedResponse(message);
+                break;
             default:    // This is the completion of a request
                 response = new LDAPResponse(message);
                 break;
@@ -247,7 +248,7 @@ public abstract class LDAPMessageQueue implements LDAPListener
     {
         return agent.isComplete( msgid);
     }
-    
+
     // When deprecated classes are removed, move doMerge code under merge
     // Methods in subclasses are removed. Change LDAPResponseListener
     // to LDAPResponseQueue
@@ -264,13 +265,13 @@ public abstract class LDAPMessageQueue implements LDAPListener
      *                  the merge, this queue object will no
      *                  longer receive any data, and calls made
      *                  to its methods will fail with a RuntimeException.
-     *                  The queue can be reactivated by using it in an 
+     *                  The queue can be reactivated by using it in an
      *                  LDAP request, after which it will receive responses
      *                  for that request..
-     *                  
+     *
      */
     public abstract void merge(LDAPMessageQueue queue2);
-    
+
     /* package */
     void doMerge(LDAPMessageQueue queue2)
     {
