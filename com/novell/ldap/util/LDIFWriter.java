@@ -14,6 +14,7 @@
  ******************************************************************************/
 package com.novell.ldap.ldif_dsml;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -33,6 +34,16 @@ import com.novell.ldap.LDAPModification;
 import com.novell.ldap.ldif_dsml.LDAPOperation;
 import com.novell.ldap.ldif_dsml.ModInfo;
 import com.novell.ldap.ldif_dsml.Base64Encoder;
+
+/**
+ * The class that is used to write LDIF content records or LDIF change records
+ * to the OutputStream object.
+ *
+ * <p>The object of the class is used to generate LDIF content record or LDIF
+ * change record lines. toRecordLines() methods have different signatures to
+ * convert <tt> LDAPEntry</tt> objects, delete dn, <tt>ModInfo</tt> object, or
+ * <tt>LDAPModification</tt> array objects into LDIF record lines.</p>
+ */
 
 
 public class LDIFWriter extends LDIF implements LDAPExport {
@@ -56,8 +67,11 @@ public class LDIFWriter extends LDIF implements LDAPExport {
      * <p>The default version 1 is used for the LDIF file</p>
      *
      * @param out     The OutputStream object
+     *
+     * @throws IOException
      */
-    public LDIFWriter(OutputStream out) throws IOException  {
+    public LDIFWriter(OutputStream out)
+    throws UnsupportedEncodingException, IOException {
 
         this( out, 1 );
     }
@@ -71,7 +85,8 @@ public class LDIFWriter extends LDIF implements LDAPExport {
      * @param out     The OutputStream object
      * @param version The version currently used by the LDIF file
      */
-    public LDIFWriter(OutputStream out, int version) throws IOException  {
+    public LDIFWriter(OutputStream out, int version)
+    throws UnsupportedEncodingException, IOException {
         super( );
 
         // check LDIF file version
@@ -92,6 +107,8 @@ public class LDIFWriter extends LDIF implements LDAPExport {
      *
      * <p>Two extra lines will be written to separate version line
      * with the rest of lines in LDIF file</p>
+     *
+     * @throws IOException if an I/O error occurs.
      */
     protected void writeVersionLine () throws IOException {
 
@@ -108,11 +125,13 @@ public class LDIFWriter extends LDIF implements LDAPExport {
      * Write a single comment line into the OutputStream.
      *
      * <p> an '#' charis added to the front of the line to indicate that
-     * the line is a coment line. If the line contains more than 80 
-     * characters, it will be splited into multiple lines that start 
+     * the line is a coment line. If the line contains more than 80
+     * characters, it will be splited into multiple lines that start
      * with '#' characters.</p>
      *
      * @param line The comment line to be written to the OutputStream
+     *
+     * @throws IOException if an I/O error occurs.
      */
     public void writeCommentLine ( String line ) throws IOException {
 
@@ -138,6 +157,8 @@ public class LDIFWriter extends LDIF implements LDAPExport {
 
     /**
      * Used to write lines of a record into the OutputStream
+     *
+     * @throws IOException if an I/O error occurs.
      */
     protected void writeRecordLines () throws IOException {
 
@@ -154,6 +175,8 @@ public class LDIFWriter extends LDIF implements LDAPExport {
 
     /**
      * Flush the output stream
+     *
+     * @throws IOException if an I/O error occurs.
      */
     public void flushStream() throws IOException {
         // flush the stream
@@ -163,6 +186,8 @@ public class LDIFWriter extends LDIF implements LDAPExport {
 
     /**
      * Flush and close the output stream
+     *
+     * @throws IOException if an I/O error occurs.
      */
     public void closeStream() throws IOException {
         // flush and then close the stream
@@ -176,6 +201,7 @@ public class LDIFWriter extends LDIF implements LDAPExport {
      * @param entry LDAPEntry object
      * @param ctrls LDAPControl[] object
      *
+     * @throws IOException if an I/O error occurs.
      */
     public void writeContent(LDAPEntry entry, LDAPControl[] ctrls)
     throws IOException {
@@ -199,6 +225,8 @@ public class LDIFWriter extends LDIF implements LDAPExport {
      *
      * @param entries LDAPEntry array object
      * @param ctrls LDAPControl[] object
+     *
+     * @throws IOException if an I/O error occurs.
      */
     public void writeContents(LDAPEntry[] entries, LDAPControl[] ctrls)
     throws IOException  {
@@ -218,9 +246,10 @@ public class LDIFWriter extends LDIF implements LDAPExport {
      * @see LDAPModify
      *
      * @param change LDAPOperation object
+     *
+     * @throws IOException if an I/O error occurs.
      */
-    public void writeChange(LDAPOperation change)
-    throws IOException  {
+    public void writeChange(LDAPOperation change) throws IOException  {
 
         this.dn = change.getDN();
         this.currentControls = change.getControls();
@@ -266,6 +295,8 @@ public class LDIFWriter extends LDIF implements LDAPExport {
      * @see LDAPModDN
      * @see LDAPModify
      *
+     *
+     * @throws IOException if an I/O error occurs.
      */
     public void writeChanges(LDAPOperation[] changes) throws IOException  {
 
@@ -282,6 +313,8 @@ public class LDIFWriter extends LDIF implements LDAPExport {
      * <p>Turn LDAPEntry object into LDIF record</p>
      *
      * @param entry  LDAPREntry object
+     *
+     * @throws UnsupportedEncodingException
      */
     public void toRecordLines( LDAPEntry entry )
     throws UnsupportedEncodingException {
@@ -297,6 +330,8 @@ public class LDIFWriter extends LDIF implements LDAPExport {
      *
      * @param entry  LDAPREntry object
      * @param ctrls  LDAPControl object
+     *
+     * @throws UnsupportedEncodingException
      */
     public void toRecordLines( LDAPEntry entry, LDAPControl[] ctrls )
     throws UnsupportedEncodingException {
@@ -348,7 +383,7 @@ public class LDIFWriter extends LDIF implements LDAPExport {
         // to record lines
         this.rLines = new String[this.rFields.size()];
         this.rLines = (String[])this.rFields.toArray(this.rLines);
-        
+
         // to record lines each of which has no more than 80 characters
         to80charLines();
 
@@ -500,14 +535,14 @@ public class LDIFWriter extends LDIF implements LDAPExport {
             tempString = base64Encoder.encoder(modInfo.newRDN);
             // put newRDN into record fields with a trailing space
             this.rFields.add(new String("newrdn:" + tempString + " "));
-        }        
+        }
 
         // save deleteOldRDN
         this.rFields.add(new String("deleteoldrdn:" + modInfo.deleteOldRDN));
-        
+
         // save newSuperior
         if ( ((modInfo.newSuperior).length()) != 0) {
-            
+
             if ( isSafeString(modInfo.newSuperior) ) {
                 this.rFields.add(new String("newsuperior:" + modInfo.newSuperior));
             }
@@ -517,7 +552,7 @@ public class LDIFWriter extends LDIF implements LDAPExport {
                 // put newSuperior into record fields with a trailing space
                 this.rFields.add(new String("newsuperior:" + tempString));
             }
-        }        
+        }
 
         // to record lines
         this.rLines = new String[this.rFields.size()];
@@ -620,7 +655,7 @@ public class LDIFWriter extends LDIF implements LDAPExport {
                     this.tempList.add( this.rLines[i].substring(0, 80) );
                     // any continuation line has length of
                     // 80 and starts with a white space
-                    this.rLines[i] = new String (" " 
+                    this.rLines[i] = new String (" "
                                                + this.rLines[i].substring(80) );
                 }
                 // save the last part of the field
@@ -632,13 +667,15 @@ public class LDIFWriter extends LDIF implements LDAPExport {
         this.rLines =  (String[])this.tempList.toArray(this.rLines);
     }
 
-    
+
 
     /**
      * Add record dn into record fields.
      *
      * <p>Check if dn is base64 encoded and use either 'dn:: dn spec ' or
      * 'dn: dn spec' format</p>
+     *
+     * @throws UnsupportedEncodingException
      */
     public void addDNToRecordFields() throws UnsupportedEncodingException {
 
@@ -647,7 +684,7 @@ public class LDIFWriter extends LDIF implements LDAPExport {
         if ( !isSafeString( this.dn ) ) {
             // IF dn contains NON-SAFE-INIT-CHAR or NON-SAFE-CHAR,
             // it has to be base64 encoded
-            this.dn = base64Encoder.encoder( this.dn );            
+            this.dn = base64Encoder.encoder( this.dn );
             // base64 encoded dn ended with white spavce
             this.rFields.add( new String("dn:: " + dn + " "));
         }
@@ -759,5 +796,5 @@ public class LDIFWriter extends LDIF implements LDAPExport {
 
         return isSafe;
     }
-    
+
 }
