@@ -187,7 +187,7 @@ public class RfcLDAPResult extends ASN1Sequence implements RfcResponse {
     */
    public final RfcLDAPDN getMatchedDN()
    {
-		return new RfcLDAPDN(((ASN1OctetString)get(1)).byteValue());
+        return new RfcLDAPDN(((ASN1OctetString)get(1)).byteValue());
    }
 
    /**
@@ -195,7 +195,7 @@ public class RfcLDAPResult extends ASN1Sequence implements RfcResponse {
     */
    public final RfcLDAPString getErrorMessage()
    {
-		return new RfcLDAPString(((ASN1OctetString)get(2)).byteValue());
+        return new RfcLDAPString(((ASN1OctetString)get(2)).byteValue());
    }
 
    /**
@@ -203,7 +203,6 @@ public class RfcLDAPResult extends ASN1Sequence implements RfcResponse {
     */
    public final RfcReferral getReferral()
    {
-		return (size() > 3) ? (RfcReferral)get(3) : null;
+        return (size() > 3) ? (RfcReferral)get(3) : null;
    }
 }
-

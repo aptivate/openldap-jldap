@@ -25,10 +25,10 @@ import com.novell.ldap.asn1.*;
  */
 public class RfcAssertionValue extends ASN1OctetString {
 
-	/**
-	 *
-	 */
-	public RfcAssertionValue(byte[] value) {
-		super(value);
-	}
+    /**
+     *
+     */
+    public RfcAssertionValue(byte[] value) {
+        super(value);
+    }
 }

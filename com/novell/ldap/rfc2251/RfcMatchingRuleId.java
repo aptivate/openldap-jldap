@@ -24,13 +24,11 @@ package com.novell.ldap.rfc2251;
  */
 public class RfcMatchingRuleId extends RfcLDAPString {
 
-	/**
-	 * Constructs a MatchingRuleId from a String.
-	 */
-	public RfcMatchingRuleId(String s)
-	{
-		super(s);
-	}
-
+    /**
+     * Constructs a MatchingRuleId from a String.
+     */
+    public RfcMatchingRuleId(String s)
+    {
+        super(s);
+    }
 }
-

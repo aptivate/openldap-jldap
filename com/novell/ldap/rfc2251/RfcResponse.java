@@ -17,7 +17,7 @@ package com.novell.ldap.rfc2251;
 import com.novell.ldap.asn1.*;
 
 /**
- * This interface represents RfcLDAPMessages that contain responses from a
+ * This interface represents RfcLDAPMessages that contain a response from a
  * server.
  *
  * <p>If the protocol operation of the RfcLDAPMessage is of this type,
@@ -25,26 +25,23 @@ import com.novell.ldap.asn1.*;
  */
 public interface RfcResponse {
 
-	/**
-	 *
-	 */
-	public ASN1Enumerated getResultCode();
+    /**
+     *
+     */
+    public ASN1Enumerated getResultCode();
 
-	/**
-	 *
-	 */
-	public RfcLDAPDN getMatchedDN();
+    /**
+     *
+     */
+    public RfcLDAPDN getMatchedDN();
 
-	/**
-	 *
-	 */
-	public RfcLDAPString getErrorMessage();
+    /**
+     *
+     */
+    public RfcLDAPString getErrorMessage();
 
-	/**
-	 *
-	 */
-	public RfcReferral getReferral();
-
+    /**
+     *
+     */
+    public RfcReferral getReferral();
 }
-
-

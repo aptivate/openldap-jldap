@@ -27,28 +27,26 @@ import com.novell.ldap.asn1.*;
  */
 public class RfcReferral extends ASN1SequenceOf {
 
-	//*************************************************************************
-	// Constructor for Referral
-	//*************************************************************************
+    //*************************************************************************
+    // Constructor for Referral
+    //*************************************************************************
 
-	/**
-	 * The only time a Referral object is constructed, is when we are
-	 * decoding an RfcLDAPResult or COMPONENTS OF RfcLDAPResult.
-	 */
-	public RfcReferral(ASN1Decoder dec, InputStream in, int len)
-		throws IOException
-	{
-		super(dec, in, len);
+    /**
+     * The only time a Referral object is constructed, is when we are
+     * decoding an RfcLDAPResult or COMPONENTS OF RfcLDAPResult.
+     */
+    public RfcReferral(ASN1Decoder dec, InputStream in, int len)
+        throws IOException
+    {
+        super(dec, in, len);
 
-		//convert from ASN1OctetString to RfcLDAPURL here (then look at
-		// LDAPResponse.getReferrals())
-	}
+        //convert from ASN1OctetString to RfcLDAPURL here (then look at
+        // LDAPResponse.getReferrals())
+    }
 
-	//*************************************************************************
-	// Accessors
-	//*************************************************************************
+    //*************************************************************************
+    // Accessors
+    //*************************************************************************
 
-	// inherited from SequenceOf
-
+    // inherited from SequenceOf
 }
-

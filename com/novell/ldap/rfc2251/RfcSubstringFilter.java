@@ -31,20 +31,18 @@ import com.novell.ldap.asn1.*;
  */
 public class RfcSubstringFilter extends ASN1Sequence {
 
-	//*************************************************************************
-	// Constructors for SubstringFilter
-	//*************************************************************************
+    //*************************************************************************
+    // Constructors for SubstringFilter
+    //*************************************************************************
 
-	/**
-	 *
-	 */
-	public RfcSubstringFilter(RfcAttributeDescription type,
-		                    ASN1SequenceOf substrings)
-	{
-		super(2);
-		add(type);
-		add(substrings);
-	}
-
+    /**
+     *
+     */
+    public RfcSubstringFilter(RfcAttributeDescription type,
+                            ASN1SequenceOf substrings)
+    {
+        super(2);
+        add(type);
+        add(substrings);
+    }
 }
-

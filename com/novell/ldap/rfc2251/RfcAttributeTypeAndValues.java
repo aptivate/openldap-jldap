@@ -27,18 +27,18 @@ import com.novell.ldap.asn1.*;
  */
 public class RfcAttributeTypeAndValues extends ASN1Sequence {
 
-	//*************************************************************************
-	// Constructor for AttributeTypeAndValues
-	//*************************************************************************
+    //*************************************************************************
+    // Constructor for AttributeTypeAndValues
+    //*************************************************************************
 
-	/**
-	 *
-	 */
-	public RfcAttributeTypeAndValues(RfcAttributeDescription type, ASN1SetOf vals)
-	{
-		super(2);
-		add(type);
-		add(vals);
+    /**
+     *
+     */
+    public RfcAttributeTypeAndValues(RfcAttributeDescription type, ASN1SetOf vals)
+    {
+        super(2);
+        add(type);
+        add(vals);
         return;
-	}
+    }
 }

@@ -27,13 +27,12 @@ import com.novell.ldap.asn1.*;
  */
 public class RfcAttributeList extends ASN1SequenceOf {
 
-	//*************************************************************************
-	// Constructor for AttributeList
-	//*************************************************************************
+    //*************************************************************************
+    // Constructor for AttributeList
+    //*************************************************************************
    public RfcAttributeList(int size)
    {
        super(size);
        return;
    }
-
 }

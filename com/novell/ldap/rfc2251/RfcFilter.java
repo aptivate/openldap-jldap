@@ -130,7 +130,7 @@ public class RfcFilter extends ASN1Choice {
       throws LDAPException
    {
       if(filterExpr == null || filterExpr.equals("")) {
-		 filterExpr = new String("(objectclass=*)");
+         filterExpr = new String("(objectclass=*)");
       }
 
       if(filterExpr.charAt(0) != '(')

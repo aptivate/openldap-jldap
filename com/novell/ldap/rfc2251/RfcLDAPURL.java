@@ -14,8 +14,6 @@
  ******************************************************************************/
 package com.novell.ldap.rfc2251;
 
-import com.novell.ldap.asn1.*;
-
 /**
  * Represents an LDAP URL.
  *
@@ -25,17 +23,15 @@ import com.novell.ldap.asn1.*;
  */
 public class RfcLDAPURL extends RfcLDAPString {
 
-	//*************************************************************************
-	// Constructor for RfcLDAPURL
-	//*************************************************************************
+    //*************************************************************************
+    // Constructor for RfcLDAPURL
+    //*************************************************************************
 
-	/**
-	 *
-	 */
-	public RfcLDAPURL(String s)
-	{
-		super(s);
-	}
-
+    /**
+     *
+     */
+    public RfcLDAPURL(String s)
+    {
+        super(s);
+    }
 }
-

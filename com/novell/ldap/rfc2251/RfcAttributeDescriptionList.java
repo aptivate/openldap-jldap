@@ -50,10 +50,10 @@ public class RfcAttributeDescriptionList extends ASN1SequenceOf
         super(attrs == null ? 0 : attrs.length);
 
         if(attrs != null) {
-		    for(int i=0; i<attrs.length; i++) {
-			    add(new RfcAttributeDescription(attrs[i]));
-		    }
-	    }
+            for(int i=0; i<attrs.length; i++) {
+                add(new RfcAttributeDescription(attrs[i]));
+            }
+        }
         return;
     }
 

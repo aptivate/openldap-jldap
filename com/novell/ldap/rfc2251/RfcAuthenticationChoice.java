@@ -28,15 +28,15 @@ import com.novell.ldap.asn1.*;
  */
 public class RfcAuthenticationChoice extends ASN1Choice {
 
-	//*************************************************************************
-	// Constructors for AuthenticationChoice
-	//*************************************************************************
+    //*************************************************************************
+    // Constructors for AuthenticationChoice
+    //*************************************************************************
 
-	/**
-	 *
-	 */
-	public RfcAuthenticationChoice(ASN1Tagged choice)
-	{
-		super(choice);
-	}
+    /**
+     *
+     */
+    public RfcAuthenticationChoice(ASN1Tagged choice)
+    {
+        super(choice);
+    }
 }
