@@ -450,7 +450,11 @@ public class Message
                     Debug.trace( Debug.messages, name + "Sending abandon request");
                 }
                 // Create the abandon message, but don't track it.
-                LDAPMessage msg = new LDAPAbandonRequest( msgId, cons.getControls());
+                LDAPControl[] cont = null;
+                if( cons != null) {
+                    cont = cons.getControls();
+                }
+                LDAPMessage msg = new LDAPAbandonRequest( msgId, cont);
                 // Send abandon message to server
                 conn.writeMessage( msg);
             } catch (LDAPException ex) {

@@ -41,7 +41,7 @@ public class LocalException extends LDAPException
         this.request = request;
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.messages, "LocalException created with msg \"" +
-                message + "\" and  code " + resultCode);
+                getMessage() + "\" and  code " + resultCode);
             if( rootException != null) {
                 Debug.trace( Debug.messages,
                         "LocalException has rootException - " +
