@@ -59,22 +59,22 @@ public class ExtResponseFactory {
         // Is this an OID we support, if yes then build the
         // detailed LDAPExtendedResponse object
         try {
-            if (inOID.equals(NamingContextConstants.NAMING_CONTEXT_COUNT_RES)) {
+            if (inOID.equals(ReplicationConstants.NAMING_CONTEXT_COUNT_RES)) {
                 return new NamingContextEntryCountResponse(inResponse);
             }
-            if (inOID.equals(NamingContextConstants.GET_IDENTITY_NAME_RES) ) {
+            if (inOID.equals(ReplicationConstants.GET_IDENTITY_NAME_RES) ) {
                 return new GetContextIdentityNameResponse(inResponse);
             }
-            if (inOID.equals(NamingContextConstants.GET_EFFECTIVE_PRIVILEGES_RES) ) {
+            if (inOID.equals(ReplicationConstants.GET_EFFECTIVE_PRIVILEGES_RES) ) {
                 return new GetEffectivePrivilegesResponse(inResponse);
             }
-            if (inOID.equals(NamingContextConstants.GET_REPLICA_INFO_RES) ) {
+            if (inOID.equals(ReplicationConstants.GET_REPLICA_INFO_RES) ) {
                 return new GetReplicaInfoResponse(inResponse);
             }
-            if (inOID.equals(NamingContextConstants.LIST_REPLICAS_RES) ) {
+            if (inOID.equals(ReplicationConstants.LIST_REPLICAS_RES) ) {
                 return new ListReplicasResponse(inResponse);
             }
-			if (inOID.equals(NamingContextConstants.GET_REPLICATION_FILTER_RES) ) {
+            if (inOID.equals(ReplicationConstants.GET_REPLICATION_FILTER_RES) ) {
                 return new GetReplicationFilterResponse(inResponse);
             }
             else
@@ -82,9 +82,9 @@ public class ExtResponseFactory {
         }
 
         catch(IOException ioe) {
-			throw new LDAPException(
+            throw new LDAPException(
                           ExceptionMessages.DECODING_ERROR,
                           LDAPException.DECODING_ERROR);
-		}
+        }
     }
 }

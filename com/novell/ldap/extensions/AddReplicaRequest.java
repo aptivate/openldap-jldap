@@ -71,7 +71,7 @@ public class AddReplicaRequest extends LDAPExtendedOperation {
  public AddReplicaRequest(String dn, String serverDN, int replicaType, int flags)
                 throws LDAPException {
 
-        super(NamingContextConstants.ADD_REPLICA_REQ, null);
+        super(ReplicationConstants.ADD_REPLICA_REQ, null);
 
         try {
 

@@ -53,7 +53,7 @@ public class ChangeReplicaTypeRequest extends LDAPExtendedOperation {
  * <br><br>
  *
  * @param replicaType    The new replica type. The replica types are defined
- *                       in the NamingContextConstants class.
+ *                       in the ReplicationConstants class.
  *<br><br>
  * @param flags   Specifies whether all servers in the replica ring must be up
  *                before proceeding. When set to zero, the status of the servers is
@@ -63,17 +63,17 @@ public class ChangeReplicaTypeRequest extends LDAPExtendedOperation {
  * @exception LDAPException A general exception which includes an error message
  *                          and an LDAP error code.
  *
- * @see NamingContextConstants#LDAP_RT_MASTER
- * @see NamingContextConstants#LDAP_RT_SECONDARY
- * @see NamingContextConstants#LDAP_RT_READONLY
- * @see NamingContextConstants#LDAP_RT_SUBREF
- * @see NamingContextConstants#LDAP_RT_SPARSE_WRITE
- * @see NamingContextConstants#LDAP_RT_SPARSE_READ
+ * @see ReplicationConstants#LDAP_RT_MASTER
+ * @see ReplicationConstants#LDAP_RT_SECONDARY
+ * @see ReplicationConstants#LDAP_RT_READONLY
+ * @see ReplicationConstants#LDAP_RT_SUBREF
+ * @see ReplicationConstants#LDAP_RT_SPARSE_WRITE
+ * @see ReplicationConstants#LDAP_RT_SPARSE_READ
  */
  public ChangeReplicaTypeRequest(String dn, String serverDN, int replicaType, int flags)
                 throws LDAPException {
 
-        super(NamingContextConstants.CHANGE_REPLICA_TYPE_REQ, null);
+        super(ReplicationConstants.CHANGE_REPLICA_TYPE_REQ, null);
 
         try {
 
