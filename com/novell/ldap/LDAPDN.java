@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPDN.java,v 1.8 2000/10/18 17:24:09 smerrill Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPDN.java,v 1.9 2000/10/31 23:52:20 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -19,8 +19,8 @@ package com.novell.ldap;
  *  A utility class to facilitate composition and deomposition
  *  of distinguished names (DNs).
  *
- *  Specifies methods for manipulating a distinguished name (DN)
- *  and a relative distinguished name (RDN).
+ *  <p>Specifies methods for manipulating a distinguished name (DN)
+ *  and a relative distinguished name (RDN).</p>
  */
 public class LDAPDN {
 
