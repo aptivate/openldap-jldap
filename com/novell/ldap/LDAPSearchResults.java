@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResults.java,v 1.41 2001/04/19 18:40:34 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResults.java,v 1.42 2001/04/23 21:16:05 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -95,7 +95,7 @@ public class LDAPSearchResults implements Enumeration
     /**
      * Returns a count of the entries in the search result.
      *
-     * <p>If the search is asynchronous (batch size not 0),
+     * <p>For a synchronous search with batch size not equal to 0,
      *  this reports the number of results received so far. </p>
      *
      * @return The number of search results received so far.
