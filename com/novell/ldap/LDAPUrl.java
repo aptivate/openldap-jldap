@@ -40,7 +40,7 @@ public class LDAPUrl implements java.lang.Cloneable {
     private boolean    secure = false;               // URL scheme ldap/ldaps
     private boolean    ipV6 = false;                 // TCP/IP V6
     private String     host = null;                  // Host
-    private int        port;                         // Port
+    private int        port = 0;                     // Port
     private String     dn = null;                    // Base DN
     private String[]   attrs = null;                 // Attributes
     private String     filter = null;                // Filter
@@ -338,12 +338,21 @@ public class LDAPUrl implements java.lang.Cloneable {
     }
 
     /**
-    * Returns the distinguished name encapsulated in the URL.
+    * Returns the base distinguished name encapsulated in the URL.
     *
     * @return The base distinguished name specified in the URL, or null if none.
     */
     public String getDN() {
           return dn;
+    }
+
+    /**
+    * Sets the base distinguished name encapsulated in the URL.
+    */
+    /* package */
+    void setDN(String dn) {
+          this.dn = dn;
+          return;
     }
 
     /**
@@ -383,6 +392,9 @@ public class LDAPUrl implements java.lang.Cloneable {
     */
     public int getPort()
     {
+          if( port == 0) {
+             return LDAPConnection.DEFAULT_PORT;
+          }
           return port;
     }
 
@@ -423,9 +435,26 @@ public class LDAPUrl implements java.lang.Cloneable {
           }
           // Host:port/dn
           if( ipV6 ) {
-               url.append( "[" );
+               url.append( "[" + host + "]");
+          } else {
+              url.append( host);
           }
-          url.append( host + ":" + port + "/" + dn );
+          
+          // Port not specified
+          if( port != 0) {
+             url.append( ":" + port);
+          }
+          
+          if( (dn == null) && (attrs == null) && (scope == DEFAULT_SCOPE) &&
+                    (filter == null) && (extensions == null) ) {
+               return url.toString();
+          }
+          
+          url.append( "/" );
+          
+          if( dn != null) {
+             url.append( dn );
+          }
 
           if( (attrs == null) && (scope == DEFAULT_SCOPE) &&
                     (filter == null) && (extensions == null) ) {

@@ -16,6 +16,7 @@
 package com.novell.ldap;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.Vector;
 
 import com.novell.ldap.asn1.*;
@@ -130,7 +131,24 @@ public class LDAPResponse extends LDAPMessage
             int size = ref.size();
             referrals = new String[size];
             for(int i=0; i<size; i++) {
-                referrals[i] = new String(((ASN1OctetString)ref.get(i)).getContent());
+                String aRef = new String(((ASN1OctetString)ref.get(i)).getContent());
+                try {
+                    // get the referral URL
+                    LDAPUrl urlRef = new LDAPUrl( aRef);
+                    if( urlRef.getDN() == null) {
+                        RfcLDAPMessage origMsg =
+                            super.getASN1Object().getRequestingMessage().getASN1Object();
+                        String dn;
+                        if( (dn = origMsg.getRequestDN()) != null) {
+                            urlRef.setDN( dn);
+                            aRef = urlRef.toString();
+                        }
+                    }
+                } catch( MalformedURLException mex) {
+                    ;
+                } finally {
+                    referrals[i] = aRef;
+                }        
             }
         }
         return referrals;
