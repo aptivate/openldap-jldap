@@ -19,7 +19,8 @@ package org.ietf.ldap;
  *  This class encapsulates reauthentiation credentials for the specified
  *  host and port.
  *
- *  @see com.novell.ldap.LDAPRebindAuth
+ *  @see <a href="../../../../doc/com/novell/ldap/LDAPRebindAuth.html">
+            com.novell.ldap.LDAPRebindAuth</a>
  */
 public class LDAPRebindAuth
 {
@@ -28,7 +29,9 @@ public class LDAPRebindAuth
      * Constructs information that is used by the client for authentication
      * when following referrals automatically.
      *
-     *  @see com.novell.ldap.LDAPRebindAuth#LDAPRebindAuth(String,String)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPRebindAuth.html
+            #LDAPRebindAuth(java.lang.String, java.lang.String)">
+            com.novell.ldap.LDAPRebindAuth.LDAPRebindAuth( String, String)</a>
      */
     public LDAPRebindAuth ( String dn, String password )
     {
@@ -49,7 +52,9 @@ public class LDAPRebindAuth
      * Returns the distinguished name to be used for reauthentication on
      * automatic referral following.
      *
-     *  @see com.novell.ldap.LDAPRebindAuth#getDN()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPRebindAuth.html
+            #getDN()">
+            com.novell.ldap.LDAPRebindAuth.getDN()</a>
      */
     public String getDN()
     {
@@ -60,7 +65,9 @@ public class LDAPRebindAuth
      * Returns the password to be used for reauthentication on automatic
      * referral following.
      *
-     *  @see com.novell.ldap.LDAPRebindAuth#getPassword()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPRebindAuth.html
+            #getPassword()">
+            com.novell.ldap.LDAPRebindAuth.getPassword()</a>
      */
     public String getPassword()
     {
