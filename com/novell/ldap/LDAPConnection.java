@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.35 2000/09/18 20:12:04 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.36 2000/09/22 17:24:24 vtag Exp $
 *
 * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
 * 
@@ -56,7 +56,7 @@ public class LDAPConnection implements
    private Hashtable authenticationHash = null;
 
   /**
-   * A <code>setOption</code> key that specifies whether aliases are dereferenced.
+   * A setOption key that specifies whether aliases are dereferenced.
    *
    * <p>Can be set to the following values:</p>
    *<ul>
@@ -77,7 +77,7 @@ public class LDAPConnection implements
    public static final int DEREF = 2;
 
    /**
-   * An <code>setOption</code> key, the corresponding value
+   * A setOption key, the corresponding value
    * of which controls the the constraint specifying
    * if aliases are dereferenced.
    *
@@ -90,7 +90,7 @@ public class LDAPConnection implements
    public static final int DEREF_NEVER  = 0;
    
    /**
-   * An <code>setOption</code> key value that specifies the constraint
+   * A setOption key value that specifies the constraint
    * that aliases are dereferenced when
    * searching for the starting entry but are not dereferenced when
    * searching the entries beneath the starting point.
@@ -104,7 +104,7 @@ public class LDAPConnection implements
    public static final int DEREF_FINDING = 1;
    
    /**
-   * An <code>setOption</code> key value that specifies the constraint
+   * A setOption key value that specifies the constraint
    * that aliases are dereferenced when
    * searching the entries beneath the starting point but not when 
    * searching for the starting entry.
@@ -118,7 +118,7 @@ public class LDAPConnection implements
    public static final int DEREF_SEARCHING = 2;
    
   /**
-   * An <code>setOption</code> key value that specifies the constraint
+   * A setOption key value that specifies the constraint
    * that aliases are dereferenced always 
    * (when searching for the starting entry and when
    * searching the entries beneath the starting point).
@@ -132,7 +132,7 @@ public class LDAPConnection implements
    public static final int DEREF_ALWAYS = 3;
    
   /**
-   * An <code>setOption</code> key, the corresponding value of which
+   * A setOption key which
    * specifies the maximum number of search results to
    * return.
    *
@@ -147,11 +147,11 @@ public class LDAPConnection implements
    public static final int SIZELIMIT = 3;
 
   /**
-   * An <code>setOption</code> key, the corresponding value of which
+   * A setOption key which
    * specifies the maximum number of milliseconds the client
    * waits for an operation to complete. 
    *
-   * <p>If this option is set to 0, there is no maximum time limit.
+   * <p>If this option is set to 0, there is no maximum time limit.</p>
    *
    * <p> The value must be an Integer.</p>
    * Default value: 0
@@ -162,7 +162,7 @@ public class LDAPConnection implements
    public static final int TIMELIMIT = 4;
    
   /**
-   * An <code>setOption</code> key, the corresponding value of which
+   * A setOption key which
    * specifies the maximum number of seconds the server 
    * is to wait when returning search results.
    *
@@ -177,9 +177,10 @@ public class LDAPConnection implements
    public static final int SERVER_TIMELIMIT = 5;
    
   /**
-   * An <code>setOption</code> key, the corresponding value of which
-   * specifies the maximum number of encoding format for strintgs.
-   * By default, the value of this options is LDAPConnection.UTF8.
+   * A setOption key which
+   * specifies the maximum number of encoding formats for strings.
+   *
+   * <p>By default, the value of this options is LDAPConnection.UTF8.</p>
    *
    * @see LDAPv2#setOption(int, java.lang.Object)
    * @see LDAPv2#getOption(int)
@@ -189,7 +190,7 @@ public class LDAPConnection implements
    public static final int STRING_FORMAT = 6;
 
   /**
-   * An <code>setOption</code> key value that specifies that
+   * A setOption key value which specifies that
    * strings are encoded as UTF8.
    *
    * @see LDAPv2#setOption(int, java.lang.Object)
@@ -199,7 +200,7 @@ public class LDAPConnection implements
    public static final int UTF8 = 0;
 
   /**
-   * An <code>setOption</code> key value that specifies that
+   * A setOption key which specifies that
    * strings are encoded as T61.
    *
    * @see LDAPv2#setOption(int, java.lang.Object)
@@ -209,7 +210,7 @@ public class LDAPConnection implements
    public static final int T61 = 1;
    
   /**
-   * An <code>setOption</code> key, the corresponding value of which
+   * A setOption key which
    * specifies whether or not the client follows referrals
    * automatically.
    *
@@ -229,7 +230,7 @@ public class LDAPConnection implements
    public static final int REFERRALS = 8;
    
   /**
-   * An <code>setOption</code> key, the corresponding value of which
+   * A setOption key which
    * specifies an object that implements the LDAPRebind
    * interface.
    *
@@ -249,7 +250,7 @@ public class LDAPConnection implements
    public static final int REFERRALS_REBIND_PROC = 9;
    
    /**
-   * An <code>setOption</code> key, the corresponding value of which
+   * A setOption key which
    * specifies the maximum number of referrals in a sequence
    * that the client will follow.
    *
@@ -266,7 +267,7 @@ public class LDAPConnection implements
    public static final int REFERRALS_HOP_LIMIT = 10;
    
    /**
-   * An <code>setOption</code> key, the corresponding value of which
+   * A setOption key which
    * specifies an object that can process an authentication
    * request, overriding the default authentication behavior.
    *
@@ -281,7 +282,7 @@ public class LDAPConnection implements
    public static final int BIND = 13;
    
    /**
-   * An <code>setOption</code> key, the corresponding value of which
+   * A setOption key which
    * specifies the number of search results to return at a
    * time.
    *
@@ -298,7 +299,7 @@ public class LDAPConnection implements
    public static final int BATCHSIZE = 20;
 
   /**
-   * Specifies the value for the LDAPv2 protocol version.
+   * Specifies the LDAPv2 protocol version.
    *
    * <p>You can use this identifier with the LDAPConnection.bind or
    * LDAPConnection.connect methods
@@ -310,7 +311,7 @@ public class LDAPConnection implements
    public static final int LDAP_V2 = 2;
    
   /**
-   * Specifies the value for the LDAPv3 protocol version.
+   * Specifies the LDAPv3 protocol version.
    *
    * <p>You can use this identifier with the LDAPConnection.bind or
    * LDAPConnection.connect methods
@@ -332,8 +333,8 @@ public class LDAPConnection implements
    *The default SSL port number for LDAP servers.
    *
    * <p>You can use this identifier to specify the port when using the
-   * LDAPConnection.connect method to connect to an LDAP server running 
-   * on port 389.</p>
+   * LDAPConnection.connect method to connect to an LDAP server listening 
+   * on port 636 for SSL connections.</p>
    */
    public static final int DEFAULT_SSL_PORT = 636;
 
@@ -372,7 +373,7 @@ public class LDAPConnection implements
     *
     * <p>The network connection remains open until all clones have 
     * disconnected or gone out of scope. Any connection opened after
-    * cloning is private to the object making the connection.<\p>
+    * cloning is private to the object making the connection.</p>
     * 
     * <p>The clone can issue requests and freely modify options and search 
     * constraints, and , without affecting the source object or other clones. 
@@ -450,14 +451,14 @@ public class LDAPConnection implements
    }
 
    /**
-    * Returns the authentication properties for SASL authentication
+    * Returns the authentication properties for SASL authentication.
     *
     * <p> Null is returned if no authentication has been performed
     * or no authentication Hashtable is present.</p>
     *
-    * @return The hashTable used for authentication information or null if the 
-    * object is not present or authenticated.  The object returned may
-	* be either of type <code>Hashtable</code> or <code>Properties</code>.
+    * @return The Hashtable used for authentication information or null if the 
+    * object is not present or not authenticated. The object returned can
+	* be either of type Hashtable or Properties.
     */
    public Hashtable getAuthenticationQualifiers()
    {
@@ -518,7 +519,7 @@ public class LDAPConnection implements
     * Returns the stream used by the connection object to send data to the
     * LDAP server.
     *
-    * @return The stream the connection object used for sending data,
+    * @return The stream the connection object used for sending data
     * or null if the object has never connected.
     
     */
@@ -540,7 +541,7 @@ public class LDAPConnection implements
    }
 
    /**
-    * Gets a property of a connection object.
+    * Returns a property of a connection object.
     *
     *
     *  @param name   Name of the property to be returned.
@@ -559,8 +560,6 @@ public class LDAPConnection implements
     *                             string.                  
     *  </ul>                                             
     * 
-    *  <p>Other properties may be available in particular implementations
-    *  of the class, and used to modify operations such as search.</p>
     *
     *  <p>A deep copy of the property is provided where applicable; a
     *  client does not need to clone the object received.</p>
