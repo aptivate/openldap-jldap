@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.85 2001/03/05 15:56:18 javed Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.86 2001/03/05 21:55:22 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -157,6 +157,14 @@ public class LDAPConnection implements Cloneable
 
 
     public static final String LDAP_PROPERTY_SECURITY = "version.security";
+
+
+    /**
+     * A string that corresponds to the server shutdown notification OID.
+     *
+     */
+
+	public static final String SERVER_SHUTDOWN_OID = "1.3.6.1.4.1.1466.20036";
 
     /*
      * Constructors

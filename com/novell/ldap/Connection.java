@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.40 2001/03/06 23:34:48 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.41 2001/03/07 00:30:04 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -72,6 +72,9 @@ public final class Connection implements Runnable
     private OutputStream out = null;
     // When set to true, app is not notified of connection failures
     private boolean shutdown = false;
+
+	// Tracks server shutdown unsolicited notifications
+	private boolean serverShutdownNotification = false;
 
     // Place to save message information classes
     private MessageVector messages = new MessageVector(5,5);
@@ -947,6 +950,21 @@ public final class Connection implements Runnable
             "Calling all Unsolicited Message Listeners");
         }
 
+
+		// MISSING:  If this is a shutdown notification from the server
+		// set a flag in the Connection class so that we can throw an
+		// appropriate LDAPException to the application
+		LDAPMessage extendedLDAPMessage = new LDAPExtendedResponse(message);
+		String notificationOID = ((LDAPExtendedResponse)extendedLDAPMessage).getID();
+		if (notificationOID.equals(LDAPConnection.SERVER_SHUTDOWN_OID)) {
+			
+			if( Debug.LDAP_DEBUG ) {
+				Debug.trace( Debug.messages, name + "Received server shutdown notification!");
+			}
+
+			serverShutdownNotification = true;
+		}
+
 		int numOfListeners = unsolicitedListeners.size();
 
 		// Cycle through all the listeners
@@ -959,13 +977,6 @@ public final class Connection implements Runnable
 			// Create a new ExtendedResponse each time as we do not want each listener
 			// to have its own copy of the message
 			LDAPMessage tempLDAPMessage = new LDAPExtendedResponse(message);
-
-
-			// MISSING:  If this is a shutdown notification from the server
-			// set a flag in the Connection class so that we can throw an
-			// appropriate LDAPException to the application
-
-			// N  E  E  D   C O D E         H E R E - See javed
 
 			// Spawn a new thread for each listener to go process the message
 			// The reason we create a new thread rather than just call the
