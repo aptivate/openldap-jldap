@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/src/com/novell/ldap/client/Connection.java,v 1.14 2000/09/03 19:55:55 smerrill Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.15 2000/09/11 21:05:55 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -57,8 +57,6 @@ public final class Connection implements Runnable {
    private LBEREncoder encoder = new LBEREncoder();
    private LBERDecoder decoder = new LBERDecoder();
 
-   private String host;
-   private int port;
 
    private boolean bound = false;
 
@@ -98,14 +96,6 @@ public final class Connection implements Runnable {
       return out;
    }
 
-   public String getHost() {
-      return host;
-   }
-
-   public int getPort() {
-      return port;
-   }
-
    /**
     * Constructs a TCP/IP connection to a server specified in host and port.
     * The socketFactory parameter produces SSL sockets.
@@ -113,9 +103,6 @@ public final class Connection implements Runnable {
    public Connection(String host, int port, LDAPSocketFactory socketFactory)
       throws LDAPException
    {
-      this.host = host;
-      this.port = port;
-
       // Make socket connection to specified host and port
       try {
          if(socketFactory != null) {
@@ -289,4 +276,3 @@ public final class Connection implements Runnable {
    }
 
 }
-

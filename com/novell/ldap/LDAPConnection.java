@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.30 2000/09/13 16:15:39 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.31 2000/09/13 20:17:57 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -46,13 +46,15 @@ public class LDAPConnection implements
 
    private Connection conn = null;
    private LDAPSocketFactory socketFactory = null;
-   private LDAPSearchConstraints defSearchCons = new LDAPSearchConstraints();
-   private LDAPConstraints defCons = new LDAPConstraints();
-   private boolean ldapv3 = true;
-   private String authenticationPassword = null;
-   private String authenticationDN = null;
    private String host = null;
    private int port = 0;
+   private LDAPSearchConstraints defSearchCons = new LDAPSearchConstraints();
+   private LDAPConstraints defCons = new LDAPConstraints();
+   private int authenticationVersion = 3;
+   private String authenticationPassword = null;
+   private String authenticationDN = null;
+   private String authenticationMethod = new String("none");
+   private Hashtable authenticationHash = null;
 
    /**
    * An identifier that specifies that aliases are never dereferenced.
@@ -329,7 +331,7 @@ public class LDAPConnection implements
     */
    public String getAuthenticationDN()
    {
-      return null;
+      return authenticationDN;
    }
 
    /*
@@ -342,7 +344,7 @@ public class LDAPConnection implements
     * 
     *  <ul>
     *  <li>"none" indicates the connection is not authenticated.</li>
-
+    *
     *
     *  <li>"simple" indicates simple authentication was used or that a null
     *                 or empty authentication DN was specified.</li>
@@ -354,12 +356,34 @@ public class LDAPConnection implements
     */
    public String getAuthenticationMethod()
    {
-      if(isBound()) {
-         return "simple";
-      }
-      else {
-         return "none";
-      }
+      return( authenticationMethod);
+   }
+
+   /**
+    * Returns the authentication properties for SASL authentication
+    *
+    * <p> Null is returned if no authentication has been performed
+    * or no authentication Hashtable is present.</p>
+    *
+    * @return The hashTable used for authentication information or null if the 
+    * object is not present or authenticated.
+    */
+   public Hashtable getAuthenticationQualifiers()
+   {
+      return authenticationHash;
+   }
+
+   /**
+    * Returns the protocol version uses to authenticate
+    *
+    * <p> 0 is returned if no authentication has been performed.</p>
+    *
+    * @return The protol version used for authentication or 0 
+    * not authenticated.
+    */
+   public int getAuthenticationVersion()
+   {
+      return authenticationVersion;
    }
 
    /**
@@ -372,7 +396,7 @@ public class LDAPConnection implements
     */
    public String getAuthenticationPassword()
    {
-      return null;
+      return authenticationPassword;
    }
 
    /**
@@ -384,7 +408,7 @@ public class LDAPConnection implements
     */
    public String getHost()
    {
-      return isConnected() ? conn.getHost() : null;
+      return this.host;
    }
 
    /**
@@ -421,7 +445,7 @@ public class LDAPConnection implements
     */
    public int getPort()
    {
-      return isConnected() ? conn.getPort() : -1;
+      return this.port;
    }
 
    /**
@@ -1256,18 +1280,18 @@ public class LDAPConnection implements
       if(cons == null)
          cons = defSearchCons;
 
-        if(dn == null)
-            dn = "";
+      if(dn == null)
+         dn = "";
 
-        if(passwd == null)
-            passwd = "";
+      if(passwd == null)
+         passwd = "";
 
       switch(version) {
          case LDAP_V3:
-            ldapv3 = true;
+            authenticationVersion = version;
             break;
          case LDAP_V2:
-            ldapv3 = false;
+            authenticationVersion = version;
             break;
          default:
             throw new LDAPException("Protocol version " + version +
@@ -1300,7 +1324,7 @@ public class LDAPConnection implements
                                  LDAPException.OTHER);
       }
 
-      setAuthenticationInfo( dn, passwd);
+      setAuthenticationInfo( dn, passwd, "simple", null);
 //    if(passwd != null) {
 //       req.getLber().reset(); // clear copy of passwd
 //    }
@@ -1720,9 +1744,11 @@ public class LDAPConnection implements
 
       conn = new Connection(host, port, socketFactory);
 
-      bind(version, dn, passwd);
-      this.setConnectionInfo( host, port);
-      this.setAuthenticationInfo( dn, passwd);
+      if( (dn != null) || (passwd != null))
+          bind(version, dn, passwd);
+
+      this.setConnectionInfo( host, port, socketFactory);
+      this.setAuthenticationInfo( dn, passwd, "simple", null);
       return;
    }
 
@@ -1742,10 +1768,12 @@ public class LDAPConnection implements
     *              port number.<br><br>
     */
 
-    /* Package */ void setConnectionInfo(    String host, int port)
+    /* Package */ void setConnectionInfo(    String host, int port,
+                                            LDAPSocketFactory factory)
     {
         this.host = host;
         this.port = port;
+        this.socketFactory = factory;
         return;
     }
     /**
@@ -1763,10 +1791,13 @@ public class LDAPConnection implements
     *                  name and passwd as the password.
     */
 
-    /* Package */ void setAuthenticationInfo( String dn, String passwd)
+    /* Package */ void setAuthenticationInfo( String dn, String passwd,
+                                            String method, Hashtable hash)
     {
         authenticationDN = dn;
         authenticationPassword = passwd;
+        authenticationMethod = method;
+        authenticationHash = hash;
         return;
     }
 
@@ -1926,8 +1957,7 @@ public class LDAPConnection implements
       if(conn != null) {
          conn.shutdown((LDAPControl[])null);
          conn = null;
-         setConnectionInfo( null, 0);
-         setAuthenticationInfo( null, null);
+         setAuthenticationInfo( null, null, "none", null);
       }
       else {
          throw new LDAPException("Not connected.",
