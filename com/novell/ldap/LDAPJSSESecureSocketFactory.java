@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSecureSocketFactory.java,v 1.7 2001/03/01 00:29:57 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPJSSESecureSocketFactory.java,v 1.1 2001/04/19 16:51:04 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -19,6 +19,7 @@ import java.io.*;
 import java.net.*;
 import javax.net.*;
 import javax.net.ssl.*;
+import com.sun.net.ssl.SSLContext;
 
 
 
@@ -28,15 +29,24 @@ import javax.net.ssl.*;
  *
  */
 public class LDAPJSSESecureSocketFactory implements LDAPSocketFactory {
-    private static SocketFactory ssl;
+    private static SocketFactory factory;
     /**
      * Constructs an LDAPSecureSocketFactory object.
      *
      */
     public LDAPJSSESecureSocketFactory()
     {
-        ssl = SSLSocketFactory.getDefault();
+        factory = SSLSocketFactory.getDefault();
     }
+
+    /*
+     * Constructs a SecureSocketFactory using the SSLContext as specified.  Note
+     * that ctx should be initialized by the method init before calling this
+     * method.
+     *
+    public LDAPJSSESecureSocketFactory(SSLContext ctx){
+        factory = ctx.getSocketFactory();
+    }*/
 
     /**
      * Returns the socket connected to the LDAP server with the specified
@@ -64,18 +74,20 @@ public class LDAPJSSESecureSocketFactory implements LDAPSocketFactory {
         throws IOException, UnknownHostException
     {
         try {
-            return ssl.createSocket(host, port);
+            return factory.createSocket(host, port);
         }   // For now just turn all exceptions into IOException
         catch( Exception e) {
            throw new IOException( e.toString());
         }
     }
 
+/*
     public void testInstallation(String inetaddress, int port) throws java.io.IOException {
-        SSLSocket sslSocket = (SSLSocket)ssl.createSocket(inetaddress, port);
+        SSLSocket sslSocket = (SSLSocket)factory.createSocket(inetaddress, port);
         String [] cipherSuites = sslSocket.getEnabledCipherSuites();
-        for(int i= 0; i < cipherSuites.length; i++){
-            System.out.println("Cipher Suite " + i + " = " + cipherSuites[i]);
+        //we don't want to expose the cipher suits being used.
+        //for(int i= 0; i < cipherSuites.length; i++){
+        //    System.out.println("Cipher Suite " + i + " = " + cipherSuites[i]);
         }
-    }
+    }*/
 }
