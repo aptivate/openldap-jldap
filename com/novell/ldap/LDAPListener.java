@@ -1,6 +1,6 @@
 /**
  * Not in the draft.
- 
+ *
  *  Represents the message queue associated with a particular LDAP
  *  operation or operations.
  */
@@ -84,24 +84,24 @@ public abstract class LDAPListener implements TimerListener {
 	 * @internal
 	 */
 	public void timedOut(int msgId) {
-		// inform the messageID list that the timer thread will die
-		queue.removeTimer(msgId);
-		ldapClient.abandon(msgId, (LDAPControl[])null); // will remove id and notify
-		queue.removeResponses(msgId);
 		exceptions.addElement(
-			new LDAPException("Client timeout on message " + msgId,
-				               LDAPException.LDAP_TIMEOUT));
-
-/*
-		Integer i = new Integer(msgId);
-		if(messageIDs.containsKey(i)) {
-			TimerWrapper tw = (TimerWrapper)messageIDs.get(i);
-			tw.setTimer(null); // clear out the Timer reference
-			ldapClient.abandon(msgId, (LDAPControl[])null); // will remove id and notify
-		}
-*/		
+			new LDAPException("Client timeout", LDAPException.LDAP_TIMEOUT));
+		queue.removeTimer(msgId); // timer thread does not need to be stopped.
+		ldapClient.abandon(msgId, (LDAPControl[])null); // will remove id and notify
 	}
 
+	/**
+	 * @internal
+	 * called by LDAPSearchResults
+	 * Will abandon all message IDs for this LDAPListener.
+	 */
+	public void abandonAll() {
+		int[] ids = queue.getMessageIDs();
+		for(int i=0; i<ids.length; i++) {
+			ldapClient.abandon(ids[i], (LDAPControl[])null);
+		}
+	}
+	
 	/**
 	 *
 	 */

@@ -1,4 +1,5 @@
-/*
+/**
+ *
  */
 package com.novell.ldap.client;
 
@@ -128,12 +129,15 @@ public final class Connection implements Runnable {
 	//------------------------------------------------------------------------
 	// Methods to manage IO to the LDAP server
 
+	/**
+	 *	Returns a unique message id for this connection.
+	 */
    synchronized int getMsgId() {
       return ++msgId;
    }
 
 	/**
-	 * Writes a ber encoded message to the LDAP server over a socket
+	 * Writes a ber encoded message to the LDAP server over a socket.
 	 */
    public void writeMessage(BerEncoder ber) throws IOException {
       synchronized(this) {
@@ -142,7 +146,7 @@ public final class Connection implements Runnable {
       }
    }
 
-	//---------------------------------------------------------------
+	//------------------------------------------------------------------------
 	// Methods to manage the LDAP Listeners
 
 	public void addLDAPListener(LDAPListener listener) {
@@ -170,69 +174,9 @@ public final class Connection implements Runnable {
 			}
 	}
 
-	//---------------------------------------------------------------
-
-/*
-   // save this code as an example how to abandon a request
-	//
-	//
-   synchronized void abandonRequest(int mid, LDAPControl[] reqCtls) {
-
-      LDAPRequest ldr = findRequest(mid);
-
-      if(ldr == null) {
-         return;
-      }
-
-      BerEncoder ber = new BerEncoder(256);
-      int abandonMsgId = getMsgId();
-
-      //
-      // build the abandon request.
-      //
-
-      try {
-
-         ber.beginSeq(Ber.ASN_SEQUENCE | Ber.ASN_CONSTRUCTOR);
-         ber.encodeInt(abandonMsgId);
-         ber.encodeInt(mid, LDAPClient.LDAP_REQ_ABANDON);
-
-         if(v3) {
-            LDAPClient.encodeControls(ber, reqCtls);
-         }
-         ber.endSeq();
-
-         outStream.write(ber.getBuf(), 0, ber.getDataLen());
-         outStream.flush();
-         removeRequest(mid);
-
-      }
-      catch(IOException ex) {
-         //System.err.println("ldap.abandon: " + ex);
-      }
-
-      // Dont expect any response for the abandon request.
-   }
-
-   synchronized void abandonOutstandingReqs(LDAPControl[] reqCtls) {
-
-      LDAPRequest ldr = pendingRequests;
-      LDAPRequest nextLdr = null;
-
-      while(ldr != null) {
-         abandonRequest(ldr.msgId, reqCtls);
-         pendingRequests = ldr = ldr.next;
-      }
-
-   }
-*/	
-
-   ////////////////////////////////////////////////////////////////////////////
-   //
-   // Methods to unbind from server and clear up resources when object is
-   // destroyed.
-   //
-   ////////////////////////////////////////////////////////////////////////////
+	//------------------------------------------------------------------------
+   // Methods to unbind from the server and clean up resources when this
+	// object is destroyed.
 
    private synchronized void ldapUnbind(LDAPControl[] reqCtls) {
 
@@ -263,10 +207,16 @@ public final class Connection implements Runnable {
       // Dont expect any response for the unbind request.
    }
 
+	/**
+	 *
+	 */
    protected void finalize() {
       cleanup(null);
    }
 
+	/**
+	 *
+	 */
    synchronized void cleanup(LDAPControl[] reqCtls) {
 
       if(socket != null) {
@@ -294,13 +244,9 @@ public final class Connection implements Runnable {
    }
 
 
-   ////////////////////////////////////////////////////////////////////////////
-   //
-   // The LDAP Binding thread. It does the demultiplexing of multiple requests
-   // on the same TCP connection.
-   //
-   ////////////////////////////////////////////////////////////////////////////
-
+	//------------------------------------------------------------------------
+   // The LDAP Binding thread. It does the demultiplexing of multiple
+	// requests on the same TCP connection.
 
    public void run() {
       byte inbuf[];
@@ -415,7 +361,7 @@ public final class Connection implements Runnable {
       catch(java.io.IOException ex) {
       }
       finally {
-         cleanup(null); // cleanup
+         cleanup(null);
       }
    }
 

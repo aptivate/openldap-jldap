@@ -100,6 +100,7 @@ public class LDAPConnection implements
     * by the object.
     */
    public void finalize() throws LDAPException {
+		disconnect();
    }
 
    /*
@@ -166,10 +167,7 @@ public class LDAPConnection implements
     * from the LDAP server.
     */
    public InputStream getInputStream() {
-      if(ldapClient != null) {
-         return ldapClient.getInputStream();
-      }
-      return null;
+		return isConnected() ? ldapClient.getInputStream() : null;
    }
 
    /*
@@ -181,10 +179,7 @@ public class LDAPConnection implements
     * LDAP server.
     */
    public OutputStream getOutputStream() {
-      if(ldapClient != null) {
-         return ldapClient.getOutputStream();
-      }
-      return null;
+		return isConnected() ? ldapClient.getOutputStream() : null;
    }
 
    /*
@@ -294,7 +289,7 @@ public class LDAPConnection implements
     * server.
     */
    public boolean isBound() {
-      return(ldapClient.isBound());
+		return isConnected() ? ldapClient.isBound() : false;
    }
 
    /*
@@ -430,7 +425,7 @@ public class LDAPConnection implements
     * the LDAP server.
     */
    public void setInputStream(InputStream stream) {
-      if(ldapClient != null) {
+      if(isConnected()) {
          ldapClient.setInputStream(stream);
       }
    }
@@ -444,7 +439,7 @@ public class LDAPConnection implements
     * LDAP server.
     */
    public void setOutputStream(OutputStream stream) {
-      if(ldapClient != null) {
+      if(isConnected()) {
          ldapClient.setOutputStream(stream);
       }
    }
@@ -757,8 +752,10 @@ public class LDAPConnection implements
     */
    public void disconnect()
 	throws LDAPException {
-		ldapClient.close((LDAPControl[])null);
-		ldapClient = null;
+		if(ldapClient != null) {
+			ldapClient.close((LDAPControl[])null);
+			ldapClient = null;
+		}
    }
 
    /**

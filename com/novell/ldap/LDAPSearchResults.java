@@ -176,15 +176,15 @@ public class LDAPSearchResults implements Enumeration {
 					}
 				}
 				else {
-					// new up a client timeout result
-					LDAPResult result = new LDAPResult();
-					result.resultCode = LDAPException.LDAP_TIMEOUT;
-					entries.addElement(result);
-					return true; // search has been abandoned
+					// how can we arrive here?
+					// we would have to have no responses, no message IDs and no
+					// exceptions
+
+					return true;
 				}
 			}
-			catch(LDAPException e) {
-				// new up a client timeout result
+			catch(LDAPException e) { // network error
+				// could be a client timeout result
 				LDAPResult result = new LDAPResult();
 				result.resultCode = e.getLDAPResultCode();
 				entries.addElement(result);
@@ -195,12 +195,15 @@ public class LDAPSearchResults implements Enumeration {
 	}
 
 	/**
-	 *	The search can be abandoned in three ways:
-	 * 1) By LDAPConnection.abandon()
-	 * 2) By LDAPAsynchronousConnection.abandon()
-	 * 3) By a client time out
+	 *
 	 */
 	public void abandon() {
+		// first, remove message ID and timer and any responses in the queue
+		listener.abandonAll();
+
+		// next, clear out enumeration
+		entries.setSize(0);
+		elements = entries.elements();
 		completed = true;
 	}
 
