@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.100 2001/05/29 19:24:57 vtag Exp $
+ * $Novell: /ldap/src/jldap/org/ietf/ldap/LDAPConnection.java,v 1.1 2001/06/26 15:48:42 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -168,14 +168,12 @@ public class LDAPConnection implements Cloneable
             private LDAPSocketFactory factory;
             private SocketFactoryImpl( LDAPSocketFactory factory)
             {
-                System.out.println("novell Factory class " + this + " wraps " + factory);
                 this.factory = factory;
                 return;
             }
 
             public LDAPSocketFactory getWrappedObject()
             {
-                System.out.println("novell Factory class " + this + " returns " + factory);
                 return factory;
             }
             
@@ -200,7 +198,13 @@ public class LDAPConnection implements Cloneable
      */
     public LDAPConnection(LDAPSocketFactory factory)
     {
-        conn = new com.novell.ldap.LDAPConnection( getSocketImpl(factory));
+        if( (factory != null) &&
+                (factory instanceof com.novell.ldap.LDAPSocketFactory)) {
+            conn = new com.novell.ldap.LDAPConnection(
+                                   (com.novell.ldap.LDAPSocketFactory)factory);
+        } else {
+            conn = new com.novell.ldap.LDAPConnection( getSocketImpl(factory));
+        }
         return;
     }
 
@@ -378,7 +382,11 @@ public class LDAPConnection implements Cloneable
         if( factory == null) {
             return null;                            
         }
-        return ((SocketFactoryWrapper)factory).getWrappedObject();
+        if(factory instanceof LDAPSocketFactory) {
+            return (LDAPSocketFactory)factory;
+        } else {
+            return ((SocketFactoryWrapper)factory).getWrappedObject();
+        }
     }
 
     /**
@@ -473,7 +481,14 @@ public class LDAPConnection implements Cloneable
      */
     public static void setSocketFactory( LDAPSocketFactory factory)
     {
-        com.novell.ldap.LDAPConnection.setSocketFactory(getSocketImpl(factory));
+        if( (factory != null) &&
+                (factory instanceof com.novell.ldap.LDAPSocketFactory)) {
+            com.novell.ldap.LDAPConnection.setSocketFactory(
+                                    (com.novell.ldap.LDAPSocketFactory)factory);
+        } else {
+            com.novell.ldap.LDAPConnection.setSocketFactory(
+                                                        getSocketImpl(factory));
+        }
         return;
     }
     
