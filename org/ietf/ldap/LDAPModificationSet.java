@@ -19,7 +19,8 @@ package org.ietf.ldap;
  *  Holds a collection of LDAPModification objects, representing
  *  changes to be made to attributes of a single entry.
  *
- * @see com.novell.ldap.LDAPModificationSet
+ * @see <a href="../../../../doc/com/novell/ldap/LDAPModificationSet.html">
+            com.novell.ldap.LDAPModificationSet</a>
  */
 public class LDAPModificationSet {
 
@@ -38,7 +39,9 @@ public class LDAPModificationSet {
     /**
      * Constructs a new, empty set of modifications.
      *
-     * @see com.novell.ldap.LDAPModificationSet#LDAPModificationSet()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPModificationSet.html
+            #LDAPModificationSet()">
+            com.novell.ldap.LDAPModification.LDAPModificationSet()</a>
      */
     public LDAPModificationSet()
     {
@@ -59,7 +62,9 @@ public class LDAPModificationSet {
      * Specifies a modification to be added to the set of
      * modifications.
      *
-     * @see com.novell.ldap.LDAPModificationSet#add(int,LDAPAttribute)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPModificationSet.html
+            #add(int, com.novell.ldap.LDAPAttribute)">
+            com.novell.ldap.LDAPModification.add(int, LDAPAttribute)</a>
      */
     public void add(int op, LDAPAttribute attr)
     {
@@ -71,7 +76,9 @@ public class LDAPModificationSet {
      * Retrieves a particular LDAPModification object at the position
      * specified by the index.
      *
-     * @see com.novell.ldap.LDAPModificationSet#elementAt(int)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPModificationSet.html
+            #elementAt(int)">
+            com.novell.ldap.LDAPModification.elementAt(int)</a>
      */
     public LDAPModification elementAt(int index)
         throws ArrayIndexOutOfBoundsException
@@ -83,7 +90,9 @@ public class LDAPModificationSet {
      * Removes the first attribute with the specified name in the set of
      * modifications.
      *
-     * @see com.novell.ldap.LDAPModificationSet#remove(String)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPModificationSet.html
+            #remove(java.lang.String)">
+            com.novell.ldap.LDAPModification.remove(String)</a>
      */
     public void remove(String name)
     {
@@ -95,7 +104,9 @@ public class LDAPModificationSet {
      * Removes a particular LDAPModification object at the position
      * specified by the index.
      *
-     * @see com.novell.ldap.LDAPModificationSet#removeElementAt(int)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPModificationSet.html
+            #removeElementAt(int)">
+            com.novell.ldap.LDAPModification.removeElementAt(int)</a>
      */
     public void removeElementAt(int index)
         throws ArrayIndexOutOfBoundsException
@@ -107,7 +118,9 @@ public class LDAPModificationSet {
     /**
      * Retrieves the number of LDAPModification objects in this set.
      *
-     * @see com.novell.ldap.LDAPModificationSet#size()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPModificationSet.html
+            #size()">
+            com.novell.ldap.LDAPModification.size()</a>
      */
     public int size()
     {
