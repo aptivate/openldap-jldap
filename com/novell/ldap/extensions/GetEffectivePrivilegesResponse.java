@@ -82,12 +82,12 @@ public class GetEffectivePrivilegesResponse extends LDAPExtendedResponse {
     * @return A flag which is a combination of zero or more privilege flags as
     * returned by the server.
     *
-    * @see LDAPNDSConst#LDAP_DS_ATTR_COMPARE
-    * @see LDAPNDSConst#LDAP_DS_ATTR_READ
-    * @see LDAPNDSConst#LDAP_DS_ATTR_WRITE
-    * @see LDAPNDSConst#LDAP_DS_ATTR_SELF
-    * @see LDAPNDSConst#LDAP_DS_ATTR_SUPERVISOR
-    * @see LDAPNDSConst#LDAP_DS_ATTR_INHERIT_CTL
+    * @see LDAPDSConstants#LDAP_DS_ATTR_COMPARE
+    * @see LDAPDSConstants#LDAP_DS_ATTR_READ
+    * @see LDAPDSConstants#LDAP_DS_ATTR_WRITE
+    * @see LDAPDSConstants#LDAP_DS_ATTR_SELF
+    * @see LDAPDSConstants#LDAP_DS_ATTR_SUPERVISOR
+    * @see LDAPDSConstants#LDAP_DS_ATTR_INHERIT_CTL
     */
    public int getPrivileges() {
         return privileges;

@@ -15,10 +15,10 @@
 package com.novell.ldap;
 
 /**
- * LDAPNDSConst.java contains bit values for [Entry Rights], [All attribute
+ * LDAPDSConstants.java contains bit values for [Entry Rights], [All attribute
  * Rights], attribute rights, and entry flags in Novell eDirectory 
  */
-public interface LDAPNDSConst {
+public interface LDAPDSConstants {
 
 	///////////////////////////////////////////////////////////////////////////
 	// bit values for [Entry Rights] of access control in Novell eDirecroty
