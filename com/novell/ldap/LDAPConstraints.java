@@ -27,7 +27,7 @@ import com.novell.ldap.client.Debug;
  *
  * @see LDAPConnection#setConstraints(LDAPConstraints)
  */
-public class LDAPConstraints implements Cloneable {
+public class LDAPConstraints implements Cloneable, java.io.Serializable {
 
     private int msLimit = 0;
     private int hopLimit = 10;
@@ -412,6 +412,30 @@ public class LDAPConstraints implements Cloneable {
         } catch( CloneNotSupportedException ce) {
             throw new RuntimeException("Internal error, cannot create clone");
         }
+    }
+
+    /**
+    *  Writes the object state to a stream in standard Default Binary format
+    *  This function wraps ObjectOutputStream' s defaultWriteObject() to write
+    *  the non-static and non-transient fields of the current class to the stream
+    *   
+    *  @param objectOStrm  The OutputSteam where the Object need to be written
+    */
+    private void writeObject(java.io.ObjectOutputStream objectOStrm)
+	    throws java.io.IOException {
+		objectOStrm.defaultWriteObject();
+    }
+    
+    /**
+    *  Reads the serialized object from the underlying input stream.
+    *  This function wraps ObjectInputStream's  defaultReadObject() function
+    *
+    *  @param objectIStrm  InputStream used to recover those objects previously serialized. 
+    */
+    private void readObject(java.io.ObjectInputStream objectIStrm)
+         throws java.io.IOException, ClassNotFoundException
+    {
+	  objectIStrm.defaultReadObject();
     }
 
 

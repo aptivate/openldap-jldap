@@ -33,8 +33,8 @@ import com.novell.ldap.client.EnumeratedIterator;
  * @see LDAPSchema
  * @see LDAPConnection#fetchSchema
  */
-public abstract class LDAPSchemaElement extends LDAPAttribute {
-
+public abstract class LDAPSchemaElement extends LDAPAttribute implements 
+    java.io.Serializable {
     /**
      * Creates an LDAPSchemaElement by setting the name of the LDAPAttribute.
      * Because this is the only constructor, all extended classes are expected
@@ -256,6 +256,29 @@ public abstract class LDAPSchemaElement extends LDAPAttribute {
     public void removeValue(Byte[] value){
         throw new UnsupportedOperationException(
                 "removeValue is not supported by LDAPSchemaElement");
+    }
+    /**
+    *  Writes the object state to a stream in standard Default Binary format
+    *  This function wraps ObjectOutputStream' s defaultWriteObject() to write
+    *  the non-static and non-transient fields of the current class to the stream
+    *   
+    *  @param objectOStrm  The OutputSteam where the Object need to be written
+    */
+    private void writeObject(java.io.ObjectOutputStream objectOStrm)
+	    throws java.io.IOException {
+		objectOStrm.defaultWriteObject();
+    }
+    
+    /**
+    *  Reads the serialized object from the underlying input stream.
+    *  This function wraps ObjectInputStream's  defaultReadObject() function
+    *
+    *  @param objectIStrm  InputStream used to recover those objects previously serialized. 
+    */
+    private void readObject(java.io.ObjectInputStream objectIStrm)
+         throws java.io.IOException, ClassNotFoundException
+    {
+	  objectIStrm.defaultReadObject();
     }
 
 }

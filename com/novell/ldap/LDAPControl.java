@@ -15,10 +15,21 @@
 
 package com.novell.ldap;
 
-import com.novell.ldap.client.*;
-import com.novell.ldap.asn1.*;
-import com.novell.ldap.rfc2251.*;
+import java.io.IOException;
+import java.io.InputStream;
 
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+
+import com.novell.ldap.asn1.ASN1Boolean;
+import com.novell.ldap.asn1.ASN1OctetString;
+import com.novell.ldap.client.RespControlVector;
+import com.novell.ldap.rfc2251.RfcControl;
+import com.novell.ldap.rfc2251.RfcLDAPOID;
+import com.novell.ldap.util.LDAPXMLHandler;
+import com.novell.ldap.util.SAXEventMultiplexer;
+import com.novell.ldap.util.ValueXMLhandler;
+import com.novell.ldap.util.Base64;
 /**
  *  Encapsulates optional additional parameters or constraints to be applied to
  *  an LDAP operation.
@@ -31,7 +42,7 @@ import com.novell.ldap.rfc2251.*;
  * @see LDAPSearchConstraints#getControls
  * @see LDAPSearchConstraints#setControls
  */
-public class LDAPControl implements Cloneable {
+public class LDAPControl implements Cloneable,java.io.Serializable {
 
     private static RespControlVector registeredControls =
                                                     new RespControlVector(5, 5);
@@ -187,4 +198,137 @@ public class LDAPControl implements Cloneable {
     {
         return control;
     }
+
+    void newLine(int indentTabs,java.io.Writer out) throws IOException
+    {
+        String tabString = "    ";    
+        
+        out.write("\n");
+        for (int i=0; i< indentTabs; i++){
+            out.write(tabString);
+        }
+        return;
+    }
+    
+    /**
+     * This method does DSML serialization of the instance.
+     *
+     * @param oout Outputstream where the serialzed data has to be written
+     *
+     * @throws IOException if write fails on OutputStream 
+     */    
+    public void writeDSML(java.io.OutputStream oout) throws IOException
+    {
+        java.io.Writer out=new java.io.OutputStreamWriter(oout,"UTF-8");
+        int indent=0;
+        newLine(indent,out);
+        out.write("<control type=\"");
+        out.write(getID());
+        out.write("\" criticality=\""+isCritical()+ "\"");
+
+        byte value[] = getValue();
+        if (value == null){
+            out.write(" / >");
+        } else {
+            out.write(">");
+            newLine(indent+1,out);
+            out.write("<controlValue xsi:type=\"xsd:base64Binary\">");
+            out.write(Base64.encode(value));
+            out.write("</controlValue>");
+            newLine(indent,out);
+            out.write("</control>");
+        }
+        out.close();
+    }
+	/**
+	* This method is used to deserialize the DSML encoded representation of
+	* this class.
+	* @param input InputStream for the DSML formatted data. 
+	* @return Deserialized form of this class.
+	* @throws IOException when serialization fails.
+	*/   
+  public static Object readDSML(InputStream input) throws IOException {
+    SAXEventMultiplexer xmlreader = new SAXEventMultiplexer();
+    xmlreader.setLDAPXMLHandler(getXMLHandler("control", null));
+    return (LDAPControl) xmlreader.parseXML(input);
+  }
+	/**
+	* This method return the LDAPHandler which handles the XML (DSML) tags
+	* for this class
+	* @param tagname Name of the Root tag used to represent this class.
+	* @param parenthandler Parent LDAPXMLHandler for this tag.
+	* @return LDAPXMLHandler to handle this element.
+	*/    
+  static LDAPXMLHandler getXMLHandler(
+    String tagname,
+    LDAPXMLHandler parenthandler) {
+    return new LDAPXMLHandler(tagname, parenthandler) {
+      String oid;
+      boolean critical;
+      byte[] controlvalue;
+      protected void initHandler() {
+        //set value handler.
+        setchildelement(new ValueXMLhandler("controlValue", this));
+      }
+
+      protected void endElement() {
+        LDAPControl control = new LDAPControl(oid, critical, controlvalue);
+        setObject(control);
+      }
+      protected void addValue(String tag, Object value) {
+        if (tag.equals("value")) {
+          controlvalue = (byte[]) value;
+        }
+      }
+
+      protected void handleAttributes(Attributes attributes)
+        throws SAXException {
+        oid = attributes.getValue("type");
+        if (oid == null) {
+          //Oid is mandatory.
+          throw new SAXException("type is mandatory for a Control");
+        }
+        critical = "true".equalsIgnoreCase(attributes.getValue("criticality"));
+      }
+
+    };
+
+  }
+	/**
+	 * Returns a  string representation of this class.
+	 *
+	 * @return The string representation of this class.
+	 */
+  public String toString()
+  {
+		StringBuffer result = new StringBuffer("LDAPControl: ");
+		result.append("((oid="+getID()+"");
+		result.append(",critical="+isCritical()+")");
+		result.append("(value="+getValue()+"))");
+		return result.toString();
+  }    
+    /**
+    *  Writes the object state to a stream in standard Default Binary format
+    *  This function wraps ObjectOutputStream' s defaultWriteObject() to write
+    *  the non-static and non-transient fields of the current class to the stream
+    *   
+    *  @param objectOStrm  The OutputSteam where the Object need to be written
+    */
+    private void writeObject(java.io.ObjectOutputStream objectOStrm)
+	    throws java.io.IOException {
+		objectOStrm.defaultWriteObject();
+    }
+    
+    /**
+    *  Reads the serialized object from the underlying input stream.
+    *  This function wraps ObjectInputStream's  defaultReadObject() function
+    *
+    *  @param objectIStrm  InputStream used to recover those objects previously serialized. 
+    */
+    private void readObject(java.io.ObjectInputStream objectIStrm)
+         throws java.io.IOException, ClassNotFoundException
+    {
+	  objectIStrm.defaultReadObject();
+    }
+     
 }

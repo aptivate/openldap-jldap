@@ -15,9 +15,12 @@
 
 package com.novell.ldap;
 
-import com.novell.ldap.LDAPResponse;
+import java.net.MalformedURLException;
+
 import com.novell.ldap.rfc2251.*;
 import com.novell.ldap.asn1.*;
+import com.novell.ldap.client.RespExtensionSet;
+
 
 /**
  *
@@ -27,7 +30,57 @@ import com.novell.ldap.asn1.*;
  *  The response can contain the OID of the extension, an octet string
  *  with the operation's data, both, or neither.
  */
-public class LDAPExtendedResponse extends LDAPResponse {
+public class LDAPExtendedResponse extends LDAPResponse implements 
+    java.io.Serializable {
+
+    private static RespExtensionSet registeredResponses =
+                                                    new RespExtensionSet();
+
+  /**
+   * Creates the Extended Response Object passing the individual parameters.
+   *  
+   * @param resultCode  The result code as defined in LDAPException.
+   *
+   * @param matchedDN   The name of the lowest entry that was matched
+   *                    for some error result codes, an empty string
+   *                    or <code>null</code> if none.
+   *
+   * @param serverMessage  A diagnostic message returned by the server,
+   *                       an empty string or <code>null</code> if none.
+   *
+   * @param referrals   The referral URLs returned for a REFERRAL result
+   *                    code or <code>null</code> if none.
+   *
+   * @param controls    Any controls returned by the server or
+   *                    <code>null</code> if none.
+   * @param extendedid The LDAPOID for this extended operation.
+   * @param extendedvalue The Value (Data) for this extended operation.  
+   * @throws MalformedURLException When the referral URL are malformed.
+   * 
+   */
+  public LDAPExtendedResponse(
+    int resultCode,
+    String matchedDN,
+    String serverMessage,
+    String[] referrals,
+    LDAPControl[] controls,
+    String extendedid,
+    byte[] extendedvalue)
+    throws MalformedURLException {
+	this(
+      new RfcLDAPMessage(
+        new RfcExtendedResponse(
+          new ASN1Enumerated(resultCode),
+          (matchedDN != null) ? new RfcLDAPDN(matchedDN) : new RfcLDAPDN(""),
+          (serverMessage != null)
+            ? new RfcLDAPString(serverMessage)
+            : new RfcLDAPString(""),
+          (referrals != null) ? new RfcReferral(referrals) : null,
+          (extendedid != null) ? new RfcLDAPOID(extendedid) : null,
+          (extendedvalue != null)
+            ? new ASN1OctetString(extendedvalue)
+            : null)));
+  }
 
     /**
      * Creates an LDAPExtendedResponse object which encapsulates
@@ -69,4 +122,53 @@ public class LDAPExtendedResponse extends LDAPResponse {
 		else
 			return(tempString.byteValue());
     }
+    
+    /**
+     * Registers a class to be instantiated on receipt of a extendedresponse
+     * with the given OID.
+     *
+     * <p>Any previous registration for the OID is overridden. The 
+     *  extendedResponseClass object MUST be an extension of 
+     *  LDAPExtendedResponse. </p>
+     *
+     * @param oid            The object identifier of the control.
+     * <br><br>
+     * @param extendedResponseClass  A class which can instantiate an 
+     *                                LDAPExtendedResponse.
+     */
+    public static void register(String oid, Class extendedResponseClass) 
+    {
+        registeredResponses.registerResponseExtension(oid, extendedResponseClass);
+        return;
+    }
+    
+    /* package */
+    public static RespExtensionSet getRegisteredResponses()
+    {
+        return registeredResponses;
+    }
+    /**
+    *  Writes the object state to a stream in standard Default Binary format
+    *  This function wraps ObjectOutputStream' s defaultWriteObject() to write
+    *  the non-static and non-transient fields of the current class to the stream
+    *   
+    *  @param objectOStrm  The OutputSteam where the Object need to be written
+    */
+    private void writeObject(java.io.ObjectOutputStream objectOStrm)
+	    throws java.io.IOException {
+		objectOStrm.defaultWriteObject();
+    }
+    
+    /**
+    *  Reads the serialized object from the underlying input stream.
+    *  This function wraps ObjectInputStream's  defaultReadObject() function
+    *
+    *  @param objectIStrm  InputStream used to recover those objects previously serialized. 
+    */
+    private void readObject(java.io.ObjectInputStream objectIStrm)
+         throws java.io.IOException, ClassNotFoundException
+    {
+	  objectIStrm.defaultReadObject();
+    }
+
 }

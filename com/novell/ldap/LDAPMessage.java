@@ -20,6 +20,9 @@ import com.novell.ldap.rfc2251.*;
 import com.novell.ldap.client.RespControlVector;
 import com.novell.ldap.client.Debug;
 
+import com.novell.ldap.util.DSMLReader;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Constructor;
 
@@ -28,11 +31,10 @@ import java.lang.reflect.Constructor;
  *
  * <p>Subclassed by response messages used in asynchronous operations.
  *
- *  <p>Sample Code: <a href="http://developer.novell.com/ndk/doc/samplecode/
- *jldap_sample/asynchronous/Searchas.java.html">Searchas.java</a></p>
+ *  <p>Sample Code: <a href="http://developer.novell.com/ndk/doc/samplecode/jldap_sample/asynchronous/Searchas.java.html">Searchas.java</a></p>
  *
  */
-public class LDAPMessage
+public class LDAPMessage implements java.io.Serializable 
 {
 
     /**
@@ -175,6 +177,13 @@ public class LDAPMessage
      *<p>EXTENDED_RESONSE = 24</p>
      */
     public final static int EXTENDED_RESPONSE       = 24;
+
+    /**
+     * An extended response operation.
+     *
+     *<p>EXTENDED_RESONSE = 24</p>
+     */
+    public final static int INTERMEDIATE_RESPONSE   = 25;
 
     /**
      * A request or response message for an asynchronous LDAP operation.
@@ -555,6 +564,9 @@ public class LDAPMessage
             case EXTENDED_RESPONSE:
                 name = "LDAPExtendedResponse";
                 break;
+            case INTERMEDIATE_RESPONSE:
+                name = "LDAPIntermediateResponse";
+                break;
             default:
                 throw new RuntimeException("LDAPMessage: Unknown Type " + getType());
         }
@@ -622,4 +634,67 @@ public class LDAPMessage
         }
         return m.stringTag;
     }
+
+    /**
+     * This method does DSML serialization of the instance.
+     *
+     * @param oout Outputstream where the serialzed data has to be written
+     *
+     * @throws IOException if write fails on OutputStream 
+     */    
+    public void writeDSML(java.io.OutputStream  oout) throws java.io.IOException
+    {
+    	com.novell.ldap.util.DSMLWriter out=new 
+    	                 com.novell.ldap.util.DSMLWriter(oout);
+    	try{
+		out.useIndent(true);
+        out.setIndent(4);    	
+    	out.writeMessage(this);
+    	out.finish();
+    	}catch(LDAPLocalException le){
+    	}
+    }
+	/**
+	 * This method is used to deserialize the DSML encoded representation of
+	 * this class.
+	 * @param input InputStream for the DSML formatted data. 
+	 * @return Deserialized form of this class.
+	 * @throws IOException when serialization fails.
+	 */
+	public static Object readDSML(InputStream input) throws IOException {
+	 LDAPMessage msg = null;
+	 try {
+    	DSMLReader reader = new DSMLReader(input);
+    	msg = reader.readMessage();
+  		} catch (LDAPLocalException e) {
+		 e.printStackTrace();
+		 throw new IOException("LDAPLocalException"+ e);
+  		}
+	 	return msg;	
+	}
+
+    /**
+    *  Writes the object state to a stream in standard Default Binary format
+    *  This function wraps ObjectOutputStream' s defaultWriteObject() to write
+    *  the non-static and non-transient fields of the current class to the stream
+    *   
+    *  @param objectOStrm  The OutputSteam where the Object need to be written
+    */
+    private void writeObject(java.io.ObjectOutputStream objectOStrm)
+	    throws java.io.IOException {
+		objectOStrm.defaultWriteObject();
+    }
+    
+    /**
+    *  Reads the serialized object from the underlying input stream.
+    *  This function wraps ObjectInputStream's  defaultReadObject() function
+    *
+    *  @param objectIStrm  InputStream used to recover those objects previously serialized. 
+    */
+    private void readObject(java.io.ObjectInputStream objectIStrm)
+         throws java.io.IOException, ClassNotFoundException
+    {
+	  objectIStrm.defaultReadObject();
+    }
+            
 }

@@ -15,6 +15,18 @@
 
 package com.novell.ldap;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+
+import com.novell.ldap.util.LDAPXMLHandler;
+import com.novell.ldap.util.SAXEventMultiplexer;
+
+import com.novell.ldap.util.Base64;
+import java.util.Iterator;
 /**
  * Represents a single entry in a directory, consisting of
  * a distinguished name (DN) and zero or more attributes.
@@ -27,7 +39,7 @@ package com.novell.ldap;
  * @see LDAPAttribute
  * @see LDAPAttributeSet
  */
-public class LDAPEntry implements java.lang.Comparable
+public class LDAPEntry implements java.lang.Comparable,java.io.Serializable
 {
     protected String dn;
     protected LDAPAttributeSet attrs;
@@ -175,4 +187,133 @@ public class LDAPEntry implements java.lang.Comparable
         }
         return result.toString();
     }
+
+    void newLine(int indentTabs,java.io.Writer out) throws java.io.IOException
+    {
+        String tabString = "    ";    
+        
+        out.write("\n");
+        for (int i=0; i< indentTabs; i++){
+            out.write(tabString);
+        }
+        
+    }
+    
+    private void writeAttribute(LDAPAttribute attr,java.io.Writer out) throws java.io.IOException
+    {
+        newLine(2,out);
+        out.write("<attr name=\"");
+        out.write(attr.getName());
+        out.write("\">");
+        String values[] = attr.getStringValueArray();
+        byte bytevalues[][] = attr.getByteValueArray();
+        for(int i=0; i<values.length; i++){
+            newLine(3,out);
+            if (Base64.isValidUTF8(bytevalues[i], false)){
+                out.write("<value>");
+                out.write(values[i]);
+                out.write("</value>");
+            } else {
+                out.write("<value xsi:type=\"xsd:base64Binary\">");
+                out.write(Base64.encode(bytevalues[i]));
+                out.write("</value>");
+            }
+
+        }
+        newLine(2,out);
+        out.write("</attr>");
+        
+    }
+
+    /**
+     * This method does DSML serialization of the instance.
+     *
+     * @param oout Outputstream where the serialzed data has to be written
+     *
+     * @throws IOException if write fails on OutputStream 
+     */    
+    public void writeDSML(java.io.OutputStream oout) throws java.io.IOException
+    {
+        java.io.Writer out=new java.io.OutputStreamWriter(oout,"UTF-8");
+        out.write("<LDAPEntry dn=\"");
+        out.write(getDN());
+        out.write("\">");
+        Iterator i = getAttributeSet().iterator();
+        while (i.hasNext()){
+            writeAttribute( (LDAPAttribute) i.next(),out);
+        }
+        newLine(0,out);
+        out.write("</LDAPEntry>");    
+        out.close();
+    }    
+	/**
+	* This method is used to deserialize the DSML encoded representation of
+	* this class.
+	* @param input InputStream for the DSML formatted data. 
+	* @return Deserialized form of this class.
+	* @throws IOException when serialization fails.
+	*/     
+	public static Object readDSML(InputStream input)throws IOException    
+		 {
+		 SAXEventMultiplexer xmlreader = new SAXEventMultiplexer();
+		 xmlreader.setLDAPXMLHandler(getXMLHandler("LDAPEntry",null));		
+		 return (LDAPEntry) xmlreader.parseXML(input);
+		 }
+	/**
+	* This method return the LDAPHandler which handles the XML (DSML) tags
+	* for this class
+	* @param tagname Name of the Root tag used to represent this class.
+	* @param parenthandler Parent LDAPXMLHandler for this tag.
+	* @return LDAPXMLHandler to handle this element.
+	*/    		 
+	static LDAPXMLHandler getXMLHandler(String tagname,LDAPXMLHandler parenthandler) {
+		return new LDAPXMLHandler(tagname, parenthandler) {
+			String dn;
+			List valuelist = new ArrayList();
+			protected void initHandler() {
+				//set LDAPAttribute handler.
+				setchildelement(LDAPAttribute.getXMLHandler("attr",this));
+			}
+			protected void endElement() {
+				LDAPAttributeSet attrset = new LDAPAttributeSet();
+				attrset.addAll(valuelist);
+				LDAPEntry entry = new LDAPEntry(dn,attrset);				
+				setObject(entry);
+			}
+			protected void addValue(String tag, Object value) {
+				if (tag.equals("attr")) {
+					valuelist.add(value);
+				}
+			}
+			protected void handleAttributes(Attributes attributes)throws SAXException {
+					dn = attributes.getValue("dn");
+					if (dn== null)
+						throw new SAXException("invalid entry Tag, dn is mandatory element: ");
+						}
+    		
+			};
+		};
+    /**
+    *  Writes the object state to a stream in standard Default Binary format
+    *  This function wraps ObjectOutputStream' s defaultWriteObject() to write
+    *  the non-static and non-transient fields of the current class to the stream
+    *   
+    *  @param objectOStrm  The OutputSteam where the Object need to be written
+    */
+    private void writeObject(java.io.ObjectOutputStream objectOStrm)
+	    throws java.io.IOException {
+		objectOStrm.defaultWriteObject();
+    }
+    
+    /**
+    *  Reads the serialized object from the underlying input stream.
+    *  This function wraps ObjectInputStream's  defaultReadObject() function
+    *
+    *  @param objectIStrm  InputStream used to recover those objects previously serialized. 
+    */
+    private void readObject(java.io.ObjectInputStream objectIStrm)
+         throws java.io.IOException, ClassNotFoundException
+    {
+	  objectIStrm.defaultReadObject();
+    }    
 }

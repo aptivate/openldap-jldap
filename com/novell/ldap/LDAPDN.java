@@ -169,6 +169,10 @@ public class LDAPDN {
      *
      * <p>For example, for the rdn "cn=Acme\, Inc", the unescapeRDN method
      * returns "cn=Acme, Inc".</p>
+     * <p><b>Note:</b>This function doesn't check for the
+     * validity of the RDN string use isValid(String) function to check the 
+     * validity. The results is undefined for invalid RDN's.
+     * </p>
      * unescapeRDN unescapes the AttributeValue by
      * removing the '\' when the next character fits the following:<BR>
      * ',' '+' '"' '\' '<' '>' ';'<BR>
@@ -179,14 +183,18 @@ public class LDAPDN {
      *  @param rdn            The RDN to unescape.
      *
      * @return The RDN with the escaping characters removed.
+     * @see LDAPDN#isValid(String)
      */
     public static String unescapeRDN (String rdn) {
         StringBuffer unescaped = new StringBuffer();
         int i = 0;
 
         while (i < rdn.length() && rdn.charAt(i) != '='){
+			unescaped.append(rdn.charAt(i));
             i++;  //advance until we find the separator =
         }
+        //add character '='
+		unescaped.append(rdn.charAt(i));
         if ( i == rdn.length()){
             throw new IllegalArgumentException("Could not parse rdn: Attribute "
                 + "type and name must be separated by an equal symbol, '='");
@@ -206,6 +214,8 @@ public class LDAPDN {
                    (rdn.charAt(i+1) == '<') || (rdn.charAt(i+1) == '>') ||
                    (rdn.charAt(i+1) == ';'))
                 {   //I'm not sure if I have to check for these special chars
+					unescaped.append(rdn.charAt(i+1));
+                	i++;
                     continue;
                 }
                 //check if the last two chars are "\ "

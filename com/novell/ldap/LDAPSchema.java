@@ -77,7 +77,7 @@ import com.novell.ldap.client.EnumeratedIterator;
  * @see LDAPConnection#fetchSchema
  * @see LDAPConnection#getSchemaDN
  */
-public class LDAPSchema extends LDAPEntry {
+public class LDAPSchema extends LDAPEntry implements java.io.Serializable{
 
     /** The idTable hash on the oid (or integer ID for DITStructureRule) and
      *  is used for retrieving enumerations
@@ -636,6 +636,28 @@ public class LDAPSchema extends LDAPEntry {
             throw new IllegalArgumentException(
                 "The specified schema element type is not recognized");
     }
-
+    /**
+    *  Writes the object state to a stream in standard Default Binary format
+    *  This function wraps ObjectOutputStream' s defaultWriteObject() to write
+    *  the non-static and non-transient fields of the current class to the stream
+    *   
+    *  @param objectOStrm  The OutputSteam where the Object need to be written
+    */
+    private void writeObject(java.io.ObjectOutputStream objectOStrm)
+	    throws java.io.IOException {
+		objectOStrm.defaultWriteObject();
+    }
+    
+    /**
+    *  Reads the serialized object from the underlying input stream.
+    *  This function wraps ObjectInputStream's  defaultReadObject() function
+    *
+    *  @param objectIStrm  InputStream used to recover those objects previously serialized. 
+    */
+    private void readObject(java.io.ObjectInputStream objectIStrm)
+         throws java.io.IOException, ClassNotFoundException
+    {
+	  objectIStrm.defaultReadObject();
+    }
 
 }

@@ -15,11 +15,16 @@
 
 package com.novell.ldap;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 import java.util.Enumeration;
 import java.net.MalformedURLException;
 
 import com.novell.ldap.client.Debug;
 import com.novell.ldap.client.ArrayEnumeration;
+import com.novell.ldap.util.LDAPXMLHandler;
+import com.novell.ldap.util.SAXEventMultiplexer;
 
  /**
  *
@@ -32,7 +37,7 @@ import com.novell.ldap.client.ArrayEnumeration;
  *
  * @see LDAPConnection#search
  */
-public class LDAPUrl implements java.lang.Cloneable
+public class LDAPUrl implements java.lang.Cloneable,java.io.Serializable
 {
     static private final int    DEFAULT_SCOPE  = LDAPConnection.SCOPE_BASE;
 
@@ -782,5 +787,81 @@ public class LDAPUrl implements java.lang.Cloneable
         return;
     }
 
+    /**
+     * This method does DSML serialization of the instance.
+     *
+     * @param oout Outputstream where the serialzed data has to be written
+     *
+     * @throws IOException if write fails on OutputStream 
+     */    
+    public void writeDSML(java.io.OutputStream oout) throws java.io.IOException
+    {
+        java.io.Writer out=new java.io.OutputStreamWriter(oout,"UTF-8");
+        out.write("<LDAPUrl>" + toString() + "</LDAPUrl>");
+		out.close();
+	}
+
+  /**
+   * This method is used to deserialize the DSML encoded representation of
+   * this class.
+   * @param input InputStream for the DSML formatted data. 
+   * @return Deserialized form of this class.
+   * @throws IOException when serialization fails.
+   */
+  public static Object readDSML(InputStream input) throws IOException {
+    SAXEventMultiplexer xmlreader = new SAXEventMultiplexer();
+    xmlreader.setLDAPXMLHandler(getXMLHandler("LDAPUrl", null));
+    return (LDAPUrl) xmlreader.parseXML(input);
+  }
+
+  /**
+   * This method return the LDAPHandler which handles the XML (DSML) tags
+   * for this class
+   * @param tagname Name of the Root tag used to represent this class.
+   * @param parenthandler Parent LDAPXMLHandler for this tag.
+   * @return LDAPXMLHandler to handle this element.
+   */
+  static LDAPXMLHandler getXMLHandler(
+    String tagname,
+    LDAPXMLHandler parenthandler) {
+    return new LDAPXMLHandler(tagname, parenthandler) {
+      protected void endElement() {
+        try {
+          LDAPUrl url = new LDAPUrl(getValue());
+          setObject(url);
+        } catch (MalformedURLException e) {
+          e.printStackTrace();
+          //ignore the Exception, and return null.
+        }
+      }
+
+    };
+
+  }
+     /**
+    *  Writes the object state to a stream in standard Default Binary format
+    *  This function wraps ObjectOutputStream' s defaultWriteObject() to write
+    *  the non-static and non-transient fields of the current class to the stream
+    *   
+    *  @param objectOStrm  The OutputSteam where the Object need to be written
+    */
+    
+    private void writeObject(java.io.ObjectOutputStream objectOStrm)
+	    throws java.io.IOException {
+		objectOStrm.defaultWriteObject();
+    }
+    
+    /**
+    *  Reads the serialized object from the underlying input stream.
+    *  This function wraps ObjectInputStream's  defaultReadObject() function
+    *
+    *  @param objectIStrm  InputStream used to recover those objects previously serialized. 
+    */
+    
+    private void readObject(java.io.ObjectInputStream objectIStrm)
+         throws java.io.IOException, ClassNotFoundException
+    {
+	  objectIStrm.defaultReadObject();
+    }
 
 }

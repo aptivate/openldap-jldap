@@ -15,6 +15,19 @@
 
 package com.novell.ldap;
 
+import com.novell.ldap.util.Base64;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+
+import com.novell.ldap.util.LDAPXMLHandler;
+import com.novell.ldap.util.SAXEventMultiplexer;
+import com.novell.ldap.util.ValueXMLhandler;
 /**
  * A single add, delete, or replace operation to an LDAPAttribute.
  *
@@ -63,7 +76,7 @@ package com.novell.ldap;
  * @see LDAPConnection#modify
  * @see LDAPAttribute
  */
-public class LDAPModification {
+public class LDAPModification implements java.io.Serializable{
 
    private int op;
    private LDAPAttribute attr;
@@ -150,4 +163,190 @@ public class LDAPModification {
    {
       return op;
    }
+   
+    void newLine(int indentTabs,java.io.Writer out) throws java.io.IOException
+    {
+        String tabString = "    ";    
+        
+        out.write("\n");
+        for (int i=0; i< indentTabs; i++){
+            out.write(tabString);
+        }
+        return;
+    }
+   
+    /**
+     * This method does DSML serialization of the instance.
+     *
+     * @param oout Outputstream where the serialzed data has to be written
+     *
+     * @throws IOException if write fails on OutputStream 
+     */    
+    public void writeDSML(java.io.OutputStream oout) throws java.io.IOException
+    {
+        java.io.Writer out=new java.io.OutputStreamWriter(oout,"UTF-8");
+        out.write("<modification name=\"");
+        out.write(attr.getName());
+        out.write("\" operation=\"");
+        switch(getOp())
+        {
+            case LDAPModification.ADD:
+                out.write("add");
+                break;
+
+            case LDAPModification.DELETE:
+                out.write("delete");
+                break;
+
+            case LDAPModification.REPLACE:
+                out.write("replace");
+                break;
+        }
+                    
+        out.write("\">");
+        LDAPAttribute attr=getAttribute();
+        String values[] = attr.getStringValueArray();
+        byte bytevalues[][] = attr.getByteValueArray();
+            for(int j=0; j<values.length; j++){
+                newLine(1,out);
+                if (Base64.isValidUTF8(bytevalues[j], false)){
+                    out.write("<value>");
+                    out.write(values[j]);
+                    out.write("</value>");
+                } else {
+                    out.write("<value xsi:type=\"xsd:base64Binary\">");
+                    out.write(Base64.encode(bytevalues[j]));
+                    out.write("</value>");
+                }
+
+            }
+        newLine(0,out);
+        out.write("</modification>");
+        out.close();
+    }
+	/**
+	* This method is used to deserialize the DSML encoded representation of
+	* this class.
+	* @param input InputStream for the DSML formatted data. 
+	* @return Deserialized form of this class.
+	* @throws IOException when serialization fails.
+	*/    
+	public static Object readDSML(InputStream input)throws IOException    
+		 {
+		 SAXEventMultiplexer xmlreader = new SAXEventMultiplexer();
+		 xmlreader.setLDAPXMLHandler(getXMLHandler("modification",null));		
+		 return (LDAPModification) xmlreader.parseXML(input);
+		 }
+		 
+	/**
+	* This method return the LDAPHandler which handles the XML (DSML) tags
+	* for this class
+	* @param tagname Name of the Root tag used to represent this class.
+	* @param parenthandler Parent LDAPXMLHandler for this tag.
+	* @return LDAPXMLHandler to handle this element.
+	*/  
+	static LDAPXMLHandler getXMLHandler(String tagname,LDAPXMLHandler parenthandler) {
+		return new LDAPXMLHandler(tagname, parenthandler) {
+			String attrName;
+			int operation;
+			List valuelist = new ArrayList();
+			protected void initHandler() {
+				//set Value Handler .
+				setchildelement(new ValueXMLhandler(this));
+			}
+			protected void endElement() {
+				LDAPAttribute attr = new LDAPAttribute(attrName);
+				if (!valuelist.isEmpty())
+				{
+					Iterator valueiterator = valuelist.iterator();
+					while (valueiterator.hasNext())
+					{
+						attr.addValue((byte[])valueiterator.next());
+					}
+				}
+				LDAPModification mod = new LDAPModification(operation,attr);
+				setObject(mod);
+			}
+			protected void addValue(String tag, Object value) {
+				if (tag.equals("value")) {
+					valuelist.add(value);
+				}
+			}
+			protected void handleAttributes(Attributes attrs)throws SAXException {
+				
+				String temp;
+				attrName = attrs.getValue("name");
+				temp = attrs.getValue("operation");
+				if (temp == null || attrName == null) {
+					throw new SAXException(
+						"Required attribute missing from tag "
+							+ ""
+							+ "<modification> (operation or name are required)");
+				} else if (temp.equals("add")) {
+					operation = LDAPModification.ADD;
+				} else if (temp.equals("replace")) {
+					operation = LDAPModification.REPLACE;
+				} else if (temp.equals("delete")) {
+					operation = LDAPModification.DELETE;
+				} else {
+					throw new SAXException(
+						"Invalid value for attribute 'operation': " + temp);
+				}
+    		
+			}
+		};
+
+	
+	}
+	/**
+	 * Returns a  string representation of this class.
+	 *
+	 * @return The string representation of this class.
+	 */
+	public String toString()
+		{
+			StringBuffer result = new StringBuffer("LDAPModification: (operation=");
+			switch(getOp())
+			{
+				case LDAPModification.ADD:
+					result.append("add");
+					break;
+
+				case LDAPModification.DELETE:
+					result.append("delete");
+					break;
+
+				case LDAPModification.REPLACE:
+					result.append("replace");
+					break;
+			}
+			result.append(",("+getAttribute()+"))");
+			return result.toString();
+		}
+
+   /**
+    *  Writes the object state to a stream in standard Default Binary format
+    *  This function wraps ObjectOutputStream' s defaultWriteObject() to write
+    *  the non-static and non-transient fields of the current class to the stream
+    *   
+    *  @param objectOStrm  The OutputSteam where the Object need to be written
+    */
+    private void writeObject(java.io.ObjectOutputStream objectOStrm)
+	    throws java.io.IOException {
+		objectOStrm.defaultWriteObject();
+    }
+    
+    /**
+    *  Reads the serialized object from the underlying input stream.
+    *  This function wraps ObjectInputStream's  defaultReadObject() function
+    *
+    *  @param objectIStrm  InputStream used to recover those objects previously serialized. 
+    */
+    private void readObject(java.io.ObjectInputStream objectIStrm)
+         throws java.io.IOException, ClassNotFoundException
+    {
+	  objectIStrm.defaultReadObject();
+    }
+    
+
 }

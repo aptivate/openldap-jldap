@@ -58,7 +58,8 @@ import java.io.EOFException;
  *     1 1 1 1 1 (> 30) multiple octet tag, more octets follow
  *</pre>
  */
-public class ASN1Identifier extends Object implements Cloneable {
+public class ASN1Identifier extends Object implements Cloneable,
+		java.io.Serializable {
 
     /**
      * Universal tag class.
@@ -281,5 +282,29 @@ public class ASN1Identifier extends Object implements Cloneable {
         } catch( CloneNotSupportedException ce) {
             throw new RuntimeException("Internal error, cannot create clone");
         }
+    }
+
+    /**
+    *  Writes the object state to a stream in standard Default Binary format
+    *  This function wraps ObjectOutputStream' s defaultWriteObject() to write
+    *  the non-static and non-transient fields of the current class to the stream
+    *   
+    *  @param objectOStrm  The OutputSteam where the Object need to be written
+    */
+    private void writeObject(java.io.ObjectOutputStream objectOStrm)
+	    throws java.io.IOException {
+		objectOStrm.defaultWriteObject();
+    }
+    
+    /**
+    *  Reads the serialized object from the underlying input stream.
+    *  This function wraps ObjectInputStream's  defaultReadObject() function
+    *
+    *  @param objectIStrm  InputStream used to recover those objects previously serialized. 
+    */
+    private void readObject(java.io.ObjectInputStream objectIStrm)
+         throws java.io.IOException, ClassNotFoundException
+    {
+	  objectIStrm.defaultReadObject();
     }
 }
