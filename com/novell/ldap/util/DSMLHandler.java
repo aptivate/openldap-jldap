@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: DSMLHandler.java,v 1.20 2002/11/12 18:42:54 $
+ * $Novell: DSMLHandler.java,v 1.21 2002/11/13 23:52:19 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -308,7 +308,7 @@ public class DSMLHandler implements ContentHandler, ErrorHandler
                     valueState = state;
                     state = tag;
                     value = new StringBuffer();
-                    String temp = attrs.getValue("type");
+                    String temp = attrs.getValue("xsi:type");
                     if ( temp != null && temp.equals("xsd:base64Binary") ){
                         isBase64 = true;
                     } else {
@@ -646,12 +646,14 @@ public class DSMLHandler implements ContentHandler, ErrorHandler
                 case MODIFICATION:
                     //store each modify in 'list'
                     {
+                        LDAPAttribute at = new LDAPAttribute(attrName);
+                        for (int i=0; i< attributeValues.size(); i++){
+                            at.addValue((byte[])attributeValues.get(i));
+                        }
+
                         state = MODIFY_REQUEST;
                         LDAPModification mod =
-                            new LDAPModification( operation,
-                                new LDAPAttribute(attrName,
-                                (String[]) attributeValues.toArray(
-                                        new String[ attributeValues.size()])));
+                                new LDAPModification(operation, at);
                         modlist.add(mod);
                     }
                     break;
@@ -894,7 +896,7 @@ public class DSMLHandler implements ContentHandler, ErrorHandler
                         attributeValues.add(
                                 Base64.decode(value, 0, value.length()));
                     } else {
-                        attributeValues.add(value.toString());
+                        attributeValues.add(value.toString().getBytes("UTF-8"));
                     }
                     break;
             }
