@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPControl.java,v 1.18 2000/11/10 16:50:02 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPControl.java,v 1.19 2000/11/27 22:39:38 cmorris Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -15,6 +15,7 @@
 
 package com.novell.ldap;
 
+import com.novell.ldap.client.*;
 import com.novell.ldap.asn1.*;
 import com.novell.ldap.rfc2251.*;
 
@@ -29,6 +30,7 @@ import com.novell.ldap.rfc2251.*;
  */
 public class LDAPControl implements Cloneable {
 
+    private static RespControlVector registeredControls = new RespControlVector(5, 5);
     private RfcControl control; // An RFC 2251 Control
 
     /**
@@ -124,6 +126,16 @@ public class LDAPControl implements Cloneable {
      */
     public static LDAPControl newInstance(byte[] data)
     {
+        /* Parse data to get the OID, criticality, controlData  */
+        
+        /* search through the registered extension list to find the response control class */
+        
+        /* If found get default 3 parameter LDAPControl constructor */
+        
+            /* Call sort control class default constructor */
+        
+        /* else return a default LDAPControl object */
+        
         throw new RuntimeException("Method LDAPControl.newInstance not implemented");
     }
 
@@ -140,7 +152,7 @@ public class LDAPControl implements Cloneable {
      */
     public static void register(String oid, Class controlClass)
     {
-        throw new RuntimeException("Method LDAPControl.register not implemented");
+        registeredControls.registerResponseControl(oid, controlClass);
     }
 
     /**
