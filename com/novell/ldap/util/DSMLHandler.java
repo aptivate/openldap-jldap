@@ -196,6 +196,10 @@ class DSMLHandler
   private boolean isResumeOnError;
   //Used to store previous state for controls
   private int prevstate = 0;
+  //Used for Extended response, Since Extended Response
+  //add ldap response state have a common code,
+  //this code helps to separate the two.
+  private boolean isextendedstate = false;
   //Search Ids
   private String searchResponseid;
 
@@ -432,7 +436,8 @@ class DSMLHandler
           }
 
           //no break, extended response , extendeds generic response.
-
+          isextendedstate = true;
+          
         case LDAP_RESPONSE :
           //Process Generic Ldap Response.
           if (tag == RESULT_CODE) {
@@ -1005,6 +1010,7 @@ class DSMLHandler
           isBase64 = false;
           break;
         case EXTENDED_RESPONSE :
+        	isextendedstate = false;
           //queue up x-operation
 
           if (controls != null && controls.size() > 0) {
@@ -1091,7 +1097,11 @@ class DSMLHandler
         case ERROR_MESSAGE :
 
           errorMessage = new String(value.toString().getBytes("UTF-8"));
-          state = LDAP_RESPONSE;
+          if (!isextendedstate) {
+              state = LDAP_RESPONSE;
+          } else {
+              state = EXTENDED_RESPONSE;
+          }
           break;
         case SEARCH_REQUEST :
           //queue up search
