@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConstraints.java,v 1.19 2001/04/18 15:59:26 vtag Exp $
+ * $Novell: /ldap/src/jldap/org/ietf/ldap/LDAPConstraints.java,v 1.1 2001/06/26 15:48:42 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -318,10 +318,7 @@ public class LDAPConstraints
      */
     public void setClientControls(LDAPControl control)
     {
-        if( control == null) {
-            cons.setClientControls( (com.novell.ldap.LDAPControl[])null);
-        }
-        cons.setClientControls( control.getWrappedObject());
+        cons.setClientControls( control);
         return;
     }
 
@@ -332,16 +329,7 @@ public class LDAPConstraints
      */
     public void setClientControls(LDAPControl[] controls)
     {
-        if( controls == null) {
-            cons.setClientControls( (com.novell.ldap.LDAPControl[])null);
-            return;
-        }
-        com.novell.ldap.LDAPControl[] novellControls = 
-                    new com.novell.ldap.LDAPControl[controls.length];
-        for( int i=0; i < controls.length; i++) {
-            novellControls[i] = controls[i].getWrappedObject();
-        }
-        cons.setClientControls( novellControls);
+        cons.setClientControls( controls);
         return;
     }
 
@@ -352,10 +340,7 @@ public class LDAPConstraints
      */
     public void setServerControls(LDAPControl control)
     {
-        if( control == null) {
-            cons.setClientControls( (com.novell.ldap.LDAPControl[])null);
-        }
-        cons.setServerControls( control.getWrappedObject());
+        cons.setServerControls( control);
         return;
     }
 
@@ -366,16 +351,7 @@ public class LDAPConstraints
      */
     public void setServerControls(LDAPControl[] controls)
     {
-        if( controls == null) {
-            cons.setServerControls( (com.novell.ldap.LDAPControl[])null);
-            return;
-        }
-        com.novell.ldap.LDAPControl[] novellControls = 
-                    new com.novell.ldap.LDAPControl[controls.length];
-        for( int i=0; i < controls.length; i++) {
-            novellControls[i] = controls[i].getWrappedObject();
-        }
-        cons.setServerControls( novellControls);
+        cons.setServerControls( controls);
         return;
     }
 }
