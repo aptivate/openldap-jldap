@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPCompareAttrNames.java,v 1.13 2000/11/27 22:45:52 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPCompareAttrNames.java,v 1.14 2000/11/29 21:00:51 cmorris Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -161,23 +161,37 @@ public class LDAPCompareAttrNames implements LDAPEntryComparator {
     * @return True if entry1 is greater than enter2; otherwise, false.
     */
    public boolean isGreater (LDAPEntry entry1, LDAPEntry entry2) {
+      LDAPAttribute one, two;
       String[] first;   //these are arrays because of multivalued attributes, which are ignored.
       String[] second;
       int compare,i=0;
 
       //throw new RuntimeException("isGreater is not implemented yet");
       do {//while first and second are equal
-         first = entry1.getAttribute(sortByNames[i]).getStringValueArray();
-         second= entry2.getAttribute(sortByNames[i]).getStringValueArray();
-         if (location == null){
-            compare = first[0].compareTo(second[0]);           
-         }//We could also use the other multivalues attributes to break ties and such.
-         else{
-            throw new RuntimeException("Currently supports only English local (null)");
+         one = entry1.getAttribute(sortByNames[i]);
+         two = entry2.getAttribute(sortByNames[i]);
+         if ((one != null) && (two != null)){
+           first = one.getStringValueArray();
+           second= two.getStringValueArray();
+           if (location == null){
+              compare = first[0].compareToIgnoreCase(second[0]);
+           }//We could also use the other multivalued attributes to break ties and such.
+           else{
+              throw new RuntimeException("Currently supports only English local (null)");
+           }
          }
+         else //one of the entries was null
+         {
+            if (one != null)
+              compare = -1;   //one is greater than two
+            else if (two != null)
+              compare = 1;    //one is lesser than two
+            else
+              compare = 0;  //tie - break it with the next attribute name
+         }
+
          i++;
       } while ((compare == 0) && (i < sortByNames.length));
-
 
       if (compare > 0){
          return sortAscending[i-1]; //if we sort up then entry1 is greater otherwise it is lesser
@@ -185,8 +199,8 @@ public class LDAPCompareAttrNames implements LDAPEntryComparator {
       else if (compare < 0){
          return !sortAscending[i-1];//if we sort up then entry1 is lesser otherwise it is greater
       }
-      else return true; //trivial ordering
-      
+      else return false; //trivial ordering
+
    }
 
 
