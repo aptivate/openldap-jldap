@@ -130,7 +130,7 @@ public class DSMLReader implements LDAPReader {
 
         try {
             SAXParserFactory spf = SAXParserFactory.newInstance();
-            //spf.setNamespaceAware(true);
+            spf.setNamespaceAware(true);
             //spf.setValidating(true);
 
             XMLReader parser = null;

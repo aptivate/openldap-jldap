@@ -56,14 +56,15 @@ class DSMLHandler implements ContentHandler, ErrorHandler
     private static final int FILTER = 15;           //<filter>
     private static final int SUBSTRINGS = 16;       //<substrings>
     private static final int FINAL = 17;            //<final>
+    private static final int PRESENT = 18;          //<present>
 
     /* miscelaneous tags :*/
-    private static final int ADD_ATTRIBUTE = 18;    //<attr>
-    private static final int MODIFICATION = 19;     //<modification>
-    private static final int X_NAME = 20;           //<requestName>
-    private static final int X_VALUE = 21;          //<requestValue>
+    private static final int ADD_ATTRIBUTE = 19;    //<attr>
+    private static final int MODIFICATION = 20;     //<modification>
+    private static final int X_NAME = 21;           //<requestName>
+    private static final int X_VALUE = 22;          //<requestValue>
 
-    private static final int BATCH_RESPONSE= 22;    //<batchResponse>
+    private static final int BATCH_RESPONSE= 23;    //<batchResponse>
     /* The folling are possible states from the BatchResponse state
         .... SearchResponse ...*/
 
@@ -72,7 +73,7 @@ class DSMLHandler implements ContentHandler, ErrorHandler
     private static final java.util.HashMap requestTags;
 
     static {  //Initialize requestTags
-        requestTags = new java.util.HashMap(23, 9999);
+        requestTags = new java.util.HashMap(24, 9999);
         //High load factor means optimized for lookup time
         requestTags.put("batchRequest", new Integer(BATCH_REQUEST));
         requestTags.put("authRequest",  new Integer(AUTH_REQUEST));
@@ -95,15 +96,16 @@ class DSMLHandler implements ContentHandler, ErrorHandler
         requestTags.put("modification", new Integer(MODIFICATION));
         requestTags.put("requestName",  new Integer(X_NAME));
         requestTags.put("requestValue", new Integer(X_VALUE));
+        requestTags.put("present", new Integer(PRESENT));
     }
 
     // SAX calls this method when it encounters an element
     public void startElement(String strNamespaceURI,
-                             String strLocalName,
+                             String strSName,
                              String strQName,
                              Attributes attrs) throws SAXException
     {
-        Integer elementTag = (Integer)requestTags.get(strQName);
+        Integer elementTag = (Integer)requestTags.get(strSName);
         if (elementTag == null){
             throw new SAXException("Element name, \"" + strQName
                                 + "\" not recognized");
@@ -135,8 +137,9 @@ class DSMLHandler implements ContentHandler, ErrorHandler
                 if (tag == ATTRIBUTES){
                     this.attributeList.clear();
                     state = tag;
-                }
-                else //I may not have to check for this if decide to validate
+                } else if (tag == FILTER){
+                    state = FILTER;
+                } else //I may not have to check for this if decide to validate
                     throw new SAXException("incomplete searchRequest tag");
 
                 break;
@@ -382,11 +385,11 @@ class DSMLHandler implements ContentHandler, ErrorHandler
 
     // SAX calls this method when the end-tag for an element is encountered
     public void endElement(String strNamespaceURI,
-                           String strLocalName,
+                           String strSName,
                            String strQName) throws SAXException
     {
 
-        Integer elementTag = (Integer)requestTags.get(strQName);
+        Integer elementTag = (Integer)requestTags.get(strSName);
         if (elementTag == null){
             throw new SAXException("Element name, \"" + strQName
                                 + "\" not recognized");
