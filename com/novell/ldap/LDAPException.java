@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPException.java,v 1.22 2001/03/01 00:29:50 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPException.java,v 1.23 2001/03/05 17:12:57 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -1110,17 +1110,17 @@ public class LDAPException extends Exception
    }
 
    /**
-    * Returns the error message, if this message is available (that is, if
-    * this message was set). If the message was not set, this method returns
-    * null.
+    * Returns the error message from the LDAP server, if this message is
+    * available (that is, if this message was set). If the message was not set,
+    * this method returns null.
     *
     * @return The error message or null if the message was not set.
     *
     */
-   public String getLDAPErrorMessage()
-   {
-      return super.getMessage();
-   }
+    public String getLDAPErrorMessage()
+    {
+        return serverMessage;
+    }
 
     /**
      * Returns the lower level Exception which caused the failure, if any.
@@ -1132,16 +1132,18 @@ public class LDAPException extends Exception
         return rootException;
     }
 
-   /**
-    *    Returns the message stored in LDAPExceptionMessageResource + locale
-    *    using messageOrKey and arguments passed into the constructor.  If no
-    *    string exists in the resource then this returns the string stored in
-    *    message.
-    *
-    *    @param locale    The Locale that should be used to pull message strings
-    *            	  out of LDAPExceptionMessageResource
-    */
-    public String getLDAPErrorMessage(Locale locale)
+
+  /**
+   *    Returns the message stored in LDAPExceptionMessageResource for the
+   *    specified locale using messageOrKey and argments passed into the
+   *    constructor.  If no string exists in the resource then this returns
+   *    the string stored in message.  (This method is identical to
+   *    getLDAPErrorMessage(Locale locale).)
+   *
+   *    @param locale    The Locale that should be used to pull message strings
+   *                     out of LDAPExceptionMessageResource.
+   */
+    public String getLocalizedMessage(Locale locale)
     {
       String pattern;
       ResourceBundle Messages =  ResourceBundle.getBundle(
@@ -1160,21 +1162,6 @@ public class LDAPException extends Exception
         pattern = mf.format(arguments);
       }
       return pattern;
-    }
-
-  /**
-   *    Returns the message stored in LDAPExceptionMessageResource for the
-   *    specified locale using messageOrKey and argments passed into the
-   *    constructor.  If no string exists in the resource then this returns
-   *    the string stored in message.  (This method is identical to
-   *    getLDAPErrorMessage(Locale locale).)
-   *
-   *    @param locale    The Locale that should be used to pull message strings
-   *                     out of LDAPExceptionMessageResource.
-   */
-    public String getLocalizedMessage(Locale locale)
-    {
-      return getLDAPErrorMessage(locale);
     }
 
 
