@@ -230,32 +230,33 @@ public class LDAPUrl {
     */
     public static String encode(String toEncode) {
       StringBuffer buffer = new StringBuffer(toEncode.length()); //empty but initial capicity of 'length'
-
+      String temp;
       char currChar;
       for(int i = 0; i < toEncode.length(); i++){
          currChar = toEncode.charAt(i);
-         if //all chars with no corresponding graphic US-ASCII
-            (((int)currChar < 0x1F) || ((int)currChar == 0x7F) ||
-             ((int)currChar > 0x80 && (int)currChar <0xFF)){
-               buffer.append("%"+Integer.toHexString((int)currChar));
-         }
-         if (//Unsafe chars
-            ((currChar == '<') || (currChar == '>') || (currChar == '\"') ||
-             (currChar == '#') || (currChar == '%') || (currChar == '{') ||
-             (currChar == '}') || (currChar == '|') || (currChar == '\\') ||
-             (currChar == '^') || (currChar == '~') || (currChar == '[') ||
-             (currChar == '\'')) ||
-              //Reserved chars
-            ((currChar == ';') || (currChar == '/') || (currChar == '?') ||
-             (currChar == ':') || (currChar == '@') || (currChar == '=') ||
-             (currChar == '&'))) {
-               buffer.append("%"+Integer.toHexString((int)currChar));
+         if (//all chars with no corresponding graphic US-ASCII:
+            (((int)currChar <= 0x1F) || ((int)currChar == 0x7F) ||
+             (((int)currChar >= 0x80)  && ((int)currChar <= 0xFF))) ||
+             //Unsafe chars:
+            ((currChar == '<' ) || (currChar == '>' ) || (currChar == '\"' ) ||
+             (currChar == '#' ) || (currChar == '%' ) || (currChar == '{' ) ||
+             (currChar == '}' ) || (currChar == '|' ) || (currChar == '\\' ) ||
+             (currChar == '^' ) || (currChar == '~' ) || (currChar == '[' ) ||
+             (currChar == '\'' )) ||
+              //Reserved chars:
+            ((currChar == ';' ) || (currChar == '/' ) || (currChar == '?' ) ||
+             (currChar == ':' ) || (currChar == '@' ) || (currChar == '=' ) ||
+             (currChar == '&' ))){
+               temp = Integer.toHexString((int)currChar);
+               if (temp.length()==1)
+                  buffer.append("%0"+temp);
+               else //if(temp.length()==2) this can only be two or one digit long.
+                  buffer.append("%"+Integer.toHexString((int)currChar));
          }
          else
             buffer.append(currChar);
       }
-
-
+      return buffer.toString();
     }
 
     /**
