@@ -1,7 +1,7 @@
 /* **************************************************************************
- * $OpenLDAP$
+ * $Novell: $
  *
- * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
+ * Copyright (C) 2001 Novell, Inc. All Rights Reserved.
  *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
@@ -29,22 +29,22 @@ import java.io.IOException;
 public class ReplicationConstants {
 
     /**
-     * A constant for the createNamingContextRequest OID.
+     * A constant for the SplitPartitionRequest OID.
      */
     public static final String CREATE_NAMING_CONTEXT_REQ    = "2.16.840.1.113719.1.27.100.3";
 
     /**
-     * A constant for the createNamingContextResponse OID.
+     * A constant for the SplitPartitionResponse OID.
      */
     public static final String CREATE_NAMING_CONTEXT_RES    = "2.16.840.1.113719.1.27.100.4";
 
     /**
-     * A constant for the mergeNamingContextRequest OID.
+     * A constant for the mergePartitionRequest OID.
      */
     public static final String MERGE_NAMING_CONTEXT_REQ     = "2.16.840.1.113719.1.27.100.5";
 
     /**
-     * A constant for the mergeNamingContextResponse OID.
+     * A constant for the mergePartitionResponse OID.
      */
     public static final String MERGE_NAMING_CONTEXT_RES     = "2.16.840.1.113719.1.27.100.6";
 
@@ -79,12 +79,12 @@ public class ReplicationConstants {
     public static final String DELETE_REPLICA_RES           = "2.16.840.1.113719.1.27.100.12";
 
     /**
-     * A constant for the namingContextEntryCountRequest OID.
+     * A constant for the partitionEntryCountRequest OID.
      */
     public static final String NAMING_CONTEXT_COUNT_REQ     = "2.16.840.1.113719.1.27.100.13";
 
     /**
-     * A constant for the namingContextEntryCountResponse OID.
+     * A constant for the partitionEntryCountResponse OID.
      */
     public static final String NAMING_CONTEXT_COUNT_RES     = "2.16.840.1.113719.1.27.100.14";
 
@@ -139,12 +139,12 @@ public class ReplicationConstants {
     public static final String SEND_ALL_UPDATES_RES         = "2.16.840.1.113719.1.27.100.24";
 
     /**
-     * A constant for the requestNamingContextSyncRequest OID.
+     * A constant for the requestPartitionSyncRequest OID.
      */
     public static final String NAMING_CONTEXT_SYNC_REQ      = "2.16.840.1.113719.1.27.100.25";
 
     /**
-     * A constant for the requestNamingContextSyncResponse OID.
+     * A constant for the requestPartitionSyncResponse OID.
      */
     public static final String NAMING_CONTEXT_SYNC_RES      = "2.16.840.1.113719.1.27.100.26";
 
@@ -159,12 +159,12 @@ public class ReplicationConstants {
     public static final String SCHEMA_SYNC_RES              = "2.16.840.1.113719.1.27.100.28";
 
     /**
-     * A constant for the abortNamingContextOperationRequest OID.
+     * A constant for the abortPartitionOperationRequest OID.
      */
     public static final String ABORT_NAMING_CONTEXT_OP_REQ  = "2.16.840.1.113719.1.27.100.29";
 
     /**
-     * A constant for the abortNamingContextOperationResponse OID.
+     * A constant for the abortPartitionOperationResponse OID.
      */
     public static final String ABORT_NAMING_CONTEXT_OP_RES  = "2.16.840.1.113719.1.27.100.30";
 
@@ -209,22 +209,22 @@ public class ReplicationConstants {
     public static final String GET_REPLICATION_FILTER_RES   = "2.16.840.1.113719.1.27.100.38";
 
     /**
-     * A constant for the createOrphanNamingContextRequest OID.
+     * A constant for the splitOrphanPartitionRequest OID.
      */
     public static final String CREATE_ORPHAN_NAMING_CONTEXT_REQ     = "2.16.840.1.113719.1.27.100.39";
 
     /**
-     * A constant for the createOrphanNamingContextResponse OID.
+     * A constant for the splitOrphanPartitionResponse OID.
      */
     public static final String CREATE_ORPHAN_NAMING_CONTEXT_RES     = "2.16.840.1.113719.1.27.100.40";
 
     /**
-     * A constant for the removeOrphanNamingContextRequest OID.
+     * A constant for the removeOrphanPartitionRequest OID.
      */
     public static final String REMOVE_ORPHAN_NAMING_CONTEXT_REQ     = "2.16.840.1.113719.1.27.100.41";
 
     /**
-     * A constant for the removeOrphanNamingContextResponse OID.
+     * A constant for the removeOrphanPartitionResponse OID.
      */
     public static final String REMOVE_ORPHAN_NAMING_CONTEXT_RES     = "2.16.840.1.113719.1.27.100.42";
 
@@ -291,21 +291,21 @@ public class ReplicationConstants {
 
     /**
      * A constant that specifies that all servers in a replica ring must be
-     * running for a naming context operation to proceed.
+     * running for a partition operation to proceed.
      */
     public static final int LDAP_ENSURE_SERVERS_UP = 1;
 
 
     /**
-     * Identifies this replica as the master replica of the naming context.
+     * Identifies this replica as the master replica of the partition.
      *
-     * <p>On this type of replica, entries can be modified, and naming context
+     * <p>On this type of replica, entries can be modified, and partition
      * operations can be performed.</p>
      */
     public static final int LDAP_RT_MASTER          = 0;
 
     /**
-     * Identifies this replica as a secondary replica of the naming context.
+     * Identifies this replica as a secondary replica of the partition.
      *
      * <p>On this type of replica, read and write operations can be performed,
      *  and entries can be modified.</p>
@@ -313,7 +313,7 @@ public class ReplicationConstants {
     public static final int LDAP_RT_SECONDARY       = 1;
 
     /**
-     * Identifies this replica as a read-only replica of the naming context.
+     * Identifies this replica as a read-only replica of the partition.
      *
      * <p>Only NDS synchronization processes can modified entries on this
      * replica.</p>
@@ -322,16 +322,16 @@ public class ReplicationConstants {
 
     /**
      * Identifies this replica as a subordinate reference replica of the
-     * naming context.
+     * partition.
      *
      * <p>NDS automatically adds these replicas to a server when the server
-     * does not contain replicas of all child naming contexts. Only NDS can
+     * does not contain replicas of all child partitions. Only NDS can
      * modify information on these types of replicas. </p>
      */
     public static final int LDAP_RT_SUBREF          = 3;
 
     /**
-     * Identifies this replica as a read/write replica of the naming context,
+     * Identifies this replica as a read/write replica of the partition,
      * but the replica contains sparse data.
      *
      * <p>The replica has been configured to contain only specified object types
@@ -341,7 +341,7 @@ public class ReplicationConstants {
     public static final int LDAP_RT_SPARSE_WRITE    = 4;
 
     /**
-     * Identifies this replica as a read-only replica of the naming context,
+     * Identifies this replica as a read-only replica of the partition,
      * but the replica contains sparse data.
      *
      * <p>The replica has been configured to contain only specified object types
@@ -372,7 +372,7 @@ public class ReplicationConstants {
 
     /**
      * Indicates that the replica is locked. The move operation uses this state
-     * to lock the parent naming context of the child naming context that is moving.
+     * to lock the parent partition of the child partition that is moving.
      */
     public static final int LDAP_RS_LOCKED          = 3;
 
@@ -398,14 +398,14 @@ public class ReplicationConstants {
     public static final int LDAP_RS_BEGIN_ADD       = 8;
 
     /**
-     * Indicates that a naming context is receiving a new master replica.
+     * Indicates that a partition is receiving a new master replica.
      *
      * <p>The replica that will be the new master replica is set to this state.</p>
      */
     public static final int LDAP_RS_MASTER_START    = 11;
 
     /**
-     * Indicates that a naming context has a new master replica.
+     * Indicates that a partition has a new master replica.
      *
      * <p>When the new master is set to this state, NDS knows that the replica is
      * now the master and changes its replica type to master and the old master to
@@ -414,34 +414,34 @@ public class ReplicationConstants {
     public static final int LDAP_RS_MASTER_DONE     = 12;
 
     /**
-     * Indicates that the naming context is going to split into two naming contexts.
+     * Indicates that the partition is going to split into two partitions.
      *
-     * <p>In this state, other replicas of the naming context are informed of the
+     * <p>In this state, other replicas of the partition are informed of the
      * pending split.</p>
      */
     public static final int LDAP_RS_SS_0            = 48;   // Replica splitting 0
 
     /**
-     * Indicates that that the split naming context operation has started.
+     * Indicates that that the split partition operation has started.
      *
      * <p>When the split is finished, the state will change to RS_ON.</p>
      */
     public static final int LDAP_RS_SS_1            = 49;   // Replica splitting 1
 
     /**
-     * Indicates that that two naming contexts are in the process of joining
-     * into one naming context.
+     * Indicates that that two partitions are in the process of joining
+     * into one partition.
      *
      * <p>In this state, the replicas that are affected are informed of the join
-     * operation. The master replica of the parent and child naming contexts are
+     * operation. The master replica of the parent and child partitions are
      * first set to this state and then all the replicas of the parent and child.
      * New replicas are added where needed.</p>
      */
     public static final int LDAP_RS_JS_0            = 64;   // Replica joining 0
 
     /**
-     * Indicates that that two naming contexts are in the process of joining
-     * into one naming context.
+     * Indicates that that two partitions are in the process of joining
+     * into one partition.
      *
      * <p>This state indicates that the join operation is waiting for the new
      * replicas to synchronize and move to the RS_ON state.</p>
@@ -449,8 +449,8 @@ public class ReplicationConstants {
     public static final int LDAP_RS_JS_1            = 65;   // Replica joining 1
 
     /**
-     * Indicates that that two naming contexts are in the process of joining
-     * into one naming context.
+     * Indicates that that two partitions are in the process of joining
+     * into one partition.
      *
      * <p>This state indicates that all the new replicas are in the RS_ON state
      * and that the rest of the work can be completed.</p>
@@ -467,7 +467,7 @@ public class ReplicationConstants {
     public static final int LDAP_DS_FLAG_BUSY       = 0x0001;
 
     /**
-     * Indicates that this naming context is on the DNS federation boundary.
+     * Indicates that this partition is on the DNS federation boundary.
      * This flag is only set on DNS trees.
      */
     public static final int LDAP_DS_FLAG_BOUNDARY   = 0x0002;
