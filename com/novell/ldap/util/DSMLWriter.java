@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: DSMLWriter.java,v 1.15 2002/11/04 19:01:46 $
+ * $Novell: DSMLWriter.java,v 1.16 2002/11/04 19:20:31 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -260,9 +260,33 @@ public class DSMLWriter implements LDAPWriter {
 
     private void writeResult(LDAPResponse result, int indent) throws IOException {
         /* controls: */
-        //LDAPControl[] controls = result.getControls();
+        LDAPControl[] controls = result.getControls();
+        if (controls != null){
+            for(int i=0; i<controls.length; i++){
+                newLine(indent);
+                out.write("<control numericOID=\"");
+                out.write(controls[i].getID());
+                out.write("\" criticality=\""+controls[i].isCritical()+ "\" ");
+
+                byte value[] = controls[i].getValue();
+                if (value == null){
+                    out.write("/ >");
+                } else {
+                    out.write("xsi:type=\"base64Binary\">");
+                    out.write(Base64.encode(value));
+                    out.write("</control>");
+                }
+            }
+        }
 
         /* referal: */
+        String referrals[] = result.getReferrals();
+        if (referrals != null){
+            for(int i=0; i<referrals.length; i++){
+                newLine(indent);
+                out.write("<referral>"+referrals[i]+"</referral>");
+            }
+        }
 
         /* result code: */
         newLine(indent);
@@ -299,6 +323,7 @@ public class DSMLWriter implements LDAPWriter {
         newLine(2);
         out.write("</searchResultReference>");
     }
+
     private void writeSearchResponse(LDAPSearchResult result)
             throws IOException
     {

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: DOMWriter.java,v 1.5 2002/11/04 19:01:46 $
+ * $Novell: DOMWriter.java,v 1.6 2002/11/04 19:20:31 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -102,7 +102,6 @@ public class DOMWriter implements LDAPWriter
             root.appendChild( message2Element(message) );
         }
         if (message.getType()== LDAPMessage.SEARCH_RESULT){
-            root.appendChild(searchNode);
             state = RESPONSE_BATCH;
             searchNode = null;
         }
@@ -148,12 +147,23 @@ public class DOMWriter implements LDAPWriter
                     attribute.setAttribute("name", attr.getName());
 
                     String values[] = attr.getStringValueArray();
+                    byte bytevalues[][] = attr.getByteValueArray();
                     for(int i=0; i<values.length; i++){
                         Element value = doc.createElement("value");
-                        value.appendChild(doc.createTextNode(values[i]));
+                        if (Base64.isValidUTF8(bytevalues[i], false)){
+                            value.appendChild(doc.createTextNode(values[i]));
+                        } else {
+                            value.setAttribute("xsi:type", "base64Binary");
+                            value.appendChild(doc.createTextNode(
+                                    Base64.encode(bytevalues[i])));
+                        }
                         attribute.appendChild(value);
                     }
                     e.appendChild(attribute);
+                }
+                LDAPControl controls[] = message.getControls();
+                if (controls!=null){
+                    writeControls(e, controls);
                 }
                 break;
             case LDAPMessage.SEARCH_RESULT_REFERENCE:
@@ -204,8 +214,7 @@ public class DOMWriter implements LDAPWriter
                 if (value != null){
                     resp = doc.createElement("response");
                     resp.setAttribute("xsi:type", "base64Binary");
-                    text = doc.createTextNode(Base64.encode(value));
-                    resp.appendChild(text);
+                    resp.appendChild(doc.createTextNode(Base64.encode(value)));
                     e.appendChild(resp);
                 }
                 break;
@@ -224,16 +233,33 @@ public class DOMWriter implements LDAPWriter
      * @param response  Response message to write.
      */
     private void writeResult(Element e, LDAPResponse response){
-        LDAPResponse r = (LDAPResponse) response;
 
+        /* controls: */
+        LDAPControl controls[] = response.getControls();
+        if (controls != null){
+            writeControls(e, controls);
+        }
+
+        /* Referral */
+        String urls[] = response.getReferrals();
+        if (urls != null){
+            for (int i=0; i<urls.length; i++){
+                Element referral = doc.createElement("referral");
+                Text text = doc.createTextNode(urls[i]);
+                referral.appendChild(text);
+                e.appendChild(referral);
+            }
+        }
+
+        /* result code: */
         Element resultCode = doc.createElement("resultCode");
-        int result = r.getResultCode();
+        int result = response.getResultCode();
         resultCode.setAttribute("code",  result + "");
         resultCode.setAttribute("descr", LDAPException.resultCodeToString(result));
 
         e.appendChild(resultCode);
         /* Server Message: */
-        String temp = r.getErrorMessage();
+        String temp = response.getErrorMessage();
         if (temp != null && temp.length() > 0){
             Element err = doc.createElement("errorMessage");
             Text errorMessage = doc.createTextNode(temp);
@@ -242,9 +268,29 @@ public class DOMWriter implements LDAPWriter
         }
 
         /* MatchedDN */
-        temp = r.getMatchedDN();
+        temp = response.getMatchedDN();
         if (temp != null && temp.length() > 0){
             e.setAttribute("matchedDN", temp);
+        }
+
+    }
+
+    private void writeControls(Element e, LDAPControl[] controls) {
+        for (int i=0; i< controls.length; i++){
+            Element el = doc.createElement("control");
+            el.setAttribute("NumericOID", controls[i].getID());
+            el.setAttribute("criticality", Boolean.toString(
+                    controls[i].isCritical()));
+
+            byte byteValue[] = controls[i].getValue();
+            if (byteValue!= null){
+                Element value = doc.createElement("controlValue");
+                value.setAttribute("xsi:type", "base64Binary");
+                Text text = doc.createTextNode( Base64.encode(byteValue));
+                value.appendChild(text);
+                el.appendChild(value);
+            }
+            e.appendChild( el );
         }
     }
 
@@ -316,6 +362,7 @@ public class DOMWriter implements LDAPWriter
         {
             searchNode = doc.createElement("searchResponse");
             searchNode.setAttribute("requestID", ""+message.getMessageID());
+            root.appendChild(searchNode);
             state = SEARCH_RESPONSE;
         }
 
