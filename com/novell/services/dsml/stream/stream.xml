@@ -66,7 +66,7 @@
 
     <servlet-mapping>
         <servlet-name>streaming</servlet-name>
-        <url-pattern>/stream</url-pattern>
+        <url-pattern>/service</url-pattern>
     </servlet-mapping>
 
 </web-app>

@@ -64,7 +64,7 @@
 
     <servlet-mapping>
         <servlet-name>jbroker</servlet-name>
-        <url-pattern>/dom</url-pattern>
+        <url-pattern>/service</url-pattern>
     </servlet-mapping>
 
 </web-app>
