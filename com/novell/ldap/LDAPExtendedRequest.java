@@ -6,7 +6,6 @@ import com.novell.ldap.LDAPConstraints;
 import com.novell.ldap.LDAPMessage;
 import com.novell.ldap.LDAPExtendedOperation;
 import com.novell.ldap.asn1.ASN1OctetString;
-import com.novell.ldap.client.Debug;
 import com.novell.ldap.rfc2251.RfcExtendedRequest;
 import com.novell.ldap.rfc2251.RfcLDAPOID;
 

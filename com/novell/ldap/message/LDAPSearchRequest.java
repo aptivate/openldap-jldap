@@ -4,7 +4,6 @@ package com.novell.ldap.message;
 
 import com.novell.ldap.*;
 import com.novell.ldap.asn1.*;
-import com.novell.ldap.client.Debug;
 import com.novell.ldap.rfc2251.*;
 
 /* 
@@ -27,11 +26,11 @@ import com.novell.ldap.rfc2251.*;
  */
 public class LDAPSearchRequest extends LDAPMessage {    
     /**
-     * @param String base
-     * @param int scope
-     * @param String[] attrs
-     * @param boolean typesOnly
-     * @param com.novell.ldap.LDAPSearchConstraints cons 
+     * @param base
+     * @param scope
+     * @param attrs
+     * @param typesOnly
+     * @param cons
      */
     public LDAPSearchRequest( String base,
                               int scope,

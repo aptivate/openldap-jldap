@@ -4,7 +4,6 @@ package com.novell.ldap.message;
 
 import com.novell.ldap.*;
 import com.novell.ldap.asn1.*;
-import com.novell.ldap.client.Debug;
 import com.novell.ldap.rfc2251.*;
 
 import java.util.Enumeration;
