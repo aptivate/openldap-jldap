@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.91 2001/04/18 17:09:27 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.92 2001/04/19 18:40:32 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -3337,13 +3337,13 @@ public class LDAPConnection implements Cloneable
                     // Indicate this connection created to follow referral
                     rconn.getConnection().setActiveReferral( refInfo);
                     break;
-                } catch( Exception lex) {
+                } catch( Throwable lex) {
                     if( rconn != null) {
                         try {
                             if( Debug.LDAP_DEBUG) {
                                 Debug.trace( Debug.referrals, name +
                                 "getReferralConnection, exception binding for referral" +
-                                ex.toString());
+                                lex.toString());
                             }
                             rconn.disconnect();
                             rconn = null;
@@ -3404,7 +3404,7 @@ public class LDAPConnection implements Cloneable
                             LDAPExceptionMessageResource.REFERRAL_BIND_MATCH,
                             LDAPException.CONNECT_ERROR);
                 }
-            } catch( LDAPReferralException lex) {
+            } catch( Throwable lex) {
                 if( Debug.LDAP_DEBUG) {
                     Debug.trace( Debug.referrals, name +
                                 "getReferralConnection: " +
