@@ -273,7 +273,7 @@ public class LDAPMatchingRuleUseSchema
 
   public void modify(LDAPConnection ld, LDAPSchemaElement newValue, String dn) throws LDAPException {
     if( newValue instanceof LDAPMatchingRuleUseSchema != true ){
-        throw new LDAPException("Schema element is not an LDAPMatchingRuleUseSchema object",
+        throw new LDAPException(LDAPExceptionMessageResource.NOT_A_RULEUSESHCEMA, //"Schema element is not an LDAPMatchingRuleUseSchema object",
                 LDAPException.INVALID_ATTRIBUTE_SYNTAX);
     }
 
@@ -327,6 +327,6 @@ public class LDAPMatchingRuleUseSchema
         catch( LDAPException e){
             throw e;
         }
-    }	
+    }
 
 }

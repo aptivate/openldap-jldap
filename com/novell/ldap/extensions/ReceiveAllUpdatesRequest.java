@@ -1,8 +1,8 @@
 /* **************************************************************************
- * $Id: ReceiveAllUpdatesRequest.java,v 1.11 2000/10/05 17:51:43 judy Exp $
+ * $Id: ReceiveAllUpdatesRequest.java,v 1.12 2000/10/10 19:17:31 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
- * 
+ *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
  * TO VERSION 2.0.1 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
@@ -10,14 +10,14 @@
  * IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
  * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.1 OF THE OPENLDAP
  * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
- * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY. 
+ * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
  ***************************************************************************/
-package com.novell.ldap.extensions; 
+package com.novell.ldap.extensions;
 
 import com.novell.ldap.*;
 import com.novell.ldap.asn1.*;
 import java.io.*;
- 
+
 /**
  *  Schedules a specified directory server to receive updates from another
  *  directory server for a specific replica.
@@ -33,51 +33,51 @@ import java.io.*;
  * &nbsp;&nbsp;&nbsp;&nbsp;   fromServerDN &nbsp;&nbsp;&nbsp;    LDAPDN</p>
  */
 public class ReceiveAllUpdatesRequest extends LDAPExtendedOperation {
-   
+
 /**
  *
- * Constructs an extended operation object for receiving all updates from 
+ * Constructs an extended operation object for receiving all updates from
  * another directory server for a specific replica.
  *
  * @param partitionRoot   The distinguished name of the replica
  *                        that will be updated.
  *<br><br>
- * @param toServerDN      The distinguished name of the server holding the 
+ * @param toServerDN      The distinguished name of the server holding the
  *                        replica to be updated.
- * <br><br>     
- * @param fromServerDN    The distinguished name of the server from which 
+ * <br><br>
+ * @param fromServerDN    The distinguished name of the server from which
  *                        updates are sent.
  *
- * @exception LDAPException A general exception which includes an error message 
+ * @exception LDAPException A general exception which includes an error message
  *                          and an LDAP error code.
- */   
- public ReceiveAllUpdatesRequest(String partitionRoot, String toServerDN, String fromServerDN) 
+ */
+ public ReceiveAllUpdatesRequest(String partitionRoot, String toServerDN, String fromServerDN)
                 throws LDAPException {
-        
+
         super(NamingContextConstants.RECEIVE_ALL_UPDATES_REQ, null);
-        
+
         try {
-            
+
             if ( (partitionRoot == null) || (toServerDN == null) || (fromServerDN == null) )
-                throw new LDAPException("Invalid parameter",
-                                    LDAPException.PARAM_ERROR);                           
-            
+                throw new LDAPException(LDAPExceptionMessageResource.PARAM_ERROR,
+                                    LDAPException.PARAM_ERROR);
+
             ByteArrayOutputStream encodedData = new ByteArrayOutputStream();
          LBEREncoder encoder  = new LBEREncoder();
-                                                    
+
           ASN1OctetString asn1_partitionRoot = new ASN1OctetString(partitionRoot);
           ASN1OctetString asn1_toServerDN = new ASN1OctetString(toServerDN);
           ASN1OctetString asn1_fromServerDN = new ASN1OctetString(fromServerDN);
-            
+
             asn1_partitionRoot.encode(encoder, encodedData);
             asn1_toServerDN.encode(encoder, encodedData);
             asn1_fromServerDN.encode(encoder, encodedData);
-            
+
             setValue(encodedData.toByteArray());
-            
+
         }
       catch(IOException ioe) {
-         throw new LDAPException("Encoding Error",
+         throw new LDAPException(LDAPExceptionMessageResource.ENCODING_ERROR,
                                  LDAPException.ENCODING_ERROR);
       }
    }

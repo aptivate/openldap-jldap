@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttributeSchema.java,v 1.17 2000/12/04 22:59:51 bgudmundson Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttributeSchema.java,v 1.18 2000/12/09 00:19:50 bgudmundson Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -497,7 +497,7 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
 
   public void modify(LDAPConnection ld, LDAPSchemaElement newValue, String dn) throws LDAPException {
     if( newValue instanceof LDAPAttributeSchema != true ){
-        throw new LDAPException("Schema element is not an LDAPAttributeSchema object",
+        throw new LDAPException(LDAPExceptionMessageResource.NOT_AN_ATTRIBUTE, //"Schema element is not an LDAPAttributeSchema object",
                 LDAPException.INVALID_ATTRIBUTE_SYNTAX);
     }
 

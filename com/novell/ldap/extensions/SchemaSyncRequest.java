@@ -1,8 +1,8 @@
 /* **************************************************************************
- * $Id: SchemaSyncRequest.java,v 1.11 2000/10/05 17:51:43 judy Exp $
+ * $Id: SchemaSyncRequest.java,v 1.12 2000/10/10 19:17:31 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
- * 
+ *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
  * TO VERSION 2.0.1 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
@@ -10,14 +10,14 @@
  * IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
  * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.1 OF THE OPENLDAP
  * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
- * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY. 
+ * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
  ***************************************************************************/
-package com.novell.ldap.extensions; 
+package com.novell.ldap.extensions;
 
 import com.novell.ldap.*;
 import com.novell.ldap.asn1.*;
 import java.io.*;
- 
+
 /**
  *
  *  Synchronizes the schema.
@@ -32,44 +32,44 @@ import java.io.*;
  *  &nbsp;&nbsp;&nbsp;&nbsp;     delay &nbsp;&nbsp;&nbsp;           INTEGER</p>
  */
 public class SchemaSyncRequest extends LDAPExtendedOperation {
-   
+
 /**
  *  Constructs an extended operation object for synchronizing the schema.
  *
- * @param serverName     The distinguished name of the server which will start 
+ * @param serverName     The distinguished name of the server which will start
  *                       the synchronization.
  * <br><br>
- * @param delay          The time, in seconds, to delay before the synchronization 
+ * @param delay          The time, in seconds, to delay before the synchronization
  *                       should start.
  *
- * @exception LDAPException A general exception which includes an error message 
+ * @exception LDAPException A general exception which includes an error message
  *                          and an LDAP error code.
- */   
- public SchemaSyncRequest(String serverName, int delay) 
+ */
+ public SchemaSyncRequest(String serverName, int delay)
                 throws LDAPException {
-        
+
         super(NamingContextConstants.SCHEMA_SYNC_REQ, null);
-        
+
         try {
-            
+
             if (serverName == null)
-                throw new LDAPException("Invalid parameter",
+                throw new LDAPException(LDAPExceptionMessageResource.PARAM_ERROR,
                                     LDAPException.PARAM_ERROR);
-         
+
           ByteArrayOutputStream encodedData = new ByteArrayOutputStream();
          LBEREncoder encoder  = new LBEREncoder();
-                                                    
+
           ASN1OctetString asn1_serverName = new ASN1OctetString(serverName);
           ASN1Integer asn1_delay = new ASN1Integer(delay);
 
             asn1_serverName.encode(encoder, encodedData);
             asn1_delay.encode(encoder, encodedData);
-            
+
             setValue(encodedData.toByteArray());
-            
+
         }
       catch(IOException ioe) {
-         throw new LDAPException("Encoding Error",
+         throw new LDAPException(LDAPExceptionMessageResource.ENCODING_ERROR,
                                  LDAPException.ENCODING_ERROR);
       }
    }

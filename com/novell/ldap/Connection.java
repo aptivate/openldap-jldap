@@ -1,8 +1,8 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.31 2001/01/04 20:14:48 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.32 2001/01/08 19:04:30 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
- * 
+ *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
  * TO VERSION 2.0.1 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
@@ -10,9 +10,9 @@
  * IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
  * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.1 OF THE OPENLDAP
  * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
- * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY. 
+ * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
  ***************************************************************************/
- 
+
 package com.novell.ldap.client;
 
 import java.io.*;
@@ -86,7 +86,7 @@ public final class Connection implements Runnable
     private static Object nameLock = new Object(); // protect connNum
     private static int connNum = 0;
     private String name;
-    
+
     // These attributes can be retreived using the getProperty
     // method in LDAPConnection.  Future releases might require
     // these to be local variables that can be modified using
@@ -94,7 +94,7 @@ public final class Connection implements Runnable
     public static Float sdk = new Float(1.0);
     public static Float protocol = new Float(3.0);
     public static String security = "simple";
-    
+
     /**
      * Create a new Connection object
      *
@@ -141,9 +141,9 @@ public final class Connection implements Runnable
      * response to the bind is processed, or when the bind operation times out.
      * Returns when the semaphore is acquired.
      *
-     * @param msgId a value that identifies the owner of this semaphore. A 
+     * @param msgId a value that identifies the owner of this semaphore. A
      * value of zero means assign a unique semaphore value.
-     * 
+     *
      * @return the semaphore value used to acquire the lock
      */
     public int acquireBindSemaphore(int msgId)
@@ -153,11 +153,11 @@ public final class Connection implements Runnable
             if( id == 0) {
                 fakeId = ((fakeId == Integer.MIN_VALUE) ? (fakeId = -1) : --fakeId);
                 id = fakeId;
-            }    
+            }
             while( true) {
                 if( bindSemaphoreOwner == 0) {
                    // we have acquired the semahpore
-                   bindSemaphoreOwner = id; 
+                   bindSemaphoreOwner = id;
                    break;
                 } else {
                     if( bindSemaphoreOwner == id) {
@@ -299,8 +299,10 @@ public final class Connection implements Runnable
                 }
             }
         } catch(IOException ioe) {
-            throw new LDAPException("Unable to connect to server: " + host,
-                             LDAPException.CONNECT_ERROR);
+            throw new LDAPException(
+              LDAPExceptionMessageResource.CONNECT_ERROR,
+              new Object[] { host },
+              LDAPException.CONNECT_ERROR);
         }
         // Set host and port
         this.host = host;
@@ -360,7 +362,7 @@ public final class Connection implements Runnable
     {
         return destroyClone(null,0);
     }
-    
+
     /**
      *  Destroys a clone.  If the object is a clone,
      *  the connection is left untouched and a new
@@ -379,7 +381,7 @@ public final class Connection implements Runnable
         }
         Connection conn = this;
         int semId = acquireBindSemaphore();
-        
+
         if( cloneCount > 0) {
             cloneCount--;
             // This is a clone, set a new connection object.
@@ -396,7 +398,7 @@ public final class Connection implements Runnable
                         "destroyClone(" + cloneCount + ") destroy old connection");
                 }
                 shutdown("Destroy Clone", semId);
-            }    
+            }
         }
         if( host != null) {
             conn.connect( host, port, semId);
@@ -596,7 +598,7 @@ public final class Connection implements Runnable
             }
             return;
         }
-        
+
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.messages, name +
                 "shutdown: Shutting down connection - " + reason);
@@ -604,7 +606,7 @@ public final class Connection implements Runnable
         while( true ) {
             // remove messages from connection list and send abandon
             try {
-                info = (Message)messages.remove(0);         
+                info = (Message)messages.remove(0);
                 if( Debug.LDAP_DEBUG) {
                     Debug.trace( Debug.messages, name +
                         "Shutdown removed message(" + info.getMessageID() + ")");
@@ -648,7 +650,7 @@ public final class Connection implements Runnable
                 // ignore problem closing socket
             }
             socket = null;
-        }        
+        }
 
         freeBindSemaphore( semId);
         return;
@@ -658,7 +660,7 @@ public final class Connection implements Runnable
     *
     *  Sets the authentication credentials in the object
     *  and set flag indicating successful bind.
-    * 
+    *
     *
     *<br><br>
     * @param bindProps   The BindProperties object to set.
@@ -673,7 +675,7 @@ public final class Connection implements Runnable
     *
     *  Sets the authentication credentials in the object
     *  and set flag indicating successful bind.
-    * 
+    *
     *
     *<br><br>
     * @param bindProps   The BindProperties object to set.
@@ -711,7 +713,7 @@ public final class Connection implements Runnable
                 myIn = in;
                 if( myIn == null) {
                     if( Debug.LDAP_DEBUG) {
-                        Debug.trace( Debug.messages, name + 
+                        Debug.trace( Debug.messages, name +
                             "reader: thread stopping, connection shut down");
                     }
                     break;
@@ -757,33 +759,33 @@ public final class Connection implements Runnable
                             Debug.trace( Debug.messages, name +
                                 "reader: message(" + msgId +
                                 ") not accepting replies, discarding reply");
-                        }        
+                        }
                     }
                 } catch ( NoSuchFieldException ex) {
                     if( Debug.LDAP_DEBUG ) {
                         Debug.trace( Debug.messages, name +
                             "reader: message(" + msgId +
                             ") not found, discarding reply");
-                    }        
+                    }
                 }
             }
         } catch( IOException ioe) {
             if( Debug.LDAP_DEBUG ) {
                 reason = "reader: Connection lost for " + host + ":" + port + " " + ioe.toString();
                 Debug.trace( Debug.messages, name + reason);
-            }        
+            }
         } finally {
             if( Debug.LDAP_DEBUG ) {
                 Debug.trace( Debug.messages, name +
                 "reader: connection shutdown");
-            }        
+            }
             shutdown(reason, 0);
         }
         reader = null;
         if( Debug.LDAP_DEBUG ) {
             Debug.trace( Debug.messages, name +
             "reader: thread terminated");
-        }        
+        }
         return;
     }
 }

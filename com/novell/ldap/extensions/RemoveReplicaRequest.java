@@ -1,8 +1,8 @@
 /* **************************************************************************
- * $Id: RemoveReplicaRequest.java,v 1.11 2000/10/05 17:51:43 judy Exp $
+ * $Id: RemoveReplicaRequest.java,v 1.12 2000/10/10 19:17:31 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
- * 
+ *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
  * TO VERSION 2.0.1 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
@@ -10,18 +10,18 @@
  * IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
  * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.1 OF THE OPENLDAP
  * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
- * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY. 
+ * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
  ***************************************************************************/
-package com.novell.ldap.extensions; 
+package com.novell.ldap.extensions;
 
 import com.novell.ldap.*;
 import com.novell.ldap.asn1.*;
 import java.io.*;
- 
+
 /**
  *
  *  Removes a replica from the specified directory server.
- * 
+ *
  *  <p>To remove a replica from a particular server, you must create an instance
  *  of this class and then call the extendedOperation method with this
  *  object as the required LDAPExtendedOperation parameter.</p>
@@ -37,7 +37,7 @@ import java.io.*;
  *  &nbsp;&nbsp;&nbsp;&nbsp;        dn &nbsp;&nbsp;&nbsp;          LDAPDN</p>
  */
 public class RemoveReplicaRequest extends LDAPExtendedOperation {
-   
+
 /**
  * Constructs an extended operation object for removing a replica.
  *
@@ -46,29 +46,29 @@ public class RemoveReplicaRequest extends LDAPExtendedOperation {
  * <br><br>
  * @param serverDN    The distinguished name of server from which the replica
  *                    will be removed.
- * <br><br>     
- * @param flags   Determines whether all servers in the replica ring must 
+ * <br><br>
+ * @param flags   Determines whether all servers in the replica ring must
  *                be up before proceeding. When set to zero, the status of the
  *                servers is not checked. When set to LDAP_ENSURE_SERVERS_UP,
  *                all servers must be up for the operation to proceed.
  *
- * @exception LDAPException A general exception which includes an error message 
+ * @exception LDAPException A general exception which includes an error message
  *                          and an LDAP error code.
- */   
- public RemoveReplicaRequest(String dn, String serverDN, int flags) 
+ */
+ public RemoveReplicaRequest(String dn, String serverDN, int flags)
                 throws LDAPException {
-        
+
         super(NamingContextConstants.DELETE_REPLICA_REQ, null);
-        
+
         try {
-            
+
             if ( (dn == null) || (serverDN == null) )
-                throw new LDAPException("Invalid parameter",
+                throw new LDAPException(LDAPExceptionMessageResource.PARAM_ERROR,
                                     LDAPException.PARAM_ERROR);
-         
+
           ByteArrayOutputStream encodedData = new ByteArrayOutputStream();
          LBEREncoder encoder  = new LBEREncoder();
-                                     
+
           ASN1Integer asn1_flags = new ASN1Integer(flags);
           ASN1OctetString asn1_serverDN = new ASN1OctetString(serverDN);
           ASN1OctetString asn1_dn = new ASN1OctetString(dn);
@@ -76,12 +76,12 @@ public class RemoveReplicaRequest extends LDAPExtendedOperation {
             asn1_flags.encode(encoder, encodedData);
             asn1_serverDN.encode(encoder, encodedData);
             asn1_dn.encode(encoder, encodedData);
-            
+
             setValue(encodedData.toByteArray());
-            
+
         }
       catch(IOException ioe) {
-         throw new LDAPException("Encoding Error",
+         throw new LDAPException(LDAPExceptionMessageResource.ENCODING_ERROR,
                                  LDAPException.ENCODING_ERROR);
       }
    }

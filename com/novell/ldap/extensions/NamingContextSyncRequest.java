@@ -1,8 +1,8 @@
 /* **************************************************************************
- * $Id: NamingContextSyncRequest.java,v 1.11 2000/10/05 17:51:42 judy Exp $
+ * $Id: NamingContextSyncRequest.java,v 1.12 2000/10/10 19:17:31 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
- * 
+ *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
  * TO VERSION 2.0.1 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
@@ -10,14 +10,14 @@
  * IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
  * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.1 OF THE OPENLDAP
  * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
- * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY. 
+ * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
  ***************************************************************************/
-package com.novell.ldap.extensions; 
+package com.novell.ldap.extensions;
 
 import com.novell.ldap.*;
 import com.novell.ldap.asn1.*;
 import java.io.*;
- 
+
 /**
  *
  *  Synchronizes all replicas of a naming context.
@@ -33,51 +33,51 @@ import java.io.*;
  *  &nbsp;&nbsp;&nbsp;&nbsp; delay&nbsp;&nbsp;&nbsp;           INTEGER</p>
  */
 public class NamingContextSyncRequest extends LDAPExtendedOperation {
-   
+
 /**
  *
- *   Constructs an extended operation object for synchronizing the replicas 
+ *   Constructs an extended operation object for synchronizing the replicas
  *   of a naming context.
  *
- * @param serverName     The distinquished name of server containing the 
+ * @param serverName     The distinquished name of server containing the
  *                       naming context.
  * <br><br>
  * @param partitionRoot  The distinguished name of the naming context
  *                       to synchronize.
  *<br><br>
- * @param delay          The time, in seconds, to delay before the synchronization 
+ * @param delay          The time, in seconds, to delay before the synchronization
  *                       should start.
  *
- * @exception LDAPException A general exception which includes an error message 
+ * @exception LDAPException A general exception which includes an error message
  *                          and an LDAP error code.
- */   
- public NamingContextSyncRequest(String serverName, String partitionRoot, int delay) 
+ */
+ public NamingContextSyncRequest(String serverName, String partitionRoot, int delay)
                 throws LDAPException {
-        
+
         super(NamingContextConstants.NAMING_CONTEXT_SYNC_REQ, null);
-        
+
         try {
-            
+
             if ( (serverName == null) || (partitionRoot == null) )
-                throw new LDAPException("Invalid parameter",
+                throw new LDAPException(LDAPExceptionMessageResource.PARAM_ERROR,
                                     LDAPException.PARAM_ERROR);
-         
+
          ByteArrayOutputStream encodedData = new ByteArrayOutputStream();
          LBEREncoder encoder  = new LBEREncoder();
-                                                    
+
           ASN1OctetString asn1_serverName = new ASN1OctetString(serverName);
           ASN1OctetString asn1_partitionRoot = new ASN1OctetString(partitionRoot);
           ASN1Integer asn1_delay = new ASN1Integer(delay);
-            
+
             asn1_serverName.encode(encoder, encodedData);
             asn1_partitionRoot.encode(encoder, encodedData);
             asn1_delay.encode(encoder, encodedData);
-            
+
             setValue(encodedData.toByteArray());
-             
+
         }
       catch(IOException ioe) {
-         throw new LDAPException("Encoding Error",
+         throw new LDAPException(LDAPExceptionMessageResource.ENCODING_ERROR,
                                  LDAPException.ENCODING_ERROR);
       }
    }

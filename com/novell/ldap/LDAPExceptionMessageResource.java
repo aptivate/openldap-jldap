@@ -7,9 +7,9 @@ public class LDAPExceptionMessageResource extends java.util.ListResourceBundle {
   //static strings to aide lookup and guarentee accuracy:
   //DO NOT include these strings in other Locales
   public final static String CONNECT_ERROR        = "CONNECT_ERROR";
-  public final static String DECODE_ERROR         = "DECODE_ERROR";
-  public final static String PARAMETER_ERROR      = "PARAMETER_ERROR";
-  public final static String ENCODE_ERROR         = "ENCODE_ERROR";
+  public final static String PARAM_ERROR          = "PARAM_ERROR";
+  public final static String DECODING_ERROR       = "DECODING_ERROR";
+  public final static String ENCODING_ERROR       = "ENCODING_ERROR";
   public final static String INVALID_ESCAPE       = "INVALID_ESCAPE";
   public final static String UNEXPECTED_END       = "UNEXPECTED_END";
   public final static String MISSING_LEFT_PAREN   = "MISSING_LEFT_PAREN";
@@ -27,9 +27,9 @@ public class LDAPExceptionMessageResource extends java.util.ListResourceBundle {
   static final Object[][] contents = {
   // LOCALIZE THIS
       {"CONNECT_ERROR", "Unable to connect to server: {0}"},
-      {"DECODE_ERROR", "Error Decoding responseValue"},
-      {"PARAMETER_ERROR", "Invalid parameter"},
-      {"ENCODE_ERROR","Encoding Error"},
+      {"PARAM_ERROR", "Invalid parameter"},
+      {"DECODING_ERROR", "Error Decoding responseValue"},
+      {"ENCODING_ERROR","Encoding Error"},
       {"INVALID_ESCAPE", "Invalid escape value" },
       {"UNEXPECTED_END", "Unexpected end of filter"},
       {"MISSING_LEFT_PAREN", "Missing left paren"},
@@ -39,7 +39,7 @@ public class LDAPExceptionMessageResource extends java.util.ListResourceBundle {
       {"UNEQUAL_LENGTHS","Length of attribute Name array does not equal length of Flags array"},
       {"COMMUNICATE_ERROR","Communication error: {0}"},
       {"MAXHOPS_EXCEEDED","Max hops exceeded"},
-      {"IMPROPER_REFERRAL","Referral doesn't make sense for command"},
+      {"IMPROPER_REFERRAL","Referral doesnt make sense for command, {0}"},
       {"NOT_A_RULESCHEMA","Schema element is not an LDAPMatchingRuleSchema object"},
       {"NOT_A_RULEUSESHCEMA","Schema element is not an LDAPMatchingRuleUseSchema object"}
   // END OF MATERIAL TO LOCALIZE

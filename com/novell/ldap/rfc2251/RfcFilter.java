@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/rfc2251/RfcFilter.java,v 1.17 2000/11/09 23:50:55 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/rfc2251/RfcFilter.java,v 1.18 2000/11/10 16:50:08 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  ***************************************************************************/
@@ -11,6 +11,7 @@ import java.io.*;
 
 import com.novell.ldap.asn1.*;
 import com.novell.ldap.LDAPException;
+import com.novell.ldap.LDAPExceptionMessageResource;
 
 /**
  *       Filter ::= CHOICE {
@@ -135,7 +136,7 @@ public class RfcFilter extends ASN1Choice {
       ft.getLeftParen();
 
       ASN1Tagged filter = parseFilterComp();
-      
+
       ft.getRightParen();
 
       return filter;
@@ -342,7 +343,7 @@ public class RfcFilter extends ASN1Choice {
                   sb.append(ch);
                }
                else {
-                  throw new LDAPException("Invalid escape value",
+                  throw new LDAPException(LDAPExceptionMessageResource.INVALID_ESCAPE, //"Invalid escape value",
                                           LDAPException.FILTER_ERROR);
                }
             }
@@ -411,11 +412,11 @@ class FilterTokenizer {
       throws LDAPException
    {
       if(i >= len)
-         throw new LDAPException("Unexpected end of filter",
+         throw new LDAPException(LDAPExceptionMessageResource.UNEXPECTED_END, //"Unexpected end of filter",
                                  LDAPException.FILTER_ERROR);
 
       if(filter.charAt(i++) != '(')
-         throw new LDAPException("Missing left paren",
+         throw new LDAPException(LDAPExceptionMessageResource.MISSING_LEFT_PAREN, //"Missing left paren",
                                  LDAPException.FILTER_ERROR);
    }
 
@@ -427,11 +428,11 @@ class FilterTokenizer {
       throws LDAPException
    {
       if(i >= len)
-         throw new LDAPException("Unexpected end of filter",
+         throw new LDAPException(LDAPExceptionMessageResource.UNEXPECTED_END, //"Unexpected end of filter",
                                  LDAPException.FILTER_ERROR);
 
       if(filter.charAt(i++) != ')')
-         throw new LDAPException("Missing right paren",
+         throw new LDAPException(LDAPExceptionMessageResource.MISSING_RIGHT_PAREN, //"Missing right paren",
                                  LDAPException.FILTER_ERROR);
    }
 
@@ -446,7 +447,7 @@ class FilterTokenizer {
       throws LDAPException
    {
       if(i >= len)
-         throw new LDAPException("Unexpected end of filter",
+         throw new LDAPException(LDAPExceptionMessageResource.UNEXPECTED_END, //"Unexpected end of filter",
                                  LDAPException.FILTER_ERROR);
 
       if(filter.charAt(i) == '&') {
@@ -482,7 +483,7 @@ class FilterTokenizer {
       throws LDAPException
    {
       if(i >= len)
-         throw new LDAPException("Unexpected end of filter",
+         throw new LDAPException(LDAPExceptionMessageResource.UNEXPECTED_END, //"Unexpected end of filter",
                                  LDAPException.FILTER_ERROR);
 
       if(filter.startsWith(">=", i)) {
@@ -505,7 +506,7 @@ class FilterTokenizer {
          i++;
          return RfcFilter.EQUALITY_MATCH;
       }
-      throw new LDAPException("Invalid filter type",
+      throw new LDAPException(LDAPExceptionMessageResource.INVALID_FILTER, //"Invalid filter type",
                               LDAPException.FILTER_ERROR);
    }
 
@@ -517,7 +518,7 @@ class FilterTokenizer {
       throws LDAPException
    {
       if(i >= len)
-         throw new LDAPException("Unexpected end of filter",
+         throw new LDAPException(LDAPExceptionMessageResource.UNEXPECTED_END, //"Unexpected end of filter",
                                  LDAPException.FILTER_ERROR);
 
       StringBuffer sb = new StringBuffer();
@@ -545,7 +546,7 @@ class FilterTokenizer {
       throws LDAPException
    {
       if(i >= len)
-         throw new LDAPException("Unexpected end of filter",
+         throw new LDAPException(LDAPExceptionMessageResource.UNEXPECTED_END, //"Unexpected end of filter",
                                  LDAPException.FILTER_ERROR);
 
       return filter.charAt(i);
