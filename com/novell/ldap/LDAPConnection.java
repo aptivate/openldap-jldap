@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.34 2000/09/14 20:06:14 judy Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.35 2000/09/18 20:12:04 vtag Exp $
 *
 * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
 * 
@@ -326,6 +326,16 @@ public class LDAPConnection implements
    * on port 389.</p>
    */
    public static final int DEFAULT_PORT = 389;
+
+
+  /**
+   *The default SSL port number for LDAP servers.
+   *
+   * <p>You can use this identifier to specify the port when using the
+   * LDAPConnection.connect method to connect to an LDAP server running 
+   * on port 389.</p>
+   */
+   public static final int DEFAULT_SSL_PORT = 636;
 
    /*
     * Constructors
