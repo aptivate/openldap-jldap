@@ -50,14 +50,18 @@ public class LDIFWriter extends LDIF implements LDAPExport {
 
     /**
      * Construct an LDIFWriter object by calling super constructor, and
-     * initializing LDIF_VERSION, OutputStreamReader object, and BufferedWriter
+     * initializing version, OutputStreamReader object, and BufferedWriter
      * object.
+     *
+     * @param out     The OutputStream object
+     * @param version The version currently used by the LDIF file
      */
-    public LDIFWriter(OutputStream out) throws IOException  {
+    public LDIFWriter(OutputStream out, int version) throws IOException  {
         super( );
-        super.setVersion( LDIF.LDIF_VERSION_1 );
+        super.setVersion( version );
         OutputStreamWriter osw = new OutputStreamWriter(out, "UTF8");
         bufWriter = new BufferedWriter( osw );
+        writeVersionLine();
     }
 
     /**
@@ -66,10 +70,10 @@ public class LDIFWriter extends LDIF implements LDAPExport {
      * <p>Two extra lines will be written to separate version line with the rest
      * of lines in LDIF file</p>
      */
-    public void writeVersionLine () throws IOException {
+    protected void writeVersionLine () throws IOException {
 
         // LDIF file is  currently using 'version 1'
-        String versionLine = new String("version: " + LDIF_VERSION_1);
+        String versionLine = new String("version: " + getVersion());
         bufWriter.write( versionLine, 0, versionLine.length());
         // start a new line and then an extra line to separate
         // the version line with the rest of the contents in LDIF file
@@ -113,7 +117,7 @@ public class LDIFWriter extends LDIF implements LDAPExport {
      *
      * @param lines The lines to be written to the OutputStream
      */
-    public void writeRecordLines ( String[] lines ) throws IOException {
+    protected void writeRecordLines ( String[] lines ) throws IOException {
 
         if ( lines != null ) {
             for ( int i = 0; i < lines.length; i++ ) {
@@ -121,7 +125,7 @@ public class LDIFWriter extends LDIF implements LDAPExport {
                 // start a new line
                 bufWriter.newLine();
             }
-            // write a new line to sepatate records
+            // write a new line to separate records
             bufWriter.newLine();
         }
     }
@@ -153,8 +157,6 @@ public class LDIFWriter extends LDIF implements LDAPExport {
      */
     public void writeContent(LDAPEntry entry, LDAPControl[] ctrls)
     throws IOException {
-
-        this.recordType = LDIF.CONTENT_RECORD;
 
         if( ! isContent()) {
             throw new RuntimeException("Cannot write change to LDIF"
