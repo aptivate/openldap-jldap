@@ -4,8 +4,6 @@ package com.novell.ldap.ldif_dsml;
 import com.novell.ldap.LDAPMessage;
 import com.novell.ldap.LDAPLocalException;
 
-import java.io.IOException;
-
 public interface LDAPWriter {
 
 //    abstract public void writeOperation(LDAPMessage messageToWrite) throws IOException, LDAPLocalException;

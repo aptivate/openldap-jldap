@@ -14,22 +14,17 @@
  ******************************************************************************/
 package com.novell.ldap.ldif_dsml;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.BufferedWriter;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.Iterator;
 
 import com.novell.ldap.LDAPAttribute;
 import com.novell.ldap.LDAPAttributeSet;
 import com.novell.ldap.LDAPControl;
 import com.novell.ldap.LDAPEntry;
-import com.novell.ldap.LDAPException;
 import com.novell.ldap.LDAPModification;
 import com.novell.ldap.ldif_dsml.LDAPRequest;
 import com.novell.ldap.ldif_dsml.Base64;
@@ -47,14 +42,11 @@ import com.novell.ldap.ldif_dsml.Base64;
 
 public class LDIFWriter extends LDIF implements LDAPWriter {
 
-    private int            recordType;                    // record type
     private String         dn;                            // record dn
     private Base64         base64 = new Base64();
     private BufferedWriter bufWriter;
     private LDAPControl[]  currentControls;
     private LDAPEntry      currentEntry = null;
-    private LDAPRequest    currentChange = null;
-
 
     /**
      * Constructs an LDIFWriter object by calling super constructor, and
@@ -560,8 +552,6 @@ public class LDIFWriter extends LDIF implements LDAPWriter {
      * @param dn    String object representing entry DN
      * @param ctrls LDAPControl array object
      *
-     * @return String array which contains the LDIF change/delete record lines
-     *
      * @see LDAPControl
      */
     public void writeRecordLines( String dn, LDAPControl[] ctrls )
@@ -670,7 +660,7 @@ public class LDIFWriter extends LDIF implements LDAPWriter {
     /**
      * Check if the input String object is a SAFE-STRING
      *
-     * @param boolean object to incidate that the string is safe or not safe
+     * @param value boolean object to incidate that the string is safe or not safe
      */
     public boolean isSafe(String value) {
 
@@ -716,7 +706,7 @@ public class LDIFWriter extends LDIF implements LDAPWriter {
      * <p>Check if the bytes starts with UL, LF, CR, ' ', ':', or '<',
      * or contains any NUL, LF, or CR</p>
      *
-     * @param boolean object to incidate that the string is safe or not safe
+     * @param bytes boolean object to incidate that the string is safe or not safe
      */
     public boolean isSafe(byte[] bytes) {
 

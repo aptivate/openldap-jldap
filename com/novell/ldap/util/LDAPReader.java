@@ -2,8 +2,6 @@
 
 package com.novell.ldap.ldif_dsml;
 
-import com.novell.ldap.LDAPMessage;
-
 abstract public interface LDAPReader {
 
     /**
