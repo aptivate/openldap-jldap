@@ -51,9 +51,9 @@
 (null=\00)
 	a3 09 04 04 6e 75 6c 6c 04 01 00
 (bell=\07)
-    a3 09 04 04 62 65 6c 6c  04 01 07
+    a3 09 04 04 62 65 6c 6c 04 01 07
 (bell=)
-    a3 09 04 04 62 65 6c 6c  04 01 07
+    a3 09 04 04 62 65 6c 6c 04 01 07
 (attr;x-star=\2a)
 	a3 10 04 0b 61 74 74 72 3b 78 2d 73 74 61 72 04 01 2a
 (attr;x-escape=\5C)
@@ -185,4 +185,6 @@ attr=*)
 (|)
 	*// empty filter set
 (attr?=)
+	*// invalid tag
+(|(uid=cn)(cn=cn))
 	*// invalid tag

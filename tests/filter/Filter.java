@@ -102,7 +102,7 @@ public class Filter
                 StringBuffer buf = new StringBuffer( inFilter.length() * 3);
                 try {
                     RfcFilter filter = new RfcFilter(inFilter);
-                    ASN1Object o = filter.getContent();
+                    ASN1Object o = filter.choiceValue();
                     byte[] encoded = o.getEncoding(new LBEREncoder());
                     for( int j=0; j<encoded.length; j++) {
                         int val = encoded[j] & 0xff;

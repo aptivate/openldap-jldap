@@ -50,7 +50,7 @@
         <mkdir dir="${build}"/>
         <javac srcdir="."
                 includes="*.java,*/*.java"
-                classpath="../../../javaldap/pkg/lib_debug/ldap.jar"
+                classpath="../../pkg/lib_debug/ldap.jar"
                 destdir="${build}"
                 deprecation="off"
                 debug="${debug}"
