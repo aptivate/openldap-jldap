@@ -29,156 +29,177 @@ import java.lang.reflect.Constructor;
  * <p>Subclassed by response messages used in asynchronous operations.
  *
  *  <p>Sample Code: <a href="http://developer.novell.com/ndk/doc/samplecode/
- *jldap_sample/asynchronous/Searchas.java.html">Searchas.java</p>
+ *jldap_sample/asynchronous/Searchas.java.html">Searchas.java</a></p>
+ *
  */
-public class LDAPMessage {
+public class LDAPMessage
+{
 
-  /**
-   * A request or response message for an asynchronous LDAP operation.
-   */
+    /**
+     * A bind request operation.
+     *
+     *<p>BIND_REQUEST = 0</p>
+     */
+    public final static int BIND_REQUEST            = 0;
+
+    /**
+     * A bind response operation.
+     *
+     *<p>BIND_RESPONSE = 1</p>
+     */
+    public final static int BIND_RESPONSE           = 1;
+
+    /**
+     * An unbind request operation.
+     *
+     *<p>UNBIND_REQUEST = 2</p>
+     */
+    public final static int UNBIND_REQUEST          = 2;
+
+    /**
+     * A search request operation.
+     *
+     *<p>SEARCH_REQUEST = 3</p>
+     */
+    public final static int SEARCH_REQUEST          = 3;
+
+    /**
+     * A search response containing data.
+     *
+     *<p>SEARCH_RESPONSE = 4</p>
+     */
+    public final static int SEARCH_RESPONSE         = 4;
+
+    /**
+     * A search result message - contains search status.
+     *
+     *<p>SEARCH_RESULT = 5</p>
+     */
+    public final static int SEARCH_RESULT           = 5;
+
+    /**
+     * A modify request operation.
+     *
+     *<p>MODIFY_REQUEST = 6</p>
+     */
+    public final static int MODIFY_REQUEST          = 6;
+
+    /**
+     * A modify response operation.
+     *
+     *<p>MODIFY_RESPONSE = 7</p>
+     */
+    public final static int MODIFY_RESPONSE         = 7;
+
+    /**
+     * An add request operation.
+     *
+     *<p>ADD_REQUEST = 8</p>
+     */
+    public final static int ADD_REQUEST             = 8;
+
+    /**
+     * An add response operation.
+     *
+     *<p>ADD_RESONSE = 9</p>
+     */
+    public final static int ADD_RESPONSE            = 9;
+
+    /**
+     * A delete request operation.
+     *
+     *<p>DEL_REQUEST = 10</p>
+     */
+    public final static int DEL_REQUEST             = 10;
+
+    /**
+     * A delete response operation.
+     *
+     *<p>DEL_RESONSE = 11</p>
+     */
+    public final static int DEL_RESPONSE            = 11;
+
+    /**
+     * A modify RDN request operation.
+     *
+     *<p>MODIFY_RDN_REQUEST = 12</p>
+     */
+    public final static int MODIFY_RDN_REQUEST      = 12;
+
+    /**
+     * A modify RDN response operation.
+     *
+     *<p>MODIFY_RDN_RESPONSE = 13</p>
+     */
+    public final static int MODIFY_RDN_RESPONSE     = 13;
+
+    /**
+     * A compare result operation.
+     *
+     *<p>COMPARE_REQUEST = 14</p>
+     */
+    public final static int COMPARE_REQUEST         = 14;
+
+    /**
+     * A compare response operation.
+     *
+     *<p>COMPARE_RESPONSE = 15</p>
+     */
+    public final static int COMPARE_RESPONSE        = 15;
+
+    /**
+     * An abandon request operation.
+     *
+     *<p>ABANDON_REQUEST = 16</p>
+     */
+    public final static int ABANDON_REQUEST         = 16;
+
+  
+    /**
+     * A search result reference operation.
+     *
+     *<p>SEARCH_RESULT_REFERENCE = 19</p>
+     */
+    public final static int SEARCH_RESULT_REFERENCE = 19;
+
+    /**
+     * An extended request operation.
+     *
+     *<p>EXTENDED_REQUEST = 23</p>
+     */
+    public final static int EXTENDED_REQUEST        = 23;
+
+    /**
+     * An extended response operation.
+     *
+     *<p>EXTENDED_RESONSE = 24</p>
+     */
+    public final static int EXTENDED_RESPONSE       = 24;
+    
+    /**
+     * A request or response message for an asynchronous LDAP operation.
+     */
 	protected RfcLDAPMessage message;
 
-  /**
-   * A bind request operation.
-   *
-   *<p>BIND_REQUEST = 0</p>
-   */
-   public final static int BIND_REQUEST            = 0;
-
-  /**
-   * A bind response operation.
-   *
-   *<p>BIND_RESPONSE = 1</p>
-   */
-   public final static int BIND_RESPONSE           = 1;
-
-  /**
-   * An unbind request operation.
-   *
-   *<p>UNBIND_REQUEST = 2</p>
-   */
-   public final static int UNBIND_REQUEST          = 2;
-
-  /**
-   * A search request operation.
-   *
-   *<p>SEARCH_REQUEST = 3</p>
-   */
-   public final static int SEARCH_REQUEST          = 3;
-
-  /**
-   * A search response containing data.
-   *
-   *<p>SEARCH_RESPONSE = 4</p>
-   */
-   public final static int SEARCH_RESPONSE         = 4;
-
-  /**
-   * A search result message - contains search status.
-   *
-   *<p>SEARCH_RESULT = 5</p>
-   */
-   public final static int SEARCH_RESULT           = 5;
-
-  /**
-   * A modify request operation.
-   *
-   *<p>MODIFY_REQUEST = 6</p>
-   */
-   public final static int MODIFY_REQUEST          = 6;
-
-  /**
-   * A modify response operation.
-   *
-   *<p>MODIFY_RESPONSE = 7</p>
-   */
-   public final static int MODIFY_RESPONSE         = 7;
-
-  /**
-   * An add request operation.
-   *
-   *<p>ADD_REQUEST = 8</p>
-   */
-   public final static int ADD_REQUEST             = 8;
-
-  /**
-   * An add response operation.
-   *
-   *<p>ADD_RESONSE = 9</p>
-   */
-   public final static int ADD_RESPONSE            = 9;
-
-  /**
-   * A delete request operation.
-   *
-   *<p>DEL_REQUEST = 10</p>
-   */
-   public final static int DEL_REQUEST             = 10;
-
-  /**
-   * A delete response operation.
-   *
-   *<p>DEL_RESONSE = 11</p>
-   */
-   public final static int DEL_RESPONSE            = 11;
-
-  /**
-   * A modify RDN request operation.
-   *
-   *<p>MODIFY_RDN_REQUEST = 12</p>
-   */
-   public final static int MODIFY_RDN_REQUEST      = 12;
-
-  /**
-   * A modify RDN response operation.
-   *
-   *<p>MODIFY_RDN_RESPONSE = 13</p>
-   */
-   public final static int MODIFY_RDN_RESPONSE     = 13;
-
-  /**
-   * A compare result operation.
-   *
-   *<p>COMPARE_REQUEST = 14</p>
-   */
-   public final static int COMPARE_REQUEST         = 14;
-
-  /**
-   * A compare response operation.
-   *
-   *<p>COMPARE_RESPONSE = 15</p>
-   */
-   public final static int COMPARE_RESPONSE        = 15;
-
-  /**
-   * An abandon request operation.
-   *
-   *<p>ABANDON_REQUEST = 16</p>
-   */
-   public final static int ABANDON_REQUEST         = 16;
-
-
-  /**
-   * A search result reference operation.
-   *
-   *<p>SEARCH_RESULT_REFERENCE = 19</p>
-   */
-   public final static int SEARCH_RESULT_REFERENCE = 19;
-
-  /**
-   * An extended request operation.
-   *
-   *<p>EXTENDED_REQUEST = 23</p>
-   */
-   public final static int EXTENDED_REQUEST        = 23;
-
-  /**
-   * An extended response operation.
-   *
-   *<p>EXTENDED_RESONSE = 24</p>
-   */
-   public final static int EXTENDED_RESPONSE       = 24;
-
+    /**
+     * Lock object to protect counter for message numbers
+     */
+    /* 
+    private static Object msgLock = new Object();
+    */
+    
+    /**
+     * Counters used to construct request message #'s, unique for each request
+     * Will be enabled after ASN.1 conversion
+     */
+    /* 
+    private static int msgNum = 0; // LDAP Request counter
+    */
+    private int imsgNum = -1;     // This instance LDAPMessage number
+    
+    private int messageType = -1;
+    private boolean ifRequest = false;
+    
 	/**
 	 * Creates an LDAPMessage when sending a protocol operation.
      *
@@ -190,7 +211,7 @@ public class LDAPMessage {
 	 */
 	public LDAPMessage(RfcRequest op)
 	{
-		this(op, null);
+		this(-1, op, null);
 	}
 
     /**
@@ -216,10 +237,21 @@ public class LDAPMessage {
      *
      * @see #getType
 	 */
-	public LDAPMessage(RfcRequest op, LDAPControl[] controls)
+	public LDAPMessage( int type,
+                        RfcRequest op,
+                        LDAPControl[] controls)
 	{
-	 RfcControls asn1Ctrls = null;
-
+        
+        // Get a unique number for this request message
+        /* Turn on after ASN.1 conversion
+        synchronized( msgLock) {
+             msgNum += 1;
+             imsgNum = msgNum;
+        }    
+        */
+    
+        messageType = type;
+        RfcControls asn1Ctrls = null;
 		if(controls != null) {
 			// Move LDAPControls into an RFC 2251 Controls object.
 			asn1Ctrls = new RfcControls();
@@ -230,6 +262,10 @@ public class LDAPMessage {
 
 		// create RFC 2251 LDAPMessage
 		message = new RfcLDAPMessage(op, asn1Ctrls);
+        if( Debug.LDAP_DEBUG) {
+            Debug.trace( Debug.apiRequests, "Creating " + toString());
+        }
+        return;
 	}
 
 	/**
@@ -243,26 +279,14 @@ public class LDAPMessage {
 	public LDAPMessage(RfcLDAPMessage message)
 	{
 		this.message = message;
+        return;
 	}
 
-/*
-	protected LDAPMessage(int messageID, LDAPControl[] controls, int type)
-	{
-		this.messageID = messageID;
-		if(controls != null && controls.length > 0) {
-			this.controls = new Vector(controls.length);
-			for(int i=0; i<controls.length; i++) {
-				this.controls.addElement(controls[i]);
-			}
-		}
-		this.type = type;
-	}
-*/
-
-   /**
-    * Returns any controls in the message.
-    */
-   public LDAPControl[] getControls() {
+    /**
+     * Returns any controls in the message.
+     */
+    public LDAPControl[] getControls()
+    {
 
         LDAPControl[] controls = null;
         RfcControls asn1Ctrls = message.getControls();
@@ -286,9 +310,9 @@ public class LDAPMessage {
 		         * code realizes that we have a control it is already too late.
                  */
 		        RfcControl rfcCtl = (RfcControl)asn1Ctrls.get(i);
-                String oid = rfcCtl.getControlType().getString();
-                byte[] value = rfcCtl.getControlValue().getContent();
-                boolean critical = rfcCtl.getCriticality().getContent();
+                String oid = rfcCtl.getControlType().stringValue();
+                byte[] value = rfcCtl.getControlValue().byteValue();
+                boolean critical = rfcCtl.getCriticality().booleanValue();
 
 		        /* Return from this call should return either an LDAPControl
 		         * or a class extending LDAPControl that implements the
@@ -298,7 +322,8 @@ public class LDAPMessage {
 		    }
 	    }
 	    return controls;
-   }
+    }
+    
     /**
      * Instantiates an LDAPControl.  We search through our list of
      * registered controls.  If we find a matchiing OID we instantiate
@@ -309,7 +334,7 @@ public class LDAPMessage {
      *
      * @param data A RfcControl object that encodes the returned control.
      */
-    private LDAPControl controlFactory(String oid,boolean critical,byte[] value)
+    private final LDAPControl controlFactory(String oid,boolean critical,byte[] value)
     {
         RespControlVector regControls = LDAPControl.getRegisteredControls();
         try {
@@ -376,55 +401,144 @@ public class LDAPMessage {
         return new LDAPControl( oid, critical, value);
     }
 
-   /**
-    * Returns the message ID.
-    */
-   public int getMessageID() {
-      return message.getMessageID();
-   }
+    /**
+     * Returns the message ID.  The message ID is an integer value
+     * identifying the LDAP request and its response.
+     */
+    public int getMessageID()
+    {
+        if( imsgNum == -1) {
+            imsgNum = message.getMessageID();
+        }
+        return imsgNum;
+    }
 
-   /**
-    * Returns the LDAP operation type of the message.
-    *
-    * <p>The type is one of the following:</p>
-    * <ul>
-    *   <li>BIND_REQUEST            = 0;</li>
-    *   <li>BIND_RESPONSE           = 1;</li>
-    *   <li>UNBIND_REQUEST          = 2;</li>
-    *   <li>SEARCH_REQUEST          = 3;</li>
-    *   <li>SEARCH_RESPONSE         = 4;</li>
-    *   <li>SEARCH_RESULT           = 5;</li>
-    *   <li>MODIFY_REQUEST          = 6;</li>
-    *   <li>MODIFY_RESPONSE         = 7;</li>
-    *   <li>ADD_REQUEST             = 8;</li>
-    *   <li>ADD_RESPONSE            = 9;</li>
-    *   <li>DEL_REQUEST             = 10;</li>
-    *   <li>DEL_RESPONSE            = 11;</li>
-    *   <li>MODIFY_RDN_REQUEST      = 12;</li>
-    *   <li>MODIFY_RDN_RESPONSE     = 13;</li>
-    *   <li>COMPARE_REQUEST         = 14;</li>
-    *   <li>COMPARE_RESPONSE        = 15;</li>
-    *   <li>ABANDON_REQUEST         = 16;</li>
-    *   <li>SEARCH_RESULT_REFERENCE = 19;</li>
-    *   <li>EXTENDED_REQUEST        = 23;</li>
-    *   <li>EXTENDED_RESPONSE       = 24;</li>
-    * </ul>
-    *
-    *@return The operation type of the message.
-    */
-   public int getType()
+    /**
+     * Returns the LDAP operation type of the message.
+     *
+     * <p>The type is one of the following:</p>
+     * <ul>
+     *   <li>BIND_REQUEST            = 0;</li>
+     *   <li>BIND_RESPONSE           = 1;</li>
+     *   <li>UNBIND_REQUEST          = 2;</li>
+     *   <li>SEARCH_REQUEST          = 3;</li>
+     *   <li>SEARCH_RESPONSE         = 4;</li>
+     *   <li>SEARCH_RESULT           = 5;</li>
+     *   <li>MODIFY_REQUEST          = 6;</li>
+     *   <li>MODIFY_RESPONSE         = 7;</li>
+     *   <li>ADD_REQUEST             = 8;</li>
+     *   <li>ADD_RESPONSE            = 9;</li>
+     *   <li>DEL_REQUEST             = 10;</li>
+     *   <li>DEL_RESPONSE            = 11;</li>
+     *   <li>MODIFY_RDN_REQUEST      = 12;</li>
+     *   <li>MODIFY_RDN_RESPONSE     = 13;</li>
+     *   <li>COMPARE_REQUEST         = 14;</li>
+     *   <li>COMPARE_RESPONSE        = 15;</li>
+     *   <li>ABANDON_REQUEST         = 16;</li>
+     *   <li>SEARCH_RESULT_REFERENCE = 19;</li>
+     *   <li>EXTENDED_REQUEST        = 23;</li>
+     *   <li>EXTENDED_RESPONSE       = 24;</li>
+     * </ul>
+     *
+     * @return The operation type of the message.
+     */
+    public int getType()
 	{
-		return message.getProtocolOp().getIdentifier().getTag();
-   }
+        if( messageType == -1) {
+		    messageType = message.getProtocolOp().getIdentifier().getTag();
+        }
+        return messageType;
+    }
 
-	/**
+    /**
+     * Indicates whether the message is a request or a response
+     *
+     * @return true if the message is a request, false if it is a response,
+     * a search result, or a search result reference.
+     */
+    public boolean isRequest()
+	{
+        if( messageType == -1) {
+		    messageType = message.getProtocolOp().getIdentifier().getTag();
+            getName();
+        }
+        return ifRequest;
+    }
+    /**
 	 * Returns the RFC 2251 LDAPMessage composed in this object.
      *
      * @deprecated For internal use only
 	 */
-	public RfcLDAPMessage getASN1Object()
+	final public RfcLDAPMessage getASN1Object()
 	{
 		return message;
 	}
 
+    /**
+     * Creates a String representation of this object
+     *
+     * @return a String representation for this LDAPMessage
+     */
+    public String toString()
+    {
+        return getName() + "(" + getMessageID() + "): " + message.toString();
+    }
+    
+    private final
+    String getName()
+    {
+        switch(getType()) {
+            case SEARCH_RESULT:
+                return "LDAPSearchResult";
+            case SEARCH_REQUEST:
+                ifRequest = true;
+                return "LDAPSearchRequest";
+            case SEARCH_RESPONSE:
+                return "LDAPSearchResponse";
+            case MODIFY_REQUEST:
+                ifRequest = true;
+                return "LDAPModifyRequest";
+            case MODIFY_RESPONSE:
+                return "LDAPModifyResponse";
+            case ADD_REQUEST:
+                ifRequest = true;
+                return "LDAPAddRequest";
+            case ADD_RESPONSE:
+                return "LDAPAddResponse";
+            case DEL_REQUEST:
+                ifRequest = true;
+                return "LDAPDelRequest";
+            case DEL_RESPONSE:
+                return "LDAPDelResponse";
+            case MODIFY_RDN_REQUEST:
+                ifRequest = true;
+                return "LDAPModifyRDNRequest";
+            case MODIFY_RDN_RESPONSE:
+                return "LDAPModifyRDNResponse";
+            case COMPARE_REQUEST:
+                ifRequest = true;
+                return "LDAPCompareRequest";
+            case COMPARE_RESPONSE:
+                return "LDAPCompareResponse";
+            case BIND_REQUEST:
+                ifRequest = true;
+                return "LDAPBindRequest";
+            case BIND_RESPONSE:
+                return "LDAPBindResponse";
+            case UNBIND_REQUEST:
+                ifRequest = true;
+                return "LDAPUnbindRequest";
+            case ABANDON_REQUEST:
+                ifRequest = true;
+                return "LDAPAbandonRequest";
+            case SEARCH_RESULT_REFERENCE:
+                return "LDAPSearchResultReference";
+            case EXTENDED_REQUEST:
+                ifRequest = true;
+                return "LDAPExtendedRequest";
+            case EXTENDED_RESPONSE:
+                return "LDAPExtendedResponse";
+        }
+        return "Message type: " + getType();
+    }
 }

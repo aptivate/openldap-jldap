@@ -24,8 +24,9 @@ import java.util.StringTokenizer;
 import java.net.MalformedURLException;
 
 import com.novell.ldap.*;
-import com.novell.ldap.client.*;
 import com.novell.ldap.asn1.*;
+import com.novell.ldap.client.*;
+import com.novell.ldap.message.*;
 import com.novell.ldap.rfc2251.*;
 import com.novell.ldap.resources.*;
 
@@ -732,9 +733,7 @@ public class LDAPConnection implements Cloneable
 
 
         LDAPMessage startTLS = makeExtendedOperation(
-                new LDAPExtendedOperation( this.START_TLS_OID, null ),
-                        null, //constraints
-                        (LDAPResponseQueue) null);
+                new LDAPExtendedOperation( this.START_TLS_OID, null ), null);
 
         int tlsID = startTLS.getMessageID();
 
@@ -1079,27 +1078,7 @@ public class LDAPConnection implements Cloneable
                     LDAPException.PARAM_ERROR);
         }
 
-        // convert Java-API LDAPEntry to RFC2251 AttributeList
-        RfcAttributeList attrList = new RfcAttributeList();
-        LDAPAttributeSet attrSet = entry.getAttributeSet();
-        Enumeration enum = attrSet.getAttributes();
-        while(enum.hasMoreElements()) {
-            LDAPAttribute attr = (LDAPAttribute)enum.nextElement();
-            ASN1SetOf vals = new ASN1SetOf();
-            Enumeration attrEnum = attr.getByteValues();
-            while(attrEnum.hasMoreElements()) {
-                vals.add(new RfcAttributeValue((byte[])attrEnum.nextElement()));
-            }
-            attrList.add(new RfcAttributeTypeAndValues(
-                new RfcAttributeDescription(attr.getName()), vals));
-        }
-
-        LDAPMessage msg =
-                new LDAPMessage(
-                    new RfcAddRequest(
-                        new RfcLDAPDN(entry.getDN()),
-                        attrList),
-                    cons.getControls());
+        LDAPMessage msg = new LDAPAddRequest( entry, cons);
 
         return sendRequest(msg, cons.getTimeLimit(), queue, null);
     }
@@ -1456,18 +1435,7 @@ public class LDAPConnection implements Cloneable
         if(passwd == null)
             passwd = new byte[] {};
 
-        LDAPMessage msg =
-                new LDAPMessage(
-                    new RfcBindRequest(
-                        new ASN1Integer(version),
-                        new RfcLDAPDN(dn),
-                        new RfcAuthenticationChoice(
-                            new ASN1Tagged(
-                                new ASN1Identifier(ASN1Identifier.CONTEXT,
-                                            false, 0),
-                                new ASN1OctetString(passwd),
-                                false))), // implicit tagging
-                    cons.getControls());
+        LDAPMessage msg = new LDAPBindRequest( version, dn, passwd, cons);
 
         msgId = msg.getMessageID();
         bindProps = new BindProperties(version, dn.trim(),"simple", null, null);
@@ -1846,23 +1814,16 @@ public class LDAPConnection implements Cloneable
         if(cons == null)
             cons = defSearchCons;
 
-        String type = attr.getName();
+        String name = attr.getName();
         byte[] value = attr.getByteValueArray()[0]; // get first value
 
-        if(dn == null || type == null || value == null) {
+        if(dn == null || value == null) {
             // Invalid parameter
             throw new LDAPException(ExceptionMessages.PARAM_ERROR,
                                     LDAPException.PARAM_ERROR);
         }
 
-        LDAPMessage msg =
-            new LDAPMessage(
-                new RfcCompareRequest(
-                    new RfcLDAPDN(dn),
-                    new RfcAttributeValueAssertion(
-                        new RfcAttributeDescription(type),
-                        new RfcAssertionValue(value))),
-                cons.getControls());
+        LDAPMessage msg = new LDAPCompareRequest( dn, name, value, cons);
 
         return sendRequest(msg, cons.getTimeLimit(), queue, null);
     }
@@ -2057,10 +2018,7 @@ public class LDAPConnection implements Cloneable
         if(cons == null)
             cons = defSearchCons;
 
-        LDAPMessage msg =
-            new LDAPMessage(
-                new RfcDelRequest(dn),
-                cons.getControls());
+        LDAPMessage msg = new LDAPDeleteRequest( dn, cons);
 
         return sendRequest(msg, cons.getTimeLimit(), queue, null);
     }
@@ -2270,7 +2228,7 @@ public class LDAPConnection implements Cloneable
         // Use default constraints if none-specified
         if(cons == null)
             cons = defSearchCons;
-        LDAPMessage msg = makeExtendedOperation(op, cons, queue);
+        LDAPMessage msg = makeExtendedOperation(op, cons);
         return sendRequest(msg, cons.getTimeLimit(), queue, null);
     }
 
@@ -2281,8 +2239,7 @@ public class LDAPConnection implements Cloneable
      * get the MessageID.
      */
     protected LDAPMessage makeExtendedOperation(LDAPExtendedOperation op,
-                                                LDAPConstraints cons,
-                                                LDAPResponseQueue queue)
+                                                LDAPConstraints cons)
         throws LDAPException
     {
         // Use default constraints if none-specified
@@ -2295,17 +2252,8 @@ public class LDAPConnection implements Cloneable
             throw new LDAPException(ExceptionMessages.OP_PARAM_ERROR,
                                     LDAPException.PARAM_ERROR);
         }
-        if( Debug.LDAP_DEBUG) {
-            Debug.trace( Debug.apiRequests, name +
-            "extendedOperation(" + op.getID() + ")");
-        }
-        ASN1OctetString value =
-            (op.getValue() != null) ? new ASN1OctetString(op.getValue()) : null;
 
-        RfcExtendedRequest er = new RfcExtendedRequest(
-                            new RfcLDAPOID(op.getID()), value);
-
-        return new LDAPMessage(er, cons.getControls());
+        return new LDAPExtendedRequest(op, cons);
     }
 
     //*************************************************************************
@@ -2645,37 +2593,7 @@ public class LDAPConnection implements Cloneable
         if(cons == null)
             cons = defSearchCons;
 
-        // Convert Java-API LDAPModification[] to RFC2251 SEQUENCE OF SEQUENCE
-        ASN1SequenceOf rfcMods = new ASN1SequenceOf();
-        for(int i=0; i<mods.length; i++) {
-            LDAPModification mod = mods[i];
-            LDAPAttribute attr = mod.getAttribute();
-
-            // place modification attribute values in ASN1SetOf
-            ASN1SetOf vals = new ASN1SetOf();
-            if( attr.size() > 0) {
-                Enumeration attrEnum = attr.getByteValues();
-                while(attrEnum.hasMoreElements()) {
-                    vals.add(new RfcAttributeValue((byte[])attrEnum.nextElement()));
-                }
-            }
-
-            // create SEQUENCE containing mod operation and attr type and vals
-            ASN1Sequence rfcMod = new ASN1Sequence();
-            rfcMod.add(new ASN1Enumerated(mod.getOp()));
-            rfcMod.add(new RfcAttributeTypeAndValues(
-                new RfcAttributeDescription(attr.getName()), vals));
-
-            // place SEQUENCE into SEQUENCE OF
-            rfcMods.add(rfcMod);
-        }
-
-        LDAPMessage msg =
-            new LDAPMessage(
-                new RfcModifyRequest(
-                    new RfcLDAPDN(dn),
-                    rfcMods),
-                cons.getControls());
+        LDAPMessage msg = new LDAPModifyRequest( dn, mods, cons);
 
         return sendRequest(msg, cons.getTimeLimit(), queue, null);
     }
@@ -3132,15 +3050,8 @@ public class LDAPConnection implements Cloneable
         if(cons == null)
             cons = defSearchCons;
 
-        LDAPMessage msg =
-            new LDAPMessage(
-                new RfcModifyDNRequest(
-                    new RfcLDAPDN(dn),
-                    new RfcRelativeLDAPDN(newRdn),
-                    new ASN1Boolean(deleteOldRdn),
-                    (newParentdn != null) ?
-                        new RfcLDAPDN(newParentdn) : null),
-                cons.getControls());
+        LDAPMessage msg = new LDAPModifyDNRequest( dn, newRdn, newParentdn,
+                                deleteOldRdn, cons);
 
         return sendRequest(msg, cons.getTimeLimit(), queue, null);
     }
@@ -3337,18 +3248,8 @@ public class LDAPConnection implements Cloneable
         if(cons == null)
             cons = defSearchCons;
 
-        LDAPMessage msg = new LDAPMessage(
-            new RfcSearchRequest(
-            new RfcLDAPDN(base),
-            new ASN1Enumerated(scope),
-            new ASN1Enumerated(cons.getDereference()),
-            new ASN1Integer(cons.getMaxResults()),
-            new ASN1Integer(cons.getServerTimeLimit()),
-            new ASN1Boolean(typesOnly),
-            new RfcFilter(filter),
-            new RfcAttributeDescriptionList(attrs)),
-        cons.getControls());
-
+        LDAPMessage msg = new LDAPSearchRequest( base, scope, filter,
+                                                 attrs, typesOnly, cons);
         MessageAgent agent;
         LDAPSearchQueue myqueue = queue;
         if(myqueue == null) {
@@ -3437,6 +3338,83 @@ public class LDAPConnection implements Cloneable
                 false, cons);
         conn.disconnect();
         return toReturn;
+    }
+    
+    /**
+     * Apply the LDAP search request indicated by the LDAP request object to a
+     * directory.
+     *
+     * <p>the LDAP requests can be LDAPAdd, LDAPdelete, LDAPModDN,
+     * or LDAPModify</p>
+     *
+     * @param ld     The LDAPConnection object
+     * @param change The LDAPMessage request which represents a specific
+     *               LDAP operation
+     * @exception    LDAPException A general exception which includes an error
+     *               message and an LDAP error code.
+     */
+    public LDAPSearchQueue applyToDIT( LDAPMessage request,
+                            LDAPSearchQueue queue,
+                            LDAPConstraints cons)
+            throws LDAPException
+    {
+
+        if( Debug.LDAP_DEBUG) {
+            Debug.trace( Debug.apiRequests, name +
+            "applyToDIT(" + request.toString() + ")");
+        }
+        
+        if( ! request.isRequest() ) {
+            throw new RuntimeException( "Object is not a request message");
+        }
+        if(cons == null)
+            cons = defSearchCons;
+
+        MessageAgent agent;
+        LDAPSearchQueue myqueue = queue;
+        if(myqueue == null) {
+            agent = new MessageAgent();
+            myqueue = new LDAPSearchQueue( agent );
+        } else {
+            agent = queue.getMessageAgent();
+        }
+
+        try {
+            agent.sendMessage( conn, request, cons.getTimeLimit(), myqueue, null);
+        } catch(LDAPException lex) {
+            throw lex;
+        }
+        return (LDAPSearchQueue)myqueue;
+    }
+
+    /**
+     * Apply the LDAP request indicated by the LDAPRequest object to a
+     * directory.
+     *
+     * <p>the LDAP requests can be LDAPAdd, LDAPdelete, LDAPModDN,
+     * or LDAPModify</p>
+     *
+     * @param ld     The LDAPConnection object
+     * @param request The LDAPRequest object which represents a specific
+     *               LDAP request
+     * @exception    LDAPException A general exception which includes an error
+     *               message and an LDAP error code.
+     */
+    public LDAPResponseQueue applyToDIT( LDAPMessage request,
+                                         LDAPConstraints cons)
+            throws LDAPException
+    {
+
+        if( Debug.LDAP_DEBUG) {
+            Debug.trace( Debug.apiRequests, name +
+            "applyToDIT(" + request.toString() + ")");
+        }
+        if(cons == null)
+            cons = defSearchCons;
+        if( ! request.isRequest() ) {
+            throw new RuntimeException( "Object is not a request message");
+        }
+        return sendRequest(request, cons.getTimeLimit(), null, null);
     }
 
     //*************************************************************************
