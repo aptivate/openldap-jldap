@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/org/ietf/ldap/LDAPConnection.java,v 1.19 2000/08/21 18:35:41 vtag Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/org/ietf/ldap/LDAPConnection.java,v 1.20 2000/08/22 22:51:05 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -62,6 +62,8 @@ public class LDAPConnection implements
 
    public static final int LDAP_V2 = 2;
    public static final int LDAP_V3 = 3;
+
+	public static final int DEFAULT_PORT = 389;
 
    /*
     * Constructors
