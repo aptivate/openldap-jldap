@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPVirtualListControl.java,v 1.2 2001/03/29 23:26:08 javed Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPVirtualListControl.java,v 1.3 2001/03/30 22:56:01 javed Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -31,18 +31,19 @@ import com.novell.ldap.rfc2251.*;
  * list size and the actual first index. This object can then be used 
  * by the client with a new requested position or length and sent to the 
  * server to obtain a different segment of the virtual list.<br>
+ */
+ 
+ /* The following is the ASN.1 of the VLV Request packet:<br>
  *
- * <p>The following is the ASN.1 of the VLV Request packet:<br>
- *
- *							VirtualListViewRequest ::= SEQUENCE {<br>
- * &nbsp;&nbsp;&nbsp;		beforeCount    INTEGER (0..maxInt),<br>
- * &nbsp;&nbsp;&nbsp;		afterCount     INTEGER (0..maxInt),<br>
- * &nbsp;&nbsp;&nbsp;		CHOICE {<br>
- * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;			byoffset [0] SEQUENCE {<br>
- * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;		offset          INTEGER (0 .. maxInt),<br>
- * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	    contentCount    INTEGER (0 .. maxInt) },<br>
- * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         greaterThanOrEqual [1] AssertionValue },<br>
- * &nbsp;&nbsp;&nbsp;		contextID     OCTET STRING OPTIONAL }<br>
+ * VirtualListViewRequest ::= SEQUENCE {
+ *      beforeCount    INTEGER (0..maxInt),
+ * 		afterCount     INTEGER (0..maxInt),
+ *      CHOICE {
+ *          byoffset [0] SEQUENCE {
+ *              offset          INTEGER (0 .. maxInt),
+ *              contentCount    INTEGER (0 .. maxInt) },
+ *          greaterThanOrEqual [1] AssertionValue },
+ *      contextID     OCTET STRING OPTIONAL }
  *
  */
 public class LDAPVirtualListControl extends LDAPControl {
@@ -172,83 +173,83 @@ public class LDAPVirtualListControl extends LDAPControl {
 	 */
 	private void BuildTypedVLVRequest() 
 	{
+	    /* Create a new ASN1Sequence object */
 		m_vlvRequest = new ASN1Sequence(4);
 
-		// Add the beforeCount and afterCount fields
+		/* Add the beforeCount and afterCount fields to the sequence */
         m_vlvRequest.add(new ASN1Integer(m_beforeCount));
 		m_vlvRequest.add(new ASN1Integer(m_afterCount));
 
-		// Add the CHOICE option corresponding to greaterthanOrEqual OCTET STRING
+        /* The next field is dependent on the type of indexing being used.
+         * A "typed" VLV request uses a ASN.1 OCTET STRING to index to the 
+         * correct object in the list.  Encode the ASN.1 CHOICE corresponding 
+         * to this option (as indicated by the greaterthanOrEqual field)
+         * in the ASN.1.
+         */
 		m_vlvRequest.add(new ASN1Tagged(new ASN1Identifier( ASN1Identifier.CONTEXT, 
 		                                                    false,
 											                GREATERTHANOREQUAL),
 										new RfcAssertionValue(m_jumpTo),
 										false));
 
-		// Add the optional context string if one was provided
+		/* Add the optional context string if one is available.
+		 */
 		if (m_context != null)
 			m_vlvRequest.add(new ASN1OctetString(m_context));
 
 	}
 
   /**
-	* 3.1.1 Constructors 
 	* Use this constructor when the size of the virtual list is known, to 
-	* fetch a subset. 
-   	*
+	* fetch a subset. <br><br>
     * 
-    * @param beforeCount	The number of entries before startIndex (the 
-	*						reference entry) to be returned. 
+    * @param beforeCount The number of entries before startIndex (the 
+	* reference entry) to be returned. <br><br>
     *  
-    * @param afterCount		The number of entries after startIndex to be 
-	*						returned. 
+    * @param afterCount	The number of entries after startIndex to be 
+	* returned.<br><br>
 	*    
-    * @param startIndex     The index of the reference entry to be returned. 
-    *
-    * @param contentCount	The total number of entries assumed to be in the 
-	*						list. This is a number returned on a previous 
-	*						search, in the LDAPVirtualListResponse. The 
-	*						server may use this number to adjust the returned 
-	*						subset offset. 
-	*
+    * @param startIndex The index of the reference entry to be returned.<br><br>
+    * 
+    * @param contentCount The total number of entries assumed to be in the 
+	* list. This is a number returned on a previous search, in the 
+	* LDAPVirtualListResponse. The server may use this number to adjust 
+	* the returned subset offset. 
 	*/
 	public LDAPVirtualListControl(	int		startIndex, 
 									int		beforeCount, 
 									int		afterCount, 
 									int		contentCount ) 
 	{
-	    // Set the context field to null
+	    /* Set the OPTIONAL context field to null 
+		 */
 		this(startIndex, beforeCount, afterCount, contentCount, null);
 	}
 
 
 
   /**
-	* 3.1.1 Constructors 
 	* Use this constructor when the size of the virtual list is known, to 
-	* fetch a subset. 
+	* fetch a subset.<br><br>
    	*
-    * 
     * @param beforeCount	The number of entries before startIndex (the 
-	*						reference entry) to be returned. 
+	* reference entry) to be returned.<br><br>
     *  
     * @param afterCount		The number of entries after startIndex to be 
-	*						returned. 
+	* returned.<br><br>
 	*    
-    * @param startIndex     The index of the reference entry to be returned. 
+    * @param startIndex     The index of the reference entry to be 
+    * returned.<br><br>
     *
     * @param contentCount	The total number of entries assumed to be in the 
-	*						list. This is a number returned on a previous 
-	*						search, in the LDAPVirtualListResponse. The 
-	*						server may use this number to adjust the returned 
-	*						subset offset. 
+	* list. This is a number returned on a previous search, in the 
+	* LDAPVirtualListResponse. The server may use this number to adjust 
+	* the returned subset offset.<br><br>
 	*
-    *  
     * @param context		Used by some implementations to process requests 
-	*						more efficiently. The context should be null on 
-	*						the first search, and thereafter it should be 
-	*						whatever was returned by the server in the 
-	*						virtual list response control. 
+	* more efficiently. The context should be null on the first search, 
+	* and thereafter it should be whatever was returned by the server in the 
+	* virtual list response control. 
 	*/
     public LDAPVirtualListControl(	int		startIndex, 
 									int		beforeCount, 
@@ -287,25 +288,32 @@ public class LDAPVirtualListControl extends LDAPControl {
 	 *  Used only when using the Indexed mode of VLV Control
 	 */
 	private void BuildIndexedVLVRequest() 
-	{
+	{   
+	    /* Create a new ASN1Sequence object */
 		m_vlvRequest = new ASN1Sequence(4);
 
-		// Add the beforeCount and afterCount fields
+		/* Add the beforeCount and afterCount fields to the sequence */
         m_vlvRequest.add(new ASN1Integer(m_beforeCount));
 		m_vlvRequest.add(new ASN1Integer(m_afterCount));
 
-		// Construct the inner CHOICE sequence
+		/* The next field is dependent on the type of indexing being used.
+         * An "indexed" VLV request uses a ASN.1 SEQUENCE to index to the 
+         * correct object in the list.  Encode the ASN.1 CHOICE corresponding 
+         * to this option (as indicated by the byoffset fieldin the ASN.1.
+         */
 		ASN1Sequence byoffset = new ASN1Sequence(2);
 		byoffset.add(new ASN1Integer(m_startIndex));
 		byoffset.add(new ASN1Integer(m_contentCount));;
 
-		// Add the CHOICE option corresponding to byoffset choice
+		/* Add the ASN.1 sequence to the encoded data
+		 */
 		m_vlvRequest.add(new ASN1Tagged(	new ASN1Identifier(ASN1Identifier.CONTEXT, true,
 											BYOFFSET),
 										byoffset,
 										false));
 
-		// Add the optional context string if one is avaialable
+		/* Add the optional context string if one is available.
+		 */
 		if (m_context != null)
 			m_vlvRequest.add(new ASN1OctetString(m_context));
 
@@ -313,39 +321,31 @@ public class LDAPVirtualListControl extends LDAPControl {
 
 
   /**
-	*	3.1.2 getAfterCount 
     *	Returns the number of entries after the top/center one to return per 
 	*   page of results. 
 	*/
 	public int getAfterCount() 
     {
-	
 		return m_afterCount;
-		
 	}   
     
 
 
   /**
-	*	3.1.3 getBeforeCount 
 	*	Returns the number of entries before the top/center one to return per  
 	*   page of results. 
 	*/
 	public int getBeforeCount() 
     {
-
 		return m_beforeCount;
 	}    
     
 
 
   /**
-    *	3.1.4 getListSize 
 	*	Returns the size of the virtual search results list. For a newly 
 	*	constructed control - one which is not the result of parseResponse on 
 	*	a control returned by a server - the method returns -1. 
-	*
-	*	Same as the contentCount if it exists
 	*/
    public int getListSize() 
    {
@@ -355,9 +355,7 @@ public class LDAPVirtualListControl extends LDAPControl {
     
 
     
-    
   /**
-    *	3.1.5 setListSize 
 	*	Sets the assumed size of the virtual search results list. This will 
 	*	typically be a number returned on a previous virtual list request in 
 	*	an LDAPVirtualListResponse. 
@@ -366,8 +364,15 @@ public class LDAPVirtualListControl extends LDAPControl {
     {
 		m_contentCount = size;
 
-		// Rebuild the request
+		/* since we just changed a field we need to rebuild the ber
+		 * encoded control
+		 */
 		BuildIndexedVLVRequest();
+		
+		/* Set the request data field in the in the parent LDAPControl to
+		 * the ASN.1 encoded value of this control.  This encoding will be 
+		 * appended to the search request when the control is sent.
+		 */
 		setValue (m_vlvRequest.getEncoding(new LBEREncoder()));
 
 	}
@@ -375,17 +380,17 @@ public class LDAPVirtualListControl extends LDAPControl {
 
     
   /**
-    *	3.1.6 setRange 
-	*	Sets the center or starting list index to return, and the number of 
-	*	results before and after. 
+	* Sets the center or starting list index to return, and the number of 
+	* results before and after.<br><br>
 	*
-	*	@param	listIndex		The center or starting list index to be returned. 
+	* @param	listIndex		The center or starting list index to be 
+	* returned. <br><br>
     *
-    *	@param	beforeCount		The number of entries before "listIndex" to be 
-	*							returned. 
+    * @param	beforeCount		The number of entries before "listIndex" to be 
+	* returned. <br><br>
     *
-    *	@param	afterCount		The number of entries after "listIndex" to be 
-	*							returned. 
+    * @param	afterCount		The number of entries after "listIndex" to be 
+	* returned. <br><br>
 	*/
     
 	public void setRange( int listIndex, 
@@ -393,60 +398,69 @@ public class LDAPVirtualListControl extends LDAPControl {
                          int afterCount ) 
     {
 
-        // Save off the fields in local variables
+        /* Save off the fields in local variables
+         */
 		m_beforeCount = beforeCount;
 		m_afterCount = afterCount;
 		m_startIndex = listIndex;
 
-		// Rebuild the request
+		/* since we just changed a field we need to rebuild the ber
+		 * encoded control
+		 */
 		BuildIndexedVLVRequest();
 
+        /* Set the request data field in the in the parent LDAPControl to
+		 * the ASN.1 encoded value of this control.  This encoding will be 
+		 * appended to the search request when the control is sent.
+		 */
 		setValue (m_vlvRequest.getEncoding(new LBEREncoder()));
 
 	}
 
     
-  /**
-    *	3.1.6 setRange -missing
-	*	Sets the center or starting list index to return, and the number of 
-	*	results before and after. 
-	*
-	*  @param jumpTo		A search expression that defines the first 
-	*						element to be returned in the virtual search 
-    *						results. The filter expression in the search 
-    *						operation itself may be, for example, 
-    *						"objectclass=person" and the jumpTo expression in 
-    *						the virtual list control may be "cn=m*", to 
-    *						retrieve a subset of entries starting at or 
-    *						centered around those with a common name 
-    *						beginning with the letter "M". 
-    *
-    *	@param	beforeCount		The number of entries before "listIndex" to be 
-	*							returned. 
-    *
-    *	@param	afterCount		The number of entries after "listIndex" to be 
-	*							returned. 
-	*/
+  /** PROPOSED ADDITION TO NEXT VERSION OF DRAFT (v7)
+   *
+   * Sets the center or starting list index to return, and the number of 
+   * results before and after.<br><br>
+   *
+   * @param jumpTo A search expression that defines the first 
+   * element to be returned in the virtual search results. The filter 
+   * expression in the search operation itself may be, for example, 
+   * "objectclass=person" and the jumpTo expression in the virtual 
+   * list control may be "cn=m*", to retrieve a subset of entries 
+   * starting at or centered around those with a common name 
+   * beginning with the letter "M".<br><br>
+   *
+   * @param	beforeCount	The number of entries before "listIndex" to be 
+   * returned.<br><br>
+   *
+   * @param	afterCount The number of entries after "listIndex" to be 
+   * returned.<br><br>
+   */
     
 	public void setRange( String jumpTo, 
                          int beforeCount, 
                          int afterCount ) 
     {
-		// Save off the fields in local variables
+		/* Save off the fields in local variables
+		 */
 		m_beforeCount = beforeCount;
 		m_afterCount = afterCount;
 		m_jumpTo = jumpTo;
 
-		// Rebuild the request using private method
+		/* since we just changed a field we need to rebuild the ber
+		 * encoded control
+		 */
 		BuildTypedVLVRequest();
 
-		// Set the request data in the parent LDAPControl value
-		// field.  This encoding will be appended to the search request
+		/* Set the request data field in the in the parent LDAPControl to
+		 * the ASN.1 encoded value of this control.  This encoding will be 
+		 * appended to the search request when the control is sent.
+		 */
 		setValue (m_vlvRequest.getEncoding(new LBEREncoder()));
 	}
     
   /**
-	*	3.1.7 getContext 
 	*   Returns the cookie used by some servers to optimize the processing of 
 	*	virtual list requests. 
 	*/    
@@ -459,26 +473,35 @@ public class LDAPVirtualListControl extends LDAPControl {
 
     
   /**
-    *	3.1.8 setContext 
 	*	Sets the cookie used by some servers to optimize the processing of 
 	*	virtual list requests. It should be the context field returned in a 
 	*	virtual list response control for the same search. 
 	*/
    public void setContext( String context ) 
    {	
+        /* Index of the context field if one exists in the ber
+         */
 		int CONTEXTIDINDEX = 3;
+		
+		/* Save off the new value in private variable
+		 */
 		m_context = context;
 
+        /* Is there a context field that is already in the ber
+         */
 		if (m_vlvRequest.size() == 4) {
-			// Replace it!
+			/* If YES then replace it */			 
 			m_vlvRequest.set(CONTEXTIDINDEX, new ASN1OctetString(m_context));
 		}
 		else if (m_vlvRequest.size() == 3) {
-			// Add a new one - none existed before
+			/* If no then add a new one */
 			m_vlvRequest.add(new ASN1OctetString(m_context));
 		}
 
-		// Do not forget to set the value field in the parent
+		/* Set the request data field in the in the parent LDAPControl to
+		 * the ASN.1 encoded value of this control.  This encoding will be 
+		 * appended to the search request when the control is sent.
+		 */
 		setValue (m_vlvRequest.getEncoding(new LBEREncoder()));
 		
    }
