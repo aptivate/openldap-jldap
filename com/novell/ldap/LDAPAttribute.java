@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttribute.java,v 1.10 2000/10/09 19:11:22 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttribute.java,v 1.11 2000/10/18 22:15:13 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -25,7 +25,8 @@ import java.util.*;
  *
  * <p>The LDAPAttribute class is used to specify an attribute to be added 
  * to, deleted from, or modified in a directory entry. An LDAPAttribute object
- * is also returned on a search of a directory.</p>
+ * is also returned on a search of a directory.
+ * Methods in this class are not thread safe.</p>
  *
  * <p> On an instance of an LDAPAttribute object, you can perform the following
  * tasks: </p>
@@ -113,7 +114,7 @@ public class LDAPAttribute {
      *
      * @param attrString Value of the attribute as a string.
      */
-    public synchronized void addValue(String attrString) {
+    public void addValue(String attrString) {
         values.addElement(attrString);
     }
 
@@ -122,7 +123,7 @@ public class LDAPAttribute {
      *
      * @param attrBytes Value of the attribute as raw bytes.
      */
-    public synchronized void addValue(byte attrBytes[]) {
+    public void addValue(byte attrBytes[]) {
         values.addElement(attrBytes);
     }
 
@@ -385,7 +386,7 @@ public class LDAPAttribute {
      *
      * @param attrString   Value of the attribute as a string.
      */
-    public synchronized void removeValue(String attrString) {
+    public void removeValue(String attrString) {
         values.removeElement(attrString);
     }
 
@@ -394,7 +395,7 @@ public class LDAPAttribute {
      *
      * @param attrBytes    Value of the attribute as raw bytes.
      */
-    public synchronized void removeValue(byte attrBytes[]) {
+    public void removeValue(byte attrBytes[]) {
         values.removeElement(attrBytes);
     }
 
