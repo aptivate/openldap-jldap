@@ -77,7 +77,7 @@ public class GetEffectivePrivilegesResponse extends LDAPExtendedResponse {
    /**
     * Returns the effective privileges.
     *
-    * <p>See the NamingContextConstants class for the privilege flags.
+    * <p>See the ReplicationConstants class for the privilege flags.
     *
     * @return A flag which is a combination of zero or more privilege flags as
     * returned by the server.

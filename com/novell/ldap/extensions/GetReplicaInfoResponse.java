@@ -158,9 +158,9 @@ public class GetReplicaInfoResponse extends LDAPExtendedResponse {
 
 
    /**
-    * Returns the numeric identifier for the naming context (partition).
+    * Returns the numeric identifier for the partition.
     *
-    * @return Integer value specifying the naming context ID.
+    * @return Integer value specifying the partition ID.
     */
    public int getpartitionID() {
         return partitionID;
@@ -170,19 +170,19 @@ public class GetReplicaInfoResponse extends LDAPExtendedResponse {
     * Returns the current state of the replica.
     *
     * @return Integer value specifying the current state of the replica. See
-    * NamingContextConstants class for possible values for this field.
+    * ReplicationConstants class for possible values for this field.
     *
-    * @see NamingContextConstants#LDAP_RS_BEGIN_ADD
-    * @see NamingContextConstants#LDAP_RS_DEAD_REPLICA
-    * @see NamingContextConstants#LDAP_RS_DYING_REPLICA
-    * @see NamingContextConstants#LDAP_RS_JS_0
-    * @see NamingContextConstants#LDAP_RS_JS_1
-    * @see NamingContextConstants#LDAP_RS_JS_2
-    * @see NamingContextConstants#LDAP_RS_LOCKED
-    * @see NamingContextConstants#LDAP_RS_MASTER_DONE
-    * @see NamingContextConstants#LDAP_RS_MASTER_START
-    * @see NamingContextConstants#LDAP_RS_SS_0
-    * @see NamingContextConstants#LDAP_RS_TRANSITION_ON
+    * @see ReplicationConstants#LDAP_RS_BEGIN_ADD
+    * @see ReplicationConstants#LDAP_RS_DEAD_REPLICA
+    * @see ReplicationConstants#LDAP_RS_DYING_REPLICA
+    * @see ReplicationConstants#LDAP_RS_JS_0
+    * @see ReplicationConstants#LDAP_RS_JS_1
+    * @see ReplicationConstants#LDAP_RS_JS_2
+    * @see ReplicationConstants#LDAP_RS_LOCKED
+    * @see ReplicationConstants#LDAP_RS_MASTER_DONE
+    * @see ReplicationConstants#LDAP_RS_MASTER_START
+    * @see ReplicationConstants#LDAP_RS_SS_0
+    * @see ReplicationConstants#LDAP_RS_TRANSITION_ON
     */
    public int getreplicaState() {
         return replicaState;
@@ -219,7 +219,7 @@ public class GetReplicaInfoResponse extends LDAPExtendedResponse {
    }
 
    /**
-    * Returns the distinguished name of the naming context.
+    * Returns the distinguished name of the partition.
     *
     * @return String value specifying the name of the partition read.
     */
@@ -230,17 +230,17 @@ public class GetReplicaInfoResponse extends LDAPExtendedResponse {
    /**
     *  Returns the replica type.
     *
-    * <p>See the NamingContextConstants class for possible values for
+    * <p>See the ReplicationConstants class for possible values for
     * this field.</p>
     *
     * @return Integer identifying the type of the replica.
     *
-    * @see NamingContextConstants#LDAP_RT_MASTER
-    * @see NamingContextConstants#LDAP_RT_SECONDARY
-    * @see NamingContextConstants#LDAP_RT_READONLY
-    * @see NamingContextConstants#LDAP_RT_SUBREF
-    * @see NamingContextConstants#LDAP_RT_SPARSE_WRITE
-    * @see NamingContextConstants#LDAP_RT_SPARSE_READ
+    * @see ReplicationConstants#LDAP_RT_MASTER
+    * @see ReplicationConstants#LDAP_RT_SECONDARY
+    * @see ReplicationConstants#LDAP_RT_READONLY
+    * @see ReplicationConstants#LDAP_RT_SUBREF
+    * @see ReplicationConstants#LDAP_RT_SPARSE_WRITE
+    * @see ReplicationConstants#LDAP_RT_SPARSE_READ
     */
    public int getreplicaType() {
         return replicaType;
@@ -249,13 +249,13 @@ public class GetReplicaInfoResponse extends LDAPExtendedResponse {
    /**
     * Returns flags that specify whether the replica is busy or is a boundary.
     *
-    * <p>See the NamingContextConstants class for possible values for
+    * <p>See the ReplicationConstants class for possible values for
     * this field.</p>
     *
     * @return Integer value specifying the flags for the replica.
     *
-    * @see NamingContextConstants#LDAP_DS_FLAG_BUSY
-    * @see NamingContextConstants#LDAP_DS_FLAG_BOUNDARY
+    * @see ReplicationConstants#LDAP_DS_FLAG_BUSY
+    * @see ReplicationConstants#LDAP_DS_FLAG_BOUNDARY
     */
    public int getflags() {
         return flags;

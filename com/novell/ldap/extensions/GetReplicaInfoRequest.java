@@ -57,7 +57,7 @@ public class GetReplicaInfoRequest extends LDAPExtendedOperation {
  public GetReplicaInfoRequest(String serverDN, String partitionDN)
                 throws LDAPException {
 
-        super(NamingContextConstants.GET_REPLICA_INFO_REQ, null);
+        super(ReplicationConstants.GET_REPLICA_INFO_REQ, null);
 
         try {
 

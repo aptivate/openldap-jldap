@@ -40,7 +40,7 @@ public class RefreshLDAPServerRequest extends LDAPExtendedOperation {
  public RefreshLDAPServerRequest()
                 throws LDAPException {
 
-        super(NamingContextConstants.REFRESH_SERVER_REQ, null);
+        super(ReplicationConstants.REFRESH_SERVER_REQ, null);
 
    }
 

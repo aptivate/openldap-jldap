@@ -19,8 +19,8 @@ import com.novell.ldap.asn1.*;
 import com.novell.ldap.resources.*;
 
 /**
- *  	This API is used to trigger the specified background process on the
- *	NDS server.
+ *      This API is used to trigger the specified background process on the
+ *  NDS server.
  *
  *  <p>The TriggerBackgroundProcessRequest uses tone of the following OID's
  *  depending on the process being triggered:<br>
@@ -40,13 +40,13 @@ import com.novell.ldap.resources.*;
 
 public class TriggerBackgroundProcessRequest extends LDAPExtendedOperation {
 
-	/** ID's used to refer to different NDS backgground processes*/
-	public static final int LDAP_BK_PROCESS_BKLINKER	= 1;
-	public static final int LDAP_BK_PROCESS_JANITOR		= 2;
-	public static final int LDAP_BK_PROCESS_LIMBER		= 3;
-	public static final int LDAP_BK_PROCESS_SKULKER		= 4;
-	public static final int LDAP_BK_PROCESS_SCHEMA_SYNC = 5;
-	public static final int LDAP_BK_PROCESS_PART_PURGE	= 6;
+    /** ID's used to refer to different NDS backgground processes*/
+    public static final int LDAP_BK_PROCESS_BKLINKER    = 1;
+    public static final int LDAP_BK_PROCESS_JANITOR     = 2;
+    public static final int LDAP_BK_PROCESS_LIMBER      = 3;
+    public static final int LDAP_BK_PROCESS_SKULKER     = 4;
+    public static final int LDAP_BK_PROCESS_SCHEMA_SYNC = 5;
+    public static final int LDAP_BK_PROCESS_PART_PURGE  = 6;
 
 /**
  *
@@ -58,36 +58,36 @@ public class TriggerBackgroundProcessRequest extends LDAPExtendedOperation {
  * @exception LDAPException A general exception which includes an error message
  *                          and an LDAP error code.
  */
-	public TriggerBackgroundProcessRequest(int processID)
+    public TriggerBackgroundProcessRequest(int processID)
                 throws LDAPException {
 
-		super(null, null);
+        super(null, null);
 
-		switch (processID) {
+        switch (processID) {
 
-		case LDAP_BK_PROCESS_BKLINKER:
-			setID(NamingContextConstants.TRIGGER_BKLINKER_REQ);
-			break;
+        case LDAP_BK_PROCESS_BKLINKER:
+            setID(ReplicationConstants.TRIGGER_BKLINKER_REQ);
+            break;
         case LDAP_BK_PROCESS_JANITOR:
-			setID(NamingContextConstants.TRIGGER_JANITOR_REQ);
-			break;
+            setID(ReplicationConstants.TRIGGER_JANITOR_REQ);
+            break;
         case LDAP_BK_PROCESS_LIMBER:
-			setID(NamingContextConstants.TRIGGER_LIMBER_REQ);
-			break;
+            setID(ReplicationConstants.TRIGGER_LIMBER_REQ);
+            break;
         case LDAP_BK_PROCESS_SKULKER:
-			setID(NamingContextConstants.TRIGGER_SKULKER_REQ);
-			break;
+            setID(ReplicationConstants.TRIGGER_SKULKER_REQ);
+            break;
         case LDAP_BK_PROCESS_SCHEMA_SYNC:
-			setID(NamingContextConstants.TRIGGER_SCHEMA_SYNC_REQ);
-			break;
+            setID(ReplicationConstants.TRIGGER_SCHEMA_SYNC_REQ);
+            break;
         case LDAP_BK_PROCESS_PART_PURGE:
-			setID(NamingContextConstants.TRIGGER_PART_PURGE_REQ);
-			break;
-		default:
-			throw new LDAPException(ExceptionMessages.PARAM_ERROR,
+            setID(ReplicationConstants.TRIGGER_PART_PURGE_REQ);
+            break;
+        default:
+            throw new LDAPException(ExceptionMessages.PARAM_ERROR,
                           LDAPException.PARAM_ERROR);
 
-		}
-	}
+        }
+    }
 
 }

@@ -60,7 +60,7 @@ public class RemoveReplicaRequest extends LDAPExtendedOperation {
  public RemoveReplicaRequest(String dn, String serverDN, int flags)
                 throws LDAPException {
 
-        super(NamingContextConstants.DELETE_REPLICA_REQ, null);
+        super(ReplicationConstants.DELETE_REPLICA_REQ, null);
 
         try {
 

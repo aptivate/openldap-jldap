@@ -56,7 +56,7 @@ public class ReceiveAllUpdatesRequest extends LDAPExtendedOperation {
  public ReceiveAllUpdatesRequest(String partitionRoot, String toServerDN, String fromServerDN)
                 throws LDAPException {
 
-        super(NamingContextConstants.RECEIVE_ALL_UPDATES_REQ, null);
+        super(ReplicationConstants.RECEIVE_ALL_UPDATES_REQ, null);
 
         try {
 

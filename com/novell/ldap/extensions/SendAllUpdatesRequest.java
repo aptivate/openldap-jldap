@@ -52,7 +52,7 @@ public class SendAllUpdatesRequest extends LDAPExtendedOperation {
  public SendAllUpdatesRequest(String partitionRoot, String origServerDN)
                 throws LDAPException {
 
-        super(NamingContextConstants.SEND_ALL_UPDATES_REQ, null);
+        super(ReplicationConstants.SEND_ALL_UPDATES_REQ, null);
 
         try {
 

@@ -50,7 +50,7 @@ public class SchemaSyncRequest extends LDAPExtendedOperation {
  public SchemaSyncRequest(String serverName, int delay)
                 throws LDAPException {
 
-        super(NamingContextConstants.SCHEMA_SYNC_REQ, null);
+        super(ReplicationConstants.SCHEMA_SYNC_REQ, null);
 
         try {
 

@@ -49,7 +49,7 @@ public class ListReplicasRequest extends LDAPExtendedOperation {
  public ListReplicasRequest(String serverName)
                 throws LDAPException {
 
-        super(NamingContextConstants.LIST_REPLICAS_REQ, null);
+        super(ReplicationConstants.LIST_REPLICAS_REQ, null);
 
         try {
 

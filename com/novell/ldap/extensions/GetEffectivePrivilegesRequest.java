@@ -63,7 +63,7 @@ import java.io.ByteArrayOutputStream;
     public GetEffectivePrivilegesRequest(String dn, String trusteeDN, String attrName)
                 throws LDAPException {
 
-        super(NamingContextConstants.GET_EFFECTIVE_PRIVILEGES_REQ, null);
+        super(ReplicationConstants.GET_EFFECTIVE_PRIVILEGES_REQ, null);
 
         try {
 

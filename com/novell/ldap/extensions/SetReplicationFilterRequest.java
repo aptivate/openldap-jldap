@@ -64,7 +64,7 @@ public class SetReplicationFilterRequest extends LDAPExtendedOperation {
  public SetReplicationFilterRequest(String serverDN,  String[][] replicationFilter)
                 throws LDAPException {
 
-        super(NamingContextConstants.SET_REPLICATION_FILTER_REQ, null);
+        super(ReplicationConstants.SET_REPLICATION_FILTER_REQ, null);
 
         try {
 

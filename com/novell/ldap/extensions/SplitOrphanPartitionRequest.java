@@ -41,14 +41,14 @@ public class SplitOrphanPartitionRequest extends LDAPExtendedOperation {
 
 /**
  *
- * Constructs an extended operation object for creating an orphan naming context.
+ * Constructs an extended operation object for creating an orphan partition.
  *
  *
  * @param serverDN    The distinguished name of the server on which
- *                    the new orphan naming context will reside.
+ *                    the new orphan partition will reside.
  *<br><br>
  * @param contextName The distinguished name of the
- *                    new orphan naming context.
+ *                    new orphan partition.
  *
  * @exception LDAPException A general exception which includes an error message
  *                          and an LDAP error code.
@@ -56,7 +56,7 @@ public class SplitOrphanPartitionRequest extends LDAPExtendedOperation {
  public SplitOrphanPartitionRequest(String serverDN, String contextName)
                 throws LDAPException {
 
-        super(NamingContextConstants.CREATE_ORPHAN_NAMING_CONTEXT_REQ, null);
+        super(ReplicationConstants.CREATE_ORPHAN_NAMING_CONTEXT_REQ, null);
 
         try {
 

@@ -54,7 +54,7 @@ public class GetReplicationFilterRequest extends LDAPExtendedOperation {
  public GetReplicationFilterRequest(String serverDN)
                 throws LDAPException {
 
-        super(NamingContextConstants.GET_REPLICATION_FILTER_REQ, null);
+        super(ReplicationConstants.GET_REPLICATION_FILTER_REQ, null);
 
         try {
 
@@ -70,7 +70,7 @@ public class GetReplicationFilterRequest extends LDAPExtendedOperation {
             // Add the serverDN to encoded data
             asn1_serverDN.encode(encoder, encodedData);
             setValue(encodedData.toByteArray());
-		}
+        }
       catch(IOException ioe) {
          throw new LDAPException(ExceptionMessages.ENCODING_ERROR,
                                  LDAPException.ENCODING_ERROR);
