@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.59 2000/11/27 18:19:59 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.60 2000/11/28 23:50:41 vtag Exp $
 *
 * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
 * 
@@ -180,10 +180,27 @@ public class LDAPConnection implements Cloneable
     */
    public Object clone()
    {
-      // Tell the Connection object a clone exists
-      conn.createClone();
+      LDAPConnection newClone = new LDAPConnection();
+      conn.createClone();     // Tell the Connection object a clone exists
+      newClone.conn = conn;   // same connection
 
-      throw new RuntimeException("Method LDAPConnection.clone not implemented");
+      //now just duplicate the defSearchCons and responseCtls
+      if (defSearchCons != null){
+         newClone.defSearchCons = (LDAPSearchConstraints)defSearchCons.clone();
+      }
+      else{
+         newClone.defSearchCons = null;
+      }
+      if (responseCtls != null){
+         newClone.responseCtls = new LDAPControl[responseCtls.length];
+         for(int i=0; i < responseCtls.length; i++){
+            newClone.responseCtls[i] = (LDAPControl)responseCtls[i].clone();
+         }
+      }
+      else {
+         newClone.responseCtls = null;
+      }
+      return (Object) newClone;
    }
 
    /**
