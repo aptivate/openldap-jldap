@@ -18,7 +18,8 @@ package org.ietf.ldap;
 /**
  *  Represents a set of options to control an LDAP operation.
  *
- * @see com.novell.ldap.LDAPConstraints
+ * @see <a href="../../../../doc/com/novell/ldap/LDAPConstraints.html">
+            com.novell.ldap.Constraints</a>
  */
 public class LDAPConstraints
 {
@@ -68,7 +69,9 @@ public class LDAPConstraints
      * Constructs an LDAPConstraints object, using the default
      * option values.
      *
-     * @see com.novell.ldap.LDAPConstraints#LDAPConstraints()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPConstraints.html
+            #LDAPConstraints()">
+            com.novell.ldap.LDAPConstraints.LDAPConstraints()</a>
      */
     public LDAPConstraints()
     {
@@ -83,6 +86,11 @@ public class LDAPConstraints
      *
      * @see com.novell.ldap.LDAPConstraints#LDAPConstraints(
                 int,boolean,LDAPReferralHandler,int)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPConstraints.html
+            #LDAPConstraints(int, boolean, 
+            com.novell.ldap.LDAPReferralHandler, int)">
+            com.novell.ldap.LDAPConstraints.LDAPConstraints(int, boolean, 
+            LDAPReferralHandler, int)</a>
      */
     public LDAPConstraints(int msLimit,
                       boolean doReferrals,
@@ -173,7 +181,9 @@ public class LDAPConstraints
      * Returns the maximum number of hops to follow during automatic
      * referral following.
      *
-     * @see com.novell.ldap.LDAPConstraints#getHopLimit()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPConstraints.html
+            #getHopLimit()">
+            com.novell.ldap.LDAPConstraints.getHopLimit()</a>
      */
     public int getHopLimit()
     {
@@ -183,7 +193,9 @@ public class LDAPConstraints
     /**
      * Returns true if referrals are to be followed automatically.
      *
-     * @see com.novell.ldap.LDAPConstraints#getHopLimit()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPConstraints.html
+            #getReferralFollowing()">
+            com.novell.ldap.LDAPConstraints.getReferralFollowing()</a>
      */
     public boolean getReferralFollowing()
     {
@@ -194,7 +206,9 @@ public class LDAPConstraints
      * Returns the maximum number of milliseconds to wait for any operation
      * under these constraints.
      *
-     * @see com.novell.ldap.LDAPConstraints#getTimeLimit()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPConstraints.html
+            #getTimeLimit()">
+            com.novell.ldap.LDAPConstraints.getTimeLimit()</a>
      */
     public int getTimeLimit()
     {
@@ -205,7 +219,9 @@ public class LDAPConstraints
      * Sets the maximum number of hops to follow in sequence during
      * automatic referral following.
      *
-     * @see com.novell.ldap.LDAPConstraints#setHopLimit(int)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPConstraints.html
+            #setHopLimit(int)">
+            com.novell.ldap.LDAPConstraints.setHopLimit(int)</a>
      */
     public void setHopLimit(int hop_limit)
     {
@@ -216,8 +232,10 @@ public class LDAPConstraints
     /**
      * Specifies the object that will process authentication requests.
      *
-     * @see com.novell.ldap.LDAPConstraints#setReferralHandler(
-                    LDAPReferralHandler)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPConstraints.html
+            #setReferralHandler(com.novell.ldap.LDAPReferralHandler)">
+            com.novell.ldap.LDAPConstraints.setReferralHandler(
+            LDAPReferralHandler)</a>
      */
     public void setReferralHandler(LDAPReferralHandler binder)
     {
@@ -251,7 +269,9 @@ public class LDAPConstraints
      * Specifies whether referrals are followed automatically or whether
      * referrals throw an LDAPReferralException.
      *
-     * @see com.novell.ldap.LDAPConstraints#setReferralFollowing(boolean)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPConstraints.html
+            #setReferralFollowing(boolean)">
+            com.novell.ldap.LDAPConstraints.setReferralFollowing(boolean)</a>
      */
     public void setReferralFollowing(boolean doReferrals)
     {
@@ -263,7 +283,9 @@ public class LDAPConstraints
      * Sets the maximum number of milliseconds the client waits for
      * any operation under these search constraints to complete.
      *
-     * @see com.novell.ldap.LDAPConstraints#setTimeLimit(int)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPConstraints.html
+            #setTimeLimit(int)">
+            com.novell.ldap.LDAPConstraints.setTimeLimit(int)</a>
      */
     public void setTimeLimit(int msLimit)
     {
@@ -274,7 +296,9 @@ public class LDAPConstraints
     /**
      * Returns the client controls to be used by the interface.
      *
-     * @see com.novell.ldap.LDAPConstraints#getClientControls()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPConstraints.html
+            #getClientControla()">
+            com.novell.ldap.LDAPConstraints.getClientControla()</a>
      */
     public LDAPControl[] getClientControls()
     {
@@ -294,7 +318,9 @@ public class LDAPConstraints
     /**
      * Returns the server controls to be sent to the server.
      *
-     * @see com.novell.ldap.LDAPConstraints#getServerControls()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPConstraints.html
+            #getServerControls()">
+            com.novell.ldap.LDAPConstraints.getServerControls()</a>
      */
     public LDAPControl[] getServerControls()
     {
@@ -314,7 +340,9 @@ public class LDAPConstraints
     /**
      * Sets a client control for use by the interface.
      *
-     * @see com.novell.ldap.LDAPConstraints#setClientControls(LDAPControl)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPConstraints.html
+            #setServerControls(com.novell.ldap.LDAPControl)">
+            com.novell.ldap.LDAPConstraints.setServerControls(LDAPControl)</a>
      */
     public void setClientControls(LDAPControl control)
     {
@@ -325,7 +353,9 @@ public class LDAPConstraints
     /**
      * Sets an array of client controls for use by the interface.
      *
-     * @see com.novell.ldap.LDAPConstraints#setClientControls(LDAPControl[])
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPConstraints.html
+            #setClientControls(com.novell.ldap.LDAPControl[])">
+            com.novell.ldap.LDAPConstraints.setClientControls(LDAPControl[])</a>
      */
     public void setClientControls(LDAPControl[] controls)
     {
@@ -336,7 +366,9 @@ public class LDAPConstraints
     /**
      * Sets a server control to be sent to the server.
      *
-     * @see com.novell.ldap.LDAPConstraints#setServerControls(LDAPControl)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPConstraints.html
+            #setServerControls(com.novell.ldap.LDAPControl)">
+            com.novell.ldap.LDAPConstraints.setServerControls(LDAPControl)</a>
      */
     public void setServerControls(LDAPControl control)
     {
@@ -347,7 +379,9 @@ public class LDAPConstraints
     /**
      * Sets an array of server controls to be sent to the server.
      *
-     * @see com.novell.ldap.LDAPConstraints#setServerControls(LDAPControl[])
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPConstraints.html
+            #setServerControls(com.novell.ldap.LDAPControl[])">
+            com.novell.ldap.LDAPConstraints.setServerControls(LDAPControl[])</a>
      */
     public void setServerControls(LDAPControl[] controls)
     {
