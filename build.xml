@@ -1,4 +1,4 @@
-<!-- $Novell: /ldap/src/jldap/build.xml,v 1.42 2001/06/26 15:48:39 vtag Exp $ -->
+<!-- $Novell: /ldap/src/jldap/build.xml,v 1.43 2001/06/29 21:52:12 vtag Exp $ -->
 <!--
  ******************************************************************************
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
@@ -137,6 +137,15 @@
 			<property name="DEBUG_VALUE" value="false"/>
 		</ant>
 	</target>
+
+    <!-- =================================================================== -->
+    <!-- setup for javadoc                                                   -->
+    <!-- =================================================================== -->
+    <target name="setupDoc" depends="init">
+		<ant antfile="javac.xml" target="setupDebug">
+			<property name="DEBUG_VALUE" value="true"/>
+		</ant>
+    </target>
 
     <!-- =================================================================== -->
     <!-- final is synonym for build release classes                          -->
@@ -287,7 +296,7 @@
     <!-- =================================================================== -->
     <!-- create javadoc for IETF ldap classes                                -->
     <!-- =================================================================== -->
-    <target name="docldap" depends="init, debug">
+    <target name="docldap" depends="init, setupDoc">
 		<delete dir="${pkg.apidoc}"/>
         <echo message="Creating distribution ldap javadoc"/>
         <mkdir dir="${pkg.apidoc}"/>
@@ -310,13 +319,11 @@
     <!-- =================================================================== -->
     <!-- create javadoc for all LDAP classes for internal developer use only -->
     <!-- =================================================================== -->
-    <target name="docdeveloper" depends="init">
+    <target name="docdeveloper" depends="init, setupDoc">
 		<delete dir="${pkg.developer}"/>
         <echo message="Creating internal developer ldap javadoc"/>
         <mkdir dir="${doc.developer}"/>
 		<filter token="COMPILE_DEBUG" value="true"/>
-		<delete file="org/ietf/ldap/client/Debug.java"/>
-		<copy file="org/ietf/ldap/client/Debug.template" tofile="org/ietf/ldap/client/Debug.java" filtering="YES"/>
         <javadoc sourcepath="${docsrc}"
             destdir="${doc.developer}"
             classpath="external/ssl/domestic/nssl1.2_dom.jar;external/jsse/lib/jcert.jar;external/jsse/lib/jnet.jar;external/jsse/lib/jsse.jar"
