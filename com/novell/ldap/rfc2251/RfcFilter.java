@@ -573,6 +573,9 @@ public class RfcFilter extends ASN1Choice
             if (value == null){
                 topOfStack.setTaggedValue(current);
                 filterStack.add(current);
+            } else if (value instanceof ASN1SetOf) {
+                ((ASN1SetOf)value).add( current );
+                //don't add this to the stack:
             } else if (value instanceof ASN1Set) {
                 ((ASN1Set)value).add( current );
                 //don't add this to the stack:
@@ -791,7 +794,7 @@ public class RfcFilter extends ASN1Choice
         if (rfcType == AND || rfcType == OR){
             current = new ASN1Tagged(
                     new ASN1Identifier(ASN1Identifier.CONTEXT, true, rfcType),
-                    new ASN1Set(),  //content to be set later
+                    new ASN1SetOf(),  //content to be set later
                     false);
         } else if (rfcType == NOT){
             current = new ASN1Tagged(
@@ -815,6 +818,10 @@ public class RfcFilter extends ASN1Choice
   */
     public void endNestedFilter(int rfcType) throws LDAPLocalException
     {
+        if (rfcType == NOT) {
+            //if this is a Not than Not should be the second thing on the stack
+            filterStack.pop();
+        }
         int topOfStackType = ((ASN1Object)
                 filterStack.peek()).getIdentifier().getTag();
         if (topOfStackType != rfcType){
