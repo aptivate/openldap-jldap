@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPDN.java,v 1.15 2001/02/27 21:38:45 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPDN.java,v 1.16 2001/03/01 00:29:49 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -116,8 +116,8 @@ public class LDAPDN {
     * unescapeRDN unescapes the AttributeValue by
     * removing the '\' when the next character fits the following:<BR>
     * ',' '+' '"' '\' '<' '>' ';'<BR>
-    * '#' if it comes at the beginning of the string (without the '\').<BR>
-    * ' ' (space) if it comes at the beginning or the end of a string (without the '\').
+    * '#' if it comes at the beginning of the Attribute Name (without the '\').<BR>
+    * ' ' (space) if it comes at the beginning or the end of the Attribute Name
     * </p>
     *  @param rdn            The RDN to unescape.
     *
