@@ -60,223 +60,226 @@ import java.io.EOFException;
  */
 public class ASN1Identifier extends Object implements Cloneable {
 
-   /**
-    * Universal tag class.
-    *
-    * <p> UNIVERSAL = 0 </p>
-    */
-   public static final int UNIVERSAL = 0;
-
-   /**
-    * Application-wide tag class.
-    *
-    * <p> APPLICATION = 1 </p>
-    */
-   public static final int APPLICATION = 1;
-
-   /**
-    * Context-specific tag class.
-    *
-    * <p> CONTEXT = 2 </p>
-    */
-   public static final int CONTEXT = 2;
-
-   /**
-    * Private-use tag class.
-    *
-    * <p> PRIVATE = 3 </p>
-    */
-   public static final int PRIVATE = 3;
-
-
-   /* Private variables
-    */
-
-   private int tagClass;
-   private boolean constructed;
-   private int tag;
-   private int encodedLength;
-
-   /* Constructors for ASN1Identifier
-    */
-
-   /**
-    * Constructs an ASN1Identifier using the classtype, form and tag.
-    *
-    * @param tagClass As defined above.
-    *
-    * @param constructed Set to true if constructed and false if primitive.
-    *
-    * @param tag The tag of this identifier
-    */
-   public ASN1Identifier(int tagClass, boolean constructed, int tag)
-   {
-      this.tagClass = tagClass;
-      this.constructed = constructed;
-      this.tag = tag;
-   }
-
-   /**
-    * Decode an ASN1Identifier directly from an InputStream and
-    * save the encoded length of the ASN1Identifier.
-    *
-    * @param in The input stream to decode from.
-    */
-   public ASN1Identifier(InputStream in)
-      throws IOException
-   {
-      int r = in.read();
-      encodedLength++;
-      if(r < 0)
-         throw new EOFException("BERDecoder: decode: EOF in Identifier");
-      tagClass = r >> 6;
-      constructed = (r & 0x20) != 0;
-      tag = r & 0x1F;      // if tag < 30 then its a single octet identifier.
-      if(tag == 0x1F)      // if true, its a multiple octet identifier.
-         tag = decodeTagNumber(in);
-   }
-
-   public ASN1Identifier()
-   {
-   }
-
-   /**
-    * Decode an ASN1Identifier directly from an InputStream and
-    * save the encoded length of the ASN1Identifier, but reuse the object.
-    *
-    * @param in The input stream to decode from.
-    */
-   public final void reset(InputStream in)
-      throws IOException
-   {
-      encodedLength = 0;
-      int r = in.read();
-      encodedLength++;
-      if(r < 0)
-         throw new EOFException("BERDecoder: decode: EOF in Identifier");
-      tagClass = r >> 6;
-      constructed = (r & 0x20) != 0;
-      tag = r & 0x1F;      // if tag < 30 then its a single octet identifier.
-      if(tag == 0x1F)      // if true, its a multiple octet identifier.
-         tag = decodeTagNumber(in);
-   }
-
-   /**
-    * In the case that we have a tag number that is greater than 30, we need
-    * to decode a multiple octet tag number.
-    */
-   private int decodeTagNumber(InputStream in)
-      throws IOException
-   {
-      int n = 0;
-      while(true) {
-         int r = in.read();
-         encodedLength++;
-         if(r < 0)
-            throw new EOFException("BERDecoder: decode: EOF in tag number");
-         n = (n<<7) + (r & 0x7F);
-         if((r & 0x80) == 0)
-            break;
-      }
-      return n;
-   }
-
-   /**
-    * Returns the CLASS of this ASN1Identifier as an int value.
-    *
-    * @see #UNIVERSAL
-    * @see #APPLICATION
-    * @see #CONTEXT
-    * @see #PRIVATE
-    */
-   public final int getASN1Class()
-   {
-      return tagClass;
-   }
-
-   /**
-    * Return a boolean indicating if the constructed bit is set.
-    *
-    * @return true if constructed and false if primitive.
-    */
-   public final boolean getConstructed()
-   {
-      return constructed;
-   }
-
-   /**
-    * Returns the TAG of this ASN1Identifier.
-    */
-   public final int getTag()
-   {
-      return tag;
-   }
-
-   /**
-    * Returns the encoded length of this ASN1Identifier.
-    */
-   public final int getEncodedLength()
-   {
-      return encodedLength;
-   }
-
-   /* Convenience methods
-    */
-
-   /**
-    * Returns a boolean value indicating whether or not this ASN1Identifier
-    * has a TAG CLASS of UNIVERSAL.
-    *
-    * @see #UNIVERSAL
-    */
-   public final boolean isUniversal()
-   {
-      return tagClass == UNIVERSAL;
-   }
-
-   /**
-    * Returns a boolean value indicating whether or not this ASN1Identifier
-    * has a TAG CLASS of APPLICATION.
-    *
-    * @see #APPLICATION
-    */
-   public final boolean isApplication()
-   {
-      return tagClass == APPLICATION;
-   }
-
-   /**
-    * Returns a boolean value indicating whether or not this ASN1Identifier
-    * has a TAG CLASS of CONTEXT-SPECIFIC.
-    *
-    * @see #CONTEXT
-    */
-   public final boolean isContext()
-   {
-      return tagClass == CONTEXT;
-   }
-
-   /**
-    * Returns a boolean value indicating whether or not this ASN1Identifier
-    * has a TAG CLASS of PRIVATE.
-    *
-    * @see #PRIVATE
-    */
-   public final boolean isPrivate()
-   {
-      return tagClass == PRIVATE;
-   }
-
-   /**
-    * Creates a duplicate of this object and returns a reference to the 
-    * duplicate.
-    *
-    */
-   public Object clone()
-   {
-      return new ASN1Identifier(this.tagClass, this.constructed, this.tag);
-   }
-
-
+    /**
+     * Universal tag class.
+     *
+     * <p> UNIVERSAL = 0 </p>
+     */
+    public static final int UNIVERSAL = 0;
+ 
+    /**
+     * Application-wide tag class.
+     *
+     * <p> APPLICATION = 1 </p>
+     */
+    public static final int APPLICATION = 1;
+ 
+    /**
+     * Context-specific tag class.
+     *
+     * <p> CONTEXT = 2 </p>
+     */
+    public static final int CONTEXT = 2;
+ 
+    /**
+     * Private-use tag class.
+     *
+     * <p> PRIVATE = 3 </p>
+     */
+    public static final int PRIVATE = 3;
+ 
+ 
+    /* Private variables
+     */
+ 
+    private int tagClass;
+    private boolean constructed;
+    private int tag;
+    private int encodedLength;
+ 
+    /* Constructors for ASN1Identifier
+     */
+ 
+    /**
+     * Constructs an ASN1Identifier using the classtype, form and tag.
+     *
+     * @param tagClass As defined above.
+     *
+     * @param constructed Set to true if constructed and false if primitive.
+     *
+     * @param tag The tag of this identifier
+     */
+    public ASN1Identifier(int tagClass, boolean constructed, int tag)
+    {
+        this.tagClass = tagClass;
+        this.constructed = constructed;
+        this.tag = tag;
+    }
+ 
+    /**
+     * Decode an ASN1Identifier directly from an InputStream and
+     * save the encoded length of the ASN1Identifier.
+     *
+     * @param in The input stream to decode from.
+     */
+    public ASN1Identifier(InputStream in)
+            throws IOException
+    {
+        int r = in.read();
+        encodedLength++;
+        if(r < 0)
+            throw new EOFException("BERDecoder: decode: EOF in Identifier");
+        tagClass = r >> 6;
+        constructed = (r & 0x20) != 0;
+        tag = r & 0x1F;      // if tag < 30 then its a single octet identifier.
+        if(tag == 0x1F)      // if true, its a multiple octet identifier.
+            tag = decodeTagNumber(in);
+        return;
+    }
+ 
+    public ASN1Identifier()
+    {
+        return;
+    }
+ 
+    /**
+     * Decode an ASN1Identifier directly from an InputStream and
+     * save the encoded length of the ASN1Identifier, but reuse the object.
+     *
+     * @param in The input stream to decode from.
+     */
+    public final void reset(InputStream in)
+            throws IOException
+    {
+        encodedLength = 0;
+        int r = in.read();
+        encodedLength++;
+        if(r < 0)
+            throw new EOFException("BERDecoder: decode: EOF in Identifier");
+        tagClass = r >> 6;
+        constructed = (r & 0x20) != 0;
+        tag = r & 0x1F;      // if tag < 30 then its a single octet identifier.
+        if(tag == 0x1F)      // if true, its a multiple octet identifier.
+            tag = decodeTagNumber(in);
+    }
+ 
+    /**
+     * In the case that we have a tag number that is greater than 30, we need
+     * to decode a multiple octet tag number.
+     */
+    private int decodeTagNumber(InputStream in)
+            throws IOException
+    {
+        int n = 0;
+        while(true) {
+            int r = in.read();
+            encodedLength++;
+            if(r < 0)
+                throw new EOFException("BERDecoder: decode: EOF in tag number");
+            n = (n<<7) + (r & 0x7F);
+            if((r & 0x80) == 0)
+                break;
+        }
+        return n;
+    }
+ 
+    /**
+     * Returns the CLASS of this ASN1Identifier as an int value.
+     *
+     * @see #UNIVERSAL
+     * @see #APPLICATION
+     * @see #CONTEXT
+     * @see #PRIVATE
+     */
+    public final int getASN1Class()
+    {
+        return tagClass;
+    }
+ 
+    /**
+     * Return a boolean indicating if the constructed bit is set.
+     *
+     * @return true if constructed and false if primitive.
+     */
+    public final boolean getConstructed()
+    {
+        return constructed;
+    }
+ 
+    /**
+     * Returns the TAG of this ASN1Identifier.
+     */
+    public final int getTag()
+    {
+        return tag;
+    }
+ 
+    /**
+     * Returns the encoded length of this ASN1Identifier.
+     */
+    public final int getEncodedLength()
+    {
+        return encodedLength;
+    }
+ 
+    /* Convenience methods
+     */
+ 
+    /**
+     * Returns a boolean value indicating whether or not this ASN1Identifier
+     * has a TAG CLASS of UNIVERSAL.
+     *
+     * @see #UNIVERSAL
+     */
+    public final boolean isUniversal()
+    {
+        return tagClass == UNIVERSAL;
+    }
+ 
+    /**
+     * Returns a boolean value indicating whether or not this ASN1Identifier
+     * has a TAG CLASS of APPLICATION.
+     *
+     * @see #APPLICATION
+     */
+    public final boolean isApplication()
+    {
+        return tagClass == APPLICATION;
+    }
+ 
+    /**
+     * Returns a boolean value indicating whether or not this ASN1Identifier
+     * has a TAG CLASS of CONTEXT-SPECIFIC.
+     *
+     * @see #CONTEXT
+     */
+    public final boolean isContext()
+    {
+        return tagClass == CONTEXT;
+    }
+ 
+    /**
+     * Returns a boolean value indicating whether or not this ASN1Identifier
+     * has a TAG CLASS of PRIVATE.
+     *
+     * @see #PRIVATE
+     */
+    public final boolean isPrivate()
+    {
+        return tagClass == PRIVATE;
+    }
+ 
+    /**
+     * Creates a duplicate, not a true clone, of this object and returns
+     * a reference to the duplicate.
+     *
+     */
+    public Object clone()
+    {
+        try {
+            return super.clone();
+        } catch( CloneNotSupportedException ce) {
+            throw new RuntimeException("Internal error, cannot create clone");
+        }
+    }
 }
-
