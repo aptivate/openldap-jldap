@@ -1,0 +1,188 @@
+#***************************************************************************
+# $OpenLDAP$
+#
+# Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
+#
+# THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
+# TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
+# TO VERSION 2.0.1 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
+# AVAILABLE AT HTTP://WWW.OPENLDAP.ORG/LICENSE.HTML OR IN THE FILE "LICENSE"
+# IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
+# OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.1 OF THE OPENLDAP
+# PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
+# THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
+#******************************************************************************/
+#
+# Used with the Filter test program which reads a file of filters
+# and expected generated values (this file).
+#
+# File format
+# <filter>
+# <value>
+#
+# Example:
+# (attr=*)
+#    87 04 61 74 74 72
+# attr=*
+#    *// no parens (treat as (attr=*))
+#
+# An asterisk preceding the <value> indicates the
+# filter is invalid which the API should detect.
+#
+# Whitespace preceding <value> is ignored.
+# All characters (including whitespace) are examined for <filter>
+#
+# Comments in the file begin with # in column 1 and are ignored.
+#
+(attr=*)
+	87 04 61 74 74 72
+(attr;x-tag=*)
+	87 0a 61 74 74 72 3b 78 2d 74 61 67
+(attr=)
+	a3 08 04 04 61 74 74 72 04 00
+(1.2.3.4.5=)
+	a3 0d 04 09 31 2e 32 2e 33 2e 34 2e 35 04 00
+1.2.3.4.5;x-tag=)
+	a3 13 04 0f 31 2e 32 2e 33 2e 34 2e 35 3b 78 2d 74 61 67 04 00
+(space= )
+	a3 0a 04 05 73 70 61 63 65 04 01 20
+(attr=value)
+	a3 0d 04 04 61 74 74 72 04 05 76 61 6c 75 65
+(null=\00)
+	a3 09 04 04 6e 75 6c 6c 04 01 00
+(bell=\07)
+    a3 09 04 04 62 65 6c 6c  04 01 07
+(bell=)
+    a3 09 04 04 62 65 6c 6c  04 01 07
+(attr;x-star=\2a)
+	a3 10 04 0b 61 74 74 72 3b 78 2d 73 74 61 72 04 01 2a
+(attr;x-escape=\5C)
+	a3 12 04 0d 61 74 74 72 3b 78 2d 65 73 63 61 70 65 04 01 5c
+(attr=initial*)
+	a4 11 04 04 61 74 74 72 30 09 80 07 69 6e 69 74 69 61 6c
+(attr=*any*)
+	a4 0d 04 04 61 74 74 72 30 05 81 03 61 6e 79
+(attr=*final)
+	a4 0f 04 04 61 74 74 72 30 07 82 05 66 69 6e 61 6c
+(attr=initial*final)
+	a4 18 04 04 61 74 74 72 30 10 80 07 69 6e 69 74 69 61 6c 82 05 66 69 6e 61 6c
+(attr=initial*any*any*final)
+	a4 22 04 04 61 74 74 72 30 1a 80 07 69 6e 69 74 69 61 6c 81 03 61 6e 79 81 03 61 6e 79 82 05 66 69 6e 61 6c
+(attr=initial*any*)
+	a4 16 04 04 61 74 74 72 30 0e 80 07 69 6e 69 74 69 61 6c 81 03 61 6e 79
+(attr=*any*final)
+	a4 14 04 04 61 74 74 72 30 0c 81 03 61 6e 79 82 05 66 69 6e 61 6c
+(attr=*any*any*)
+	a4 12 04 04 61 74 74 72 30 0a 81 03 61 6e 79 81 03 61 6e 79
+(attr=**)
+	a4 0a 04 04 61 74 74 72 30 02 81 00
+(attr=initial**)
+	a4 13 04 04 61 74 74 72 30 0b 80 07 69 6e 69 74 69 61 6c 81 00
+(attr=**final)
+	a4 11 04 04 61 74 74 72 30 09 81 00 82 05 66 69 6e 61 6c
+(attr=initial**final)
+	a4 1a 04 04 61 74 74 72 30 12 80 07 69 6e 69 74 69 61 6c 81 00 82 05 66 69 6e 61 6c
+(attr=initial***final)
+	a4 1c 04 04 61 74 74 72 30 14 80 07 69 6e 69 74 69 61 6c 81 00 81 00 82 05 66 69 6e 61 6c
+(attr~=)
+	a8 08 04 04 61 74 74 72 04 00
+(attr~=fubar)
+	a8 0d 04 04 61 74 74 72 04 05 66 75 62 61 72
+(attr>=fubar)
+	a5 0d 04 04 61 74 74 72 04 05 66 75 62 61 72
+(attr<=fubar)
+	a6 0d 04 04 61 74 74 72 04 05 66 75 62 61 72
+(attr:1.2.3:=fubar)
+	a9 14 81 05 31 2e 32 2e 33 82 04 61 74 74 72 83 05 66 75 62 61 72
+(attr:dn:=fubar)
+	a9 10 82 04 61 74 74 72 83 05 66 75 62 61 72 84 01 ff
+(attr:DN:=fubar)
+	a9 11 81 02 44 4e 82 04 61 74 74 72 83 05 66 75 62 61 72
+(attr:dn:1.2.3:=fubar)
+	a9 17 81 05 31 2e 32 2e 33 82 04 61 74 74 72 83 05 66 75 62 61 72 84 01 ff
+(:1.2.3:=fubar)
+	a9 0e 81 05 31 2e 32 2e 33 83 05 66 75 62 61 72
+(:caseExactMatch:=fubar)
+	a9 17 81 0e 63 61 73 65 45 78 61 63 74 4d 61 74 63 68 83 05 66 75 62 61 72
+(:dn:1.2.3:=fubar)
+	a9 11 81 05 31 2e 32 2e 33 83 05 66 75 62 61 72 84 01 ff
+(:dn:caseIgnoreMatch:=fubar)
+	a9 1b 81 0f 63 61 73 65 49 67 6e 6f 72 65 4d 61 74 63 68 83 05 66 75 62 61 72 84 01 ff
+(!(objectClass=*))
+	a2 0d 87 0b 6f 62 6a 65 63 74 43 6c 61 73 73
+(!(|(&(!(objectClass=*)))))
+	a2 13 a1 11 a0 0f a2 0d 87 0b 6f 62 6a 65 63 74 43 6c 61 73 73
+(&(objectClass=*))
+	a0 0d 87 0b 6f 62 6a 65 63 74 43 6c 61 73 73
+(&(objectClass=*)(name~=))
+	a0 17 87 0b 6f 62 6a 65 63 74 43 6c 61 73 73 a8 08 04 04 6e 61 6d 65 04 00
+(|(objectClass=*))
+	a1 0d 87 0b 6f 62 6a 65 63 74 43 6c 61 73 73
+(|(objectClass=*)(name~=))
+	a1 17 87 0b 6f 62 6a 65 63 74 43 6c 61 73 73 a8 08 04 04 6e 61 6d 65 04 00
+attr=*
+	*// no parens (treat as (attr=*))
+(attr=*
+	*// no closing paren
+attr=*)
+	*// no opening paren
+(attr~=*)
+	*// unescaped *
+(attr=<NUL>)
+	*// unescaped NUL in valueencoding
+(attr=()
+	*// unescaped opening paren in valueencoding
+(attr=))
+	*// unescaped closing paren in valueencoding
+(attr=\)
+	*// unescaped backslash in valueencoding
+(attr=\GG)s
+	*// invalid hex character
+(attr=\F)
+	*// invalid escaping (single hex character)
+(attr=\*)
+	*// invalid escaping of * (treat as (attr=\2a))
+(attr=\()
+	*// invalid escaping of ( (treat as (attr=\28))
+(attr=\))
+	*// invalid escaping of ) (treat as (attr=\29))
+(attr=\\)
+	*// invalid escaping of \ (treat as (attr=\5c))
+(attr=\x)
+	*// invalid escaping of x
+(attr>0)
+	*// invalid, no =
+(attr<0)
+	*// invalid, no =
+(attr?=value)
+	*// invalid filter type
+							
+	*// spaces empty
+()
+	*// empty
+(=)
+	*// no attr
+(;option=*)
+	*// no attribute type
+(attr;=*)
+	*// no option
+(at_tr=*)
+	*// invalid attribute type
+(attr;opt_=*)
+	*// invalid option
+(attr\3Boption=*)
+	*// invalid escaping
+(:=)
+	*// no matching rule
+(::=)
+	*// no dn nor matching rule
+(:::=)
+	*// no dn nor matching rule
+(!)
+	*// no inner filter
+(!(attr=TRUE)(attr=FALSE))
+	*// multiple inner filter
+(|)
+	*// empty filter set
+(attr?=)
+	*// invalid tag

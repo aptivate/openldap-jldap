@@ -1,0 +1,120 @@
+#***************************************************************************
+# $OpenLDAP$
+#
+# Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
+#
+# THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
+# TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
+# TO VERSION 2.0.1 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
+# AVAILABLE AT HTTP://WWW.OPENLDAP.ORG/LICENSE.HTML OR IN THE FILE "LICENSE"
+# IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
+# OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.1 OF THE OPENLDAP
+# PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
+# THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
+#******************************************************************************/
+#
+# Used with the DN test program which reads a file of DNs
+#
+# File format
+# <dn>
+# <comment>
+#
+#    or
+#
+# *<dn>
+# <comment>
+#
+# Examples:
+# 1.1.1=
+#     // empty value
+# UID=john,smith
+#     // unescaped ,
+#
+# An asterisk "*" preceding a <comment> indicates this
+# DN is invalid and an error should be produced.
+#
+# Whitespace preceding <comment> is ignored.
+# All characters (including whitespace) are examined for <dn>
+#
+# Comments in the file begin with # in column 1 and are ignored.
+#
+#
+# Valid DNs
+#
+
+    // empty
+UID=jsmith,DC=example,DC=net
+
+OU=Sales+CN=J. Smith,DC=example,DC=net
+
+CN=John Smith\, III,DC=example,DC=net
+
+CN=John Smith\2C III,DC=example,DC=net
+
+CN=Before\0dAfter,DC=example,DC=net
+
+CN=\23John Smith\20,DC=example,DC=net
+
+CN=\#John Smith\ ,DC=example,DC=net
+
+1.3.6.1.4.1.1466.0=#04024869,DC=example,DC=com
+
+CN=CN=Lu\C4\8Di\C4\87
+
+1.1.1=
+    // empty value
+#
+# Invalid DNs, Leading * on the comment indicates dn should
+# produce an error. Some implementations may be liberal in
+# what they accept but should strict in what they produce.
+uid;x-option=jsmith
+    *// option
+at_tr=jsmith
+    *// invalid attribute type name
+-attr=jsmith
+    *// invalid attribute type name
+1..1=jsmith
+    *// invalid numeric OID
+1.1.=jsmith
+    *// invalid numeric OID
+01.1=jsmith
+    *// invalid numeric OID
+1.ff=jsmith
+    *// invalid numeric OID
+1.1.1=#GG
+    *// invalid HEX form
+1.1.1=#000
+    *// invalid HEX form
+1.1.1=#F
+    *// invalid HEX form
+1.1.1=#
+    *// invalid HEX form
+UID=jsmith,,DC=example,DC=net
+    *// extra comma
+UID=john,smith
+    *// unescaped ,
+UID=john+smith
+    *// unescaped +
+UID=john\?smith
+    *// invalid escape of ? or unescaped \ character
+UID=john\Fsmith
+    *// invalid hex escape
+UID=john\GGsmith
+    *// invalid hex escape
+#
+# The following strings are invalid for use in LDAPv3, but were
+# legal in LDAPv2 (RFC 1779).  Some LDAPv3 implementations are
+# liberal in accepting these but should not generate them.
+#
+ 
+    *// space
+OID.1.1=jsmith
+    *// invalid attribute type name
+UID=jsmith, O=example, C=US
+    *// spaces
+UID=jsmith;O=example;C=US
+    *// semi-colons
+<UID=jsmith,O=example,C=US>
+    *// brackets
+CN="John Smith",O=example,C=US
+    *// quotes
