@@ -13,6 +13,7 @@
  * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
  ******************************************************************************/
 package com.novell.ldap.util;
+import com.novell.ldap.LDAPDN;
 import com.novell.ldap.util.RDN;
 import java.util.Vector;
 import java.util.ArrayList;
@@ -252,7 +253,15 @@ public class DN extends Object
                     nextChar = dnString.charAt(++currIndex);
                     if (isHexDigit(nextChar))
                     {
-                        tokenBuf[tokenIndex++] = hexToChar(currChar, nextChar);
+                        char tmpc = hexToChar(currChar, nextChar);
+                        if (this.needsEscape(tmpc)) {
+                        	tokenBuf[tokenIndex++] = '\\';
+                        	tokenBuf[tokenIndex++] = tmpc;
+                        }
+                        else {
+                        	tokenBuf[tokenIndex++] = tmpc;
+                        }
+                    	 
                         trailingSpaceCount = 0;
                     }
                     else
@@ -337,7 +346,13 @@ public class DN extends Object
                     nextChar = dnString.charAt(++currIndex);
                     if (isHexDigit(nextChar))
                     {
-                        tokenBuf[tokenIndex++] = hexToChar(currChar, nextChar);
+                    	char tmpc = hexToChar(currChar, nextChar);
+                    	if (this.needsEscape(tmpc)) {
+                    		tokenBuf[tokenIndex++] = '\\';
+                    	}	
+                    	
+                    	tokenBuf[tokenIndex++] = tmpc;
+                    	
                         trailingSpaceCount = 0;
                     }
                     else
@@ -550,9 +565,9 @@ public class DN extends Object
         String dn = "";
         if (length < 1)
             return null;
-        dn = rdnList.get(0).toString();
+        dn = LDAPDN.escapeRDN(rdnList.get(0).toString());
         for (int i=1; i<length; i++)
-            dn += "," + rdnList.get(i).toString();
+            dn += "," + LDAPDN.escapeRDN(rdnList.get(i).toString());
         return dn;
     }
 

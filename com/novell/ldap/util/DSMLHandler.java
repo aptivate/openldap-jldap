@@ -149,6 +149,8 @@ class DSMLHandler
   private static final int LDAP_RESPONSE = 36; //Generic Response Type.
   private static final int RESULT_CODE = 37; //<resultCode>
   private static final int ERROR_MESSAGE = 38; //<errorMessage>
+  private static final int ERROR_RESPONSE = 53; //<errorResponse>
+  private static final int MESSAGE = 54; //<errorResponse>
   private static final int REFERRAL_LIST = 39; //<referral>
 
   //For Search Response
@@ -203,6 +205,10 @@ class DSMLHandler
   //Search Ids
   private String searchResponseid;
 
+private String errorType;
+
+private ArrayList errors = new ArrayList();
+
   static { //Initialize requestTags
     requestTags = new java.util.HashMap(35, (float) 0.25);
     //Load factor of 0.25 optimizes for speed rather than size.
@@ -248,6 +254,8 @@ class DSMLHandler
     requestTags.put("addResponse", new Integer(ADD_RESPONSE));
     requestTags.put("resultCode", new Integer(RESULT_CODE));
     requestTags.put("errorMessage", new Integer(ERROR_MESSAGE));
+    requestTags.put("message", new Integer(MESSAGE));
+    requestTags.put("errorResponse", new Integer(ERROR_RESPONSE));
     requestTags.put("referral", new Integer(REFERRAL_LIST));
 
     //Search Response Objects
@@ -363,7 +371,16 @@ class DSMLHandler
             state = LDAP_RESPONSE;
             //Handling as a generic LdapResponse.
             parseTagAttributes(LDAP_RESPONSE, attrs);
-          } else {
+          } else if (tag == ERROR_RESPONSE) {
+            
+          	//Process Compare Response.
+            responsetype = LDAPMessage.ABANDON_REQUEST;
+            state = ERROR_RESPONSE;
+            //Handling as a generic LdapResponse.
+            parseTagAttributes(ERROR_RESPONSE, attrs);
+          }  
+          
+          else {
             throw new SAXException("invalid tag: " + strSName);
 
           }
@@ -449,7 +466,7 @@ class DSMLHandler
             responsecode = (new Integer(attrs.getValue("code"))).intValue();
             responseDesc = attrs.getValue("descr");
 
-          } else if (tag == ERROR_MESSAGE) {
+          } else if (tag == ERROR_MESSAGE || tag == MESSAGE) {
             //nothing to do, just cleanup value.
             if (value == null) {
               value = new StringBuffer();
@@ -471,6 +488,16 @@ class DSMLHandler
             state = tag;
           }
           break;
+        case ERROR_RESPONSE :
+        	if (value == null) {
+                value = new StringBuffer();
+              } else {
+
+                //cleanup value.
+                value.delete(0, value.length());
+              }
+              state = tag;
+              break;
         case SEARCH_REQUEST :
           if ((isParallel == true && isUnordered == true)
             && requestID == null) {
@@ -696,6 +723,10 @@ class DSMLHandler
     throws SAXException {
 
     switch (tag) {
+      case ERROR_RESPONSE:
+      	this.errorType = attrs.getValue("type");
+      	break;
+      	
       case BATCH_RESPONSE :
         batchRequestID = attrs.getValue("requestID");
         break;
@@ -876,6 +907,8 @@ class DSMLHandler
       || state == X_VALUE
       || state == VALUE
       || state == ERROR_MESSAGE
+      || state == MESSAGE
+	  || state == ERROR_RESPONSE
       || state == EXTENDED_RESPONSE_NAME
       || state == EXTENDED_RESPONSE_RESPONSE
       || state == REFERRAL_LIST
@@ -905,6 +938,21 @@ class DSMLHandler
     String[] referalarr = null;
     try {
       switch (tag) {
+        case ERROR_RESPONSE:
+        	if (this.errorMessage.indexOf(':') != -1) {
+        		String num,msg;
+        		num = errorMessage.substring(0,errorMessage.indexOf(':'));
+        		
+        		try {
+        			int errorNum = Integer.parseInt(num);
+        			this.errors.add(new LDAPException(this.errorType,errorNum,this.errorMessage.substring(errorMessage.indexOf(':') + 1)));
+        		} catch (NumberFormatException nfe) {
+        			this.errors.add(new LDAPException(this.errorType,LDAPException.UNWILLING_TO_PERFORM,this.errorMessage));
+        		}
+        	} else {
+        		this.errors.add(new LDAPException(this.errorType,LDAPException.UNWILLING_TO_PERFORM,this.errorMessage));
+        	}
+        	state = BATCH_RESPONSE;
         case BATCH_REQUEST :
         case BATCH_RESPONSE :
           state = START;
@@ -1094,6 +1142,12 @@ class DSMLHandler
           referrallist.add(turl);
           state = LDAP_RESPONSE;
           break;
+        case MESSAGE:
+        	errorMessage = new String(value.toString().getBytes("UTF-8"));
+            
+            state = ERROR_RESPONSE;
+            
+            break;
         case ERROR_MESSAGE :
 
           errorMessage = new String(value.toString().getBytes("UTF-8"));
@@ -1512,6 +1566,9 @@ class DSMLHandler
           if (this.isBase64) {
             attributeValues.add(Base64.decode(value, 0, value.length()));
           } else {
+            
+            
+          	if (value == null) value = new StringBuffer();
             attributeValues.add(value.toString().getBytes("UTF-8"));
           }
           break;
@@ -1525,8 +1582,7 @@ class DSMLHandler
   }
 
   public void warning(SAXParseException e) throws SAXException {
-    System.out.println("warning: " + e.toString());
-    throw e;
+   
   }
 
   public void error(SAXParseException e) throws SAXException {
@@ -1535,7 +1591,8 @@ class DSMLHandler
   }
 
   public void fatalError(SAXParseException e) throws SAXException {
-    System.out.println("fatal error: " + e.toString());
+    System.out.println("line : " + e.getLineNumber() + ", column : " + e.getColumnNumber());
+  	System.out.println("fatal error: " + e.toString());
     throw e;
   }
 
@@ -1710,5 +1767,9 @@ class DSMLHandler
   /*package */
   ArrayList getQueue() {
     return this.queue;
+  }
+  
+  ArrayList getErrors() {
+  	return this.errors;
   }
 }

@@ -63,6 +63,9 @@
 					<pathelement location="external/jsse/lib/jcert.jar"/>
 					<pathelement location="external/jsse/lib/jnet.jar"/>
 					<pathelement location="external/jsse/lib/jsse.jar"/>
+					<pathelement location="external/commons-httpclient-2.0-rc2.jar"/>
+						
+							
                 </classpath>
         </javac>
 
@@ -95,6 +98,7 @@
 					<pathelement location="external/jsse/lib/jcert.jar"/>
 					<pathelement location="external/jsse/lib/jnet.jar"/>
 					<pathelement location="external/jsse/lib/jsse.jar"/>
+					<pathelement location="external/commons-httpclient-2.0-rc2.jar"/>
                 </classpath>
         </javac>
 

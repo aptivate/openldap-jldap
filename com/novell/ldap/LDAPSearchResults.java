@@ -62,6 +62,11 @@ public class LDAPSearchResults
      * @param cons The LDAPSearchConstraints associated with this search
      */
     /* package */
+    
+    LDAPSearchResults() {
+    		//Required so that a DSML version of this cladd can be utilized
+    }
+    
     LDAPSearchResults(  LDAPConnection conn,
                         LDAPSearchQueue queue,
                         LDAPSearchConstraints cons)

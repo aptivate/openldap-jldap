@@ -42,11 +42,18 @@ public class DSMLWriter implements LDAPWriter {
     private String tabString = "    ";
     private String version = "2.0";
 
+    private boolean resumeOnError;
+    
     private static final String BATCH_REQUEST_START =
-            "<batchRequest xmlns=\"urn:oasis:names:tc:DSML:2:0:core\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">";
+            "<batchRequest xmlns=\"urn:oasis:names:tc:DSML:2:0:core\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" onError=\"";
     private static final String BATCH_RESPONSE_START =
             "<batchResponse xmlns=\"urn:oasis:names:tc:DSML:2:0:core\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">";
 
+    
+    public void setResumeOnError(boolean resumeOnError) {
+    	this.resumeOnError = resumeOnError;
+    }
+    
     /**
      * Initializes this writer by opening the specified file to write DSML into.
      * @param file  File to write DSML
@@ -124,7 +131,13 @@ public class DSMLWriter implements LDAPWriter {
         newLine(2);
         out.write("<message>");
         newLine(3);
-        out.write(e.toString());
+        if (e instanceof LDAPException) {
+        	LDAPException le = (LDAPException) e;
+        	String msg = Integer.toString(le.getResultCode()) + ":" + le.getMessage();
+        	out.write(makeXMLSafe(msg));
+        } else {
+        	out.write(makeXMLSafe(e.getMessage()));
+        }
         newLine(2);
         out.write("</message>");
         newLine(1);
@@ -450,7 +463,7 @@ public class DSMLWriter implements LDAPWriter {
         checkState(true);
         newLine(2);
         out.write("<searchResultEntry dn=\"");
-        out.write(entry.getDN());
+        out.write(this.makeAttributeSafe(entry.getDN()));
         if( requestID != null) {
             out.write("\" requestID=\"" + requestID);
         }
@@ -973,13 +986,13 @@ public class DSMLWriter implements LDAPWriter {
         if (message instanceof LDAPResponse){
             String matchedDN = ((LDAPResponse) message).getMatchedDN();
             if (matchedDN != null && !matchedDN.equals("")){
-                out.write(" matchedDN=\"" + matchedDN + "\"");
+                out.write(" matchedDN=\"" + this.makeAttributeSafe(matchedDN) + "\"");
             }
         }
 
         if( message instanceof LDAPCompareRequest) {
             String dn = ((LDAPCompareRequest) message).getDN();
-            out.write(" dn=\"" + dn + "\"");
+            out.write(" dn=\"" + this.makeAttributeSafe(dn) + "\"");
         }
 
         if( message instanceof LDAPExtendedRequest) {
@@ -988,22 +1001,22 @@ public class DSMLWriter implements LDAPWriter {
         
         if( message instanceof LDAPDeleteRequest) {
             String dn = ((LDAPDeleteRequest) message).getDN();
-			out.write(" dn=\"" + dn + "\"");                        
+			out.write(" dn=\"" + this.makeAttributeSafe(dn) + "\"");                        
         }
         
         if( message instanceof LDAPAddRequest) {
             String dn = ((LDAPAddRequest) message).getEntry().getDN();
-			out.write(" dn=\"" + dn + "\"");                        
+			out.write(" dn=\"" + this.makeAttributeSafe(dn) + "\"");                        
         }
         
         if( message instanceof LDAPModifyRequest) {
             String dn = ((LDAPModifyRequest) message).getDN();
-			out.write(" dn=\"" + dn + "\"");                        
+			out.write(" dn=\"" + this.makeAttributeSafe(dn) + "\"");                        
         }
 
         if( message instanceof LDAPModifyDNRequest) {
             String dn = ((LDAPModifyDNRequest) message).getDN();
-			out.write(" dn=\"" + dn + "\"");
+			out.write(" dn=\"" + this.makeAttributeSafe(dn) + "\"");
 			out.write(" newrdn=\"");
 			out.write(((LDAPModifyDNRequest) message).getNewRDN() + "\" deleteoldrdn=\"");
 			out.write(((LDAPModifyDNRequest) message).getDeleteOldRDN() + "\" newSuperior=\"");
@@ -1022,7 +1035,9 @@ public class DSMLWriter implements LDAPWriter {
             int tlimit =  ((LDAPSearchRequest) message).getServerTimeLimit();
             boolean isTypesonly =  ((LDAPSearchRequest) message).isTypesOnly();
             
-			out.write(" dn=\"" + dn + "\"");            
+            
+            
+			out.write(" dn=\"" + this.makeAttributeSafe(dn) + "\"");            
             switch(scope)   {
                 case LDAPConnection.SCOPE_BASE:
                     searchScope = "baseObject";
@@ -1121,7 +1136,7 @@ public class DSMLWriter implements LDAPWriter {
         if (temp != null && temp.length() > 0){
             newLine(indent);
             out.write("<errorMessage>");
-            out.write(temp);
+            out.write(makeXMLSafe(temp));
             out.write("</errorMessage>");
         }
        return;
@@ -1305,14 +1320,16 @@ public class DSMLWriter implements LDAPWriter {
         byte bytevalues[][] = attr.getByteValueArray();
         for(int i=0; i<values.length; i++){
             newLine(4);
-            if (Base64.isValidUTF8(bytevalues[i], false)){
+            
+            if (Base64.isValidUTF8(bytevalues[i],true) && this.isXMLSafe(bytevalues[i])){
                 out.write("<value>");
                 String xmlvalue = values[i];
 				xmlvalue = xmlvalue.replaceAll("&", "&amp;");
 				xmlvalue = xmlvalue.replaceAll("<", "&lt;");
 				xmlvalue = xmlvalue.replaceAll(">", "&gt;");
-				xmlvalue = xmlvalue.replaceAll("'", "&apos");
+				xmlvalue = xmlvalue.replaceAll("'", "&apos;");
 				xmlvalue = xmlvalue.replaceAll("\"", "&quot;");
+				
                 out.write(xmlvalue);
                 out.write("</value>");
             } else {
@@ -1346,7 +1363,7 @@ public class DSMLWriter implements LDAPWriter {
                 state = RESPONSE_BATCH;
             }
             else{
-                out.write(BATCH_REQUEST_START);
+                out.write(BATCH_REQUEST_START + (resumeOnError ? "resume" : "exit") + "\">");
                 state = REQUEST_BATCH;
             }
         }
@@ -1416,4 +1433,49 @@ public class DSMLWriter implements LDAPWriter {
         this.tabString = temp.toString();
         return;
     }
+    
+    private boolean isXMLSafe(byte[] val) {
+    	boolean safe = true;
+    	
+    	for (int i=0,m=val.length;i<m;i++) {
+    		if (val[i] >= 0 && val[i] <= 31) {
+    			safe = false;
+    			break;
+    		}
+    	}
+    	
+    	
+    	return safe;
+    }
+    
+    private String makeXMLSafe(String msg) {
+    	if (msg == null) {
+    		return "";
+    	}
+    	byte[] val = msg.getBytes();
+    	boolean safe = true;
+    	
+    	for (int i=0,m=val.length;i<m;i++) {
+    		if (val[i] >= 0 && val[i] <= 31) {
+    			val[i] = (byte) ' ';
+    		}
+    	}
+    	
+    	return new String(val);
+    	
+    }
+    
+    private String makeAttributeSafe(String attrib) {
+    	
+    	String ret = attrib;
+    	ret = ret.replaceAll("&", "&amp;");
+		ret = ret.replaceAll(">", "&gt;");
+		ret = ret.replaceAll("'", "&apos;");
+		ret = ret.replaceAll("\"", "&quot;");
+    	
+    	
+    	return ret;
+    }
+    
 }
+

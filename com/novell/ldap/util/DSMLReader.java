@@ -17,6 +17,9 @@ package com.novell.ldap.util;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.parsers.SAXParser;
 
@@ -78,9 +81,10 @@ public class DSMLReader implements LDAPReader {
      * @throws LDAPLocalException Occurs when no batchRequest or batchResponse
      * is found, or the document is invalid DSML.
      */
-    public DSMLReader (java.io.InputStream inputStream) throws LDAPLocalException
+    public DSMLReader (java.io.InputStream inputStream) throws LDAPLocalException, UnsupportedEncodingException
     {
-        this( new java.io.InputStreamReader(inputStream));
+        
+    	this( new java.io.InputStreamReader(inputStream,"UTF8"));
         return;
     }
 
@@ -238,5 +242,9 @@ public class DSMLReader implements LDAPReader {
      */
     public boolean isResumeOnError(){
         return this.handler.isResumeOnError();
+    }
+    
+    public ArrayList getErrors() {
+    	return this.handler.getErrors();
     }
 }
