@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPResponseListener.java,v 1.16 2000/10/31 23:52:24 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPResponseListener.java,v 1.17 2000/11/03 22:23:01 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -37,7 +37,7 @@ public class LDAPResponseListener implements LDAPListener
     /**
      * Constructs a response listener on the specific connection.
      *
-     *  @param conn The connection for the listener.
+     *  @param listen The client listener to associate with this conneciton
      */
     /* package */
     LDAPResponseListener(ClientListener listen)

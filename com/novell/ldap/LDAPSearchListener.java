@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchListener.java,v 1.17 2000/10/31 23:52:25 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchListener.java,v 1.18 2000/11/03 22:23:01 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -33,9 +33,9 @@ public class LDAPSearchListener implements LDAPListener
     private ClientListener listen;
     
     /**
-     * Constructs a response listener on the specific connection.
+     * Constructs a response listener using a specific client listener
      *
-     *  @param conn The connection for the listener.
+     *  @param listen The client listener to associate with this listener
      */
     /* package */
     LDAPSearchListener(ClientListener listen)
@@ -136,6 +136,7 @@ public class LDAPSearchListener implements LDAPListener
       throws LDAPException
    {
       LDAPMessage message;
+
       com.novell.ldap.protocol.LDAPMessage msg = listen.getLDAPMessage(); // blocks
 
       if(msg == null)

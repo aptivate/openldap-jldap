@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/src/com/novell/ldap/protocol/LDAPMessage.java,v 1.8 2000/08/22 01:47:25 smerrill Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/protocol/LDAPMessage.java,v 1.9 2000/09/11 21:06:01 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  ***************************************************************************/
@@ -8,31 +8,32 @@ package com.novell.ldap.protocol;
 
 import java.io.*;
 import com.novell.ldap.asn1.*;
+import com.novell.ldap.client.Debug;
 
 /**
  *       LDAPMessage ::= SEQUENCE {
  *               messageID       MessageID,
  *               protocolOp      CHOICE {
- *                       bindRequest     BindRequest,
- *                       bindResponse    BindResponse,
- *                       unbindRequest   UnbindRequest,
- *                       searchRequest   SearchRequest,
- *                       searchResEntry  SearchResultEntry,
- *                       searchResDone   SearchResultDone,
- *                       searchResRef    SearchResultReference,
- *                       modifyRequest   ModifyRequest,
- *                       modifyResponse  ModifyResponse,
- *                       addRequest      AddRequest,
- *                       addResponse     AddResponse,
- *                       delRequest      DelRequest,
- *                       delResponse     DelResponse,
- *                       modDNRequest    ModifyDNRequest,
- *                       modDNResponse   ModifyDNResponse,
- *                       compareRequest  CompareRequest,
- *                       compareResponse CompareResponse,
- *                       abandonRequest  AbandonRequest,
- *                       extendedReq     ExtendedRequest,
- *                       extendedResp    ExtendedResponse },
+ *                   bindRequest     BindRequest,
+ *                   bindResponse    BindResponse,
+ *                   unbindRequest   UnbindRequest,
+ *                   searchRequest   SearchRequest,
+ *                   searchResEntry  SearchResultEntry,
+ *                   searchResDone   SearchResultDone,
+ *                   searchResRef    SearchResultReference,
+ *                   modifyRequest   ModifyRequest,
+ *                   modifyResponse  ModifyResponse,
+ *                   addRequest      AddRequest,
+ *                   addResponse     AddResponse,
+ *                   delRequest      DelRequest,
+ *                   delResponse     DelResponse,
+ *                   modDNRequest    ModifyDNRequest,
+ *                   modDNResponse   ModifyDNResponse,
+ *                   compareRequest  CompareRequest,
+ *                   compareResponse CompareResponse,
+ *                   abandonRequest  AbandonRequest,
+ *                   extendedReq     ExtendedRequest,
+ *                   extendedResp    ExtendedResponse },
  *                controls       [0] Controls OPTIONAL }
  *
  * Note: The creation of a MessageID should be hidden within the creation of
@@ -73,10 +74,10 @@ public class LDAPMessage extends ASN1Sequence {
    {
       super(dec, in, len);
 
-		byte[] content;
-		ByteArrayInputStream bais;
+        byte[] content;
+        ByteArrayInputStream bais;
 
-//      set(0, new MessageID(((ASN1Integer)get(0)).getInt()));
+      //      set(0, new MessageID(((ASN1Integer)get(0)).getInt()));
 
       // Decode implicitly tagged protocol operation from an ASN1Tagged type
       // to its appropriate application type.
@@ -85,16 +86,20 @@ public class LDAPMessage extends ASN1Sequence {
       content = ((ASN1OctetString)protocolOp.getContent()).getContent();
       bais = new ByteArrayInputStream(content);
 
+      if( Debug.LDAP_DEBUG ) {
+          Debug.trace( Debug.messages, "protocol/LDAPMessage: input message tag " +
+            protocolOpId.getTag());
+      }
       switch(protocolOpId.getTag()) {
-			case ProtocolOp.SEARCH_RESULT_ENTRY:
-				set(1, new SearchResultEntry(dec, bais, content.length));
-				break;
-			case ProtocolOp.SEARCH_RESULT_DONE:
-				set(1, new SearchResultDone(dec, bais, content.length));
-				break;
-			case ProtocolOp.SEARCH_RESULT_REFERENCE:
-				set(1, new SearchResultReference(dec, bais, content.length));
-				break;
+         case ProtocolOp.SEARCH_RESULT_ENTRY:
+            set(1, new SearchResultEntry(dec, bais, content.length));
+            break;
+         case ProtocolOp.SEARCH_RESULT_DONE:
+            set(1, new SearchResultDone(dec, bais, content.length));
+            break;
+         case ProtocolOp.SEARCH_RESULT_REFERENCE:
+            set(1, new SearchResultReference(dec, bais, content.length));
+            break;
          case ProtocolOp.ADD_RESPONSE:
             set(1, new AddResponse(dec, bais, content.length));
             break;
@@ -119,17 +124,17 @@ public class LDAPMessage extends ASN1Sequence {
       }
 
       // decode optional implicitly tagged controls from ASN1Tagged type to
-		// to RFC 2251 types.
-		if(size() > 2) {
-			ASN1Tagged controls = (ASN1Tagged)get(2);
-//			ASN1Identifier controlsId = protocolOp.getIdentifier();
-			// we could check to make sure we have controls here....
+      // to RFC 2251 types.
+      if(size() > 2) {
+         ASN1Tagged controls = (ASN1Tagged)get(2);
+         //   ASN1Identifier controlsId = protocolOp.getIdentifier();
+         // we could check to make sure we have controls here....
 
-			content = ((ASN1OctetString)controls.getContent()).getContent();
-			bais = new ByteArrayInputStream(content);
-			set(2, new Controls(dec, bais, content.length));
-		}
-
+         content = ((ASN1OctetString)controls.getContent()).getContent();
+         bais = new ByteArrayInputStream(content);
+         set(2, new Controls(dec, bais, content.length));
+      }
+      return;
    }
 
    //*************************************************************************
@@ -157,9 +162,9 @@ public class LDAPMessage extends ASN1Sequence {
     */
    public Controls getControls()
    {
-		if(size() > 2)
-			return (Controls)get(2);
-		return null;
+        if(size() > 2)
+            return (Controls)get(2);
+        return null;
    }
 
 }

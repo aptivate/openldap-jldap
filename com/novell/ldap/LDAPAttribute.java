@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttribute.java,v 1.15 2000/11/02 22:31:42 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttribute.java,v 1.16 2000/11/03 16:14:30 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -21,8 +21,7 @@ import java.util.*;
  *
  * <p>The LDAPAttribute class is used to specify an attribute to be added 
  * to, deleted from, or modified in a directory entry. An LDAPAttribute object
- * is also returned on a search of a directory.
- * Methods in this class are not thread safe.</p>
+ * is also returned on a search of a directory.</p>
  *
  * <p> On an instance of an LDAPAttribute object, you can perform the following
  * tasks: </p>

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.17 2000/09/14 20:32:30 smerrill Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.18 2000/10/31 00:45:10 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -22,41 +22,40 @@ import java.util.Vector;
 import com.novell.ldap.*;
 import com.novell.ldap.asn1.*;
 import com.novell.ldap.protocol.UnbindRequest;
+import com.novell.ldap.client.Debug;
 
 /**
-  * A thread that creates a connection to an LDAP server. After the
-  * connection is made, another thread is created that reads data from the
-  * connection.
-  */
+ * A thread that creates a connection to an LDAP server. After the
+ * connection is made, another thread is created that reads data from the
+ * connection.
+ * The listener thread will multiplex response messages received from the
+ * server to one of many queues. Each ClientListener which registers with
+ * this class will have its own message queue. That message queue may be
+ * dedicated to a single LDAP operation, or may be shared among many LDAP
+ * operations.
+ *
+ * The applications thread, using an ClientListener, writes data directly
+ * to the server using this class. The application thread will then query
+ * the ClientListener for a response.
+ *
+ * The listener thread reads data directly from the server as it decodes
+ * an LDAPMessage and writes it to a message queue associated with either
+ * an LDAPResponseListener, or an LDAPSearchListener. It uses the message
+ * ID from the response to determine which listener is expecting the
+ * result. It does this by getting a list of message ID's from each
+ * listener, and comparing the message ID from the message just received
+ * and adding the message to that listeners queue.
+ *
+ * Note: the listener thread must not be a "selfish" thread, since some
+ * operating systems do not time slice.
+ *
+ */
 public final class Connection implements Runnable {
-
-   // The listener thread will multiplex response messages received from the
-   // server to one of many queues. Each ClientListener which registers with
-   // this class will have its own message queue. That message queue may be
-   // dedicated to a single LDAP operation, or may be shared among many LDAP
-   // operations.
-   //
-   // The applications thread, using an ClientListener, writes data directly
-   // to the server using this class. The application thread will then query
-   // the ClientListener for a response.
-   //
-   // The listener thread reads data directly from the server as it decodes
-   // an LDAPMessage and writes it to a message queue associated with either
-   // an LDAPResponseListener, or an LDAPSearchListener. It uses the message
-   // ID from the response to determine which listener is expecting the
-   // result. It does this by getting a list of message ID's from each
-   // listener, and comparing the message ID from the message just received
-   // and adding the message to that listeners queue.
-   //
-   // Note: the listener thread must not be a "selfish" thread, since some
-   // operating systems do not time slice.
-   //
    private Thread listener; // New thread that reads data from the server.
    private boolean v3 = true;
 
    private LBEREncoder encoder = new LBEREncoder();
    private LBERDecoder decoder = new LBERDecoder();
-
 
    private boolean bound = false;
 
@@ -65,36 +64,6 @@ public final class Connection implements Runnable {
    private Socket socket;
 
    private Vector ldapListeners;
-
-   // true means v3; false means v2
-   void setV3(boolean v) {
-      v3 = v;
-   }
-
-   // A BIND request has been successfully made on this connection
-   public void setBound() {
-      bound = true;
-   }
-
-   public boolean isBound() {
-      return bound;
-   }
-
-   public void setInputStream(InputStream is) {
-      in = is;
-   }
-
-   public void setOutputStream(OutputStream os) {
-      out = os;
-   }
-
-   public InputStream getInputStream() {
-      return in;
-   }
-
-   public OutputStream getOutputStream() {
-      return out;
-   }
 
    /**
     * Constructs a TCP/IP connection to a server specified in host and port.
@@ -140,6 +109,36 @@ public final class Connection implements Runnable {
       }
    }
 
+   // true means v3; false means v2
+   void setV3(boolean v) {
+      v3 = v;
+   }
+
+   // A BIND request has been successfully made on this connection
+   public void setBound() {
+      bound = true;
+   }
+
+   public boolean isBound() {
+      return bound;
+   }
+
+   public void setInputStream(InputStream is) {
+      in = is;
+   }
+
+   public void setOutputStream(OutputStream os) {
+      out = os;
+   }
+
+   public InputStream getInputStream() {
+      return in;
+   }
+
+   public OutputStream getOutputStream() {
+      return out;
+   }
+   
    //------------------------------------------------------------------------
    // Methods to manage the Client Listeners
    //------------------------------------------------------------------------
@@ -199,7 +198,6 @@ public final class Connection implements Runnable {
             }
          }
          catch(IOException ioe) {
-
          }
          finally {
             try {
@@ -231,8 +229,14 @@ public final class Connection implements Runnable {
             // Decode an LDAPMessage directly from the socket.
             // ------------------------------------------------------------
             ASN1Identifier asn1ID = new ASN1Identifier(in);
-            if(asn1ID.getTag() != ASN1Sequence.TAG)
-               continue; // loop looking for an LDAPMessage identifier
+            int tag = asn1ID.getTag();
+            if(asn1ID.getTag() != ASN1Sequence.TAG) {
+                if( Debug.LDAP_DEBUG) {
+                    Debug.trace( Debug.messages,
+                        "client/Connection: discarding message with tag " + tag);
+                }
+                continue; // loop looking for an LDAPMessage identifier
+            }
 
             ASN1Length asn1Len = new ASN1Length(in);
 
@@ -253,22 +257,39 @@ public final class Connection implements Runnable {
                // It is possible to receive a response for a request which
                // has been abandoned. If abandoned, do nothing.
                int cnt = ldapListeners.size();
+               boolean foundId = false;
                findMsgId:
                   for(int i=0; i<cnt; i++) {
                      ClientListener ldapListener =
                          (ClientListener)ldapListeners.elementAt(i);
                      int[] msgIDs = ldapListener.getMessageIDs();
-                     for(int j=0; j<msgIDs.length; j++)
+                     for(int j=0; j<msgIDs.length; j++) {
                         if(msgIDs[j] == msgId) {
                            ldapListener.addLDAPMessage(msg); //notifies
+                           foundId = true;
                            break findMsgId; // we're done, so bail out
                         }
+                     }
                   }
+               if( Debug.LDAP_DEBUG ) {
+                  if( ! foundId ) {
+                    Debug.trace( Debug.messages, "client/Connection: discarding message id " +
+                        msgId);
+                  } else {
+                      Debug.trace( Debug.messages, "client/Connection: queue message msgid " +
+                          msgId);
+                      Debug.trace( Debug.buffer, " message " + msg.toString());
+                  }
+               }
             }
          }
       }
       catch(IOException ioe) {
-//       ioe.printStackTrace();
+         Debug.trace( Debug.messages, "client/Connection: IOException " +
+            ioe.toString());
+         ClientListener ldapListener = (ClientListener)ldapListeners.elementAt(0);
+         ldapListener.addLDAPException( new LDAPException("Connection lost: ",
+            LDAPException.SERVER_DOWN));
       }
       finally {
          shutdown(null);

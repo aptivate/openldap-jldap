@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: MessageQueue.java,v 1.6 2000/09/11 21:05:55 vtag Exp $
+ * $Id: MessageQueue.java,v 1.7 2000/10/31 00:45:11 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -17,6 +17,7 @@ package com.novell.ldap.client;
 
 import java.util.Vector;
 import com.novell.ldap.protocol.*;
+import com.novell.ldap.LDAPException;
 
 public class MessageQueue {
 
@@ -31,7 +32,8 @@ public class MessageQueue {
     * Returns the message IDs for all outstanding requests. The last ID in
     * the array is the messageID of the latest submitted request.
     */
-   public int[] getMessageIDs() {
+   public int[] getMessageIDs()
+   {
 		int[] ids = new int[messageIDs.size()];
 		for(int i=0; i<messageIDs.size(); i++) {
 			TimedMessage tm = (TimedMessage)messageIDs.elementAt(i);
@@ -44,7 +46,8 @@ public class MessageQueue {
 	 * Returns a boolean value indicating whether or not the specified
 	 * message id exists in the message id list.
 	 */
-	public boolean messageIDExists(int msgId) {
+	public boolean messageIDExists(int msgId)
+	{
 		for(int i=0; i<messageIDs.size(); i++) {
 			TimedMessage tm = (TimedMessage)messageIDs.elementAt(i);
 			if(tm.getMessageID() == msgId) {
@@ -57,7 +60,8 @@ public class MessageQueue {
    /**
     * Reports true if a response has been received from the server.
     */
-   public boolean isResponseReceived() {
+   public boolean isResponseReceived()
+   {
 		synchronized(responses) { // do I need to do this!!!!
 			return !responses.isEmpty();
 		}
@@ -68,7 +72,8 @@ public class MessageQueue {
 	 * the list of reponses already received and pull out any repsonse with
 	 * a matching id.
 	 */
-	public void removeResponses(int msgId) {
+	public void removeResponses(int msgId)
+	{
 		for(int i=responses.size()-1; i>=0; i--) {
 			LDAPMessage message = (LDAPMessage)responses.elementAt(i);
 			if(message.getMessageID() == msgId) {
@@ -78,15 +83,27 @@ public class MessageQueue {
 	}
 
 	/**
-	 *
+	 * Add a message to the application queue
 	 */
-	public synchronized void addLDAPMessage(LDAPMessage message) {
+	public synchronized void addLDAPMessage(LDAPMessage message)
+	{
 		responses.addElement(message);
 		notify(); //notifyAll() ???
 	}
 
-	public synchronized LDAPMessage getLDAPMessage() {
-		LDAPMessage message = null;
+	/**
+	 * Add a message to the application queue
+	 */
+	public synchronized void addLDAPException(LDAPException ex)
+	{
+		responses.addElement(ex);
+		notify(); //notifyAll() ???
+	}
+
+	public synchronized LDAPMessage getLDAPMessage()
+            throws LDAPException
+	{
+		Object message = null;
 
 		try {
 			// Abandon can remove message IDs at any time, but we still need
@@ -96,14 +113,17 @@ public class MessageQueue {
 			}
 
 			if(!responses.isEmpty()) {
-				message = (LDAPMessage)responses.firstElement();
+                message = (LDAPMessage)responses.firstElement();
+                if( message instanceof LDAPException ) {
+                    throw (LDAPException)message;
+                }
 				responses.removeElementAt(0);
 			}
 		}
 		catch(InterruptedException e) {
 		}
 
-		return message;
+		return (LDAPMessage)message;
 	}
 
 	/**
@@ -116,7 +136,8 @@ public class MessageQueue {
 	/**
 	 *
 	 */
-	public synchronized void removeMessageID(int id) { // does this need to be synchronized !!!!
+	public synchronized void removeMessageID(int id) // does this need to be synchronized !!!!
+    {
 		for(int i=0; i<messageIDs.size(); i++) {
 			TimedMessage tm = (TimedMessage)messageIDs.elementAt(i);
 			if(tm.getMessageID() == id) {
@@ -133,7 +154,8 @@ public class MessageQueue {
 	/**
 	 *
 	 */
-	public synchronized void removeTimer(int id) { // does this need to be synchronized!!!
+	public synchronized void removeTimer(int id) // does this need to be synchronized!!!
+    {
 		for(int i=0; i<messageIDs.size(); i++) {
 			TimedMessage tm = (TimedMessage)messageIDs.elementAt(i);
 			if(tm.getMessageID() == id) {
@@ -147,7 +169,8 @@ public class MessageQueue {
 	 * In the event of an abandon, we want to remove the message id and notify
 	 * in case a thread is waiting for a response.
 	 */ 
-	public synchronized void removeMessageIDAndNotify(int id) {
+	public synchronized void removeMessageIDAndNotify(int id)
+	{
 		removeMessageID(id);
 		notify();
 	}
@@ -155,7 +178,8 @@ public class MessageQueue {
 }
 
 
-class TimedMessage {
+class TimedMessage
+{
 	private int messageID;
 	private Timer timer;
 

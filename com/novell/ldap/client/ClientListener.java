@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/client/ClientListener.java,v 1.1 2000/10/03 21:44:01 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/client/ClientListener.java,v 1.2 2000/10/31 00:45:10 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -209,6 +209,14 @@ public class ClientListener implements TimerListener {
     {
         queue.addLDAPMessage(message);
     }
+    
+    /**
+     * Adds an LDAPException to the listener's queue.
+     */
+    public void addLDAPException(com.novell.ldap.LDAPException ex)
+    {
+        queue.addLDAPException(ex);
+    }
 
    /**
     * Returns the next message in the queue.
@@ -216,6 +224,7 @@ public class ClientListener implements TimerListener {
     * @return The next message in the queue.
     */
     public com.novell.ldap.protocol.LDAPMessage getLDAPMessage()
+            throws com.novell.ldap.LDAPException
     {
         return queue.getLDAPMessage();
     }
