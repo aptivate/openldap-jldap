@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/client/Message.java,v 1.15 2001/03/06 23:34:49 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/client/Message.java,v 1.16 2001/04/19 18:40:35 vtag Exp $
 *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -471,7 +471,6 @@ public class Message extends Thread
             conn.removeMessage( this);
         }
         // Get rid of all replies queued
-        cleanup();
         if( informUserEx != null) {
             replies.addElement( new LDAPResponse( informUserEx,
                         conn.getActiveReferral()));
@@ -532,9 +531,8 @@ public class Message extends Thread
             Debug.trace( Debug.messages, name + "cleanup");
         }
         try {
-            super.finalize();
             acceptReplies = false;
-            if( ! complete) {
+            if( conn != null) {
                 conn.removeMessage( this );
             }
             // Empty out any accumuluated replies
@@ -544,7 +542,7 @@ public class Message extends Thread
                         "cleanup: remove " + replies.size() + " replies");
                 }
             }
-            while( ! replies.isEmpty()) {
+            while( (replies != null) && (! replies.isEmpty())) {
                 replies.remove(0);
             }
         } catch ( Throwable ex ) {
@@ -554,6 +552,14 @@ public class Message extends Thread
             }
             ;// nothing
         }
+        // Let GC clean up this stuff
+        conn = null;
+        msg = null;
+        agent = null;
+        listen = null;
+        replies = null;
+        name = null;
+        bindprops = null;
         return;
     }
 
@@ -570,8 +576,10 @@ public class Message extends Thread
     /**
      * finalize
      */
-    public void finalize()
+    protected void finalize() throws Throwable
     {
+        super.finalize();
+
         cleanup();
         return;
     }

@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/client/MessageAgent.java,v 1.11 2001/03/23 19:13:34 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/client/MessageAgent.java,v 1.12 2001/04/19 17:47:56 vtag Exp $
 *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -162,6 +162,7 @@ public class MessageAgent
                     info.getMessageID() + ")" + " Messages in queue");
                 debugDisplayMessages();
             }
+            info.cleanup();                 // Get rid of resources
             return;
         } catch( NoSuchFieldException ex ) {
             if( Debug.LDAP_DEBUG) {
@@ -191,6 +192,7 @@ public class MessageAgent
             }
             info.abandon( null, null);
             messages.removeElement( info);
+            info.cleanup();                 // Get rid of resources
         }
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.messages, name +
@@ -309,6 +311,14 @@ public class MessageAgent
                     messages.removeElement( info);
                     if( Debug.LDAP_DEBUG) {
                         Debug.trace( Debug.messages, name +
+                            "getLDAPMessage: By ID Return Last Message(" +
+                            info.getMessageID() + ")");
+                        debugDisplayMessages();
+                    }
+                    info.cleanup();                 // Get rid of resources
+                } else {
+                    if( Debug.LDAP_DEBUG) {
+                        Debug.trace( Debug.messages, name +
                             "getLDAPMessage: By ID Return Message(" +
                             info.getMessageID() + ")");
                         debugDisplayMessages();
@@ -352,6 +362,7 @@ public class MessageAgent
                                     info.getMessageID() + ")");
                                 debugDisplayMessages();
                              }
+                            info.cleanup();            // Get rid of resources
                           } else {
                              if( Debug.LDAP_DEBUG) {
                                 Debug.trace( Debug.messages, name +
