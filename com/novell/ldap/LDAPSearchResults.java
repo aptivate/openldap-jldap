@@ -98,9 +98,11 @@ public class LDAPSearchResults
      * Returns a count of the items in the search result.
      *
      * <p>Returns a count of the entries and exceptions remaining in the object.
-     * If the search was submitted with a batch size greater than 0,
-     * this reports the number of results received so far but not enumerated
-     * with next().</p>
+     * If the search was submitted with a batch size greater than zero,
+     * getCount reports the number of results received so far but not enumerated
+     * with next().  If batch size equals zero, getCount reports the number of
+     * items received, since the application thread blocks until all results are
+     * received.</p>
      *
      * @return The number of items received but not retrieved by the application
      */
