@@ -21,7 +21,7 @@ import java.io.IOException;
 
 /**
  *  Used to construct a TLS socket and used by the startTLS method of
- *  LDAPConnection.  
+ *  LDAPConnection.
  *
  *  <p>Programmers needing to provide or use specialized socket connections for
  *  startTLS can provide an implementation of this interface.  Any socketFactory
@@ -57,6 +57,6 @@ public interface LDAPTLSSocketFactory extends LDAPSocketFactory{
     *
     * @see LDAPConnection#startTLS
     */
-   public Socket createTLSSocket(Socket clearTextSocket)
+   public Socket createSocket(Socket clearTextSocket)
        throws IOException, UnknownHostException;
 }

@@ -90,7 +90,7 @@ public final class Connection implements Runnable
     //  to tell the reader what state we are in.
     private final static int CONTINUE_READING = -99;
     private final static int STOP_READING = -98;
-    
+
     //  Stops the reader thread when a Message with the passed-in ID is read.
     //  This parameter is set by stopReaderOnReply and stopTLS
     private int stopReaderMessageID = CONTINUE_READING;
@@ -859,13 +859,13 @@ public final class Connection implements Runnable
             /*  We need to wait for the reader to terminate or the reader
              *  will eat up the TLS handshake packets and throw them away.
              *  LDAPConnection called stopReaderOnReply before calling this
-             *  method, which should have stopped the reader when the 
+             *  method, which should have stopped the reader when the
              *  response to the startTLS extended request was received..
              */
             waitForReader(null);
             this.nonTLSBackup = this.socket;
             this.socket = ((LDAPTLSSocketFactory)
-                        this.mySocketFactory).createTLSSocket( this.socket );
+                        this.mySocketFactory).createSocket( this.socket );
             this.in = socket.getInputStream();
             this.out = socket.getOutputStream();
 
@@ -944,7 +944,7 @@ public final class Connection implements Runnable
         }finally {
             this.freeWriteSemaphore(semaphoreID);
         }
-        return;    
+        return;
     }
 
     /**
@@ -1055,7 +1055,7 @@ public final class Connection implements Runnable
                          * IF so we quit. Actually calling the return will
                          * first transfer control to the finally clause which
                          * will do the necessary clean up.
-                         */ 
+                         */
                         if (serverShutdownNotification) {
                             notify = new LocalException(
                                 ExceptionMessages.SERVER_SHUTDOWN_REQ,
@@ -1131,7 +1131,7 @@ public final class Connection implements Runnable
                     Debug.trace( Debug.TLS,
                         "reader: Stopping thread, retaining the connection");
                 }
-            }            
+            }
         }
         deadReaderException = ioex;
         deadReader = reader;
@@ -1171,7 +1171,7 @@ public final class Connection implements Runnable
       addUnsolicitedNotificationListener(LDAPUnsolicitedNotificationListener listener)
     {
         unsolicitedListeners.add(listener);
-        return;    
+        return;
     }
 
     /** Remove the specific object from current list of listeners
@@ -1180,7 +1180,7 @@ public final class Connection implements Runnable
       removeUnsolicitedNotificationListener(LDAPUnsolicitedNotificationListener listener)
     {
         unsolicitedListeners.removeElement(listener);
-        return;    
+        return;
     }
 
     /** Inner class defined so that we can spawn off each unsolicited
@@ -1202,13 +1202,13 @@ public final class Connection implements Runnable
         {
             this.listenerObj = l;
             this.unsolicitedMsg = m;
-            return;    
+            return;
         }
 
         public void run()
         {
             listenerObj.messageReceived(unsolicitedMsg);
-            return;    
+            return;
         }
     }
 

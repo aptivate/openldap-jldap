@@ -74,7 +74,7 @@ public class LDAPJSSEStartTLSFactory
         return new java.net.Socket(host, port);
     }
 
-    public Socket createTLSSocket( Socket socket )
+    public Socket createSocket( Socket socket )
         throws IOException, UnknownHostException
     {
         SSLSocket tls = (SSLSocket)factory.createSocket(
@@ -120,7 +120,7 @@ public class LDAPJSSEStartTLSFactory
         {
             if( Debug.LDAP_DEBUG ) {
                 Debug.trace(Debug.messages, "startTLS: Handshake is complete");
-            }    
+            }
             this.ssf.pauseForHandShake = false;
             return;
         }
