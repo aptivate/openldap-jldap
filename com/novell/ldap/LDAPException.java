@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPException.java,v 1.27 2001/04/23 21:05:34 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPException.java,v 1.28 2001/06/08 20:41:19 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -684,6 +684,21 @@ public class LDAPException extends Exception
    * <p>REFERRAL_LIMIT_EXCEEDED = 97</p>
    */
    public final static int REFERRAL_LIMIT_EXCEEDED = 97;
+
+   /**
+    * Indicates that the server response to a request is invalid
+    *
+    * <p>INVALID_RESPONSE = 100</p>
+    */
+   public final static int INVALID_RESPONSE = 100;
+
+   /**
+    * Indicates that the server response to a request is ambiguous
+    *
+    * <p>AMBIGUOUS_RESPONSE = 101</p>
+    */
+   public final static int AMBIGUOUS_RESPONSE = 101;
+
 
    /**
     * Indicates that TLS is not supported on the server.
