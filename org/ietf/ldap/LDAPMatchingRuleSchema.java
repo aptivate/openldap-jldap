@@ -19,7 +19,8 @@ package org.ietf.ldap;
  *  Represents the schematic definition of a particular matching rule
  *  in a particular Directory Server.
  *
- * @see com.novell.ldap.LDAPMatchingRuleSchema
+ * @see <a href="../../../../doc/com/novell/ldap/LDAPMatchingRuleSchema.html">
+            com.novell.ldap.LDAPMatchingRuleSchema</a>
  */
 public class LDAPMatchingRuleSchema extends LDAPSchemaElement
 {
@@ -41,8 +42,12 @@ public class LDAPMatchingRuleSchema extends LDAPSchemaElement
      * Constructs a matching rule definition for adding to or deleting from
      * a directory.
      *
-     * @see com.novell.ldap.LDAPMatchingRuleSchema#LDAPMatchingRuleSchema(
-            String,String,String,String[],String,String[])
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPMatchingRuleSchema.html
+            #LDAPMatchingRuleSchema(java.lang.String, java.lang.String, 
+            java.lang.String, java.lang.String[], java.lang.String, 
+            java.lang.String[])">
+            com.novell.ldap.LDAPMatchingRuleSchema.LDAPMatchingRuleSchema(
+            String, String, String, String[], String, String[])</a>
      */
     public LDAPMatchingRuleSchema(String name,
                                   String oid,
@@ -65,8 +70,11 @@ public class LDAPMatchingRuleSchema extends LDAPSchemaElement
      * Constructs a matching rule definition for adding to or deleting from
      * a directory.
      *
-     * @see com.novell.ldap.LDAPMatchingRuleSchema#LDAPMatchingRuleSchema(
-            String,String,String,boolean,String,String[])
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPMatchingRuleSchema.html
+            #LDAPMatchingRuleSchema(java.lang.String, java.lang.String, 
+            java.lang.String, boolean, java.lang.String, java.lang.String[])">
+            com.novell.ldap.LDAPMatchingRuleSchema.LDAPMatchingRuleSchema(
+            String, String, String, boolean, String, String[])</a>
      */
     public LDAPMatchingRuleSchema(String name,
                                  String oid,
@@ -91,8 +99,10 @@ public class LDAPMatchingRuleSchema extends LDAPSchemaElement
      * returned from a schema query for "matchingRule" and for
      * "matchingRuleUse" for the same rule.
      *
-     * @see com.novell.ldap.LDAPMatchingRuleSchema#LDAPMatchingRuleSchema(
-            String,String)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPMatchingRuleSchema.html
+            #LDAPMatchingRuleSchema(java.lang.String, java.lang.String)">
+            com.novell.ldap.LDAPMatchingRuleSchema.LDAPMatchingRuleSchema(
+            String, String)</a>
      */
     public LDAPMatchingRuleSchema(String rawMatchingRule,
                                   String rawMatchingRuleUse)
@@ -106,7 +116,9 @@ public class LDAPMatchingRuleSchema extends LDAPSchemaElement
     /**
      * Returns the OIDs of the attributes to which this rule applies.
      *
-     * @see com.novell.ldap.LDAPMatchingRuleSchema#getAttributes()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPMatchingRuleSchema.html
+            #getAttributes()">
+            com.novell.ldap.LDAPMatchingRuleSchema.getAttribues()</a>
      */
     public String[] getAttributes() {
         return schema.getAttributes();
@@ -115,7 +127,9 @@ public class LDAPMatchingRuleSchema extends LDAPSchemaElement
     /**
      * Returns the OID of the syntax that this matching rule is valid for.
      *
-     * @see com.novell.ldap.LDAPMatchingRuleSchema#getSyntaxString()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPMatchingRuleSchema.html
+            #getSyntaxString()">
+            com.novell.ldap.LDAPMatchingRuleSchema.getSyntaxString()</a>
      */
     public String getSyntaxString() {
         return schema.getSyntaxString();
