@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPUrl.java,v 1.17 2000/11/03 23:47:07 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPUrl.java,v 1.19 2000/11/14 21:44:15 cmorris Exp $
 *
 * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
 *
@@ -145,8 +145,15 @@ public class LDAPUrl {
                    int scope,
                    String filter,
                    boolean secure)
-     {
-        throw new RuntimeException("LDAPUrl: secure constructor not implemented");
+    {
+        this.host = host;
+		this.port = port;
+		this.dn = dn;
+		this.attrs = attrNames;
+		this.scope = scope;
+		this.filter = filter;		
+		this.secure = secure;
+		return;        
     }
     /**
     * Decodes a URL-encoded string.
@@ -326,6 +333,16 @@ public class LDAPUrl {
     public int getScope()
     {
 		return scope;
+    }
+    
+    /** 
+    * Returns true is the URL is of the type ldaps (LDAP over SSL, a predecessor
+    * to startTls)
+    *
+    * @return whether this is a secure LDAP url or not.
+    */
+    public boolean isSecure(){
+        return secure;
     }
 
     /**
