@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/client/RespControlVector.java,v 1.1 2000/11/22 22:17:42 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/client/RespControlVector.java,v 1.1 2001/01/24 21:01:59 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -51,6 +51,10 @@ public class RespControlVector extends java.util.Vector
      */
     public synchronized void registerResponseControl(String oid, Class controlClass)
     {
+        if( Debug.LDAP_DEBUG) {
+            Debug.trace( Debug.Controls, "Registered Control with following OID" + oid);
+        }
+        
         addElement(new RegisteredControl(oid, controlClass));
     }
     
@@ -73,6 +77,10 @@ public class RespControlVector extends java.util.Vector
             
             /* Does the stored OID match with whate we are looking for */
             if(ctl.myOID.compareTo(searchOID) == 0) {
+                
+                if( Debug.LDAP_DEBUG) {
+                    Debug.trace( Debug.Controls, "Returned control matched a registered control");
+                }
                 
                 /* Return the class name if we have match */
                 return ctl.myClass;

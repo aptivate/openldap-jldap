@@ -1,4 +1,4 @@
-// $Novell: /ldap/src/jldap/com/novell/ldap/client/Debug.template,v 1.9 2001/01/26 18:22:11 javed Exp $
+// $Novell: /ldap/src/jldap/com/novell/ldap/client/Debug.template,v 1.10 2001/01/26 18:45:56 vtag Exp $
 // **
 // ** NOTICE: Do NOT edit file Debug.java, the real file is Debug.template
 // **
@@ -51,7 +51,7 @@ import java.util.StringTokenizer;
  * </ul>
  *
  * @author Steven F. Sonntag
- * @version $Id: Debug.template,v 1.9 2001/01/26 18:22:11 javed Exp $
+ * @version $Id: Debug.template,v 1.10 2001/01/26 18:45:56 vtag Exp $
  */
 
 public abstract class Debug {
@@ -422,11 +422,12 @@ public abstract class Debug {
                 printit = traceConnections;
                 tracing="traceConnections";
             }
-            if( printit)
-            if( str == null) {
-                System.err.println("  \nprintDebug: Cannot print NULL string");
-            } else {
-                System.err.println( tracing + ": " + str);
+            if( printit) {
+                if( str == null) {
+                    System.err.println("  \nprintDebug: Cannot print NULL string");
+                } else {
+                    System.err.println( tracing + ": " + str);
+                }
             }
         }
         return;
