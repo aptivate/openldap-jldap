@@ -20,7 +20,8 @@ import java.util.Locale;
  *  Thrown to indicate that an LDAP error has occurred. This is a general
  *  exception which includes an error message and an LDAP error code.
  *
- * @see com.novell.ldap.LDAPException
+ * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html">
+            com.novell.ldap.LDAPException</a>
  */
 
 public class LDAPException extends Exception
@@ -30,7 +31,9 @@ public class LDAPException extends Exception
     /**
      *Indicates the requested client operation completed successfully.
      *
-     * @see com.novell.ldap.LDAPException#SUCCESS
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #SUCCESS">
+            com.novell.ldap.LDAPException.SUCCESS</a>
      */
     public final static int SUCCESS = 
 			    com.novell.ldap.LDAPException.SUCCESS;
@@ -38,7 +41,9 @@ public class LDAPException extends Exception
     /**
      * Indicates an internal error.
      *
-     * @see com.novell.ldap.LDAPException#OPERATIONS_ERROR
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #OPERATIONS_ERROR">
+            com.novell.ldap.LDAPException.OPERATIONS_ERROR</a>
      */
     public final static int OPERATIONS_ERROR = 
 			    com.novell.ldap.LDAPException.OPERATIONS_ERROR;
@@ -47,7 +52,9 @@ public class LDAPException extends Exception
      * Indicates that the server has received an invalid or malformed request
      * from the client.
      *
-     * @see com.novell.ldap.LDAPException#PROTOCOL_ERROR
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #PROTOCOL_ERROR">
+            com.novell.ldap.LDAPException.PROTOCOL_ERROR</a>
      */
     public final static int PROTOCOL_ERROR = 
 			    com.novell.ldap.LDAPException.PROTOCOL_ERROR;
@@ -56,7 +63,9 @@ public class LDAPException extends Exception
      * Indicates that the operation's time limit specified by either the
      * client or the server has been exceeded.
      *
-     * @see com.novell.ldap.LDAPException#TIME_LIMIT_EXCEEDED
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #TIME_LIMIT_EXCEEDED">
+            com.novell.ldap.LDAPException.TIME_LIMIT_EXCEEDED</a>
      */
     public final static int TIME_LIMIT_EXCEEDED = 
 			    com.novell.ldap.LDAPException.TIME_LIMIT_EXCEEDED;
@@ -65,7 +74,9 @@ public class LDAPException extends Exception
      * Indicates that in a search operation, the size limit specified by
      * the client or the server has been exceeded.
      *
-     * @see com.novell.ldap.LDAPException#SIZE_LIMIT_EXCEEDED
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #SIZE_LIMIT_EXCEEDED">
+            com.novell.ldap.LDAPException.SIZE_LIMIT_EXCEEDED</a>
      */
     public final static int SIZE_LIMIT_EXCEEDED = 
 			    com.novell.ldap.LDAPException.SIZE_LIMIT_EXCEEDED;
@@ -74,7 +85,8 @@ public class LDAPException extends Exception
      * Does not indicate an error condition. Indicates that the results of
      * a compare operation are false.
      *
-     * @see com.novell.ldap.LDAPException#COMPARE_FALSE
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #COMPARE_FALSE">com.novell.ldap.LDAPException.COMPARE_FALSE</a>
      */
     public final static int COMPARE_FALSE = 
 			    com.novell.ldap.LDAPException.COMPARE_FALSE;
@@ -83,7 +95,8 @@ public class LDAPException extends Exception
      * Does not indicate an error condition. Indicates that the results of a
      * compare operation are true.
      *
-     * @see com.novell.ldap.LDAPException#COMPARE_TRUE
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #COMPARE_TRUE">com.novell.ldap.LDAPException.COMPARE_TRUE</a>
      */
     public final static int COMPARE_TRUE = 
 			    com.novell.ldap.LDAPException.COMPARE_TRUE;
@@ -92,7 +105,9 @@ public class LDAPException extends Exception
      * Indicates that during a bind operation the client requested an
      * authentication method not supported by the LDAP server.
      *
-     * @see com.novell.ldap.LDAPException#AUTH_METHOD_NOT_SUPPORTED
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #AUTH_METHOD_NOT_SUPPORTED">
+            com.novell.ldap.LDAPException.AUTH_METHOD_NOT_SUPPORTED</a>
      */
     public final static int AUTH_METHOD_NOT_SUPPORTED = 
 			    com.novell.ldap.LDAPException.AUTH_METHOD_NOT_SUPPORTED;
@@ -100,7 +115,9 @@ public class LDAPException extends Exception
     /**
      *Indicates a problem with the level of authentication.
      *
-     * @see com.novell.ldap.LDAPException#STRONG_AUTH_REQUIRED
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #STRONG_AUTH_REQUIRED">
+            com.novell.ldap.LDAPException.STRONG_AUTH_REQUIRED</a>
      */
     public final static int STRONG_AUTH_REQUIRED = 
 			    com.novell.ldap.LDAPException.STRONG_AUTH_REQUIRED;
@@ -110,7 +127,8 @@ public class LDAPException extends Exception
      * server does not hold the target entry of the request, but that the
      * servers in the referral field may.
      *
-     * @see com.novell.ldap.LDAPException#REFERRAL
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #REFERRAL">com.novell.ldap.LDAPException.REFERRAL</a>
      */
     public final static int REFERRAL = 
 			    com.novell.ldap.LDAPException.REFERRAL;
@@ -119,7 +137,9 @@ public class LDAPException extends Exception
      * Indicates that an LDAP server limit set by an administrative authority
      * has been exceeded.
      *
-     * @see com.novell.ldap.LDAPException#ADMIN_LIMIT_EXCEEDED
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #ADMIN_LIMIT_EXCEEDED">
+            com.novell.ldap.LDAPException.ADMIN_LIMIT_EXCEEDED</a>
      */
     public final static int ADMIN_LIMIT_EXCEEDED = 
 			    com.novell.ldap.LDAPException.ADMIN_LIMIT_EXCEEDED;
@@ -128,7 +148,9 @@ public class LDAPException extends Exception
      * Indicates that the LDAP server was unable to satisfy a request because
      * one or more critical extensions were not available.
      *
-     * @see com.novell.ldap.LDAPException#UNAVAILABLE_CRITICAL_EXTENSION
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #UNAVAILABLE_CRITICAL_EXTENSION">
+            com.novell.ldap.LDAPException.UNAVAILABLE_CRITICAL_EXTENSION</a>
      */
     public final static int UNAVAILABLE_CRITICAL_EXTENSION = 
 			    com.novell.ldap.LDAPException.UNAVAILABLE_CRITICAL_EXTENSION;
@@ -137,7 +159,9 @@ public class LDAPException extends Exception
      * Indicates that the session is not protected by a protocol such as
      * Transport Layer Security (TLS), which provides session confidentiality.
      *
-     * @see com.novell.ldap.LDAPException#CONFIDENTIALITY_REQUIRED
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #CONFIDENTIALITY_REQUIRED">
+            com.novell.ldap.LDAPException.CONFIDENTIALITY_REQUIRED</a>
      */
     public final static int CONFIDENTIALITY_REQUIRED = 
 			    com.novell.ldap.LDAPException.CONFIDENTIALITY_REQUIRED;
@@ -146,7 +170,9 @@ public class LDAPException extends Exception
      * Does not indicate an error condition, but indicates that the server is
      * ready for the next step in the process.
      *
-     * @see com.novell.ldap.LDAPException#SASL_BIND_IN_PROGRESS
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #SASL_BIND_IN_PROGRESS">
+            com.novell.ldap.LDAPException.SASL_BIND_IN_PROGRESS</a>
      */
     public final static int SASL_BIND_IN_PROGRESS = 
 			    com.novell.ldap.LDAPException.SASL_BIND_IN_PROGRESS;
@@ -155,7 +181,9 @@ public class LDAPException extends Exception
      * Indicates that the attribute specified in the modify or compare
      * operation does not exist in the entry.
      *
-     * @see com.novell.ldap.LDAPException#NO_SUCH_ATTRIBUTE
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #NO_SUCH_ATTRIBUTE">
+            com.novell.ldap.LDAPException.NO_SUCH_ATTRIBUTE</a>
      */
     public final static int NO_SUCH_ATTRIBUTE = 
 			    com.novell.ldap.LDAPException.NO_SUCH_ATTRIBUTE;
@@ -164,7 +192,9 @@ public class LDAPException extends Exception
      * Indicates that the attribute specified in the modify or add operation
      * does not exist in the LDAP server's schema.
      *
-     * @see com.novell.ldap.LDAPException#UNDEFINED_ATTRIBUTE_TYPE
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #UNDEFINED_ATTRIBUTE_TYPE">
+            com.novell.ldap.LDAPException.UNDEFINED_ATTRIBUTE_TYPE</a>
      */
     public final static int UNDEFINED_ATTRIBUTE_TYPE = 
 			    com.novell.ldap.LDAPException.UNDEFINED_ATTRIBUTE_TYPE;
@@ -173,7 +203,9 @@ public class LDAPException extends Exception
      * Indicates that the matching rule specified in the search filter does
      * not match a rule defined for the attribute's syntax.
      *
-     * @see com.novell.ldap.LDAPException#INAPPROPRIATE_MATCHING
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #INAPPROPRIATE_MATCHING">
+            com.novell.ldap.LDAPException.INAPPROPRIATE_MATCHING</a>
      */
     public final static int INAPPROPRIATE_MATCHING = 
 			    com.novell.ldap.LDAPException.INAPPROPRIATE_MATCHING;
@@ -182,7 +214,9 @@ public class LDAPException extends Exception
      * Indicates that the attribute value specified in a modify, add, or
      * modify DN operation violates constraints placed on the attribute.
      *
-     * @see com.novell.ldap.LDAPException#CONSTRAINT_VIOLATION
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #CONSTRAINT_VIOLATION">
+            com.novell.ldap.LDAPException.CONSTRAINT_VIOLATION</a>
      */
     public final static int CONSTRAINT_VIOLATION = 
 			    com.novell.ldap.LDAPException.CONSTRAINT_VIOLATION;
@@ -191,7 +225,9 @@ public class LDAPException extends Exception
      * Indicates that the attribute value specified in a modify or add
      * operation already exists as a value for that attribute.
      *
-     * @see com.novell.ldap.LDAPException#ATTRIBUTE_OR_VALUE_EXISTS
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #ATTRIBUTE_OR_VALUE_EXISTS">
+            com.novell.ldap.LDAPException.ATTRIBUTE_OR_VALUE_EXISTS</a>
      */
     public final static int ATTRIBUTE_OR_VALUE_EXISTS = 
 			    com.novell.ldap.LDAPException.ATTRIBUTE_OR_VALUE_EXISTS;
@@ -200,7 +236,9 @@ public class LDAPException extends Exception
      * Indicates that the attribute value specified in an add, compare, or
      * modify operation is an unrecognized or invalid syntax for the attribute.
      *
-     * @see com.novell.ldap.LDAPException#INVALID_ATTRIBUTE_SYNTAX
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #INVALID_ATTRIBUTE_SYNTAX">
+            com.novell.ldap.LDAPException.INVALID_ATTRIBUTE_SYNTAX</a>
      */
     public final static int INVALID_ATTRIBUTE_SYNTAX = 
 			    com.novell.ldap.LDAPException.INVALID_ATTRIBUTE_SYNTAX;
@@ -208,7 +246,9 @@ public class LDAPException extends Exception
     /**
      * Indicates the target object cannot be found.
      *
-     * @see com.novell.ldap.LDAPException#NO_SUCH_OBJECT
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #NO_SUCH_OBJECT">
+            com.novell.ldap.LDAPException.NO_SUCH_OBJECT</a>
      */
     public final static int NO_SUCH_OBJECT = 
 			    com.novell.ldap.LDAPException.NO_SUCH_OBJECT;
@@ -216,7 +256,9 @@ public class LDAPException extends Exception
     /**
      * Indicates that an error occurred when an alias was dereferenced.
      *
-     * @see com.novell.ldap.LDAPException#ALIAS_PROBLEM
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #ALIAS_PROBLEM">
+            com.novell.ldap.LDAPException.ALIAS_PROBLEM</a>
      */
     public final static int ALIAS_PROBLEM = 
 			    com.novell.ldap.LDAPException.ALIAS_PROBLEM;
@@ -224,7 +266,9 @@ public class LDAPException extends Exception
     /**
      * Indicates that the syntax of the DN is incorrect.
      *
-     * @see com.novell.ldap.LDAPException#INVALID_DN_SYNTAX
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #INVALID_DN_SYNTAX">
+            com.novell.ldap.LDAPException.INVALID_DN_SYNTAX</a>
      */
     public final static int INVALID_DN_SYNTAX = 
 			    com.novell.ldap.LDAPException.INVALID_DN_SYNTAX;
@@ -233,7 +277,9 @@ public class LDAPException extends Exception
      * Indicates that the specified operation cannot be performed on a
      * leaf entry.
      *
-     * @see com.novell.ldap.LDAPException#IS_LEAF
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #IS_LEAF">
+            com.novell.ldap.LDAPException.IS_LEAF</a>
      */
     public final static int IS_LEAF = 
 			    com.novell.ldap.LDAPException.IS_LEAF;
@@ -243,7 +289,9 @@ public class LDAPException extends Exception
      * have access rights to read the aliased object's name or dereferencing
      * is not allowed.
      *
-     * @see com.novell.ldap.LDAPException#ALIAS_DEREFERENCING_PROBLEM
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #ALIAS_DEREFERENCING_PROBLEM">
+            com.novell.ldap.LDAPException.ALIAS_DEREFERENCING_PROBLEM</a>
      */
     public final static int ALIAS_DEREFERENCING_PROBLEM = 
 			    com.novell.ldap.LDAPException.ALIAS_DEREFERENCING_PROBLEM;
@@ -252,7 +300,9 @@ public class LDAPException extends Exception
      * Indicates that during a bind operation, the client is attempting to use
      * an authentication method that the client cannot use correctly.
      *
-     * @see com.novell.ldap.LDAPException#INAPPROPRIATE_AUTHENTICATION
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #INAPPROPRIATE_AUTHENTICATION">
+            com.novell.ldap.LDAPException.INAPPROPRIATE_AUTHENTICATION</a>
      */
     public final static int INAPPROPRIATE_AUTHENTICATION = 
 			    com.novell.ldap.LDAPException.INAPPROPRIATE_AUTHENTICATION;
@@ -260,7 +310,9 @@ public class LDAPException extends Exception
     /**
      * Indicates that invalid information was passed during a bind operation.
      *
-     * @see com.novell.ldap.LDAPException#INVALID_CREDENTIALS
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #INVALID_CREDENTIALS">
+            com.novell.ldap.LDAPException.INVALID_CREDENTIALS</a>
      */
     public final static int INVALID_CREDENTIALS = 
 			    com.novell.ldap.LDAPException.INVALID_CREDENTIALS;
@@ -269,7 +321,9 @@ public class LDAPException extends Exception
      * Indicates that the caller does not have sufficient rights to perform
      * the requested operation.
      *
-     * @see com.novell.ldap.LDAPException#INSUFFICIENT_ACCESS_RIGHTS
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #INSUFFICIENT_ACCESS_RIGHTS">
+            com.novell.ldap.LDAPException.INSUFFICIENT_ACCESS_RIGHTS</a>
      */
     public final static int INSUFFICIENT_ACCESS_RIGHTS = 
 			    com.novell.ldap.LDAPException.INSUFFICIENT_ACCESS_RIGHTS;
@@ -279,7 +333,9 @@ public class LDAPException extends Exception
      * at this time, but if the client waits and resubmits the request, the
      * server may be able to process it then.
      *
-     * @see com.novell.ldap.LDAPException#BUSY
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #BUSY">
+            com.novell.ldap.LDAPException.BUSY</a>
      */
     public final static int BUSY = 
 			    com.novell.ldap.LDAPException.BUSY;
@@ -288,7 +344,9 @@ public class LDAPException extends Exception
      * Indicates that the LDAP server cannot process the client's bind
      * request, usually because it is shutting down.
      *
-     * @see com.novell.ldap.LDAPException#UNAVAILABLE
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #UNAVAILABLE">
+            com.novell.ldap.LDAPException.UNAVAILABLE</a>
      */
     public final static int UNAVAILABLE = 
 			    com.novell.ldap.LDAPException.UNAVAILABLE;
@@ -297,7 +355,9 @@ public class LDAPException extends Exception
      * Indicates that the LDAP server cannot process the request because of
      * server-defined restrictions.
      *
-     * @see com.novell.ldap.LDAPException#UNWILLING_TO_PERFORM
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #UNWILLING_TO_PERFORM">
+            com.novell.ldap.LDAPException.UNWILLING_TO_PERFORM</a>
      */
     public final static int UNWILLING_TO_PERFORM = 
 			    com.novell.ldap.LDAPException.UNWILLING_TO_PERFORM;
@@ -306,7 +366,9 @@ public class LDAPException extends Exception
      * Indicates that the client discovered an alias or referral loop,
      * and is thus unable to complete this request.
      *
-     * @see com.novell.ldap.LDAPException#LOOP_DETECT
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #LOOP_DETECT">
+            com.novell.ldap.LDAPException.LOOP_DETECT</a>
      */
     public final static int LOOP_DETECT = 
 			    com.novell.ldap.LDAPException.LOOP_DETECT;
@@ -315,7 +377,9 @@ public class LDAPException extends Exception
      * Indicates that the add or modify DN operation violates the schema's
      * structure rules.
      *
-     * @see com.novell.ldap.LDAPException#NAMING_VIOLATION
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #NAMING_VIOLATION">
+            com.novell.ldap.LDAPException.NAMING_VIOLATION</a>
      */
     public final static int NAMING_VIOLATION = 
 			    com.novell.ldap.LDAPException.NAMING_VIOLATION;
@@ -324,7 +388,9 @@ public class LDAPException extends Exception
      * Indicates that the add, modify, or modify DN operation violates the
      * object class rules for the entry.
      *
-     * @see com.novell.ldap.LDAPException#OBJECT_CLASS_VIOLATION
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #OBJECT_CLASS_VIOLATION">
+            com.novell.ldap.LDAPException.OBJECT_CLASS_VIOLATION</a>
      */
     public final static int OBJECT_CLASS_VIOLATION = 
 			    com.novell.ldap.LDAPException.OBJECT_CLASS_VIOLATION;
@@ -332,7 +398,9 @@ public class LDAPException extends Exception
     /**
      * Indicates that the requested operation is permitted only on leaf entries.
      *
-     * @see com.novell.ldap.LDAPException#NOT_ALLOWED_ON_NONLEAF
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #NOT_ALLOWED_ON_NONLEAF">
+            com.novell.ldap.LDAPException.NOT_ALLOWED_ON_NONLEAF</a>
      */
     public final static int NOT_ALLOWED_ON_NONLEAF = 
 			    com.novell.ldap.LDAPException.NOT_ALLOWED_ON_NONLEAF;
@@ -341,7 +409,9 @@ public class LDAPException extends Exception
      * Indicates that the modify operation attempted to remove an attribute
      * value that forms the entry's relative distinguished name.
      *
-     * @see com.novell.ldap.LDAPException#NOT_ALLOWED_ON_RDN
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #NOT_ALLOWED_ON_RDN">
+            com.novell.ldap.LDAPException.NOT_ALLOWED_ON_RDN</a>
      */
     public final static int NOT_ALLOWED_ON_RDN = 
 			    com.novell.ldap.LDAPException.NOT_ALLOWED_ON_RDN;
@@ -351,7 +421,9 @@ public class LDAPException extends Exception
      * exists, or that the modify operation attempted to rename an entry to the
      * name of an entry that already exists.
      *
-     * @see com.novell.ldap.LDAPException#ENTRY_ALREADY_EXISTS
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #ENTRY_ALREADY_EXISTS">
+            com.novell.ldap.LDAPException.ENTRY_ALREADY_EXISTS</a>
      */
     public final static int ENTRY_ALREADY_EXISTS = 
 			    com.novell.ldap.LDAPException.ENTRY_ALREADY_EXISTS;
@@ -360,7 +432,9 @@ public class LDAPException extends Exception
      * Indicates that the modify operation attempted to modify the structure
      * rules of an object class.
      *
-     * @see com.novell.ldap.LDAPException#OBJECT_CLASS_MODS_PROHIBITED
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #OBJECT_CLASS_MODS_PROHIBITED">
+            com.novell.ldap.LDAPException.OBJECT_CLASS_MODS_PROHIBITED</a>
      */
     public final static int OBJECT_CLASS_MODS_PROHIBITED = 
 			    com.novell.ldap.LDAPException.OBJECT_CLASS_MODS_PROHIBITED;
@@ -369,7 +443,9 @@ public class LDAPException extends Exception
      * Indicates that the modify DN operation moves the entry from one LDAP
      * server to another and thus requires more than one LDAP server.
      *
-     * @see com.novell.ldap.LDAPException#AFFECTS_MULTIPLE_DSAS
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #AFFECTS_MULTIPLE_DSAS">
+            com.novell.ldap.LDAPException.AFFECTS_MULTIPLE_DSAS</a>
      */
     public final static int AFFECTS_MULTIPLE_DSAS = 
 			    com.novell.ldap.LDAPException.AFFECTS_MULTIPLE_DSAS;
@@ -377,7 +453,9 @@ public class LDAPException extends Exception
     /**
      * Indicates an unknown error condition.
      *
-     * @see com.novell.ldap.LDAPException#OTHER
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #OTHER">
+            com.novell.ldap.LDAPException.OTHER</a>
      */
     public final static int OTHER = 
 			    com.novell.ldap.LDAPException.OTHER;
@@ -387,7 +465,9 @@ public class LDAPException extends Exception
      * with the LDAP server. Either the LDAP server is down or the specified
      * host name or port number is incorrect.
      *
-     * @see com.novell.ldap.LDAPException#SERVER_DOWN
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #SERVER_DOWN">
+            com.novell.ldap.LDAPException.SERVER_DOWN</a>
      */
     public final static int SERVER_DOWN = 
 			    com.novell.ldap.LDAPException.SERVER_DOWN;
@@ -396,7 +476,9 @@ public class LDAPException extends Exception
      * Indicates that the LDAP client has an error. This is usually a failed
      * dynamic memory allocation error.
      *
-     * @see com.novell.ldap.LDAPException#LOCAL_ERROR
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #LOCAL_ERROR">
+            com.novell.ldap.LDAPException.LOCAL_ERROR</a>
      */
     public final static int LOCAL_ERROR = 
 			    com.novell.ldap.LDAPException.LOCAL_ERROR;
@@ -405,7 +487,9 @@ public class LDAPException extends Exception
      * Indicates that the LDAP client encountered errors when encoding an
      * LDAP request intended for the LDAP server.
      *
-     * @see com.novell.ldap.LDAPException#ENCODING_ERROR
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #ENCODING_ERROR">
+            com.novell.ldap.LDAPException.ENCODING_ERROR</a>
      */
     public final static int ENCODING_ERROR = 
 			    com.novell.ldap.LDAPException.ENCODING_ERROR;
@@ -414,7 +498,9 @@ public class LDAPException extends Exception
      * Indicates that the LDAP client encountered errors when decoding an
      * LDAP response from the LDAP server.
      *
-     * @see com.novell.ldap.LDAPException#DECODING_ERROR
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #DECODING_ERROR">
+            com.novell.ldap.LDAPException.DECODING_ERROR</a>
      */
     public final static int DECODING_ERROR = 
 			    com.novell.ldap.LDAPException.DECODING_ERROR;
@@ -423,7 +509,9 @@ public class LDAPException extends Exception
      * Indicates that the time limit of the LDAP client was exceeded while
      * waiting for a result.
      *
-     * @see com.novell.ldap.LDAPException#LDAP_TIMEOUT
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #LDAP_TIMEOUT">
+            com.novell.ldap.LDAPException.LDAP_TIMEOUT</a>
      */
     public final static int LDAP_TIMEOUT = 
 			    com.novell.ldap.LDAPException.LDAP_TIMEOUT;
@@ -432,7 +520,9 @@ public class LDAPException extends Exception
      * Indicates that a bind method was called with an unknown
      * authentication method.
      *
-     * @see com.novell.ldap.LDAPException#AUTH_UNKNOWN
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #AUTH_UNKNOWN">
+            com.novell.ldap.LDAPException.AUTH_UNKNOWN</a>
      */
     public final static int AUTH_UNKNOWN = 
 			    com.novell.ldap.LDAPException.AUTH_UNKNOWN;
@@ -441,7 +531,9 @@ public class LDAPException extends Exception
      * Indicates that the search method was called with an invalid
      * search filter.
      *
-     * @see com.novell.ldap.LDAPException#FILTER_ERROR
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #FILTER_ERROR">
+            com.novell.ldap.LDAPException.FILTER_ERROR</a>
      */
     public final static int FILTER_ERROR = 
 			    com.novell.ldap.LDAPException.FILTER_ERROR;
@@ -449,7 +541,9 @@ public class LDAPException extends Exception
     /**
      * Indicates that the user cancelled the LDAP operation.
      *
-     * @see com.novell.ldap.LDAPException#USER_CANCELLED
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #USER_CANCELLED">
+            com.novell.ldap.LDAPException.USER_CANCELLED</a>
      */
     public final static int USER_CANCELLED = 
 			    com.novell.ldap.LDAPException.USER_CANCELLED;
@@ -458,7 +552,9 @@ public class LDAPException extends Exception
      * Indicates that a dynamic memory allocation method failed when calling
      * an LDAP method.
      *
-     * @see com.novell.ldap.LDAPException#NO_MEMORY
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #NO_MEMORY">
+            com.novell.ldap.LDAPException.NO_MEMORY</a>
      */
     public final static int NO_MEMORY = 
 			    com.novell.ldap.LDAPException.NO_MEMORY;
@@ -467,7 +563,9 @@ public class LDAPException extends Exception
      * Indicates that the LDAP client has lost either its connection or
      * cannot establish a connection to the LDAP server.
      *
-     * @see com.novell.ldap.LDAPException#CONNECT_ERROR
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #CONNECT_ERROR">
+            com.novell.ldap.LDAPException.CONNECT_ERROR</a>
      */
     public final static int CONNECT_ERROR = 
 			    com.novell.ldap.LDAPException.CONNECT_ERROR;
@@ -476,7 +574,9 @@ public class LDAPException extends Exception
      * Indicates that the requested functionality is not supported by the
      * client.
      *
-     * @see com.novell.ldap.LDAPException#LDAP_NOT_SUPPORTED
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #LDAP_NOT_SUPPORTED">
+            com.novell.ldap.LDAPException.LDAP_NOT_SUPPORTED</a>
      */
     public final static int LDAP_NOT_SUPPORTED = 
 			    com.novell.ldap.LDAPException.LDAP_NOT_SUPPORTED;
@@ -485,7 +585,9 @@ public class LDAPException extends Exception
      * Indicates that the client requested a control that the libraries
      * cannot find in the list of supported controls sent by the LDAP server.
      *
-     * @see com.novell.ldap.LDAPException#CONTROL_NOT_FOUND
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #CONTROL_NOT_FOUND">
+            com.novell.ldap.LDAPException.CONTROL_NOT_FOUND</a>
      */
     public final static int CONTROL_NOT_FOUND = 
 			    com.novell.ldap.LDAPException.CONTROL_NOT_FOUND;
@@ -493,7 +595,9 @@ public class LDAPException extends Exception
     /**
      * Indicates that the LDAP server sent no results.
      *
-     * @see com.novell.ldap.LDAPException#NO_RESULTS_RETURNED
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #NO_RESULTS_RETURNED">
+            com.novell.ldap.LDAPException.NO_RESULTS_RETURNED</a>
      */
     public final static int NO_RESULTS_RETURNED = 
 			    com.novell.ldap.LDAPException.NO_RESULTS_RETURNED;
@@ -501,7 +605,9 @@ public class LDAPException extends Exception
     /**
      * Indicates that more results are chained in the result message.
      *
-     * @see com.novell.ldap.LDAPException#MORE_RESULTS_TO_RETURN
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #MORE_RESULTS_TO_RETURN">
+            com.novell.ldap.LDAPException.MORE_RESULTS_TO_RETURN</a>
      */
     public final static int MORE_RESULTS_TO_RETURN = 
 			    com.novell.ldap.LDAPException.MORE_RESULTS_TO_RETURN;
@@ -510,7 +616,9 @@ public class LDAPException extends Exception
      * Indicates the LDAP libraries detected a loop. Usually this happens
      * when following referrals.
      *
-     * @see com.novell.ldap.LDAPException#CLIENT_LOOP
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #CLIENT_LOOP">
+            com.novell.ldap.LDAPException.CLIENT_LOOP</a>
      */
     public final static int CLIENT_LOOP = 
 			    com.novell.ldap.LDAPException.CLIENT_LOOP;
@@ -519,39 +627,49 @@ public class LDAPException extends Exception
      * Indicates that the referral exceeds the hop limit. The default hop
      * limit is ten.
      *
-     * @see com.novell.ldap.LDAPException#REFERRAL_LIMIT_EXCEEDED
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #REFERRAL_LIMIT_EXCEEDED">
+            com.novell.ldap.LDAPException.REFERRAL_LIMIT_EXCEEDED</a>
      */
     public final static int REFERRAL_LIMIT_EXCEEDED = 
 			    com.novell.ldap.LDAPException.REFERRAL_LIMIT_EXCEEDED;
 
-   /**
-    * Indicates that the server response to a request is invalid
-    *
-    * <p>INVALID_RESPONSE = 100</p>
-    */
+    /**
+     * Indicates that the server response to a request is invalid
+     *
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #INVALID_RESPONSE">
+            com.novell.ldap.LDAPException.INVALID_RESPONSE</a>
+     */
    public final static int INVALID_RESPONSE = 
 			    com.novell.ldap.LDAPException.INVALID_RESPONSE;
 
-   /**
-    * Indicates that the server response to a request is ambiguous
-    *
-    * <p>AMBIGUOUS_RESPONSE = 101</p>
-    */
+    /**
+     * Indicates that the server response to a request is ambiguous
+     *
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #AMBIGUOUS_RESPONSE">
+            com.novell.ldap.LDAPException.AMBIGUOUS_RESPONSE</a>
+     */
    public final static int AMBIGUOUS_RESPONSE = 
 			    com.novell.ldap.LDAPException.AMBIGUOUS_RESPONSE;
 
     /**
      * Indicates that TLS is not supported on the server.
      *
-     * @see com.novell.ldap.LDAPException#TLS_NOT_SUPPORTED
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #TLS_NOT_SUPPORTED">
+            com.novell.ldap.LDAPException.TLS_NOT_SUPPORTED</a>
      */
     public final static int TLS_NOT_SUPPORTED = 
 			    com.novell.ldap.LDAPException.TLS_NOT_SUPPORTED;
 
-    /*
+    /**
      * Constructs a default exception with no specific error information.
      *
-     * @see com.novell.ldap.LDAPException#LDAPException()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #LDAPException()">
+            com.novell.ldap.LDAPException.LDAPException()</a>
      */
     public LDAPException()
     {
@@ -575,7 +693,9 @@ public class LDAPException extends Exception
      * Constructs an exception with with a detail message 
      * String and the result code.
      *
-     * @see com.novell.ldap.LDAPException#LDAPException(String, int)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #LDAPException(java.lang.String, int)">
+            com.novell.ldap.LDAPException.LDAPException(String, int)</a>
      */
     public LDAPException(String message, int resultCode)
     {
@@ -588,7 +708,10 @@ public class LDAPException extends Exception
      * Constructs an exception with with a detail message String, the
      * result code, and the root exception.
      *
-     * @see com.novell.ldap.LDAPException#LDAPException(String, int, Throwable)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #LDAPException(java.lang.String, int, java.lang.Throwable)">
+            com.novell.ldap.LDAPException.LDAPException(String, int,
+            Throwable)</a>
      */
     public LDAPException(
                 String message, int resultCode, Throwable rootException)
@@ -603,7 +726,10 @@ public class LDAPException extends Exception
      * Constructs an exception with with a detail message String, result code,
      * and a matchedDN returned from the server.
      *
-     * @see com.novell.ldap.LDAPException#LDAPException(String, int, String)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #LDAPException(java.lang.String, int, java.lang.String)">
+            com.novell.ldap.LDAPException.LDAPException(String, int,
+            String)</a>
      */
     public LDAPException( String message, int resultCode, String matchedDN)
     {
@@ -626,7 +752,9 @@ public class LDAPException extends Exception
      * Returns a string representing the internal error code, in the default
      * locale.
      *
-     * @see com.novell.ldap.LDAPException#errorCodeToString()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #errorCodeToString()">
+            com.novell.ldap.LDAPException.errorCodeToString()</a>
      */
     public String errorCodeToString()
     {
@@ -637,7 +765,9 @@ public class LDAPException extends Exception
      * Returns a string representing an arbitrary error code, in the default
      * locale, or null if there is no such code.
      *
-     * @see com.novell.ldap.LDAPException#errorCodeToString(int)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #errorCodeToString(int)">
+            com.novell.ldap.LDAPException.errorCodeToString(int)</a>
      */
     public static String errorCodeToString( int code )
     {
@@ -649,7 +779,9 @@ public class LDAPException extends Exception
      * specified locale, or null if a string representation is not available
      * for the requested locale.
      *
-     * @see com.novell.ldap.LDAPException#errorCodeToString(Locale)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #errorCodeToString(java.util.Locale)">
+            com.novell.ldap.LDAPException.errorCodeToString(Locale)</a>
      */
     public String errorCodeToString( Locale locale )
     {
@@ -661,7 +793,9 @@ public class LDAPException extends Exception
      * specified locale, or null if there is no such code or if a string
      * representation is not available for the requested Locale.
      *
-     * @see com.novell.ldap.LDAPException#errorCodeToString(int, Locale)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #errorCodeToString(int, java.util.Locale)">
+            com.novell.ldap.LDAPException.errorCodeToString(int, Locale)</a>
      */
     public static String errorCodeToString( int code, Locale locale )
     {
@@ -672,7 +806,9 @@ public class LDAPException extends Exception
      * Returns the error message from the LDAP server, if this message is
      * available (that is, if this message was set).
      *
-     * @see com.novell.ldap.LDAPException#errorCodeToString(int, Locale)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #getLDAPErrorMessage()">
+            com.novell.ldap.LDAPException.getLDAPErrorMessage()</a>
      */
     public String getLDAPErrorMessage()
     {
@@ -682,7 +818,9 @@ public class LDAPException extends Exception
     /**
      * Returns the lower level Exception which caused the failure, if any.
      *
-     * @see com.novell.ldap.LDAPException#getCause()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #getCause()">
+            com.novell.ldap.LDAPException.getCause()</a>
      */
     public Throwable getCause()
     {
@@ -692,7 +830,9 @@ public class LDAPException extends Exception
     /**
      * Returns the result code from the exception.
      *
-     * @see com.novell.ldap.LDAPException#getLDAPResultCode()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #getLDAPResultCode()">
+            com.novell.ldap.LDAPException.getLDAPResultCode()</a>
      */
     public int getLDAPResultCode()
     {
@@ -703,7 +843,9 @@ public class LDAPException extends Exception
      * Returns the part of a submitted distinguished name which could be
      * matched by the server.
      *
-     * @see com.novell.ldap.LDAPException#getMatchedDN()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #getMatchedDN()">
+            com.novell.ldap.LDAPException.getMatchedDN()</a>
      */
     public String getMatchedDN()
     {
@@ -713,7 +855,9 @@ public class LDAPException extends Exception
     /**
      * Converts the integer error value to a string, in the default locale.
      *
-     * @return the String value of the current error
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #toString()">
+            com.novell.ldap.LDAPException.toString()</a>
      */
     public String toString()
     {
