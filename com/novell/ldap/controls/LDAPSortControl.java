@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPSortControl.java,v 1.5 2001/01/26 20:31:53 javed Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPSortControl.java,v 1.6 2001/03/01 00:30:07 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -42,11 +42,11 @@ public class LDAPSortControl extends LDAPControl {
     /**
      * Constructs a sort control with a single key.
      *
-     *  key            A sort key object, which specifies attribute,
+     *  @param key     A sort key object, which specifies attribute,
      *                 order, and optional matching rule.
      *
-     *  critical       True if the search operation is to fail if the
-     *                 server does not support this control.
+     *  @param critical	True if the search operation is to fail if the
+     *					server does not support this control.
      */
     public LDAPSortControl(LDAPSortKey key, boolean critical)
     {
@@ -56,11 +56,11 @@ public class LDAPSortControl extends LDAPControl {
     /**
      * Constructs a sort control with multiple sort keys.
      *
-     *  keys           An array of sort key objects, to be processed in
-     *                 order.
+     *  @param keys		An array of sort key objects, to be processed in
+     *					order.
      *
-     *  critical       True if the search operation is to fail if the
-     *                 server does not support this control.
+     *  @param critical	True if the search operation is to fail if the
+     *					server does not support this control.
      */
     public LDAPSortControl(LDAPSortKey[] keys, boolean critical)
     {
