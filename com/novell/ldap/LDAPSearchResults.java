@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResults.java,v 1.38 2001/03/01 00:29:57 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResults.java,v 1.39 2001/03/02 23:10:29 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -129,10 +129,11 @@ public class LDAPSearchResults implements Enumeration
     {
         boolean ret = false;
         if( (entryIndex < entryCount) || (referenceIndex < referenceCount)) {
+            // we have data
             ret = true;
         }
         else
-        if(completed == false) { // reload the Vector
+        if(completed == false) { // reload the Vector by getting more results
             resetVectors();
             ret = (entryIndex < entryCount) || (referenceIndex < referenceCount);
         }
@@ -148,22 +149,31 @@ public class LDAPSearchResults implements Enumeration
     }
 
     /*
-     * One or more of the vectors was emptied,
-     * get more data for them.
+     * If both of the vectors are empty, get more data for them.
      */
     private void resetVectors()
     {
+        // If we're done, no further checking needed
+        if( completed) {
+            return;
+        }
+        // Checks if we have run out of references
         if( (referenceIndex != 0) && (referenceIndex >= referenceCount) ) {
             references.setSize(0);
             referenceCount = 0;
             referenceIndex = 0;
         }
+        // Checks if we have run out of entries
         if( (entryIndex != 0) && (entryIndex >= entryCount) ) {
             entries.setSize(0);
             entryCount = 0;
             entryIndex = 0;
        }
-       completed = getBatchOfResults();
+       // If no data at all, must reload enumeration
+       if( (referenceIndex == 0) && (referenceCount == 0) &&
+                (entryIndex == 0) && (entryCount == 0)) {
+            completed = getBatchOfResults();
+       }
        return;
     }
     /**
@@ -186,11 +196,9 @@ public class LDAPSearchResults implements Enumeration
             throw new NoSuchElementException(
                 "LDAPSearchResults.next() no more results");
         }
-        // Check if need to reload the enumeration
-        if( ! completed && ((entryIndex >= entryCount) ||
-                (referenceIndex >= referenceCount))) {
-            resetVectors();
-        }
+        // Check if the enumeration is empty and must be reloaded
+        resetVectors();
+
         Object element = null;
         // Check for Search References & deliver to app as they come in
         // We only get here if not following referrals/references
@@ -284,12 +292,12 @@ public class LDAPSearchResults implements Enumeration
                 "LDAPSearchResults.nextElement() no more results");
         }
         // Check if need to reload the enumeration
-        // We want to receive all entries before we hand over references
-        if( ! completed && (entryIndex >= entryCount) ) {
-            resetVectors(); // Return when we have something
-        }
+        // We have separate vectors for referrals/references because
+        // We return them ahead of any normal data.
+        resetVectors(); // Return when we have something
+
         // Check for Search References, deliver to app as they come in
-        // We only get here if not following referrals
+        // We only get here if not automatically following referrals
         if( referenceIndex < referenceCount ) {
             String refs[] = (String[])(references.elementAt( referenceIndex++) );
             if( Debug.LDAP_DEBUG ) {
@@ -305,7 +313,7 @@ public class LDAPSearchResults implements Enumeration
             ((LDAPReferralException)element).setReferrals( refs);
         } else
         if( entryIndex < entryCount ) {
-            // Check for Search Entries and the Search Response
+            // Check for Search Entries and the Search Responses
             element = entries.elementAt( entryIndex++ );
             if( Debug.LDAP_DEBUG ) {
                 Debug.trace( Debug.messages, name +
