@@ -57,8 +57,8 @@
             includes="*.java"
             destdir="${top}/${build.servlet}/debug"
             deprecation="on"
-            debug="off"
-            optimize="on">
+            debug="on"
+            optimize="off">
             <classpath>
                 <pathelement location="."/>
                 <pathelement location="${top}/classes_debug/"/>
