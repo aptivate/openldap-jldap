@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/com/novell/asn1/ldap/Filter.java,v 1.10 2000/08/29 06:36:06 smerrill Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/com/novell/asn1/ldap/Filter.java,v 1.11 2000/08/30 02:19:23 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  ***************************************************************************/
@@ -167,7 +167,7 @@ public class Filter extends ASN1Choice {
 				break;
          default:
             int filterType = ft.getFilterType();
-            String value = ft.getValue();
+				String value = ft.getValue();
 
             switch(filterType) {
                case GREATER_OR_EQUAL:
@@ -181,7 +181,7 @@ public class Filter extends ASN1Choice {
                         new AssertionValue(escaped2unicode(value))),
                      false);
                   break;
-               case EQUALITY_MATCH:
+               case EQUALITY_MATCH: // may be PRESENT or SUBSTRINGS also
                   if(value.equals("*")) { // present
                      tag = new ASN1Tagged(
                         new ASN1Identifier(ASN1Identifier.CONTEXT, false,
@@ -189,7 +189,7 @@ public class Filter extends ASN1Choice {
                         new AttributeDescription(ft.getAttr()),
                         false);
                   }
-                  else if(value.indexOf('*') != -1) { // substring
+                  else if(value.indexOf('*') != -1) { // substrings
                      // parse: [initial], *any*, [final] into an
 							// ASN1SequenceOf
                      StringTokenizer sub =
@@ -248,6 +248,40 @@ public class Filter extends ASN1Choice {
                            new AssertionValue(escaped2unicode(value))),
                         false);
                   }
+						break;
+					case EXTENSIBLE_MATCH:
+						String type = null, matchingRule = null;
+						boolean dnAttributes = false;
+						StringTokenizer st =
+							new StringTokenizer(ft.getAttr(), ":", true);
+
+						boolean first = true;
+						while(st.hasMoreTokens()) {
+							String s = st.nextToken().trim();
+							if(first && !s.equals(":")) {
+								type = s;
+							}
+							else if(s.equals("dn")) {
+								dnAttributes = true;
+							}
+							else if(!s.equals(":")) {
+								matchingRule = s;
+							}
+							first = false;
+						}
+
+						tag = new ASN1Tagged(
+							new ASN1Identifier(ASN1Identifier.CONTEXT, true,
+													 EXTENSIBLE_MATCH),
+							new MatchingRuleAssertion(
+								(matchingRule == null) ? null :
+							       new MatchingRuleId(matchingRule),
+						      (type == null) ? null :
+							       new AttributeDescription(type),
+							   new AssertionValue(escaped2unicode(value)),
+							   (dnAttributes == false) ? null :
+									 new ASN1Boolean(true)),
+							false);
             }
       }
       return tag;
@@ -429,11 +463,13 @@ class FilterTokenizer {
          return Filter.NOT;
       }
 
-      String delims = "=~<>:()";
-      StringBuffer sb = new StringBuffer();
-      while(delims.indexOf(filter.charAt(i)) == -1) {
-         sb.append(filter.charAt(i++));
-      }
+		// get first component of 'item' (attr or :dn or :matchingrule)
+      String delims = "=~<>()";
+		StringBuffer sb = new StringBuffer();
+		while(delims.indexOf(filter.charAt(i)) == -1 &&
+				filter.startsWith(":=", i) == false) {
+			sb.append(filter.charAt(i++));
+		}
 
       attr = sb.toString().trim();
       return -1;
@@ -462,6 +498,10 @@ class FilterTokenizer {
          i+=2;
          return Filter.APPROX_MATCH;
       }
+		if(filter.startsWith(":=", i)) {
+         i+=2;
+         return Filter.EXTENSIBLE_MATCH;
+		}
       if(filter.charAt(i) == '=') {
          i++;
          return Filter.EQUALITY_MATCH;
