@@ -239,10 +239,15 @@ public class LDAPConstraints implements Cloneable {
     /**
      * Sets a single control to be sent to the server.
      *
-     * @param control     A single control to be sent to the server.
+     * @param control     A single control to be sent to the server or
+     *                    null if none.
      */
     public void setControls(LDAPControl control)
     {
+        if( control == null) {
+            this.controls = null;
+            return;
+        }
         this.controls = new LDAPControl[1];
         this.controls[0] = (LDAPControl)control.clone();
         return;
@@ -251,10 +256,15 @@ public class LDAPConstraints implements Cloneable {
     /**
      * Sets controls to be sent to the server.
      *
-     * @param controls       An array of controls to be sent to the server.
+     * @param controls      An array of controls to be sent to the server or
+     *                      null if none.
      */
     public void setControls(LDAPControl[] controls)
     {
+        if( (controls == null) || (controls.length == 0)) {
+            this.controls = null;
+            return;
+        }
         this.controls = new LDAPControl[controls.length];
         for( int i=0; i<controls.length; i++) {
             this.controls[i] = (LDAPControl)controls[i].clone();
