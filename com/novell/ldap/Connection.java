@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.33 2001/02/13 18:36:49 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.34 2001/02/16 18:58:49 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -860,6 +860,10 @@ public final class Connection implements Runnable
 			LDAPMessage tempLDAPMessage = new LDAPExtendedResponse(message);
 			
 			// Spawn a new thread for each listener to go process the message
+			// INCOMPLETE - THIS IS TO RISKY.  WHAT IF THIS THREAD
+			// BLOCKS - REMEMBER THIS IS A APP SPECIFIED CLASS
+			// WE DO NOT KNOW WHAT THEY MIGHT DO.  THIS WILL BLOCK
+			// THE DEAMON THREAD INDEFINITELY
 			listener.messageReceived(tempLDAPMessage);
 
 		}
