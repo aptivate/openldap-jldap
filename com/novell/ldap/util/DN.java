@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/util/DN.java,v 1.3 2001/03/14 19:25:58 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/util/DN.java,v 1.4 2001/03/19 20:00:36 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -26,9 +26,8 @@ import java.util.Vector;
  * <ul>
  *     <li>cn=admin,ou=marketing,o=corporation</li>
  *     <li>cn=admin,ou=marketing</li>
- *     <li>oid.2.5.4.3=#616460696E,ou=marketing</li>
- *     <!-- a=97=x61, d=100=x64, m=109=x60, i=105=x69, n=110=x6E -->
  *     <li>2.5.4.3=admin,ou=marketing</li>
+ *     <li>oid.2.5.4.3=admin,ou=marketing</li>
  * </ul>
  *
  * <P>Note: Multivalued attributes are all considered to be one
@@ -314,7 +313,7 @@ public class DN extends Object
             break;
 
          case HEX_RDN_VALUE:
-            if ((!isHexDigit(currChar)) || (currIndex == lastIndex))
+            if ((!isHexDigit(currChar)) || (currIndex > lastIndex))
             {
                //check for odd number of hex digits
                if ((hexDigitCount%2) != 0)
@@ -364,7 +363,7 @@ public class DN extends Object
       }
 
       //check ending state
-      if (state == UNQUOTED_RDN_VALUE)
+      if (state == UNQUOTED_RDN_VALUE || state == HEX_RDN_VALUE)
       {
          attrValue =
           new String(tokenBuf, 0, tokenIndex - trailingSpaceCount);
@@ -536,19 +535,21 @@ public class DN extends Object
      *  example:  "cn=admin, ou=marketing, o=corporation" is contained by
      *  "o=corporation", "ou=marketing, o=corporation", and "ou=marketing"
      *  but <B>not</B> by "cn=admin" or "cn=admin,ou=marketing,o=corporation"
+     *  Note: For users of Netscape's SDK this method is comparable to contains
      *
      * @param DN of a container
      * @return true if containerDN contains this DN
      */
-     public boolean containedBy(DN containerDN){
+
+     public boolean isDescendantOf(DN containerDN){
         int i = containerDN.rdnList.size() -1;  //index to an RDN of the ContainerDN
-        int j = rdnList.size() -1;              //index to an RDN of the ContainedDN
+        int j = this.rdnList.size() -1;              //index to an RDN of the ContainedDN
 
         //Search from the end of the DN for an RDN that matches the end RDN of
         //containerDN.
-        while ( !((RDN)rdnList.elementAt(j--)).equals(
+        while ( !((RDN)this.rdnList.elementAt(j--)).equals(
                   (RDN)containerDN.rdnList.elementAt(i))){
-            if (j < 0)
+            if (j <= 0)
                 return false;
                 //if the end RDN of containerDN does not have any equal
                 //RDN in rdnList, then containerDN does not contain this DN
@@ -557,7 +558,7 @@ public class DN extends Object
         j--;
         //step backwards to verify that all RDNs in containerDN exist in this DN
         for (/* i, j */ ; i>=0 && j >=0; i--, j--){
-            if (!((RDN)rdnList.elementAt(j)).equals(
+            if (!((RDN)this.rdnList.elementAt(j)).equals(
                   (RDN)containerDN.rdnList.elementAt(i)))
                   return false;
         }
@@ -565,21 +566,6 @@ public class DN extends Object
             return false;
 
         return true;
-     }
-
-     /**
-      * <P> Determines if this DN is <I>contained</I> by the DN passed in.  For
-      * example:  "cn=admin, ou=marketing, o=corporation" is contained by
-      * "o=corporation", "ou=marketing, o=corporation", and "ou=marketing"
-      * but <B>not</B> by "cn=admin" or "cn=admin,ou=marketing,o=corporation"
-      * </P><P>Note: This method is identical to containedBy and added for
-      * convenience.</P>
-      *
-      * @param DN of a container
-      * @return true if containerDN contains this DN
-      */
-     public boolean isDescendantOf(DN dn){
-        return this.containedBy(dn);
      }
 
      /**

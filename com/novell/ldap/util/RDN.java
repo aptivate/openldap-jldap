@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/util/RDN.java,v 1.3 2001/03/19 20:00:36 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/util/RDN.java,v 1.4 2001/03/22 18:24:35 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -74,16 +74,18 @@ public class RDN extends Object
         if (this.values.size() != rdn.values.size()){
             return false;
         }
-        int j;
-        for (int i=0; i<this.values.size(); i++){
+        int j,i;
+        for (i=0; i<this.values.size(); i++){
             //verify that the current value and type exists in the other list
             j=0;
-            while ( j<values.size() &&
+            //May need a more intellegent compare
+            while ( j<values.size() && (
                     !((String)this.types.elementAt(i)).equalsIgnoreCase(
-                      (String) rdn.types.elementAt(j)) &&
+                      (String) rdn.types.elementAt(j)) ||
                     !((String)this.values.elementAt(i)).equalsIgnoreCase(
-                      (String) rdn.values.elementAt(j)) )
+                      (String) rdn.values.elementAt(j)) )){
                 j++;
+            }
             if (j >= rdn.values.size()) //couldn't find first value
                 return false;
         }
