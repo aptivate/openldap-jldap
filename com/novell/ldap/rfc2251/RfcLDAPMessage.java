@@ -79,17 +79,29 @@ public class LDAPMessage extends ASN1Sequence {
 			case ProtocolOp.SEARCH_RESULT_DONE:
 				set(1, new SearchResultDone(dec, bais, content.length));
 				break;
+			case ProtocolOp.SEARCH_RESULT_REFERENCE:
+				set(1, new SearchResultReference(dec, bais, content.length));
+				break;
+         case ProtocolOp.ADD_RESPONSE:
+            set(1, new AddResponse(dec, bais, content.length));
+            break;
          case ProtocolOp.BIND_RESPONSE:
             set(1, new BindResponse(dec, bais, content.length));
             break;
-         case ProtocolOp.ADD_RESPONSE:
-            set(1, new AddResponse(dec, bais, content.length));
+         case ProtocolOp.COMPARE_RESPONSE:
+            set(1, new CompareResponse(dec, bais, content.length));
             break;
          case ProtocolOp.DEL_RESPONSE:
             set(1, new DelResponse(dec, bais, content.length));
             break;
          case ProtocolOp.EXTENDED_RESPONSE:
             set(1, new ExtendedResponse(dec, bais, content.length));
+            break;
+         case ProtocolOp.MODIFY_RESPONSE:
+            set(1, new ModifyResponse(dec, bais, content.length));
+            break;
+         case ProtocolOp.MODIFY_DN_RESPONSE:
+            set(1, new ModifyDNResponse(dec, bais, content.length));
             break;
       }
 

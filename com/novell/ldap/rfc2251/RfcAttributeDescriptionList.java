@@ -38,11 +38,13 @@ public class AttributeDescriptionList extends ASN1SequenceOf {
     */
    public AttributeDescriptionList(String[] attrs)
    {
-      super(attrs.length);
+      super(attrs == null ? 0 : attrs.length);
 
-      for(int i=0; i<attrs.length; i++) {
-         add(new AttributeDescription(attrs[i]));
-      }
+		if(attrs != null) {
+			for(int i=0; i<attrs.length; i++) {
+				add(new AttributeDescription(attrs[i]));
+			}
+		}
    }
 
    /**
