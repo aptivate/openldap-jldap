@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell$
+ * $Novell: /ldap/src/jldap/ldap/src/com/novell/asn1/ASN1Boolean.java,v 1.3 2000/09/03 06:43:06 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  ***************************************************************************/
@@ -25,7 +25,7 @@ public class ASN1Boolean extends ASN1Simple {
    //*************************************************************************
 
    /**
-    * Constructs an ASN1Boolean object using a boolean value.
+    * Constructs an ASN1Boolean object from a boolean value.
     */
    public ASN1Boolean(boolean content)
    {
@@ -69,7 +69,7 @@ public class ASN1Boolean extends ASN1Simple {
    }
 
    /**
-    * Return a String representation of this ASN1Object.
+    * Returns a String representation of this ASN1Boolean.
     */
    public String toString()
    {

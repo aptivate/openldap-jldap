@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell$
+ * $Novell: /ldap/src/jldap/ldap/src/com/novell/asn1/ASN1Enumerated.java,v 1.4 2000/09/03 06:43:07 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  ***************************************************************************/
@@ -47,7 +47,7 @@ public class ASN1Enumerated extends ASN1Numeric {
    public ASN1Enumerated(ASN1Decoder dec, InputStream in, int len)
       throws IOException
    {
-      id = new ASN1Identifier(ASN1Identifier.UNIVERSAL, false, ENUMERATED);
+      id = new ASN1Identifier(ASN1Identifier.UNIVERSAL, false, TAG);
       content = (Long)dec.decodeNumeric(in, len);
    }
 
@@ -66,7 +66,7 @@ public class ASN1Enumerated extends ASN1Numeric {
    }
 
    /**
-    * Return a String representation of this ASN1Object.
+    * Return a String representation of this ASN1Enumerated.
     */
    public String toString()
    {

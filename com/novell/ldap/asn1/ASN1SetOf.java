@@ -1,3 +1,8 @@
+/* **************************************************************************
+ * $Novell$
+ *
+ * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
+ ***************************************************************************/
 
 package com.novell.asn1;
 
@@ -10,60 +15,65 @@ import java.util.*;
  */
 public class ASN1SetOf extends ASN1Structured {
 
-	//*************************************************************************
-	// Constructors for ASN1SetOf
-	//*************************************************************************
+   /**
+    * ASN.1 SET OF tag definition.
+    */
+   public static final int TAG = 0x11;
 
-	/**
-	 * Constructs an ASN1SetOf object.
-	 */
-	public ASN1SetOf()
-	{
-		this(5);
-	}
+   //*************************************************************************
+   // Constructors for ASN1SetOf
+   //*************************************************************************
 
-	/**
-	 * Constructs an ASN1SetOf object.
-	 *
-	 * @param size Specifies the initial size of the collection.
-	 */
-	public ASN1SetOf(int size)
-	{
-		id = new ASN1Identifier(ASN1Identifier.UNIVERSAL, true, SET_OF);
-		content = new Vector(size);
-	}
+   /**
+    * Constructs an ASN1SetOf object.
+    */
+   public ASN1SetOf()
+   {
+      this(5);
+   }
 
-	/**
-	 * A copy constructor which creates an ASN1SetOf from an
-	 * instance of ASN1Set.
-	 *
-	 * Since SET and SET_OF have the same identifier, the decoder
-	 * will always return a SET object when it detects that identifier.
-	 * In order to take advantage of the ASN1SetOf type, we need to be
-	 * able to construct this object when knowingly receiving an
-	 * ASN1Set.
-	 */
-	public ASN1SetOf(ASN1Set set)
-	{
-		id = new ASN1Identifier(ASN1Identifier.UNIVERSAL, true, SET_OF);
-		content = new Vector(set.size());
-		Enumeration e = set.elements();
-		while(e.hasMoreElements()) {
-			add((ASN1Object)e.nextElement());
-		}
-	}
+   /**
+    * Constructs an ASN1SetOf object.
+    *
+    * @param size Specifies the initial size of the collection.
+    */
+   public ASN1SetOf(int size)
+   {
+      id = new ASN1Identifier(ASN1Identifier.UNIVERSAL, true, TAG);
+      content = new Vector(size);
+   }
 
-	//*************************************************************************
-	// ASN1SetOf specific methods
-	//*************************************************************************
+   /**
+    * A copy constructor which creates an ASN1SetOf from an
+    * instance of ASN1Set.
+    *
+    * Since SET and SET_OF have the same identifier, the decoder
+    * will always return a SET object when it detects that identifier.
+    * In order to take advantage of the ASN1SetOf type, we need to be
+    * able to construct this object when knowingly receiving an
+    * ASN1Set.
+    */
+   public ASN1SetOf(ASN1Set set)
+   {
+      id = new ASN1Identifier(ASN1Identifier.UNIVERSAL, true, TAG);
+      content = new Vector(set.size());
+      Enumeration e = set.elements();
+      while(e.hasMoreElements()) {
+         add((ASN1Object)e.nextElement());
+      }
+   }
 
-	/**
-	 * Return a String representation of this ASN1Object.
-	 */
-	public String toString()
-	{
-		return super.toString("SET OF: { ");
-	}
+   //*************************************************************************
+   // ASN1SetOf specific methods
+   //*************************************************************************
+
+   /**
+    * Return a String representation of this ASN1SetOf.
+    */
+   public String toString()
+   {
+      return super.toString("SET OF: { ");
+   }
 
 }
 

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/client/Connection.java,v 1.12 2000/08/28 22:19:00 vtag Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/client/Connection.java,v 1.13 2000/09/02 21:09:23 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -244,7 +244,7 @@ public final class Connection implements Runnable {
             // Decode an LDAPMessage directly from the socket.
             // ------------------------------------------------------------
             ASN1Identifier asn1ID = new ASN1Identifier(in);
-            if(asn1ID.getTag() != ASN1Structured.SEQUENCE)
+            if(asn1ID.getTag() != ASN1Sequence.TAG)
                continue; // loop looking for an LDAPMessage identifier
 
             ASN1Length asn1Len = new ASN1Length(in);

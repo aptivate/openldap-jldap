@@ -1,3 +1,8 @@
+/* **************************************************************************
+ * $Novell$
+ *
+ * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
+ ***************************************************************************/
 
 package com.novell.asn1;
 
@@ -10,50 +15,55 @@ import java.util.Vector;
  */
 public class ASN1Set extends ASN1Structured {
 
-	//*************************************************************************
-	// Constructors for ASN1Set
-	//*************************************************************************
+   /**
+    * ASN.1 SET tag definition.
+    */
+   public static final int TAG = 0x11;
 
-	/**
-	 * Constructs an ASN1Set.
-	 */
-	public ASN1Set()
-	{
-		this(5);
-	}
+   //*************************************************************************
+   // Constructors for ASN1Set
+   //*************************************************************************
 
-	/**
-	 * Constructs an ASN1Set.
-	 *
-	 * @param size Specifies the initial size of the collection.
-	 */
-	public ASN1Set(int size)
-	{
-		id = new ASN1Identifier(ASN1Identifier.UNIVERSAL, true, SET);
-		content = new Vector(size);
-	}
+   /**
+    * Constructs an ASN1Set.
+    */
+   public ASN1Set()
+   {
+      this(5);
+   }
 
-	/**
-	 * Constructs an ASN1Set object by decoding data from an input stream.
-	 */
-	public ASN1Set(ASN1Decoder dec, InputStream in, int len)
-		throws IOException
-	{
-		id = new ASN1Identifier(ASN1Identifier.UNIVERSAL, true, SET);
-		decodeStructured(dec, in, len);
-	}
+   /**
+    * Constructs an ASN1Set.
+    *
+    * @param size Specifies the initial size of the collection.
+    */
+   public ASN1Set(int size)
+   {
+      id = new ASN1Identifier(ASN1Identifier.UNIVERSAL, true, TAG);
+      content = new Vector(size);
+   }
 
-	//*************************************************************************
-	// ASN1Set specific methods
-	//*************************************************************************
+   /**
+    * Constructs an ASN1Set object by decoding data from an input stream.
+    */
+   public ASN1Set(ASN1Decoder dec, InputStream in, int len)
+      throws IOException
+   {
+      id = new ASN1Identifier(ASN1Identifier.UNIVERSAL, true, TAG);
+      decodeStructured(dec, in, len);
+   }
 
-	/**
-	 * Return a String representation of this ASN1Object.
-	 */
-	public String toString()
-	{
-		return super.toString("SET: { ");
-	}
+   //*************************************************************************
+   // ASN1Set specific methods
+   //*************************************************************************
+
+   /**
+    * Return a String representation of this ASN1Set.
+    */
+   public String toString()
+   {
+      return super.toString("SET: { ");
+   }
 
 }
 

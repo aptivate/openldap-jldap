@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/com/novell/asn1/LBERDecoder.java,v 1.1 2000/09/02 21:03:09 smerrill Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/com/novell/asn1/LBERDecoder.java,v 1.2 2000/09/03 06:43:08 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  ***************************************************************************/
@@ -125,15 +125,15 @@ public class LBERDecoder implements ASN1Decoder {
                return new ASN1VisibleString(this, in, length);
             case ASN1GeneralString.TAG:
                return new ASN1GeneralString(this, in, length);
-            case ASN1Structured.SEQUENCE:
+            case ASN1Sequence.TAG:
                return new ASN1Sequence(this, in, length);
-            case ASN1Structured.SET:
+            case ASN1Set.TAG:
                return new ASN1Set(this, in, length);
             default:
                throw new EOFException("Unknown tag"); // !!! need a better exception
          }
       }
-      else {
+      else { // APPLICATION or CONTEXT-SPECIFIC tag
          return new ASN1Tagged(this, in, length, asn1ID);
       }
    }
