@@ -30,7 +30,7 @@ package com.novell.ldap;
  *
  *  <p>Sample Code: <a href="http://developer.novell.com/ndk/doc/samplecode/jldap_sample/jldap_sample/SearchUtil.java.html">SearchUtil.java</p>
  *
- *  @see LDAPBind
+ *  @see LDAPBindHandler
  *  @see LDAPConstraints#setReferralFollowing(boolean)
  */
 public interface LDAPAuthHandler extends LDAPReferralHandler
