@@ -17,6 +17,7 @@ package com.novell.ldap;
 
 import java.util.Iterator;
 import java.util.HashMap;
+import java.util.Map;
 import com.novell.ldap.client.EnumeratedIterator;
 
 
@@ -382,5 +383,26 @@ public class LDAPAttributeSet
             throws ArrayIndexOutOfBoundsException {
         this.remove(this.elementAt(index));
         return;
+    }
+
+    /**
+     * Returns a string representation of this LDAPAttributeSet
+     *
+     * @return a string representation of this LDAPAttributeSet
+     */ 
+    public String toString()
+    {
+        StringBuffer retValue = new StringBuffer("LDAPAttributeSet: ");
+        Iterator attrs = iterator();
+        boolean first = true;
+        while( attrs.hasNext()) {
+            if( ! first) {
+                retValue.append(" ");
+            }
+            first = false;
+            LDAPAttribute attr = (LDAPAttribute)attrs.next();
+            retValue.append(attr.toString());
+        }    
+        return retValue.toString();
     }
 }

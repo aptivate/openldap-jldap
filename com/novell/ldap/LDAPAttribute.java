@@ -675,4 +675,45 @@ public class LDAPAttribute implements java.lang.Cloneable,
 
         return true;
     }
+    
+    /**
+     * Returns a string representation of this LDAPAttribute
+     *
+     * @return a string representation of this LDAPAttribute
+     */ 
+    public String toString()
+    {
+        StringBuffer result = new StringBuffer("LDAPAttribute: ");
+        try {
+            result.append("{type='" + name + "'");
+            if( values != null) {
+                result.append(", ");
+                if( values.length == 1) {
+                    result.append("value='");
+                } else {
+                    result.append("values='");
+                }
+                for(int i=0; i < values.length; i++) {
+                    if( i != 0) {
+                        result.append("','");
+                    }
+                    if( ((byte[])values[i]).length == 0) {
+                        continue;
+                    }
+                    String sval = new String( (byte[])values[ i ], "UTF-8" );
+                    if( sval.length() == 0) {
+                        // didn't decode well, must be binary
+                        result.append("<binary value, length:" + sval.length());
+                        continue;
+                    }
+                    result.append(sval);
+                }
+                result.append("'");
+            }    
+            result.append("}");
+        } catch( Exception e) {
+            throw new RuntimeException(e.toString());
+        }
+        return result.toString();
+    }
 }
