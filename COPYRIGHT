@@ -1,4 +1,4 @@
-Copyright 2001 The OpenLDAP Foundation
+Copyright 1998-2003 The OpenLDAP Foundation
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -7,20 +7,17 @@ Public License.  A copy of this license is available at
 http://www.OpenLDAP.org/license.html or in file LICENSE in the
 top-level directory of the distribution.
 
-Individual files and/or contributed packages may contain material
-copyright by other parties and use subject to additional restrictions.
+OpenLDAP is a registered trademark of the OpenLDAP Foundation.
 
-This work is derived from materials developed by Novell Corporation.
+Individual files and/or contributed packages may be copyright by
+other parties and subject to additional restrictions.
 
-This work contains materials derived from public sources.
-
-Additional Information about OpenLDAP can be obtained at
-<http://www.openldap.org/>.
-
+Additional information about OpenLDAP can be obtained at:
+    http://www.openldap.org/
 ---
 
  ******************************************************************************
- * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
+ * Copyright (C) 1999 - 2003 Novell, Inc. All Rights Reserved.
  *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
@@ -32,5 +29,5 @@ Additional Information about OpenLDAP can be obtained at
  * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
  ******************************************************************************
 
-$OpenLDAP$
-
+Additional Information about Novell, Inc. can be obtained at
+    <http://www.novell.com/>.
