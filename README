@@ -177,4 +177,5 @@ The following directories are created when "ant all" is run:
         jldap/pkg/lib_debug         # Jar file for ldap - not optimized, debug on 
 
 
+---
 $OpenLDAP$
