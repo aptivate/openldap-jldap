@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.38 2001/02/28 21:16:08 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.39 2001/03/01 00:30:04 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -471,6 +471,10 @@ public final class Connection implements Runnable
         throws LDAPException
     {
         messages.addElement( info);
+        // For bind requests, if not connected, attempt to reconnect
+        if( info.isBindRequest() && (isConnected() == false) && (host != null)) {
+            connect( host, port, info.getMessageID());
+        }
         LDAPMessage msg = info.getRequest();
         writeMessage( msg);
         return;

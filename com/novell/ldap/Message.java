@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/client/Message.java,v 1.13 2001/03/01 00:30:05 cmorris Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/client/Message.java,v 1.14 2001/03/06 19:19:13 vtag Exp $
 *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -550,6 +550,16 @@ public class Message extends Thread
         return;
     }
 
+    /**
+     * Returns true if this message is a bind request
+     *
+     * @return true if a bind request
+     */
+    public boolean isBindRequest()
+    {
+        return (bindprops != null);
+    }
+    
     /**
      * finalize
      */
