@@ -25,15 +25,16 @@ import java.util.Enumeration;
 import java.util.NoSuchElementException;
 
 /**
- *
- *  The enumerable results of a synchronous search operation.
+ * <p>An LDAPSearchResults object is returned from a synchronous search 
+ * operation. It provides access to all results received during the 
+ * operation (entries and exceptions).</p>
  *
  *  <p>Sample Code: <a href="http://developer.novell.com/ndk/doc/samplecode/
  *jldap_sample/asynchronous/Searchas.java.html">Searchas.java</p>
  *
  * @see LDAPConnection#search
  */
-public class LDAPSearchResults implements Enumeration
+public class LDAPSearchResults
 {
 
     private Vector entries;             // Search entries
@@ -44,7 +45,6 @@ public class LDAPSearchResults implements Enumeration
     private int referenceIndex;         // Current position in vector
     private int batchSize;              // Application specified batch size
     private boolean completed = false;  // All entries received
-    private int count = 0;              // Number of entries read
     private LDAPControl[] controls = null; // Last set of controls
     private LDAPSearchQueue queue;
     private static Object nameLock = new Object(); // protect resultsNum
@@ -99,16 +99,18 @@ public class LDAPSearchResults implements Enumeration
     }
 
     /**
-     * Returns a count of the entries in the search result.
+     * Returns a count of the items in the search result.
      *
-     * <p>For a synchronous search with batch size not equal to 0,
-     *  this reports the number of results received so far. </p>
+     * <p>Returns a count of the entries and exceptions remaining in the object.
+     * If the search was submitted with a batch size greater than 0,
+     * this reports the number of results received so far but not enumerated
+     * with next().</p>
      *
-     * @return The number of search results received so far.
+     * @return The number of items received but not retrieved by the application
      */
     public int getCount()
     {
-        return count;
+        return references.size() + entries.size();
     }
 
     /**
@@ -125,13 +127,11 @@ public class LDAPSearchResults implements Enumeration
     }
 
     /**
-     * Specifies whether or not there are more search results in the
-     * enumeration.
+     * Reports if there are more search results.
      *
-     * @return True, if there are more search results; false, if there are no
-     *         more search results.
+     * @return true if there are more search results. 
      */
-    public boolean hasMoreElements()
+    public boolean hasMore()
     {
         boolean ret = false;
         if( (entryIndex < entryCount) || (referenceIndex < referenceCount)) {
@@ -183,17 +183,18 @@ public class LDAPSearchResults implements Enumeration
        return;
     }
     /**
-     * Returns the next result in the enumeration as an LDAPEntry.
+     * Returns the next result as an LDAPEntry.
      *
-     * <p>If automatic referral following is disabled and one or more
-     * referrals are among the search results, the next method will throw
-     * an LDAPReferralException the last time it is called, after all other
-     * results have been returned.</p>
+     * <p>If automatic referral following is disabled or if a referral
+     * was not followed, next() will throw an LDAPReferralException
+     * when the referral is received.</p>
      *
      * @return The next search result as an LDAPEntry.
      *
      * @exception LDAPException A general exception which includes an error
      *                          message and an LDAP error code.
+     * @exception LDAPReferralException A referral was received and not 
+     *                          followed.
      */
     public LDAPEntry next() throws LDAPException
     {
@@ -283,189 +284,6 @@ public class LDAPSearchResults implements Enumeration
     }
 
     /**
-     * Returns the next result in the enumeration as an Object.
-     *
-     * <p>The nextElement method is the default implementation of the
-     * Enumeration.nextElement method. The returned value may be an LDAPEntry
-     * or an LDAPReferralException. </p>
-     *
-     * @return The next element in the enumeration.
-     */
-    public Object nextElement()
-    {
-        Object element;
-        if( completed && (entryIndex >= entryCount) &&
-                (referenceIndex >= referenceCount) ) {
-            throw new NoSuchElementException(
-                "LDAPSearchResults.nextElement() no more results");
-        }
-        // Check if need to reload the enumeration
-        // We have separate vectors for referrals/references because
-        // We return them ahead of any normal data.
-        resetVectors(); // Return when we have something
-
-        // Check for Search References, deliver to app as they come in
-        // We only get here if not automatically following referrals
-        if( referenceIndex < referenceCount ) {
-            String refs[] = (String[])(references.elementAt( referenceIndex++) );
-            if( Debug.LDAP_DEBUG ) {
-                Debug.trace( Debug.messages, name +
-                    "next: returns referral exception");
-                for( int i = 0; i < refs.length; i++) {
-                    Debug.trace( Debug.messages, name + ":\t" + refs[i]);
-                }
-            }
-            // Search result reference received and referral following is off
-            element = new LDAPReferralException(
-                ExceptionMessages.REFERENCE_NOFOLLOW);
-            ((LDAPReferralException)element).setReferrals( refs);
-        } else
-        if( entryIndex < entryCount ) {
-            // Check for Search Entries and the Search Responses
-            element = entries.elementAt( entryIndex++ );
-            if( Debug.LDAP_DEBUG ) {
-                Debug.trace( Debug.messages, name +
-                    "nextElement: returns " +
-                    element.getClass().getName() + "@" +
-                    Integer.toHexString(element.hashCode()) );
-            }
-            if(element instanceof LDAPResponse) {
-                // Search done w/bad status
-                LDAPException ex;
-                // get Exception object
-                ex = ((LDAPResponse)element).getResultException();
-                if( Debug.LDAP_DEBUG ) {
-                    if( ex == null ) {
-                        throw new RuntimeException(
-                            name + "nextElement: got success result from queue");
-                    }
-                }
-                element = ex;
-            }
-        } else {
-            if( Debug.LDAP_DEBUG ) {
-                Debug.trace( Debug.messages, name +
-                    "nextElement: No entry found and request incomplete\n" +
-                    "\tentryIdx " + entryIndex +
-                    ", entryCnt " + entryCount +
-                    ", referIdx " + referenceIndex +
-                    ", referCnt " + referenceCount );
-            }
-            element = new LDAPException(
-                ExceptionMessages.REFERRAL_LOCAL,
-                new Object[] { "nextElement" },
-                LDAPException.LOCAL_ERROR);
-        }
-        return element;
-    }
-
-     /**
-      * Sorts all entries in the results using the provided comparison
-      * object.
-      *
-      * <p>If the object has been partially or completely enumerated,
-      * only the remaining elements are sorted. Sorting the results requires that
-      * they all be present. This implies that LDAPSearchResults.nextElement
-      * method will always block until all results have been retrieved,
-      * after a sort operation.</p>
-      *
-      * <p>The LDAPCompareAttrNames class is provided to support the common need
-      * to collate by single or multiple attribute values, in ascending or
-      * descending order.  Examples: </p>
-      *<ul>
-      *   <li>res.sort(new LDAPCompareAttrNames("cn"));</li>
-      *
-      *   <li>res.sort(new LDAPCompareAttrNames("cn", false));</li>
-      *
-      *   <li>String[] attrNames = { "sn", "givenname" };
-      *   res.sort(new LDAPCompareAttrNames(attrNames));</li>
-      *</ul>
-      *
-      *  @param comp     An object that implements the LDAPEntryComparator
-      *                  interface to compare two objects of type
-      *                  LDAPEntry.
-      */
-    public void sort(LDAPEntryComparator comp) {
-       if (!completed){
-         batchSize = Integer.MAX_VALUE;
-         completed = getBatchOfResults();
-       }
-
-       //ready to sort from index on.
-        if (entryIndex < entries.size())  //if not all used up. This replaces 'rangeCheck' in Java Source 1.2.2 of Arrays.sort(...comparator)
-           mergeSort((Vector)entries.clone(), entries, entryIndex, entries.size(), comp);
-   }
-
-     /**
-      * @internal
-      *
-      * Vector Sort Utility function to aide sort
-      * Sorts the source vector into the destination vector according to
-      * LDAPEntryComparator.  This sort is a mergesort for large Vectors and an
-      * insertion sort for small Vectors.
-      *
-      * @param source the Vector to be sorted.
-      * @param destination the result of Vector. (Clone of source??)
-      * @param low index of the first sorted element
-      * @param high index of the last sorted element
-      * @param comp the LDAPEntryComparator to determine the order of the Vector.
-      * @see LDAPCompareAttrNames
-      */
-    private static void mergeSort(Vector source, Vector destination,
-                                int low, int high, LDAPEntryComparator comp){
-        int size = low - high;
-
-        //For small sizes simply do an Insertion Sort
-        if (size < 7) {
-            int j=0;
-            for( int i=low; i<high; i++){
-                for(j=i; j>low &&
-                    !(destination.elementAt(j) instanceof LDAPResponse) &&
-                    comp.isGreater((LDAPEntry)destination.elementAt(j-1),
-                    (LDAPEntry)destination.elementAt(j)); j--){
-                        swap(destination, j, j-1);
-                }
-            }
-            return;
-        }
-
-        int middle = (low + high)/2;
-        mergeSort(destination, source, low, middle, comp);  //sort left into source
-        mergeSort(destination, source, middle, high, comp); //sort right into source
-
-        //Now Merge Left and right into destination
-        for(int i=low, j=low, k=middle; j<high; i++){
-            if (k>=high || j<middle && (
-                (source.elementAt(k) instanceof LDAPResponse) ||
-                !comp.isGreater((LDAPEntry)source.elementAt(j),
-                                (LDAPEntry)source.elementAt(k))))
-                destination.setElementAt(source.elementAt(j++),i );
-            else
-                destination.setElementAt(source.elementAt(k++),i );
-        }
-    }
-
-
-
-   /**
-    * @internal
-    *
-    * Util function used by MergeSort.  Swaps the elements at index A with B
-    * in the Vector
-    * @param x  Vector in which elements will be swapped
-    * @param a  Index to one of the elements
-    * @patam b  Index to the other element
-    */
-   private static void swap(Vector x, int a, int b) {
-   	Object t = x.elementAt(a);
-   	   x.setElementAt( x.elementAt(b),a);
-   	x.setElementAt(t, b);
-   }
-
-
-
-
-    /**
      * @internal
      *
      * Will collect batchSize elements from an LDAPSearchQueue message
@@ -503,7 +321,6 @@ public class LDAPSearchResults implements Enumeration
                         entries.addElement( entry );
                         i++;
                         entryCount++;
-                        count++;
                         if( Debug.LDAP_DEBUG ) {
                             Debug.trace( Debug.messages, name +
                                 "read LDAPEntry@" +
@@ -635,5 +452,223 @@ public class LDAPSearchResults implements Enumeration
         // next, clear out enumeration
         resetVectors();
         completed = true;
+    }
+    // ##############################################################    
+    // Deprecated methods follow - to be removed in Sep 2003 NDK
+    // ##############################################################    
+    
+    /**
+     * Reports if there are more search results in the enumeration.
+     
+     * @deprecated replaced by {@link #hasMore}.  This method will be
+     *  removed in the fall 2003 NDK.
+     *
+     * @return True, if there are more search results; false, if there are no
+     *         more search results.
+     */
+    public boolean hasMoreElements()
+    {
+        return hasMore();
+    }
+    
+    /**
+     * Returns the next result in the enumeration as an Object.
+     *
+     * @deprecated use instead {@link #next} This method will be
+     *  removed in the fall 2003 NDK.
+     *
+     * <p>The nextElement method is the default implementation of the
+     * Enumeration.nextElement method. The returned value may be an LDAPEntry
+     * or an LDAPReferralException. </p>
+     *
+     * @return The next element in the enumeration.
+     */
+    public Object nextElement()
+    {
+        Object element;
+        if( completed && (entryIndex >= entryCount) &&
+                (referenceIndex >= referenceCount) ) {
+            throw new NoSuchElementException(
+                "LDAPSearchResults.nextElement() no more results");
+        }
+        // Check if need to reload the enumeration
+        // We have separate vectors for referrals/references because
+        // We return them ahead of any normal data.
+        resetVectors(); // Return when we have something
+
+        // Check for Search References, deliver to app as they come in
+        // We only get here if not automatically following referrals
+        if( referenceIndex < referenceCount ) {
+            String refs[] = (String[])(references.elementAt( referenceIndex++) );
+            if( Debug.LDAP_DEBUG ) {
+                Debug.trace( Debug.messages, name +
+                    "next: returns referral exception");
+                for( int i = 0; i < refs.length; i++) {
+                    Debug.trace( Debug.messages, name + ":\t" + refs[i]);
+                }
+            }
+            // Search result reference received and referral following is off
+            element = new LDAPReferralException(
+                ExceptionMessages.REFERENCE_NOFOLLOW);
+            ((LDAPReferralException)element).setReferrals( refs);
+        } else
+        if( entryIndex < entryCount ) {
+            // Check for Search Entries and the Search Responses
+            element = entries.elementAt( entryIndex++ );
+            if( Debug.LDAP_DEBUG ) {
+                Debug.trace( Debug.messages, name +
+                    "nextElement: returns " +
+                    element.getClass().getName() + "@" +
+                    Integer.toHexString(element.hashCode()) );
+            }
+            if(element instanceof LDAPResponse) {
+                // Search done w/bad status
+                LDAPException ex;
+                // get Exception object
+                ex = ((LDAPResponse)element).getResultException();
+                if( Debug.LDAP_DEBUG ) {
+                    if( ex == null ) {
+                        throw new RuntimeException(
+                            name + "nextElement: got success result from queue");
+                    }
+                }
+                element = ex;
+            }
+        } else {
+            if( Debug.LDAP_DEBUG ) {
+                Debug.trace( Debug.messages, name +
+                    "nextElement: No entry found and request incomplete\n" +
+                    "\tentryIdx " + entryIndex +
+                    ", entryCnt " + entryCount +
+                    ", referIdx " + referenceIndex +
+                    ", referCnt " + referenceCount );
+            }
+            element = new LDAPException(
+                ExceptionMessages.REFERRAL_LOCAL,
+                new Object[] { "nextElement" },
+                LDAPException.LOCAL_ERROR);
+        }
+        return element;
+    }
+
+    /**
+     * Sorts all entries in the results using the provided comparison
+     * object.
+     *
+     * @deprecated replaced by Collections mechanisms. LDAPEntry now 
+     * implements the Comparable interface. See {@link LDAPEntry}.
+     * This method will be removed in the fall 2003 NDK.
+     *
+     * <p>If the object has been partially or completely enumerated,
+     * only the remaining elements are sorted. Sorting the results requires that
+     * they all be present. This implies that LDAPSearchResults.nextElement
+     * method will always block until all results have been retrieved,
+     * after a sort operation.</p>
+     *
+     * <p>The LDAPCompareAttrNames class is provided to support the common need
+     * to collate by single or multiple attribute values, in ascending or
+     * descending order.  Examples: </p>
+     *<ul>
+     *   <li>res.sort(new LDAPCompareAttrNames("cn"));</li>
+     *
+     *   <li>res.sort(new LDAPCompareAttrNames("cn", false));</li>
+     *
+     *   <li>String[] attrNames = { "sn", "givenname" };
+     *   res.sort(new LDAPCompareAttrNames(attrNames));</li>
+     *</ul>
+     *
+     *  @param comp     An object that implements the LDAPEntryComparator
+     *                  interface to compare two objects of type
+     *                  LDAPEntry.
+     */
+    public void sort(LDAPEntryComparator comp)
+    {
+        if (!completed) {
+            batchSize = Integer.MAX_VALUE;
+            completed = getBatchOfResults();
+        }
+
+        //ready to sort from index on.
+        // if not all used up. This replaces 'rangeCheck'
+        // in Java Source 1.2.2 of Arrays.sort(...comparator)
+        if (entryIndex < entries.size())
+            mergeSort((Vector)entries.clone(),
+                            entries, entryIndex, entries.size(), comp);
+        return;       
+    }
+
+    /**
+     * @internal
+     *
+     * @deprecated replaced by {@link #hasMore}.  This method will be
+     *  removed in the fall 2003 NDK.
+     *
+     * Vector Sort Utility function to aide sort
+     * Sorts the source vector into the destination vector according to
+     * LDAPEntryComparator.  This sort is a mergesort for large Vectors and an
+     * insertion sort for small Vectors.
+     *
+     * @param source the Vector to be sorted.
+     * @param destination the result of Vector. (Clone of source??)
+     * @param low index of the first sorted element
+     * @param high index of the last sorted element
+     * @param comp the LDAPEntryComparator to determine the order of the Vector.
+     * @see LDAPCompareAttrNames
+     */
+    private static void mergeSort(Vector source, Vector destination,
+                                int low, int high, LDAPEntryComparator comp)
+    {
+        int size = low - high;
+
+        //For small sizes simply do an Insertion Sort
+        if (size < 7) {
+            int j=0;
+            for( int i=low; i<high; i++){
+                for(j=i; j>low &&
+                    !(destination.elementAt(j) instanceof LDAPResponse) &&
+                    comp.isGreater((LDAPEntry)destination.elementAt(j-1),
+                    (LDAPEntry)destination.elementAt(j)); j--){
+                        swap(destination, j, j-1);
+                }
+            }
+            return;
+        }
+
+        int middle = (low + high)/2;
+        mergeSort(destination, source, low, middle, comp);  //sort left into source
+        mergeSort(destination, source, middle, high, comp); //sort right into source
+
+        //Now Merge Left and right into destination
+        for(int i=low, j=low, k=middle; j<high; i++){
+            if (k>=high || j<middle && (
+                (source.elementAt(k) instanceof LDAPResponse) ||
+                !comp.isGreater((LDAPEntry)source.elementAt(j),
+                                (LDAPEntry)source.elementAt(k))))
+                destination.setElementAt(source.elementAt(j++),i );
+            else
+                destination.setElementAt(source.elementAt(k++),i );
+        }
+        return;
+    }
+
+
+
+    /**
+     * @internal
+     *
+     * @deprecated replaced by {@link #hasMore}.  This method will be
+     *  removed in the fall 2003 NDK.
+     *
+     * Util function used by MergeSort.  Swaps the elements at index A with B
+     * in the Vector
+     * @param x  Vector in which elements will be swapped
+     * @param a  Index to one of the elements
+     * @patam b  Index to the other element
+     */
+    private static void swap(Vector x, int a, int b) {
+   	    Object t = x.elementAt(a);
+   	    x.setElementAt( x.elementAt(b),a);
+   	    x.setElementAt(t, b);
+        return;
     }
 }

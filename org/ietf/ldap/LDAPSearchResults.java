@@ -15,15 +15,14 @@
 
 package org.ietf.ldap;
 
-import java.util.Enumeration;
-
 /**
- *  The enumerable results of a synchronous search operation.
+ * <p>An LDAPSearchResults provides access to all results received during
+ * the operation (entries and exceptions).</p>
  *
  *  @see <a href="../../../../doc/com/novell/ldap/LDAPSearchResults.html">
             com.novell.ldap.LDAPSearchResults</a>
  */
-public class LDAPSearchResults implements Enumeration
+public class LDAPSearchResults
 {
     private com.novell.ldap.LDAPSearchResults results;
 
@@ -82,20 +81,19 @@ public class LDAPSearchResults implements Enumeration
     }
 
     /**
-     * Specifies whether or not there are more search results in the
-     * enumeration.
+     * Reports if there are more search results.
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPSearchResults.html
-            #hasMoreElements()">
+            #hasMore()">
             com.novell.ldap.LDAPSearchResults.hasMoreElements()</a>
      */
-    public boolean hasMoreElements()
+    public boolean hasMore()
     {
-        return results.hasMoreElements();   
+        return results.hasMore();   
     }
 
     /**
-     * Returns the next result in the enumeration as an LDAPEntry.
+     * Returns the next result as an LDAPEntry.
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPSearchResults.html
             #next()">
@@ -112,67 +110,6 @@ public class LDAPSearchResults implements Enumeration
             } else {
                 throw new LDAPException( ex);
             }
-        }
-    }
-
-    /**
-     * Returns the next result in the enumeration as an Object.
-     *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPSearchResults.html
-            #nextElement()">
-            com.novell.ldap.LDAPSearchResults.nextElement()</a>
-     */
-    public Object nextElement()
-    {
-        Object ret = results.nextElement();
-            
-        if( ret instanceof com.novell.ldap.LDAPEntry) {
-            return new LDAPEntry( (com.novell.ldap.LDAPEntry) ret);
-        } else
-        if( ret instanceof com.novell.ldap.LDAPReferralException) {
-            return new LDAPReferralException(
-                            (com.novell.ldap.LDAPReferralException)ret);
-        } else
-        if( ret instanceof com.novell.ldap.LDAPException) {
-            return new LDAPException(
-                            (com.novell.ldap.LDAPException)ret);
-        } else {
-            throw new RuntimeException("nextElement() unexpected return value");
-        }
-    }
-
-    /**
-     * Sorts all entries in the results using the provided comparison
-     * object.
-     *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPSearchResults.html
-            #sort(com.novell.ldap.LDAPEntryComparator)">
-            com.novell.ldap.LDAPSearchResults.sort(LDAPEntryComparator)</a>
-     */
-    public void sort(LDAPEntryComparator comp)
-    {
-        results.sort( new CompareSort( comp));
-        return;
-    }
-
-    /**
-     * Wrap a user's org.ietf.ldap.LDAPEntryComparator class
-     */
-    private class CompareSort implements com.novell.ldap.LDAPEntryComparator
-    {
-        org.ietf.ldap.LDAPEntryComparator comp;
-
-        private
-        CompareSort( LDAPEntryComparator comp)
-        {
-            this.comp = comp;
-            return;
-        }
-
-        public boolean isGreater( com.novell.ldap.LDAPEntry entry1,
-                                  com.novell.ldap.LDAPEntry entry2)
-        {
-            return comp.isGreater(new LDAPEntry(entry1), new LDAPEntry(entry2));
         }
     }
 }
