@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSchema.java,v 1.10 2000/10/03 22:26:13 bgudmundson Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSchema.java,v 1.11 2000/10/09 19:11:24 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -148,9 +148,12 @@ public class LDAPSchema {
 								else if(attrName.equals("objectClasses")){
 									enumString = attr.getStringValues();
 									String value;
+         								LDAPObjectClassSchema classSchema;
 									while(enumString.hasMoreElements())
 									{
 										value = (String) enumString.nextElement();
+          									classSchema = new LDAPObjectClassSchema( value );
+                   								objectClassHashtable.put(classSchema.getName(), classSchema);
 									}
 								}
 								else if(attrName.equals("attributeTypes")){
@@ -267,7 +270,7 @@ public class LDAPSchema {
     * @return An enumeration of object class definitions.
     */
    public Enumeration getObjectClasses() {
-      throw new RuntimeException("Method LDAPSchema.getObjectClasses not implemented");
+      return objectClassHashtable.elements();
    }
 
    /*

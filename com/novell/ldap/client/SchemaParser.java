@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: SchemaParser.java,v 1.1 2000/05/17 19:03:46 bgudmundson Exp $
+ * $Id: SchemaParser.java,v 1.2 2000/10/02 19:57:23 bgudmundson Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -21,6 +21,7 @@ import java.util.Enumeration;
 import java.io.StreamTokenizer;
 import java.io.StringReader;
 import java.io.IOException;
+import com.novell.ldap.LDAPObjectClassSchema;
 
 public class SchemaParser{
 
@@ -31,8 +32,12 @@ public class SchemaParser{
 	String description;
         String syntax;
         String superior;
+        String superiors[];
+        String required[];
+        String optional[];
         boolean single = false;
         boolean obsolete = false;
+        int type = -1;
         Vector qualifiers = new Vector();
 
 	public SchemaParser( String rawString ) throws IOException {
@@ -42,8 +47,12 @@ public class SchemaParser{
                 st2.ordinaryChars('0', '9');
                 st2.ordinaryChar('{');
                 st2.ordinaryChar('}');
+                st2.ordinaryChar('_');
+                st2.ordinaryChar(';');
                 st2.wordChars('.', '9');
                 st2.wordChars('{', '}');
+                st2.wordChars('_', '_');
+                st2.wordChars(';', ';');
                 //st2.quoteChar(''');
 		StringTokenizer strTokens = new StringTokenizer( rawString, " '()\t\r\n", true );
 		// Parse the string
@@ -58,6 +67,7 @@ public class SchemaParser{
             }
             //First parse out the OID
             try{
+              String currName;
               if( StreamTokenizer.TT_EOF !=  st2.nextToken()){
                   if(st2.ttype == '('){
                   if(StreamTokenizer.TT_WORD ==  st2.nextToken()){
@@ -97,9 +107,25 @@ public class SchemaParser{
                         continue;
                       }
                       if(st2.sval.equals("SUP")){
-                        if( st2.nextToken() == StreamTokenizer.TT_WORD ){
-                          superior = st2.sval;
+                        Vector values = new Vector();
+                        st2.nextToken();
+                        if(st2.ttype == '(' ){
+                          st2.nextToken();
+                          while(st2.ttype != ')' ){
+                            if(st2.ttype != '$'){
+                            	values.addElement(st2.sval);
+                             }
+                             st2.nextToken();
+                          }
                         }
+                      	else{
+                      		values.addElement(st2.sval);
+                        	superior = st2.sval;
+                        }
+                        if(values.size() > 0){
+                            superiors = new String[values.size()];
+                            values.copyInto(superiors);
+                          }
                         continue;
                       }
                       if(st2.sval.equals("SINGLE-VALUE")){
@@ -110,6 +136,63 @@ public class SchemaParser{
                         obsolete = true;
                         continue;
                       }
+                      if(st2.sval.equals("MUST")){
+                        Vector values = new Vector();
+                        st2.nextToken();
+                        if(st2.ttype == '(' ){
+                          st2.nextToken();
+                          while(st2.ttype != ')' ){
+                            if(st2.ttype != '$'){
+                            	values.addElement(st2.sval);
+                             }
+                             st2.nextToken();
+                          }
+                        }
+                      	else
+                      		values.addElement(st2.sval);
+                        if(values.size() > 0){
+                            required = new String[values.size()];
+                            values.copyInto(required);
+                          }
+                        continue;
+                      }
+                      if(st2.sval.equals("MAY")){
+                        Vector values = new Vector();
+                        st2.nextToken();
+                        if(st2.ttype == '(' ){
+                          st2.nextToken();
+                          for(int i = 0; st2.ttype != ')'; i++ ){
+                            if(st2.ttype != '$'){
+                            	values.addElement(st2.sval);
+                             }
+                             st2.nextToken();
+                          }
+                        }
+                      	else
+                      		values.addElement(st2.sval);
+                        if(values.size() > 0){
+                            optional = new String[values.size()];
+                            values.copyInto(optional);
+                          }
+                        continue;
+                      }
+                      if(st2.sval.equals("ABSTRACT")){
+                        type = LDAPObjectClassSchema.ABSTRACT;
+                        continue;
+                      }
+                      if(st2.sval.equals("STRUCTURAL")){
+                        type = LDAPObjectClassSchema.STRUCTURAL;
+                        continue;
+                      }
+                      if(st2.sval.equals("AUXILIARY")){
+                        type = LDAPObjectClassSchema.AUXILIARY;
+                        continue;
+                      }
+                      currName = st2.sval;
+                      AttributeQualifier q = parseQualifier( st2, currName );
+		      if( q != null)
+                     	qualifiers.addElement(q);
+                      continue;
                     }
                   }
 		}
@@ -118,6 +201,7 @@ public class SchemaParser{
             catch(IOException e){
               throw e;
             }
+            /*
             // Get the rest of the schema elements
 		while(strTokens.hasMoreTokens()){
 		  currToken = getTokenPastSpaces(strTokens);
@@ -146,6 +230,15 @@ public class SchemaParser{
                   if(currToken.equals("OBSOLETE")){
                     continue;
                   }
+                  if(currToken.equals("ABSTRACT")){
+                    continue;
+                  }
+                  if(currToken.equals("STRUCTURAL")){
+                    continue;
+                  }
+                  if(currToken.equals("AUXILIARY")){
+                    continue;
+                  }
 
                   // All remaining elements are stored as qualifiers
                   AttributeQualifier q = parseQualifier( strTokens, currToken );
@@ -153,6 +246,7 @@ public class SchemaParser{
                      qualifiers.addElement(q);
                    continue;
 		}
+  	*/
 	}
 
 	public void setRawString( String rawString ) {
@@ -198,6 +292,18 @@ public class SchemaParser{
 	}
         public boolean getObsolete() {
 		return obsolete;
+	}
+ 	public int getType() {
+		return type;
+	}
+ 	public String[] getSuperiors() {
+		return superiors;
+	}
+ 	public String[] getRequired() {
+		return required;
+	}
+ 	public String[] getOptional() {
+		return optional;
 	}
         private String getTokenPastSpaces( StringTokenizer st ){
           // Move past spaces
@@ -265,6 +371,26 @@ public class SchemaParser{
             }
            return retString;
         }
+        private AttributeQualifier parseQualifier( StreamTokenizer st, String name ) throws IOException {
+          AttributeQualifier qualifier = new AttributeQualifier(name);
+
+          try{
+          	if(st.nextToken() == '\'' ){
+          		qualifier.addValue(st.sval);
+           	}
+           	else if(st.ttype == '(' ){
+           		while(st.nextToken() == '\'' ){
+           			qualifier.addValue(st.sval);
+             		}
+           	}
+            }
+            catch(IOException e){
+              throw e;
+            }
+
+           return qualifier;
+        }
+
         private AttributeQualifier parseQualifier( StringTokenizer st, String name ){
           AttributeQualifier qualifier = new AttributeQualifier(name);
           String currToken;

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPObjectClassSchema.java,v 1.10 2000/10/09 19:11:24 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPObjectClassSchema.java,v 1.11 2000/10/09 21:41:18 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -14,17 +14,21 @@
  ***************************************************************************/
 
 package com.novell.ldap;
+import com.novell.ldap.client.SchemaParser;
+import com.novell.ldap.client.AttributeQualifier;
+import java.util.Enumeration;
+import java.io.IOException;
 
 /*
  * 4.23 public class LDAPObjectClassSchema
  */
- 
+
 /**
  *
- *  Represents the definition of an object class. 
+ *  Represents the definition of an object class.
  *
- *  <p>The LDAPObjectClassSchema class is used to query for the definition of an 
- *  object class, and to add or delete an object class definition from a 
+ *  <p>The LDAPObjectClassSchema class is used to query for the definition of an
+ *  object class, and to add or delete an object class definition from a
  *  directory's schema. </p>
  *
  */
@@ -32,7 +36,7 @@ public class LDAPObjectClassSchema extends LDAPSchemaElement{
   String[] superiors;
   String[] required;
   String[] optional;
-  int type;
+  int type = -1;
 
  /**
   * This class definition defines an abstract schema class.
@@ -40,14 +44,14 @@ public class LDAPObjectClassSchema extends LDAPSchemaElement{
   * <p>This is equivalent to setting the NDS effective class flag to true.</p>
   */
   public final static int ABSTRACT = 0;
-  
+
  /**
   * This class definition defines a structural schema class.
   *
   * <p>This is equivalent to setting the NDS effective class flag to true.</p>
   */
   public final static int STRUCTURAL = 1;
-  
+
  /**
   * This class definition defines an auxiliary schema class.
   */
@@ -68,10 +72,10 @@ public class LDAPObjectClassSchema extends LDAPSchemaElement{
     *<br><br>
     *  @param description    Optional description of the object class.
     *<br><br>
-    *  @param superiors      An array of names for object classes from which 
+    *  @param superiors      An array of names for object classes from which
     *                        this one inherits.
     *<br><br>
-    *  @param required       An array of names for attributes which are required 
+    *  @param required       An array of names for attributes which are required
     *                        for an entry with this object class.
     *<br><br>
     *  @param optional       An array of names for attributes which are optional
@@ -127,7 +131,34 @@ public class LDAPObjectClassSchema extends LDAPSchemaElement{
     *                  query for "objectClasses".
     */
    public LDAPObjectClassSchema(String raw) {
-      throw new RuntimeException("Constructor LDAPObjectClassSchema(String raw) not implemented");
+     try{
+	SchemaParser parser = new SchemaParser( raw );
+
+    	if( parser.getName() != null)
+		super.name = new String(parser.getName());
+  	super.aliases = parser.getAliases();
+   	if( parser.getID() != null)
+        	super.oid = new String(parser.getID());
+        if( parser.getDescription() != null)
+        	super.description = new String(parser.getDescription());
+        super.obsolete = parser.getObsolete();
+        if( parser.getRequired() != null)
+        	required = (String[]) parser.getRequired().clone();
+        if( parser.getOptional() != null)
+        	optional = (String[])parser.getOptional().clone();
+        if( parser.getSuperiors() != null)
+        	superiors = (String[])parser.getSuperiors().clone();
+        type = parser.getType();
+        Enumeration qualifiers = parser.getQualifiers();
+        AttributeQualifier attrQualifier;
+        while(qualifiers.hasMoreElements()){
+        	attrQualifier = (AttributeQualifier) qualifiers.nextElement();
+        	setQualifier(attrQualifier.getName(), attrQualifier.getValues());
+         }
+
+	}
+        catch( IOException e){
+        }
    }
 
    /*
@@ -140,7 +171,7 @@ public class LDAPObjectClassSchema extends LDAPSchemaElement{
     * @return The object classes superior to this class.
     */
    public String[] getSuperiors() {
-      throw new RuntimeException("Method LDAPObjectClassSchema.getSuperiors not implemented");
+      return superiors;
    }
 
    /*
@@ -154,7 +185,7 @@ public class LDAPObjectClassSchema extends LDAPSchemaElement{
     * @return The list of required attributes defined for this class.
     */
    public String[] getRequiredAttributes() {
-      throw new RuntimeException("Method LDAPObjectClassSchema.getRequiredAttributes not implemented");
+      return required;
    }
 
    /*
@@ -168,7 +199,7 @@ public class LDAPObjectClassSchema extends LDAPSchemaElement{
     * @return The list of optional attributes defined for this class.
     */
    public String[] getOptionalAttributes() {
-      throw new RuntimeException("Method LDAPObjectClassSchema.getOptionalAttributes not implemented");
+      return optional;
    }
 
    /*
@@ -178,20 +209,125 @@ public class LDAPObjectClassSchema extends LDAPSchemaElement{
    /**
     * Returns the type of object class.
     *
-    *  <p>The getType method returns one of the following constants defined in 
+    *  <p>The getType method returns one of the following constants defined in
     *  LDAPObjectClassSchema:
     * <ul>
     *   <li>ABSTRACT</li>
     *   <li>AUXILIARY</li>
-    *   <li>STRUCTURAL</li> 
+    *   <li>STRUCTURAL</li>
     *</ul>
-    *<p>See the LDAPSchemaElement.getQualifier method for information on 
+    *<p>See the LDAPSchemaElement.getQualifier method for information on
     * obtaining the X-NDS flags.</p>
     *
     * @return The type of object class.
     */
    public int getType() {
       return type;
+   }
+
+    /**
+    * Returns a string in a format suitable for directly adding to a
+    * directory, as a value of the particular schema element class.
+    *
+    * @return A string representation of the class' definition.
+    */
+   public String getValue() {
+
+      StringBuffer valueBuffer = new StringBuffer("( ");
+      String token;
+      String[] strArray;
+
+      if( (token = getID()) != null){
+        valueBuffer.append(token);
+      }
+      strArray = getAliases();
+      if( (token = getName()) != null){
+        valueBuffer.append(" NAME ");
+        if(strArray != null){
+          valueBuffer.append("( ");
+        }
+        valueBuffer.append("'" + token + "'");
+        if(strArray != null){
+          for( int i = 0; i < strArray.length; i++ ){
+            valueBuffer.append(" '" + strArray[i] + "'");
+          }
+          valueBuffer.append(" )");
+        }
+      }
+      if( (token = getDescription()) != null){
+        valueBuffer.append(" DESC ");
+        valueBuffer.append("'" + token + "'");
+      }
+      if( isObsolete()){
+        valueBuffer.append(" OBSOLETE");
+      }
+      if( (strArray = getSuperiors()) != null){
+      	valueBuffer.append(" SUP ");
+      	if( strArray.length > 1)
+       		valueBuffer.append("( ");
+        for(int i = 0; i < strArray.length; i++){
+      		if( i > 0)
+        		valueBuffer.append(" $ ");
+          	valueBuffer.append(strArray[i]);
+        }
+        if( strArray.length > 1)
+      		valueBuffer.append(" )");
+      }
+      if( getType() != -1){
+      	if( getType() == LDAPObjectClassSchema.ABSTRACT)
+       		valueBuffer.append( " ABSTRACT" );
+        else if( getType() == LDAPObjectClassSchema.AUXILIARY)
+        	valueBuffer.append( " AUXILIARY" );
+      	else if( getType() == LDAPObjectClassSchema.STRUCTURAL)
+       		valueBuffer.append( " STRUCTURAL" );
+      }
+      if( (strArray = getRequiredAttributes()) != null){
+      	valueBuffer.append(" MUST ");
+       	if( strArray.length > 1)
+        	valueBuffer.append("( ");
+        for( int i =0; i < strArray.length; i++){
+        	if( i > 0)
+         		valueBuffer.append(" $ ");
+           	valueBuffer.append(strArray[i]);
+        }
+        if( strArray.length > 1)
+        	valueBuffer.append(" )");
+      }
+      if( (strArray = getOptionalAttributes()) != null){
+      	valueBuffer.append(" MAY ");
+      	if( strArray.length > 1)
+       		valueBuffer.append("( ");
+        for( int i =0; i < strArray.length; i++){
+        	if( i > 0)
+         		valueBuffer.append(" $ ");
+           	valueBuffer.append(strArray[i]);
+        }
+        if( strArray.length > 1)
+        	valueBuffer.append(" )");
+      }
+      Enumeration en;
+      if( (en = getQualifierNames()) != null){
+      	String qualName;
+       	String[] qualValue;
+      	while( en.hasMoreElements() ) {
+       		qualName = (String)en.nextElement();
+         	valueBuffer.append( " " + qualName + " ");
+          	if((qualValue = getQualifier( qualName )) != null){
+           		if( qualValue.length > 1)
+             			valueBuffer.append("( ");
+                       	for(int i = 0; i < qualValue.length; i++ ){
+                          	if( i > 0 )
+                           		valueBuffer.append(" ");
+                        	valueBuffer.append( "'" + qualValue[i] + "'");
+                      	}
+                       if( qualValue.length > 1)
+                       	valueBuffer.append(" )");
+            	}
+      	}
+      }
+      valueBuffer.append(" )");
+      return valueBuffer.toString();
+
    }
 
 }
