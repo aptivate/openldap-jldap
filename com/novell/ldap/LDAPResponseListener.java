@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPResponseListener.java,v 1.21 2000/11/10 16:50:03 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPResponseListener.java,v 1.22 2000/11/13 23:57:01 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -30,31 +30,31 @@ public class LDAPResponseListener implements LDAPListener
 {
 
    /**
-    * The client listener object
+    * The message agent object associated with this listener
     */
-    private ClientListener listen;
+    private MessageAgent agent;
     
     /**
      * Constructs a response listener on the specific connection.
      *
-     *  @param listen The client listener to associate with this conneciton
+     *  @param listen The message agent to associate with this conneciton
      */
     /* package */
-    LDAPResponseListener(ClientListener listen)
+    LDAPResponseListener(MessageAgent agent)
     {
-        this.listen = listen;
+        this.agent = agent;
         return;    
     }
 
    /**
-    * Returns the internal client listener object
+    * Returns the message agent associated with this listener
     *
-    * @return The internal client listener object
+    * @return the message agent object
     */
     /* package */
-    ClientListener getClientListener()
+    MessageAgent getMessageAgent()
     {
-        return listen;
+        return agent;
     }
 
    /**
@@ -67,7 +67,7 @@ public class LDAPResponseListener implements LDAPListener
     */
     public int[] getMessageIDs()
     {
-        return listen.getMessageIDs();
+        return agent.getMessageIDs();
     }
     
    /**
@@ -78,7 +78,7 @@ public class LDAPResponseListener implements LDAPListener
     */
     public boolean isResponseReceived()
     {
-        return listen.isResponseReceived();
+        return agent.isResponseReceived();
     }
 
    /**
@@ -90,7 +90,7 @@ public class LDAPResponseListener implements LDAPListener
     */
     public boolean isResponseReceived(int msgid)
     {
-        throw new RuntimeException("LDAPSearchListener.isResponseRecieved(msgid) is not implemented");
+        return agent.isResponseReceived( msgid);
     }
 
    /**
@@ -102,9 +102,20 @@ public class LDAPResponseListener implements LDAPListener
     */
     public void merge(LDAPResponseListener listener2)
     {
-        listen.merge( listener2 );
+        agent.merge( listener2.getMessageAgent() );
         return;
     }
+
+    /**
+     * Reports true if all results have been received for a particular
+     * message id, i.e. a response has been received from the server for the
+     * id.  There may still be messages waiting to be retrieved with
+     * getResponse.
+     */
+     public boolean isComplete( int msgid )
+     {
+        return agent.isComplete();
+     }
 
    /**
     * Returns the response.
@@ -114,24 +125,15 @@ public class LDAPResponseListener implements LDAPListener
     * then returns the response. The client is responsible for processing
     * the responses returned from a listener.</p>
     *
-    * @return The response.
+    * @return The response or null if there are no requests..
     *
     * @exception LDAPException A general exception which includes an error
     *  message and an LDAP error code.
     */
    public LDAPMessage getResponse()
         throws LDAPException
-    {
-        LDAPResponse response;
-        RfcLDAPMessage message = listen.getLDAPMessage();
-        if(message.getProtocolOp() instanceof RfcExtendedResponse) {
-            ExtResponseFactory fac = new ExtResponseFactory();
-            response = fac.convertToExtendedResponse(message);
-        }
-        else
-            response = new LDAPResponse(message);
-        listen.removeMessageID(response.getMessageID());
-        return (LDAPMessage)response;
+   {
+        return getresp( null );
    }
 
    /**
@@ -142,7 +144,7 @@ public class LDAPResponseListener implements LDAPListener
     * then returns the response. The client is responsible for processing
     * the responses returned from a listener.</p>
     *
-    * @return The response.
+    * @return The response or null if there are no requests..
     *
     * @exception LDAPException A general exception which includes an error
     *  message and an LDAP error code.
@@ -150,8 +152,23 @@ public class LDAPResponseListener implements LDAPListener
    public LDAPMessage getResponse(int msgid)
         throws LDAPException
    {
-        throw new RuntimeException("LDAPSearchListener.getResponse(msgid) is not implemented");
+       return getresp( new Integer(msgid));
    }
 
+   private LDAPMessage getresp( Integer msgid)
+        throws LDAPException
+   {
+        RfcLDAPMessage message;
+        LDAPResponse response;
+        if( (message = agent.getLDAPMessage( msgid)) == null) {
+            return null;
+        }
+        if(message.getProtocolOp() instanceof RfcExtendedResponse) {
+            ExtResponseFactory fac = new ExtResponseFactory();
+            response = fac.convertToExtendedResponse(message);
+        } else {
+            response = new LDAPResponse(message);
+        }
+        return (LDAPMessage)response;
+   }
 }
-

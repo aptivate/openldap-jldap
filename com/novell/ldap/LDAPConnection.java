@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.56 2000/11/10 16:50:01 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.57 2000/11/10 17:08:14 javed Exp $
 *
 * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
 * 
@@ -17,6 +17,7 @@ package com.novell.ldap;
 import java.io.*;
 import java.util.*;
 
+import com.novell.ldap.*;
 import com.novell.ldap.client.*;
 import com.novell.ldap.asn1.*;
 import com.novell.ldap.rfc2251.*;
@@ -36,19 +37,9 @@ import com.novell.ldap.rfc2251.*;
  */
 public class LDAPConnection implements Cloneable
 {
-
-   static private LDAPSocketFactory socketFactory = null;
-   private LDAPSocketFactory mySocketFactory = socketFactory;
-   private Connection conn = null;
-   private String host = null;
-   private int port = 0;
-   private LDAPSearchConstraints defSearchCons = new LDAPSearchConstraints();
-   private int protocolVersion = 3;
-   private String authenticationPassword = null;
-   private String authenticationDN = null;
-   private String authenticationMethod = "none";
-   private Hashtable authenticationHash = null;
-   private LDAPControl[] responseCtls = null;
+    private LDAPSearchConstraints defSearchCons = new LDAPSearchConstraints();
+    private LDAPControl[] responseCtls = null;
+    private Connection conn = null;
 
     /**
      * Used with search to specify that the scope of entrys to search is to 
@@ -142,6 +133,7 @@ public class LDAPConnection implements Cloneable
     */
    public LDAPConnection()
    {
+      conn = new Connection( );
       return;
    }
 
@@ -158,7 +150,7 @@ public class LDAPConnection implements Cloneable
     */
    public LDAPConnection(LDAPSocketFactory factory)
    {
-      socketFactory = factory;
+      conn = new Connection( factory );
       return;
    }
    
@@ -188,6 +180,9 @@ public class LDAPConnection implements Cloneable
     */
    public Object clone()
    {
+      // Tell the Connection object a clone exists
+      conn.createClone();
+
       throw new RuntimeException("Method LDAPConnection.clone not implemented");
    }
 
@@ -218,7 +213,7 @@ public class LDAPConnection implements Cloneable
     */
    public String getAuthenticationDN()
    {
-      return authenticationDN;
+      return conn.getAuthenticationDN();
    }
 
    /**
@@ -239,7 +234,7 @@ public class LDAPConnection implements Cloneable
     */
    public String getAuthenticationMethod()
    {
-      return( authenticationMethod);
+      return conn.getAuthenticationMethod();
    }
 
    /**
@@ -254,7 +249,7 @@ public class LDAPConnection implements Cloneable
     */
    public String getAuthenticationPassword()
    {
-      return authenticationPassword;
+      return conn.getAuthenticationPassword();
    }
    
    /**
@@ -283,7 +278,7 @@ public class LDAPConnection implements Cloneable
     */
    public String getHost()
    {
-      return this.host;
+      return conn.getHost();
    }
 
    /**
@@ -297,7 +292,7 @@ public class LDAPConnection implements Cloneable
     */
    public InputStream getInputStream()
    {
-      return isConnected() ? conn.getInputStream() : null;
+      return conn.getInputStream();
    }
 
    /**
@@ -311,7 +306,7 @@ public class LDAPConnection implements Cloneable
     */
    public OutputStream getOutputStream()
    {
-      return isConnected() ? conn.getOutputStream() : null;
+      return conn.getOutputStream();
    }
 
    /**
@@ -325,7 +320,7 @@ public class LDAPConnection implements Cloneable
     */
    public int getPort()
    {
-      return this.port;
+      return conn.getPort();
    }
 
    /**
@@ -375,7 +370,7 @@ public class LDAPConnection implements Cloneable
     */
    public int getProtocolVersion()
    {
-      return protocolVersion;
+      return conn.getProtocolVersion();
    }
 
    /**
@@ -393,7 +388,7 @@ public class LDAPConnection implements Cloneable
     */
    public Hashtable getSaslBindProperties()
    {
-      return authenticationHash;
+      return conn.getSaslBindProperties();
    }
 
    /**
@@ -449,8 +444,7 @@ public class LDAPConnection implements Cloneable
    }
 
    /**
-    * Returns the LDAPSocketFactory used to establish a connection to a
-    * server.
+    * Returns the LDAPSocketFactory used to establish this server connection.
     *
     * @return The LDAPSocketFactory used to establish a connection.
     *
@@ -459,7 +453,7 @@ public class LDAPConnection implements Cloneable
     */
    public LDAPSocketFactory getSocketFactory()
    {
-      return socketFactory;
+      return conn.getSocketFactory();
    }
 
    /**
@@ -473,7 +467,7 @@ public class LDAPConnection implements Cloneable
     */
    public boolean isBound()
    {
-      return isConnected() ? conn.isBound() : false;
+      return conn.isBound();
    }
 
    /**
@@ -621,9 +615,9 @@ public class LDAPConnection implements Cloneable
     *
     * @see #LDAPConnection( LDAPSocketFactory)
     */
-   public static void setSocketFactory(LDAPSocketFactory factory)
+   public static void setSocketFactory( LDAPSocketFactory factory)
    {
-      socketFactory = factory;
+      Connection.setSocketFactory( factory);
       return;
    }
   
@@ -743,10 +737,15 @@ public class LDAPConnection implements Cloneable
    {
       validateConn();
 
-      // We need to inform the ClientListener which owns this messageID to
+      // We need to inform the Message Agent which owns this messageID to
       // remove it from the queue.
-      conn.abandon(id);
-      return;
+      try {
+          MessageAgent agent = conn.getMessageAgent(id);
+          agent.abandon(id, cons);
+          return;
+      } catch( NoSuchFieldException ex) {
+          return; // Ignore error
+      }
    }
 
    /**
@@ -786,15 +785,15 @@ public class LDAPConnection implements Cloneable
       throws LDAPException
    {
       if(listener != null) {
-         ClientListener clientListener;
-         if( listener instanceof LDAPSearchListener ) {
-            clientListener = ((LDAPSearchListener)listener).getClientListener();
+         MessageAgent agent;
+         if( listener instanceof LDAPSearchListener) {
+            agent = ((LDAPSearchListener)listener).getMessageAgent();
          } else {
-            clientListener = ((LDAPResponseListener)listener).getClientListener();
+            agent = ((LDAPResponseListener)listener).getMessageAgent();
          }
-         int[] msgIds = clientListener.getMessageIDs();
+         int[] msgIds = agent.getMessageIDs();
          for(int i=0; i<msgIds.length; i++) {
-            abandon(msgIds[i], cons);
+            agent.abandon(msgIds[i], cons);
          }
       }
       return;
@@ -887,7 +886,6 @@ public class LDAPConnection implements Cloneable
       throws LDAPException
    {
       validateConn();
-      ClientListener clientListener;
 
       if(cons == null)
          cons = defSearchCons;
@@ -919,24 +917,7 @@ public class LDAPConnection implements Cloneable
                     attrList),
                 cons.getServerControls());
 
-      if(listener == null) {
-         clientListener = new ClientListener(conn);
-         listener = new LDAPResponseListener( clientListener );
-      } else {
-         clientListener = listener.getClientListener();
-      }
-
-      try {
-         clientListener.writeMessage(msg, cons.getTimeLimit());
-      }
-      catch(IOException ioe) {
-         // do we need to remove message id here?
-
-         throw new LDAPException("Communication error.",
-                                 LDAPException.OTHER);
-      }
-
-      return listener;
+      return sendRequest(msg, cons.getTimeLimit(), listener);
    }
 
     //*************************************************************************
@@ -1162,7 +1143,7 @@ public class LDAPConnection implements Cloneable
       LDAPResponse res = (LDAPResponse)listener.getResponse();
 
       if(res.getResultCode() == LDAPException.SUCCESS) {
-          conn.setBound();
+          conn.setBound(version, dn, passwd, "simple", (Hashtable)null, (Object)null);
       }
 
       res.chkResultCode();
@@ -1245,7 +1226,6 @@ public class LDAPConnection implements Cloneable
                                     LDAPConstraints cons)
       throws LDAPException
    {
-      ClientListener clientListener;
       validateConn();
 
       if(cons == null)
@@ -1256,19 +1236,6 @@ public class LDAPConnection implements Cloneable
 
       if(passwd == null)
          passwd = "";
-
-      switch(version) {
-         case LDAP_V3:
-            protocolVersion = version;
-            break;
-         case LDAP_V2:
-            protocolVersion = version;
-            break;
-         default:
-            throw new LDAPException("Protocol version " + version +
-                                    " not supported",
-                                    LDAPException.PROTOCOL_ERROR);
-      }
 
       LDAPMessage msg =
             new LDAPMessage(
@@ -1282,29 +1249,11 @@ public class LDAPConnection implements Cloneable
                             false))), // implicit tagging
                 cons.getServerControls());
 
-      if(listener == null) {
-         clientListener = new ClientListener(conn);
-         listener = new LDAPResponseListener( clientListener );
-      } else {
-         clientListener = listener.getClientListener();
-      }
+      LDAPResponseListener listen=sendRequest(msg,cons.getTimeLimit(),listener);
 
-      try {
-         clientListener.writeMessage(msg, cons.getTimeLimit());
-      }
-      catch(IOException ioe) {
-         // do we need to remove message id here?
+      conn.setBound( version, dn, passwd, "simple", null, null);
 
-         throw new LDAPException("Communication error.",
-                                 LDAPException.OTHER);
-      }
-
-      setAuthenticationInfo( dn, passwd, "simple", null);
-//    if(passwd != null) {
-//       req.getLber().reset(); // clear copy of passwd
-//    }
-
-      return listener;
+      return listen;
    }
 
    /**
@@ -1601,7 +1550,6 @@ public class LDAPConnection implements Cloneable
                                        LDAPConstraints cons)
       throws LDAPException
    {
-      ClientListener clientListener;
       validateConn();
 
       if(cons == null)
@@ -1623,24 +1571,7 @@ public class LDAPConnection implements Cloneable
                         new RfcAssertionValue(value))),
                 cons.getServerControls());
 
-      if(listener == null) {
-         clientListener = new ClientListener(conn); 
-         listener = new LDAPResponseListener( clientListener );
-      } else {
-         clientListener = listener.getClientListener();
-      }
-
-        try {
-            clientListener.writeMessage(msg, cons.getTimeLimit());
-        }
-        catch(IOException ioe) {
-              // do we need to remove message id here?
-
-            throw new LDAPException("Communication error.",
-                                            LDAPException.OTHER);
-        }
-
-      return listener;
+      return sendRequest(msg, cons.getTimeLimit(), listener);
    }
 
     //*************************************************************************
@@ -1676,47 +1607,24 @@ public class LDAPConnection implements Cloneable
    public void connect(String host, int port)
       throws LDAPException
    {
+      // connect doesn't affect other clones
       // if already connected, disconnect first
-      if(conn != null) {
-         disconnect();
+      if( conn.isCloned()) {
+          conn.destroyClone();
+          // Duplicate socket factory of original connection
+          conn = new Connection( conn.getSocketFactory());
+      } else
+      if( conn.isConnected()) {
+          // Destroy old connection if no clones and if connected
+          conn.shutdown(null);
       }
-
-      conn = new Connection(host, port, mySocketFactory);
-
-      this.host = host;
-      this.port = port;
+      conn.connect(host, port);
       return;
    }
-
-    /**
-    *
-    *  Sets the specified dn, and password
-    *  in the object without connecting or authenticating.
-    *
-    *  @param dn   If non-null and non-empty, specifies that the 
-    *              connection and all operations through it should be 
-    *              authenticated with the DN as the distinguished name.<br><br>
-    *<br><br>
-    *  @param passwd   If non-null and non-empty, specifies that the
-    *                  connection and all operations through it should 
-    *                  be authenticated with the dn as the distinguished 
-    *                  name and passwd as the password.
-    */
-
-    /* Package */ void setAuthenticationInfo( String dn, String passwd,
-                                            String method, Hashtable hash)
-    {
-        authenticationDN = dn;
-        authenticationPassword = passwd;
-        authenticationMethod = method;
-        authenticationHash = hash;
-        return;
-    }
 
     //*************************************************************************
     // delete methods
     //*************************************************************************
-
 
    /**
     *
@@ -1799,7 +1707,6 @@ public class LDAPConnection implements Cloneable
                                       LDAPConstraints cons)
       throws LDAPException
    {
-      ClientListener clientListener;
       validateConn();
 
       if(dn == null)
@@ -1814,24 +1721,7 @@ public class LDAPConnection implements Cloneable
                 new RfcDelRequest(dn),
                 cons.getServerControls());
 
-      if(listener == null) {
-         clientListener = new ClientListener(conn);
-         listener = new LDAPResponseListener( clientListener );
-      } else {
-         clientListener = listener.getClientListener();
-      }
-
-      try {
-         clientListener.writeMessage(msg, cons.getTimeLimit());
-      }
-      catch(IOException ioe) {
-         // do we need to remove message id here?
-
-         throw new LDAPException("Communication error.",
-                                 LDAPException.OTHER);
-      }
-
-      return listener;
+      return sendRequest(msg, cons.getTimeLimit(), listener);
    }
 
     //*************************************************************************
@@ -1854,14 +1744,15 @@ public class LDAPConnection implements Cloneable
    public void disconnect()
       throws LDAPException
    {
-      if(conn != null) {
-         conn.shutdown((LDAPControl[])null);
-         conn = null;
-         setAuthenticationInfo( null, null, "none", null);
-      }
-      else {
-         throw new LDAPException("Not connected.",
-                                 LDAPException.CONNECT_ERROR);
+      // disconnect doesn't affect other clones
+      if( conn.isCloned()) {
+          conn.destroyClone();
+          // Duplicate socket factory of original connection object
+          conn = new Connection( conn.getSocketFactory());
+      } else 
+      if( conn.isConnected()) {
+          // Destroy old connection if no clones and if connected
+          conn.shutdown(null);
       }
       return;
    }
@@ -1990,8 +1881,6 @@ public class LDAPConnection implements Cloneable
                                                LDAPResponseListener listener)
         throws LDAPException
     {
-
-      ClientListener clientListener;
       // Validate our connection structure
       validateConn();
 
@@ -2016,23 +1905,7 @@ public class LDAPConnection implements Cloneable
 
       LDAPMessage msg = new LDAPMessage(er, cons.getServerControls());
 
-      // Create a listener if we do not have one already
-      if(listener == null) {
-         clientListener = new ClientListener(conn);
-         listener = new LDAPResponseListener( clientListener );
-      } else {
-         clientListener = listener.getClientListener();
-      }
-
-      try {
-         clientListener.writeMessage(msg, cons.getTimeLimit());
-      }
-      catch(IOException ioe) {
-         throw new LDAPException("Communication error.",
-                                 LDAPException.OTHER);
-      }
-
-      return listener;
+      return sendRequest(msg, cons.getTimeLimit(), listener);
    }
 
     //*************************************************************************
@@ -2280,7 +2153,6 @@ public class LDAPConnection implements Cloneable
                                       LDAPConstraints cons)
       throws LDAPException
    {
-      ClientListener clientListener;
       validateConn();
 
       if(dn == null)
@@ -2320,24 +2192,7 @@ public class LDAPConnection implements Cloneable
                     rfcMods),
                 cons.getServerControls());
 
-      if(listener == null) {
-         clientListener = new ClientListener(conn);
-         listener = new LDAPResponseListener( clientListener );
-      } else {
-         clientListener = listener.getClientListener();
-      }
-
-        try {
-            clientListener.writeMessage(msg, cons.getTimeLimit());
-        }
-        catch(IOException ioe) {
-              // do we need to remove message id here?
-
-            throw new LDAPException("Communication error.",
-                                            LDAPException.OTHER);
-        }
-
-      return listener;
+      return sendRequest(msg, cons.getTimeLimit(), listener);
    }
 
     //*************************************************************************
@@ -2734,7 +2589,6 @@ public class LDAPConnection implements Cloneable
                                       LDAPConstraints cons)
       throws LDAPException
    {
-      ClientListener clientListener;
       validateConn();
 
       if(dn == null || newRdn == null)
@@ -2754,24 +2608,7 @@ public class LDAPConnection implements Cloneable
                         new RfcLDAPDN(newParentdn) : null),
                 cons.getServerControls());
 
-      if(listener == null) {
-         clientListener = new ClientListener(conn);
-         listener = new LDAPResponseListener( clientListener );
-      } else {
-         clientListener = listener.getClientListener();
-      }
-
-        try {
-            clientListener.writeMessage(msg, cons.getTimeLimit());
-        }
-        catch(IOException ioe) {
-              // do we need to remove message id here?
-
-            throw new LDAPException("Communication error.",
-                                            LDAPException.OTHER);
-        }
-
-      return listener;
+      return sendRequest(msg, cons.getTimeLimit(), listener);
    }
 
     //*************************************************************************
@@ -2957,7 +2794,6 @@ public class LDAPConnection implements Cloneable
                                     LDAPSearchConstraints cons)
       throws LDAPException
    {
-      ClientListener clientListener;
       validateConn();
 
       if(cons == null)
@@ -2975,24 +2811,22 @@ public class LDAPConnection implements Cloneable
             new RfcAttributeDescriptionList(attrs)),
          cons.getServerControls());
 
-      if(listener == null) {
-         clientListener = new ClientListener(conn);
-         listener = new LDAPSearchListener( clientListener );
-      } else {
-         clientListener = listener.getClientListener();
-      }
+        MessageAgent agent;
+        LDAPSearchListener listen = listener;
+        if(listen == null) {
+            agent = new MessageAgent();
+            listen = new LDAPSearchListener( agent );
+        } else {
+            agent = listener.getMessageAgent();
+        }
 
-    try {
-       clientListener.writeMessage(msg, cons.getTimeLimit());
-    }
-    catch(IOException ioe) {
-         // do we need to remove message id here?
-
-       throw new LDAPException("Communication error.",
-                               LDAPException.OTHER);
-    }
-
-      return listener;
+        try {
+            agent.sendMessage( conn, msg, cons.getTimeLimit(), listen);
+        } catch(IOException ioe) {
+            throw new LDAPException("Communication error:" + ioe.toString(),
+                                     LDAPException.CONNECT_ERROR);
+        }
+        return listen;
    }
 
    /*
@@ -3054,14 +2888,49 @@ public class LDAPConnection implements Cloneable
     //*************************************************************************
 
     /**
+     * get an LDAPResponseListener for this request and send request
      *
+     * @param msg the message to send
+     *<br><br>
+     * @param msg the timeout value
+     *<br><br>
+     * @param listen the response listener or null
+     *
+     * @return the LDAPResponseListener for this request
      */
-   private void validateConn()
-      throws LDAPException
-   {
-      if(conn == null) {
-         new LDAPException("Not connected", LDAPException.CONNECT_ERROR);
-      }
+    private LDAPResponseListener sendRequest(
+                                        LDAPMessage msg,
+                                        int timeout,
+                                        LDAPResponseListener listener)
+            throws LDAPException
+    {
+        MessageAgent agent;
+        LDAPResponseListener listen = listener;
+        if(listen == null) {
+            agent = new MessageAgent();
+            listen = new LDAPResponseListener( agent);
+        } else {
+            agent = listener.getMessageAgent();
+        }
+
+        try {
+            agent.sendMessage( conn, msg, timeout, listen);
+        } catch(IOException ioe) {
+            throw new LDAPException("Communication error:" + ioe.toString(),
+                                     LDAPException.CONNECT_ERROR);
+        }
+        return listen;
+    }
+
+    /**
+     * Check if the connection is connected
+     */
+    private void validateConn()
+        throws LDAPException
+    {
+        if(conn.isConnected()) {
+            new LDAPException("Not connected", LDAPException.CONNECT_ERROR);
+        }
       return;
-   }
+    }
 }

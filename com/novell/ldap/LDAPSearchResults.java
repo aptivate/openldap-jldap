@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResults.java,v 1.25 2000/11/03 23:26:29 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResults.java,v 1.26 2000/11/03 23:30:05 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -37,7 +37,8 @@ public class LDAPSearchResults implements Enumeration
     private int count = 0;              // Number of entries read
     private LDAPControl[] controls = null; // Last set of controls
     private LDAPSearchListener listener;
-    private String name = "LDAPSearchResults@" + Integer.toHexString(hashCode());
+    private static int resultsNum = 0;  // used for debug
+    private String name;                // used for debug
 
     /**
      * Constructs a listener object for search results.
@@ -64,6 +65,9 @@ public class LDAPSearchResults implements Enumeration
         this.batchSize = (batchSize == 0) ? Integer.MAX_VALUE : batchSize;
 
         if( Debug.LDAP_DEBUG ) {
+            synchronized(this) {
+                name = "LDAPSearchResults(" + ++resultsNum + "): ";
+            }
             Debug.trace( Debug.messages, name + " Object created, batch size " +
                 this.batchSize );
         }
@@ -388,12 +392,13 @@ public class LDAPSearchResults implements Enumeration
     /**
      * Cancels the search request and clears the message and enumeration.
      */
-    /*package*/ void abandon() {
+    /*package*/
+    void abandon() {
         if( Debug.LDAP_DEBUG ) {
             Debug.trace( Debug.messages, name + ".abandon: Entry");
         }
         // first, remove message ID and timer and any responses in the queue
-        listener.getClientListener().abandonAll();
+        listener.getMessageAgent().abandonAll();
 
         // next, clear out enumeration
         resetVectors();

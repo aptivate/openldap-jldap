@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/rfc2251/RfcLDAPMessage.java,v 1.12 2000/11/09 23:50:56 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/rfc2251/RfcLDAPMessage.java,v 1.13 2000/11/10 16:50:08 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  ***************************************************************************/
@@ -87,7 +87,7 @@ public class RfcLDAPMessage extends ASN1Sequence {
       bais = new ByteArrayInputStream(content);
 
       if( Debug.LDAP_DEBUG ) {
-          Debug.trace( Debug.messages, "protocol/RfcLDAPMessage: input message tag " +
+          Debug.trace( Debug.messages, "RfcLDAPMessage: input message w/tag " +
             protocolOpId.getTag());
       }
       switch(protocolOpId.getTag()) {

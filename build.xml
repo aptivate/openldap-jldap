@@ -1,4 +1,4 @@
-<!-- $Novell: /ldap/src/jldap/build.xml,v 1.23 2000/11/09 18:27:14 vtag Exp $ -->
+<!-- $Novell: /ldap/src/jldap/build.xml,v 1.24 2000/11/10 16:50:01 vtag Exp $ -->
 <!-- ======================================================================= -->
 <!-- TOP level build file                                                -->
 <!-- ======================================================================= -->
@@ -63,11 +63,17 @@
     <!-- =================================================================== -->
     <!-- clean all files                                                     -->
     <!-- =================================================================== -->
-	<target name="clean" depends="init">
+	<target name="clean" depends="init, cleancode, cleandoc">
+            <echo message="Cleaning files"/>
+	</target>
+
+    
+    <!-- =================================================================== -->
+    <!-- clean code result files                                                     -->
+    <!-- =================================================================== -->
+	<target name="cleancode" depends="init">
             <echo message="Cleaning files"/>
 			<delete file="com/novell/ldap/client/Debug.java"/>
-            <deltree dir="${doc}"/>
-            <deltree dir="${pkg.doc}"/>
             <deltree dir="${lib}"/>
             <deltree dir="${lib.debug}"/>
             <deltree dir="${build}"/>
@@ -76,6 +82,14 @@
             <deltree dir="${build.tests}"/>
 	</target>
 
+    <!-- =================================================================== -->
+    <!-- clean doc files                                                     -->
+    <!-- =================================================================== -->
+	<target name="cleandoc" depends="init">
+            <echo message="Cleaning files"/>
+            <deltree dir="${doc}"/>
+            <deltree dir="${pkg.doc}"/>
+	</target>
 
     <!-- =================================================================== -->
     <!-- clean the pkg directory                                             --> 

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchListener.java,v 1.21 2000/11/09 23:50:39 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchListener.java,v 1.22 2000/11/10 16:50:03 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -30,7 +30,7 @@ public class LDAPSearchListener implements LDAPListener
    /**
     * The client listener object
     */
-    private ClientListener listen;
+    private MessageAgent agent;
     
     /**
      * Constructs a response listener using a specific client listener
@@ -38,9 +38,9 @@ public class LDAPSearchListener implements LDAPListener
      *  @param listen The client listener to associate with this listener
      */
     /* package */
-    LDAPSearchListener(ClientListener listen)
+    LDAPSearchListener(MessageAgent agent)
     {
-        this.listen = listen;
+        this.agent = agent;
         return;    
     }
 
@@ -50,9 +50,9 @@ public class LDAPSearchListener implements LDAPListener
     * @return The internal client listener object
     */
     /* package */
-    ClientListener getClientListener()
+    MessageAgent getMessageAgent()
     {
-        return listen;
+        return agent;
     }
     
    /**
@@ -65,7 +65,7 @@ public class LDAPSearchListener implements LDAPListener
     */
     public int[] getMessageIDs()
     {
-        return listen.getMessageIDs();
+        return agent.getMessageIDs();
     }
 
    /**
@@ -76,7 +76,7 @@ public class LDAPSearchListener implements LDAPListener
     */
     public boolean isResponseReceived()
     {
-        return listen.isResponseReceived();
+        return agent.isResponseReceived();
     }
 
    /**
@@ -87,7 +87,7 @@ public class LDAPSearchListener implements LDAPListener
     */
     public boolean isResponseReceived(int msgid)
     {
-        throw new RuntimeException("LDAPSearchListener.isResponseReceived(msgid) is not implemented");
+        return agent.isResponseReceived(msgid);
     }
 
    /**
@@ -99,7 +99,7 @@ public class LDAPSearchListener implements LDAPListener
     */
     public void merge(LDAPResponseListener listener2)
     {
-        listen.merge( listener2);
+        agent.merge( listener2.getMessageAgent());
         return;
     }
 
@@ -111,7 +111,7 @@ public class LDAPSearchListener implements LDAPListener
      */
      public boolean isComplete( int msgid )
      {
-        throw new RuntimeException("LDAPSearchListener.isComplete(msgid) is not implemented");
+        return agent.isComplete();
      }
     
    /**
@@ -135,30 +135,7 @@ public class LDAPSearchListener implements LDAPListener
    public LDAPMessage getResponse()
       throws LDAPException
    {
-      LDAPMessage message;
-
-      RfcLDAPMessage msg = listen.getLDAPMessage(); // blocks
-
-      if(msg == null)
-         return null;
-
-      if(msg.getProtocolOp() instanceof RfcSearchResultEntry) {
-         message = new LDAPSearchResult(msg);
-      }
-      else if(msg.getProtocolOp() instanceof RfcSearchResultReference) {
-         message = new LDAPSearchResultReference(msg);
-      }
-      else { // must be SearchResultDone
-         message = new LDAPResponse(msg);
-         listen.removeMessageID(message.getMessageID());
-      }
-
-      // network error exceptions... (LDAP_TIMEOUT for example)
-      LDAPException e = listen.getException();
-      if( e != null )
-         throw e;
-
-      return message;
+      return getResp( null );
    }
 
    /**
@@ -183,6 +160,29 @@ public class LDAPSearchListener implements LDAPListener
    public LDAPMessage getResponse(int msgid)
       throws LDAPException
    {
-        throw new RuntimeException("LDAPSearchListener.getResponse(msgid) is not implemented");
+      return getResp( new Integer(msgid));
+   }
+
+   private LDAPMessage getResp( Integer msgid)
+   {
+      LDAPMessage message;
+      RfcLDAPMessage msg;
+
+
+      if( (msg = agent.getLDAPMessage( msgid)) == null) { // blocks
+          return null;  // no messages on this agent
+      }
+
+      if(msg.getProtocolOp() instanceof RfcSearchResultEntry) {
+         message = new LDAPSearchResult(msg);
+      }
+      else if(msg.getProtocolOp() instanceof RfcSearchResultReference) {
+         message = new LDAPSearchResultReference(msg);
+      }
+      else { // must be SearchResultDone
+         message = new LDAPResponse(msg);
+      }
+
+      return message;
    }
 }

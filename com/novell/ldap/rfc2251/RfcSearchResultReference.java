@@ -4,7 +4,6 @@ package com.novell.ldap.rfc2251;
 import java.io.*;
 import java.util.*;
 import com.novell.ldap.asn1.*;
-import com.novell.ldap.client.Debug;
 
 /**
  *       SearchResultReference ::= [APPLICATION 19] SEQUENCE OF LDAPURL
