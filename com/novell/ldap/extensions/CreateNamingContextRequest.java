@@ -19,7 +19,19 @@ import com.novell.ldap.client.protocol.lber.*;
 import java.io.IOException;
  
 /**
- * public class CreateNamingContextRequest
+ *  public class CreateNamingContextRequest
+ *
+ *      This class inherits from the LDAPExtendedOperation class
+ *  and is used to create a new naming context. (NDS partition).
+ *  To create a new naming context create an instance of this 
+ *  class and then call the extendedOperation method with this
+ *  object as the required LDAPExtendedOperation parameter
+ *
+ *  The OID used for this extended operation is:
+ *      "2.16.840.1.113719.1.27.100.3"
+ *
+ *  The RequestValue has the folling ASN:
+ *
  *  requestValue ::=
  *          flags   INTEGER
  *          dn      LDAPDN
@@ -28,8 +40,20 @@ public class CreateNamingContextRequest extends LDAPExtendedOperation {
    
     private static final String requestOID  = "2.16.840.1.113719.1.27.100.3";
     private static final String respOID  = "2.16.840.1.113719.1.27.100.4";
-    
-    public CreateNamingContextRequest(String dn, int flags) 
+
+/**
+ *  public CreateNamingContextRequest()
+ *
+ *      The constructor takes two parameters:
+ *
+ *      String dn:  Specify the distinguished name of the container
+ *                  where the new naming context root should be located.
+ *
+ *      int flags:  Specifies if all servers in the replica ring must be
+ *                  up before proceeding.  Set to LDAP_ENSURE_SERVERS_UP 
+ *                  field defined in the NamingContextConstants class .
+ */   
+ public CreateNamingContextRequest(String dn, int flags) 
                 throws LDAPException {
         
         super(requestOID, null);

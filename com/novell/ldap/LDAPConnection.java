@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: LDAPConnection.java,v 1.10 2000/07/25 20:42:50 javed Exp $
+ * $Id: LDAPConnection.java,v 1.11 2000/07/25 23:38:58 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -1512,7 +1512,7 @@ public class LDAPConnection implements
    /**
     * Synchronous LDAP extended request 
     */
-   public LDAPExtendedOperation extendedOperation(LDAPExtendedOperation op)
+   public LDAPExtendedResponse extendedOperation(LDAPExtendedOperation op)
    throws LDAPException {
 
 		return extendedOperation(op, defSearchCons);
@@ -1521,23 +1521,14 @@ public class LDAPConnection implements
    /**
     *  Synchronous LDAP extended request with SearchConstraints
     */
-   public LDAPExtendedOperation extendedOperation(LDAPExtendedOperation op,
+   public LDAPExtendedResponse extendedOperation(LDAPExtendedOperation op,
 		                                            LDAPSearchConstraints cons)
    throws LDAPException {
 
 		// Call asynchronous API and get back handler to reponse listener
 		LDAPResponseListener listener = extendedOperation(op, (LDAPResponseListener)null, cons);
-		
 		LDAPExtendedResponse response = (LDAPExtendedResponse) listener.getResponse();
-
-		if (response != null) {
-			String tempOID = response.getID();
-			byte [] tempVal = response.getValue();
-			LDAPExtendedOperation result = new LDAPExtendedOperation(tempOID, tempVal);
-			return result;
-		}
-
-		return null;
+		return response;
 	}
 
 

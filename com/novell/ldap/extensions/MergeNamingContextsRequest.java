@@ -19,17 +19,42 @@ import com.novell.ldap.client.protocol.lber.*;
 import java.io.IOException;
  
 /**
- * 4.11 public class MergeNamingContextsRequest
+ *  public class MergeNamingContextsRequest
+ *
+ *      This class inherits from the LDAPExtendedOperation class
+ *  and is used to create a new naming context. (NDS partition).
+ *  To create a new naming context create an instance of this 
+ *  class and then call the extendedOperation method with this
+ *  object as the required LDAPExtendedOperation parameter
+ *
+ *  The OID used for this extended operation is:
+ *      "2.16.840.1.113719.1.27.100.5"
+ *
+ *  The RequestValue has the folling ASN:
+ *
  *  requestValue ::=
  *          flags   INTEGER
  *          dn      LDAPDN
- *
  */
 public class MergeNamingContextsRequest extends LDAPExtendedOperation {
    
     private static final String requestOID  = "2.16.840.1.113719.1.27.100.5";
     private static final String respOID  = "2.16.840.1.113719.1.27.100.6";
     
+    
+/**
+ *  public MergeNamingContextsRequest()
+ *
+ *      The constructor takes two parameters:
+ *
+ *      String dn:  Specify the distinguished name of the child naming
+ *                  contexts root - that is to be joined to its parent.
+ *
+ *      int flags:  Specifies if all servers in the replica ring must be
+ *                  up before proceeding.  Set to LDAP_ENSURE_SERVERS_UP 
+ *                  field defined in the NamingContextConstants class .
+ */
+ 
     public MergeNamingContextsRequest(String dn, int flags) 
                 throws LDAPException {
         

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: NamingContextConstants.java,v 1.2 2000/07/26 21:33:18 javed Exp $
+ * $Id: NamingContextConstants.java,v 1.1 2000/07/26 21:50:03 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -24,7 +24,7 @@ import java.io.IOException;
  */
 public class NamingContextConstants {
    
-    private static final int LDAP_ENSURE_SERVER_UP = 1;
+    private static final int LDAP_ENSURE_SERVERS_UP = 1;
     
     public NamingContextConstants()  {}   
 		

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id$
+ * $Id: LDAPv3.java,v 1.2 2000/03/14 18:17:31 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -206,6 +206,10 @@ public interface LDAPv3 extends LDAPv2 {
     * Returns an operation-specific object, containing an ID and an Octet
     * String or BER-encoded value(s).
     *
+    *  Note that the return value is different from that defined int the
+    *  current draft.  The draft will be changed to match what we have
+    *  here.
+    *
     * Parameters are:
     *
     *  op             Object which contains an identifier of the
@@ -214,7 +218,7 @@ public interface LDAPv3 extends LDAPv2 {
     *                  is connected to, and  operation-specific sequence
     *                  of Octet String or BER-encoded value(s).
     */
-   public LDAPExtendedOperation extendedOperation(
+   public LDAPExtendedResponse extendedOperation(
                                    LDAPExtendedOperation op )
                                    throws LDAPException;
 
