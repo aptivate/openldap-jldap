@@ -1,8 +1,8 @@
 /* **************************************************************************
- * $Id$
+ * $Id: LDAPAttributeSet.java,v 1.2 2000/03/14 18:17:25 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
- * 
+ *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
  * TO VERSION 2.0.1 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
@@ -10,9 +10,9 @@
  * IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
  * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.1 OF THE OPENLDAP
  * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
- * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY. 
+ * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
  ***************************************************************************/
- 
+
 package com.novell.ldap;
 
 import java.util.*;
@@ -94,7 +94,15 @@ public class LDAPAttributeSet implements Cloneable {
     * subtype specification(s). "cn", "cn;phonetic", and cn;binary" are
     * valid attribute names.
     */
-   public LDAPAttribute[] getAttribute(String attrName) {
+   public LDAPAttribute getAttribute(String attrName) {
+      LDAPAttribute attrib;
+      Enumeration enumAttr = attrs.elements();
+      while( enumAttr.hasMoreElements()){
+        attrib = (LDAPAttribute) enumAttr.nextElement();
+        if(attrib.getName().equals(attrName)){
+          return attrib;
+        }
+      }
       return null;
    }
 
@@ -124,7 +132,7 @@ public class LDAPAttributeSet implements Cloneable {
     *    cn;lang-en
     *    cn;lang-ja-JP-kanji
     *    sn
-    * 
+    *
     *    getAttribute( "cn" )               returns null.
     *    getAttribute( "sn" )               returns the "sn" attribute.
     *    getAttribute( "cn", "lang-en-us" ) returns the "cn;lang-en"
