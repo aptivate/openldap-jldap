@@ -45,13 +45,15 @@ import com.novell.ldap.ldif_dsml.LDAPModify;
  */
 public class LDIFReader extends LDIF implements LDAPImport {
 
-    private int       version, operationType;
-    private String    dn, changeField, changeOperation;
+    private int       version;                   // LDIF file version
+    private int       operationType;
+    private String    dn;                        // entry dn
+    private String    changeField;               // record change field
     private String    line;
     private String[]  rFields;                   // record fields
     private String[]  namePairs;                 // attr name and value pairs
     private String[]  cFields;                   // control fields
-    private ArrayList rLines = new ArrayList();
+    private ArrayList rLines = new ArrayList();  // record lines
     private BufferedReader      bufReader;
     private LDAPControl[] controls = null;
     private LDAPEntry currentEntry = null;
@@ -122,7 +124,13 @@ public class LDIFReader extends LDIF implements LDAPImport {
         // skip the leading empty and comment lines before version line
         while( (((this.line = bufReader.readLine())!= null)
                && (this.line.length() == 0))
-               || ( this.line.startsWith("#"))) {
+               ||  (this.line != null && this.line.startsWith("#"))) {
+        }
+
+        if ( line == null ) {
+             throw new RuntimeException(
+                 "com.novell.ldap.ldif_dsml.LDIFReader: "
+                                     + "There is an empty file" ) ;
         }
 
         // the version line, check the version
@@ -148,6 +156,8 @@ public class LDIFReader extends LDIF implements LDAPImport {
             // mark the first dn line, so we can later go back to here
             bufReader.mark( bufSize );
             this.line=bufReader.readLine();
+
+            // end of file ?
             if ( this.line == null) {
                 throw new RuntimeException(
                         "com.novell.ldap.ldif_dsml.LDIFReader: "
@@ -157,7 +167,14 @@ public class LDIFReader extends LDIF implements LDAPImport {
         } while((this.line.length()== 0) || this.line.startsWith("#"));
 
         // this is the first line of the dn field
-        this.rLines.add(this.line);
+        if ( !this.line.startsWith("dn")) {
+                throw new RuntimeException(
+                        "com.novell.ldap.ldif_dsml.LDIFReader: "
+                                 + "a record should starts with dn");
+        }
+        else {
+            this.rLines.add(this.line);
+        }
 
         // ignore the rest lines of the dn field and read the
         // line right after the dn field
@@ -203,9 +220,7 @@ public class LDIFReader extends LDIF implements LDAPImport {
 
 
     /**
-     * Read the record lines in the LDIF content file, turn the lines into lDIF
-     * record fields, process the fileld information, construct and return
-     * LDAPEntry object.
+     * Read the records from the LDIF content file.
      *
      * @return The LDAPEntry object represented by the LDIF content record.
      */
@@ -242,12 +257,7 @@ public class LDIFReader extends LDIF implements LDAPImport {
 
 
     /**
-     * Read the record lines in the LDIF change file.
-     *
-     * <p>Turn the lines into lDIF record fields, process the fileld
-     * information, construct and return LDAPOperation object.</p>
-     *
-     * @return The LDAPOperation object represented by the LDIF change record.
+     * Read the LDAP operations from the LDIF change file.
      *
      * @see LDAPOperation
      */
@@ -634,10 +644,11 @@ public class LDIFReader extends LDIF implements LDAPImport {
     private void setOperationType( ) {
 
         int index;
+        String changeOperation;
 
         index = (this.changeField).indexOf((int)':');
 
-        this.changeOperation = (this.changeField).substring(index+1).trim();
+        changeOperation = (this.changeField).substring(index+1).trim();
 
         // set operation type
         if ( changeOperation.equalsIgnoreCase("add") ) {

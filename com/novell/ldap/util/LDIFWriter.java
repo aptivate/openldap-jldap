@@ -32,24 +32,42 @@ import com.novell.ldap.LDAPException;
 import com.novell.ldap.LDAPModification;
 import com.novell.ldap.ldif_dsml.LDAPOperation;
 import com.novell.ldap.ldif_dsml.ModInfo;
-import com.novell.ldap.util.DN;
+import com.novell.ldap.ldif_dsml.Base64Encoder;
 
 
 public class LDIFWriter extends LDIF implements LDAPExport {
 
     private int            recordType;                    // record type
     private String         dn;                            // record dn
+    private String         lines;
     private String[]       rLines;                        // record lines
     private String[]       cFields;                       // control fiields
+    private String         base64String;
     private ArrayList      rFields  = new ArrayList();    // record fields
     private ArrayList      tempList = new ArrayList();
+    private Base64Encoder  base64Encoder = new Base64Encoder();
     private BufferedWriter bufWriter;
     private LDAPControl[]  currentControls;
     private LDAPEntry      currentEntry = null;
     private LDAPOperation  currentChange = null;
 
+
     /**
-     * Construct an LDIFWriter object by calling super constructor, and
+     * Constructs an LDIFWriter object by calling super constructor, and
+     * OutputStreamReader object, and BufferedWriter object.
+     *
+     * <p>The default version 1 is used for the LDIF file</p>
+     *
+     * @param out     The OutputStream object
+     */
+    public LDIFWriter(OutputStream out) throws IOException  {
+
+        this( out, 1 );
+    }
+
+
+    /**
+     * Constructs an LDIFWriter object by calling super constructor, and
      * initializing version, OutputStreamReader object, and BufferedWriter
      * object.
      *
@@ -58,6 +76,14 @@ public class LDIFWriter extends LDIF implements LDAPExport {
      */
     public LDIFWriter(OutputStream out, int version) throws IOException  {
         super( );
+
+        // check LDIF file version
+        if ( version != 1 ) {
+            throw new RuntimeException(
+                        "com.novell.ldap.ldif_dsml.LDIFReader: "
+                                 + "Should be version 1");
+        }
+
         super.setVersion( version );
         OutputStreamWriter osw = new OutputStreamWriter(out, "UTF8");
         bufWriter = new BufferedWriter( osw );
@@ -67,8 +93,8 @@ public class LDIFWriter extends LDIF implements LDAPExport {
     /**
      * Write the version line of LDIF file into the OutputStream.
      *
-     * <p>Two extra lines will be written to separate version line with the rest
-     * of lines in LDIF file</p>
+     * <p>Two extra lines will be written to separate version line
+     * with the rest of lines in LDIF file</p>
      */
     protected void writeVersionLine () throws IOException {
 
@@ -159,8 +185,9 @@ public class LDIFWriter extends LDIF implements LDAPExport {
     throws IOException {
 
         if( ! isContent()) {
-            throw new RuntimeException("Cannot write change to LDIF"
-                                                  + " content file");
+            throw new RuntimeException(
+                 "com.novell.ldap.ldif_dsml.LDAIWriter: "
+                      + "Cannot write change to LDIF content file");
         }
 
         // to content record lines
@@ -252,23 +279,35 @@ public class LDIFWriter extends LDIF implements LDAPExport {
 
     }
 
+
     /**
      * Used to generate LDIF content record or LDIF change/add record lines.
      *
-     *<p>Turn LDAPEntry object and LDAPControl[] object into LDIF record fields
-     * and then turn record fields into record lines</p>
+     *<p>Turn LDAPEntry object into LDIF record lines lines</p>
+     *
+     * @param entry  LDAPREntry object
+     */
+    public void toRecordLines( LDAPEntry entry )
+    throws UnsupportedEncodingException {
+        toRecordLines(entry, null);
+    }
+
+
+    /**
+     * Used to generate LDIF content record or LDIF change/add record lines.
+     *
+     * <p>Turn LDAPEntry object and LDAPControl[] object into LDIF record
+     * lines</p>
      *
      * @param entry  LDAPREntry object
      * @param ctrls  LDAPControl object
-     *
-     * @return String array which contains the LDIF content or LDIF
-     * change/add record lines
      */
     public void toRecordLines( LDAPEntry entry, LDAPControl[] ctrls )
     throws UnsupportedEncodingException {
 
         int      i, len;
-        String   attrName,  dn, temp, value;
+        boolean  safeString;
+        String   attrName, temp, value;
         LDAPAttribute attr;
         LDAPAttributeSet attrSet;
         Iterator allAttrs;
@@ -276,13 +315,15 @@ public class LDIFWriter extends LDIF implements LDAPExport {
 
         this.rFields.clear();
 
-        // save entry dn field
-        dn = new String( entry.getDN() );
-        addDNToRecordFields(dn);
+        // get dn from the entry
+        this.dn = new String( entry.getDN() );
+
+        // add dn to record fileds
+        addDNToRecordFields();
 
         // save controls if there any
         if ( ctrls != null ) {
-            addControlToRecordFields( ctrls );
+            addControlsToRecordFields( ctrls );
         }
 
         if ( !isContent() ) {
@@ -296,7 +337,6 @@ public class LDIFWriter extends LDIF implements LDAPExport {
         while(allAttrs.hasNext()) {
            attr = (LDAPAttribute)allAttrs.next();
            attrName = attr.getName();
-           //temp = new String ( attrName + ": ");
 
            allValues = attr.getStringValues();
 
@@ -309,12 +349,34 @@ public class LDIFWriter extends LDIF implements LDAPExport {
            }
         }
 
+        // to record lines
         this.rLines = new String[this.rFields.size()];
         this.rLines = (String[])this.rFields.toArray(this.rLines);
+        
+        // to record lines each of which has no more than 80 characters
+        toLines(this.rLines);
 
-        //return toLines( this.rLines );
     }
 
+
+    /**
+     * Used to generate LDIF change/modify reocrd lines.
+     *
+     * <p>Turn entry DN, LDAPModification[] object into LDIF LDIF record
+     * fields and then turn record fields into LDIF  change/modify record
+     * lines</p>
+     *
+     * @param dn    String object representing entry DN
+     * @param mods  LDAPModification array object
+     *
+     * @see LDAPModification
+     * @see LDAPControl
+     */
+    public void toRecordLines( String dn, LDAPModification[] mods )
+    throws UnsupportedEncodingException {
+
+        toRecordLines( dn, mods, null );
+    }
 
 
     /**
@@ -328,8 +390,6 @@ public class LDIFWriter extends LDIF implements LDAPExport {
      * @param mods  LDAPModification array object
      * @param ctrls LDAPControl array object
      *
-     * @return String array which contains the LDIF change/modify record lines
-     *
      * @see LDAPModification
      * @see LDAPControl
      */
@@ -340,14 +400,12 @@ public class LDIFWriter extends LDIF implements LDAPExport {
         String attrName, attrValue;
         LDAPAttribute attr;
 
-
-        // save entry dn
-        addDNToRecordFields(dn);
-
+        // add dn to record fileds
+        addDNToRecordFields();
 
         // save controls if there is any
         if ( ctrls != null ) {
-            addControlToRecordFields( ctrls );
+            addControlsToRecordFields( ctrls );
         }
 
         // save change type
@@ -358,8 +416,8 @@ public class LDIFWriter extends LDIF implements LDAPExport {
 
             modOp = mods[i].getOp();
             attr =  mods[i].getAttribute();
-            attrName = attr.getName();
-            attrValue = attr.getStringValue();
+            attrName = attr.getName().trim();
+            attrValue = attr.getStringValue().trim();
 
             switch ( modOp )  {
                 case LDAPModification.ADD:
@@ -374,52 +432,90 @@ public class LDIFWriter extends LDIF implements LDAPExport {
                     break;
                 default:
             }
-            //this.rFields.add(new String( attrName + ": " + attrValue));
+
+            // add attribute names and values to record fields
             addAttrValueToRecordFields(attrName, attrValue);
+
             // add separators between different modify operations
             this.rFields.add(new String("-"));
+
             // add an empty line between different modify operations
             this.rFields.add(new String(""));
         }
 
+        // to record lines
         this.rLines = new String[this.rFields.size()];
         this.rLines = (String[])this.rFields.toArray(this.rLines);
-        
-        //return toLines( this.rLines );
+
+        // to record lines each of which has no more than 80 characters
+        toLines(this.rLines);
     }
+
 
     /**
      * Used to generate LDIF change/moddn reocrd lines.
      *
-     * <p>Turn entry DN and ModInfo into LDIF change/modify record
-     * fields and then turn record fields into LDIF change/moddn record lines</p>
+     * <p>Turn entry DN and ModInfo into LDIF change/modify record lines</p>
+     *
+     * @param dn      String object representing entry DN
+     * @param modInfo ModInfo object
+     *
+     * @see ModInfo
+     */
+    public void toRecordLines( String dn, ModInfo modInfo )
+    throws UnsupportedEncodingException {
+
+        toRecordLines( dn, modInfo, null );
+    }
+
+
+    /**
+     * Used to generate LDIF change/moddn reocrd lines.
+     *
+     * <p>Turn entry DN and ModInfo into LDIF change/modify record lines</p>
      *
      * @param dn      String object representing entry DN
      * @param modInfo ModInfo object
      * @param ctrls   LDAPControl array object
-     *
-     * @return String array which contains the LDIF change/modify record lines
      *
      * @see ModInfo
      */
     public void toRecordLines( String dn, ModInfo modInfo,
     LDAPControl[] ctrls ) throws UnsupportedEncodingException {
 
+        String tempString;
+
         // save entry dn
-        addDNToRecordFields(dn);
+        addDNToRecordFields();
 
         if ( ctrls != null ) {
-            addControlToRecordFields( ctrls );
+            addControlsToRecordFields( ctrls );
         }
 
         // save change type
         this.rFields.add(new String("changetype: moddn"));
 
-        // save moddn info
-        this.rFields.add(new String("newrdn:" + modInfo.newRDN));
+        // save new RDN
+        if ( !isSafeString(modInfo.newRDN) ) {
+            tempString = base64Encoder.encoder(modInfo.newRDN);
+            this.rFields.add(new String("newrdn:" + tempString));
+        }
+        else {        
+            this.rFields.add(new String("newrdn:" + modInfo.newRDN));
+        }
+
+        // save deleteOldRDN
         this.rFields.add(new String("deleteoldrdn:" + modInfo.deleteOldRDN));
+        
         if ( ((modInfo.newSuperior).length()) != 0) {
-            this.rFields.add(new String("newsuperior:" + modInfo.newSuperior));
+            
+            if ( !isSafeString(modInfo.newSuperior) ) {
+                tempString = base64Encoder.encoder(modInfo.newSuperior);
+                this.rFields.add(new String("newsuperior:" + tempString));
+            }
+            else {
+                this.rFields.add(new String("newsuperior:" + modInfo.newSuperior));
+            }
         }
 
         this.rLines = new String[this.rFields.size()];
@@ -446,11 +542,11 @@ public class LDIFWriter extends LDIF implements LDAPExport {
     throws UnsupportedEncodingException {
 
         // save entry dn
-        addDNToRecordFields(dn);
+        addDNToRecordFields();
 
         // save controls if there is any
         if ( ctrls != null ) {
-            addControlToRecordFields( ctrls );
+            addControlsToRecordFields( ctrls );
         }
 
         // save change type
@@ -458,9 +554,6 @@ public class LDIFWriter extends LDIF implements LDAPExport {
 
         this.rLines = new String[this.rFields.size()];
         this.rLines = (String[])this.rFields.toArray( this.rLines );
-
-
-        //return toLines( this.rLines );
     }
 
 
@@ -492,12 +585,13 @@ public class LDIFWriter extends LDIF implements LDAPExport {
             this.tempList.add( "# " + line);
         }
 
-        return (String[])this.tempList.toArray();
+        this.rLines = new String[tempList.size()];
+        return (String[])this.tempList.toArray(this.rLines);
     }
 
     /**
-     * Turn any string in input String array into multiple continuation lines if
-     * it contains more than 80 characters
+     * Turn any string in input String array into multiple continuation
+     * lines if it contains more than 80 characters
      *
      * @param ls  The input String array object
      *
@@ -537,9 +631,9 @@ public class LDIFWriter extends LDIF implements LDAPExport {
      * Convert LDAPControl array object to control fields in LDIF format
      *
      * @param ctrls LDAPControl array object
-     *     
+     *
      */
-    public void addControlToRecordFields(LDAPControl[] ctrls)
+    public void addControlsToRecordFields(LDAPControl[] ctrls)
     throws UnsupportedEncodingException {
 
         boolean criticality;
@@ -553,10 +647,17 @@ public class LDIFWriter extends LDIF implements LDAPExport {
             criticality = ctrls[i].isCritical();
             byteValue = ctrls[i].getValue();
 
-            if ( (byteValue.length) > 0 ) {
-                controlValue = new String( byteValue, "UTF-8");
+            if ( byteValue.length > 0 ) {
+                //controlValue = new String( byteValue, "UTF8");
+
+                // always encode control value(s) ?
+                byteValue = base64Encoder.encoder( byteValue );
+
+                controlValue = new String(byteValue, "UTF8");
+
+                // a trailing space is add to the end of base64 encoded value
                 this.rFields.add( "control: " + controlOID + " " + criticality
-                              + ": " + controlValue );
+                              + ":: " + controlValue + " " );
             }
             else {
                 this.rFields.add("control: " + controlOID + " " + criticality);
@@ -568,20 +669,19 @@ public class LDIFWriter extends LDIF implements LDAPExport {
      * Add record dn into record fields.
      *
      * <p>Check if dn is base64 encoded and use either 'dn:: dn spec' or
-     * 'dn: dn spec' format</p>    
-     */    
-    public void addDNToRecordFields(String dn) {
-        
-        int index;
-        
-        index = dn.lastIndexOf((int)' '); 
-        
-        if ( (index != -1) && (index == dn.length() - 1) ) {
-            // base64 encoded
+     * 'dn: dn spec' format</p>
+     */
+    public void addDNToRecordFields() throws UnsupportedEncodingException {
+
+        Base64Encoder base64Encoder = new Base64Encoder();
+
+        if ( !isSafeString( this.dn ) ) {
+            this.dn = base64Encoder.encoder( this.dn );
+            // add encoded dn to record fileds
             this.rFields.add( new String("dn:: " + dn ));
         }
         else {
-            // UTF8 string
+            // add dn to record fileds
             this.rFields.add( new String("dn: " + dn ));
         }
 
@@ -590,23 +690,59 @@ public class LDIFWriter extends LDIF implements LDAPExport {
     /**
      * Add record attribute name and value into record fields.
      *
-     * <p>Check if attribute value is base64 encoded and use either 
-     * 'attrName:: attrSpec' or 'attrName: attrSpec' format</p>    
-     */    
-    public void addAttrValueToRecordFields(String attrName, String attrSpec) {
-        
-        int index;
-        
-        index = attrSpec.lastIndexOf((int)' '); 
-        
-        if ( (index != -1) && (index == attrSpec.length() - 1) ) {
-            // base64 encoded
-            this.rFields.add( new String(attrName + ":: " + attrSpec ));
+     * <p>Check if attribute value contains NON-SAFE-INIT-CHAR or
+     * NON-SAFE_CHAR. if it does, encode it</p>
+     */
+    public void addAttrValueToRecordFields(String attrName, String attrSpec)
+    throws UnsupportedEncodingException {
+
+        if ( !isSafeString(attrSpec) ) {
+            // attrSpec contains NON-SAFE-INIT-CHAR or NON-SAFE-CHAR,
+            // it has to be base64 encoded
+            attrSpec = base64Encoder.encoder(attrSpec);
+            // base64 encoded attribute spec ended with white spavce
+            this.rFields.add( new String(attrName + ":: " + attrSpec + " " ));
         }
         else {
-            // UTF8 string
             this.rFields.add( new String(attrName + ": " + attrSpec ));
         }
 
     }
+
+    /**
+     * Check if the input String object is a SAFE-STRING
+     */
+    private boolean isSafeString( String value ) {
+
+        int i, len = value.length();
+        boolean isSafe = true;
+
+        // is there any NON-SAFE-INIT-CHAR
+        if (   (value.charAt(0) == 0x00)     // NUL
+            || (value.charAt(0) == 0x0A)     // linefeeder
+            || (value.charAt(0) == 0x0D)     // carrage return
+            || (value.charAt(0) == 0x20)     // space(' ')
+            || (value.charAt(0) == 0x3A)     // colon(':')
+            || (value.charAt(0) == 0x3C)) {  // less-than('<')
+
+            isSafe = false;
+
+            return isSafe;
+        }
+
+        // is there any NON-SAFE-CHAR
+        for ( i = 1; i < len; i++ ) {
+            if (   (value.charAt(i) == 0x00)    // NUL
+                || (value.charAt(i) == 0x0A)    // linefeed
+                || (value.charAt(i) == 0x0D)) { // carrage return
+
+                isSafe = false;
+
+                return isSafe;
+            }
+        }
+
+        return isSafe;
+    }
+    
 }
