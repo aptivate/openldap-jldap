@@ -87,8 +87,8 @@ public class TriggerBackgroundProcessRequest extends LDAPExtendedOperation {
             setID(ReplicationConstants.TRIGGER_PART_PURGE_REQ);
             break;
         default:
-            throw new LDAPException(ExceptionMessages.PARAM_ERROR,
-                          LDAPException.PARAM_ERROR);
+            throw new IllegalArgumentException(
+                                     ExceptionMessages.PARAM_ERROR);
 
         }
     }
