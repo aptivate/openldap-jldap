@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: NamingContextConstants.java,v 1.7 2000/07/31 16:00:37 javed Exp $
+ * $Id: NamingContextConstants.java,v 1.8 2000/07/31 16:51:42 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -42,7 +42,10 @@ public class NamingContextConstants {
     public static final String NAMING_CONTEXT_COUNT_RES     = "2.16.840.1.113719.1.27.100.14";
 	public static final String CHANGE_REPLICA_TYPE_REQ		= "2.16.840.1.113719.1.27.100.15";
 	public static final String CHANGE_REPLICA_TYPE_RES		= "2.16.840.1.113719.1.27.100.16";
-    
+    public static final String GET_REPLICA_INFO_REQ         = "2.16.840.1.113719.1.27.100.17";
+    public static final String GET_REPLICA_INFO_RES         = "2.16.840.1.113719.1.27.100.18";
+	public static final String LIST_REPLICAS_REQ            = "2.16.840.1.113719.1.27.100.19";
+	public static final String LIST_REPLICAS_RES    		= "2.16.840.1.113719.1.27.100.20";
     public static final String RECEIVE_ALL_UPDATES_REQ		= "2.16.840.1.113719.1.27.100.21";
 	public static final String RECEIVE_ALL_UPDATES_RES		= "2.16.840.1.113719.1.27.100.22";
     public static final String SEND_ALL_UPDATES_REQ		    = "2.16.840.1.113719.1.27.100.23";
@@ -51,9 +54,12 @@ public class NamingContextConstants {
 	public static final String NAMING_CONTEXT_SYNC_RES	    = "2.16.840.1.113719.1.27.100.26";
 	public static final String SCHEMA_SYNC_REQ		        = "2.16.840.1.113719.1.27.100.27";
 	public static final String SCHEMA_SYNC_RES	    	    = "2.16.840.1.113719.1.27.100.28";
-    
-    
-
+    public static final String ABORT_NAMING_CONTEXT_OP_REQ  = "2.16.840.1.113719.1.27.100.29";
+	public static final String ABORT_NAMING_CONTEXT_OP_RES	= "2.16.840.1.113719.1.27.100.30";
+	public static final String GET_IDENTITY_NAME__REQ       = "2.16.840.1.113719.1.27.100.31";
+    public static final String GET_IDENTITY_NAME__RES		= "2.16.840.1.113719.1.27.100.32";
+    public static final String GET_EFFECTIVE_PRIVILEGES_REQ	= "2.16.840.1.113719.1.27.100.33";
+    public static final String GET_EFFECTIVE_PRIVILEGES_RES	= "2.16.840.1.113719.1.27.100.34";
 
     /**
      * Naming Context operation flags
@@ -74,6 +80,4 @@ public class NamingContextConstants {
     public static final int LDAP_RT_SPARSE_READ     = 5;    
     
     public NamingContextConstants()  {}   
-		
-
 }
