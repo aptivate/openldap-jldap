@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConstraints.java,v 1.17 2001/02/27 22:53:14 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConstraints.java,v 1.18 2001/03/01 00:29:48 cmorris Exp $
  *
   * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -121,7 +121,8 @@ public class LDAPConstraints implements Cloneable {
      *
      * @return An LDAPReferralHandler object that can process authentication.
      */
-    public LDAPReferralHandler getReferralHandler() {
+    /*package*/
+    LDAPReferralHandler getReferralHandler() {
         return refHandler;
     }
 

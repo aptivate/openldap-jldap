@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.88 2001/03/12 16:45:57 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.89 2001/03/14 19:25:56 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -327,21 +327,6 @@ public class LDAPConnection implements Cloneable
     public String getAuthenticationMethod()
     {
         return conn.getBindProperties().getAuthenticationMethod();
-    }
-
-    /**
-     * Returns the password used for simple authentication by this object.
-     *
-     * <p> null is returned if no simple authentication has been performed.</p>
-     *
-     * @return The password used for simple authentication or null if the
-     * object is not authenticated.
-     *
-     * @see #bind( String, String)
-     */
-    public String getAuthenticationPassword()
-    {
-        return conn.getBindProperties().getAuthenticationPassword();
     }
 
     /**
@@ -1411,7 +1396,7 @@ public class LDAPConnection implements Cloneable
                     cons.getServerControls());
 
         msgId = msg.getMessageID();
-        bindProps = new BindProperties( version, dn, passwd, "simple", null, null);
+        bindProps = new BindProperties( version, dn, "simple", null, null);
 
         // The semaphore is released when the bind response is queued.
         conn.acquireBindSemaphore( msgId);

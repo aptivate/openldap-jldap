@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/client/BindProperties.java,v 1.1 2000/12/06 19:30:06 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/client/BindProperties.java,v 1.2 2001/03/01 00:30:04 cmorris Exp $
 *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -25,21 +25,18 @@ public class BindProperties
 
     private int version = 3;
     String dn = null;
-    String passwd = null;
     String method = null;
     Hashtable bindProperties = null;
     Object bindCallbackHandler = null;
 
     public BindProperties(   int version,
                              String dn,
-                             String passwd,
                              String method,
                              Hashtable bindProperties,
                              Object bindCallbackHandler)
     {
         this.version = version;
         this.dn = dn;
-        this.passwd = passwd;
         this.method = method;
         this.bindProperties = bindProperties;
         this.bindCallbackHandler = bindCallbackHandler;
@@ -51,16 +48,6 @@ public class BindProperties
     public int getProtocolVersion()
     {
         return version;
-    }
-
-    /**
-     * Gets the authentication password
-     *
-     * @return the authentication password for this connection
-     */
-    public String getAuthenticationPassword()
-    {
-        return passwd;
     }
 
     /**
