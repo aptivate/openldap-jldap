@@ -23,6 +23,7 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.*;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXNotRecognizedException;
 
 import com.novell.ldap.*;
 
@@ -118,6 +119,11 @@ public class DSMLReader implements LDAPReader {
             throw new LDAPLocalException(
                     "The SAX parser is configured incorrectly:" + e,
                     LDAPException.LOCAL_ERROR,
+                    e);
+        } catch (SAXNotRecognizedException e){
+            throw new LDAPLocalException(
+                    null,
+                    LDAPException.PROTOCOL_ERROR,
                     e);
         } catch (SAXException e) {
             throw new LDAPLocalException(

@@ -172,7 +172,7 @@ class DSMLHandler extends DefaultHandler implements
         Integer elementTag = (Integer)requestTags.get(strSName);
         if (elementTag == null){
             if (state != START){  //Ignore tags outside of DSML tags
-            throw new SAXException("Element name, \"" + strQName
+            throw new SAXNotRecognizedException("Element name, \"" + strQName
                                 + "\" not recognized");
             } else {
                 return;
@@ -575,7 +575,7 @@ class DSMLHandler extends DefaultHandler implements
         Integer elementTag = (Integer)requestTags.get(strSName);
         if (elementTag == null){
             if (state != START){  //Ignore tags outside of DSML tags
-                throw new SAXException("Element name, \"" + strQName
+                throw new SAXNotRecognizedException("Element name, \"" + strQName
                                 + "\" not recognized");
             } else {
                 return;

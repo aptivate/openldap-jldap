@@ -104,6 +104,7 @@ public class DSMLWriter implements LDAPWriter {
         if (e instanceof LDAPException){
             switch (((LDAPException)e).getResultCode()){
                 case LDAPException.DECODING_ERROR:
+                case LDAPException.PROTOCOL_ERROR:
                     out.write("malformedRequest\">");
                     break;
                 case LDAPException.LOCAL_ERROR:
