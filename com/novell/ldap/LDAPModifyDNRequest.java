@@ -19,7 +19,7 @@ import com.novell.ldap.*;
 import com.novell.ldap.asn1.*;
 import com.novell.ldap.rfc2251.*;
 
-/*
+/**
  * Represents an LDAP ModifyDN request
  *//*
  *       ModifyDNRequest ::= [APPLICATION 12] SEQUENCE {
