@@ -24,7 +24,7 @@ import java.io.IOException;
 /**
  *  deprecated. @See GetBindDNResponse.
  */
-public class GetContextIdentityNameResponse extends LDAPExtendedResponse {  
+public class GetContextIdentityNameResponse extends GetBindDNResponse {  
     public GetContextIdentityNameResponse (RfcLDAPMessage rfcMessage)
          throws IOException {
 
