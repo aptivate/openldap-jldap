@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/client/ClientListener.java,v 1.4 2000/11/09 18:27:18 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/client/ClientListener.java,v 1.5 2000/11/09 23:50:40 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -18,9 +18,9 @@ package com.novell.ldap.client;
 import java.io.*;
 import java.util.Vector;
 
-import com.novell.ldap.protocol.*;
+import com.novell.ldap.rfc2251.*;
 import com.novell.ldap.*;
-//import com.novell.ldap.client.protocol.AbandonRequest;
+//import com.novell.ldap.client.rfc2251.AbandonRequest;
 
 /*
  * Not in the draft.

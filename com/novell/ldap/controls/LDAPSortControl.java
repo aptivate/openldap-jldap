@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPSortControl.java,v 1.2 2000/10/18 15:52:23 javed Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPSortControl.java,v 1.3 2000/11/09 23:50:41 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -17,7 +17,7 @@ package com.novell.ldap.controls;
 
 import com.novell.ldap.*;
 import com.novell.ldap.asn1.*;
-import com.novell.ldap.protocol.*;
+import com.novell.ldap.rfc2251.*;
 
 /**
  * 3.3 public class LDAPSortControl

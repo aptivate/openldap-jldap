@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPExtendedResponse.java,v 1.19 2000/11/09 18:27:16 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPExtendedResponse.java,v 1.20 2000/11/09 23:50:38 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -17,7 +17,7 @@ package com.novell.ldap;
 
 import java.io.IOException;
 import com.novell.ldap.LDAPResponse;
-import com.novell.ldap.protocol.*;
+import com.novell.ldap.rfc2251.*;
 
 /**
  *

@@ -1,4 +1,4 @@
-<!-- $Novell: /ldap/src/jldap/build.xml,v 1.22 2000/10/23 16:33:41 vtag Exp $ -->
+<!-- $Novell: /ldap/src/jldap/build.xml,v 1.23 2000/11/09 18:27:14 vtag Exp $ -->
 <!-- ======================================================================= -->
 <!-- TOP level build file                                                -->
 <!-- ======================================================================= -->
@@ -253,7 +253,7 @@
         <javadoc sourcepath="${docsrc}"
                         destdir="${doc.novell}"
                         classpath="external/ssl/domestic/nssl1.2_dom.jar"
-                        packagenames="com.novell.ldap,com.novell.ldap.asn1,com.novell.ldap.client,com.novell.ldap.protocol,com.novell.ldap.extensions"
+                        packagenames="com.novell.ldap,com.novell.ldap.asn1,com.novell.ldap.client,com.novell.ldap.rfc2251,com.novell.ldap.extensions"
                         Windowtitle="LDAP Classes"
                         Splitindex="true"
                         Private="true"

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResult.java,v 1.17 2000/11/09 18:27:17 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResult.java,v 1.18 2000/11/09 23:50:40 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -18,7 +18,7 @@ package com.novell.ldap;
 import java.util.Enumeration;
 
 import com.novell.ldap.asn1.*;
-import com.novell.ldap.protocol.*;
+import com.novell.ldap.rfc2251.*;
 
 /**
  *  Encapsulates a single search result that is in response to an asynchronous

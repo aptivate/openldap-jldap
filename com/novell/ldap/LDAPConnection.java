@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.54 2000/11/09 18:27:14 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.55 2000/11/09 23:50:37 vtag Exp $
 *
 * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
 * 
@@ -19,7 +19,7 @@ import java.util.*;
 
 import com.novell.ldap.client.*;
 import com.novell.ldap.asn1.*;
-import com.novell.ldap.protocol.*;
+import com.novell.ldap.rfc2251.*;
 
 /**
  *

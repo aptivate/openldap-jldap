@@ -1,5 +1,5 @@
 
-package com.novell.ldap.protocol;
+package com.novell.ldap.rfc2251;
 
 /**
  * This interface represents Protocol Operations that are requests from a

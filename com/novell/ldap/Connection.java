@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.20 2000/11/09 18:27:18 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.21 2000/11/09 23:50:40 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -20,9 +20,9 @@ import java.net.Socket;
 import java.util.Vector;
 
 import com.novell.ldap.*;
-import com.novell.ldap.protocol.RfcLDAPMessage;
+import com.novell.ldap.rfc2251.RfcLDAPMessage;
 import com.novell.ldap.asn1.*;
-import com.novell.ldap.protocol.RfcUnbindRequest;
+import com.novell.ldap.rfc2251.RfcUnbindRequest;
 import com.novell.ldap.client.Debug;
 
 /**

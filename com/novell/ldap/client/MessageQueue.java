@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: MessageQueue.java,v 1.8 2000/11/08 22:41:34 vtag Exp $
+ * $Id: MessageQueue.java,v 1.9 2000/11/09 18:27:18 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -16,7 +16,7 @@
 package com.novell.ldap.client;
 
 import java.util.Vector;
-import com.novell.ldap.protocol.*;
+import com.novell.ldap.rfc2251.*;
 import com.novell.ldap.LDAPException;
 
 public class MessageQueue {

@@ -1,10 +1,10 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/protocol/RfcFilter.java,v 1.16 2000/11/09 18:27:20 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/rfc2251/RfcFilter.java,v 1.17 2000/11/09 23:50:55 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  ***************************************************************************/
 
-package com.novell.ldap.protocol;
+package com.novell.ldap.rfc2251;
 
 import java.util.*;
 import java.io.*;

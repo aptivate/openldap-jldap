@@ -25,7 +25,7 @@
     <!-- clean class files                                                  -->
     <!-- =================================================================== -->
     <target name="clean" depends="init">
-		<delete dir="${top}/${build}/com/novell/ldap/protocol" includes="*.class"/>
+		<delete dir="${top}/${build}/com/novell/ldap/rfc2251" includes="*.class"/>
 	</target>
 
     <!-- =================================================================== -->
@@ -34,7 +34,7 @@
     <target name="compile" depends="init">
 		<mkdir dir="${top}/${build}"/>
         <javac srcdir="${top}"
-				includes="com/novell/ldap/protocol/*.java"
+				includes="com/novell/ldap/rfc2251/*.java"
                 destdir="${top}/${build}"
                 deprecation="off"
                 debug="${debug}"
