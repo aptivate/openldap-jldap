@@ -3399,44 +3399,6 @@ public class LDAPConnection implements Cloneable
         return myqueue;
     }
 
-    /**
-     * Sends an LDAP request to a directory server.
-     *
-     * <p>The specified the LDAP request is sent to the directory server
-     * associated with this connection. An LDAP request object is an 
-     * {@link LDAPMessage} with the operation type set to one of the request
-     * types. You can build a request by using the request classes found in the
-     * {@link com.novell.ldap.message } package</p>
-     *
-     * @param request The LDAP request to send to the directory server.
-     * @param cons    The constraints that apply to this request
-     * @exception     LDAPException A general exception which includes an error
-     *              message and an LDAP error code.
-     *
-     * @see LDAPMessage#getType()
-     * @see LDAPMessage#isRequest()
-     */
-    public LDAPResponseQueue sendRequest( LDAPMessage request,
-                                          LDAPConstraints cons)
-            throws LDAPException
-    {
-        if( Debug.LDAP_DEBUG) {
-            Debug.trace( Debug.apiRequests, name +
-            "sendRequest(" + request.toString() + ")");
-        }
-        
-        if( ! request.isRequest() ) {
-            throw new IllegalArgumentException(
-                        "LDAPMessage object is not a request message");
-        }
-        
-        if(cons == null) {
-            cons = defSearchCons;
-        }
-        
-        return sendRequestToServer(request, cons.getTimeLimit(), null, null);
-    }
-
     //*************************************************************************
     // helper methods
     //*************************************************************************
