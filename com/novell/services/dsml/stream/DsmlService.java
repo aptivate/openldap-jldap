@@ -14,17 +14,16 @@
  ******************************************************************************/
 package com.novell.services.dsml.stream;
 
-import com.novell.ldap.*;
-
+import com.novell.ldap.LDAPSocketFactory;
+import com.novell.ldap.LDAPJSSESecureSocketFactory;
+import com.novell.ldap.LDAPConnection;
 import com.novell.ldap.connectionpool.PoolManager;
 import com.novell.ldap.util.DSMLReader;
 import com.novell.ldap.util.DSMLWriter;
 import com.novell.ldap.util.LDAPReader;
 import com.novell.ldap.util.LDAPWriter;
-
 import com.novell.services.dsml.Authorization;
 import com.novell.services.dsml.ImportExport;
-
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -33,6 +32,8 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.StringBuffer;
+import java.util.Map;
 
 /**
  * DSML Service
@@ -51,7 +52,8 @@ import java.io.PrintWriter;
 public class DsmlService extends HttpServlet
 {
     // Connection Pool stays intact for the life of the servlet.
-    private PoolManager connPool = null;
+    private        PoolManager connPool = null;
+    private static String      status   = "OK";
 
     /**
      * Initialize servlet by creating Connection Pool.
@@ -117,10 +119,12 @@ public class DsmlService extends HttpServlet
                                        maxConns,
                                        maxInsts2SharConn,
                                        factory);
+        status = "Initalized properly";
         }
         catch (Exception e)
         {
-            throw new ServletException("DsmlService init Failed e: " + e);
+            status = "Init Failed e: " + e;
+            throw new ServletException(status);
         }
         return;
     }
@@ -142,8 +146,8 @@ public class DsmlService extends HttpServlet
                        throws ServletException,
                               IOException
     {
-        PrintWriter      rspPrtWtr   = null;
-        DSMLWriter       rspDsmlWtr  = null;
+        PrintWriter      respPrtWtr   = null;
+        DSMLWriter       respDsmlWtr  = null;
         DSMLReader       reqDsmlRdr  = null;
         Authorization    reqAuth     = null;
 
@@ -159,34 +163,142 @@ public class DsmlService extends HttpServlet
             rsp.setContentType("text/xml; charset=utf-8");
             // Get response PrintWriter object from HttpServletResponse so we
             // can write response.
-            rspPrtWtr = rsp.getWriter();
+            respPrtWtr = rsp.getWriter();
             // Write XML version to response.
-            rspPrtWtr.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+            respPrtWtr.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
             // Write start of soap envelope.
-            rspPrtWtr.println("<soap-env:Envelope xmlns:soap-env=\"http://schemas.xmlsoap.org/soap/envelope/\">");
+            respPrtWtr.println("<soap-env:Envelope xmlns:soap-env=\"http://schemas.xmlsoap.org/soap/envelope/\">");
             // Write start of soap body.
-            rspPrtWtr.println("<soap-env:Body>");
+            respPrtWtr.println("<soap-env:Body>");
             // Set response PrintWriter object into DSLMLWriter.
-            rspDsmlWtr = new DSMLWriter(rspPrtWtr);
+            respDsmlWtr = new DSMLWriter(respPrtWtr);
 
             //Handle all DSML processing
-            ImportExport.process(reqAuth, connPool, reqDsmlRdr, rspDsmlWtr);
+            ImportExport.process(reqAuth, connPool, reqDsmlRdr, respDsmlWtr);
 
             // Write end soap body.
-            rspPrtWtr.println("</soap-env:Body>");
+            respPrtWtr.println("</soap-env:Body>");
             // Write end soap envelope
-            rspPrtWtr.println("</soap-env:Envelope>");
+            respPrtWtr.println("</soap-env:Envelope>");
             // Set HttpServletResponse status to OK
             rsp.setStatus(rsp.SC_OK);
             // Flush response to the client.
-            rspPrtWtr.flush();
+            respPrtWtr.flush();
+            
+            status = "Last doPost successful";
         }
         catch(Exception e)
         {
             rsp.setStatus(rsp.SC_INTERNAL_SERVER_ERROR);
-            if(null != rspPrtWtr)rspPrtWtr.flush();
-            throw new ServletException("DsmlService - Error: " + e);
+            if(null != respPrtWtr)respPrtWtr.flush();
+            status = "DsmlService - Error: " + e;
+
+            throw new ServletException(status);
         }
         return;
+    }
+
+
+    public void doGet (HttpServletRequest req,
+                       HttpServletResponse rsp)
+                       throws ServletException,
+                              IOException
+    {  
+        PrintWriter rspPrtWtr = rsp.getWriter();
+        Map params =  req.getParameterMap();
+        
+        if (params==null || 0 == params.size()){ 
+            showStatus(rspPrtWtr);
+        }
+        else if(params.containsKey("wsdl") || params.containsKey("WSDL")){
+            //if the specified userAction is "wsdl".
+            doWSDL(rspPrtWtr,req.getRequestURL().toString());  
+        }   
+        else{
+            // user Action is not specified
+            errorAction(rspPrtWtr);
+        }
+        
+        // Set HttpServletResponse status to OK
+        rsp.setStatus(rsp.SC_OK);
+        // Flush response to the client.
+        rspPrtWtr.flush();
+        
+        return;
+    }  // end doGet
+
+
+    //when action is null
+    private  void showStatus(PrintWriter prtWtr){
+        prtWtr.println("<?xml version=\"1.0\"?>");
+        prtWtr.println("<return_message>");
+        prtWtr.println("<status>" + status + "</status>");
+        prtWtr.println("</return_message>");
+    }
+
+    //when the action is doWSDL
+    private void doWSDL(PrintWriter prtWtr, String location){
+        prtWtr.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+        prtWtr.println("<definitions name=\"DsmlService\"");
+        prtWtr.println("targetNamespace=\"http://www.stream.dsml.services.novell.com\"");
+        prtWtr.println("xmlns=\"http://schemas.xmlsoap.org/wsdl/\"");
+        prtWtr.println("xmlns:ns0=\"http://schemas.novell.com\"");
+        prtWtr.println("xmlns:soap=\"http://schemas.xmlsoap.org/wsdl/soap/\"");
+        prtWtr.println("xmlns:soapenc=\"http://schemas.xmlsoap.org/soap/encoding/\"");
+        prtWtr.println("xmlns:tns=\"http://www.dsml.services.novell.com\"");
+        prtWtr.println("xmlns:wsdl=\"http://schemas.xmlsoap.org/wsdl/\" xmlns:xsd=\"http://www.oasis-open.org/committees/dsml/docs/DSMLv2.xsd\">");
+        prtWtr.println("<types>");
+        prtWtr.println("<schema");
+        prtWtr.println("targetNamespace=\"http://schemas.novell.com\"");
+        prtWtr.println("xmlns=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">");
+        prtWtr.println("<annotation>");
+        prtWtr.println("<documentation xml:lang=\"en\">    XML type for Element");
+        prtWtr.println("type.   </documentation>");
+        prtWtr.println("</annotation>");
+        prtWtr.println("<complexType name=\"element\">");
+        prtWtr.println("<element name=\"element\" type=\"xsd:anyType\"/>");
+        prtWtr.println("</complexType>");
+        prtWtr.println("</schema>");
+        prtWtr.println("</types>");
+        prtWtr.println("<message name=\"batchRequestRequest\">");
+        prtWtr.println("<part element=\"ns0:element\" name=\"arg0\"/>");
+        prtWtr.println("</message>");
+        prtWtr.println("<message name=\"batchRequestResponse\">");
+        prtWtr.println("<part element=\"ns0:element\" name=\"result\"/>");
+        prtWtr.println("</message>");
+        prtWtr.println("<portType name=\"Dsml\">");
+        prtWtr.println("<operation name=\"batchRequest\" parameterOrder=\"arg0\">");
+        prtWtr.println("<input message=\"tns:batchRequestRequest\"/>");
+        prtWtr.println("<output message=\"tns:batchRequestResponse\"/>");
+        prtWtr.println("</operation>");
+        prtWtr.println("</portType>");
+        prtWtr.println("<binding name=\"DsmlBinding\" type=\"tns:Dsml\">");
+        prtWtr.println("<soap:binding style=\"document\" transport=\"http://schemas.xmlsoap.org/soap/http\"/>");
+        prtWtr.println("<operation name=\"batchRequest\">");
+        prtWtr.println("<soap:operation soapAction=\"#batchRequest\"/>");
+        prtWtr.println("<input>");
+        prtWtr.println("<soap:body use=\"literal\"/>");
+        prtWtr.println("</input>");
+        prtWtr.println("<output>");
+        prtWtr.println("<soap:body use=\"literal\"/>");
+        prtWtr.println("</output>");
+        prtWtr.println("</operation>");
+        prtWtr.println("</binding>");
+        prtWtr.println("<service name=\"DsmlService\">");
+        prtWtr.println("<port binding=\"tns:DsmlBinding\" name=\"DsmlPort\">");
+        prtWtr.print("<soap:address location=\"");
+        prtWtr.print(location);        
+        prtWtr.println("\"/>");
+        prtWtr.println("</port>");
+        prtWtr.println("</service>");
+        prtWtr.println("</definitions>");
+    }//end doWSDL
+    
+    //when action is not specified
+    private  void errorAction(PrintWriter prtWtr){
+        prtWtr.println("<?xml version=\"1.0\"?>");
+        prtWtr.println("<return_message>");
+        prtWtr.println("<action>Invalid Action!</action>");
+        prtWtr.println("</return_message>");
     }
 }
