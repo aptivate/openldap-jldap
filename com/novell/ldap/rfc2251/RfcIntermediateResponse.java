@@ -144,7 +144,7 @@ public class RfcIntermediateResponse extends ASN1Sequence implements RfcResponse
     public final ASN1Identifier getIdentifier()
     {
         return new ASN1Identifier(ASN1Identifier.APPLICATION, true,
-                                   LDAPMessage.EXTENDED_RESPONSE);
+                                   LDAPMessage.INTERMEDIATE_RESPONSE);
     }
     
     /**

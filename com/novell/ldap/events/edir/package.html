@@ -1,0 +1,74 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+<!--
+
+  $OpenLDAP$
+
+  ******************************************************************************
+ * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
+ *
+ * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
+ * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
+ * TO VERSION 2.0.1 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
+ * AVAILABLE AT HTTP://WWW.OPENLDAP.ORG/LICENSE.HTML OR IN THE FILE "LICENSE"
+ * IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
+ * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.1 OF THE OPENLDAP
+ * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
+ * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
+ ******************************************************************************
+
+
+-->
+</head>
+<body bgcolor="white">
+
+Provides classes for Edirectory Events notification when connected to a LDAP V3 Server.
+
+
+<h2>Package Specification</h2>
+
+This package defines the classes for notification of Edirectory Events.&nbsp;
+
+<p>The following example explains the use of EdirEventSource.</p>
+
+<p>&nbsp;</p>
+<code>
+<font SIZE="2">
+<p>source = </font><font SIZE="2" COLOR="#7f0055"><b>new</b></font><font SIZE="2"> 
+EdirEventSource(); </font><font SIZE="2" COLOR="#3f7f5f">//create an instance</p>
+</font><font SIZE="2">
+<p>EdirEventSpecifier specifier[] = </font><font SIZE="2" COLOR="#7f0055"><b>new</b></font><font SIZE="2"> 
+EdirEventSpecifier[2]; </font><font SIZE="2" COLOR="#3f7f5f">//array of 
+EdirEventSpecifier to specify the event types</p>
+</font><font SIZE="2">
+<p></p>
+<p>listener = </font><font SIZE="2" COLOR="#7f0055"><b>new</b></font><font SIZE="2"> 
+EdirLDAPEventListener(); </font><font SIZE="2" COLOR="#3f7f5f">//An 
+implementation of LDAPEventListener</p>
+</font><font SIZE="2">
+<p>specifier[0] = </font><font SIZE="2" COLOR="#7f0055"><b>new</b></font><font SIZE="2"> 
+EdirEventSpecifier(EdirEventConstant.EVT_ADD_VALUE,</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+EdirEventConstant.EVT_STATUS_ALL); </font><font SIZE="2" COLOR="#3f7f5f">// All 
+Add Values events.</p>
+</font><font SIZE="2">
+<p>specifier[1] =</font><font SIZE="2" COLOR="#7f0055"><b>new</b></font><font SIZE="2"> 
+EdirEventSpecifier(EdirEventConstant.EVT_ADD_ENTRY,</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+EdirEventConstant.EVT_STATUS_ALL); </font><font SIZE="2" COLOR="#3f7f5f">//All 
+Add Entry events.</p>
+</font><font SIZE="2">
+<p>source.registerforEvent(specifier, connection, listener); </font>
+<font SIZE="2" COLOR="#3f7f5f">//register for events </p>
+</font><font SIZE="2">
+<p></font><font SIZE="2" COLOR="#3f7f5f">//Process the events in the listener</p>
+</font><font SIZE="2">
+<p></p>
+<p></font><font SIZE="2" COLOR="#3f7f5f">//In the end, Remove the listener</p>
+</font><font SIZE="2">
+<p>source.removeListener(listener);</p>
+</font>
+</code>
+</body>
+</html>

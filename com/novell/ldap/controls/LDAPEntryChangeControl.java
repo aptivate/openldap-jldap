@@ -179,6 +179,44 @@ public class LDAPEntryChangeControl extends LDAPControl
      */
     public java.lang.String toString()
     {
-        return super.toString();
+		StringBuffer result = new StringBuffer("LDAPEntryChangeControl: ");
+		result.append("((oid="+getID()+"");
+		result.append(",critical="+isCritical()+")");
+		result.append("(value="+getValue()+"))");
+		result.append("(changeType ="+getChangeTypeString(getChangeType())+")");
+		result.append("(changeNumber ="+getChangeNumber()+")");
+		result.append("(PreviousDN="+getPreviousDN()+"))");
+		return result.toString();
+        
     }
+	/**
+	 * Return a string indicating the type of change represented by the
+	 * changeType parameter.
+	 */
+	private String getChangeTypeString(
+		int changeType)
+	{
+		String changeTypeString;
+
+		switch (changeType) {
+			case LDAPPersistSearchControl.ADD:
+				changeTypeString = "ADD";
+				break;
+			case LDAPPersistSearchControl.MODIFY:
+				changeTypeString = "MODIFY";
+				break;
+			case LDAPPersistSearchControl.MODDN:
+				changeTypeString = "MODDN";
+				break;
+			case LDAPPersistSearchControl.DELETE:
+				changeTypeString = "DELETE";
+				break;
+			default:
+				changeTypeString =
+				 "Unknown change type: " + String.valueOf(changeType);
+				break;
+		}
+
+		return changeTypeString;
+	}
 } //end class LDAPEntryChangeControl

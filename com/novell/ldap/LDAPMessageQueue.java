@@ -16,6 +16,7 @@
 package com.novell.ldap;
 
 import com.novell.ldap.client.Debug;
+import com.novell.ldap.client.IntermediateResponseFactory;
 import com.novell.ldap.rfc2251.RfcLDAPMessage;
 import com.novell.ldap.client.ExtResponseFactory;
 
@@ -188,7 +189,8 @@ public abstract class LDAPMessageQueue
                 response = new LDAPSearchResultReference(message);
                 break;
             case LDAPMessage.INTERMEDIATE_RESPONSE:
-                response = new LDAPIntermediateResponse(message);
+            	
+                response = IntermediateResponseFactory.convertToIntermediateResponse(message);
                 break;
             case LDAPMessage.EXTENDED_RESPONSE:
                 ExtResponseFactory fac = new ExtResponseFactory();

@@ -289,12 +289,15 @@ class Message
         switch( message.getType()) {
         case LDAPMessage.SEARCH_RESPONSE:
         case LDAPMessage.SEARCH_RESULT_REFERENCE:
+		case LDAPMessage.INTERMEDIATE_RESPONSE:
             // SearchResultEntry or SearchResultReference
             if( Debug.LDAP_DEBUG) {
                 Debug.trace( Debug.messages, name +
                     "Reply Queued (" + replies.size() + " in queue)");
             }
             break;
+        
+        	
         default:
             // All Responses with a result code
             int res;
