@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPAttributeSet.java,v 1.5 2000/08/25 16:49:59 judy Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPAttributeSet.java,v 1.6 2000/08/28 22:18:54 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -168,7 +168,7 @@ public class LDAPAttributeSet implements Cloneable {
     * @param attrName  The name of an attribute to retrieve, with or without
     * subtype specifications. For example, "cn", "cn;phonetic", and 
     * cn;binary" are valid attribute names.
-    *
+    *<br><br>
     * @param lang   A language specification with optional subtypes 
     * appended using "-" as separator. For example, "lang-en", "lang-en-us", 
     * "lang-ja", and "lang-ja-JP-kanji" are valid language specification.

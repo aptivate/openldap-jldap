@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPCompareAttrNames.java,v 1.4 2000/08/25 19:37:56 judy Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPCompareAttrNames.java,v 1.5 2000/08/28 22:18:55 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -48,7 +48,7 @@ public class LDAPCompareAttrNames implements LDAPEntryComparator {
     * either ascending or descending order.
     *
     * @param attrName       Name of an attribute to sort by.
-    *
+    *<br><br>
     * @param ascendingFlag  True specifies ascending order; false specifies
     *                 descending order.
     */
@@ -72,7 +72,7 @@ public class LDAPCompareAttrNames implements LDAPEntryComparator {
     * attribute.
     *
     * @param attrNames      Array of names of attributes to sort by.
-    *
+    *<br><br>
     * @param ascendingFlags  Array of flags, one for each attrName, where
     *                true specifies ascending order and false specifies
     *                descending order. An LDAPException is thrown if
@@ -126,7 +126,7 @@ public class LDAPCompareAttrNames implements LDAPEntryComparator {
     * on object construction.
     *
     * @param entry1         Target entry for comparison.
-    *
+    *<br><br>
     * @param entry2         Entry to be compared to.
     *
     * @return True if entry1 is greater than enter2; otherwise, false.

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPConstraints.java,v 1.5 2000/08/28 22:18:55 vtag Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPConstraints.java,v 1.6 2000/08/29 16:56:07 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -15,13 +15,17 @@
 
 package com.novell.ldap;
 
-/**
+/*
  * 4.7 public class LDAPConstraints
+ */
+ 
+/**
  *
- *  A set of options to control any operation. There is always an
- *  LDAPConstraints associated with an LDAPConnection object; its
- *  values can be changed with LDAPConnection.setOption, or overridden by
- *  passing an LDAPConstraints object to an operation.
+ *  Represents a set of options to control any operation. 
+ *
+ * <p>An LDAPConstraints object is always associated with an LDAPConnection 
+ * object; its values can be changed with LDAPConnection.setOption, or
+ * overridden by passing an LDAPConstraints object to an operation.</p>
  */
 public class LDAPConstraints implements Cloneable {
 
@@ -38,37 +42,41 @@ public class LDAPConstraints implements Cloneable {
     */
 
    /**
-    * Constructs an LDAPConstraints object that specifies the default
-    * set of constraints.
+    * Constructs an LDAPConstraints object, using the default
+    * option values.
     */
    public LDAPConstraints() {
    }
 
    /**
-    * Constructs a new LDAPConstraints object and allows specifying
-    * the operational constraints in that object.
+    * Constructs a new LDAPConstraints object, using the specified
+    * operational constraints for waiting, referrals, LDAPBind
+    * object, and hop limit.
     *
-    * Parameters are:
     *
-    *  msLimit         Maximum time in milliseconds to wait for results
-    *                  (0 by default, which means that there is no
-    *                  maximum time limit). This is an interface-imposed
-    *                  limit.
+    * @param msLimit  <p>The maximum time in milliseconds to wait for results.
+    *                  The default is 0, which means that there is no
+    *                  maximum time limit. This is an interface-imposed
+    *                  limit.</p>
     *
-    *  doReferrals     Specify true to follow referrals automatically,
-    *                  or false to throw an LDAPReferralException error
-    *                  if the server sends back a referral (false by
-    *                  default).  It is ignored for asynchronous operations.
+    * @param doReferrals  <p>The constraint for following referrals. True 
+    *                       indicates to follow referrals automatically and
+    *                       false to throw an LDAPReferralException error if 
+    *                       the server sends back a referral. False is the 
+    *                       default value. It is ignored for asynchronous
+    *                       operations.</p>
     *
-    *  binder          Custom authentication processor, called when the
+    * @param binder <p>The custom authentication processor that implements
+    *                  the LDAPBind interface. It is called when the
     *                  LDAPConnection needs to authenticate, typically
-    *                  on following a referral. null may be specified to
+    *                  on following a referral. A null may be specified to
     *                  indicate default authentication processing. It
-    *                  is ignored for asynchronous operations.
+    *                  is ignored for asynchronous operations.</p>
     *
-    *  hop_limit       Maximum number of referrals to follow in a
-    *                  sequence when attempting to resolve a request,
-    *                  when doing automatic referral following.
+    * @param hop_limit <p>The maximum number of referrals to follow in a
+    *                    sequence when attempting to resolve a request,
+    *                    when doing automatic referral following. The default
+    *                    is 10. It is ignored for asynchronous operations.</p>
     */
    public LDAPConstraints(int msLimit,
                           boolean doReferrals,
@@ -86,37 +94,39 @@ public class LDAPConstraints implements Cloneable {
    }
 
    /**
-    * Constructs a new LDAPConstraints object and allows specifying
-    * the operational constraints in that object.
+    * Constructs a new LDAPConstraints object, using the specified
+    * operational constraints for waiting, referrals, LDAPRebind
+    * object, and hop limit.
+
     *
-    * Parameters are:
+    *  @param msLimit  <p>The maximum time in milliseconds to wait for results.
+    *                  The default is 0, which means that there is no
+    *                  maximum time limit. This is an interface-imposed
+    *                  limit.</p>
     *
-    *  msLimit         Maximum time in milliseconds to wait for results
-    *                  (0 by default, which means that there is no
-    *                  maximum time limit). This is an interface-imposed
-    *                  limit.
+    *  @param doReferrals   <p>The constraint for following referrals. True 
+    *                       indicates to follow referrals automatically and
+    *                       false to throw an LDAPReferralException error if 
+    *                       the server sends back a referral. False is the 
+    *                       default value. It is ignored for asynchronous
+    *                       operations.</p>
     *
-    *  doReferrals     Specify true to follow referrals automatically,
-    *                  or false to throw an LDAPReferralException error
-    *                  if the server sends back a referral (false by
-    *                  default).  It is ignored for asynchronous operations.
-    *
-    *  reauth          Specifies an object of the class that implements
-    *                  the LDAPRebind interface. The object will be used
-    *                  when the client follows referrals automatically.
-    *                  The object provides a method for getting the
-    *                  distinguished name and password used to
-    *                  authenticate to another LDAP server during a
-    *                  referral. Specifying null indicates the default
+    *  @param reauth   <p>An object of the class that implements the LDAPRebind
+    *                  interface. The object will be used when the client
+    *                  follows referrals automatically. The object provides
+    *                  a method for getting the distinguished name
+    *                  and password used to authenticate to
+    *                  another LDAP server during a referral. 
+    *                  Specifying null indicates the default
     *                  LDAPRebind will be used if one has been assigned
-    *                  with LDAPConnection.setOption(), or anonymous
+    *                  with LDAPConnection.setOption method, or anonymous
     *                  authentication otherwise.  It is ignored for
-	*                  asynchronous operations.
+	*                  asynchronous operations.</p>
     *
-    *  hop_limit       Maximum number of referrals to follow in a
-    *                  sequence when attempting to resolve a request,
-    *                  when doing automatic referral following.  It is
-	*                  ignored for asynchronous operations.
+    *  @param hop_limit  <p>The maximum number of referrals to follow in a
+    *                    sequence when attempting to resolve a request,
+    *                    when doing automatic referral following.  The default
+    *                    is 10. It is ignored for asynchronous operations.</p>
     */
    public LDAPConstraints(int msLimit,
                           boolean doReferrals,
@@ -140,6 +150,9 @@ public class LDAPConstraints implements Cloneable {
    /**
     * Returns the maximum number of hops to follow during automatic
     * referral following.
+    *
+    * @return The maximum number of hops to follow during automatic
+    * referral following. 
     */
    public int getHopLimit() {
       return hopLimit;
@@ -150,7 +163,11 @@ public class LDAPConstraints implements Cloneable {
     */
 
    /**
-    * Returns an object that can process authentication. It may be null.
+    * Returns an object that can process authentication. 
+    *
+    * <p>It may be null.</p>
+    *
+    * @return An LDAPBind object that can process authentication.
     */
    public LDAPBind getBindProc() {
       return binder;
@@ -162,7 +179,12 @@ public class LDAPConstraints implements Cloneable {
 
    /**
     * Returns the object that provides the method for getting
-    * authentication information. It may be null.
+    * authentication information. 
+    *
+    *  <p>It may be null.</p>
+    *
+    * @return An LDAPRebind object that provides the method for getting
+    * authentication information. 
     */
    public LDAPRebind getRebindProc() {
       return reauth;
@@ -173,9 +195,10 @@ public class LDAPConstraints implements Cloneable {
     */
 
    /**
-    * Specifies whether nor not referrals are followed automatically.
-    * Returns true if referrals are to be followed automatically, or false
-    * if referrals throw an LDAPReferralException.
+    * Returns whether referrals are followed automatically.
+    *
+    * @return  True if referrals are to be followed automatically, or 
+    * false if referrals are to throw an LDAPReferralException.</p>
     */
    public boolean getReferrals() {
       return doReferrals;
@@ -187,9 +210,13 @@ public class LDAPConstraints implements Cloneable {
 
    /**
     * Returns the maximum number of milliseconds to wait for any operation
-    * under these constraints. If 0, there is no maximum time limit
-    * on waiting for the operation results. The actual granularity of the
-    * timeout depends on the implementation.
+    * under these constraints. 
+    *
+    * <p>If 0, there is no maximum time limit on waiting for the operation
+    *  results. The actual granularity of the timeout depends on the 
+    * implementation.</p>
+    *
+    * @return The maximum number of milliseconds to wait for the operation.
     */
    public int getTimeLimit() {
       return msLimit;
@@ -201,12 +228,12 @@ public class LDAPConstraints implements Cloneable {
 
    /**
     * Sets the maximum number of hops to follow in sequence during
-    * automatic referral following. The default is 10.
+    * automatic referral following. 
     *
-    * Parameters are:
+    * <p>The default is 10.</p>
     *
-    *  hop_limit      Maximum number of chained referrals to follow
-    *                  automatically.
+    *  @param hop_limit   The maximum number of chained referrals to follow
+    *                     automatically.
     */
    public void setHopLimit(int hop_limit) {
       this.hopLimit = hop_limit;
@@ -217,12 +244,11 @@ public class LDAPConstraints implements Cloneable {
     */
 
    /**
-    * Specifies the object that will process authentication requests. The
-    * default is null.
+    * Specifies the object that will process authentication requests. 
     *
-    * Parameters are:
+    * <p>The default is null.</p>
     *
-    *  binder         An object that implements LDAPBind.
+    *  @param binder    An object that implements LDAPBind.
     */
    public void setBindProc(LDAPBind binder) {
       this.binder = binder;
@@ -234,13 +260,14 @@ public class LDAPConstraints implements Cloneable {
 
    /**
     * Specifies the object that provides the method for getting
-    * authentication information. The default is null. If referrals is set
-    * to true, and the reauth is null, referrals will be followed with
-    * anonymous (= no) authentication.
+    * authentication information. 
     *
-    * Parameters are:
+    * <p>The default is null. If referrals is set to true, and the reauth 
+    * is null, referrals will be followed with an anonymous bind (no
+    * authentication).</p>
     *
-    *  reauth         An object that implements LDAPRebind.
+    *
+    *  @param reauth     An object that implements LDAPRebind.
     */
    public void setRebindProc(LDAPRebind reauth) {
       this.reauth = reauth;
@@ -251,15 +278,18 @@ public class LDAPConstraints implements Cloneable {
     */
 
    /**
-    * Specifies whether nor not referrals are followed automatically, or if
-    * referrals throw an LDAPReferralException.  Referrals of any type
-    * other than to an LDAP server (i.e. a referral URL other than
-    * ldap://something) are ignored on automatic referral following. The
-    * default is false.
+    * Specifies whether referrals are followed automatically or whether
+    * referrals throw an LDAPReferralException.  
     *
-    * Parameters are:
+    * <p>Referrals of any type other than to an LDAP server (for example, a
+    *  referral URL other than ldap://something) are ignored on automatic 
+    *  referral following. </p>
     *
-    *  doReferrals    True to follow referrals automatically.
+    * <p> The default is false.</p>
+    *
+    *  @param doReferrals    True to follow referrals automatically.
+    *                        False to throw an LDAPReferralException if
+    *                        the server returns a referral.
     */
    public void setReferrals(boolean doReferrals) {
       this.doReferrals = doReferrals;
@@ -271,13 +301,13 @@ public class LDAPConstraints implements Cloneable {
 
    /**
     * Sets the maximum number of milliseconds to wait for any operation
-    * under these search constraints. If 0, there is no maximum time limit
-    * on waiting for the operation results. The actual granularity of the
-    * timeout depends on the implementation.
+    * under these search constraints. 
     *
-    * Parameters are:
+    * <p>If 0, there is no maximum time limit on waiting for the operation
+    * results. The actual granularity of the timeout depends on the 
+    * implementation.</p>
     *
-    *  msLimit        Maximum milliseconds to wait.
+    *  @param msLimit      The maximum milliseconds to wait.
     */
    public void setTimeLimit(int msLimit) {
       this.msLimit = msLimit;
@@ -288,7 +318,9 @@ public class LDAPConstraints implements Cloneable {
     */
 
    /**
-    * Returns controls to be used by the interface.
+    * Returns the client controls to be used by the interface.
+    *
+    * @return The client controls.
     */
    public LDAPControl[] getClientControls() {
       return clientCtls;
@@ -299,7 +331,9 @@ public class LDAPConstraints implements Cloneable {
     */
 
    /**
-    * Returns controls to be sent to the server.
+    * Returns the server controls to be sent to the server.
+    *
+    * @return The server controls.
     */
    public LDAPControl[] getServerControls() {
       return serverCtls;
@@ -310,9 +344,9 @@ public class LDAPConstraints implements Cloneable {
     */
 
    /**
-    * Sets a control for use by the interface.
+    * Sets a client control for use by the interface.
     *
-    *  control        A single client control.
+    *  @param control     A single client control.
     */
    public void setClientControls(LDAPControl control) {
       clientCtls = new LDAPControl[1];
@@ -320,9 +354,9 @@ public class LDAPConstraints implements Cloneable {
    }
 
    /**
-    * Sets controls for use by the interface.
+    * Sets an array of client controls for use by the interface.
     *
-    *  controls       An array of client controls.
+    *  @param controls       An array of client controls.
     */
    public void setClientControls(LDAPControl[] controls) {
       clientCtls = controls;
@@ -333,9 +367,9 @@ public class LDAPConstraints implements Cloneable {
     */
 
    /**
-    * Sets a control to be sent to the server.
+    * Sets a server control to be sent to the server.
     *
-    * control        A single control to be sent to the server.
+    * @param control     A single control to be sent to the server.
     */
    public void setServerControls(LDAPControl control) {
       serverCtls = new LDAPControl[1];
@@ -343,16 +377,18 @@ public class LDAPConstraints implements Cloneable {
    }
 
    /**
-    * Sets controls to be sent to the server.
+    * Sets an array of server controls to be sent to the server.
     *
-    * controls       An array of controls to be sent to the server.
+    * @param controls       An array of controls to be sent to the server.
     */
    public void setServerControls(LDAPControl[] controls) {
       serverCtls = controls;
    }
 
    /**
-    * Clone the LDAPConstraints object.
+    * Clones an LDAPConstraints object.
+    *
+    * @return An LDAPConstraints object.
     */
    public Object clone() {
       try {

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPAttributeSchema.java,v 1.5 2000/08/24 22:39:57 judy Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPAttributeSchema.java,v 1.6 2000/08/28 22:18:54 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -51,21 +51,21 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
     * directory.
     *
     * @param name  Name of the attribute.
-    *
+    *<br><br>
     * @param oid   Object identifer of the attribute, in
     *              dotted numerical format.
-    *
+    *<br><br>
     * @param description   Optional description of the attribute.
-    *
+    *<br><br>
     * @param syntaxString  Object identifer of the syntax of the
     *              attribute, in dotted numerical format.
-    *
+    *<br><br>
     * @param single    True if the attribute is to be single-valued.
-    *
+    *<br><br>
     * @param superior  Optional name of the attribute type which this
     *              attribute type derives from; null if there is no
     *              superior attribute type.
-    *
+    *<br><br>
     * @param aliases   Optional list of additional names by which the
     *              attribute may be known; null if there are no
     *              aliases.
