@@ -61,8 +61,8 @@ public class PartitionSyncRequest extends LDAPExtendedOperation {
         try {
 
             if ( (serverName == null) || (partitionRoot == null) )
-                throw new LDAPException(ExceptionMessages.PARAM_ERROR,
-                                    LDAPException.PARAM_ERROR);
+                throw new IllegalArgumentException(
+                                         ExceptionMessages.PARAM_ERROR);
 
             ByteArrayOutputStream encodedData = new ByteArrayOutputStream();
             LBEREncoder encoder  = new LBEREncoder();
@@ -79,7 +79,8 @@ public class PartitionSyncRequest extends LDAPExtendedOperation {
         }
         catch(IOException ioe) {
             throw new LDAPException(ExceptionMessages.ENCODING_ERROR,
-                                       LDAPException.ENCODING_ERROR);
+                                       LDAPException.ENCODING_ERROR,
+                                       (String)null);
         }
     }
 }

@@ -62,8 +62,8 @@ public class GetReplicaInfoRequest extends LDAPExtendedOperation {
         try {
 
             if ( (serverDN == null) || (partitionDN == null) )
-                throw new LDAPException(ExceptionMessages.PARAM_ERROR,
-                                    LDAPException.PARAM_ERROR);
+                throw new IllegalArgumentException(
+                                         ExceptionMessages.PARAM_ERROR);
 
          ByteArrayOutputStream encodedData = new ByteArrayOutputStream();
          LBEREncoder encoder  = new LBEREncoder();
@@ -79,7 +79,7 @@ public class GetReplicaInfoRequest extends LDAPExtendedOperation {
         }
       catch(IOException ioe) {
          throw new LDAPException(ExceptionMessages.ENCODING_ERROR,
-                                 LDAPException.ENCODING_ERROR);
+                                 LDAPException.ENCODING_ERROR,(String)null);
       }
    }
 
