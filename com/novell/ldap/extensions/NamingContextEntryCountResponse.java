@@ -20,68 +20,12 @@ import com.novell.ldap.rfc2251.*;
 import java.io.IOException;
 
 /**
- * Returns the number of entries in the naming context.
- *
- *  <p>An object in this class is generated from an ExtendedResponse object
- *  using the ExtendedResponseFactory class.</p>
- *
- * <p>The namingContextEntryCountResponse extension uses the following
- * OID:<br>
- * &nbsp;&nbsp;&nbsp;2.16.840.1.113719.1.27.100.14</p>
- *
+ * deprecated. @See PartitionEntryCountResponse.
  */
-public class NamingContextEntryCountResponse extends LDAPExtendedResponse {
-
-   //The count of the objects returned by the server is saved here
-
-   private int count;
-   /**
-    * Constructs an object from the responseValue which contains the
-    * entry count.
-    *
-    * <p>The constructor parses the responseValue which has the following
-    * format:<br>
-    *  responseValue ::=<br>
-    *  &nbsp;&nbsp;&nbsp;&nbsp;  count &nbsp;&nbsp;&nbsp INTEGER</p>
-    *
-    * @exception IOException  The response value could not be decoded.
-    */
+public class NamingContextEntryCountResponse extends PartitionEntryCountResponse { 
    public NamingContextEntryCountResponse (RfcLDAPMessage rfcMessage)
          throws IOException {
 
-        super(rfcMessage);
-
-        if (getResultCode() == LDAPException.SUCCESS)
-        {
-           // parse the contents of the reply
-           byte [] returnedValue = this.getValue();
-           if (returnedValue == null)
-               throw new IOException("No returned value");
-
-           // Create a decoder object
-           LBERDecoder decoder = new LBERDecoder();
-           if (decoder == null)
-               throw new IOException("Decoding error");
-
-           ASN1Integer asn1_count = (ASN1Integer)decoder.decode(returnedValue);
-           if (asn1_count == null)
-               throw new IOException("Decoding error");
-
-           count = asn1_count.getInt();
-        }
-        else
-        {
-           count = -1;
-        }
+        super(rfcMessage);       
    }
-
-   /**
-    * Returns the number of entries in the naming context.
-    *
-    * @return The count of the number of objects returned.
-    */
-   public int getCount() {
-        return count;
-   }
-
 }
