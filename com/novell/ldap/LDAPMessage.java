@@ -15,6 +15,7 @@
 
 package com.novell.ldap;
 
+import com.novell.ldap.message.LDAPSearchRequest; // for javadoc
 import com.novell.ldap.rfc2251.*;
 import com.novell.ldap.client.RespControlVector;
 import com.novell.ldap.client.Debug;
@@ -197,6 +198,9 @@ public class LDAPMessage
     private int imsgNum = -1;     // This instance LDAPMessage number
 
     private int messageType = -1;
+
+    /* application defined tag to identify this message */
+    private String stringTag = null;
 
     /**
      * Creates an LDAPMessage when sending a protocol operation.
@@ -488,7 +492,7 @@ public class LDAPMessage
      */
     public boolean isRequest()
     {
-        return message.isRequest(); 
+        return message.isRequest();
     }
 
     /**
@@ -580,5 +584,64 @@ public class LDAPMessage
                 throw new RuntimeException("LDAPMessage: Unknown Type " + getType());
         }
         return name;
+    }
+
+    /**
+     * Sets a string identifier tag for this message.
+     *
+     * <p>This method allows an API to set a tag and later identify messages
+     * by retrieving the tag associated with the message.
+     * Tags are set by the application and not by the API or the server.
+     * Message tags are not included with any message sent to or received
+     * from the server.</p>
+     *
+     * <p>Tags set on a request to the server
+     * are automatically associated with the response messages when they are
+     * received by the API and transferred to the application.
+     * The application can explicitly set a different value in a
+     * response message.</p>
+     *
+     * <p>To set a value in a server request, for example an 
+     * {@link LDAPSearchRequest}, you must create the object,
+     * set the tag, and use the
+     * {@link LDAPConnection#applyToDIT LDAPConnection.applyToDIT()}
+     * method to send it to the server.</p>
+     *
+     * @param stringTag  the String assigned to identify this message.
+     *
+     * @see #getTag
+     * @see #isRequest
+     */
+    public void setTag(String stringTag)
+    {
+        this.stringTag = stringTag;
+        return;
+    }
+
+    /**
+     * Retrieves the identifier tag for this message.
+     *
+     * <p>An identifier can be associated with a message with the
+     * <code>setTag</code> method.
+     * Tags are set by the application and not by the API or the server.
+     * If a server response <code>isRequest() == false</code> has no tag,
+     * the tag associated with the corresponding server request is used.</p>
+     *
+     * @return the identifier associated with this message or <code>null</code>
+     *          if none.
+     *
+     * @see #setTag
+     * @see #isRequest
+     */
+    public String getTag()
+    {
+        if (this.stringTag != null) {
+            return this.stringTag;
+        }
+        LDAPMessage m = this.getRequestingMessage();
+        if (m == null) {
+            return null;
+        }
+        return m.stringTag;
     }
 }
