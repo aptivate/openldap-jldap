@@ -31,8 +31,8 @@ import com.novell.ldap.rfc2251.*;
 public class LDAPBindRequest extends LDAPMessage
 {
     /**
-     * Constructs a simple bind request.   
-     * 
+     * Constructs a simple bind request.
+     *
      *  @param version  The LDAP protocol version, use LDAP_V3.
      *                  LDAP_V2 is not supported.
      *<br><br>
@@ -66,6 +66,16 @@ public class LDAPBindRequest extends LDAPMessage
                              false))), // implicit tagging
                              cont);
         return;
+    }
+
+    /**
+     * Retrieves the Authentication DN for a bind request.
+     *
+     * @return the Authentication DN for a bind request
+     */
+    public String getAuthenticationDN()
+    {
+        return getASN1Object().getRequestDN();
     }
 
     /**
