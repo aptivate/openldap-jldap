@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPMatchingRuleSchema.java,v 1.5 2000/09/08 23:43:50 judy Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPMatchingRuleSchema.java,v 1.6 2000/09/29 15:17:14 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -25,6 +25,9 @@ package com.novell.ldap;
  *  Represents the definition of a matching rule. It is used to query
  *  matching rule syntax, and to add or delete a matching rule definition 
  *  in a directory. 
+ *
+ * <p>NDS does not currently allow matching rules to be added or deleted from
+ * the schema.</p>
  */
 public class LDAPMatchingRuleSchema extends LDAPSchemaElement {
 
@@ -43,7 +46,9 @@ public class LDAPMatchingRuleSchema extends LDAPSchemaElement {
     *<br><br>
     *  @param description    Optional description of the attribute.
     *<br><br>
-    *  @param attributes     OIDs of attributes to which the rule applies.
+    *  @param attributes     OIDs of attributes to which the rule applies. All
+    *                        attributes added to this array must use the same 
+    *                        syntax.
     *<br><br>
     *  @param syntaxString   Unique object identifer of the syntax of the
     *                        attribute, in dotted numerical format.

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPObjectClassSchema.java,v 1.7 2000/09/29 15:17:15 judy Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPObjectClassSchema.java,v 1.8 2000/09/29 15:55:27 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -184,6 +184,9 @@ public class LDAPObjectClassSchema extends LDAPSchemaElement{
     *   <li>AUXILIARY</li>
     *   <li>STRUCTURAL</li> 
     *</ul>
+    *<p>See the LDAPSchemaElement.getQualifier method for information on 
+    * obtaining the X-NDS flags.</p>
+    *
     * @return The type of object class.
     */
    public int getType() {

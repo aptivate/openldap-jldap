@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchConstraints.java,v 1.7 2000/09/18 20:12:05 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchConstraints.java,v 1.8 2000/09/28 21:29:29 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -41,8 +41,8 @@ public class LDAPSearchConstraints extends LDAPConstraints {
      */
 
     /**
-     * Constructs an LDAPSearchConstraints object that specifies the default
-     * set of search constraints.
+     * Constructs an LDAPSearchConstraints object using the default values for
+     * the search constraints.
      */
     public LDAPSearchConstraints()
     {
@@ -54,9 +54,9 @@ public class LDAPSearchConstraints extends LDAPConstraints {
      * the operational constraints in that object, including the LDAPBind 
      * object.
      *
-     *  @param msLimit  The maximum time in milliseconds to wait for results
-     *                  (0 by default, which means that there is no
-     *                  maximum time limit). This is an interface-imposed
+     *  @param msLimit  The maximum time in milliseconds to wait for results.
+     *                  The default value is 0, which means that there is no
+     *                  maximum time limit. This is an interface-imposed
      *                  limit.
      *<br><br>
      *  @param serverTimeLimit The maximum time in seconds that the server should
@@ -72,25 +72,28 @@ public class LDAPSearchConstraints extends LDAPConstraints {
      *  @param maxResults      The maximum number of search results to return.
      *                         Default: 1000
      *<br><br>
-     *  @param doReferrals     Specifies whether referaals are followed
+     *  @param doReferrals     Specifies whether referrals are followed
      *                         automatically. Set to true to follow referrals
      *                         automatically, or false to throw an 
      *                         LDAPReferralException error it the server sends
      *                         back a referral. Default: false 
      *<br><br>
-     *  @param batchSize       The number of results to block on during
-     *                         enumeration. Specifying 0 means to block until all 
-     *                         results are in. Default: 1
+     *  @param batchSize       The number of results to return in a batch.
+     *                         Specifying 0 means to block until all results are in.
+     *                         Specifying 1 means to return results one at a time.
+     *                         Default: 1
      *
      *<br><br>
      *  @param binder   The custom authentication processor, called when the
      *                  LDAPConnection needs to authenticate, typically
      *                  on following a referral. Null may be specified to
      *                  indicate default authentication processing.
+     *                  On asynchronous operations, this constraint is ignored.
      *<br><br>
      *  @param hop_limit  The maximum number of referrals to follow in a
      *                    sequence when attempting to resolve a request and
      *                    when doing automatic referral following.
+     *                    On asynchronous operations, this constraint is ignored.
      */
     public LDAPSearchConstraints(int msLimit,
                                  int serverTimeLimit,
@@ -112,9 +115,9 @@ public class LDAPSearchConstraints extends LDAPConstraints {
      * Constructs a new LDAPSearchConstraints object and allows specifying
      * the operational constraints in that object, including an LDAPRebind object.
      *
-     *  @param msLimit  The maximum time in milliseconds to wait for results
-     *                  (0 by default, which means that there is no
-     *                  maximum time limit). This is an interface-imposed
+     *  @param msLimit  The maximum time in milliseconds to wait for results.
+     *                  The default value is 0, which means that there is no
+     *                  maximum time limit. This is an interface-imposed
      *                  limit.
      *<br><br>
      *  @param serverTimeLimit The maximum time in seconds that the server should
@@ -131,13 +134,14 @@ public class LDAPSearchConstraints extends LDAPConstraints {
      *                         Default: 1000
      *<br><br>
      *  @param doReferrals     Specifies whether to follow referrals automatically.
-     *                         Set to true to follow referrals automatically or false 
-     *                         to throw an LDAPReferralException error if the server 
-     *                         sends back a referral. Default: false 
+     *                         Set to true to follow referrals automatically or 
+     *                         false to throw an LDAPReferralException error if the  
+     *                         server sends back a referral. Default: false 
      *<br><br>
-     *  @param batchSize       Specifies the number of results to block on during
-     *                         enumeration. Specifying 0 means to block until all 
-     *                         results are in. Default: 1
+     *  @param batchSize       Specifies the number of results to return in a batch.
+     *                         Specifying 0 means to block until all results are in.
+     *                         Specifying 1 means to return results one at a time.
+     *                         Default: 1
      *<br><br>
      * @param reauth    Specifies an object of the class that implements
      *                  the LDAPRebind interface. The object will be used
@@ -148,11 +152,13 @@ public class LDAPSearchConstraints extends LDAPConstraints {
      *                  referral. Specifying null indicates the default
      *                  LDAPRebind will be used if one has been assigned
      *                  with the LDAPConnection.setOption method, or anonymous
-     *                  authentication otherwise.
+     *                  authentication otherwise. On asynchronous operations, 
+     *                  this constraint is ignored.
      *<br><br>
      *  @param hop_limit  The maximum number of referrals to follow in a
      *                    sequence when attempting to resolve a request,
-     *                    when doing automatic referral following.
+     *                    when doing automatic referral following. On asynchronous  
+     *                    operations, this constraint is ignored.
      *
      *
      */
@@ -177,11 +183,12 @@ public class LDAPSearchConstraints extends LDAPConstraints {
      */
 
     /**
-     * Returns the number of results to block on during enumeration of
-     * search results. 
+     * Returns how results are returned during a search.
      *
      * <p>This should be 0 if intermediate results are not
      * needed, and 1 if results are to be processed as they come in. </p>
+     *
+     * @return How results are to be returned.
      */
     public int getBatchSize()
     {
@@ -245,15 +252,14 @@ public class LDAPSearchConstraints extends LDAPConstraints {
      */
 
     /**
-     * Sets the suggested number of results to block on during enumeration
-     * of search results. 
+     *  Specifies how results are returned during a search operation.
      *
      * <p>This should be 0 if intermediate results are not
      * needed, and 1 if results are to be processed as they come in.  The
      * default is 1.
      *
      *
-     *  @param batchSize      Blocking size on search enumerations.
+     *  @param batchSize      The number of results to wait for.
      */
     public void setBatchSize(int batchSize)
     {
@@ -269,7 +275,8 @@ public class LDAPSearchConstraints extends LDAPConstraints {
      * dereferenced, and if so, when.
      *
      *
-     *  @param dereference  One of the following dereference values:
+     *  @param dereference  Specifies how aliases are dereference and can be set 
+     *                      to one of the following:
      * <ul>
      *                  <li>DEREF_NEVER - do not dereference aliases</li>
      *                  <li>DEREF_FINDING - dereference aliases when finding

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResultReference.java,v 1.9 2000/09/12 22:50:13 judy Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResultReference.java,v 1.10 2000/09/29 22:47:18 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -29,7 +29,7 @@ import java.util.*;
  
 /**
  *
- *  Encapsulates a continuation reference from a search operation.
+ *  Encapsulates a continuation reference from an asynchronous search operation.
  *  
  */
 public class LDAPSearchResultReference extends LDAPMessage {

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPResponseListener.java,v 1.10 2000/09/11 22:47:50 judy Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPResponseListener.java,v 1.11 2000/09/28 21:15:06 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -25,7 +25,7 @@ import com.novell.ldap.protocol.*;
  */
  
 /**
- *  Represents the message queue associated with a particular LDAP
+ *  Represents the message queue associated with a particular asynchronous LDAP
  *  operation or operations.
  */
 public class LDAPResponseListener extends LDAPListener {
@@ -50,10 +50,10 @@ public class LDAPResponseListener extends LDAPListener {
    /**
     * Returns the response.
     *
-    * <p>Blocks until a response is available, or until all operations
-    * associated with the object have completed or been canceled, and then
-    * returns the response. It is the responsibility of the client to
-    * process the responses returned from a listener.</p>
+    * <p>The getResponse method locks until a response is available, or until all 
+    * operations associated with the object have completed or been canceled, and 
+    * then returns the response. The client is responsible for processing
+    * the responses returned from a listener.</p>
     *
     * @return The response.
     *

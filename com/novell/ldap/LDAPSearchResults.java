@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResults.java,v 1.19 2000/10/02 16:24:06 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResults.java,v 1.20 2000/10/02 17:19:16 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -99,7 +99,7 @@ public class LDAPSearchResults implements Enumeration
      */
 
     /**
-     * Returns the latest server controls returned by a directory server
+     * Returns the latest server controls returned by the server
      * in the context of this search request, or null
      * if no server controls were returned.
      *
@@ -119,7 +119,8 @@ public class LDAPSearchResults implements Enumeration
      * Specifies whether or not there are more search results in the
      * enumeration. 
      *
-     * @return True, if there are more search results; false, if there are none.
+     * @return True, if there are more search results; false, if there are no
+     *         more search results.
      */
     public boolean hasMoreElements()
     {
@@ -311,7 +312,7 @@ public class LDAPSearchResults implements Enumeration
      * after a sort operation.</p>
      *
      * <p>The LDAPCompareAttrNames class is provided to support the common need
-     * to collate by a single or multiple attribute values, in ascending or
+     * to collate by single or multiple attribute values, in ascending or
      * descending order.  Examples: </p>
      *<ul>
      *   <li>res.sort(new LDAPCompareAttrNames("cn"));</li>

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchListener.java,v 1.12 2000/09/11 21:05:51 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchListener.java,v 1.13 2000/09/12 22:50:13 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -27,7 +27,7 @@ import com.novell.ldap.protocol.*;
 /**
  *
  *  Manages search results and references returned
- *  on one or more search requests.
+ *  from one or more search requests.
  */
 public class LDAPSearchListener extends LDAPListener {
  
@@ -60,7 +60,8 @@ public class LDAPSearchListener extends LDAPListener {
     * <p>The only time this method should return a null is if there is no
     * response in the message queue and there are no message IDs pending.</p>
     *
-    * @return The response (a search result, search reference, or search response)
+    * @return The response (a search result, search reference, or search response)or
+    *         null if there are no more outstanding requests.
     *
     * @exception LDAPException A general exception which includes an error 
     *                          message and an LDAP error code.

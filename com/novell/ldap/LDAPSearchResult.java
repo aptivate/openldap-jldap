@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResult.java,v 1.12 2000/09/12 22:50:13 judy Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResult.java,v 1.13 2000/09/28 21:29:30 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -40,7 +40,7 @@ public class LDAPSearchResult extends LDAPMessage {
     */
 
    /**
-    * Returns the entry of a server search response.
+    * Returns the entry of a server's search response.
     */
    public LDAPEntry getEntry() {
       LDAPAttributeSet attrs = new LDAPAttributeSet();
