@@ -913,7 +913,7 @@ class DSMLHandler
           //                queue up search
           {
 
-            state = BATCH_RESPONSE;
+            state = SEARCH_RESPONSE;
             entry = new LDAPEntry(dn, attrSet);
             LDAPControl[] cons = null;
             if (controls != null && controls.size() > 0) {
