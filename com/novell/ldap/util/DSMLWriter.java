@@ -678,7 +678,7 @@ public class DSMLWriter implements LDAPWriter {
     {
         checkState(false);
         newLine(1);
-        out.write("</modifyDNRequest>");
+        out.write("</modDNRequest>");
         return;
     }
         
