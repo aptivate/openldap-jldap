@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPException.java,v 1.9 2000/09/21 23:27:34 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPException.java,v 1.10 2000/10/02 21:49:43 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -115,7 +115,7 @@ public class LDAPException extends Exception {
     *         null if the error code doesn't exist.
     */
    public static String errorCodeToString( int code ) {
-      return null;
+      return errorStrings[code];
    }
 
    /**
@@ -131,7 +131,7 @@ public class LDAPException extends Exception {
 
     */
    public String errorCodeToString( Locale locale ) {
-      return null;
+      throw new RuntimeException("errorCodeToString( Locale ) not implemented");
    }
 
    /**
@@ -149,7 +149,7 @@ public class LDAPException extends Exception {
     *  for the requested locale or the error code doesn't exist.
     */
    public static String errorCodeToString( int code, Locale locale ) {
-      return null;
+      throw new RuntimeException("errorCodeToString( code, Locale ) not implemented");
    }
 
    /*
