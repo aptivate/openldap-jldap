@@ -19,6 +19,7 @@ import com.novell.ldap.LDAPControl;
 import com.novell.ldap.LDAPMessage;
 import com.novell.ldap.LDAPExtendedOperation;
 import com.novell.ldap.asn1.ASN1OctetString;
+import com.novell.ldap.asn1.ASN1Tagged;
 import com.novell.ldap.rfc2251.RfcExtendedRequest;
 import com.novell.ldap.rfc2251.RfcLDAPOID;
 
@@ -30,7 +31,7 @@ import com.novell.ldap.rfc2251.RfcLDAPOID;
  *               requestValue     [1] OCTET STRING OPTIONAL }
  */
 public class LDAPExtendedRequest extends LDAPMessage
-{    
+{
     /**
      * Constructs an LDAPExtendedRequest.
      *<br><br>
@@ -52,10 +53,27 @@ public class LDAPExtendedRequest extends LDAPMessage
                        null),
                cont);
         return;
-    }    
+    }
 
-    public Object getRequestInfo()
-    {
-        return null;
+    /**
+     * Retrieves an extended operation from this request
+     * @return extended operation represented in this request.
+     */
+    public LDAPExtendedOperation getExtendedOperation(){
+        RfcExtendedRequest xreq = (RfcExtendedRequest )
+                this.getASN1Object().get(1);
+
+        //Zeroth element is the OID, element one is the value
+        ASN1Tagged tag = (ASN1Tagged) xreq.get(0);
+        RfcLDAPOID oid = (RfcLDAPOID)tag.taggedValue();
+        String requestID = oid.stringValue();
+
+        byte requestValue[] = null;
+        if (xreq.size() >= 2){
+            tag = (ASN1Tagged) xreq.get(1);
+            ASN1OctetString value = (ASN1OctetString)tag.taggedValue();
+            requestValue = value.byteValue();
+        }
+        return new LDAPExtendedOperation(requestID, requestValue);
     }
 }
