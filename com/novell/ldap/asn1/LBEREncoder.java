@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/LBEREncoder.java,v 1.7 2001/03/15 19:18:33 javed Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/LBEREncoder.java,v 1.8 2001/04/06 18:06:03 javed Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -65,13 +65,13 @@ public class LBEREncoder implements ASN1Encoder {
    {
       /* Encode the id */
       encode(b.getIdentifier(), out);
-      
+
       /* Encode the length */
-      out.write(0x01); 
-      
+      out.write(0x01);
+
       /* Encode the boolean content*/
       out.write(b.getContent() ? (byte) 0xff : (byte) 0x00);
-      
+
       return;
    }
 
@@ -113,8 +113,8 @@ public class LBEREncoder implements ASN1Encoder {
    }
    */
 
-    
-    
+
+
    /**
     * Encode an ASN1Null directly into the specified outputstream.
     */
@@ -137,8 +137,8 @@ public class LBEREncoder implements ASN1Encoder {
    }
    */
 
-   
-   
+
+
    /**
     * Encode an ASN1OctetString directly into the specified outputstream.
     */
@@ -151,8 +151,8 @@ public class LBEREncoder implements ASN1Encoder {
       return;
    }
 
-   
-   
+
+
    /* ASN1 TYPE NOT YET SUPPORTED
     * Encode an ASN1ObjectIdentifier directly to a stream.
     * public void encode(ASN1ObjectIdentifier oi, OutputStream out)
@@ -161,7 +161,7 @@ public class LBEREncoder implements ASN1Encoder {
     * throw new IOException("LBEREncoder: Encode to a stream not implemented");
     * }
     */
-   
+
 
    /* ASN1 TYPE NOT YET SUPPORTED
     * Encode an ASN1CharacterString directly to a stream.
@@ -171,13 +171,13 @@ public class LBEREncoder implements ASN1Encoder {
     * throw new IOException("LBEREncoder: Encode to a stream not implemented");
     * }
     */
-    
-  
-   
+
+
+
    /* Encoders for ASN.1 structured types
     */
    /**
-    * Encode an ASN1Structured into the specified outputstream.  This method 
+    * Encode an ASN1Structured into the specified outputstream.  This method
     * can be used to encode SET, SET_OF, SEQUENCE, SEQUENCE_OF
     */
    public void encode(ASN1Structured c, OutputStream out)
@@ -186,25 +186,31 @@ public class LBEREncoder implements ASN1Encoder {
       encode(c.getIdentifier(), out);
 
       ArrayList value = c.getContent();
-      ArrayList codes = new ArrayList(value.size());
-      int length = 0;
-      
+
+//*      ArrayList codes = new ArrayList(value.size());
+ //*     int length = 0;
+      ByteArrayOutputStream output = new ByteArrayOutputStream();
+
       /* Cycle through each element encoding each element */
       for( int i=0; i < value.size(); i++) {
-         ByteArrayOutputStream output = new ByteArrayOutputStream();
+      //*   ByteArrayOutputStream output = new ByteArrayOutputStream();
+      //*   ((ASN1Object)value.get(i)).encode(this, output);
          ((ASN1Object)value.get(i)).encode(this, output);
-         codes.add(output);
-         length += output.size();
+      //*   codes.add(output);
+      //*   length += output.size();
       }
 
       /* Encode the length */
-      encodeLength(length, out);    
+      //* encodeLength(length, out);
+      encodeLength(output.size(), out);
 
       /* Add each encoded element into the output stream */
-      for( int i=0; i< codes.size(); i++) {
-          ByteArrayOutputStream output = (ByteArrayOutputStream)codes.get(i);
-          out.write(output.toByteArray());
-      }
+
+//*      for( int i=0; i< codes.size(); i++) {
+//*          ByteArrayOutputStream output = (ByteArrayOutputStream)codes.get(i);
+//*          out.write(output.toByteArray());
+//*      }
+      out.write(output.toByteArray());
       return;
    }
 
@@ -244,12 +250,12 @@ public class LBEREncoder implements ASN1Encoder {
       int c = id.getASN1Class();
       int t = id.getTag();
       byte ccf = (byte) ((c << 6) | (id.getConstructed() ? 0x20 : 0));
-      
-      if(t < 30) { 
+
+      if(t < 30) {
         /* single octet */
          out.write(ccf | t);
       }
-      else {  
+      else {
         /* multiple octet */
          out.write(ccf | 0x1F);
          encodeTagInteger(t, out);
@@ -269,6 +275,7 @@ public class LBEREncoder implements ASN1Encoder {
       if(length < 0x80) {
          out.write((byte)length);
       }
+
       else {
          byte[] octets = new byte[4]; // 4 bytes sufficient for 32 bit int.
          byte n;

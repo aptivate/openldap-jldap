@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Length.java,v 1.4 2001/03/01 00:30:00 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Length.java,v 1.5 2001/04/11 22:17:21 javed Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -32,6 +32,10 @@ public class ASN1Length {
     */
 
    /**
+    * Constructs an empty ASN1Length.  Values are added by calling reset
+    */
+   public ASN1Length(){}
+   /**
 	 * Constructs an ASN1Length
     */
    public ASN1Length(int length)
@@ -40,7 +44,7 @@ public class ASN1Length {
    }
 
    /**
-    * Constructs an ASN1Length object by decoding data from an 
+    * Constructs an ASN1Length object by decoding data from an
     * input stream.
     *
     * @param in A byte stream that contains the encoded ASN.1
@@ -49,6 +53,38 @@ public class ASN1Length {
    public ASN1Length(InputStream in)
       throws IOException
    {
+		int r = in.read();
+		encodedLength++;
+		if(r == 0x80)
+			length = -1;
+		else if(r < 0x80)
+			length = r;
+		else {
+			length = 0;
+			for(r = r & 0x7F; r > 0; r--) {
+				int part = in.read();
+				encodedLength++;
+				if(part < 0)
+					throw new EOFException("BERDecoder: decode: EOF in ASN1Length");
+				length = (length << 8) + part;
+			}
+		}
+
+   }
+
+   /**
+    * Resets an ASN1Length object by decoding data from an
+    * input stream.
+    *
+    * Note: this was added for optimization of ASN1.LBERdecoder.decode()
+    *
+    * @param in A byte stream that contains the encoded ASN.1
+    *
+    */
+   public void reset(InputStream in)
+      throws IOException
+   {
+        encodedLength = 0;
 		int r = in.read();
 		encodedLength++;
 		if(r == 0x80)

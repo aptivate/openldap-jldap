@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/LBERDecoder.java,v 1.9 2001/03/15 19:18:33 javed Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/LBERDecoder.java,v 1.10 2001/04/06 18:06:02 javed Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -53,6 +53,11 @@ import java.io.*;
  */
 public class LBERDecoder implements ASN1Decoder
 {
+    //used to speed up decode, so it doesn't need to recreate an identifier every time
+    //instead just reset is called
+    private static ASN1Identifier   asn1ID  = new ASN1Identifier();
+    private static ASN1Length       asn1Len = new ASN1Length();
+
 
    /* Generic decode routines
     */
@@ -86,16 +91,18 @@ public class LBERDecoder implements ASN1Decoder
    /**
     * Decode an LBER encoded value into an ASN1Object from an InputStream.
     *
-    * <p> This method also returns the total length of this encoded 
-    * ASN1Object (length of type + length of length + length of content) 
-    * in the parameter len. This information is helpful when decoding 
+    * <p> This method also returns the total length of this encoded
+    * ASN1Object (length of type + length of length + length of content)
+    * in the parameter len. This information is helpful when decoding
     * structured types.
     */
    public ASN1Object decode(InputStream in, int len[])
       throws IOException
    {
-      ASN1Identifier asn1ID = new ASN1Identifier(in);
-      ASN1Length asn1Len = new ASN1Length(in);
+//*      ASN1Identifier asn1ID = new ASN1Identifier(in);
+      asn1ID.reset(in);
+//*      ASN1Length asn1Len = new ASN1Length(in);
+      asn1Len.reset(in);
       int length = asn1Len.getLength();
       len[0] = asn1ID.getEncodedLength() +
                asn1Len.getEncodedLength() +
@@ -113,7 +120,7 @@ public class LBERDecoder implements ASN1Decoder
                return new ASN1Enumerated(this, in, length);
             case ASN1Null.TAG:
                return new ASN1Null(); // has no content to decode.
-            /* ASN1 TYPE NOT YET SUPPORTED               
+            /* ASN1 TYPE NOT YET SUPPORTED
             case ASN1BitString.TAG:
                return new ASN1BitString(this, in, length);
             case ASN1ObjectIdentifier.TAG:
@@ -170,7 +177,7 @@ public class LBERDecoder implements ASN1Decoder
    }
 
    /**
-    * Decode a Numeric type directly from a stream. Decodes INTEGER 
+    * Decode a Numeric type directly from a stream. Decodes INTEGER
     * and ENUMERATED types.
     */
    public Object decodeNumeric(InputStream in, int len)
@@ -197,7 +204,7 @@ public class LBERDecoder implements ASN1Decoder
       return new Long(l);
    }
 
-   /* ASN1 TYPE NOT YET SUPPORTED     
+   /* ASN1 TYPE NOT YET SUPPORTED
     * Decode a Real directly from a stream.
    public Object decodeReal(InputStream in, int len)
       throws IOException
@@ -205,8 +212,8 @@ public class LBERDecoder implements ASN1Decoder
       return null;
    }
     */
-    
-   /* ASN1 TYPE NOT YET SUPPORTED  
+
+   /* ASN1 TYPE NOT YET SUPPORTED
     * Decode a BitString directly from a stream.
     * public Object decodeBitString(InputStream in, int len)
     *   throws IOException
@@ -214,7 +221,7 @@ public class LBERDecoder implements ASN1Decoder
     *   return null;
     * }
     */
-    
+
    /**
     * Decode an OctetString directly from a stream.
     */
@@ -233,7 +240,7 @@ public class LBERDecoder implements ASN1Decoder
       return octets;
    }
 
-   /* ASN1 TYPE NOT YET SUPPORTED  
+   /* ASN1 TYPE NOT YET SUPPORTED
     * Decode an ObjectIdentifier directly from a stream.
     * public Object decodeObjectIdentifier(InputStream in, int len)
     * throws IOException
@@ -241,7 +248,7 @@ public class LBERDecoder implements ASN1Decoder
     *   return null;
     * }
     */
-    
+
    /**
     * Decode a CharacterString directly from a stream.
     */
@@ -264,7 +271,7 @@ public class LBERDecoder implements ASN1Decoder
    /* Decoders for ASN.1 useful type Contents
     */
 
-   /* ASN1 TYPE NOT YET SUPPORTED  
+   /* ASN1 TYPE NOT YET SUPPORTED
     * Decode a GeneralizedTime directly from a stream.
     * public Object decodeGeneralizedTime(InputStream in, int len)
     *   throws IOException
@@ -272,8 +279,8 @@ public class LBERDecoder implements ASN1Decoder
     *   return null;
     * }
     */
-    
-   /* ASN1 TYPE NOT YET SUPPORTED  
+
+   /* ASN1 TYPE NOT YET SUPPORTED
     * Decode a UniversalTime directly from a stream.
     * public Object decodeUniversalTime(InputStream in, int len)
     *   throws IOException
@@ -281,8 +288,8 @@ public class LBERDecoder implements ASN1Decoder
     *   return null;
     * }
     */
-    
-   /* ASN1 TYPE NOT YET SUPPORTED  
+
+   /* ASN1 TYPE NOT YET SUPPORTED
     * Decode an External directly from a stream.
     * public Object decodeExternal(InputStream in, int len)
     *   throws IOException
@@ -290,8 +297,8 @@ public class LBERDecoder implements ASN1Decoder
     *   return null;
     * }
     */
-    
-   /* ASN1 TYPE NOT YET SUPPORTED  
+
+   /* ASN1 TYPE NOT YET SUPPORTED
     * Decode an ObjectDescriptor directly from a stream.
     * public Object decodeObjectDescriptor(InputStream in, int len)
     *   throws IOException
@@ -299,8 +306,8 @@ public class LBERDecoder implements ASN1Decoder
     *      return null;
     * }
     */
-    
-    
+
+
    /* Helper methods for the BERDecoder class
     */
 

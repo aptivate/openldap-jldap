@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Identifier.java,v 1.6 2001/03/01 00:30:00 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Identifier.java,v 1.7 2001/04/11 22:17:21 javed Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -20,9 +20,9 @@ import java.io.*;
 /**
  * This class is used to encapsulate an ASN.1 Identifier.
  *
- * <p>An ASN1Identifier is composed of three parts: 
+ * <p>An ASN1Identifier is composed of three parts:
  * <li> a class type,
- * <li> a form, and 
+ * <li> a form, and
  * <li> a tag.</p>
  *
  * <p>The class type is defined as:</p>
@@ -123,6 +123,31 @@ public class ASN1Identifier {
    public ASN1Identifier(InputStream in)
       throws IOException
    {
+      int r = in.read();
+      encodedLength++;
+      if(r < 0)
+         throw new EOFException("BERDecoder: decode: EOF in Identifier");
+      tagClass = r >> 6;
+      constructed = (r & 0x20) != 0;
+      tag = r & 0x1F;      // if tag < 30 then its a single octet identifier.
+      if(tag == 0x1F)      // if true, its a multiple octet identifier.
+         tag = decodeTagNumber(in);
+   }
+
+   public ASN1Identifier()
+   {
+   }
+
+   /**
+    * Decode an ASN1Identifier directly from an InputStream and
+    * save the encoded length of the ASN1Identifier, but reuse the object.
+    *
+    * @param in The input stream to decode from.
+    */
+   public void reset(InputStream in)
+      throws IOException
+   {
+      encodedLength = 0;
       int r = in.read();
       encodedLength++;
       if(r < 0)
@@ -238,6 +263,8 @@ public class ASN1Identifier {
    {
       return tagClass == PRIVATE;
    }
+
+
 
 }
 

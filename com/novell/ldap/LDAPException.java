@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPException.java,v 1.26 2001/03/14 19:25:57 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPException.java,v 1.27 2001/04/23 21:05:34 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -121,13 +121,16 @@ import com.novell.ldap.client.Debug;
 public class LDAPException extends Exception
 {
    // Initialize the resource bundles to the default locale
-   private static final ResourceBundle defaultErrorCodes =
+   private static ResourceBundle defaultErrorCodes = null;
+      /*
       ResourceBundle.getBundle("com.novell.ldap.LDAPExceptionErrorCodeResource",
       Locale.getDefault());         //default local resource for Results
-
-   private static final ResourceBundle defaultMessages =
+      */
+   private static ResourceBundle defaultMessages = null;
+      /*
       ResourceBundle.getBundle("com.novell.ldap.LDAPExceptionMessageResource",
       Locale.getDefault());         //default local resource for Messages
+      */
 
    private int resultCode = 0;
    private String messageOrKey = null;
@@ -1038,6 +1041,12 @@ public class LDAPException extends Exception
       if( messageOrKey == null) {
           messageOrKey = "";
       }
+      if(defaultMessages == null)
+      {
+          defaultMessages = ResourceBundle.getBundle(
+              "com.novell.ldap.LDAPExceptionMessageResource",
+              Locale.getDefault());         //default local resource for Messages
+      }
       try {
         pattern = defaultMessages.getString(messageOrKey);
       }
@@ -1063,7 +1072,12 @@ public class LDAPException extends Exception
     */
    public String errorCodeToString()
    {
-      return defaultErrorCodes.getString(Integer.toString(resultCode));
+       if (defaultErrorCodes == null){
+           defaultErrorCodes = ResourceBundle.getBundle(
+               "com.novell.ldap.LDAPExceptionErrorCodeResource",
+               Locale.getDefault());         //default local resource for Results
+       }
+       return defaultErrorCodes.getString(Integer.toString(resultCode));
    }
 
    /**
@@ -1077,7 +1091,12 @@ public class LDAPException extends Exception
     */
    public static String errorCodeToString( int code )
    {
-      return defaultErrorCodes.getString(Integer.toString(code));
+       if (defaultErrorCodes == null){
+           defaultErrorCodes = ResourceBundle.getBundle(
+               "com.novell.ldap.LDAPExceptionErrorCodeResource",
+               Locale.getDefault());         //default local resource for Results
+       }
+       return defaultErrorCodes.getString(Integer.toString(code));
    }
 
    /**
