@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: DSMLReader.java,v 1.10 2002/10/15 16:28:40 $
+ * $Novell: DSMLReader.java,v 1.11 2002/10/22 22:15:46 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -13,135 +13,45 @@
  * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
  */
 
-package com.novell.ldap.ldif_dsml;
+package com.novell.ldap.util;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.parsers.SAXParser;
 
+import javax.xml.parsers.*;
+import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 import org.xml.sax.SAXException;
+
 import com.novell.ldap.*;
 
-import java.util.Iterator;
-import java.util.Enumeration;
-import java.io.IOException;
-
-import org.xml.sax.*;
-import javax.xml.parsers.*;
 
 public class DSMLReader implements LDAPReader {
 
     private int messageIndex = 0;
     private DSMLHandler handler = new DSMLHandler();
+    private boolean            requestFile=true;          // request file=true
+    private String version = "2.1";
 
-    /** this method is for testing only */
-    public static void main(String[] args) throws Exception
+    public DSMLReader (String dsmlFile)
+                throws LDAPLocalException, FileNotFoundException
     {
-        if( args.length == 0) {
-            System.out.println("usage: DSMLParser file");
-            System.exit(1);
-        }
-        // Create SAX Handler
-        String DSMLFilePath = args[0];
-        DSMLReader reader = new DSMLReader( DSMLFilePath );
-        LDAPMessage message = reader.readOperation();
-        System.out.println(message);
-        //handler.queue should be populated with LDAPMessages after parsing
-        try {
-            LDAPConnection conn = new LDAPConnection();
-            conn.connect( "151.155.155.13", 389);
-
-            LDAPSearchQueue queue =
-                    (LDAPSearchQueue)conn.applyToDIT( message, null, null);
-
-            while (( message = queue.getResponse()) != null ) {
-                // the message is a search result reference
-                if ( message instanceof LDAPSearchResultReference ) {
-                    String urls[] =
-                        ((LDAPSearchResultReference)message).getReferrals();
-                    System.out.println("Search result references:");
-                        for ( int i = 0; i < urls.length; i++ )
-                            System.out.println(urls[i]);
-                }
-                // the message is a search result
-                else if ( message instanceof LDAPSearchResult ) {
-                    LDAPEntry entry = ((LDAPSearchResult)message).getEntry();
-
-                    System.out.println("\n" + entry.getDN());
-                    System.out.println("\tAttributes: ");
-
-                    LDAPAttributeSet attributeSet = entry.getAttributeSet();
-                    Iterator allAttributes = attributeSet.iterator();
-
-                    while(allAttributes.hasNext()) {
-                        LDAPAttribute attribute =
-                                (LDAPAttribute)allAttributes.next();
-                        String attributeName = attribute.getName();
-
-                        System.out.println("\t\t" + attributeName);
-
-                        Enumeration allValues = attribute.getStringValues();
-
-                        if( allValues != null) {
-                            while(allValues.hasMoreElements()) {
-                               String Value =
-                                    (String) allValues.nextElement();
-                               System.out.println("\t\t\t" + Value);
-                            }
-                        }
-                    }
-                }
-                // the message is a search response
-                else {
-                    LDAPResponse response = (LDAPResponse)message;
-                    int status = response.getResultCode();
-                    // the return code is LDAP success
-                    int type = response.getType();
-                    if (type==LDAPMessage.SEARCH_RESULT){
-                        System.out.print("Search ");
-                    }
-                    if ( status == LDAPException.SUCCESS ) {
-
-                        System.out.println("Operation succeeded.");
-                    }
-                    // the reutrn code is referral exception
-                    else if ( status == LDAPException.REFERRAL ) {
-                        String urls[]=((LDAPResponse)message).getReferrals();
-                        System.out.println("Referrals:");
-                        for ( int i = 0; i < urls.length; i++ )
-                            System.out.println(urls[i]);
-                    }
-                    else {
-                        System.out.println("Operation failed.");
-                        throw new LDAPException( response.getErrorMessage(),
-                                                 status,
-                                                 response.getMatchedDN());
-                    }
-                }
-            }
-            // disconnect with the server
-            conn.disconnect();
-        }
-        catch( LDAPException e ) {
-            System.out.println( "Error: " + e.toString() );
-        }
+        this( new java.io.FileReader(dsmlFile) );
         return;
     }
 
-    public DSMLReader (String dsmlFile)
-                throws LDAPLocalException, java.io.FileNotFoundException
+    public DSMLReader (java.io.InputStream inputStream) throws LDAPLocalException
     {
-        this( new java.io.FileReader(dsmlFile) );
-    }
-
-    public DSMLReader (java.io.InputStream inputStream) throws LDAPLocalException {
         this( new java.io.InputStreamReader(inputStream));
+        return;
     }
 
 
-    public DSMLReader (java.io.Reader reader) throws LDAPLocalException {
+    public DSMLReader (java.io.Reader reader) throws LDAPLocalException
+    {
         // Create an XML Parser
-
         try {
             SAXParserFactory spf = SAXParserFactory.newInstance();
             spf.setNamespaceAware(true);
@@ -177,12 +87,34 @@ public class DSMLReader implements LDAPReader {
                     LDAPException.LOCAL_ERROR,
                     e);
         }
+        return;
     }
 
-    public LDAPMessage readOperation() {
+    public LDAPMessage readMessage()
+    {
         if (this.messageIndex >= handler.queue.size())
             return null;
         return (LDAPMessage) handler.queue.get( this.messageIndex ++ );
     }
+    
+    /**
+     * Gets the version of the LDIF data associated with the input stream
+     *
+     * @return the version number
+     */
+    public String getVersion()
+    {
+        return version;
+    }
+    
+    /**
+     * Returns true if request data ist associated with the input stream,
+     * or false if content data.
+     *
+     * @return true if input stream contains request data.
+     */
+    public boolean isRequest()
+    {
+        return requestFile;
+    }
 }
-

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: LDIFWriter.java,v 1.28 2002/10/15 22:31:01 $
+ * $Novell: LDIFWriter.java,v 1.29 2002/10/22 22:15:59 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -12,7 +12,7 @@
  * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
  * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
  ******************************************************************************/
-package com.novell.ldap.ldif_dsml;
+package com.novell.ldap.util;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -24,8 +24,11 @@ import com.novell.ldap.LDAPAttribute;
 import com.novell.ldap.LDAPAttributeSet;
 import com.novell.ldap.LDAPControl;
 import com.novell.ldap.LDAPEntry;
+import com.novell.ldap.LDAPException;
 import com.novell.ldap.LDAPMessage;
+import com.novell.ldap.LDAPMessageQueue;
 import com.novell.ldap.LDAPModification;
+import com.novell.ldap.LDAPSearchResult;
 import com.novell.ldap.message.LDAPAddRequest;
 import com.novell.ldap.message.LDAPDeleteRequest;
 import com.novell.ldap.message.LDAPModifyDNRequest;
@@ -41,71 +44,181 @@ import com.novell.ldap.util.Base64;
  */
 
 
-public class LDIFWriter extends LDIF implements LDAPWriter {
+public class LDIFWriter implements LDAPWriter
+{
 
-    private BufferedWriter bufWriter;
+    private Boolean         requestFile = null;          // request file=true
+    private BufferedWriter  bufWriter;
+    private String          version;
 
     /**
-     * Constructs an LDIFWriter object by calling super constructor, and
-     * OutputStreamReader object, and BufferedWriter object.
+     * Constructs an LDIFWriter object.  It allows the setting of the 
+     * OutputStreamReader object, and assumes the LDIF version is "1".
+     * The type of file written is determined by the first message written
+     * to the file.
      *
-     * <p>The default version 1 is used for the LDIF file</p>
+     * <p>If the first message is one of LDAPAddRequest,
+     * LDAPDeleteRequest, LDAPModifyDNRequest, or LDAPModifyRequest the
+     * file will be writen as an LDAP request (change) file.</p>
      *
-     * @param out The OutputStream object
+     * <p>If the first message written to the file is an LDAPSearchResult object
+     * an LDIF content file will be written.</p>
      *
-     * @throws IOException
+     * <p>You are not allowed to mix request data and content data</p>
+     *
+     * @param out     The OutputStream where the LDIF data will be written.
+     *
+     * @throws IOException for errors writing to the stream.
      */
     public LDIFWriter(OutputStream out)
-                throws IOException {
-
-        this( out, 1 );
+                throws IOException
+    {
+        this( out, "1", null );
         return;
     }
 
     /**
-     * Constructs an LDIFWriter object by calling super constructor, and
-     * initializing version, OutputStreamReader object, and BufferedWriter
-     * object.
+     * Constructs an LDIFWriter object.  It allows the setting of the 
+     * OutputStreamReader object, the LDIF version, and the type of LDIF file.
      *
-     * @param out     The OutputStream object
-     * @param version The version currently used by the LDIF file
+     * @param out     The OutputStream where the LDIF data will be written.
+     *
+     * @param version The version to set in the LDIF file, must be "1".
+     *
+     * @param request If true sets the out file type to request (change) data,
+     * else the file type will be content.
+     *
+     * @throws IOException
      */
-    public LDIFWriter(OutputStream out, int version)
-                throws IOException {
+    public LDIFWriter(OutputStream out, String version, boolean request)
+                throws IOException
+    {
+        this( out, version, new Boolean(request));
+        return;
+    }
+    
+    /**
+     * Constructs an LDIFWriter object.  It allows the setting of the 
+     * OutputStreamReader object, the LDIF version, and the type of LDIF file.
+     *
+     * <p>You are not allowed to mix request data and content data</p>
+     *
+     * @param out     The OutputStream where the LDIF data will be written.
+     *
+     * @param version The version to set in the LDIF file, must be "1".
+     *
+     * @param request If true sets the out file type to request (change) data,
+     * else the file type will be content.
+     *
+     * @throws IOException
+     */
+    private LDIFWriter(OutputStream out, String version, Boolean request)
+                throws IOException
+    {
         super();
 
         // check LDIF file version
-        if ( version != 1 ) {
+        if ( version != "1" ) {
             throw new RuntimeException(
                         "com.novell.ldap.ldif_dsml.LDIFWriter: LDIF version:"
                                    + "found: " + version + ", Should be: 1");
         }
 
-        super.setVersion( version );
+        this.version = version;
+        requestFile = request;
         OutputStreamWriter osw = new OutputStreamWriter(out, "UTF-8");
         bufWriter = new BufferedWriter( osw );
-        writeCommentLine("This LDIF file was generated by Novell's Java SDK"
-                          + " LDIF APIs.");
+        writeComments("This LDIF file was generated by the LDIF APIs. " +
+                        "of Novell's Java LDAP SDK");
         writeVersionLine();
         return;
     }
 
     /**
-     * Write the version line of LDIF file into the OutputStream.
+     * Write an LDAP record into LDIF file. A request or change operation may
+     * be objects of type  LDAPAddRequest, LDAPDeleteRequest,
+     * LDAPModifyDNRequest, or LDAPModifyRequest.
+     * To write LDIF Content you must use an LDAPSearchResult object.
      *
-     * <p>Two extra lines will be written to separate version line
-     * with the rest of lines in LDIF file</p>
+     * <p>You are not allowed to mix request data and content data</p>
+     *
+     * @param request LDAPMessage object
      *
      * @throws IOException if an I/O error occurs.
+     *
+     * @see com.novell.ldap.LDAPSearchResults
+     * @see com.novell.ldap.message.LDAPAddRequest
+     * @see com.novell.ldap.message.LDAPDeleteRequest
+     * @see com.novell.ldap.message.LDAPModifyDNRequest
+     * @see com.novell.ldap.message.LDAPModifyRequest
      */
-    private void writeVersionLine () throws IOException {
+    public void writeMessage(LDAPMessage request)
+                throws IOException
+    {
+        LDAPControl[]  controls = request.getControls();
+        
+        // Check for valid type
+        switch( request.getType()) {
+        case LDAPMessage.SEARCH_RESPONSE:
+            if( requestFile == null) {
+                requestFile = Boolean.FALSE;
+            }
+            if( isRequest()) {
+                throw new RuntimeException("Attempting to write content " +
+                        " in a request stream");
+            }
+            break;
+        case LDAPMessage.ADD_REQUEST:
+        case LDAPMessage.DEL_REQUEST:
+        case LDAPMessage.MODIFY_RDN_REQUEST:
+        case LDAPMessage.MODIFY_REQUEST:
+            if( requestFile == null) {
+                requestFile = Boolean.TRUE;
+            }
+            if( ! isRequest()) {
+                throw new RuntimeException("Attempting to write request " +
+                        " in a content stream");
+            }
+            break;
+        default:
+            throw new RuntimeException("Unsupported request type: " +
+                    request.toString());
+        }
 
-        // LDIF file is currently using 'version 1'
-        String versionLine = new String("version: " + getVersion());
-        bufWriter.write( versionLine, 0, versionLine.length());
-        // write an empty line to separate the version line
-        // with the rest of the contents in LDIF file
-        bufWriter.newLine();
+        switch( request.getType()) {
+        case LDAPMessage.SEARCH_RESPONSE:
+            // LDAP Search Result Entry, write entry to outputStream
+            LDAPSearchResult sreq = (LDAPSearchResult)request;
+            writeAddRequest(sreq.getEntry(), controls);
+            break;
+        case LDAPMessage.ADD_REQUEST:
+            // LDAPAdd request, write entry to outputStream
+            LDAPAddRequest areq = (LDAPAddRequest)request;
+            writeAddRequest(areq.getEntry(), controls);
+            break;
+        case LDAPMessage.DEL_REQUEST:
+            // LDAPDelete request, write dn to outputStream
+            LDAPDeleteRequest dreq = (LDAPDeleteRequest)request;
+            writeDeleteRequest( dreq.getDN(), controls );
+            break;
+        case LDAPMessage.MODIFY_RDN_REQUEST:
+            // LDAPModDN request, write request data to outputStream
+            LDAPModifyDNRequest rreq = (LDAPModifyDNRequest)request;
+            // write to outputStream
+            writeModifyDNRequest( rreq.getDN(),
+                                  rreq.getNewRDN(),
+                                  rreq.getDeleteOldRDN(),
+                                  rreq.getParentDN(),
+                                  controls );
+            break;
+        case LDAPMessage.MODIFY_REQUEST:
+            // LDAPModify request, write modifications to outputStream
+            LDAPModifyRequest mreq = (LDAPModifyRequest)request;
+            // write to outputStream
+            writeModifyRequest( mreq.getDN(), mreq.getModifications(), controls );
+            break;
+        }            
+        // write an empty line to separate records
         bufWriter.newLine();
         return;
     }
@@ -113,27 +226,27 @@ public class LDIFWriter extends LDIF implements LDAPWriter {
     /**
      * Write a comment line into the LDIF OutputStream.
      *
-     * <p> an '#' char is added to the front of the line to indicate that
-     * the line is a comment line. If the line contains more than 78
+     * <p> an '#' char is added to the front of each line to indicate that
+     * the line is a comment line. If a line contains more than 78
      * chars, it will be split into multiple lines that start
      * with '#' chars.</p>
      *
-     * @param line The comment line to be written to the OutputStream
+     * @param lines The comment lines to be written to the OutputStream
      *
      * @throws IOException if an I/O error occurs.
      */
-    public void writeCommentLine (String line) throws IOException
+    public void writeComments (String lines) throws IOException
     {
-        if (line != null && line.length() != 0) {
+        if (lines != null && lines.length() != 0) {
 
-            if (line.length() <= 78) {
+            if (lines.length() <= 78) {
                 // short line, write it out
-                bufWriter.write("# " + line, 0, line.length()+2);
+                bufWriter.write("# " + lines, 0, lines.length()+2);
             }
             else {
                 // berak long line
                 StringBuffer longLine = new StringBuffer();
-                longLine.append(line);
+                longLine.append(lines);
 
                 while(longLine.length() > 78) {
                     // write "# " and the starting 78 chars
@@ -154,6 +267,72 @@ public class LDIFWriter extends LDIF implements LDAPWriter {
         return;
     }
 
+    /**
+     * Gets the version of the LDIF data associated with the input stream
+     *
+     * @return the version number
+     */
+    public String getVersion()
+    {
+        return version;
+    }
+
+    /**
+     * Returns true if request data ist associated with the input stream,
+     * or false if content data.
+     *
+     * @return true if input stream contains request data.
+     */
+    public boolean isRequest()
+    {
+        return requestFile.booleanValue();
+    }
+    
+    /**
+     * Check if the input byte array object is safe to make a String.
+     *
+     * <p>Check if the input byte array contains any un-printable value</p>
+     *
+     * @param bytes The byte array object to be checked.
+     *
+     * @return boolean object to incidate that the byte array
+     * object is safe or not
+     */
+    public boolean isPrintable( byte[] bytes )
+    {
+        if (bytes == null) {
+            throw new RuntimeException(
+                    "com.novell.ldap.ldif_dsml.LDIFWriter: null pointer");
+        }
+        else if (bytes.length > 0) {
+            for (int i=0; i<bytes.length; i++) {
+                if ( (bytes[i]&0x00ff) < 0x20 || (bytes[i]&0x00ff) > 0x7e ) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    
+    /**
+     * Write the version line of LDIF file into the OutputStream.
+     *
+     * <p>Two extra lines will be written to separate version line
+     * with the rest of lines in LDIF file</p>
+     *
+     * @throws IOException if an I/O error occurs.
+     */
+    private void writeVersionLine () throws IOException
+    {
+        // LDIF file is currently using 'version 1'
+        String versionLine = new String("version: " + getVersion());
+        bufWriter.write( versionLine, 0, versionLine.length());
+        // write an empty line to separate the version line
+        // with the rest of the contents in LDIF file
+        bufWriter.newLine();
+        bufWriter.newLine();
+        return;
+    }
 
     /**
      * Write a line into the OutputStream.
@@ -202,118 +381,6 @@ public class LDIFWriter extends LDIF implements LDAPWriter {
         }
     }
 
-
-    /**
-     * Write a number of content records into LDIF content file.
-     *
-     * @param entries LDAPEntry array object
-     */
-    public void writeContents(LDAPEntry[] entries)
-            throws IOException
-    {
-        for ( int i = 0; i < entries.length; i++ ) {
-            writeContent(entries[i]);
-        }
-        return;
-    }
-
-
-    /**
-     * Write a content record into LDIF content file
-     *
-     * @param entry LDAPEntry object
-     *
-     * @throws IOException if an I/O error occurs.
-     */
-    public void writeContent(LDAPEntry entry)
-            throws IOException
-    {
-        // write the content line into LDIF file
-        writeAddRequest(entry, null);
-        // write an empry line to separate records
-        bufWriter.newLine();
-        // write to putputStream
-        bufWriter.flush();
-        return;
-    }
-
-
-    /**
-     * Write a number of LDAP requests into LDIF change file. The requests
-     * can be an LDAPAddRequest, LDAPDeleteRequest, LDAPModifyDNRequest,
-     * or LDAPModifyRequest operation.
-     *
-     * @see com.novell.ldap.message.LDAPAddRequest
-     * @see com.novell.ldap.message.LDAPDeleteRequest
-     * @see com.novell.ldap.message.LDAPModifyDNRequest
-     * @see com.novell.ldap.message.LDAPModifyRequest
-     *
-     * @throws IOException if an I/O error occurs.
-     */
-    public void writeRequests(LDAPMessage[] requests) throws IOException
-    {
-        for ( int i = 0; i < requests.length; i++ ) {
-            writeRequest( requests[i] );
-        }
-        return;
-    }
-
-
-    /**
-     * Write an LDAP change record into LDIF file. The change operation may
-     * be an LDAPAddRequest, LDAPDeleteRequest, LDAPModifyDNRequest,
-     * or LDAPModifyRequest.
-     *
-     * @see com.novell.ldap.message.LDAPAddRequest
-     * @see com.novell.ldap.message.LDAPDeleteRequest
-     * @see com.novell.ldap.message.LDAPModifyDNRequest
-     * @see com.novell.ldap.message.LDAPModifyRequest
-     *
-     * @param request LDAPMessage object
-     *
-     * @throws IOException if an I/O error occurs.
-     */
-    public void writeRequest(LDAPMessage request) throws IOException
-    {
-        LDAPControl[]  controls = request.getControls();
-
-        switch( request.getType()) {
-        case LDAPMessage.ADD_REQUEST:
-            // LDAPAdd request, write entry to outputStream
-            LDAPAddRequest areq = (LDAPAddRequest)request;
-            writeAddRequest(areq.getEntry(), controls);
-            break;
-        case LDAPMessage.DEL_REQUEST:
-            // LDAPDelete request, write dn to outputStream
-            LDAPDeleteRequest dreq = (LDAPDeleteRequest)request;
-            writeDeleteRequest( dreq.getDN(), controls );
-            break;
-        case LDAPMessage.MODIFY_RDN_REQUEST:
-            // LDAPModDN request, write request data to outputStream
-            LDAPModifyDNRequest rreq = (LDAPModifyDNRequest)request;
-            // write to outputStream
-            writeModifyDNRequest( rreq.getDN(),
-                                  rreq.getNewRDN(),
-                                  rreq.getDeleteOldRDN(),
-                                  rreq.getParentDN(),
-                                  controls );
-            break;
-        case LDAPMessage.MODIFY_REQUEST:
-            // LDAPModify request, write modifications to outputStream
-            LDAPModifyRequest mreq = (LDAPModifyRequest)request;
-            // write to outputStream
-            writeModifyRequest( mreq.getDN(), mreq.getModifications(), controls );
-            break;
-        default:
-            throw new RuntimeException("Unsupported request type: " +
-                    request.toString());
-        }            
-        // write an empty line to separate records
-        bufWriter.newLine();
-        return;
-    }
-
-
     /**
      * Used to generate LDIF content record or LDIF change/add record lines.
      *
@@ -355,8 +422,6 @@ public class LDIFWriter extends LDIF implements LDAPWriter {
         }
         return;
     }
-
-
 
     /**
      * Used to generate LDIF change/modify record lines.
@@ -421,8 +486,6 @@ public class LDIFWriter extends LDIF implements LDAPWriter {
         }
         return;
     }
-
-
 
     /**
      * Used to generate LDIF change/moddn record lines.
@@ -508,7 +571,6 @@ public class LDIFWriter extends LDIF implements LDAPWriter {
         return;
     }
 
-
     /**
      * Write the DN to the outputStream.  If the DN characters are unsafe,
      * the DN is encoded.
@@ -526,7 +588,6 @@ public class LDIFWriter extends LDIF implements LDAPWriter {
         }
         return;
     }
-
 
     /**
      * Write control line(s).
@@ -554,7 +615,6 @@ public class LDIFWriter extends LDIF implements LDAPWriter {
         return;
     }
 
-
     /**
      * Write attribute name and value into outputStream.
      *
@@ -577,7 +637,6 @@ public class LDIFWriter extends LDIF implements LDAPWriter {
         return;
     }
 
-
     /**
      * Write attribute name and value into outputStream.
      *
@@ -599,31 +658,5 @@ public class LDIFWriter extends LDIF implements LDAPWriter {
             }
         }
         return;
-    }
-
-    /**
-     * Check if the input byte array object is safe to make a String.
-     *
-     * <p>Check if the input byte array contains any un-printable value</p>
-     *
-     * @param bytes The byte array object to be checked.
-     *
-     * @return boolean object to incidate that the byte array
-     * object is safe or not
-     */
-    public boolean isPrintable( byte[] bytes )
-    {
-        if (bytes == null) {
-            throw new RuntimeException(
-                    "com.novell.ldap.ldif_dsml.LDIFWriter: null pointer");
-        }
-        else if (bytes.length > 0) {
-            for (int i=0; i<bytes.length; i++) {
-                if ( (bytes[i]&0x00ff) < 0x20 || (bytes[i]&0x00ff) > 0x7e ) {
-                    return false;
-                }
-            }
-        }
-        return true;
     }
 }

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: DSMLHandler.java,v 1.15 2002/10/24 19:30:12 $
+ * $Novell: DSMLHandler.java,v 1.16 2002/10/25 18:09:58 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -12,7 +12,7 @@
  * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
  * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
  */
-package com.novell.ldap.ldif_dsml;
+package com.novell.ldap.util;
 
 import com.novell.ldap.*;
 import com.novell.ldap.rfc2251.*;

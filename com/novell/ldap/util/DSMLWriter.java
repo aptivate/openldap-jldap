@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: DSMLWriter.java,v 1.11 2002/10/22 22:15:47 $
+ * $Novell: DSMLWriter.java,v 1.12 2002/10/25 18:09:59 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -13,7 +13,7 @@
  * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
  */
 
-package com.novell.ldap.ldif_dsml;
+package com.novell.ldap.util;
 
 import com.novell.ldap.*;
 
@@ -31,6 +31,7 @@ public class DSMLWriter implements LDAPWriter {
     private static final int SEARCH_TAG = 3;
     private boolean indent = false;
     private String tabString = "    ";
+    private String version = "2.1";
 
     private static final String BATCH_REQUEST_START =
             "<batchRequest xmlns=\"urn:oasis:names:tc:DSML:2:0:core\">";
@@ -90,7 +91,13 @@ public class DSMLWriter implements LDAPWriter {
         out.close();
     }
 
-    public void writeOperation(LDAPMessage messageToWrite) throws IOException, LDAPLocalException
+    public void writeComments( String lines)
+    {
+        return;
+    }
+    
+    public void writeMessage(LDAPMessage messageToWrite)
+                throws IOException, LDAPLocalException
     {
         //check state and write batch tags if neccessary
         if ((messageToWrite instanceof LDAPResponse) ||
@@ -196,7 +203,28 @@ public class DSMLWriter implements LDAPWriter {
                 break;
         }
     }
+    
+    /**
+     * Gets the version of the LDIF data associated with the input stream
+     *
+     * @return the version number
+     */
+    public String getVersion()
+    {
+        return version;
+    }
 
+    /**
+     * Returns true if request data ist associated with the input stream,
+     * or false if content data.
+     *
+     * @return true if input stream contains request data.
+     */
+    public boolean isRequest()
+    {
+        return true;
+    }
+    
     private void writeResult(LDAPResponse result, int indent) throws IOException {
         /* controls: */
         //LDAPControl[] controls = result.getControls();
