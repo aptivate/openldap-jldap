@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/client/Message.java,v 1.9 2001/01/04 20:14:48 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/client/Message.java,v 1.10 2001/01/04 20:55:56 vtag Exp $
 *
 * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
 * 
@@ -213,8 +213,7 @@ public class Message extends Thread
      *
      * @return the RfcLDAPMessage request associated with this message
      */
-    /* package */
-    LDAPMessage getRequest()
+    public LDAPMessage getRequest()
     {
         return msg;
     }
@@ -256,7 +255,7 @@ public class Message extends Thread
             if( Debug.LDAP_DEBUG) {
                 res = ((RfcResponse)message.getProtocolOp()).getResultCode().getInt();
                 Debug.trace( Debug.messages, name +
-                    "Queuing LDAPResult, message complete, status " + res);
+                    "LDAPResult Queued, message complete, status " + res);
             }
             // Accept no more results for this message
             // Leave on connection queue so we can abandon if necessary
@@ -283,7 +282,7 @@ public class Message extends Thread
             }
         } else {
             if( Debug.LDAP_DEBUG) {
-                Debug.trace( Debug.messages, name + "Queuing Reply");
+                Debug.trace( Debug.messages, name + "Reply Queued");
             }
         }
         // wake up waiting threads
