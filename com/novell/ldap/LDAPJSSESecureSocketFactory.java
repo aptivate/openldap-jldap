@@ -49,39 +49,20 @@ public class LDAPJSSESecureSocketFactory
     public LDAPJSSESecureSocketFactory()
     {
         factory = SSLSocketFactory.getDefault();
+        return;
     }
 
     /**
      * Constructs an LDAPSocketFactory object using the
      * SSLSocketFactory specified.
      *
-     * For information on using the SSLContext see also
+     * For information on using the the SSLSocketFactory, see also
      * <a href="http://java.sun.com/j2se/1.4/docs/api/javax/net/ssl/SSLSocketFactory.html>
-     * javax.net.ssl.SSLContext</a>
+     * javax.net.ssl.SSLSocketFactory</a>
      */
     public LDAPJSSESecureSocketFactory(SSLSocketFactory factory)
     {
         this.factory = factory;
-        return;
-    }
-
-    /**
-     * @deprecated see #LDAPJSSESecureSocketFactory(SSLSocketFactory)
-     * Note: This should not be in this Factory.  Will be removed because
-     * it forces a dependency on Sun's JSSE.
-     *
-     * Constructs a SocketFactory object using the SSLContext as specified.
-     *
-     * <p>Note that ctx should be initialized by the method init before calling
-     * this method.  This method can be used to customize which JSSE provider is
-     * used, which Cipher suites are used, and what trustManagers are used</p>
-     *
-     * For information on using the SSLContext see also
-     * <a href="http://java.sun.com/j2se/1.4/docs/api/javax/net/ssl/SSLContext.html>
-     * javax.net.ssl.SSLContext</a>
-     */
-    public LDAPJSSESecureSocketFactory(com.sun.net.ssl.SSLContext ctx){
-        factory = ctx.getSocketFactory();
         return;
     }
 
