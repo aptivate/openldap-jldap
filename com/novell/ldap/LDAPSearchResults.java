@@ -91,8 +91,6 @@ public class LDAPSearchResults
                             " Object created, batch size " + this.batchSize +
                             ", hops " + cons.getHopLimit());
         }
-
-        completed = getBatchOfResults(); // initialize the vector
         return;
     }
 
