@@ -42,33 +42,32 @@ import com.novell.ldap.ldif_dsml.LDAPModify;
 
 public class LDIFReader extends LDIF implements LDAPImport {
 
-    private int                 version;
+    private int       version, recordType, changeType;    
+    private String    dn, changeField, changeOperation;
+    private String[]  recordFields;    
+    private String[]  namePairs;                 // attr name and value pairs
+    private String[]  controlFields;
     private BufferedReader      bufReader;
-    private String    dn;
-    private String[]  recordFields;
+    private LDAPControl[] controls = null;
     private LDAPEntry currentEntry = null;
     private LDAPOperation currentChange = null;
-    private String[] namePairs;
-    ///private String[] attrs;
-    private int recordType;
-    private String    changeField;
-    private String[] controlFields;
-    private LDAPControl[] controls = null;
-    private String    changeOperation;
-    private int       changeType;
 
     /**
      * Constructs an LDIFReader object by initializing LDIF_VERSION, isContent,
      * InputStreamReader, and BufferedReader.
+     *
+     * In order to determine if this is a LDIF content file or LDIF change file,
+     * the lines of the first record in the file are red into memory.  
      */
     public LDIFReader(InputStream in) throws IOException, LDAPException {
+        
         super();
         super.setVersion( LDIF.LDIF_VERSION_1 );
         InputStreamReader isr = new InputStreamReader(in, "UTF8");
         bufReader = new BufferedReader(isr);
 
         String line;
-        ArrayList FRLines = new ArrayList(); // first record lines
+        ArrayList FRLines = new ArrayList();
 
         // skip the leading empty and comment lines before version line,
         // and read the version line
@@ -81,7 +80,8 @@ public class LDIFReader extends LDIF implements LDAPImport {
             version = Integer.parseInt(
                 line.substring("version:".length()).trim() );
             if ( version != 1 ) {
-                throw( new IOException( "Should be 'version: 1'" ) );
+                throw( new IOException( "com.novell.ldap.ldif_dsml.LDIFReader" +
+                                                  "Should be 'version: 1'" ) );
             }
         }
 
@@ -109,7 +109,8 @@ public class LDIFReader extends LDIF implements LDAPImport {
         // go back to the beginning of the first record of the LDIF file
         bufReader.reset();
 
-        // is this not a content LDIF file?
+        // check the second recore field to see if it starts with 'changetype'
+        // control. If it does, set super class isContent to 'false'
         if (   ((this.recordFields[1]).startsWith("changetype:"))
             || ((this.recordFields[1]).startsWith("control:"))) {
             setContent(false);
@@ -125,7 +126,7 @@ public class LDIFReader extends LDIF implements LDAPImport {
      * @return The LDAPOperation object represented by the LDIF change record.
      */
     public LDAPOperation readChange()
-    throws UnsupportedEncodingException, LDAPException,IOException {
+    throws UnsupportedEncodingException, IOException {
 
         ArrayList cLines = new ArrayList(); // change record lines
 
@@ -142,7 +143,7 @@ public class LDIFReader extends LDIF implements LDAPImport {
         toRecordFields(cLines);
 
         //
-        setRecordProperties();
+        toRecordProperties();
 
         switch( changeType ) {
                     // construct a specific change record object and let the
@@ -212,8 +213,8 @@ public class LDIFReader extends LDIF implements LDAPImport {
 
                     default:
                         // unknown change type
-                        throw new LDAPException("com.novell.ldap.util."
-                                        + "LDIFReader: Unknown change type", 0);
+                        throw new IOException("com.novell.ldap.ldif_dsml."
+                                        + "LDIFReader: Unknown change type");
                 }
 
         return currentChange;
@@ -246,7 +247,7 @@ public class LDIFReader extends LDIF implements LDAPImport {
         toRecordFields(cLines);
 
         //
-        setRecordProperties();
+        toRecordProperties();
 
         currentEntry = toLDAPEntry();
 
@@ -260,7 +261,7 @@ public class LDIFReader extends LDIF implements LDAPImport {
      * @param The LDIF record fields.
      */
     private void decodeRecordFields(String[] fields)
-                            throws UnsupportedEncodingException, LDAPException {
+                            throws UnsupportedEncodingException, IOException {
 
         int i, firstColon, len = fields.length;;
         String tempString;
@@ -290,12 +291,11 @@ public class LDIFReader extends LDIF implements LDAPImport {
      * @return LDAPEntry object.
      */
     private LDAPEntry toLDAPEntry() {
-        int i, j, len;
-        int index;                       // to separate attrNames and attrValues
-        ArrayList tl  = new ArrayList(); // to hold multiple attr values
-        String attrName;                 // to hole attribute name
-        String attrValue;                // to hold attribute value
-        String[] values = null;          // to hold multi-valued attribute values
+        int i, j, index, len;                      
+        ArrayList tl  = new ArrayList(); 
+        String attrName;                 
+        String attrValue;                
+        String[] values = null;          
         LDAPAttribute attr;
         LDAPAttributeSet attrSet = new LDAPAttributeSet();
 
@@ -308,7 +308,7 @@ public class LDIFReader extends LDIF implements LDAPImport {
             attrValue = (namePairs[i]).substring(index + 1).trim();
             tl.add(attrValue);
 
-            // look up the rest of the anmePairs to see
+            // look up the rest of the namePairs to see
             // if this is a multi-valued attribute
             for ( j = i + 1; j < len; j++) {
                 index = (namePairs[j]).indexOf((int)':');
@@ -369,7 +369,8 @@ public class LDIFReader extends LDIF implements LDAPImport {
 
         // check if the first dn line starts with 'dn:'
         if ( !line.startsWith("dn:") ) {
-            throw new IOException("Any record should start with 'dn:'");
+            throw new IOException("com.novell.ldap.ldif_dsml." + 
+                                  "Any record should start with 'dn:'");
         }
 
         RLines.add(line);
@@ -386,31 +387,22 @@ public class LDIFReader extends LDIF implements LDAPImport {
     /**
      * Turn record lines into record fields and decode any Base64 encoded fields
      *
-     * @param The LDIF record lines
+     * @param lines  The LDIF record lines
      */
     public void toRecordFields(ArrayList lines)
-    throws UnsupportedEncodingException, LDAPException {
+    throws UnsupportedEncodingException, IOException {
 
         int i, firstColon, len = lines.size();
-        String tempString, rLines[];
+        String tempString;
         ArrayList tempList = new ArrayList();
 
-        // populate rLines with the lines just red
-        rLines = new String[lines.size()];
+        
         for ( i = 0; i < len; i++ ) {
-            rLines[i] = (String)lines.get(i);
-        }
+            tempString = (String)(lines.get(i));
 
-        // a record field may consist of one or multiple lines. concatenate
-        // the continuation lines to get the whole field. a continuation
-        // line starts with a single white space
-        for ( i = 0; i < len; i++ ) {
-            tempString = rLines[i];
-
-            while( (i < len-1) && (rLines[i+1]).startsWith(" ")) {
-                // find a continuationvline,concatenate
-                // it to the previous line
-                tempString += (rLines[i+1]).substring(1);
+            while( (i < len-1) && (((String)lines.get(i+1))).startsWith(" ")) {
+                // find a continuationvline,concatenate it to the previous line
+                tempString += ((String)lines.get(i+1)).substring(1);
                 i++;
             }
 
@@ -428,7 +420,11 @@ public class LDIFReader extends LDIF implements LDAPImport {
         decodeRecordFields(this.recordFields);
     }
 
-    private void setRecordProperties() throws LDAPException {
+    /**
+     * set up record dn, attribute names and values, and controls
+     *
+     */    
+    private void toRecordProperties() throws IOException {
 
         int i, index, len = this.recordFields.length;
 
@@ -489,8 +485,7 @@ public class LDIFReader extends LDIF implements LDAPImport {
                     this.namePairs[i] = this.recordFields[i+2];
                 }
             }
-            //setChangeIdentity(this.changeField);
-
+            
             index = (this.changeField).indexOf((int)':');
             this.changeOperation = (this.changeField).substring(index+1).trim();
 
@@ -511,7 +506,8 @@ public class LDIFReader extends LDIF implements LDAPImport {
                 this.changeType = LDAPOperation.LDAP_MODIFY;
             }
             else
-                throw new LDAPException("not supported change operation", 0);
+                throw new IOException("com.novell.ldap.ldif_dsml." +
+                                      "not supported change operation");
 
         }
     }
@@ -519,16 +515,20 @@ public class LDIFReader extends LDIF implements LDAPImport {
     /**
      * Build an ModInfo object based on the content of LDIF modDN reocrd
      *
-     * @return ModInfo object that holds newRDN, deleteOldRDN, and newSuperior
+     * @return mods ModInfo object that holds newRDN, deleteOldRDN, 
+     * and newSuperior
      */
     public ModInfo toModInfo() {
 
+        int index;
         boolean delOldRDN;
         String nRDN, sDelOldRDN, nSup;
         ModInfo mi = null;
 
-        nRDN = (namePairs[0]).substring(namePairs[0].indexOf((int)':')+ 1).trim();
-        sDelOldRDN=((namePairs[1]).substring(namePairs[1].indexOf((int)':')+1)).trim();
+        index = namePairs[0].indexOf((int)':') + 1;
+        nRDN  = namePairs[0].substring(index).trim();
+        index = namePairs[1].indexOf((int)':')+1;
+        sDelOldRDN = namePairs[1].substring(index).trim();
 
         if ( Integer.parseInt(sDelOldRDN) == 1 ) {
             delOldRDN = true;
@@ -543,7 +543,8 @@ public class LDIFReader extends LDIF implements LDAPImport {
         }
         else {
             // new superior is specified in the record
-            nSup=(namePairs[02]).substring(namePairs[2].indexOf((int)':')+1).trim();
+            nSup = namePairs[02].
+                          substring(namePairs[2].indexOf((int)':')+1).trim();
             mi = new ModInfo( nRDN, delOldRDN, nSup) ;
         }
 
@@ -555,7 +556,7 @@ public class LDIFReader extends LDIF implements LDAPImport {
      *
      * @return LDAPModification array.
      */
-    public LDAPModification[] toLDAPModifications () throws LDAPException {
+    public LDAPModification[] toLDAPModifications () throws IOException {
 
         int        i, j, k, changeNumber = 0, modType, len = namePairs.length;
         String     temp, attrName, attrValue, modOp;
@@ -617,7 +618,8 @@ public class LDIFReader extends LDIF implements LDAPImport {
                     mod = new LDAPModification(LDAPModification.REPLACE, attr);
                 }
                 else {
-                    throw new LDAPException("Not supported modify operation", 0);
+                    throw new IOException("com.novell.ldap.ldif_dsml.LDIFReader:" 
+                                            + "Not supported modify operation");
                 }
 
                 j++;
