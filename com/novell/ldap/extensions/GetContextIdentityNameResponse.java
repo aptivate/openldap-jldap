@@ -48,25 +48,33 @@ public class GetContextIdentityNameResponse extends LDAPExtendedResponse {
          throws IOException {
 
         super(rfcMessage);
-        // parse the contents of the reply
-        byte [] returnedValue = this.getValue();
-        if (returnedValue == null)
-            throw new IOException("No returned value");
+        
+        if (getResultCode() == LDAPException.SUCCESS)
+        {
+            // parse the contents of the reply
+            byte [] returnedValue = this.getValue();
+            if (returnedValue == null)
+                throw new IOException("No returned value");
 
-        // Create a decoder object
-        LBERDecoder decoder = new LBERDecoder();
-        if (decoder == null)
-            throw new IOException("Decoding error");
+            // Create a decoder object
+            LBERDecoder decoder = new LBERDecoder();
+            if (decoder == null)
+                throw new IOException("Decoding error");
 
-        // The only parameter returned should be an octet string
-        ASN1OctetString asn1_identity = (ASN1OctetString)decoder.decode(returnedValue);
-        if (asn1_identity == null)
-            throw new IOException("Decoding error");
+            // The only parameter returned should be an octet string
+            ASN1OctetString asn1_identity = (ASN1OctetString)decoder.decode(returnedValue);
+            if (asn1_identity == null)
+                throw new IOException("Decoding error");
 
-        // Convert to normal string object
-        identity = new String(asn1_identity.getContent());
-        if (identity == null)
-            throw new IOException("Decoding error");
+            // Convert to normal string object
+            identity = new String(asn1_identity.getContent());
+            if (identity == null)
+                throw new IOException("Decoding error");
+        }
+        else
+        {
+            identity = "";
+        }
    }
 
    /**

@@ -50,22 +50,28 @@ public class GetEffectivePrivilegesResponse extends LDAPExtendedResponse {
 
         super(rfcMessage);
 
-        // parse the contents of the reply
-        byte [] returnedValue = this.getValue();
-        if (returnedValue == null)
-            throw new IOException("No returned value");
+        if (getResultCode() == LDAPException.SUCCESS)
+        {
+            // parse the contents of the reply
+            byte [] returnedValue = this.getValue();
+            if (returnedValue == null)
+                throw new IOException("No returned value");
 
-        // Create a decoder object
-        LBERDecoder decoder = new LBERDecoder();
-        if (decoder == null)
-            throw new IOException("Decoding error");
+            // Create a decoder object
+            LBERDecoder decoder = new LBERDecoder();
+            if (decoder == null)
+                throw new IOException("Decoding error");
 
-        ASN1Integer asn1_privileges = (ASN1Integer)decoder.decode(returnedValue);
-        if (asn1_privileges == null)
-            throw new IOException("Decoding error");
+            ASN1Integer asn1_privileges = (ASN1Integer)decoder.decode(returnedValue);
+            if (asn1_privileges == null)
+                throw new IOException("Decoding error");
 
-
-        privileges = asn1_privileges.getInt();
+            privileges = asn1_privileges.getInt();
+        }
+        else
+        {
+            privileges = 0;
+        }
    }
 
    /**
