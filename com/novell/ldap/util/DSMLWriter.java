@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: DSMLWriter.java,v 1.20 2002/11/13 23:56:10 $
+ * $Novell: DSMLWriter.java,v 1.21 2002/11/14 17:32:19 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -445,11 +445,19 @@ public class DSMLWriter implements LDAPWriter {
         out.write(attr.getName());
         out.write("\">");
         String values[] = attr.getStringValueArray();
+        byte bytevalues[][] = attr.getByteValueArray();
         for(int i=0; i<values.length; i++){
             newLine(4);
-            out.write("<value>");
-            out.write(values[i]);
-            out.write("</value>");
+            if (Base64.isValidUTF8(bytevalues[i], false)){
+                out.write("<value>");
+                out.write(values[i]);
+                out.write("</value>");
+            } else {
+                out.write("<value xsi:type=\"base64Binary\"");
+                out.write(Base64.encode(bytevalues[i]));
+                out.write("</value>");
+            }
+
         }
         newLine(3);
         out.write("</attr>");
