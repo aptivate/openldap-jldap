@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.37 2000/09/26 22:37:22 judy Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.38 2000/09/27 22:04:57 judy Exp $
 *
 * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
 * 
@@ -48,7 +48,6 @@ public class LDAPConnection implements
    private String host = null;
    private int port = 0;
    private LDAPSearchConstraints defSearchCons = new LDAPSearchConstraints();
-   private LDAPConstraints defCons = new LDAPConstraints();
    private int authenticationVersion = 3;
    private String authenticationPassword = null;
    private String authenticationDN = null;
@@ -590,7 +589,7 @@ public class LDAPConnection implements
     */
    public LDAPConstraints getConstraints()
    {
-      return this.defCons;
+      return this.defSearchCons;
    }
 
    /**
@@ -655,7 +654,13 @@ public class LDAPConnection implements
     */
    public void setConstraints(LDAPConstraints cons)
    {
-      this.defCons = cons;
+      this.defSearchCons.setHopLimit(cons.getHopLimit());
+      this.defSearchCons.setBindProc(cons.getBindProc());
+      this.defSearchCons.setRebindProc(cons.getRebindProc());
+      this.defSearchCons.setReferrals(cons.getReferrals());
+      this.defSearchCons.setTimeLimit(cons.getTimeLimit());
+      this.defSearchCons.setClientControls(cons.getClientControls());
+      this.defSearchCons.setServerControls(cons.getServerControls());
       return;
    }
 
@@ -720,7 +725,10 @@ public class LDAPConnection implements
     */
    public void setSearchConstraints(LDAPSearchConstraints cons)
    {
-      this.defSearchCons = cons;
+      this.defSearchCons.setBatchSize( cons.getBatchSize() );
+      this.defSearchCons.setDereference( cons.getDereference() );
+      this.defSearchCons.setMaxResults( cons.getMaxResults() );
+      this.defSearchCons.setServerTimeLimit( cons.getServerTimeLimit() );
       return;
    }
 
@@ -1044,7 +1052,7 @@ public class LDAPConnection implements
                     String passwd)
       throws LDAPException
    {
-      bind(LDAP_V2, dn, passwd, defCons); // call LDAPv2 bind()
+      bind(LDAP_V2, dn, passwd, defSearchCons); // call LDAPv2 bind()
       return;
    }
 
@@ -1068,7 +1076,7 @@ public class LDAPConnection implements
                                     LDAPResponseListener listener)
                                     throws LDAPException
    {
-      return bind(LDAP_V2, dn, passwd, listener, defCons); // call LDAPv2 bind()
+      return bind(LDAP_V2, dn, passwd, listener, defSearchCons); // call LDAPv2 bind()
    }
 
     /*
@@ -1092,7 +1100,7 @@ public class LDAPConnection implements
                     String passwd)
       throws LDAPException
    {
-      bind(version, dn, passwd, defCons);
+      bind(version, dn, passwd, defSearchCons);
       return;
    }
 
@@ -1177,7 +1185,7 @@ public class LDAPConnection implements
                                     LDAPResponseListener listener)
       throws LDAPException
    {
-      return bind(version, dn, passwd, listener, defCons);
+      return bind(version, dn, passwd, listener, defSearchCons);
    }
 
    /**
@@ -1310,7 +1318,7 @@ public class LDAPConnection implements
             if( props != null) {
                 password = (String)props.get("password");
             }
-            bind( LDAP_V3, dn, password, defCons);
+            bind( LDAP_V3, dn, password, defSearchCons);
          } else {
              throw new LDAPException(    "Mechanism Not Implemented.",
                                     LDAPException.LDAP_NOT_SUPPORTED);
@@ -2465,6 +2473,8 @@ public class LDAPConnection implements
          search(base, scope, filter, attrs, typesOnly,
                (LDAPSearchListener)null, cons);
 
+      if( cons == null )
+        cons = defSearchCons;
       return new LDAPSearchResults(cons.getBatchSize(), listener);
    }
 

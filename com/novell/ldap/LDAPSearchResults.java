@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResults.java,v 1.13 2000/09/28 15:28:45 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResults.java,v 1.14 2000/09/28 17:43:40 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -32,11 +32,11 @@ public class LDAPSearchResults implements Enumeration
 {
 
     private Vector entries;             // Search entries
-    private Enumeration entryElements;  // Enumeration of entries
-    
-    private Vector searchRefs;          // Search Result References
-    private Enumeration refElements;    // Enumeration of References
-    
+    private int entryCount;             // # Search entries in vector
+    private int entryIndex;             // Current position in vector
+    private Vector references;          // Search Result References
+    private int referenceCount;         // # Search Result Reference in vector
+    private int referenceIndex;         // Current position in vector
     private int batchSize;              // Application specified batch size
     private boolean completed = false;  // All entries received
     private int count = 0;              // Number of entries read
@@ -53,13 +53,21 @@ public class LDAPSearchResults implements Enumeration
     /* package */
     LDAPSearchResults(int batchSize, LDAPSearchListener listener)
     {
+        // setup entry Vector
         int vectorIncr = (batchSize == 0) ? 64 : 0;
+        entries = new Vector( (batchSize == 0) ? 64 : batchSize, vectorIncr );
+        entryCount = 0;
+        entryIndex = 0;
+        
+        // setup search reference Vector
+        references = new Vector( 5, 5);
+        referenceCount = 0;
+        referenceIndex = 0;
+        
         this.listener = listener;
-        entries = new Vector( (batchSize == 0) ? 64 : batchSize, vectorIncr );
-        entries = new Vector( (batchSize == 0) ? 64 : batchSize, vectorIncr );
         this.batchSize = (batchSize == 0) ? Integer.MAX_VALUE : batchSize;
-        completed = getBatchOfResults(); // initialize the enumeration
-        entryElements = entries.elements();
+        completed = getBatchOfResults(); // initialize the vector
+        return;    
     }
 
     /*
@@ -108,17 +116,47 @@ public class LDAPSearchResults implements Enumeration
      */
     public boolean hasMoreElements()
     {
-        if(entryElements.hasMoreElements() == true)
+        if( (entryIndex < entryCount) || (referenceIndex < referenceCount))
             return true;
-        if(completed == false) { // reload the enumeration
-            entries.setSize(0);
+        if(completed == false) { // reload the Vector
+            resetVectors();
             completed = getBatchOfResults();
-            entryElements = entries.elements();
-            return entryElements.hasMoreElements();
+            return (entryIndex < entryCount) || (referenceIndex < referenceCount);
         }
-    return false;
+        return false;
     }
 
+    /*
+     * One or more of the vectors was emptied,
+     * get more data for them.
+     */
+    private void resetVectors()
+    {
+        if( referenceIndex >= referenceCount) {
+            if( Debug.LDAP_DEBUG ) {
+                Debug.trace( Debug.messages,
+                    "LDAPSearchResults.resetVectors: " +
+                    "resetting reference vector, index " + referenceIndex +
+                    ", count " + referenceCount);
+            }
+            references.setSize(0);
+            referenceCount = 0;
+            referenceIndex = 0;
+        }
+        if( entryIndex >= entryCount) {
+            if( Debug.LDAP_DEBUG ) {
+                Debug.trace( Debug.messages,
+                    "LDAPSearchResults.resetVectors: " +
+                    "resetting entry vector, index " + entryIndex +
+                    ", count " + entryCount);
+            }
+            entries.setSize(0);
+            entryCount = 0;
+            entryIndex = 0;
+       }
+       completed = getBatchOfResults();
+       return;
+    }
     /*
      * 4.35.4 next
      */
@@ -138,20 +176,55 @@ public class LDAPSearchResults implements Enumeration
      */
     public LDAPEntry next() throws LDAPException
     {
+        if( completed && (entryIndex >= entryCount) &&
+                (referenceIndex >= referenceCount) ) {
+            throw new NoSuchElementException(
+                "LDAPSearchResults.next() no more results");
+        }
         // Check if need to reload the enumeration
-        if( ( completed == false) && (entryElements.hasMoreElements() == false) ) {
-            entries.setSize(0);
-            completed = getBatchOfResults();
-            entryElements = entries.elements();
+        // We want to receive all entries before we hand over references
+        if( ! completed & (entryIndex >= entryCount) ) {
+            resetVectors();
         }
-        Object element = entryElements.nextElement();
-        if( Debug.LDAP_DEBUG ) {
-            Debug.trace( Debug.messages,
-                "LDAPSearchResults: next: found object " +
-                element.getClass().getName());
-        }
-        if(element instanceof LDAPResponse) {         // Search done w/bad status
-            ((LDAPResponse)element).chkResultCode(); // will throw an exception
+        // Check for Search Entries and the Search Result
+        Object element = null;
+        if( entryIndex < entryCount ) {
+            element = entries.elementAt( entryIndex++ );
+            if( Debug.LDAP_DEBUG ) {
+                Debug.trace( Debug.messages,
+                    "LDAPSearchResults: next: found object " +
+                    element.getClass().getName() + 
+                    ", at index " + (entryIndex-1));
+            }
+            if(element instanceof LDAPResponse) {         // Search done w/bad status
+                ((LDAPResponse)element).chkResultCode(); // will throw an exception
+            }
+        } else
+        // Check for Search References
+        if( referenceIndex < referenceCount ) {
+            String refs[] = (String[])(references.elementAt( referenceIndex++) );
+            if( Debug.LDAP_DEBUG ) {
+                Debug.trace( Debug.messages,
+                    "LDAPSearchResults: next: Found search reference " +
+                    "at index " + (referenceIndex-1));
+                for( int i = 0; i < refs.length; i++) {
+                    Debug.trace( Debug.messages, "LDAPSearchResults: \t" + refs[i]);
+                }
+            }
+            throw new LDAPReferralException(
+                LDAPException.errorCodeToString(LDAPException.REFERRAL),
+                LDAPException.REFERRAL, refs);
+        } else {
+            if( Debug.LDAP_DEBUG ) {
+                Debug.trace( Debug.messages, 
+                    "LDAPSearchResults.next(): No entry found and request incomplete\n" +
+                    "\tentryIndex " + entryIndex +
+                    ", entryCount " + entryCount +
+                    ", referenceIndex " + referenceIndex +
+                    ", referenceCount " + referenceCount );
+            }
+            throw new RuntimeException(
+                "LDAPSearchResults.next(): No entry found and request incomplete");
         }
         return (LDAPEntry)element;
     }
@@ -171,19 +244,51 @@ public class LDAPSearchResults implements Enumeration
      */
     public Object nextElement()
     {
+        Object element;
+        if( completed ) {
+            throw new NoSuchElementException(
+                "LDAPSearchResults.nextElement() no more results");
+        }
         // Check if need to reload the enumeration
-        if( ( completed == false) && (entryElements.hasMoreElements() == false) ) {
-            entries.setSize(0);
-            completed = getBatchOfResults();
-            entryElements = entries.elements();
+        // We want to receive all entries before we hand over references
+        if( entryIndex >= entryCount ) {
+            resetVectors();
         }
-        Object element = entryElements.nextElement();
-        if( Debug.LDAP_DEBUG ) {
-            Debug.trace( Debug.messages,
-                "LDAPSearchResults: nextElement: found object " +
-                element.getClass().getName());
+        // Check for Search Entries and the Search Response
+        if( entryIndex < entryCount ) {
+            element = entries.elementAt( entryIndex++ );
+            if( Debug.LDAP_DEBUG ) {
+                Debug.trace( Debug.messages,
+                    "LDAPSearchResults: next: found object " +
+                    element.getClass().getName());
+            }
+        } else
+        // Check for Search References
+        if( referenceIndex < referenceCount ) {
+            String refs[] = (String[])(references.elementAt( referenceIndex++) );
+            if( Debug.LDAP_DEBUG ) {
+                Debug.trace( Debug.messages,
+                    "LDAPSearchResults: next: Generating Referral Exception");
+                for( int i = 0; i < refs.length; i++) {
+                    Debug.trace( Debug.messages, "LDAPSearchResults: \t" + refs[i]);
+                }
+            }
+            element = new LDAPReferralException(
+                LDAPException.errorCodeToString(LDAPException.REFERRAL),
+                LDAPException.REFERRAL, refs);
+        } else {
+            if( Debug.LDAP_DEBUG ) {
+                Debug.trace( Debug.messages, 
+                    "LDAPSearchResults.next(): No entry found and request incomplete\n" +
+                    "\tentryIndex " + entryIndex +
+                    ", entryCount " + entryCount +
+                    ", referenceIndex " + referenceIndex +
+                    ", referenceCount " + referenceCount );
+            }
+            throw new RuntimeException(
+                "LDAPSearchResults.next(): No entry found and request incomplete");
         }
-        return element;
+        return (LDAPEntry)element;
     }
 
     /*
@@ -234,7 +339,13 @@ public class LDAPSearchResults implements Enumeration
     private boolean getBatchOfResults()
     {
         LDAPMessage msg;
-        for(int i=0; i<batchSize;) {
+        if( Debug.LDAP_DEBUG ) {
+            Debug.trace( Debug.messages,
+            "LDAPSearchResults: getBatchOfResults: " +
+            "Entry, batch size " + batchSize );
+        }
+            
+        for(int i=0; i<batchSize; ) {
             try {
                 if((msg = listener.getResponse()) != null) {
                     // Only save controls if there are some
@@ -243,26 +354,48 @@ public class LDAPSearchResults implements Enumeration
                         controls = ctls;
                     if(msg instanceof LDAPSearchResult) { // Search Entry
                         entries.addElement(((LDAPSearchResult)msg).getEntry()); // can we optimize this?
-                        if( Debug.LDAP_DEBUG )
-                            Debug.trace( Debug.messages,
-                            "LDAPSearchResults: getBatchOfResults: got LDAPSearchResult");
-                        count++;
                         i++;
+                        if( Debug.LDAP_DEBUG ) {
+                            Debug.trace( Debug.messages,
+                            "LDAPSearchResults: getBatchOfResults: " + 
+                            "add LDAPSearchResult, index " + entryCount +
+                            ", batch count " + i);
+                        }    
+                        entryCount++;
+                        count++;
                     } else 
                     if(msg instanceof LDAPSearchResultReference) { // Search Ref
-                          if( Debug.LDAP_DEBUG )
-                              Debug.trace( Debug.messages,
-                                  "LDAPSearchResults: getBatchOfResults: got LDAPSearchResultReference");
-                    } else { // SearchResultDone
-                        int resultCode = ((LDAPResponse)msg).getResultCode();
-                        if( Debug.LDAP_DEBUG )
+                        // references.addElement(
+                            // ((LDAPSearchResultReference)msg).getUrls());
+                        // referenceCount++;
+                        i++;
+                        if( Debug.LDAP_DEBUG ) {
                             Debug.trace( Debug.messages,
-                            "LDAPSearchResults: getBatchOfResults: got LDAPSearchResultDone, status " +
-                            resultCode);
-
+                            "LDAPSearchResults: getBatchOfResults: " + 
+                            "add LDAPSearchResultReference, index " + 
+                            referenceCount + ", batch count " + i);
+                        }
+                    } else { // LDAPResponse
+                        int resultCode = ((LDAPResponse)msg).getResultCode();
+                        if( Debug.LDAP_DEBUG ) {
+                            Debug.trace( Debug.messages,
+                            "LDAPSearchResults: getBatchOfResults: " + 
+                            "got LDAPResponse, status " + resultCode);
+                        }
                         if(resultCode != LDAPException.SUCCESS) {
                             entries.addElement(msg);
+                            if( Debug.LDAP_DEBUG ) {
+                                Debug.trace( Debug.messages,
+                                "LDAPSearchResults: getBatchOfResults: " + 
+                                "add LDAPResponse, index " + entryCount);
+                            }        
+                            entryCount++;
                         }
+                        if( Debug.LDAP_DEBUG ) {
+                            Debug.trace( Debug.messages,
+                            "LDAPSearchResults: getBatchOfResults: " + 
+                            "return search complete" );
+                        }        
                         return true; // search completed
                     }
                 } else {
@@ -270,7 +403,8 @@ public class LDAPSearchResults implements Enumeration
                     // we would have to have no responses, no message IDs and no
                     // exceptions
                     throw new RuntimeException(
-                        "LDAPSearchResults: getBatchOfResults: getResponse returned null");
+                        "LDAPSearchResults.getBatchOfResults(): " +
+                        "getResponse returned null");
                 }
             } catch(LDAPException e) { // network error
                 // ?? Shouldn't exception be returned to application????
@@ -279,6 +413,7 @@ public class LDAPSearchResults implements Enumeration
                 //          entries.addElement(response);
                 return true; // search has been interrupted with an error
             }
+            
         }
         return false; // search not completed
     }
@@ -291,8 +426,7 @@ public class LDAPSearchResults implements Enumeration
         listener.abandonAll();
 
         // next, clear out enumeration
-        entries.setSize(0);
-        entryElements = entries.elements();
+        resetVectors();
         completed = true;
     }
 }
