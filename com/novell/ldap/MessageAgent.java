@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/client/MessageAgent.java,v 1.10 2001/03/06 19:19:13 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/client/MessageAgent.java,v 1.11 2001/03/23 19:13:34 vtag Exp $
 *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -346,6 +346,13 @@ public class MessageAgent
                           if( ! info.acceptsReplies() & ! info.hasReplies()) {
                              // Message complete & no more replies, remove from id list
                              messages.removeElement( info);
+                             if( Debug.LDAP_DEBUG) {
+                                Debug.trace( Debug.messages, name +
+                                    "getLDAPMessage: Return last Message(" +
+                                    info.getMessageID() + ")");
+                                debugDisplayMessages();
+                             }
+                          } else {
                              if( Debug.LDAP_DEBUG) {
                                 Debug.trace( Debug.messages, name +
                                     "getLDAPMessage: Return Message(" +
