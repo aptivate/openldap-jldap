@@ -20,7 +20,8 @@ package org.ietf.ldap;
  *  Shared ancestor to the two types of referral objects - LDAPBind and
  *  LDAPRebind.
  *
- * @see com.novell.ldap.LDAPReferralHandler
+ *  @see <a href="../../../../doc/com/novell/ldap/LDAPReferralHandler.html">
+            com.novell.ldap.LDAPReferralHandler</a>
  */
 public interface LDAPReferralHandler
 {

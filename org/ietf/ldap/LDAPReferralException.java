@@ -19,7 +19,8 @@ package org.ietf.ldap;
  *  Thrown when a server returns a referral and when a referral has not
  *  been followed.
  *
- * @see com.novell.ldap.LDAPReferralException
+ *  @see <a href="../../../../doc/com/novell/ldap/LDAPReferralException.html">
+            com.novell.ldap.LDAPReferralException</a>
  */
 public class LDAPReferralException extends LDAPException
 {
@@ -39,7 +40,9 @@ public class LDAPReferralException extends LDAPException
     /**
      * Constructs a default exception with no specific error information.
      *
-     * @see com.novell.ldap.LDAPReferralException#LDAPReferralException()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPReferralException.html
+            #LDAPReferralException()">
+            com.novell.ldap.LDAPReferralException.LDAPReferralException()</a>
      */
     public LDAPReferralException()
     {
@@ -54,7 +57,10 @@ public class LDAPReferralException extends LDAPException
      * Constructs a default exception with a specified string as additional
      * information.
      *
-     * @see com.novell.ldap.LDAPReferralException#LDAPReferralException(String)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPReferralException.html
+            #LDAPReferralException(java.lang.String)">
+            com.novell.ldap.LDAPReferralException.LDAPReferralException(
+            String)</a>
      */
     public LDAPReferralException(String message)
     {
@@ -69,8 +75,10 @@ public class LDAPReferralException extends LDAPException
      * information and an exception that indicates a failure to follow a
      * referral.
      *
-     * @see com.novell.ldap.LDAPReferralException#LDAPReferralException(
-                String, Throwable)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPReferralException.html
+            #LDAPReferralException(java.lang.String, java.lang.Throwable)">
+            com.novell.ldap.LDAPReferralException.LDAPReferralException(
+            String, Throwable)</a>
      */
     public LDAPReferralException(String message,
             Throwable rootException)
@@ -86,8 +94,10 @@ public class LDAPReferralException extends LDAPException
      * Constructs an exception with a specified error string, result code, and
      * an error message from the server.
      *
-     * @see com.novell.ldap.LDAPReferralException#LDAPReferralException(
-                    String, int, String)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPReferralException.html
+            #LDAPReferralException(java.lang.String, int, java.lang.String)">
+            com.novell.ldap.LDAPReferralException.LDAPReferralException(
+            String, int, String)</a>
      */
     public LDAPReferralException(String message,
             int resultCode,
@@ -107,8 +117,11 @@ public class LDAPReferralException extends LDAPException
      * an error message from the server, and an exception that indicates
      * a failure to follow a referral.
      *
-     * @see com.novell.ldap.LDAPReferralException#LDAPReferralException(
-                String, int, String, Throwable)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPReferralException.html
+            #LDAPReferralException(java.lang.String, int, java.lang.String, 
+            java.lang.Throwable)">
+            com.novell.ldap.LDAPReferralException.LDAPReferralException(
+            String, int, String, Throwable)</a>
      */
     public LDAPReferralException(String message,
             int resultCode,
@@ -126,7 +139,9 @@ public class LDAPReferralException extends LDAPException
 
     /** Gets the referral that could not be processed.
      *
-     * @see com.novell.ldap.LDAPReferralException#getFailedReferral()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPReferralException.html
+            #getFailedReferral()">
+            com.novell.ldap.LDAPReferralException.getFailedReferral()</a>
      */
     public String getFailedReferral()
     {
@@ -137,7 +152,9 @@ public class LDAPReferralException extends LDAPException
      * Gets the list of referrals (LDAP URLs to other servers) returned by
      * the LDAP server.
      *
-     * @see com.novell.ldap.LDAPReferralException#getReferrals()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPReferralException.html
+            #getReferrals()">
+            com.novell.ldap.LDAPReferralException.getReferrals()</a>
      */
     public String[] getReferrals()
     {
@@ -147,7 +164,9 @@ public class LDAPReferralException extends LDAPException
     /**
      * Sets a referral that could not be processed
      *
-     * @see com.novell.ldap.LDAPReferralException#setFailedReferral(String)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPReferralException.html
+            #setFailedReferral(java.lang.String)">
+            com.novell.ldap.LDAPReferralException.setFailedReferral(String)</a>
      */
     public void setFailedReferral( String url)
     {
