@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Object.java,v 1.6 2001/03/01 00:30:01 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Object.java,v 1.7 2001/03/07 00:51:23 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -18,22 +18,27 @@ package com.novell.ldap.asn1;
 import java.io.*;
 
 /**
- * This is the root class for all ASN1 types.
+ * This is the base class for all other ASN1 types.
  */
 public abstract class ASN1Object implements Serializable {
 
     protected ASN1Identifier id;
 
     /**
-     * Encode this ASN1Object directly to a stream.
+     * Abstract method that must be implemented by each child
+     * class to encode itself ( an ASN1Object) directly intto 
+     * a output stream.
      *
-     * @param out The stream into which the encoding will go.
+     * @param out The output stream onto which the encoded 
+     * ASN1Object will be placed.
      */
     abstract public void encode(ASN1Encoder enc, OutputStream out)
         throws IOException;
 
     /**
-     * Returns the identifier (CLASS, FORM and TAG) for this ASN1Object.
+     * Returns the identifier for this ASN1Object as an ASN1Identifier. 
+     * This ASN1Identifier object will include the CLASS, FORM and TAG
+     * for this ASN1Object.
      */
     public ASN1Identifier getIdentifier()
     {
@@ -41,9 +46,11 @@ public abstract class ASN1Object implements Serializable {
     }
 
     /**
-     * Sets the identifier (CLASS, FORM and TAG) for this ASN1Object.
+     * Sets the identifier for this ASN1Object. This is helpful when 
+     * creating implicit ASN1Tagged types.
      *
-     * This is helpful when creating implicit ASN1Tagged types.
+     * @param id An ASN1Identifier object representing the CLASS, 
+     * FORM and TAG)
      */
     protected void setIdentifier(ASN1Identifier id)
     {
@@ -52,7 +59,10 @@ public abstract class ASN1Object implements Serializable {
     }
 
     /**
-     * Encode this ASN1Object. Return the encoding in a byte array.
+     * This method returns a byte array representing the encoded
+     * ASN1Object.  It in turn calls the encode method that is 
+     * defined in ASN1Object but will usually be implemented
+     * in the child ASN1 classses.
      */
     public byte[] getEncoding(ASN1Encoder enc) {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -60,7 +70,8 @@ public abstract class ASN1Object implements Serializable {
             encode(enc, out);
         }
         catch(IOException e) {
-            // Should never happen
+            // Should never happen - the current ASN1Object does not have
+            // a encode method. 
             throw new RuntimeException(
                 "IOException while encoding to byte array: " + e.toString());
         }

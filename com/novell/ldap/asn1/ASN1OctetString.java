@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1OctetString.java,v 1.8 2001/01/19 00:32:10 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1OctetString.java,v 1.9 2001/03/01 00:30:01 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -18,7 +18,7 @@ package com.novell.ldap.asn1;
 import java.io.*;
 
 /**
- * Represents the ASN.1 OCTET STRING type.
+ * This class encapsulates the OCTET STRING type.
  */
 public class ASN1OctetString extends ASN1Simple {
 
@@ -29,14 +29,15 @@ public class ASN1OctetString extends ASN1Simple {
     */
    public static final int TAG = 0x04;
 
-   //*************************************************************************
-   // Constructors for ASN1OctetString
-   //*************************************************************************
+   /* Constructors for ASN1OctetString
+    */
 
    /**
-    * Constructs an ASN1OctetString object using a byte array value.
+    * Call this constructor to construct an ASN1OctetString 
+    * object from a byte array.
     *
-    * @param content Non-null byte array value.
+    * @param content A byte array representing the string that 
+    * will be contained in the this ASN1OctetString object
     */
    public ASN1OctetString(byte[] content)
    {
@@ -45,9 +46,11 @@ public class ASN1OctetString extends ASN1Simple {
    }
 
    /**
-    * Constructs an ASN1OctetString object using a String value.
+    * Call this constructor to construct an ASN1OctetString 
+    * object from a String object.
     *
-    * @param content Non-null String value.
+    * @param content A string value that will be contained 
+    * in the this ASN1OctetString object
     */
    public ASN1OctetString(String content)
    {
@@ -62,8 +65,15 @@ public class ASN1OctetString extends ASN1Simple {
    }
 
    /**
-    * Constructs an ASN1OctetString object by decoding data from an input
-    * stream.
+    * Constructs an ASN1OctetString object by decoding data from an 
+    * input stream.
+    *
+    * @param dec The decoder object to use when decoding the
+    * input stream.  Sometimes a developer might want to pass
+    * in his/her own decoder object<br>
+    *
+    * @param in A byte stream that contains the encoded ASN.1
+    *
     */
    public ASN1OctetString(ASN1Decoder dec, InputStream in, int len)
       throws IOException
@@ -74,13 +84,17 @@ public class ASN1OctetString extends ASN1Simple {
                         : new byte[0];
    }
 
-   //*************************************************************************
-   // ASN1Object implementation
-   //*************************************************************************
+   /* ASN1Object implementation
+    */
 
    /**
-    * Encodes the contents of this ASN1OctetString directly to an output
-    * stream.
+    * Call this method to encode the current instance into the 
+    * specified output stream using the specified encoder object.
+    *
+    * @param enc Encoder object to use when encoding self.<br>
+    *
+    * @param out The output stream onto which the encoded byte 
+    * stream is written.
     */
    public void encode(ASN1Encoder enc, OutputStream out)
       throws IOException
@@ -88,9 +102,8 @@ public class ASN1OctetString extends ASN1Simple {
       enc.encode(this, out);
    }
 
-   //*************************************************************************
-   // ASN1OctetString specific methods
-   //*************************************************************************
+   /*ASN1OctetString specific methods
+    */
 
    /**
     * Returns the content of this ASN1OctetString as a byte array.
@@ -101,7 +114,7 @@ public class ASN1OctetString extends ASN1Simple {
    }
 
    /**
-    * Returns a String representation of this ASN1OctetString.
+    * Returns the content of this ASN1OctetString as a String.
     */
    public String getString()
    {

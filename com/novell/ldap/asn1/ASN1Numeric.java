@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Numeric.java,v 1.4 2000/09/11 21:05:53 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Numeric.java,v 1.5 2001/03/01 00:30:00 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -18,18 +18,19 @@ package com.novell.ldap.asn1;
 import java.io.*;
 
 /**
- * Base class for all ASN.1 numeric (integral) types.
+ * This is an abstract class that is the base class 
+ * for all ASN.1 numeric (integral) types. These include
+ * ASN1Integer and ASN1Enumerated.
  */
 abstract class ASN1Numeric extends ASN1Simple {
 
    protected Long content;
 
-   //*************************************************************************
-   // ASN1Numeric specific methods
-   //*************************************************************************
+   /* ASN1Numeric specific methods
+    */
 
    /**
-    * Returns the content of this ASN1Integer as an int.
+    * Returns the content of this ASN1Numeric object as an int.
     */
    public int getInt()
    {
@@ -37,7 +38,7 @@ abstract class ASN1Numeric extends ASN1Simple {
    }
 
    /**
-    * Returns the content of this ASN1Integer as a long.
+    * Returns the content of this ASN1Numeric object as a long.
     */
    public long getLong()
    {
