@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResults.java,v 1.18 2000/10/02 14:58:06 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResults.java,v 1.19 2000/10/02 16:24:06 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -257,6 +257,17 @@ public class LDAPSearchResults implements Enumeration
                     element.getClass().getName() + "@" + 
                     Integer.toHexString(element.hashCode()) );
             }
+            if(element instanceof LDAPResponse) {             // Search done w/bad status
+                LDAPException ex;
+                ex = ((LDAPResponse)element).getResultException(); // get Exception object
+                if( Debug.LDAP_DEBUG ) {
+                    if( ex == null ) {
+                        throw new RuntimeException( 
+                            name + ".nextElement: got success result from queue");
+                    }
+                }
+                element = ex;
+            }
         } else
         // Check for Search References
         if( referenceIndex < referenceCount ) {
@@ -269,8 +280,7 @@ public class LDAPSearchResults implements Enumeration
                 }
             }
             element = new LDAPReferralException(
-                LDAPException.errorCodeToString(LDAPException.REFERRAL),
-                LDAPException.REFERRAL, refs);
+                null, LDAPException.REFERRAL, refs);
         } else {
             if( Debug.LDAP_DEBUG ) {
                 Debug.trace( Debug.messages, 
@@ -283,7 +293,7 @@ public class LDAPSearchResults implements Enumeration
             throw new RuntimeException(
                 "LDAPSearchResults.next(): No entry found and request incomplete");
         }
-        return (LDAPEntry)element;
+        return element;
     }
 
     /*
