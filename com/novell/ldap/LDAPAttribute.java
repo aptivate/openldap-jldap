@@ -48,6 +48,8 @@ public class LDAPAttribute {
      * attribute.
      *
      * @param attr  An LDAPAttribute to use as a template.
+     *
+     * @throws IllegalArgumentException if attr is null
      */
     public LDAPAttribute( LDAPAttribute attr )
     {
@@ -63,8 +65,10 @@ public class LDAPAttribute {
                     this.subTypes.length );
         }
         // OK to just copy attributes, as the app only sees a deep copy of them
-        this.values = new Object[ attr.values.length ];
-        System.arraycopy( attr.values, 0, this.values, 0, this.values.length );
+        if( null != attr.values) {
+            this.values = new Object[ attr.values.length ];
+            System.arraycopy( attr.values, 0, this.values, 0, this.values.length );
+        }
         return;
     }
 
@@ -72,6 +76,8 @@ public class LDAPAttribute {
      * Constructs an attribute with no values.
      *
      * @param attrName Name of the attribute.
+     *
+     * @throws IllegalArgumentException if attrName is null
      */
     public LDAPAttribute( String attrName )
     {
@@ -89,9 +95,10 @@ public class LDAPAttribute {
      *
      * @param attrName Name of the attribute.<br><br>
      * @param attrBytes Value of the attribute as raw bytes.
-     * If attrBytes is null, no value is added to the attribute.
      *
      * <P> Note: If attrBytes represents a string it should be UTF-8 encoded.
+     *
+     * @throws IllegalArgumentException if attrName or attrBytes is null
      */
     public LDAPAttribute( String attrName, byte[] attrBytes )
     {
@@ -111,7 +118,8 @@ public class LDAPAttribute {
      *
      * @param attrName Name of the attribute.<br><br>
      * @param attrString Value of the attribute as a string.
-     * If attrString is null, no value is added to the attribute.
+     *
+     * @throws IllegalArgumentException if attrName or attrString is null
      */
     public LDAPAttribute(String attrName, String attrString)
     {
@@ -132,8 +140,9 @@ public class LDAPAttribute {
      *
      * @param attrName Name of the attribute.<br><br>
      * @param attrStrings Array of values as strings.
-     * If attrStrings is null, no value is added to the attribute.
-     * String values that are null are not added to the attribute.
+     *
+     * @throws IllegalArgumentException if attrName, attrStrings, or a member
+     *         of attrStrings is null
      */
     public LDAPAttribute(String attrName, String[] attrStrings)
     {
@@ -159,6 +168,8 @@ public class LDAPAttribute {
      * Adds a string value to the attribute.
      *
      * @param attrString Value of the attribute as a string.
+     *
+     * @throws IllegalArgumentException if attrString is null
      */
     public void addValue(String attrString)
     {
@@ -180,6 +191,8 @@ public class LDAPAttribute {
      * @param attrBytes Value of the attribute as raw bytes.
      *
      * <P> Note: If attrBytes represents a string it should be UTF-8 encoded.
+     *
+     * @throws IllegalArgumentException if attrBytes is null
      */
     public void addValue(byte[] attrBytes)
     {
@@ -216,13 +229,17 @@ public class LDAPAttribute {
     /**
      * Returns the values of the attribute as an array of bytes.
      *
-     * @return The values as an array of bytes.
+     * @return The values as an array of bytes or an empty array if there are
+     * no values.
      */
     public byte[][] getByteValueArray()
     {
-        byte[][] bva = new byte[ values.length ][];
+        if( null == this.values )
+            return new byte[ 0 ][];
+        int size = this.values.length;
+        byte[][] bva = new byte[ size ][];
         // Deep copy so application cannot change values
-        for( int i = 0, u = this.values.length; i < u; i++) {
+        for( int i = 0, u = size; i < u; i++) {
             bva[i] = new byte[((byte[])values[i]).length];
             System.arraycopy( this.values[i], 0, bva[i], 0, bva[i].length );
         }
@@ -241,10 +258,8 @@ public class LDAPAttribute {
             return new String[ 0 ];
         int size = values.length;
         String[] sva = new String[ size ];
-        for( int j = 0; j < size; j++ )
-        {
-            try
-            {
+        for( int j = 0; j < size; j++ ) {
+            try {
                 sva[ j ] = new String( (byte[])values[ j ], "UTF-8" );
             } catch( UnsupportedEncodingException uee ) {
                 // Exception should NEVER get thrown but just in case it does ...
@@ -273,12 +288,11 @@ public class LDAPAttribute {
     public String getStringValue()
     {
         String rval = null;
-        if( null != this.values )
-        {
+        if( this.values != null) {
             try {
                 rval = new String( (byte[])this.values[ 0 ], "UTF-8" );
             } catch( UnsupportedEncodingException use ) {
-                rval = new String( (byte[])this.values[ 0 ] );
+                throw new RuntimeException( use.toString());
             }
         }
         return rval;
@@ -292,14 +306,13 @@ public class LDAPAttribute {
      */
      public byte[] getByteValue()
      {
-        if( (this.values == null) || (this.values.length == 0)) {
-            return null;
-        } else {
+        byte[] bva = null;
+        if( this.values != null) {
             // Deep copy so app can't change the value
-            byte[] bva = new byte[((byte[])values[0]).length];
+            bva = new byte[((byte[])values[0]).length];
             System.arraycopy( this.values[0], 0, bva, 0, bva.length );
-            return bva;
         }
+        return bva;
      }
 
     /**
@@ -346,9 +359,14 @@ public class LDAPAttribute {
      * base name.
      *
      * @return The base name of the attribute.
+     *
+     * @throws IllegalArgumentException if attrName is null
      */
     public static String getBaseName(String attrName)
     {
+        if( attrName == null) {
+            throw new IllegalArgumentException("Attribute name cannot be null");
+        }
         int idx = attrName.indexOf( ';' );
         if( -1 == idx ) {
             return attrName;
@@ -361,7 +379,8 @@ public class LDAPAttribute {
      *
      * @return The name of the attribute.
      */
-    public String getName() {
+    public String getName()
+    {
         return name;
     }
 
@@ -373,7 +392,8 @@ public class LDAPAttribute {
      *
      * @return An array subtypes or null if the attribute has none.
      */
-    public String[] getSubtypes() {
+    public String[] getSubtypes()
+    {
         return subTypes;
     }
 
@@ -387,8 +407,14 @@ public class LDAPAttribute {
      * the subtypes.
      *
      * @return An array subtypes or null if the attribute has none.
+     *
+     * @throws IllegalArgumentException if attrName is null
      */
-    public static String[] getSubtypes(String attrName) {
+    public static String[] getSubtypes(String attrName)
+    {
+        if( attrName == null) {
+            throw new IllegalArgumentException("Attribute name cannot be null");
+        }
         StringTokenizer st = new StringTokenizer(attrName, ";");
         String baseName, subTypes[] = null;
         int cnt = st.countTokens();
@@ -413,9 +439,14 @@ public class LDAPAttribute {
      *
      * @return True, if the attribute has the specified subtype;
      *         false, if it doesn't.
+     *
+     * @throws IllegalArgumentException if subtype is null
      */
     public boolean hasSubtype(String subtype)
     {
+        if( subtype == null) {
+            throw new IllegalArgumentException("subtype cannot be null");
+        }
         if( null != this.subTypes) {
             for(int i=0; i<subTypes.length; i++) {
                 if(subTypes[i].equalsIgnoreCase(subtype))
@@ -437,11 +468,22 @@ public class LDAPAttribute {
      *
      * @return True, if the attribute has all the specified subtypes;
      *         false, if it doesn't have all the subtypes.
+     *
+     * @throws IllegalArgumentException if subtypes is null or if array member
+     *         is null.
      */
-    public boolean hasSubtypes(String[] subtypes) {
+    public boolean hasSubtypes(String[] subtypes)
+    {
+        if( subtypes == null) {
+            throw new IllegalArgumentException("subtypes cannot be null");
+        }
         gotSubType:
         for(int i=0; i<subtypes.length; i++) {
             for(int j=0; j<subTypes.length; j++) {
+                if( subTypes[j] == null) {
+                    throw new IllegalArgumentException("subtype " +
+                        "at array index " + i + " cannot be null");
+                }
                 if(subTypes[j].equalsIgnoreCase(subtypes[i])) {
                     continue gotSubType;
                 }
@@ -455,17 +497,24 @@ public class LDAPAttribute {
      * Removes a string value from the attribute.
      *
      * @param attrString   Value of the attribute as a string.
+     *
+     * <p>Note: Removing a value which is not present in the attribute has
+     * no effect.</p>
+     *
+     * @throws IllegalArgumentException if attrString is null
      */
     public void removeValue( String attrString )
     {
-        if( null != attrString ) {
-            try {
-                this.removeValue( attrString.getBytes( "UTF-8" ) );
-            } catch( UnsupportedEncodingException uee ) {
-                // This should NEVER happend but just in case ...
-                throw new RuntimeException( uee.toString());
-            }
+        if( null == attrString ) {
+            throw new IllegalArgumentException("Attribute value cannot be null");
         }
+        try {
+            this.removeValue( attrString.getBytes( "UTF-8" ) );
+        } catch( UnsupportedEncodingException uee ) {
+            // This should NEVER happen but just in case ...
+            throw new RuntimeException( uee.toString());
+        }
+        return;
     }
 
     /**
@@ -474,25 +523,39 @@ public class LDAPAttribute {
      * @param attrBytes    Value of the attribute as raw bytes.
      * <P> Note: If attrBytes represents a string it should be UTF-8 encoded.
      * Example: <code>String.getBytes("UTF-8");</code></P>
+     *
+     * <p>Note: Removing a value which is not present in the attribute has
+     * no effect.</p>
+     *
+     * @throws IllegalArgumentException if attrBytes is null
      */
     public void removeValue( byte[] attrBytes )
     {
-        if( null != attrBytes ) {
-            for( int i = 0; i < this.values.length; i++ ) {
-                if( equals( attrBytes, (byte[])this.values[ i ] ) ) {
-                    if( 0 == i && 1 == this.values.length ) {
-                            // Optimize if first element of a single valued attr
-                            this.values = null;
-                            return;
-                    }
+        if( null == attrBytes ) {
+            throw new IllegalArgumentException("Attribute value cannot be null");
+        }
+        for( int i = 0; i < this.values.length; i++ ) {
+            if( equals( attrBytes, (byte[])this.values[ i ] ) ) {
+                if( 0 == i && 1 == this.values.length ) {
+                        // Optimize if first element of a single valued attr
+                        this.values = null;
+                        return;
+                }
+                if( this.values.length == 1) {
+                    this.values = null;
+                } else {
                     int moved = this.values.length - i - 1;
                     Object[] tmp = new Object[ this.values.length - 1 ];
-                    System.arraycopy( values, 0, tmp, 0, i );
-                    System.arraycopy( values, i + 1, tmp, i, moved );
+                    if( i != 0) {
+                        System.arraycopy( values, 0, tmp, 0, i );
+                    }
+                    if( moved != 0) {
+                        System.arraycopy( values, i + 1, tmp, i, moved );
+                    }
                     this.values = tmp;
                     tmp = null;
-                    break;
                 }
+                break;
             }
         }
         return;
@@ -538,15 +601,16 @@ public class LDAPAttribute {
     }
 
    /**
-     * Returns true if the two specified arrays of bytes are equal to each
-     * another.  Matches the logic of Arrays.equals which is not available
-     * in jdk 1.1.x.
-     *
-     * @param e1 the first array to be tested
-     * @param e2 the second array to be tested
-     * @return true if the two arrays are equal
-     */
-    private boolean equals(byte[] e1, byte[] e2) {
+    * Returns true if the two specified arrays of bytes are equal to each
+    * another.  Matches the logic of Arrays.equals which is not available
+    * in jdk 1.1.x.
+    *
+    * @param e1 the first array to be tested
+    * @param e2 the second array to be tested
+    * @return true if the two arrays are equal
+    */
+    private boolean equals(byte[] e1, byte[] e2)
+    {
         // If same object, they compare true
         if (e1==e2)
             return true;
