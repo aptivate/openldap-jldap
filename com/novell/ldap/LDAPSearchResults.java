@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResults.java,v 1.20 2000/10/02 17:19:16 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResults.java,v 1.21 2000/10/02 19:46:53 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -424,7 +424,7 @@ public class LDAPSearchResults implements Enumeration
             Debug.trace( Debug.messages, name + ".abandon: Entry");
         }
         // first, remove message ID and timer and any responses in the queue
-        listener.abandonAll();
+        listener.getClientListener().abandonAll();
 
         // next, clear out enumeration
         resetVectors();

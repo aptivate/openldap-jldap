@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchListener.java,v 1.13 2000/09/12 22:50:13 judy Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchListener.java,v 1.14 2000/10/02 19:46:53 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -29,21 +29,72 @@ import com.novell.ldap.protocol.*;
  *  Manages search results and references returned
  *  from one or more search requests.
  */
-public class LDAPSearchListener extends LDAPListener {
+public class LDAPSearchListener
+{
  
    /**
-    * Constructs an LDAPSearchListener for the specified connection.
-    *
-    * @param conn The connection to the LDAP server.
+    * The client listener object
     */
-   public LDAPSearchListener(Connection conn)
-   {
-      this.conn = conn;
-      this.queue = new LDAPMessageQueue();
-      this.exceptions = new Vector(5);
-      conn.addLDAPListener(this);
-   }
+    private LDAPListener listen;
+    
+    /**
+     * Constructs a response listener on the specific connection.
+     *
+     *  @param conn The connection for the listener.
+     */
+    /* package */
+    LDAPSearchListener(LDAPListener listen)
+    {
+        this.listen = listen;
+        return;    
+    }
 
+   /**
+    * Returns the internal client listener object
+    *
+    * @return The internal client listener object
+    */
+    /* package */
+    LDAPListener getClientListener()
+    {
+        return listen;
+    }
+    
+   /**
+    * Returns the message IDs for all outstanding requests. 
+    *
+    * <p>The last ID in the array is the messageID of the 
+    * last submitted request.</p>
+    *
+    * @return The message IDs for all outstanding requests.
+    */
+    public int[] getMessageIDs()
+    {
+        return listen.getMessageIDs();
+    }
+
+   /**
+    * Reports whether a response has been received from the server.
+    *
+    * @return True if a response has been received from the server; false if
+    *         a response has not been received. 
+    */
+    public boolean isResponseReceived()
+    {
+        return listen.isResponseReceived();
+    }
+   /**
+    * Merges two response listeners by moving the contents from another
+    * listener to this one.
+    *
+    * @param listener2 The listener that receives the contents from the
+    *                  other listener.
+    */
+    public void merge(LDAPResponseListener listener2)
+    {
+        listen.merge( listener2);
+        return;
+    }
    /*
     * 4.32.2 getResponse
     */
@@ -70,7 +121,7 @@ public class LDAPSearchListener extends LDAPListener {
       throws LDAPException
    {
       LDAPMessage message;
-      com.novell.ldap.protocol.LDAPMessage msg = queue.getLDAPMessage(); // blocks
+      com.novell.ldap.protocol.LDAPMessage msg = listen.getLDAPMessage(); // blocks
 
       if(msg == null)
          return null;
@@ -83,18 +134,14 @@ public class LDAPSearchListener extends LDAPListener {
       }
       else { // must be SearchResultDone
          message = new LDAPResponse(msg);
-         queue.removeMessageID(message.getMessageID());
+         listen.removeMessageID(message.getMessageID());
       }
 
       // network error exceptions... (LDAP_TIMEOUT for example)
-      if(!exceptions.isEmpty()) {
-         LDAPException e = (LDAPException)exceptions.firstElement();
-         exceptions.removeElementAt(0);
+      LDAPException e = listen.getException();
+      if( e != null )
          throw e;
-      }
 
       return message;
    }
-
 }
-

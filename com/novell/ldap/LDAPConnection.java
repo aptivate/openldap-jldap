@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.39 2000/09/29 01:23:22 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.40 2000/09/29 15:17:13 judy Exp $
 *
 * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
 * 
@@ -868,8 +868,12 @@ public class LDAPConnection implements
    public void abandon(LDAPSearchListener listener)
       throws LDAPException
    {
-      abandon(listener, defSearchCons);
-      return;
+      if(listener != null) {
+         int[] msgIds = listener.getClientListener().getMessageIDs();
+         for(int i=0; i<msgIds.length; i++) {
+            abandon(msgIds[i], defSearchCons);
+         }
+      }
    }
 
    /**
@@ -887,36 +891,12 @@ public class LDAPConnection implements
    public void abandon(LDAPResponseListener listener)
       throws LDAPException
    {
-      abandon(listener, defSearchCons);
-      return;
-   }
-
-   /*
-   * Not in the draft
-   */
-   
-   /**
-    * Abandons all messages in progress for a listener, using the specified
-    * constaints.
-    *
-    *  @param listener  The handler returned for messages from a
-    *                   search request.<br><br>
-    *
-    *  @param cons The contraints specific to the request.  
-    *
-    *  @exception LDAPException A general exception which includes an error 
-    *  message and an LDAP error code.
-    */
-   public void abandon(LDAPListener listener, LDAPConstraints cons)
-      throws LDAPException
-   {
       if(listener != null) {
-         int[] msgIds = listener.getMessageIDs();
+         int[] msgIds = listener.getClientListener().getMessageIDs();
          for(int i=0; i<msgIds.length; i++) {
-            abandon(msgIds[i], cons);
+            abandon(msgIds[i], defSearchCons);
          }
       }
-      return;
    }
 
     //*************************************************************************
@@ -993,6 +973,7 @@ public class LDAPConnection implements
       throws LDAPException
    {
       validateConn();
+      LDAPListener clientListener;
 
       if(cons == null)
          cons = defSearchCons;
@@ -1034,11 +1015,15 @@ public class LDAPConnection implements
                     attrList),
                 cons.getServerControls());
 
-      if(listener == null)
-         listener = new LDAPResponseListener(conn);
+      if(listener == null) {
+         clientListener = new LDAPListener(conn);
+         listener = new LDAPResponseListener( clientListener );
+      } else {
+         clientListener = listener.getClientListener();
+      }
 
       try {
-         listener.writeMessage(msg, cons.getTimeLimit());
+         clientListener.writeMessage(msg, cons.getTimeLimit());
       }
       catch(IOException ioe) {
          // do we need to remove message id here?
@@ -1234,6 +1219,7 @@ public class LDAPConnection implements
                                     LDAPConstraints cons)
       throws LDAPException
    {
+      LDAPListener clientListener;
       validateConn();
 
       if(cons == null)
@@ -1270,11 +1256,15 @@ public class LDAPConnection implements
                             false))), // implicit tagging
                 cons.getServerControls());
 
-      if(listener == null)
-         listener = new LDAPResponseListener(conn);
+      if(listener == null) {
+         clientListener = new LDAPListener(conn);
+         listener = new LDAPResponseListener( clientListener );
+      } else {
+         clientListener = listener.getClientListener();
+      }
 
       try {
-         listener.writeMessage(msg, cons.getTimeLimit());
+         clientListener.writeMessage(msg, cons.getTimeLimit());
       }
       catch(IOException ioe) {
          // do we need to remove message id here?
@@ -1427,6 +1417,7 @@ public class LDAPConnection implements
                                        LDAPConstraints cons)
       throws LDAPException
    {
+      LDAPListener clientListener;
       validateConn();
 
       if(cons == null)
@@ -1448,11 +1439,15 @@ public class LDAPConnection implements
                         new AssertionValue(value))),
                 cons.getServerControls());
 
-      if(listener == null)
-         listener = new LDAPResponseListener(conn);
+      if(listener == null) {
+         clientListener = new LDAPListener(conn); 
+         listener = new LDAPResponseListener( clientListener );
+      } else {
+         clientListener = listener.getClientListener();
+      }
 
         try {
-            listener.writeMessage(msg, cons.getTimeLimit());
+            clientListener.writeMessage(msg, cons.getTimeLimit());
         }
         catch(IOException ioe) {
               // do we need to remove message id here?
@@ -1635,6 +1630,7 @@ public class LDAPConnection implements
                                       LDAPConstraints cons)
       throws LDAPException
    {
+      LDAPListener clientListener;
       validateConn();
 
       if(dn == null)
@@ -1649,11 +1645,15 @@ public class LDAPConnection implements
                 new DelRequest(dn),
                 cons.getServerControls());
 
-      if(listener == null)
-         listener = new LDAPResponseListener(conn);
+      if(listener == null) {
+         clientListener = new LDAPListener(conn);
+         listener = new LDAPResponseListener( clientListener );
+      } else {
+         clientListener = listener.getClientListener();
+      }
 
       try {
-         listener.writeMessage(msg, cons.getTimeLimit());
+         clientListener.writeMessage(msg, cons.getTimeLimit());
       }
       catch(IOException ioe) {
          // do we need to remove message id here?
@@ -1798,6 +1798,7 @@ public class LDAPConnection implements
         throws LDAPException
     {
 
+      LDAPListener clientListener;
       // Validate our connection structure
       validateConn();
 
@@ -1823,11 +1824,15 @@ public class LDAPConnection implements
       LDAPMessage msg = new LDAPMessage(er, cons.getServerControls());
 
       // Create a listener if we do not have one already
-      if(listener == null)
-         listener = new LDAPResponseListener(conn);
+      if(listener == null) {
+         clientListener = new LDAPListener(conn);
+         listener = new LDAPResponseListener( clientListener );
+      } else {
+         clientListener = listener.getClientListener();
+      }
 
       try {
-         listener.writeMessage(msg, cons.getTimeLimit());
+         clientListener.writeMessage(msg, cons.getTimeLimit());
       }
       catch(IOException ioe) {
          throw new LDAPException("Communication error.",
@@ -2053,6 +2058,7 @@ public class LDAPConnection implements
                                       LDAPConstraints cons)
       throws LDAPException
    {
+      LDAPListener clientListener;
       validateConn();
 
       if(dn == null)
@@ -2092,11 +2098,15 @@ public class LDAPConnection implements
                     rfcMods),
                 cons.getServerControls());
 
-      if(listener == null)
-         listener = new LDAPResponseListener(conn);
+      if(listener == null) {
+         clientListener = new LDAPListener(conn);
+         listener = new LDAPResponseListener( clientListener );
+      } else {
+         clientListener = listener.getClientListener();
+      }
 
         try {
-            listener.writeMessage(msg, cons.getTimeLimit());
+            clientListener.writeMessage(msg, cons.getTimeLimit());
         }
         catch(IOException ioe) {
               // do we need to remove message id here?
@@ -2415,6 +2425,7 @@ public class LDAPConnection implements
                                       LDAPConstraints cons)
       throws LDAPException
    {
+      LDAPListener clientListener;
       validateConn();
 
       if(dn == null || newRdn == null)
@@ -2434,11 +2445,15 @@ public class LDAPConnection implements
                         new com.novell.ldap.protocol.LDAPDN(newParentdn) : null),
                 cons.getServerControls());
 
-      if(listener == null)
-         listener = new LDAPResponseListener(conn);
+      if(listener == null) {
+         clientListener = new LDAPListener(conn);
+         listener = new LDAPResponseListener( clientListener );
+      } else {
+         clientListener = listener.getClientListener();
+      }
 
         try {
-            listener.writeMessage(msg, cons.getTimeLimit());
+            clientListener.writeMessage(msg, cons.getTimeLimit());
         }
         catch(IOException ioe) {
               // do we need to remove message id here?
@@ -2579,6 +2594,7 @@ public class LDAPConnection implements
                                     LDAPSearchConstraints cons)
       throws LDAPException
    {
+      LDAPListener clientListener;
       validateConn();
 
       if(cons == null)
@@ -2596,11 +2612,15 @@ public class LDAPConnection implements
             new AttributeDescriptionList(attrs)),
          cons.getServerControls());
 
-      if(listener == null)
-         listener = new LDAPSearchListener(conn);
+      if(listener == null) {
+         clientListener = new LDAPListener(conn);
+         listener = new LDAPSearchListener( clientListener );
+      } else {
+         clientListener = listener.getClientListener();
+      }
 
     try {
-       listener.writeMessage(msg, cons.getTimeLimit());
+       clientListener.writeMessage(msg, cons.getTimeLimit());
     }
     catch(IOException ioe) {
          // do we need to remove message id here?
