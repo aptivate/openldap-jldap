@@ -1,4 +1,4 @@
-    $Novell$
+    $Novell: /ldap/src/jldap/README,v 1.2 2000/08/17 22:37:41 vtag Exp $
 
                               Building JLDAP
 
@@ -13,55 +13,73 @@ For Win32
     in d:/jdk1.2.2, then you set in your environment:
 
         set JAVA_HOME=d:\jdk1.2.2
-        set ANT_HOME=d:\jldap/ant
+        set ANT_HOME=d:\jldap\ant
         PATH %ANT_HOME%\bin;%PATH%
 
-    for Linux running shell with this source directory in /usr/home/jldap
-    and java is installed in /local/jdk1.2.2 then:
+For Linux / Unix
+    If Linux running bourne shell, and this source directory is located
+    in /usr/home/jldap, and if java is installed in /usr/local/jdk1.2.2 then:
         ANT_HOME=$PWD/jldap/ant
-        JAVA_HOME=/local/jdk1.2.2
-        PATH=".:$ANT_HOME/bin:$PATH"
+        JAVA_HOME=/usr/local/jdk1.2.2
+        PATH="$ANT_HOME/bin:$PATH"
         export ANT_HOME JAVA_HOME PATH
 
-To build everything just invoke ant as follows:
+To build everything just invoke ant as follows from the top of the source tree:
 
     ant all
 
-
-Targets available are from the top of the tree are:
+Targets available at the top of the source tree are:
      clean   - Cleans all generated files and directories in this and    
                subbordinate directories                                  
      cleanpkg- Cleans pkg directory                                      
      doc     - Builds javadoc files                                      
-               Not available at the lowest directory level               
      debug   - Builds debug classes and jar files                        
-               At the lowest level directory it only compiles java files.
      release - Builds release classes and jar files                      
-               At the lowest level directory it only compiles java files.
      lib     - Builds debug & release classes and jar files.             
-               At the lowest level directory it only compiles java files.
      jar     - Synonym for lib                                           
-     all     - Builds everything possible.  At the top directory level it
-               builds all, doc, & install.  At one directory level below  
-               the top it builds all, & doc. At the lowest directory     
-               level it compiles java files for release and debug.       
+     all     - Builds everything possible. It will build in all directories -
+               debug and release jar files, java doc, samples, test programs,
+			   and create an installation directory called pkg.
      install - Copies build results from all directories and creates the 
-               pkg directory.  Only available in top makefile            
-     pkt     - Synonym for pkg                                           
+               pkg directory.
+     pkg     - Synonym for install                                           
 
-Targets available are from the the ldap and novp directories are:
+Targets available int the the ldap and novp directories are:
      clean   - Cleans all generated files and directories in this    
                and subbordinate directories                          
      doc     - Builds javadoc files                                  
      debug   - Builds debug classes and jar files                    
      release - Builds release classes and jar files                  
-     jar     - Builds debug & release classes and jar files          
      lib     - Builds debug & release classes and jar files          
-             - Builds everything possible.  Builds all, & doc        
+     jar     - Synonym for lib                                           
+     all     - Builds everything possible in this directory  It will build
+               debug and release jar files, javadoc, samples, and test programs.
 
-Targets available are from the the diretories containing java files are:
+Targets available int the the diretories containing java files are:
      clean   - Cleans all generated class files
      compile - Builds debug classes and jar files
      all     - Synonym for compile
 
 
+The following directories are created when "ant all" is run:
+
+	Contents of directories in the ldap directory
+		jldap/ldap/classes			/* Classes used to build lib/ldap.jar */
+		jldap/ldap/classes_debug	/* Classes used to build lib_debug/ldap.jar */
+		jldap/ldap/classes_tests	/* Classes for the test programs */
+		jldap/ldap/classes_samples	/* Classes for the sample programs */
+		jldap/ldap/lib				/* Jar file for ldap - optimized, debug off */
+		jldap/ldap/lib_debug		/* Jar file for ldap - not optimized, debug on */
+		jldap/ldap/doc				/* Javadoc for ldap.jar classes */
+
+	Contents of directories in the novbp directory
+		jldap/novbp/classes			/* Classes used to build lib/novbp.jar */
+		jldap/novbp/classes_debu	/* Classes used to build lib_debug/novbp.jar */g
+		jldap/novbp/classes_tests	/* Classes for the test programs */
+		jldap/novbp/classes_samples	/* Classes for the sample programs */
+		jldap/novbp/lib				/* Jar file for novbp - optimized, debug off */
+		jldap/novbp/lib_debug		/* Jar file for novbp - not optimized, debug on */
+		jldap/novbp/doc				/* Javadoc for novbp.jar classes */
+
+	Contents of directories in the jldap directory
+		jldap/pkg					/* Distribution directories and files */
