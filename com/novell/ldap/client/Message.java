@@ -421,7 +421,7 @@ public class Message
                         "Got reply from queue(" +
                         replies.size() + " remaining in queue)");
             }
-            if( (complete || ! acceptReplies) && replies.isEmpty()) {
+            if( (conn != null) && (complete || ! acceptReplies) && replies.isEmpty()) {
                 // Remove msg from connection queue when last reply read
                 conn.removeMessage(this);
             }
@@ -474,7 +474,6 @@ public class Message
             } catch (LDAPException ex) {
                 ; // do nothing
             }
-            complete = true;
             // If not informing user, remove message from agent
             if( informUserEx == null) {
                 agent.abandon( msgId, null);
@@ -493,15 +492,17 @@ public class Message
                         (conn.getActiveReferral() != null) + "\n\texception: " +
                         informUserEx.getLDAPErrorMessage());
             }
-            // wake up waiting threads
+            stopTimer();
+            // wake up waiting threads to receive exception
             sleepersAwake();
+            // Message will get cleaned up when last response removed from queue
         } else {
             // Wake up any waiting threads, so they can terminate.
             // If informing the user, we wake sleepers after
             // caller queues dummy response with error status
             sleepersAwake();
+            cleanup();
         }
-        cleanup();
         return;
     }
 
@@ -514,6 +515,7 @@ public class Message
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.messages, name + "cleanup");
         }
+        stopTimer();        // Make sure timer stopped
         try {
             acceptReplies = false;
             if( conn != null) {

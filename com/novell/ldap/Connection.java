@@ -600,17 +600,19 @@ public final class Connection implements Runnable
              * an infrequent occurence we check for it only when we get an
              * IOException
              */
-            if (serverShutdownNotification) {
-                throw new LDAPException( ExceptionMessages.SERVER_SHUTDOWN_REQ,
-                    new Object[] { host, new Integer(port)},
-                    LDAPException.CONNECT_ERROR,
-                    ioe);
-            }
+            if( ! shutdown) { // Shutdown taking care of notification
+                if (serverShutdownNotification) {
+                    throw new LDAPException( ExceptionMessages.SERVER_SHUTDOWN_REQ,
+                        new Object[] { host, new Integer(port)},
+                        LDAPException.CONNECT_ERROR,
+                        ioe);
+                }
 
-            // Other I/O Exception on host:port get reported as is
-            throw new LDAPException(ExceptionMessages.IO_EXCEPTION,
-                new Object[] {host, new Integer(port)},
+                // Other I/O Exception on host:port get reported as is
+                throw new LDAPException(ExceptionMessages.IO_EXCEPTION,
+                    new Object[] {host, new Integer(port)},
                 LDAPException.CONNECT_ERROR, ioe);
+            }        
         } finally {
             freeWriteSemaphore(id);
         }
@@ -688,7 +690,7 @@ public final class Connection implements Runnable
      * while abandoning connections.
      */
     private void
-        shutdown( String reason, int semaphoreId, LocalException notifyUser)
+    shutdown( String reason, int semaphoreId, LocalException notifyUser)
     {
         Message info = null;
         if( shutdown) {
@@ -719,11 +721,11 @@ public final class Connection implements Runnable
                 }
                 break;
             }
-            info.abandon( null, notifyUser);
+            info.abandon( null, notifyUser); // also notifies the application
         }
 
-        // Now send unbind before closing socket
         int semId = acquireWriteSemaphore( semaphoreId);
+        // Now send unbind if socket not closed
         if( (bindProperties != null) && (out != null)) {
             try {
                 LDAPMessage msg = new LDAPUnbindRequest( null);
@@ -1113,6 +1115,9 @@ public final class Connection implements Runnable
                             LDAPException.CONNECT_ERROR,
                             ioe, info);
             }
+            // The connection is no good, don't use it any more
+            in = null;
+            out = null;
         } finally {
             if( Debug.LDAP_DEBUG ) {
                 Debug.trace( Debug.messages, name +
