@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPControl.java,v 1.26 2001/03/30 01:44:59 javed Exp $
+ * $Novell: /ldap/src/jldap/org/ietf/ldap/LDAPControl.java,v 1.1 2001/06/26 15:48:43 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -15,6 +15,8 @@
 
 package org.ietf.ldap;
 
+import com.novell.ldap.rfc2251.RfcControl;
+
 /**
  *  Encapsulates additional optional parameters for an
  *  LDAP operation, either on the server or on the client.
@@ -25,11 +27,20 @@ public class LDAPControl
                 implements Cloneable
 {
     ControlImpl control;
+
+    /**
+     * Create an LDAPControl from an existing rfcControl.
+     */
+    protected LDAPControl(RfcControl control)
+    {
+        this.control = new ControlImpl( control);
+        return;
+    }
+
     /**
      * Constructs a control from a com.novell.ldap.LDAPControl object
      */
-    /* package */
-    LDAPControl( com.novell.ldap.LDAPControl control)
+    protected LDAPControl( com.novell.ldap.LDAPControl control)
     {
         this.control = new ControlImpl( control.getID(),
                                         control.isCritical(),
@@ -51,8 +62,7 @@ public class LDAPControl
     /**
      * Returns the Control object
      */
-    /* package */
-    com.novell.ldap.LDAPControl getWrappedObject()
+    protected com.novell.ldap.LDAPControl getWrappedObject()
     {
         return control;
     }
@@ -128,6 +138,14 @@ public class LDAPControl
      */
     private class ControlImpl extends com.novell.ldap.LDAPControl
     {
+        /**
+         * Create an LDAPControl from an existing rfcControl.
+         */
+        private ControlImpl(RfcControl control)
+        {
+            super( control);
+            return;
+        }
 
         /**
          * Constructs a control from a com.novell.ldap.LDAPControl object
