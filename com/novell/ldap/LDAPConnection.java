@@ -1,4 +1,5 @@
 /**
+ * $ID$
  * 4.6 public class LDAPConnection
  *                implements LDAPv3, Cloneable
  *
@@ -542,6 +543,7 @@ public class LDAPConnection implements
     *  results        An object returned from a search.
     */
    public void abandon(LDAPSearchResults results) throws LDAPException {
+		results.abandon();
    }
 
    /**
