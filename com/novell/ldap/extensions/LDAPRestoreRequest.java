@@ -28,19 +28,68 @@ import com.novell.ldap.asn1.LBEREncoder;
 import com.novell.ldap.resources.ExceptionMessages;
 
 /**
- * @author Administrator
- * 
- * TODO To change the template for this generated type comment go to Window -
- * Preferences - Java - Code Style - Code Templates
- */
+*
+* This class provides an LDAP interface for object based  
+* restore of eDirectory objects.
+*
+* <p>The information need for restore includes such items as  object DN,
+* data buffer length, string containing the chunks sizes and data blob 
+* consisting of atual backup data returned from server.
+* </p>
+* 
+* <p>To send this request to eDirectory, you must
+* create an instance of this class and then call the
+* extendedOperation method with this object as the required
+* LDAPExtendedOperation parameter.</p><br>
+*
+* <p>The getLDAPRestoreRequest extension uses the following OID:<br>
+* &nbsp;&nbsp;&nbsp;2.16.840.1.113719.1.27.100.98</p><br>
+*
+* <p>The requestValue has the following format:<br>
+*
+* <p>requestValue ::=<br>
+* &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dataChunkSizes ::=<br>
+* &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+* &nbsp;&nbsp;&nbsp;&nbsp; SEQUENCE {<br>
+* &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+* &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+* noOfChunks INTEGER<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+* &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+* &nbsp;&nbsp;&nbsp; SET of [<br>
+* &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+* &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+* &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+* SEQUENCE of {eacChunksize INTEGER}]<br>
+* &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+* &nbsp;&nbsp;&nbsp; 
+* }<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; objectDN ::= OCTET STRING<br>
+* &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bufferLength ::= INTEGER<br>
+* &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; retunedBuffer::= OCTET STRING</p>
+*/
 public class LDAPRestoreRequest extends LDAPExtendedOperation {
 
+	
+	/**
+	 *
+	 * Constructs an extended operations object which contains the ber encoded
+	 * restore data.
+	 *
+	 * @param objectDN The object DN to restore
+	 * <br><br>
+	 * @param bufferLength The length of backed up data
+	 * <br><br>
+	 * @param buffer The data buffer containing chunks sizes and data blob
+	 * <br><br>
+	 * @exception LDAPException A general exception which includes an error
+	 *                          message and an LDAP error code.
+	 */
 	public LDAPRestoreRequest(String objectDN, int bufferLength, String buffer)
-			throws LDAPException, LDAPLocalException {
+			throws LDAPException {
 
 		super(BackupRestoreConstants.NLDAP_LDAP_RESTORE_REQUEST, null);
 
 		try {
+			//Verify the validity of arguments
 			if (objectDN == null || bufferLength == 0 || buffer == null)
 				throw new IllegalArgumentException(
 						ExceptionMessages.PARAM_ERROR);
@@ -48,7 +97,12 @@ public class LDAPRestoreRequest extends LDAPExtendedOperation {
 			ByteArrayOutputStream encodedData = new ByteArrayOutputStream();
 			LBEREncoder encoder = new LBEREncoder();
 
-			//rervers parse the buffer
+			/*
+			 * From the input argument buffer get::
+			 * chunkSize => Represents the number of chunks of data returned from server
+			 * sizeOf each chunk => int represents the size of each chunk
+			 * returnedBuffer => Represents the actual data of returned eDirectoty Object 
+			 */
 			int index;
 			int chunkSize;
 			int chunks[] = null;
@@ -60,7 +114,7 @@ public class LDAPRestoreRequest extends LDAPExtendedOperation {
 						"Invalid data buffer send in the request",
 						LDAPException.ENCODING_ERROR);
 			}
-
+			//Return exception if chunkSize == 0
 			if (chunkSize == 0)
 				throw new IllegalArgumentException(
 						ExceptionMessages.PARAM_ERROR);
@@ -68,39 +122,39 @@ public class LDAPRestoreRequest extends LDAPExtendedOperation {
 			buffer = buffer.substring(index + 1);
 
 			int chunkIndex;
+			//Construct chunks array
 			chunks = new int[chunkSize];
+			//Iterate through each member in buffer, assign to chunks array elem
 			for (int i = 0; i < chunkSize; i++) {
 				chunkIndex = buffer.indexOf(';');
 				chunks[i] = Integer.parseInt(buffer.substring(0, chunkIndex));
 				buffer = buffer.substring(chunkIndex + 1);
 			}
 
-			ASN1OctetString asn1_serverDN = new ASN1OctetString(objectDN);
-			//Form the sequence to be passed to Server
+			//Form the chunks sequence to be passed to Server
 			ASN1Sequence asn1_chunksSeq = new ASN1Sequence();
 			asn1_chunksSeq.add(new ASN1Integer(chunkSize));
 			ASN1Set asn1_chunksSet = new ASN1Set();
-
 			for (int i = 0; i < chunkSize; i++) {
 				ASN1Integer tmpChunk = new ASN1Integer(chunks[i]);
 				ASN1Sequence tmpSeq = new ASN1Sequence();
 				tmpSeq.add(tmpChunk);
 				asn1_chunksSet.add(tmpSeq);
-
-				//asn1_chunksSet.add((new ASN1Sequence()).add(new
-				// ASN1Integer(chunks[i])));
 			}
 			asn1_chunksSeq.add(asn1_chunksSet);
-
-			ASN1Integer asn1_bufferLength = new ASN1Integer(bufferLength);
 			
+			//Form objectDN, bufferLength, buffer ASN1 Objects
+			ASN1OctetString asn1_objectDN = new ASN1OctetString(objectDN);
+			ASN1Integer asn1_bufferLength = new ASN1Integer(bufferLength);
 			ASN1OctetString asn1_buffer = new ASN1OctetString(buffer);
 
+			//Encode data to send to server
 			asn1_chunksSeq.encode(encoder, encodedData);
-			asn1_serverDN.encode(encoder, encodedData);
+			asn1_objectDN.encode(encoder, encodedData);
 			asn1_bufferLength.encode(encoder, encodedData);
 			asn1_buffer.encode(encoder, encodedData);
 
+			// set the value of operation specific data
 			setValue(encodedData.toByteArray());
 
 		} catch (IOException ioe) {

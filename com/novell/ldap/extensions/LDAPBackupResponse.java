@@ -27,35 +27,49 @@ import com.novell.ldap.asn1.LBERDecoder;
 import com.novell.ldap.rfc2251.RfcLDAPMessage;
 
 /**
- * @author Administrator
+ *  This object represent the data returned from a LDAPBackupRequest.
  *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
+ *  <p>An object in this class is generated from an ExtendedResponse object
+ *  using the ExtendedResponseFactory class.</p>
+ *
+ *  <p>The LDAPBackupResponse extension uses the following OID:<br>
+ *  &nbsp;&nbsp;&nbsp;2.16.840.1.113719.1.27.100.97</p>
+ *
  */
 public class LDAPBackupResponse extends LDAPExtendedResponse {
 
-	private int bufferLength;
-	private String stateInfo;
+	private int bufferLength; //Represents the length of backup data
+	private String stateInfo; //Represent the state Information of data
+	/*
+	 * The String representing the array of chunk sizes and data returned from server.
+	 * Data from server is parsed as follows before sending to any Application::
+	 * no_of_chunks;sizeOf(chunk1);sizeOf(chunk2)…sizeOf(chunkn);returnedBuffer
+	 * where
+	 * no_of_chunks => Represents the number of chunks of data returned from server
+	 * sizeOf(chunkn) => Represents the size of data in chunkn
+	 * returnedBuffer => Represents the actual data of returned eDirectoty Object 
+	 */	
 	private String parsedString; 
-	//parsedString = no_of_chunks;sizeOf(chunk1);sizeOf(chunk2)..sizeOf(chunkn);returnedBuffer
 	
 	public LDAPBackupResponse(RfcLDAPMessage rfcMessage) throws IOException {
 
+		//Call the super constructor
 		super(rfcMessage);
 		
-		int modificationTime = 0;
-		int revision = 0;
-		String returnedBuffer = null;
+		int modificationTime = 0; // Modifaction time stamp of the Object
+		int revision = 0; // Revision number of the Object
+		String returnedBuffer = null; //Actual data of returned eDirectoty Object
 		int chunksSize = 0;
-		int[] chunks = null; //This will hold size of each chunks returned from server
+		int[] chunks = null; //Holds size of each chunks returned from server
 
+		//Verify if returned ID is not proper
 		if (getID() == null
 				|| !(getID()
 						.equals(BackupRestoreConstants.NLDAP_LDAP_BACKUP_RESPONSE)))
 			throw new IOException("LDAP Extended Operation not supported");
 
 		if (getResultCode() == LDAPException.SUCCESS) {
-			// parse the contents of the reply
+			// Get the contents of the reply
 			byte[] returnedValue = this.getValue();
 			if (returnedValue == null)
 				throw new IOException(
@@ -75,16 +89,13 @@ public class LDAPBackupResponse extends LDAPExtendedResponse {
 					.decode(currentPtr);
 			if (asn1_bufferLength == null)
 				throw new IOException("Decoding error");
-
 			bufferLength = asn1_bufferLength.intValue();
-			System.out.println("sudhir buffer length =" + bufferLength);
-
+			
 			// Parse modificationTime
 			ASN1Integer asn1_modificationTime = (ASN1Integer) decoder
 					.decode(currentPtr);
 			if (asn1_modificationTime == null)
 				throw new IOException("Decoding error");
-
 			modificationTime = asn1_modificationTime.intValue();
 
 			// Parse revision
@@ -92,10 +103,9 @@ public class LDAPBackupResponse extends LDAPExtendedResponse {
 					.decode(currentPtr);
 			if (asn1_revision == null)
 				throw new IOException("Decoding error");
-
 			revision = asn1_revision.intValue();
 			
-			//format stateInfo
+			//Format stateInfo to contain both modificationTime and revision
 			this.stateInfo = modificationTime + "+" + revision;
 
 			// Parse returnedBuffer
@@ -103,30 +113,38 @@ public class LDAPBackupResponse extends LDAPExtendedResponse {
 					.decode(currentPtr);
 			if (asn1_returnedBuffer == null)
 				throw new IOException("Decoding error");
-
 			returnedBuffer = asn1_returnedBuffer.stringValue();
-			System.out.println("Ravi buffer =" + returnedBuffer);
-			System.out.println("sudhir buffer size =" + returnedBuffer.length());
-
-			//Chunks are encoded as shown below
-			//SEQUENCE{no_of_seq, SET{SEQUENCE1{size1}, SEQUENCE2{size2}....SEQUENCEn{sizen}} }
 			
+			/* 
+			 * Parse chunks array 
+			 * Chunks returned from server is encoded as shown below::
+			 * SEQUENCE{
+			 * 			chunksSize	INTEGER
+			 * 			SET of [
+			 * 				SEQUENCE of {eacChunksize        INTEGER}]
+			 * 	       }
+			 */
 			ASN1Sequence asn1_chunksSeq = (ASN1Sequence) decoder
 					.decode(currentPtr);
 			if (asn1_chunksSeq == null)
 				throw new IOException("Decoding error");
 			
+			//Get number of chunks returned from server
 			chunksSize = ((ASN1Integer)asn1_chunksSeq.get(0)).intValue();
-
+			
+			//Construct chunks array
 			chunks = new int[chunksSize];
 			
 			ASN1Set asn1_chunksSet =  (ASN1Set)asn1_chunksSeq.get(1);
 
+			//Iterate through asn1_chunksSet and put each size into chunks array
 			for (int index = 0; index < chunksSize; index++) {
 				ASN1Sequence asn1_eachSeq = (ASN1Sequence)asn1_chunksSet.get(index);
 				chunks[index] = ((ASN1Integer)asn1_eachSeq.get(0)).intValue();
 			}
 						
+			//Construct a temporary StringBuffer and append chunksSize, each size
+			//element in chunks array and actual data of eDirectoty Object
 			StringBuffer tempBuffer = new StringBuffer();
 			tempBuffer.append(chunksSize);
 			tempBuffer.append(";");
@@ -136,24 +154,52 @@ public class LDAPBackupResponse extends LDAPExtendedResponse {
 			}
 			tempBuffer.append(returnedBuffer);
 
+			//Assign tempBuffer to parsedString to be returned to Application
 			this.parsedString = tempBuffer.toString();
 		} else {
+			//Intialize all these if getResultCode() != LDAPException.SUCCESS
 			this.bufferLength = 0;
 			this.stateInfo = null;
 			this.parsedString = null;
 		}
 
 	}
-
+	
+	/**
+     * Returns the data buffer length
+     *
+     * @return bufferLength as integer.
+     */
 	public int getBufferLength() {
 		return bufferLength;
 	}
+	
+	/**
+     * Returns the stateInfo of returned eDirectory Object.
+     * This is combination of MT (Modification Timestamp) and
+     * Revision value with char '+' as separator between two.<br>
+     * Client application if want to use both MT and Revision need to break
+     * this string to get both these data.
+     *
+     * @return stateInfo as String.
+     */
+	public String getStatusInfo(){
+		return stateInfo;
+	}
 
+	/**
+     * Returns the data in String as::<br>
+     * no_of_chunks;sizeOf(chunk1);sizeOf(chunk2)…sizeOf(chunkn);returnedBuffer<br>
+     * where<br>
+     * no_of_chunks => Represents the number of chunks of data returned from server<br>
+	 * sizeOf(chunkn) => Represents the size of data in chunkn<br>
+	 * returnedBuffer => Represents the actual data of returned eDirectoty Object 
+     * 
+     * @return parsedString as String.
+     */
 	public String getParsedString() {
 				return parsedString;
 	}
 	
-	public String getStatusInfo(){
-		return stateInfo;
-	}
+	
 }
