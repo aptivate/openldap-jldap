@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: NamingContextEntryCountResponse.java,v 1.2 2000/08/01 01:03:32 javed Exp $
+ * $Id: NamingContextEntryCountResponse.java,v 1.3 2000/08/04 15:32:31 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -16,7 +16,7 @@ package com.novell.ldap.ext;
 
 import org.ietf.ldap.*;
 import org.ietf.asn1.*;
-import java.io.IOException;
+import java.io.*;
  
 /**
  *
@@ -42,16 +42,19 @@ public class NamingContextEntryCountResponse implements ParsedExtendedResponse {
         
         // parse the contents of the reply
         byte [] returnedValue = r.getValue();
-        LberDecoder responseLber;
         if (returnedValue == null)
             throw new IOException("No returned value");
-        else
-            responseLber = new LberDecoder(returnedValue, 0, returnedValue.length);
-
-        if (responseLber== null)
+        
+        // Create a decoder object
+        BERDecoder decoder = new BERDecoder();
+        if (decoder == null)
             throw new IOException("Decoding error");
             
-        count = responseLber.parseInt();
+        ASN1Integer asn1_count = (ASN1Integer)decoder.decode(returnedValue);        
+        if (asn1_count == null)
+            throw new IOException("Decoding error");     
+            
+        count = asn1_count.getInt();
    }
    
    /** Call this method to retreive the count of the objects
