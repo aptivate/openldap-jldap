@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: DSMLWriter.java,v 1.25 2002/11/26 15:59:25 $
+ * $Novell: DSMLWriter.java,v 1.26 2002/11/26 16:37:51 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -266,8 +266,13 @@ public class DSMLWriter implements LDAPWriter {
                 byte[] value = xResp.getValue();
                 if (value != null){
                     newLine(2);
-                    out.write("<response xsi:type=\"xsd:base64Binary\">");
-                    out.write(Base64.encode(value));
+                    if (Base64.isValidUTF8(value, false)){
+                        out.write("<response>");
+                        out.write(new String(value, "UTF8"));
+                    } else {
+                        out.write("<response xsi:type=\"xsd:base64Binary\">");
+                        out.write(Base64.encode(value));
+                    }
                     out.write("</response>");
                 }
                 newLine(1);
