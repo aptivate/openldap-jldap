@@ -121,7 +121,7 @@ public class LDAPAttribute {
      * Adds a byte-formatted value to the attribute.
      *
      * @param attrBytes Value of the attribute as raw bytes.
-     * <P> Note: If attrBytes is a string if should be UTF8 encoded. </P>
+     * <P> Note: If attrBytes is a string it must be UTF8 encoded. </P>
      */
     public void addValue(byte[] attrBytes) {
         values.add(attrBytes);
@@ -140,13 +140,15 @@ public class LDAPAttribute {
         Object[] a = values.toArray();
         for( int i=0; i < a.length; i++) {
             Object o = a[i];
-            if(o instanceof String) {
-                try{
-                bv.add(((String)o).getBytes("UTF8"));
-                }catch (UnsupportedEncodingException uee){}
-            }
-            else {//if this byte[] is a string it will be UTF8 encoded also
-                bv.add(o);
+            try{
+                if(o instanceof String) {
+                    bv.add(((String)o).getBytes("UTF8"));
+                } else {
+                    bv.add(o);
+                }
+            }catch (UnsupportedEncodingException uee) {
+                // Shouldn't happen, means UTF8 not supported
+                throw new RuntimeException( uee.toString());
             }
         }
         return new ArrayEnumeration( bv.toArray());
@@ -162,13 +164,15 @@ public class LDAPAttribute {
         Object[] a = values.toArray();
         for( int i=0; i < a.length; i++) {
             Object o = a[i];
-            if(o instanceof String) {
-                sv.add(o);
-            }
-            else {
-                try{
-                  sv.add(new String((byte[])o, "UTF8"));
-                }catch(UnsupportedEncodingException uee){}
+            try{
+                if(o instanceof String) {
+                    sv.add(o);
+                } else {
+                    sv.add(new String((byte[])o, "UTF8"));
+                }
+            }catch(UnsupportedEncodingException uee) {
+                // Shouldn't happen, means UTF8 not supported
+                throw new RuntimeException( uee.toString());
             }
         }
         return new ArrayEnumeration(sv.toArray());
@@ -185,8 +189,17 @@ public class LDAPAttribute {
         Object[] a = values.toArray();
         for( int j=0; j < a.length; j++) {
             Object o = a[j];
-            bva[i++] = (o instanceof String) ? ((String)o).getBytes() : (byte[])o;
-        }//do you want these bytes in UTF8??? if so ^^^ needs ,"UTF8"
+            try{
+                if( o instanceof String) {
+                    bva[i++] = ((String)o).getBytes("UTF8");
+                } else {
+                    bva[i++] = (byte[])o;
+                }
+            }catch(UnsupportedEncodingException uee) {
+                // Shouldn't happen, means UTF8 not supported
+                throw new RuntimeException( uee.toString());
+            }
+        }
         return bva;
     }
 
@@ -202,8 +215,15 @@ public class LDAPAttribute {
         for( int j=0; j < a.length; j++) {
             Object o = a[j];
             try{
-            sva[i++] = (o instanceof String) ? (String)o : new String((byte[])o, "UTF8");
-            }catch(UnsupportedEncodingException uee){}
+                if( o instanceof String ) {
+                    sva[i++] = (String)o;
+                } else {
+                    sva[i++] = new String((byte[])o, "UTF8");
+                }
+            }catch(UnsupportedEncodingException uee) {
+                // Shouldn't happen, means UTF8 not supported
+                throw new RuntimeException( uee.toString());
+            }
         }
         return sva;
     }

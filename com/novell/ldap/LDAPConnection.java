@@ -1793,7 +1793,7 @@ public class LDAPConnection implements Cloneable
             cons = defSearchCons;
 
         String type = attr.getName();
-        String value = attr.getStringValueArray()[0]; // get first value
+        byte[] value = attr.getByteValueArray()[0]; // get first value
 
         if(dn == null || type == null || value == null) {
             // Invalid parameter
