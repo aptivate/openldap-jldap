@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConstraints.java,v 1.11 2000/10/31 00:45:06 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConstraints.java,v 1.12 2000/10/31 23:52:20 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -28,8 +28,7 @@ public class LDAPConstraints implements Cloneable {
     private int msLimit = 0;
     private int hopLimit = 10;
     private boolean doReferrals = false;
-    private LDAPBind binder = null;
-    private LDAPRebind reauth = null;
+    private LDAPReferralHandler refHandler = null;
     private LDAPControl[] clientCtls = null;
     private LDAPControl[] serverCtls = null;
 
@@ -59,12 +58,13 @@ public class LDAPConstraints implements Cloneable {
      *                       default value. It is ignored for asynchronous
      *                       operations.
      *<br><br>
-     * @param binder The custom authentication processor that implements
-     *               the LDAPBind interface. It is called when the
-     *               LDAPConnection needs to authenticate, typically
-     *               on following a referral. A null may be specified to
-     *               indicate default authentication processing. It
-     *               is ignored for asynchronous operations.
+     * @param binder The custom authentication processor, called when the
+     *               LDAPConnection needs to authenticate, typically on
+     *               following a referral.  A null may be specified to
+     *               indicate default authentication processing.
+     *               tHE object may implement either the LDAPBind or
+     *               the LDAPRebind interface.
+     *               It is ignored for asynchronous operations.
      *<br><br>
      * @param hop_limit   The maximum number of referrals to follow in a
      *                    sequence when attempting to resolve a request,
@@ -73,57 +73,11 @@ public class LDAPConstraints implements Cloneable {
      */
     public LDAPConstraints(int msLimit,
                       boolean doReferrals,
-                      LDAPBind binder,
+                      LDAPReferralHandler binder,
                       int hop_limit) {
         this.msLimit = msLimit;
         this.doReferrals = doReferrals;
-        this.binder = binder;
-        this.hopLimit = hop_limit;
-        return;
-    }
-
-    /**
-     * Constructs a new LDAPConstraints object, using the specified
-     * operational constraints for waiting, referrals, LDAPRebind
-     * object, and hop limit.
- 
-     *
-     *  @param msLimit  The maximum time in milliseconds to wait for results.
-     *                  The default is 0, which means that there is no
-     *                  maximum time limit. This is an interface-imposed
-     *                  limit.
-     *<br><br>
-     *  @param doReferrals   The constraint for following referrals. True 
-     *                       indicates to follow referrals automatically and
-     *                       false to throw an LDAPReferralException error if 
-     *                       the server sends back a referral. False is the 
-     *                       default value. It is ignored for asynchronous
-     *                       operations.
-     *<br><br>
-     *  @param reauth   An object of the class that implements the LDAPRebind
-     *                  interface. The object will be used when the client
-     *                  follows referrals automatically. The object provides
-     *                  a method for getting the distinguished name
-     *                  and password used to authenticate to
-     *                  another LDAP server during a referral. 
-     *                  Specifying null indicates the default
-     *                  LDAPRebind will be used if one has been assigned
-     *                  with LDAPConnection.setOption method, or anonymous
-     *                  authentication otherwise.  It is ignored for
-     *                  asynchronous operations.
-     *<br><br>
-     *  @param hop_limit  The maximum number of referrals to follow in a
-     *                    sequence when attempting to resolve a request,
-     *                    when doing automatic referral following.  The default
-     *                    is 10. It is ignored for asynchronous operations.
-     */
-    public LDAPConstraints(int msLimit,
-                      boolean doReferrals,
-                      LDAPRebind reauth,
-                      int hop_limit) {
-        this.msLimit = msLimit;
-        this.doReferrals = doReferrals;
-        this.reauth = reauth;
+        this.refHandler = binder;
         this.hopLimit = hop_limit;
         return;
     }
@@ -140,27 +94,15 @@ public class LDAPConstraints implements Cloneable {
     }
 
     /**
-     * Returns an object that can process authentication. 
+     * Returns an object that can process authentication for automatic
+     * referral handling.
      *
      * <p>It may be null.</p>
      *
-     * @return An LDAPBind object that can process authentication.
+     * @return An LDAPReferralHandler object that can process authentication.
      */
-    public LDAPBind getBindProc() {
-        return binder;
-    }
-
-    /**
-     * Returns the object that provides the method for getting
-     * authentication information. 
-     *
-     *  <p>It may be null.</p>
-     *
-     * @return An LDAPRebind object that provides the method for getting
-     * authentication information. 
-     */
-    public LDAPRebind getRebindProc() {
-        return reauth;
+    public LDAPReferralHandler getReferralHandler() {
+        return refHandler;
     }
 
     /**
@@ -206,26 +148,10 @@ public class LDAPConstraints implements Cloneable {
      *
      * <p>The default is null.</p>
      *
-     *  @param binder    An object that implements LDAPBind.
+     *  @param binder    An object that implements LDAPReferralHandler.
      */
-    public void setBindProc(LDAPBind binder) {
-        this.binder = binder;
-        return;
-    }
-
-    /**
-     * Specifies the object that provides the method for getting
-     * authentication information. 
-     *
-     * <p>The default is null. If referrals is set to true, and the reauth 
-     * is null, referrals will be followed with an anonymous bind (no
-     * authentication).</p>
-     *
-     *
-     *  @param reauth     An object that implements LDAPRebind.
-     */
-    public void setRebindProc(LDAPRebind reauth) {
-        this.reauth = reauth;
+    public void setReferralHandler(LDAPReferralHandler binder) {
+        refHandler = binder;
         return;
     }
 

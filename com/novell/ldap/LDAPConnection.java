@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.46 2000/10/31 23:52:19 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.48 2000/11/02 19:06:41 javed Exp $
 *
 * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
 * 
@@ -492,12 +492,11 @@ public class LDAPConnection implements Cloneable
    public void setConstraints(LDAPConstraints cons)
    {
       this.defSearchCons.setHopLimit(cons.getHopLimit());
-      this.defSearchCons.setBindProc(cons.getBindProc());
-      this.defSearchCons.setRebindProc(cons.getRebindProc());
-      this.defSearchCons.setReferrals(cons.getReferrals());
       this.defSearchCons.setTimeLimit(cons.getTimeLimit());
-      this.defSearchCons.setClientControls(cons.getClientControls());
-      this.defSearchCons.setServerControls(cons.getServerControls());
+      this.defSearchCons.setReferralHandler(cons.getReferralHandler());
+      this.defSearchCons.setReferrals(cons.getReferrals());
+      this.defSearchCons.setClientControls((LDAPControl)cons.getClientControls().clone());
+      this.defSearchCons.setServerControls((LDAPControl)cons.getServerControls().clone());
       return;
    }
 
@@ -569,12 +568,7 @@ public class LDAPConnection implements Cloneable
     */
    public void setSearchConstraints(LDAPSearchConstraints cons)
    {
-      this.defSearchCons.setBatchSize( cons.getBatchSize() );
-      this.defSearchCons.setDereference( cons.getDereference() );
-      this.defSearchCons.setMaxResults( cons.getMaxResults() );
-      this.defSearchCons.setServerTimeLimit( cons.getServerTimeLimit() );
-      this.defSearchCons.setServerControls( cons.getServerControls());
-      this.defSearchCons.setClientControls( cons.getClientControls());
+      defSearchCons = (LDAPSearchConstraints)cons.clone();
       return;
    }
 
