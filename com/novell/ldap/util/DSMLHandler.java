@@ -92,7 +92,7 @@ class DSMLHandler implements ContentHandler, ErrorHandler
     private int state = START;
     private static final java.util.HashMap requestTags;
     private ASN1Tagged rootFilterNode;
-    private Stack filterStack;
+    private Stack filterStack = new Stack();
     private String dnAttributes;
     private String matchingRule;
 
@@ -165,6 +165,10 @@ class DSMLHandler implements ContentHandler, ErrorHandler
                 }
                 if (tag == MODIFY_REQUEST){
                     modlist.clear();
+                }
+                if (tag == SEARCH_REQUEST){
+                    filter = null;
+                    filterStack.removeAllElements();
                 }
                 parseTagAttributes( tag, attrs );
                 break;
@@ -360,7 +364,7 @@ class DSMLHandler implements ContentHandler, ErrorHandler
         }
         if (rootFilterNode == null || filterStack == null) {
             rootFilterNode = current;
-            filterStack = new Stack();
+            filterStack.removeAllElements();
         } else {
             //if we have the root filter then this tag must go inside of top element on the stack
             ((ASN1Tagged)filterStack.peek()).setTaggedValue(current);
@@ -548,10 +552,17 @@ class DSMLHandler implements ContentHandler, ErrorHandler
                 case SEARCH_REQUEST:
                     //queue up search
                     state = BATCH_REQUEST;
-                    message = new LDAPSearchRequest(dn, scope, filter,
+                    if (filter == null){
+                        message = new LDAPSearchRequest(dn, scope, "",
                                 (String[]) attributeNames.toArray(
                                         new String[ attributeNames.size() ] ),
                                 typesOnly, searchCons );
+                    } else {
+                        message = new LDAPSearchRequest(dn, scope, filter,
+                                (String[]) attributeNames.toArray(
+                                        new String[ attributeNames.size() ] ),
+                                typesOnly, searchCons );
+                    }
                     queue.add(message);
                     break;
                 case ATTRIBUTES:
