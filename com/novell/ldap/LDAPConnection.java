@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/src/com/novell/ldap/LDAPConnection.java,v 1.28 2000/09/11 16:34:55 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.29 2000/09/11 21:05:48 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -47,7 +47,10 @@ public class LDAPConnection implements
    private Connection conn = null;
    private LDAPSocketFactory socketFactory = null;
    private LDAPSearchConstraints defSearchCons = new LDAPSearchConstraints();
+   private LDAPConstraints defCons = new LDAPConstraints();
    private boolean ldapv3 = true;
+   private String authenticationPassword = null;
+   private String authenticationDN = null;
 
    /**
    * An identifier that specifies that aliases are never dereferenced.
@@ -471,7 +474,7 @@ public class LDAPConnection implements
     */
    public LDAPConstraints getConstraints()
    {
-      return (LDAPConstraints)getSearchConstraints();
+      return this.defCons;
    }
 
    /**
@@ -484,7 +487,7 @@ public class LDAPConnection implements
     */
    public LDAPSearchConstraints getSearchConstraints()
    {
-      return (LDAPSearchConstraints)defSearchCons.clone();
+      return this.defSearchCons;
    }
 
    /**
@@ -536,7 +539,7 @@ public class LDAPConnection implements
     */
    public void setConstraints(LDAPConstraints cons)
    {
-      defSearchCons = (LDAPSearchConstraints)cons.clone();
+      this.defCons = cons;
       return;
    }
 
@@ -674,10 +677,10 @@ public class LDAPConnection implements
 
    /**
     *
-    *  Abandons one search operation for a listener.
+    *  Abandons an asynchronous operation
     *
     *  @param id      The ID of the asynchrous operation to abandon. The ID 
-    *                 can be obtained from the search listener for the
+    *                 can be obtained from the response listener for the
     *                 operation.
     *
     *  @exception LDAPException A general exception which includes an error 
@@ -966,8 +969,124 @@ public class LDAPConnection implements
                     String passwd)
       throws LDAPException
    {
-      bind(LDAP_V2, dn, passwd); // call LDAPv3 bind()
+      bind(LDAP_V2, dn, passwd, defCons); // call LDAPv2 bind()
       return;
+   }
+
+   /**
+    *
+    * Authenticates to the LDAP server (that the object is currently
+    * connected to) as an LDAPv2 bind, using the specified name and 
+    * password.  
+    *
+    * <p>If the object has been disconnected from an LDAP server,
+    * this method attempts to reconnect to the server. If the object
+    * has already authenticated, the old authentication is discarded.</p>
+    * 
+    *  @param dn      If non-null and non-empty, specifies that the
+    *                 connection and all operations through it should
+    *                 be authenticated with dn as the distinguished
+    *                 name.<br><br>
+    *
+    *  @param passwd  If non-null and non-empty, specifies that the
+    *                 connection and all operations through it should
+    *                 be authenticated with dn as the distinguished
+    *                 name and passwd as password.
+    *
+    * @param cons     Constraints specific to the operation.
+    *
+    *  @exception LDAPException A general exception which includes an error 
+    *  message and an LDAP error code.
+    *
+    */
+   public void bind(String dn,
+                    String passwd,
+                    LDAPConstraints cons)
+                    throws LDAPException
+   {
+      bind(LDAP_V2, dn, passwd, cons); // call LDAPv2 bind()
+      return;
+   }
+
+   /**
+    *
+    * Authenticates to the LDAP server (that the object is currently
+    * connected to) as an LDAPv2 bind, using the specified name and 
+    * password.  
+    *
+    * <p>If the object has been disconnected from an LDAP server,
+    * this method attempts to reconnect to the server. If the object
+    * has already authenticated, the old authentication is discarded.</p>
+    * 
+    *  @param dn      If non-null and non-empty, specifies that the
+    *                 connection and all operations through it should
+    *                 be authenticated with dn as the distinguished
+    *                 name.<br><br>
+    *
+    *  @param passwd  If non-null and non-empty, specifies that the
+    *                 connection and all operations through it should
+    *                 be authenticated with dn as the distinguished
+    *                 name and passwd as password.
+    *
+    * @param listener Handler for messages returned from a server in
+    *                 response to this request. If it is null, a
+    *                 listener object is created internally. It is
+    *                 recommended that either the synchronous version
+    *                 of this method is used or that the client blocks
+    *                 until the listener returns a response.
+    *
+    *  @exception LDAPException A general exception which includes an error 
+    *  message and an LDAP error code.
+    *
+    */
+   public LDAPResponseListener bind(String dn,
+                                    String passwd,
+                                    LDAPResponseListener listener)
+                                    throws LDAPException
+   {
+      return bind(LDAP_V2, dn, passwd, listener, defCons); // call LDAPv2 bind()
+   }
+
+   /**
+    *
+    * Authenticates to the LDAP server (that the object is currently
+    * connected to) as an LDAPv2 bind, using the specified name and 
+    * password.  
+    *
+    * <p>If the object has been disconnected from an LDAP server,
+    * this method attempts to reconnect to the server. If the object
+    * has already authenticated, the old authentication is discarded.</p>
+    * 
+    *  @param dn      If non-null and non-empty, specifies that the
+    *                 connection and all operations through it should
+    *                 be authenticated with dn as the distinguished
+    *                 name.<br><br>
+    *
+    *  @param passwd  If non-null and non-empty, specifies that the
+    *                 connection and all operations through it should
+    *                 be authenticated with dn as the distinguished
+    *                 name and passwd as password.
+    *
+    * @param listener Handler for messages returned from a server in
+    *                 response to this request. If it is null, a
+    *                 listener object is created internally. It is
+    *                 recommended that either the synchronous version
+    *                 of this method is used or that the client blocks
+    *                 until the listener returns a response.
+    *
+    * @param cons     Constraints specific to the operation.
+    *
+    *  @exception LDAPException A general exception which includes an error 
+    *  message and an LDAP error code.
+    *
+    */
+   public LDAPResponseListener bind(String dn,
+                                    String passwd,
+                                    LDAPResponseListener listener,
+                                    LDAPConstraints cons)
+                                    throws LDAPException
+   {
+      return bind(LDAP_V2, dn, passwd, listener, cons); // call LDAPv2 bind()
    }
 
    /*
@@ -1005,7 +1124,7 @@ public class LDAPConnection implements
                     String passwd)
       throws LDAPException
    {
-      bind(version, dn, passwd, defSearchCons);
+      bind(version, dn, passwd, defCons);
       return;
    }
 
@@ -1047,7 +1166,7 @@ public class LDAPConnection implements
       LDAPResponse res = listener.getResponse();
 
       if(res.getResultCode() == LDAPException.SUCCESS) {
-         conn.setBound();
+          conn.setBound();
       }
 
       res.chkResultCode();
@@ -1090,7 +1209,7 @@ public class LDAPConnection implements
                                     LDAPResponseListener listener)
       throws LDAPException
    {
-      return bind(version, dn, passwd, listener, defSearchCons);
+      return bind(version, dn, passwd, listener, defCons);
    }
 
    /**
@@ -1179,6 +1298,8 @@ public class LDAPConnection implements
                                  LDAPException.OTHER);
       }
 
+      authenticationDN = dn;
+      authenticationPassword = passwd;
 //    if(passwd != null) {
 //       req.getLber().reset(); // clear copy of passwd
 //    }
@@ -1186,28 +1307,83 @@ public class LDAPConnection implements
       return listener;
    }
 
-   /*
+   /**
+    * Authenticates to the LDAP server (that the object is currently
+    * connected to) using the specified name and of a specified set of
+    * mechanisms. If none of the requested SASL mechanisms is available, an
+    * exception is thrown.  If the object has been disconnected from an
+    * LDAP server, this method attempts to reconnect to the server. If the
+    * object had already authenticated, the old authentication is
+    * discarded. If mechanisms is null, or if the first version of the
+    * method is called, the LDAP server will be interrogated for its
+    * supportedSaslMechanisms attribute of its root DSE. See RFC 2251 for a
+    * discussion of the SASL classes.
     *
+    * Parameters are:
+    *
+    *  dn              If non-null and non-empty, specifies that the
+    *                  connection and all operations through it should
+    *                  be authenticated with dn as the distinguished
+    *                  name.
+    *
+    *  props          Optional qualifiers for the authentication
+    *                  session, as defined in RFC 2251.
+    *
+    *  cbh            A class which may be called by the Mechanism
+    *                  Driver to obtain additional information required,
+    *                  such as additional credentials.
     */
-/*
+    /*
    public void bind(String dn,
                     Properties props,
                     javax.security.auth.callback.CallbackHandler cbh)
-                    throws LDAPException {
+                    throws LDAPException
+   {
+         throw new LDAPException(    "Not Implemented.",
+                                    LDAPException.LDAP_NOT_SUPPORTED);
    }
-*/
+   */
 
-   /*
+   /**
+    * Authenticates to the LDAP server (that the object is currently
+    * connected to) using the specified name and of a specified set of
+    * mechanisms. If none of the requested SASL mechanisms is available, an
+    * exception is thrown.  If the object has been disconnected from an
+    * LDAP server, this method attempts to reconnect to the server. If the
+    * object had already authenticated, the old authentication is
+    * discarded. If mechanisms is null, or if the first version of the
+    * method is called, the LDAP server will be interrogated for its
+    * supportedSaslMechanisms attribute of its root DSE. See RFC 2251 for a
+    * discussion of the SASL classes.
     *
+    * Parameters are:
+    *
+    *  dn              If non-null and non-empty, specifies that the
+    *                  connection and all operations through it should
+    *                  be authenticated with dn as the distinguished
+    *                  name.
+    *
+    *  mechanisms     An array of IANA-registered SASL mechanisms which
+    *                  the client is willing to use for authentication.
+    *
+    *  props          Optional qualifiers for the authentication
+    *                  session, as defined in RFC 2251.
+    *
+    *  cbh            A class which may be called by the Mechanism
+    *                  Driver to obtain additional information required,
+    *                  such as additional credentials.
     */
-/*
+    /*
    public void bind(String dn,
                     String[] mechanisms,
                     Hashtable props,
                     javax.security.auth.callback.CallbackHandler cbh)
-                    throws LDAPException {
+                    throws LDAPException
+   {
+         throw new LDAPException(    "Not Implemented.",
+                                    LDAPException.LDAP_NOT_SUPPORTED);
    }
-*/
+   */
 
     //*************************************************************************
     // compare methods
@@ -1689,6 +1865,8 @@ public class LDAPConnection implements
       if(conn != null) {
          conn.shutdown((LDAPControl[])null);
          conn = null;
+         authenticationPassword = null;
+         authenticationDN = null;
       }
       else {
          throw new LDAPException("Not connected.",
@@ -2796,7 +2974,7 @@ public class LDAPConnection implements
    }
 
    /*
-    * 4.1.8 search
+    * 4.39.12 search
     */
     
    /**
@@ -2816,7 +2994,7 @@ public class LDAPConnection implements
     *                          within its subtree
     *</ul><br><br>
     *  @param filter         Search filter specifying the search criteria, as
-    *                        defined in [FILTERS].
+    *                        defined in RFC 1960.
     *<br><br>
     *  @param attrs          Names of attributes to retrieve.
     *<br><br>

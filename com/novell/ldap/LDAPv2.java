@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPv2.java,v 1.4 2000/08/03 22:06:19 smerrill Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPv2.java,v 1.5 2000/08/28 22:18:59 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -97,6 +97,96 @@ public interface LDAPv2 {
    public void bind(String dn,
                     String passwd)
                     throws LDAPException;
+
+   /**
+    * Authenticates to the LDAP server (that the object is currently
+    * connected to) using the specified name and password.  If the object
+    * has been disconnected from an LDAP server, this method attempts to
+    * reconnect to the server. If the object had already authenticated, the
+    * old authentication is discarded.
+    *
+    * Parameters are:
+    *
+    *  dn             If non-null and non-empty, specifies that the
+    *                  connection and all operations through it should
+    *                  be authenticated with dn as the distinguished
+    *                  name.
+    *
+    *  passwd         If non-null and non-empty, specifies that the
+    *                  connection and all operations through it should
+    *                  be authenticated with dn as the distinguished
+    *                  name and passwd as password.
+    *
+    * cons           Constraints specific to the operation.
+    */
+   public void bind(String dn,
+                    String passwd,
+                    LDAPConstraints cons)
+                    throws LDAPException;
+
+   /**
+    * Authenticates to the LDAP server (that the object is currently
+    * connected to) using the specified name and password.  If the object
+    * has been disconnected from an LDAP server, this method attempts to
+    * reconnect to the server. If the object had already authenticated, the
+    * old authentication is discarded.
+    *
+    * Parameters are:
+    *
+    *  dn             If non-null and non-empty, specifies that the
+    *                  connection and all operations through it should
+    *                  be authenticated with dn as the distinguished
+    *                  name.
+    *
+    *  passwd         If non-null and non-empty, specifies that the
+    *                  connection and all operations through it should
+    *                  be authenticated with dn as the distinguished
+    *                  name and passwd as password.
+    * listener       Handler for messages returned from a server in
+    *                 response to this request. If it is null, a
+    *                 listener object is created internally. It is
+    *                 recommended that either the synchronous version
+    *                 of this method is used or that the client blocks
+    *                 until the listener returns a response.
+    */
+   public LDAPResponseListener bind(String dn,
+				                    String passwd,
+									LDAPResponseListener listener)
+				                    throws LDAPException;
+
+   /**
+    * Authenticates to the LDAP server (that the object is currently
+    * connected to) using the specified name and password.  If the object
+    * has been disconnected from an LDAP server, this method attempts to
+    * reconnect to the server. If the object had already authenticated, the
+    * old authentication is discarded.
+    *
+    * Parameters are:
+    *
+    *  dn             If non-null and non-empty, specifies that the
+    *                  connection and all operations through it should
+    *                  be authenticated with dn as the distinguished
+    *                  name.
+    *
+    *  passwd         If non-null and non-empty, specifies that the
+    *                  connection and all operations through it should
+    *                  be authenticated with dn as the distinguished
+    *                  name and passwd as password.
+	*
+    * listener       Handler for messages returned from a server in
+    *                 response to this request. If it is null, a
+    *                 listener object is created internally. It is
+    *                 recommended that either the synchronous version
+    *                 of this method is used or that the client blocks
+    *                 until the listener returns a response.
+	*
+    * cons           Constraints specific to the operation.
+    */
+   public LDAPResponseListener bind(String dn,
+				                    String passwd,
+									LDAPResponseListener listener,
+				                    LDAPConstraints cons)
+				                    throws LDAPException;
 
    /**
     * Checks to see if an entry contains an attribute with a specified
