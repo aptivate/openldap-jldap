@@ -19,7 +19,7 @@ package org.ietf.ldap;
  *
  *  Used to do explicit bind processing on a referral.
  *
- * @see com.novell.ldap.LDAPBind
+ * @see <a href="../../../../doc/com/novell/ldap/LDAPBind.html">com.novell.ldap.LDAPBind</a>
  */
 public interface LDAPBind extends LDAPReferralHandler
 {
@@ -27,7 +27,9 @@ public interface LDAPBind extends LDAPReferralHandler
     /**
      * Called by LDAPConnection when a referral is received.
      *
-     * @see com.novell.ldap.LDAPBind#bind(String[], LDAPConnection)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPBind.html
+            #bind(java.lang.String[], com.novell.ldap.LDAPConnection)">
+            com.novell.ldap.LDAPBind.bind(String[], LDAPConnection)</a>
      */
     public LDAPConnection bind (String[] ldapurl, LDAPConnection conn)
             throws LDAPReferralException;
