@@ -25,7 +25,6 @@ import com.novell.ldap.util.RDN;
  *  and a relative distinguished name (RDN).</p>
  */
 public class LDAPDN {
-   
    /**
     * Compares the two strings per the distinguishedNameMatch equality matching
     * (using case-ignore matching).  IllegalArgumentException is thrown if one
@@ -52,8 +51,8 @@ public class LDAPDN {
     * <p>For example, for the rdn "cn=Acme, Inc", the escapeRDN method
     * returns "cn=Acme\, Inc".</p>
     *
-    * <p>escapeRDN escapes the AttributeValue by inserting '\' before the following
-    * chars: * ',' '+' '"' '\' '<' '>' ';' <BR>
+    * <p>escapeRDN escapes the AttributeValue by inserting '\' before the
+    * following chars: * ',' '+' '"' '\' '<' '>' ';' <BR>
     * '#' if it comes at the beginning of the string, and <BR>
     * ' ' (space) if it comes at the beginning or the end of a string.
     * Note that single-valued attributes can be used because of ambiguity. See
@@ -174,7 +173,8 @@ public class LDAPDN {
      * unescapeRDN unescapes the AttributeValue by
      * removing the '\' when the next character fits the following:<BR>
      * ',' '+' '"' '\' '<' '>' ';'<BR>
-     * '#' if it comes at the beginning of the Attribute Name (without the '\').<BR>
+     * '#' if it comes at the beginning of the Attribute Name
+     * (without the '\').<BR>
      * ' ' (space) if it comes at the beginning or the end of the Attribute Name
      * </p>
      *  @param rdn            The RDN to unescape.
@@ -199,10 +199,13 @@ public class LDAPDN {
              i++;
         }
         for ( ; i < rdn.length(); i++){
-            //if the current char is a slash, not the end char, and is followed by a special char then...
+            //if the current char is a slash, not the end char, and is followed
+            // by a special char then...
             if ((rdn.charAt(i)== '\\') && (i != rdn.length()-1)){
-                if((rdn.charAt(i+1) == ',') || (rdn.charAt(i+1) == '+') || (rdn.charAt(i+1) == '"') || (rdn.charAt(i+1) == '\\') ||
-                   (rdn.charAt(i+1) == '<') || (rdn.charAt(i+1) == '>') || (rdn.charAt(i+1) == ';'))
+                if((rdn.charAt(i+1) == ',') || (rdn.charAt(i+1) == '+') ||
+                   (rdn.charAt(i+1) == '"') || (rdn.charAt(i+1) == '\\') ||
+                   (rdn.charAt(i+1) == '<') || (rdn.charAt(i+1) == '>') ||
+                   (rdn.charAt(i+1) == ';'))
                 {   //I'm not sure if I have to check for these special chars
                     continue;
                 }
