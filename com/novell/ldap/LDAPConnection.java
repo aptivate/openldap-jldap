@@ -321,7 +321,7 @@ public class LDAPConnection implements Cloneable
     }
 
     /**
-     * Returns the protocol version uses to authenticate
+     * Returns the protocol version uses to authenticate.
      *
      * <p> 0 is returned if no authentication has been performed.</p>
      *
@@ -1873,7 +1873,7 @@ public class LDAPConnection implements Cloneable
 
     /**
      *
-     *  Connects to the specified host and port
+     *  Connects to the specified host and port.
      *
      *  <p>If this LDAPConnection object represents an open connection, the
      *  connection is closed first before the new connection is opened.
@@ -3680,11 +3680,11 @@ public class LDAPConnection implements Cloneable
      * <p>If referral following is enabled, checks if we need to
      * follow a referral</p>
      *
-     * @parameter queue - the message queue of the current response
+     * @param queue - the message queue of the current response
      *
-     * @parameter cons - the constraints that apply to the request
+     * @param cons - the constraints that apply to the request
      *
-     * @parameter response - the LDAPResponse to check
+     * @param response - the LDAPResponse to check
      */
     private void chkResultCode( LDAPMessageQueue queue,
                                 LDAPConstraints cons,
@@ -4030,7 +4030,7 @@ public class LDAPConnection implements Cloneable
 
     /**
      * Retrieves the Distiguished Name (DN) of the schema associated with a
-     * entry in the Directory
+     * entry in the Directory.
      *
      * <p>The DN can be used with the methods fetchSchema and modify to retreive
      * and extend schema definitions.  Reads the subschemaSubentry of the entry

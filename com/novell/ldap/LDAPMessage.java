@@ -305,7 +305,7 @@ public class LDAPMessage {
      * that control by calling its contructor.  Otherwise we default to
      * returning a regular LDAPControl object
      *
-     * @depreacted.  Not to be used by application programs.
+     * @deprecated  Not to be used by application programs.
      *
      * @param data A RfcControl object that encodes the returned control.
      */

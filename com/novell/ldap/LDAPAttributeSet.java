@@ -260,7 +260,7 @@ public class LDAPAttributeSet
      *
      * @return <tt>true</tt> if this set contains the specified attribute
      *
-     * @throw <tt>ClassCastException</tt> occurs the specified Object
+     * @throws <tt>ClassCastException</tt> occurs the specified Object
      * is not of type <tt>LDAPAttribute</tt>.
      */
     public boolean contains(Object attr) {
@@ -277,7 +277,7 @@ public class LDAPAttributeSet
      *
      * @return <tt>true</tt> if the attribute was added.
      *
-     * @throw <tt>ClassCastException</tt> occurs the specified Object
+     * @throws <tt>ClassCastException</tt> occurs the specified Object
      * is not of type <tt>LDAPAttribute</tt>.
      */
     public boolean add(Object attr) {
@@ -300,7 +300,7 @@ public class LDAPAttributeSet
      *
      * @return <tt>true</tt> if the object was removed.
      *
-     * @throw <tt>ClassCastException</tt> occurs the specified Object
+     * @throws <tt>ClassCastException</tt> occurs the specified Object
      * is not of type <tt>LDAPAttribute</tt> or of type <tt>String</tt>.
      */
     public boolean remove(Object object) {
@@ -330,7 +330,7 @@ public class LDAPAttributeSet
      *
      * @param c  Collection of <tt>LDAPAttribute</tt> objects.
      *
-     * @throw <tt>ClassCastException</tt> occurs when an element in the
+     * @throws <tt>ClassCastException</tt> occurs when an element in the
      * collection is not of type <tt>LDAPAttribute</tt>.
      *
      * @return <tt>true</tt> if this set changed as a result of the call.

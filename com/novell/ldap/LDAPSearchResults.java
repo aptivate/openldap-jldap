@@ -283,15 +283,15 @@ public class LDAPSearchResults
     }
 
     /**
-     * @internal
+     * Collects batchSize elements from an LDAPSearchQueue message
+     * queue and places them in a Vector.
      *
-     * Will collect batchSize elements from an LDAPSearchQueue message
-     * queue and place them in a Vector. If the last message from the server,
+     * <p>If the last message from the server,
      * the result message, contains an error, it will be stored in the Vector
      * for nextElement to process. (although it does not increment the search
      * result count) All search result entries will be placed in the Vector.
      * If a null is returned from getResponse(), it is likely that the search
-     * was abandoned.
+     * was abandoned.</p>
      *
      * @return true if all search results have been placed in the vector.
      */
@@ -585,10 +585,6 @@ public class LDAPSearchResults
     }
 
     /**
-     * @internal
-     *
-     * @deprecated This method will be removed in the fall 2003 NDK.
-     *
      * Vector Sort Utility function to aid sort
      * Sorts the source vector into the destination vector according to
      * LDAPEntryComparator.  This sort is a mergesort for large Vectors and an
@@ -600,6 +596,8 @@ public class LDAPSearchResults
      * @param high index of the last sorted element
      * @param comp the LDAPEntryComparator to determine the order of the Vector.
      * @see LDAPCompareAttrNames
+     *
+     * @deprecated This method will be removed in the fall 2003 NDK.
      */
     private static void mergeSort(Vector source, Vector destination,
                                 int low, int high, LDAPEntryComparator comp)
@@ -640,15 +638,14 @@ public class LDAPSearchResults
 
 
     /**
-     * @internal
+     * Swaps the elements at index A with B in the Vector
      *
-     * @deprecated This method will be removed in the fall 2003 NDK.
-     *
-     * Util function used by MergeSort.  Swaps the elements at index A with B
-     * in the Vector
+     * <p>A utility function used by MergeSort.</p>
      * @param x  Vector in which elements will be swapped
      * @param a  Index to one of the elements
-     * @patam b  Index to the other element
+     * @param b  Index to the other element
+     *
+     * @deprecated This method will be removed in the fall 2003 NDK.
      */
     private static void swap(Vector x, int a, int b) {
          Object t = x.elementAt(a);

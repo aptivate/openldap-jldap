@@ -707,14 +707,14 @@ public class LDAPException extends Exception
    public final static int REFERRAL_LIMIT_EXCEEDED = 97;
 
    /**
-    * Indicates that the server response to a request is invalid
+    * Indicates that the server response to a request is invalid.
     *
     * <p>INVALID_RESPONSE = 100</p>
     */
    public final static int INVALID_RESPONSE = 100;
 
    /**
-    * Indicates that the server response to a request is ambiguous
+    * Indicates that the server response to a request is ambiguous.
     *
     * <p>AMBIGUOUS_RESPONSE = 101</p>
     */

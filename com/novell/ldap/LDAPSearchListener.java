@@ -128,9 +128,14 @@ public class LDAPSearchListener implements LDAPMessageQueue
 
     /**
      * Reports true if all results have been received for a particular
-     * message id, i.e. a response has been received from the server for the
-     * id.  There may still be messages waiting to be retrieved with
-     * getResponse.
+     * message id.
+     *
+     * <p>If the search result done has been received from the server for the
+     * message id, it reports true.  There may still be messages waiting to be
+     * retrieved by the applcation with getResponse.<p>
+     *
+     * @throws IllegalArgumentException if there is no outstanding operation
+     * for the message ID,
      */
      public boolean isComplete( int msgid )
      {
