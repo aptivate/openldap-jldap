@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPControl.java,v 1.5 2000/08/21 18:35:41 vtag Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPControl.java,v 1.6 2000/08/28 22:18:56 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -19,26 +19,28 @@ import com.novell.asn1.*;
 import com.novell.asn1.ldap.*;
 
 /**
- *  An LDAPControl encapsulates optional additional parameters or
- *  constraints to be applied to LDAP operations. If set as a Server
- *  Control, it is sent to the server along with operation requests. If
- *  set as a Client Control, it is not sent to the server, but rather
- *  interpreted locally by the client. LDAPControl is an LDAPv3
- *  extension, and is not supported in an LDAPv2 environment.
+ *  Encapsulates optional additional parameters or constraints to be 
+ *  applied to LDAP operations. 
+ *
+ * <p>If set as a server control, it is sent to the server along with operation
+ * requests. If set as a client control, it is not sent to the server, but 
+ * rather interpreted locally by the client. LDAPControl is an LDAPv3 extension,
+ * and is not supported in an LDAPv2 environment.</p>
  */
 public class LDAPControl implements Cloneable {
 
 	private Control control; // An RFC 2251 Control
 
    /**
-    * Parameters are:
+    * Constructs a new LDAPControl object using the specified values.
     *
-    *  id             The type of the Control, as a string.
-    *
-    *  critical       True if the LDAP operation should be discarded if
-    *                 the server does not support this Control.
-    *
-    *  vals           Control-specific data.
+    *  @param id     The ID of the control, as a dotted string.
+    *<br><br> 
+    *  @param critical   True if the LDAP operation should be discarded if
+    *                    the control is not supported. False if 
+    *                    the operation can be processed without the control.
+    *<br><br> 
+    *  @param vals     The control-specific data.
     */
    public LDAPControl(String id, boolean critical, byte vals[]) {
 		control = new Control(new LDAPOID(id), new ASN1Boolean(critical),
@@ -46,7 +48,7 @@ public class LDAPControl implements Cloneable {
    }
 
 	/**
-	 * Create an LDAPControl from a Control. (not in draft)
+	 * Create an LDAPControl from an existing control. 
 	 */
 	public LDAPControl(Control control)
 	{
@@ -54,7 +56,9 @@ public class LDAPControl implements Cloneable {
 	}
 
    /**
-    * Returns a deep copy of the object.
+    * Returns a copy of the current LDAPControl object.
+    *
+    * @return A copy of the current LDAPControl object.
     */
    public Object clone() {
       return null;
@@ -62,6 +66,8 @@ public class LDAPControl implements Cloneable {
 
    /**
     * Returns the identifier of the control.
+    *
+    * @return The object ID of the control.
     */
    public String getID() {
 		return new String(control.getControlType().getContent());
@@ -69,14 +75,19 @@ public class LDAPControl implements Cloneable {
 
    /**
     * Returns the control-specific data of the object.
+    *
+    * @return The control-specific data of the object as a byte array.
     */
    public byte[] getValue() {
 		return control.getControlValue().getContent();
    }
 
    /**
-    * Returns true if the control must be supported for an associated
-    * operation to be executed.
+    * Returns whether the control is critical for the operation.
+    *
+    * @return Returns true if the control must be supported for an associated
+    * operation to be executed, and false is the control is not required for 
+    * the operation.
     */
    public boolean isCritical() {
 		return control.getCriticality().getContent();
@@ -85,6 +96,8 @@ public class LDAPControl implements Cloneable {
    /**
     * Instantiates a control, given the raw data representing it in an LDAP
     * message.
+    *
+    * @param data An array of data bytes for the control.
     */
    public static LDAPControl newInstance(byte[] data) {
       return null;
@@ -92,20 +105,20 @@ public class LDAPControl implements Cloneable {
 
    /**
     * Registers a class to be instantiated on receipt of a control with the
-    * given oid. Any previous registration for the oid is overridden. The
-    * controlClass must be an extension of LDAPControl.
+    * given OID. 
     *
-    * Parameters are:
+    * <p>Any previous registration for the OID is overridden. The
+    * controlClass must be an extension of LDAPControl.</p>
     *
-    *  oid            The Object Identifier of the Control.
-    *
-    *  controlClass   A class which can instantiate an LDAPControl.
+    *  @param oid            The object identifier of the control.
+    *<br><br>
+    *  @param controlClass   A class which can instantiate an LDAPControl.
     */
    public static void register(String oid, Class controlClass) {
    }
 
 	/**
-	 *
+	 * Returns the object identifier of the control.
 	 */
 	public Control getASN1Object()
 	{

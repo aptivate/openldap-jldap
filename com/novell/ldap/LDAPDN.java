@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPDN.java,v 1.3 2000/08/03 22:06:15 smerrill Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPDN.java,v 1.4 2000/08/28 22:18:56 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -15,10 +15,13 @@
  
 package com.novell.ldap;
  
-/**
+/*
  * 4.9 public class LDAPDN
- *
- *  A utility class representing a distinguished name (DN).
+ */
+ 
+/**
+ *  Specifies methods for manipulating a distinguished name (DN)
+ *  and a relative distinguished name (RDN)).
  */
 public class LDAPDN {
 
@@ -27,14 +30,14 @@ public class LDAPDN {
     */
 
    /**
-    * Returns true if the two strings correspond to the same DN, after
-    * appropriate normalization.
+    * Normalizes the names (if appropriate) and then determines whether the 
+    * two distinguished names are the same.
     *
-    * Parameters are:
+    *  @param dn1            String form of first DN to compare.
+    *<br><br>
+    *  @param dn2            String form of second DN to compare.
     *
-    *  dn1            String form of first DN to compare.
-    *
-    *  dn2            String form of second DN to compare.
+    * @return Returns true if the two strings correspond to the same DN, 
     */
    public static boolean equals (String dn1, String dn2) {
       return false;
@@ -45,12 +48,14 @@ public class LDAPDN {
     */
 
    /**
-    * Returns the RDN after escaping the characters requiring escaping [6].
-    * For example, for the rdn ôcn=Acme, Incö, ôcn=Acme\, Incö is returned.
+    * Returns the RDN after escaping the characters requiring escaping.
     *
-    * Parameters are:
+    * <p>For example, for the rdn "ôcn=Acme, Incö", the escapeRDN method 
+    * returns "ôcn=Acme\, Incö".</p>
     *
-    *  rdn            The RDN to escape.
+    *  @param rdn            The RDN to escape.
+    *
+    *@return The RDN with escaping characters.
     */
    public static String escapeRDN (String rdn) {
       return null;
@@ -61,13 +66,14 @@ public class LDAPDN {
     */
 
    /**
-    * Returns the RDN after unescaping the characters requiring escaping
-    * [6]. For example, for the rdn ôcn=Acme\, Incö, ôcn=Acme, Incö is
-    * returned.
+    * Returns the RDN after unescaping the characters requiring escaping.
     *
-    * Parameters are:
+    * <p>For example, for the rdn "ôcn=Acme\, Incö", the unescapeRDN method 
+    * returns "ôcn=Acme, Incö".</p>
     *
-    *  rdn            The RDN to unescape.
+    *  @param rdn            The RDN to unescape.
+    *
+    * @return The RDN with the escaping characters removed.
     */
    public static String unescapeRDN (String rdn) {
       return null;
@@ -80,16 +86,17 @@ public class LDAPDN {
    /**
     * Returns the individual components of a distinguished name (DN).
     *
-    * Parameters are:
-    *
-    *  dn             Distinguished name, e.g. "cn=Babs
-    *                  Jensen,ou=Accounting,o=Acme,c=us"
-    *
-    *  noTypes        If true, returns only the values of the
-    *                  components, and not the names, e.g. "Babs
-    *                  Jensen", "Accounting", "Acme", "us" - instead of
+    * @param dn        The distinguished name, for example, "cn=Babs
+    *                  Jensen,ou=Accounting,o=Acme,c=US"
+    *<br><br>
+    * @param noTypes   If true, returns only the values of the
+    *                  components, and not the names, for example, "Babs
+    *                  Jensen", "Accounting", "Acme", "US" instead of
     *                  "cn=Babs Jensen", "ou=Accounting", "o=Acme", and
-    *                  "c=us".
+    *                  "c=US".
+    *
+    * @return An array of strings representing the individual components 
+    * of a DN, or null if the DN is not a valid DN.
     */
    public static String[] explodeDN(String dn, boolean noTypes) {
       return null;
@@ -103,13 +110,16 @@ public class LDAPDN {
     * Returns the individual components of a relative distinguished name
     * (RDN).
     *
-    * Parameters are:
+    *  @param rdn     The relative distinguished name, or in other words,
+    *                 the left-most component of a distinguished name.
+    *<br><br>
+    *  @param noTypes   If true, returns only the values of the
+    *                  components, and not the names of the component, for
+    *                  example "Babs Jensen" instead of "cn=Babs Jensen".
     *
-    *  rdn            Relative distinguished name, i.e. the left-most
-    *                  component of a distinguished name.
-    *
-    *  noTypes        If true, returns only the values of the
-    *                  components, and not the names.
+    * @return An array of strings representing the individual components 
+    * of an RDN, or null if the RDN is not a valid RDN.
+
     */
    public static String[] explodeRDN(String rdn, boolean noTypes) {
       return null;
