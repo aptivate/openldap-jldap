@@ -4417,7 +4417,7 @@ public class LDAPConnection implements Cloneable
         throws LDAPException
     {
         return search(base, scope, filter, attrs, typesOnly,
-                      (LDAPSearchListener)queue, cons);
+                      (LDAPSearchQueue)queue, cons);
     }
 
     /**
