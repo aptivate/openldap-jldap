@@ -55,6 +55,12 @@ public class LDAPControl implements Cloneable {
      */
     public LDAPControl(String oid, boolean critical, byte[] values)
     {
+        if( oid == null) {
+            throw new IllegalArgumentException("An OID must be specified");
+        }
+        if( values == null) {
+            values = new byte[]{};
+        }
         control = new RfcControl(new RfcLDAPOID(oid), new ASN1Boolean(critical),
                               new ASN1OctetString(values));
         return;
