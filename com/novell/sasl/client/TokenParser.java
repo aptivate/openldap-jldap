@@ -14,7 +14,7 @@
  ******************************************************************************/
 package com.novell.sasl.client;
 
-import javax.security.sasl.*;
+import com.novell.security.sasl.*;
 /**
  * The TokenParser class will parse individual tokens from a list of tokens that
  * are a directive value for a DigestMD5 authentication.The tokens are separated

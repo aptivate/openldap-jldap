@@ -15,7 +15,7 @@
 package com.novell.sasl.client;
 
 import java.util.*;
-import javax.security.sasl.*;
+import com.novell.security.sasl.*;
 import java.io.UnsupportedEncodingException;
 
 /**

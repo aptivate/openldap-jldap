@@ -14,7 +14,7 @@
  ******************************************************************************/
 package com.novell.sasl.client;
 
-import javax.security.sasl.*;
+import com.novell.security.sasl.*;
 import java.util.*;
 
 /**
@@ -131,7 +131,7 @@ public class ClientFactory extends Object implements SaslClientFactory
      *               passive attacks. Non-policy related properties, if
      *               present in props, are ignored.
      *
-     *   QOP ("javax.security.sasl.qop")
+     *   QOP ("com.novell.security.sasl.qop")
      *
      *              A comma-separated, ordered list of quality-of-protection
      *              values that the client or server is willing to support. A
@@ -149,7 +149,7 @@ public class ClientFactory extends Object implements SaslClientFactory
      *              the client or server. If this property is absent, the
      *              default qop is "auth".
      *
-     *   STRENGTH ("javax.security.sasl.strength")
+     *   STRENGTH ("com.novell.security.sasl.strength")
      *
      *              A comma-separated, ordered list of cipher strength values
      *              that the client or server is willing to support. A
@@ -172,33 +172,33 @@ public class ClientFactory extends Object implements SaslClientFactory
      *              If this property is absent, the default strength is
      *              "high,medium,low".
      *
-     *   SERVER_AUTH ("javax.security.sasl.server.authentication")
+     *   SERVER_AUTH ("com.novell.security.sasl.server.authentication")
      *
      *              "true" if server must authenticate to client; default
      *              "false"
      *
-     *   MAX_BUFFER ("javax.security.sasl.maxbuffer")
+     *   MAX_BUFFER ("com.novell.security.sasl.maxbuffer")
      *
      *              Maximum size of receive buffer in bytes of
      *              SaslClient/SaslServer; the default is defined by the
      *              mechanism. The property value is the string
      *              representation of an integer.
      *
-     *   CLIENT_PKGS ("javax.security.sasl.client.pkgs")
+     *   CLIENT_PKGS ("com.novell.security.sasl.client.pkgs")
      *
      *              A |-separated list of package names to use when locating
      *              a SaslClientFactory. Each package MUST contain a class
      *              named ClientFactory that implements the SaslClientFactory
      *              interface.
      *
-     *   SERVER_PKGS ("javax.security.sasl.server.pkgs")
+     *   SERVER_PKGS ("com.novell.security.sasl.server.pkgs")
      *
      *              A |-separated list of package names to use when locating
      *              a SaslServerFactory. Each package MUST contain a class
      *              named ServerFactory that implements the SaslServerFactory
      *              interface.
      *
-     *   RAW_SEND_SIZE ("javax.security.sasl.rawsendsize")
+     *   RAW_SEND_SIZE ("com.novell.security.sasl.rawsendsize")
      *
      *              Maximum size of the raw send buffer in bytes of
      *              SaslClient/SaslServer. The property value is the string
@@ -208,7 +208,7 @@ public class ClientFactory extends Object implements SaslClientFactory
      *   The following properties are for defining a security policy for a
      *   server or client. Absence of the property is interpreted as "false".
      *
-     *   POLICY_NOPLAINTEXT ("javax.security.sasl.policy.noplaintext")
+     *   POLICY_NOPLAINTEXT ("com.novell.security.sasl.policy.noplaintext")
      *
      *              "true"           if mechanisms susceptible to simple
      *                               plain passive attacks (e.g. "PLAIN") are
@@ -216,7 +216,7 @@ public class ClientFactory extends Object implements SaslClientFactory
      *
      *              "false"          if such mechanisms are permitted
      *
-     *   POLICY_NOACTIVE ("javax.security.sasl.policy.noactive")
+     *   POLICY_NOACTIVE ("com.novell.security.sasl.policy.noactive")
      *
      *              "true"           if mechanisms susceptible to active
      *                               (non-dictionary) attacks are not
@@ -224,21 +224,21 @@ public class ClientFactory extends Object implements SaslClientFactory
      *
      *              "false"          if such mechanisms are permitted.
      *
-     *   POLICY_NODICTIONARY ("javax.security.sasl.policy.nodictionary")
+     *   POLICY_NODICTIONARY ("com.novell.security.sasl.policy.nodictionary")
      *
      *              "true"           if mechanisms susceptible to passive
      *                               dictionary attacks are not permitted
      *
      *              "false"          if such mechanisms are permitted
      *
-     *   POLICY_NOANONYMOUS ("javax.security.sasl.policy.noanonymous")
+     *   POLICY_NOANONYMOUS ("com.novell.security.sasl.policy.noanonymous")
      *
      *              "true"           if mechanisms that accept anonymous
      *                               login are not permitted
      *
      *              "false"          if such mechanisms are permitted
      *
-     *   POLICY_FORWARD_SECRECY ("javax.security.sasl.policy.forward")
+     *   POLICY_FORWARD_SECRECY ("com.novell.security.sasl.policy.forward")
      *
      *   Forward secrecy means that breaking into one session will not
      *   automatically provide information for breaking into future sessions.
@@ -248,7 +248,7 @@ public class ClientFactory extends Object implements SaslClientFactory
      *
      *              "false"          if such mechanisms are not required
      *
-     *   POLICY_PASS_CREDENTIALS ("javax.security.sasl.policy.credentials")
+     *   POLICY_PASS_CREDENTIALS ("com.novell.security.sasl.policy.credentials")
      *
      *              "true"           if mechanisms that pass client
      *                               credentials are required

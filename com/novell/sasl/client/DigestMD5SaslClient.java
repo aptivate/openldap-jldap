@@ -14,7 +14,7 @@
  ******************************************************************************/
 package com.novell.sasl.client;
 
-import javax.security.sasl.*;
+import com.novell.security.sasl.*;
 import javax.security.auth.callback.*;
 import java.security.SecureRandom;
 import java.security.MessageDigest;

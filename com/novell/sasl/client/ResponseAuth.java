@@ -15,7 +15,7 @@
 package com.novell.sasl.client;
 
 import java.util.*;
-import javax.security.sasl.*;
+import com.novell.security.sasl.*;
 
 /**
  * Implements the ResponseAuth class used by the DigestMD5SaslClient mechanism

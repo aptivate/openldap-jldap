@@ -51,7 +51,7 @@
         <mkdir dir="${build.debug}"/>
         <javac
                 srcdir="."
-                includes="com/novell/**/*.java,jldap/javax/security/sasl/*.java,org/ietf/**/*.java"
+                includes="com/novell/**/*.java,jldap/com/novell/security/sasl/*.java,org/ietf/**/*.java"
                 excludes="com/novell/services/**/*.java"
                 destdir="${build.debug}"
                 target="1.2"
@@ -83,7 +83,7 @@
         <mkdir dir="${build}"/>
         <javac
                 srcdir="."
-                includes="com/novell/**/*.java,jldap/javax/security/sasl/*.java,org/ietf/**/*.java"
+                includes="com/novell/**/*.java,jldap/com/novell/security/sasl/*.java,org/ietf/**/*.java"
                 excludes="com/novell/services/**/*.java"
                 destdir="${build}"
                 target="1.2"
