@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/client/Message.java,v 1.19 2001/04/23 21:15:16 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/client/Message.java,v 1.20 2001/05/01 21:57:14 vtag Exp $
 *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -331,7 +331,7 @@ public class Message
     /**
      * Gets the next reply from the reply queue or waits until one is there
      *
-     * @return the next reply message on the reply queue
+     * @return the next reply message on the reply queue or null
      */
     /* package */
     Object waitForReply()
@@ -341,55 +341,52 @@ public class Message
         }
         // sync on message so don't confuse with timer thread
         synchronized( replies ) {
+            Object msg = null;
             while( waitForReply ) {
-                try {
-                    Object msg;
-                    // We use remove and catch the exception because
-                    // it is an atomic get and remove. isEmpty, getFirstElement,
-                    // and removeElementAt are multiple statements.
-                    // Another thread could remove the object between statements.
-                    msg = replies.remove(0); // Atomic get and remove
-                    if( (complete || ! acceptReplies) && replies.isEmpty()) {
-                        // Remove msg from connection queue when last reply read
-                        conn.removeMessage(this);
-                        if( Debug.LDAP_DEBUG) {
-                            Debug.trace( Debug.messages, name +
-                                "Last message removed, remove msg from Connection");
-                        }
-                    }
-                    else {
-                        if( Debug.LDAP_DEBUG) {
-                            Debug.trace( Debug.messages, name +
-                                "Got reply from queue(" +
-                                replies.size() + " remaining in queue)");
-                        }
-                    }
-                    return msg;
-                } catch( ArrayIndexOutOfBoundsException ex ) {
+                if( replies.isEmpty()) {
                     if( Debug.LDAP_DEBUG) {
                         Debug.trace( Debug.messages, name +
                             "No replies queued, waitForReply=" + waitForReply);
                     }
-                    if( waitForReply) {
-                        try {
-                            if( Debug.LDAP_DEBUG) {
-                                Debug.trace( Debug.messages, name +
-                                    "Wait for a reply");
-                            }
-                            replies.wait();
-                        } catch(InterruptedException ir) {
+                    try {
+                        if( Debug.LDAP_DEBUG) {
+                            Debug.trace( Debug.messages, name +
+                                "Wait for a reply");
+                        }
+                        replies.wait();
+                    } catch(InterruptedException ir) {
+                        if( waitForReply) {
+                            continue;
+                        } else {
                             break;
                         }
                     }
+                } else {
+                    msg = replies.remove(0); // Atomic get and remove
                 }
+                if( (complete || ! acceptReplies) && replies.isEmpty()) {
+                    // Remove msg from connection queue when last reply read
+                    conn.removeMessage(this);
+                    if( Debug.LDAP_DEBUG) {
+                        Debug.trace( Debug.messages, name +
+                            "Last message removed, remove msg from Connection");
+                    }
+                }
+                else {
+                    if( Debug.LDAP_DEBUG) {
+                        Debug.trace( Debug.messages, name +
+                            "Got reply from queue(" +
+                            replies.size() + " remaining in queue)");
+                    }
+                }
+                return msg;
             }
             return null;
         }
     }
 
     /**
-     * Gets the next reply from the reply queue if one exists, otherwise
-     * throws ArrayIndexOutOfBoundsException
+     * Gets the next reply from the reply queue if one exists
      *
      * @return the next reply message on the reply queue or null if none
      */
