@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSchema.java,v 1.15 2000/10/31 23:52:24 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSchema.java,v 1.16 2000/12/04 22:59:52 bgudmundson Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -271,6 +271,76 @@ public class LDAPSchema {
       return (LDAPMatchingRuleUseSchema) matchingRuleUseHashtable.get(name);
    }
 
+	/**
+    * Returns a particular DIT structure rule definition, or null if not found.
+    *
+    *  @param name     The name of the DIT structure rule use for which a definition
+    *                  is to be returned.
+    *
+    *  @return The DIT structure rule definition, or null if not found.
+    */
+   public LDAPDITStructureRuleSchema getDITStructureRule( String name ) {
+
+      throw new RuntimeException("Method LDAPSchema.getDITStructureRule not implemented");
+
+   }
+
+   /**
+    * Returns a particular DIT structure rule definition, or null if not found.
+    *
+    *  @param name     The ID of the DIT structure rule use for which a definition
+    *                  is to be returned.
+    *
+    *  @return The DIT structure rule definition, or null if not found.
+    */
+   public LDAPDITStructureRuleSchema getDITStructureRule( int ID ) {
+
+      throw new RuntimeException("Method LDAPSchema.getDITStructureRule not implemented");
+
+   }
+
+   /**
+    * Returns a particular DIT content rule definition, or null if not found.
+    *
+    *  @param name     The name of the DIT content rule use for which a definition
+    *                  is to be returned.
+    *
+    *  @return The DIT content rule definition, or null if not found.
+    */
+   public LDAPDITContentRuleSchema getDITContentRule( String name ) {
+
+      throw new RuntimeException("Method LDAPSchema.getDITContentRule not implemented");
+
+   }
+
+   /**
+    * Returns a particular name form definition, or null if not found.
+    *
+    *  @param name     The name of the name form for which a definition
+    *                  is to be returned.
+    *
+    *  @return The name form definition, or null if not found.
+    */
+   public LDAPNameFormSchema getNameForm( String name ) {
+
+      throw new RuntimeException("Method LDAPSchema.getNameForm not implemented");
+
+   }
+
+   /**
+    * Returns a particular syntax definition, or null if not found.
+    *
+    *  @param name     The oid of the syntax for which a definition
+    *                  is to be returned.
+    *
+    *  @return The syntax definition, or null if not found.
+    */
+   public LDAPSyntaxSchema getSyntax( String oid ) {
+
+      throw new RuntimeException("Method LDAPSchema.getSyntax not implemented");
+
+   }	
+
    /**
     * Returns an enumeration of attribute definitions.
     *
@@ -292,7 +362,7 @@ public class LDAPSchema {
    /**
     * Returns an enumeration of matching rule definitions.
     *
-    * @exception An enumeration of matching rule definitions.
+    * @return An enumeration of matching rule definitions.
     */
    public Enumeration getMatchingRules() {
       return matchingRuleHashtable.elements();
@@ -301,11 +371,47 @@ public class LDAPSchema {
    /**
     * Returns an enumeration of matching rule use definitions.
     *
-    * @exception An enumeration of matching rule use definitions.
+    * @return An enumeration of matching rule use definitions.
     */
    public Enumeration getMatchingUseRules() {
       return matchingRuleUseHashtable.elements();
    }
+
+   /**
+    * Returns an enumeration of DIT structure rule definitions.
+    *
+    * @return An enumeration of DIT structure rule definitions.
+    */
+   public Enumeration getDITStructureRules() {
+      throw new RuntimeException("Method LDAPSchema.getDITStructureRules not implemented");
+   }
+
+   /**
+    * Returns an enumeration of DIT content rule definitions.
+    *
+    * @return An enumeration of DIT content rule definitions.
+    */
+   public Enumeration getDITContentRules() {
+      throw new RuntimeException("Method LDAPSchema.getDITContentRules not implemented");
+   }
+   
+   /**
+    * Returns an enumeration of name form definitions.
+    *
+    * @return An enumeration of name form definitions.
+    */
+   public Enumeration getNameForms() {
+      throw new RuntimeException("Method LDAPSchema.getNameForms not implemented");
+   }
+   
+   /**
+    * Returns an enumeration of syntax definitions.
+    *
+    * @return An enumeration of syntax definitions.
+    */
+   public Enumeration getSyntaxes() {
+      throw new RuntimeException("Method LDAPSchema.getSyntaxes not implemented");
+   }	
 
    /**
     * Returns an enumeration of attribute names.
@@ -342,4 +448,31 @@ public class LDAPSchema {
    public Enumeration getMatchingRuleUseNames() {
       return matchingRuleUseHashtable.keys();
    }
+
+   /**
+  	* Returns an enumeration of DIT structure rule names.
+    *
+    * @return An enumeration of DIT structure rule names.
+    */
+   public Enumeration getDITStructureRuleNames() {
+      throw new RuntimeException("Method LDAPSchema.getDITStructureRuleNames not implemented");
+   }
+
+  /**
+  	* Returns an enumeration of DIT content rule names.
+    *
+    * @return An enumeration of DIT content rule names.
+    */
+   public Enumeration getDITContentRuleNames() {
+      throw new RuntimeException("Method LDAPSchema.getDITContentRuleNames not implemented");
+   }
+   
+  /**
+  	* Returns an enumeration of name form names.
+    *
+    * @return An enumeration of name form names.
+    */
+   public Enumeration getNameFormNames() {
+      throw new RuntimeException("Method LDAPSchema.getNameFormNames not implemented");
+   } 	
 }
