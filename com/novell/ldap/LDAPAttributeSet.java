@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttributeSet.java,v 1.14 2000/10/30 23:58:02 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttributeSet.java,v 1.15 2000/10/31 23:52:18 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -18,8 +18,8 @@ package com.novell.ldap;
 import java.util.*;
 
 /**
- *  Represents a collection of LDAPAttributes, either used to construct an entry 
- *  to be added to a directory or returned in an entry on a search or read 
+ *  Represents a collection of LDAPAttributes, either used to construct an entry
+ *  to be added to a directory or returned in an entry on a search or read
  *  operation.
  */
 public class LDAPAttributeSet implements Cloneable {
@@ -47,7 +47,11 @@ public class LDAPAttributeSet implements Cloneable {
     * @return A deep copy of this attribute set.
     */
    public Object clone() {
-      throw new RuntimeException("Method LDAPAttributeSet.clone not implemented");
+      LDAPAttributeSet newAttrs = new LDAPAttributeSet();
+      for(int i = 0; i < attrs.size(); i++){
+         newAttrs.add( new LDAPAttribute( (LDAPAttribute)attrs.elementAt(i)));
+      }
+      return (Object)newAttrs;
    }
 
    /**
@@ -58,7 +62,7 @@ public class LDAPAttributeSet implements Cloneable {
     *
     * @return    The attribute at the position specified.
     *
-    * @exception ArrayIndexOutOfBoundsException The value specified by the 
+    * @exception ArrayIndexOutOfBoundsException The value specified by the
     * index is outside of the array.
     *
     */
@@ -68,7 +72,7 @@ public class LDAPAttributeSet implements Cloneable {
    }
 
    /**
-    * Returns the attribute matching the specified attrName. 
+    * Returns the attribute matching the specified attrName.
     *
     * <p>For example:</p>
     * <ul>
@@ -83,7 +87,7 @@ public class LDAPAttributeSet implements Cloneable {
     *  subtype.</p>
     *
     * @param attrName   The name of an attribute to retrieve, with or without
-    * subtype specifications. For example, "cn", "cn;phonetic", and 
+    * subtype specifications. For example, "cn", "cn;phonetic", and
     * cn;binary" are valid attribute names.
     *
     * @return The attribute matching the specified attrName, or null if there
@@ -113,8 +117,8 @@ public class LDAPAttributeSet implements Cloneable {
     * among localizations, only the base attribute may be stored, whereas
     * for others there may be varying degrees of specialization.</p>
     *
-    * <p>For example, getAttribute(attrName,lang) returns the subtype that 
-    * matches attrName and that best matches lang.</p> 
+    * <p>For example, getAttribute(attrName,lang) returns the subtype that
+    * matches attrName and that best matches lang.</p>
     *
     * <p>If there are subtypes other than "lang" subtypes included
     * in attrName, for example, "cn;binary", only attributes with all of
@@ -147,16 +151,16 @@ public class LDAPAttributeSet implements Cloneable {
     *  subtype.</p>
     *
     * @param attrName  The name of an attribute to retrieve, with or without
-    * subtype specifications. For example, "cn", "cn;phonetic", and 
+    * subtype specifications. For example, "cn", "cn;phonetic", and
     * cn;binary" are valid attribute names.
     *<br><br>
-    * @param lang   A language specification with optional subtypes 
-    * appended using "-" as separator. For example, "lang-en", "lang-en-us", 
+    * @param lang   A language specification with optional subtypes
+    * appended using "-" as separator. For example, "lang-en", "lang-en-us",
     * "lang-ja", and "lang-ja-JP-kanji" are valid language specification.
-    *    
+    *
     * @return A single best-match attribute, or null if no match is
     * found in the entry.
-    *     
+    *
     */
    public LDAPAttribute getAttribute(String attrName, String lang) {
       throw new RuntimeException("Method LDAPAttributeSet.getAttribute not implemented");
@@ -199,14 +203,14 @@ public class LDAPAttributeSet implements Cloneable {
     * <li> "lang-ja" specifies only Japanese language subtypes</li>
     * <li> "binary" specifies only binary subtypes</li>
     * <li> "binary;lang-ja" specifies only Japanese language subtypes
-    *       which also are binary</li> 
-    * </ul>               
+    *       which also are binary</li>
+    * </ul>
     *
     * <p>NDS does not yet support language subtypes. It does support the "binary"
     *  subtype.</p>
-    * 
+    *
     * @return An attribute set containing the attributes that match the specified
-    *         subtype.                                         
+    *         subtype.
     */
    public LDAPAttributeSet getSubset(String subtype) {
       throw new RuntimeException("Method LDAPAttributeSet.getSubset not implemented");
@@ -215,12 +219,12 @@ public class LDAPAttributeSet implements Cloneable {
    /**
     * Removes the specified attribute from the set. If the attribute is not
     * a member of the set, nothing happens.
-    * 
-    * <p> To remove an LDAPAttribute by object, the LDAPAttribute.getName 
+    *
+    * <p> To remove an LDAPAttribute by object, the LDAPAttribute.getName
     * method can be used: LDAPAttributeSet.remove( attr.getName );</p>
     *
-    * @param name  Name of the attribute to remove from this set. 
-    *              
+    * @param name  Name of the attribute to remove from this set.
+    *
     */
    public void remove(String name) {
        for(int i=0; i<attrs.size(); i++) {
@@ -238,7 +242,7 @@ public class LDAPAttributeSet implements Cloneable {
     *
     * @param index  Index of the attribute to remove.
     *
-    * @exception ArrayIndexOutOfBoundsException The value specified by the 
+    * @exception ArrayIndexOutOfBoundsException The value specified by the
     * index is outside of the array.
     *
     */
