@@ -19,6 +19,11 @@ import com.novell.ldap.extensions.*;
 import com.novell.ldap.rfc2251.*;
 import com.novell.ldap.resources.*;
 import java.io.IOException;
+import com.novell.ldap.client.Debug;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Constructor;
+
 /**
  *
  *  Takes an LDAPExtendedResponse and returns an object
@@ -50,43 +55,65 @@ public class ExtResponseFactory {
 
     static public LDAPExtendedResponse convertToExtendedResponse(RfcLDAPMessage inResponse)
             throws LDAPException {
-
+        
         LDAPExtendedResponse tempResponse = new LDAPExtendedResponse(inResponse);
-
         // Get the oid stored in the Extended response
         String inOID = tempResponse.getID();
 
-        if (inOID == null)
-            return tempResponse;
-        // Is this an OID we support, if yes then build the
-        // detailed LDAPExtendedResponse object
-        try {
-            if (inOID.equals(ReplicationConstants.NAMING_CONTEXT_COUNT_RES)) {
-                return new PartitionEntryCountResponse(inResponse);
-            }
-            if (inOID.equals(ReplicationConstants.GET_IDENTITY_NAME_RES) ) {
-                return new GetBindDNResponse(inResponse);
-            }
-            if (inOID.equals(ReplicationConstants.GET_EFFECTIVE_PRIVILEGES_RES) ) {
-                return new GetEffectivePrivilegesResponse(inResponse);
-            }
-            if (inOID.equals(ReplicationConstants.GET_REPLICA_INFO_RES) ) {
-                return new GetReplicaInfoResponse(inResponse);
-            }
-            if (inOID.equals(ReplicationConstants.LIST_REPLICAS_RES) ) {
-                return new ListReplicasResponse(inResponse);
-            }
-            if (inOID.equals(ReplicationConstants.GET_REPLICATION_FILTER_RES) ) {
-                return new GetReplicationFilterResponse(inResponse);
-            }
-            else
+        RespExtensionSet regExtResponses = 
+                                LDAPExtendedResponse.getRegisteredResponses();
+        try{
+            Class extRespClass = regExtResponses.findResponseExtension(inOID);            
+            if ( extRespClass == null ){
                 return tempResponse;
+            }
+            if( Debug.LDAP_DEBUG) {
+                Debug.trace( Debug.messages,
+                 "For oid " + inOID + ", found class " + extRespClass.toString());
+            }    
+            
+            Class[] argsClass = { RfcLDAPMessage.class };
+            Object[] args = { inResponse };
+            Exception ex;
+            try{
+                Constructor extConstructor = 
+                                     extRespClass.getConstructor(argsClass);
+                try{
+                    Object resp = null;
+                    resp = extConstructor.newInstance(args);
+                    return (LDAPExtendedResponse) resp;
+                }catch(InstantiationException e) {
+                    // Could not create the ResponseControl object
+                    // All possible exceptions are ignored. We fall through
+                    // and create a default LDAPControl object
+                    ex = e;
+                } catch (IllegalAccessException e) {
+                    ex = e;
+                } catch (InvocationTargetException e) {
+                    ex = e;
+                }
+            } catch (NoSuchMethodException e) {
+                // bad class was specified, fall through and return a
+                // default  LDAPExtendedResponse object
+                ex = e;
+            }
+            if( Debug.LDAP_DEBUG) {
+                Debug.trace( Debug.messages,
+                "Unable to create new instance of child LDAPExtendedResponse");
+                Debug.trace( Debug.messages,
+                   ex.toString());
+            }
+        } catch (NoSuchFieldException e) {
+            // No match with the OID
+            // Do nothing. Fall through and construct a default LDAPControl object.
+            if( Debug.LDAP_DEBUG) {
+                Debug.trace( Debug.messages,
+                      "Oid " + inOID + " not registered");
+            }
         }
-
-        catch(IOException ioe) {
-            throw new LDAPException(
-                          ExceptionMessages.DECODING_ERROR,
-                          LDAPException.DECODING_ERROR,(String) null);
-        }
+        // If we get here we did not have a registered extendedresponse
+        // for this oid.  Return a default LDAPExtendedResponse object.
+        return tempResponse;
     }
+
 }
