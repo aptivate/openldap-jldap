@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResults.java,v 1.31 2000/12/13 22:31:30 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResults.java,v 1.32 2000/12/13 22:53:47 cmorris Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -419,8 +419,14 @@ public class LDAPSearchResults implements Enumeration
                 if((msg = listener.getResponse()) != null) {
                     // Only save controls if there are some
                     LDAPControl[] ctls = msg.getControls();
-                    if( ctls != null )
+                    if( ctls != null ) {
+                        
+                        if( Debug.LDAP_DEBUG) {
+                            Debug.trace( Debug.controls, "Saving returned controls in LDAPSearchResults local variable.");
+                        }
                         controls = ctls;
+                    }
+
                     if(msg instanceof LDAPSearchResult) { // Search Entry
                         Object entry = ((LDAPSearchResult)msg).getEntry();
                         entries.addElement( entry );
