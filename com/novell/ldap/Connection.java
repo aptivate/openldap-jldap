@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.44 2001/03/12 16:45:59 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.45 2001/03/23 19:13:33 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -505,6 +505,8 @@ public final class Connection implements Runnable
 
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.messages, name + "Writing Message(" + id + ")");
+            Debug.trace( Debug.rawInput, name + "RawWrite: " +
+                    msg.getASN1Object().toString());
         }
         acquireBindSemaphore(id);
         try {
@@ -690,7 +692,9 @@ public final class Connection implements Runnable
                 LDAPMessage msg = new LDAPMessage( new RfcUnbindRequest(),null);
                 if( Debug.LDAP_DEBUG) {
                     Debug.trace( Debug.messages, name +
-                     "Writing unbind request (" + msg.getMessageID() + ")");
+                          "Writing unbind request (" + msg.getMessageID() + ")");
+                    Debug.trace( Debug.rawInput, name + "RawWrite: " +
+                            msg.getASN1Object().toString());
                 }
                 byte[] ber = msg.getASN1Object().getEncoding(encoder);
                 out.write(ber, 0, ber.length);
@@ -795,6 +799,10 @@ public final class Connection implements Runnable
 
                 RfcLDAPMessage msg =
                     new RfcLDAPMessage( decoder, myIn, asn1Len.getLength());
+                if( Debug.LDAP_DEBUG) {
+                    Debug.trace( Debug.rawInput, name + "RawRead: " +
+                            msg.toString());
+                }
 
                 // ------------------------------------------------------------
                 // Process the decoded RfcLDAPMessage.
