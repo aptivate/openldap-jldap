@@ -1,42 +1,47 @@
-<project name="jldap" default="all" basedir=".">
-<!- Targets                                                                  -->
-<!-     clean   - Cleans all generated files and directories in this and     -->
-<!-               subbordinate directories                                   -->
-<!-     doc     - Builds javadoc files                                       -->
-<!-               Not available at the lowest directory level                -->
-<!-     debug   - Builds debug classes and jar files                         -->
-<!                At the lowest level directory it only compiles java files. -->
-<!-     release - Builds release classes and jar files                       -->
-<!                At the lowest level directory it only compiles java files. -->
-<!-     jar     - Builds debug & release classes and jar files               -->
-<!                At the lowest level directory it only compiles java files. -->
-<!-     lib     - Builds debug & release classes and jar files.              -->
-<!                At the lowest level directory it only compiles java files. -->
-<!-     all     - Builds everything possible.  At the top directory level it -->
-<!-               builds all, doc, & install.  At one directory level below  --> 
-<!-               the top it builds all, & doc. At the lowest directory      -->
-<!-               level it compiles java files for release and debug.        -->
-<!-     install - Copies build results from all directories and creates the  -->
-<!-               pkg directory.  Only available in top makefile             -->
+<project name="jldap" default="debug" basedir=".">
+<!-- Targets                                                                 -->
+<!--     clean   - Cleans all generated files and directories in this and    -->
+<!--               subbordinate directories                                  -->
+<!--     cleanpkg- Cleans pkg directory                                      -->
+<!--     doc     - Builds javadoc files                                      -->
+<!--               Not available at the lowest directory level               -->
+<!--     debug   - Builds debug classes and jar files                        -->
+<!--               At the lowest level directory it only compiles java files.-->
+<!--     release - Builds release classes and jar files                      -->
+<!--               At the lowest level directory it only compiles java files.-->
+<!--     lib     - Builds debug & release classes and jar files.             -->
+<!--               At the lowest level directory it only compiles java files.-->
+<!--     jar     - Synonym for lib                                           -->
+<!--     all     - Builds everything possible.  At the top directory level it-->
+<!--               builds all, doc, & install.  At one directory level below --> 
+<!--               the top it builds all, & doc. At the lowest directory     -->
+<!--               level it compiles java files for release and debug.       -->
+<!--     install - Copies build results from all directories and creates the -->
+<!--               pkg directory.  Only available in top makefile            -->
+<!--     pkt     - Synonym for pkg                                           -->
 
 <property name="pkg" value="pkg"/>
 <property name="pkg.lib" value="pkg/lib"/>
 <property name="pkg.lib.debug" value="pkg/lib_debug"/>
 <property name="pkg.doc" value="pkg/doc"/>
 <property name="pkg.samples" value="pkg/samples"/>
-<property name="doc" value="doc"/>
+
 <property name="lib" value="lib"/>
-<property name="lib.debug" value="lib_debug"/>
-<property name="novbp" value="novbp"/>
+<property name="doc" value="doc"/>
+<property name="lib.debug" value="lib.debug"/>
 <property name="ldap" value="ldap"/>
+<property name="novbp" value="novbp"/>
 
   <target name="init">
     <tstamp/>
   </target>
 
-  <target name="clean" depends="init">
+  <target name="clean" depends="cleanpkg">
     <ant dir="${basedir}/${ldap}" target="clean"/>
     <ant dir="${basedir}/${novbp}" target="clean"/>
+  </target>
+
+  <target name="cleanpkg" depends="init">
 	<deltree dir="${pkg}"/>
   </target>
 
@@ -46,16 +51,16 @@
   </target>
 
   <target name="debug" depends="init">
-    <ant dir="${basedir}/${ldap}" target="lib" -Ddebug="on" -Doptimize-"off"/>
-    <ant dir="${basedir}/${novbp}" target="lib" -Ddebug="on" -Doptimize-"off"/>
+    <ant dir="${basedir}/${ldap}" target="debug" />
+    <ant dir="${basedir}/${novbp}" target="debug" />
   </target>
 
   <target name="release" depends="init">
-    <ant dir="${basedir}/${ldap}" target="lib" -Ddebug="off" -Doptimize-"on"/>
-    <ant dir="${basedir}/${novbp}" target="lib" -Ddebug="off" -Doptimize-"on"/>
+    <ant dir="${basedir}/${ldap}" target="release" />
+    <ant dir="${basedir}/${novbp}" target="lib" />
   </target>
 
-  <target name="final" depends="release">
+  <target name="final" depends="release" />
 
   <target name="lib" depends="debug, release"/>
 
@@ -70,14 +75,17 @@
 	<mkdir dir="${pkg.samples}.${novbp}"/>
 	<mkdir dir="${pkg.samples}.${ldap}"/>
 
-	<copyfile src="${ldap>/${lib}/${ldap}.jar"   dest="${pkg.lib}/${ldap}.jar"/>
-	<copyfile src="${novbp>/${lib}/${novbp}.jar" dest="${pkg.lib}/${novbp}.jar"/>
-	<copyfile src="${ldap>/${lib.debug}/${ldap}.jar"   dest="${pkg.lib.debug}/${ldap}.jar"/>
-	<copyfile src="${novbp>/${lib.debug}/${novbp}.jar" dest="${pkg.lib.debug}/${novbp}.jar"/>
+	<copydir src="${ldap}/${lib}"         dest="${pkg.lib}"/>
+	<copydir src="${novbp}/${lib}"        dest="${pkg.lib}"/>
 
-	<copydir src="${ldap>/${doc}/**" dest="${pkg.doc}/${ldap}"/>
-	<copydir src="${novbp>/${doc}/**" dest="${pkg.doc}/${novbp}"/>
+	<copydir src="${ldap}/${lib.debug}"   dest="${pkg.lib.debug}"/>
+	<copydir src="${novbp}/${lib.debug}"  dest="${pkg.lib.debug}"/>
+
+	<copydir src="${ldap}/${doc}"         dest="${pkg.doc}/${ldap}"/>
+	<copydir src="${novbp}/${doc}"        dest="${pkg.doc}/${novbp}"/>
   </target>
 
-  <target name="all" depends="lib doc install"/>
+  <target name="pkg" depends="install"/>
+
+  <target name="all" depends="lib,doc,install"/>
 </project>
