@@ -1,3 +1,4 @@
+<!-- $Novell$ -->
 <!-- ======================================================================= -->
 <!-- TOP level build file                                                -->
 <!-- ======================================================================= -->
@@ -210,6 +211,7 @@
                         destdir="${pkg.doc}"
                         classpath="${lib.debug}/${ldap}.jar;external/ssl/domestic/nssl1.1_dom.jar"
                         packagenames="com.novell.ldap,com.novell.ldap.extensions,com.novell.ldap.asn1"
+                        overview="overview.html"
                         Windowtitle="LDAP Classes"
                         Splitindex="true"
                         Doctitle="LDAP Classes, Extensions, and ASN.1"
