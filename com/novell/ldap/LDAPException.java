@@ -59,72 +59,80 @@ import java.util.Locale;
  *  See RFC2251 for a discussion of the meanings of the result codes.
  *  The corresponding ASN.1 definition from RFC2251 is provided in parentheses.</p>
  *  <table>
- *   <tr>
- *   <td><b>Result Code</b>
- *   <td><b>Value</b>
- *   </tr>
- *   <tr><td> ADMIN_LIMIT_EXCEEDED (adminLimitExceeded)</td><td>11</td></tr>
- *   <tr><td> AFFECTS_MULTIPLE_DSAS (affectsMultipleDSAs</td><td>71</td></tr>
- *   <tr><td> ALIAS_DEREFERENCING_PROBLEM (aliasDereferencingProblem)</td><td>36</td></tr>
- *   <tr><td> ALIAS_PROBLEM (aliasProblem)</td><td>33</td></tr>
- *   <tr><td> ATTRIBUTE_OR_VALUE_EXISTS (AttributeOrValueExists)</td><td>20</td></tr>
- *   <tr><td> AUTH_METHOD_NOT_SUPPORTED (authMethodNotSupported)</td><td>7</td></tr>
- *   <tr><td> BUSY (busy)</td><td>51</td></tr>
- *   <tr><td> COMPARE_FALSE (compareFalse)</td><td>5</td></tr>
- *   <tr><td> COMPARE_TRUE (compareTrue)</td><td>6</td></tr>
- *   <tr><td> CONFIDENTIALITY_REQUIRED (confidentialityRequired)</td><td>13</td></tr>
- *   <tr><td> CONSTRAINT_VIOLATION (constraintViolation)</td><td>19</td></tr>
- *   <tr><td> ENTRY_ALREADY_EXISTS (entryAlreadyExists)</td><td>68</td></tr>
- *   <tr><td> INAPPROPRIATE_AUTHENTICATION (inappropriateAuthentication)</td><td>48</td></tr>
- *   <tr><td> INAPPROPRIATE_MATCHING (inappropriateMatching)</td><td>18</td></tr>
- *   <tr><td> INSUFFICIENT_ACCESS_RIGHTS (insufficientAccessRights)</td><td>50</td></tr>
- *   <tr><td> INVALID_ATTRIBUTE_SYNTAX (invalidAttributeSyntax)</td><td>21</td></tr>
- *   <tr><td> INVALID_CREDENTIALS (invalidCredentials)</td><td>49</td></tr>
- *   <tr><td> INVALID_DN_SYNTAX (invalidDNSyntax)</td><td>34</td></tr>
- *   <tr><td> IS_LEAF (isLeaf)</td><td>35</td></tr>
- *   <tr><td> LOOP_DETECT (loopDetect)</td><td>54</td></tr>
- *   <tr><td> NAMING_VIOLATION (namingViolation)</td><td>64</td></tr>
- *   <tr><td> NO_SUCH_ATTRIBUTE (noSuchAttribute)</td><td>16</td></tr>
- *   <tr><td> NO_SUCH_OBJECT (noSuchObject)</td><td>32</td></tr>
- *   <tr><td> NOT_ALLOWED_ON_NONLEAF (notAllowedOnNonLeaf)</td><td>66</td></tr>
- *   <tr><td> NOT_ALLOWED_ON_RDN (notAllowedOnRDN)</td><td>67</td></tr>
- *   <tr><td> OBJECT_CLASS_MODS_PROHIBITED (objectClassModsProhibited)</td><td>69</td></tr>
- *   <tr><td> OBJECT_CLASS_VIOLATION (objectClassViolation)</td><td>65</td></tr>
- *   <tr><td> OPERATIONS_ERROR (operationsError)</td><td>1</td></tr>
- *   <tr><td> OTHER (other)</td><td>80</td></tr>
- *   <tr><td> PROTOCOL_ERROR (protocolError)</td><td>2</td></tr>
- *   <tr><td> REFERRAL (referral)</td><td>10</td></tr>
- *   <tr><td> SASL_BIND_IN_PROGRESS (saslBindInProgress)</td><td>14</td></tr>
- *   <tr><td> SIZE_LIMIT_EXCEEDED (sizeLimitExceeded)</td><td>4</td></tr>
- *   <tr><td> STRONG_AUTH_REQUIRED (strongAuthRequired)</td><td>8</td></tr>
- *   <tr><td> SUCCESS (success)</td><td>0</td></tr>
- *   <tr><td> TIME_LIMIT_EXCEEDED (timeLimitExceeded)</td><td>3</td></tr>
- *   <tr><td> UNAVAILABLE (unavailable)</td><td>52</td></tr>
- *   <tr><td> UNAVAILABLE_CRITICAL_EXTENSION (unavailableCriticalExtension)</td><td>12</td></tr>
- *   <tr><td> UNDEFINED_ATTRIBUTE_TYPE (undefinedAttributeType)</td><td>17</td></tr>
- *   <tr><td> UNWILLING_TO_PERFORM (unwillingToPerform)</td><td>53</td></tr>
+ *  <tr>
+ *  <td><b>Value</b>
+ *  <td><b>Result Code</b>
+ *  </tr>
+ *  <tr><td> 0</td><td>{@link #SUCCESS} (success) </td></tr>
+ *  <tr><td> 1</td><td>{@link #OPERATIONS_ERROR} (operationsError) </td></tr>
+ *  <tr><td> 2</td><td>{@link #PROTOCOL_ERROR} (protocolError) </td></tr>
+ *  <tr><td> 3</td><td>{@link #TIME_LIMIT_EXCEEDED} (timeLimitExceeded) </td></tr>
+ *  <tr><td> 4</td><td>{@link #SIZE_LIMIT_EXCEEDED} (sizeLimitExceeded) </td></tr>
+ *  <tr><td> 5</td><td>{@link #COMPARE_FALSE} (compareFalse) </td></tr>
+ *  <tr><td> 6</td><td>{@link #COMPARE_TRUE} (compareTrue) </td></tr>
+ *  <tr><td> 7</td><td>{@link #AUTH_METHOD_NOT_SUPPORTED} (authMethodNotSupported) </td></tr>
+ *  <tr><td> 8</td><td>{@link #STRONG_AUTH_REQUIRED} (strongAuthRequired) </td></tr>
+ *  <tr><td> 10</td><td>{@link #REFERRAL} (referral) </td></tr>
+ *  <tr><td> 11</td><td>{@link #ADMIN_LIMIT_EXCEEDED} (adminLimitExceeded) </td></tr>
+ *  <tr><td> 12</td><td>{@link #UNAVAILABLE_CRITICAL_EXTENSION} (unavailableCriticalExtension) </td></tr>
+ *  <tr><td> 13</td><td>{@link #CONFIDENTIALITY_REQUIRED} (confidentialityRequired) </td></tr>
+ *  <tr><td> 14</td><td>{@link #SASL_BIND_IN_PROGRESS} (saslBindInProgress) </td></tr>
+ *  <tr><td> 16</td><td>{@link #NO_SUCH_ATTRIBUTE} (noSuchAttribute) </td></tr>
+ *  <tr><td> 17</td><td>{@link #UNDEFINED_ATTRIBUTE_TYPE} (undefinedAttributeType) </td></tr>
+ *  <tr><td> 18</td><td>{@link #INAPPROPRIATE_MATCHING} (inappropriateMatching) </td></tr>
+ *  <tr><td> 19</td><td>{@link #CONSTRAINT_VIOLATION} (constraintViolation) </td></tr>
+ *  <tr><td> 20</td><td>{@link #ATTRIBUTE_OR_VALUE_EXISTS} (AttributeOrValueExists) </td></tr>
+ *  <tr><td> 21</td><td>{@link #INVALID_ATTRIBUTE_SYNTAX} (invalidAttributeSyntax) </td></tr>
+ *  <tr><td> 32</td><td>{@link #NO_SUCH_OBJECT} (noSuchObject) </td></tr>
+ *  <tr><td> 33</td><td>{@link #ALIAS_PROBLEM} (aliasProblem) </td></tr>
+ *  <tr><td> 34</td><td>{@link #INVALID_DN_SYNTAX} (invalidDNSyntax) </td></tr>
+ *  <tr><td> 35</td><td>{@link #IS_LEAF} (isLeaf) </td></tr>
+ *  <tr><td> 36</td><td>{@link #ALIAS_DEREFERENCING_PROBLEM} (aliasDereferencingProblem) </td></tr>
+ *  <tr><td> 48</td><td>{@link #INAPPROPRIATE_AUTHENTICATION} (inappropriateAuthentication) </td></tr>
+ *  <tr><td> 49</td><td>{@link #INVALID_CREDENTIALS} (invalidCredentials) </td></tr>
+ *  <tr><td> 50</td><td>{@link #INSUFFICIENT_ACCESS_RIGHTS} (insufficientAccessRights) </td></tr>
+ *  <tr><td> 51</td><td>{@link #BUSY} (busy) </td></tr>
+ *  <tr><td> 52</td><td>{@link #UNAVAILABLE} (unavailable) </td></tr>
+ *  <tr><td> 53</td><td>{@link #UNWILLING_TO_PERFORM} (unwillingToPerform) </td></tr>
+ *  <tr><td> 54</td><td>{@link #LOOP_DETECT} (loopDetect) </td></tr>
+ *  <tr><td> 64</td><td>{@link #NAMING_VIOLATION} (namingViolation) </td></tr>
+ *  <tr><td> 65</td><td>{@link #OBJECT_CLASS_VIOLATION} (objectClassViolation) </td></tr>
+ *  <tr><td> 66</td><td>{@link #NOT_ALLOWED_ON_NONLEAF} (notAllowedOnNonLeaf) </td></tr>
+ *  <tr><td> 67</td><td>{@link #NOT_ALLOWED_ON_RDN} (notAllowedOnRDN) </td></tr>
+ *  <tr><td> 68</td><td>{@link #ENTRY_ALREADY_EXISTS} (entryAlreadyExists) </td></tr>
+ *  <tr><td> 69</td><td>{@link #OBJECT_CLASS_MODS_PROHIBITED} (objectClassModsProhibited) </td></tr>
+ *  <tr><td> 71</td><td>{@link #AFFECTS_MULTIPLE_DSAS} (affectsMultipleDSAs </td></tr>
+ *  <tr><td> 80</td><td>{@link #OTHER} (other) </td></tr>
  *  </table>
+ *
  *  <p>Local errors, resulting from actions other than an operation on a
  *  server.</p>
  *
- *   <li> AUTH_UNKNOWN (0x56)</li>
- *   <li> CLIENT_LOOP (0x60)</li>
- *   <li> CONNECT_ERROR (0x5d)</li>
- *   <li> CONTROL_NOT_FOUND( 0x54)</li>
- *   <li> DECODING_ERROR (0x54)</li>
- *   <li> ENCODING_ERROR (0x53)</li>
- *   <li> FILTER_ERROR (0x57)</li>
- *   <li> LOCAL_ERROR (0x52)</li>
- *   <li> LDAP_NOT_SUPPORTED (0x5c)</li>
- *   <li> LDAP_TIMEOUT (0x55)</li>
- *   <li> MORE_RESULTS_TO_RETURN (0x5f)</li>
- *   <li> NO_MEMORY (0x5a)</li>
- *   <li> NO_RESULTS_RETURNED (0x5e)</li>
- *   <li> PARAM_ERROR (0x59)</li>
- *   <li> REFERRAL_LIMIT_EXCEEDED (0x61)</li>
- *   <li> SERVER_DOWN (0x51)</li>
- *   <li> USER_CANCELLED (0x58)</li>
- *   <li> TLS_NOT_SUPPORTED (0x70)</li>
+ *  <table>
+ *   <tr>
+ *   <td><b>Value</b>
+ *   <td><b>Result Code</b>
+ *   </tr>
+ *   <tr><td>81</td><td>{@link #SERVER_DOWN}</td></tr>
+ *   <tr><td>82</td><td>{@link #LOCAL_ERROR}</td></tr>
+ *   <tr><td>83</td><td>{@link #ENCODING_ERROR}</td></tr>
+ *   <tr><td>84</td><td>{@link #DECODING_ERROR}</td></tr>
+ *   <tr><td>85</td><td>{@link #LDAP_TIMEOUT}</td></tr>
+ *   <tr><td>86</td><td>{@link #AUTH_UNKNOWN}</td></tr>
+ *   <tr><td>87</td><td>{@link #FILTER_ERROR}</td></tr>
+ *   <tr><td>88</td><td>{@link #USER_CANCELLED}</td></tr>
+ *   <tr><td>90</td><td>{@link #NO_MEMORY}</td></tr>
+ *   <tr><td>91</td><td>{@link #CONNECT_ERROR}</td></tr>
+ *   <tr><td>92</td><td>{@link #LDAP_NOT_SUPPORTED}</td></tr>
+ *   <tr><td>93</td><td>{@link #CONTROL_NOT_FOUND}</td></tr>
+ *   <tr><td>94</td><td>{@link #NO_RESULTS_RETURNED}</td></tr>
+ *   <tr><td>95</td><td>{@link #MORE_RESULTS_TO_RETURN}</td></tr>
+ *   <tr><td>96</td><td>{@link #CLIENT_LOOP}</td></tr>
+ *   <tr><td>97</td><td>{@link #REFERRAL_LIMIT_EXCEEDED}</td></tr>
+ *   <tr><td>100</td><td>{@link #INVALID_RESPONSE}</td></tr>
+ *   <tr><td>101</td><td>{@link #AMBIGUOUS_RESPONSE}</td></tr>
+ *   <tr><td>112</td><td>{@link #TLS_NOT_SUPPORTED}</td></tr>
+ *  </table>
  */
 
 public class LDAPException extends Exception
