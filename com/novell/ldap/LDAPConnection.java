@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.48 2000/11/02 19:06:41 javed Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.49 2000/11/03 17:54:13 vtag Exp $
 *
 * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
 * 
@@ -1904,7 +1904,7 @@ public class LDAPConnection implements Cloneable
    {
 
       // Call asynchronous API and get back handler to reponse listener
-      LDAPResponseListener listener = extendedOperation(op, (LDAPResponseListener)null, cons);
+      LDAPResponseListener listener = extendedOperation(op, cons, (LDAPResponseListener)null);
       LDAPExtendedResponse response = (LDAPExtendedResponse) listener.getResponse();
       return response;
    }
@@ -1939,7 +1939,7 @@ public class LDAPConnection implements Cloneable
         throws LDAPException
     {
 
-      return extendedOperation(op, listener, defSearchCons);
+      return extendedOperation(op, defSearchCons, listener);
    }
 
    /*
@@ -1969,8 +1969,8 @@ public class LDAPConnection implements Cloneable
     */
 
    public LDAPResponseListener extendedOperation(LDAPExtendedOperation op,
-                                       LDAPResponseListener listener,
-                                                  LDAPSearchConstraints cons)
+                                               LDAPSearchConstraints cons,
+                                               LDAPResponseListener listener)
         throws LDAPException
     {
 
