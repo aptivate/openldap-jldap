@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchConstraints.java,v 1.11 2000/10/31 23:52:25 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchConstraints.java,v 1.12 2000/11/03 23:16:32 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -96,8 +96,7 @@ public class LDAPSearchConstraints extends LDAPConstraints {
      *
      *  @param msLimit  The maximum time in milliseconds to wait for results.
      *                  The default value is 0, which means that there is no
-     *                  maximum time limit. This is an interface-imposed
-     *                  limit.
+     *                  maximum time limit. This is an API imposed limit.
      *<br><br>
      *  @param serverTimeLimit The maximum time in seconds that the server should
      *                         spend returning results. This is a server-imposed
@@ -135,6 +134,7 @@ public class LDAPSearchConstraints extends LDAPConstraints {
      *  @param hop_limit  The maximum number of referrals to follow in a
      *                    sequence when attempting to resolve a request and
      *                    when doing automatic referral following.
+     *                    The default value is 10.
      *                    On asynchronous operations, this constraint is ignored.
      */
     public LDAPSearchConstraints(int msLimit,

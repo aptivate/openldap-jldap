@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConstraints.java,v 1.12 2000/10/31 23:52:20 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConstraints.java,v 1.13 2000/11/03 17:54:14 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -48,8 +48,7 @@ public class LDAPConstraints implements Cloneable {
      *
      * @param msLimit   The maximum time in milliseconds to wait for results.
      *                  The default is 0, which means that there is no
-     *                  maximum time limit. This is an interface-imposed
-     *                  limit.
+     *                  maximum time limit. This an API imposed limit.
      *<br><br>
      * @param doReferrals    The constraint for following referrals. True 
      *                       indicates to follow referrals automatically and
