@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: DSMLWriter.java,v 1.19 2002/11/12 17:45:35 $
+ * $Novell: DSMLWriter.java,v 1.20 2002/11/13 23:56:10 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -129,7 +129,7 @@ public class DSMLWriter implements LDAPWriter {
                 out.write("</batchResponse>");
         }
         newLine(0);
-        out.flush();
+        //out.flush();
     }
 
     /**
@@ -508,7 +508,8 @@ public class DSMLWriter implements LDAPWriter {
         for (int i=0; i< indentTabs; i++){
             out.write(tabString);
         }
-        out.flush();
+        //out.flush();
+
         return;
     }
 
