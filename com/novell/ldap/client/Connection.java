@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.50 2001/05/02 18:51:18 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.51 2001/05/03 14:58:06 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -272,7 +272,7 @@ public final class Connection implements Runnable
                         LDAPException.CONNECT_ERROR, lex);
                 }
                 synchronized( this) {
-                    this.wait(1000);
+                    this.wait(5);
                 }
             } catch ( InterruptedException ex) {
                 ;
