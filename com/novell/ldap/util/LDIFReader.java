@@ -35,18 +35,20 @@ import com.novell.ldap.ldif_dsml.LDAPModDN;
 import com.novell.ldap.ldif_dsml.LDAPModify;
 
 /**
- * The class that takes the inputStream object as input. The inputStream may
- * be an LDIF file or other data source. It processes the inputStream till the
- * end of the stream.
+ * The class that processes the inputStream objec.
+ *
+ * <p>The inputStream may be an LDIF file or other data source. It processes
+ * the inputStream till the end of the stream.</p>
  */
 
 public class LDIFReader extends LDIF implements LDAPImport {
 
-    private int       version, recordType, changeType;    
+    private int       version, recordType, changeType;
     private String    dn, changeField, changeOperation;
-    private String[]  rFields;                          // record fields
+    private String[]  rFields;                   // record fields
     private String[]  namePairs;                 // attr name and value pairs
-    private String[]  controlFields;
+    private String[]  cFields;                   // control fields
+    private ArrayList rLines = new ArrayList();
     private BufferedReader      bufReader;
     private LDAPControl[] controls = null;
     private LDAPEntry currentEntry = null;
@@ -57,36 +59,45 @@ public class LDIFReader extends LDIF implements LDAPImport {
      * InputStreamReader, and BufferedReader.
      *
      * In order to determine if this is a LDIF content file or LDIF change file,
-     * the lines of the first record in the file are red into memory.  
+     * the lines of the first record in the file are red into memory.
      */
     public LDIFReader(InputStream in) throws IOException, LDAPException {
-        
+
         super();
         super.setVersion( LDIF.LDIF_VERSION_1 );
         InputStreamReader isr = new InputStreamReader(in, "UTF8");
         bufReader = new BufferedReader(isr);
 
-        String line;
-        ArrayList FRLines = new ArrayList();
+        String    line;
+        ArrayList frLines = new ArrayList();   // frLines - first record lines
 
-        // skip the leading empty and comment lines before version line,
-        // and read the version line
+        // skip the leading empty and comment lines before version line
         while( (((line = bufReader.readLine())!= null) && (line.length() == 0))
                || ( line != null && line.startsWith("#"))) {
         }
 
-        // if this is the version line, check the version
+        // the version line, check the version
         if (line.startsWith("version:")) {
             version = Integer.parseInt(
                 line.substring("version:".length()).trim() );
             if ( version != 1 ) {
-                throw( new IOException( "com.novell.ldap.ldif_dsml.LDIFReader" +
-                                                  "Should be 'version: 1'" ) );
+                throw new RuntimeException(
+                    "com.novell.ldap.ldif_dsml.LDIFReader: "
+                                     + "Should be 'version: 1'" ) ;
             }
         }
+        else {
+             throw new RuntimeException(
+                 "com.novell.ldap.ldif_dsml.LDIFReader: "
+                                     + "There is no version line" ) ;
+        }
 
+        // read the first record lines, convert them into record fields, and
+        // set LDIF.content to 'true' if this is a LDIF content file or 'false'
+        // if it's not
+        //
         // skip any empty and comment lines between the version line and
-        // the first line fo the dn field in the first record of the LDIF
+        // the first line of the dn field in the first record of the LDIF
         // file, read the first line of the dn field of the first record
         do {
             // mark the first dn line, so we can later go back to here
@@ -94,53 +105,97 @@ public class LDIFReader extends LDIF implements LDAPImport {
         } while((((line=bufReader.readLine())!= null) && (line.length()== 0))
                || line.startsWith("#"));
 
-        FRLines.add(line);
+        frLines.add(line);
 
         // read the rest lines of the record except comment lines
         while (((line=bufReader.readLine())!= null)&&(line.length()!=0)) {
             if ( !line.startsWith("#") )
-                FRLines.add(line);
+                frLines.add(line);
         }
 
         // we have red the lines of the first record, convert them to
-        // the record field
-        toRecordFields(FRLines);
-
-        // go back to the beginning of the first record of the LDIF file
-        bufReader.reset();
+        // the record fields
+        toRecordFields(frLines);
 
         // check the second recore field to see if it starts with 'changetype'
-        // control. If it does, set super class isContent to 'false'
+        // or 'control'. If it does, set super class content to 'false'
         if (   ((this.rFields[1]).startsWith("changetype:"))
             || ((this.rFields[1]).startsWith("control:"))) {
             setContent(false);
         }
+
+        // go back to the beginning of the first record of the LDIF file so
+        // later read can start from the first record
+        bufReader.reset();
     }
 
 
     /**
-     * Read the record lines in the LDIF change file, turn the lines into lDIF
+     * Read the record lines in the LDIF content file, turn the lines into lDIF
      * record fields, process the fileld information, construct and return
-     * LDAPOperation object.
+     * LDAPEntry object.
+     *
+     * @return The LDAPEntry object represented by the LDIF content record.
+     */
+    public LDAPEntry readContent()
+    throws UnsupportedEncodingException, LDAPException, IOException {
+
+        this.recordType = LDIF.CONTENT_RECORD;       
+
+        if( ! isContent()) {
+            throw new RuntimeException("Cannot read content from LDIF change file");
+        }
+
+        // read record lines
+        this.rLines.clear();
+        readRecordLines();
+
+        if ( this.rLines == null ) {
+            // end of file
+            return null;
+        }
+
+        // convert content record lines to the record fields
+        toRecordFields(this.rLines);
+
+        //
+        toRecordProperties();
+
+        currentEntry = toLDAPEntry();
+
+        return currentEntry;
+    }
+
+
+    /**
+     * Read the record lines in the LDIF change file.
+     *
+     * <p>Turn the lines into lDIF record fields, process the fileld
+     * information, construct and return LDAPOperation object.</p>
      *
      * @return The LDAPOperation object represented by the LDIF change record.
+     *
+     * @see LDAPOperation
      */
     public LDAPOperation readChange()
     throws UnsupportedEncodingException, IOException {
 
-        ArrayList cLines = new ArrayList(); // change record lines
-
         if( isContent()) {
-            throw new RuntimeException("Cannot read changes from LDIF content file");
+            throw new RuntimeException(
+                "Cannot read changes from LDIF content file");
         }
+        
+        // read record lines
+        this.rLines.clear();
+        readRecordLines();
 
-        if ( (cLines = readRecordLines()) == null) {
+        if ( this.rLines == null ) {
             // end of file
             return null;
         }
 
         // convert record lines to record fields
-        toRecordFields(cLines);
+        toRecordFields(this.rLines);
 
         //
         toRecordProperties();
@@ -218,47 +273,87 @@ public class LDIFReader extends LDIF implements LDAPImport {
                 }
 
         return currentChange;
-    }
+    }     
+   
 
     /**
-     * Read the record lines in the LDIF content file, turn the lines into lDIF
-     * record fields, process the fileld information, construct and return
-     * LDAPEntry object.
+     * Read the record lines by skipping any empty and comment lines and
+     * checking if the first line starts with 'dn".
      *
-     * @return The LDAPEntry object represented by the LDIF content record.
+     * @throws IOException.
      */
-    public LDAPEntry readContent()
-    throws UnsupportedEncodingException, LDAPException, IOException {
+    public void /*ArrayList*/ readRecordLines() throws IOException {
 
-        this.recordType = LDIF.CONTENT_RECORD;
-        ArrayList cLines = new ArrayList();    // content record lines
+        String line;
+        //ArrayList RLines = new ArrayList(); // any record lines
+        this.rLines.clear();
 
-        if( ! isContent()) {
-            throw new RuntimeException("Cannot read content from LDIF change file");
+        // skip empty and comment lines and read the the first dn
+        // line of the record
+        while( (((line = bufReader.readLine())!= null) && (line.length() == 0))
+                || ( line != null && line.startsWith("#"))) {
+        }
+        
+        if ( line != null ) {
+
+            // check if the first dn line starts with 'dn:'
+            if ( !line.startsWith("dn:") ) {
+                throw new IOException("com.novell.ldap.ldif_dsml." +
+                                      "Any record should start with 'dn:'");
+            }
+
+            this.rLines.add(line);
+
+            // read the rest lines of the record except comment lines
+            while (((line=bufReader.readLine())!= null)&&(line.length()!=0)) {
+                if ( !line.startsWith("#") )
+                    this.rLines.add(line);
+            }
+        }
+        else {
+            this.rLines = null;
         }
 
-        // read record lines
-        if ( (cLines = readRecordLines()) == null ) {
-            // end of file
-            return null;
+        //return RLines;
+    }
+
+    /**
+     * Turn record lines into record fields and decode any Base64 encoded fields
+     *
+     * @param lines  The LDIF record lines
+     */
+    public void toRecordFields(ArrayList lines)
+    throws UnsupportedEncodingException, IOException {
+
+        int i, firstColon, len = lines.size();
+        String tempString;
+        ArrayList tempList = new ArrayList();
+
+
+        for ( i = 0; i < len; i++ ) {
+            tempString = (String)(lines.get(i));
+
+            while( (i < len-1) && (((String)lines.get(i+1))).startsWith(" ")) {
+                // find a continuationvline,concatenate it to the previous line
+                tempString += ((String)lines.get(i+1)).substring(1);
+                i++;
+            }
+
+            tempList.add(tempString);
         }
 
-        // convert content record lines to the record fields
-        toRecordFields(cLines);
+        // get all record fields
+        this.rFields = toArray( tempList );
 
-        //
-        toRecordProperties();
-
-        currentEntry = toLDAPEntry();
-
-        return currentEntry;
+        // find and decode any Base64 encoded fields
+        decodeRecordFields(this.rFields);
     }
 
 
     /**
-     * find and decode the Base64 encoded fields.
+     * Find and decode the Base64 encoded fields.
      *
-     * @param The LDIF record fields.
+     * @param fields The LDIF record fields.
      */
     private void decodeRecordFields(String[] fields)
                             throws UnsupportedEncodingException, IOException {
@@ -285,17 +380,159 @@ public class LDIFReader extends LDIF implements LDAPImport {
 
 
     /**
+     * set up record dn, attribute names and values, and controls
+     *
+     */
+    private void toRecordProperties() throws IOException {
+
+        int i, index, len = this.rFields.length;
+        boolean criticality;
+        byte[] controlValue;
+        String controlOID, tempString, booleanString;
+
+        // set dn
+        index = this.rFields[0].indexOf((int)':');
+        this.dn = (this.rFields[0]).substring(index+1).trim();
+
+        if ( isContent() ) {
+            // this is a content record
+           this.recordType = CONTENT_RECORD;
+
+           namePairs = new String[len-1];
+
+           for ( i = 0; i < len-1; i++ ) {
+               namePairs[i] = this.rFields[i+1];
+           }
+
+        }
+        else {
+            // this is a change record
+            this.recordType = CHANGE_RECORD;
+
+            if ( (this.rFields[1]).startsWith("control:") ) {
+                // a change record with one or more controls
+                ArrayList controlList = new ArrayList();
+                i = 1;
+                while ((this.rFields[i]).startsWith("control:")) {
+                    controlList.add(this.rFields[i]);
+                    i++;
+                }
+
+                // now i reference the change field
+                int changeIndex = i;
+                this.changeField = this.rFields[changeIndex];
+
+                // all other fields
+                int contentLen = len - changeIndex;
+                this.namePairs = new String[contentLen];
+                for ( i = 0; i < contentLen; i++ ) {
+                    this.namePairs[i] = this.rFields[i+changeIndex];
+                }
+
+                // get array of control fields
+                cFields = toArray(controlList);
+
+                // get the number of controls related with this change
+                int controlNumber = controlList.size();
+                // initializing control array
+                controls = new LDAPControl[controlNumber];
+
+                // control field has th format of
+                // control: 1.2.3.4 true: this is a test control
+                for ( i = 0; i < controlNumber; i++ ) {
+                    index = this.cFields[i].indexOf((int)':');
+                    tempString = (this.cFields[i]).substring(index+1).trim();
+
+                    // get control OID
+                    index = tempString.indexOf((int)' ');
+                    controlOID = tempString.substring( 0, index );
+                    tempString = tempString.substring(index).trim();
+
+                    // get control criticality
+                    index = tempString.indexOf((int)':');
+
+                    if ( index != -1) {
+                        booleanString = tempString.substring( 0, index ).trim();
+                        tempString = tempString.substring( index+1 ).trim();
+
+                    }
+                    else {
+                        booleanString = tempString;
+                    }
+
+                    if ( booleanString.equalsIgnoreCase("true") ) {
+                        criticality = true;
+                    }
+                    else {
+                        criticality = false;
+                    }
+
+                    // get control value
+                    if ( index != -1) {
+                        controlValue = tempString.getBytes();
+                    }
+                    else {
+                        controlValue = null;
+                    }
+
+                    // build each control object
+                    this.controls[i] = new LDAPControl( controlOID,
+                                                        criticality,
+                                                        controlValue);
+                }
+
+            }
+            else {
+                // a change record with no controls
+                this.changeField = this.rFields[1];
+
+                // all other fields
+                this.namePairs = new String[len-2];
+
+                for (i=0; i<len-2; i++ ) {
+                    this.namePairs[i] = this.rFields[i+2];
+                }
+            }
+
+            index = (this.changeField).indexOf((int)':');
+            this.changeOperation = (this.changeField).substring(index+1).trim();
+
+            // set change type
+            if ( changeOperation.equalsIgnoreCase("add") ) {
+                this.changeType = LDAPOperation.LDAP_ADD;
+            }
+            else if ( changeOperation.equalsIgnoreCase("delete") ) {
+                this.changeType = LDAPOperation.LDAP_DELETE;
+            }
+            else if ( changeOperation.equalsIgnoreCase("modrdn") ) {
+                this.changeType = LDAPOperation.LDAP_MODDN;
+            }
+            else if ( changeOperation.equalsIgnoreCase("moddn") ) {
+                this.changeType = LDAPOperation.LDAP_MODDN;
+            }
+            else if ( changeOperation.equalsIgnoreCase("modify") ) {
+                this.changeType = LDAPOperation.LDAP_MODIFY;
+            }
+            else
+                throw new RuntimeException("com.novell.ldap.ldif_dsml." +
+                                      "not supported change operation");
+
+        }
+    }
+
+
+    /**
      * Process LDIF record fields to get record dn and attributes,construct
      * and return LDAPEntry object.
      *
      * @return LDAPEntry object.
      */
     private LDAPEntry toLDAPEntry() {
-        int i, j, index, len;                      
-        ArrayList tl  = new ArrayList(); 
-        String attrName;                 
-        String attrValue;                
-        String[] values = null;          
+        int i, j, index, len;
+        ArrayList tl  = new ArrayList();
+        String attrName;
+        String attrValue;
+        String[] values = null;
         LDAPAttribute attr;
         LDAPAttributeSet attrSet = new LDAPAttributeSet();
 
@@ -341,172 +578,11 @@ public class LDIFReader extends LDIF implements LDAPImport {
         return new LDAPEntry(this.dn, attrSet);
     }
 
-    /**
-     * Read the record lines by skipping any empty and comment lines and
-     * checking if the first line starts with 'dn".
-     *
-     * @throws IOException.
-     */
-    public ArrayList readRecordLines() throws IOException {
-
-        String line;
-        ArrayList RLines = new ArrayList(); // any record lines
-
-        // skip empty and comment lines and read the the first dn
-        // line of the record
-        while( (((line = bufReader.readLine())!= null) && (line.length() == 0))
-                || ( line != null && line.startsWith("#"))) {
-        }
-
-        if (line == null) {
-            return null;
-        }
-
-        // check if the first dn line starts with 'dn:'
-        if ( !line.startsWith("dn:") ) {
-            throw new IOException("com.novell.ldap.ldif_dsml." + 
-                                  "Any record should start with 'dn:'");
-        }
-
-        RLines.add(line);
-
-        // read the rest lines of the record except comment lines
-        while (((line=bufReader.readLine())!= null)&&(line.length()!=0)) {
-            if ( !line.startsWith("#") )
-                RLines.add(line);
-        }
-
-        return RLines;
-    }
 
     /**
-     * Turn record lines into record fields and decode any Base64 encoded fields
+     * Build ModInfo object based on the content of LDIF modDN reocrd
      *
-     * @param lines  The LDIF record lines
-     */
-    public void toRecordFields(ArrayList lines)
-    throws UnsupportedEncodingException, IOException {
-
-        int i, firstColon, len = lines.size();
-        String tempString;
-        ArrayList tempList = new ArrayList();
-
-        
-        for ( i = 0; i < len; i++ ) {
-            tempString = (String)(lines.get(i));
-
-            while( (i < len-1) && (((String)lines.get(i+1))).startsWith(" ")) {
-                // find a continuationvline,concatenate it to the previous line
-                tempString += ((String)lines.get(i+1)).substring(1);
-                i++;
-            }
-
-            tempList.add(tempString);
-        }
-
-        // get all record fields        
-        this.rFields = toArray( tempList );        
-
-        // find and decode any Base64 encoded fields
-        decodeRecordFields(this.rFields);
-    }
-
-    /**
-     * set up record dn, attribute names and values, and controls
-     *
-     */    
-    private void toRecordProperties() throws IOException {
-
-        int i, index, len = this.rFields.length;
-
-        // set dn
-        index = this.rFields[0].indexOf((int)':');
-        this.dn = (this.rFields[0]).substring(index+1).trim();
-
-        if ( isContent() ) {
-            // this is a content record
-           this.recordType = CONTENT_RECORD;
-
-           namePairs = new String[len-1];
-
-           for ( i = 0; i < len-1; i++ ) {
-               namePairs[i] = this.rFields[i+1];
-           }
-
-        }
-        else {
-            // this is a change record
-            this.recordType = CHANGE_RECORD;
-
-            if ( (this.rFields[1]).startsWith("control:") ) {
-                // a change record with one or more controls
-                ArrayList controlList = new ArrayList();
-                i = 1;
-                while ((this.rFields[i]).startsWith("control:")) {
-                    controlList.add(this.rFields[i]);
-                    i++;
-                }
-
-                // now i reference the change field
-                int changeIndex = i;
-                this.changeField = this.rFields[changeIndex];
-
-                // all other fields
-                int contentLen = len - changeIndex;
-                this.namePairs = new String[contentLen];
-                for (i=0; i<contentLen; i++ ) {
-                    this.namePairs[i] = this.rFields[i+changeIndex];
-                }
-
-                // get string array of control list
-                int controlNumber = controlList.size();
-                controlFields = new String[controlNumber];
-                for( i=0; i<controlNumber; i++) {
-                    controls[i] = (LDAPControl)controlList.get(i);
-                }
-            }
-            else {
-                // a change record with no controls
-                this.changeField = this.rFields[1];
-
-                // all other fields
-                this.namePairs = new String[len-2];
-
-                for (i=0; i<len-2; i++ ) {
-                    this.namePairs[i] = this.rFields[i+2];
-                }
-            }
-            
-            index = (this.changeField).indexOf((int)':');
-            this.changeOperation = (this.changeField).substring(index+1).trim();
-
-            // set change type
-            if ( changeOperation.equalsIgnoreCase("add") ) {
-                this.changeType = LDAPOperation.LDAP_ADD;
-            }
-            else if ( changeOperation.equalsIgnoreCase("delete") ) {
-                this.changeType = LDAPOperation.LDAP_DELETE;
-            }
-            else if ( changeOperation.equalsIgnoreCase("modrdn") ) {
-                this.changeType = LDAPOperation.LDAP_MODDN;
-            }
-            else if ( changeOperation.equalsIgnoreCase("moddn") ) {
-                this.changeType = LDAPOperation.LDAP_MODDN;
-            }
-            else if ( changeOperation.equalsIgnoreCase("modify") ) {
-                this.changeType = LDAPOperation.LDAP_MODIFY;
-            }
-            else
-                throw new IOException("com.novell.ldap.ldif_dsml." +
-                                      "not supported change operation");
-
-        }
-    }
-
-    /**
-     * Build an ModInfo object based on the content of LDIF modDN reocrd
-     *
-     * @return mods ModInfo object that holds newRDN, deleteOldRDN, 
+     * @return mods ModInfo object that holds newRDN, deleteOldRDN,
      * and newSuperior
      */
     public ModInfo toModInfo() {
@@ -609,7 +685,7 @@ public class LDIFReader extends LDIF implements LDAPImport {
                     mod = new LDAPModification(LDAPModification.REPLACE, attr);
                 }
                 else {
-                    throw new IOException("com.novell.ldap.ldif_dsml.LDIFReader:" 
+                    throw new IOException("com.novell.ldap.ldif_dsml.LDIFReader:"
                                             + "Not supported modify operation");
                 }
 
@@ -619,5 +695,5 @@ public class LDIFReader extends LDIF implements LDAPImport {
         }
 
         return mods;
-    }   
+    }
 }
