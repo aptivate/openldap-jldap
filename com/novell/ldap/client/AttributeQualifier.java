@@ -15,7 +15,7 @@
 
 package com.novell.ldap.client;
 
-import com.novell.ldap.client.ArrayList;
+import java.util.ArrayList;
 
 /**
  * Encapsulates a qualifier in a Schema definition.  Definitions that are not

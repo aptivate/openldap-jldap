@@ -1,7 +1,7 @@
 // $OpenLDAP$
 //
 /******************************************************************************
- * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
+ * Copyright (C) 1999 - 2002 Novell, Inc. All Rights Reserved.
  *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
@@ -37,12 +37,14 @@ public class ArrayEnumeration implements Enumeration
 
     public boolean hasMoreElements()
     {
+        if( eArray == null)
+            return false;
         return (index < eArray.length);
     }
 
     public Object nextElement() throws NoSuchElementException
     {
-        if( index >= eArray.length) {
+        if( (eArray == null) || ( index >= eArray.length)) {
             throw new NoSuchElementException();
         }
         return eArray[index++];

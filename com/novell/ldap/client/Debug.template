@@ -3,7 +3,7 @@
 // ** NOTICE: Do NOT edit file Debug.java, the real file is Debug.template
 // **
 /******************************************************************************
- * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
+ * Copyright (C) 1999 - 2002 Novell, Inc. All Rights Reserved.
  *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
@@ -649,7 +649,9 @@ public abstract class Debug {
     * <p>
     * Multiple environment values are separated by semicolon's, i.e.
     * <ul>
-    * <code>java -Doil.debug=serverprogress;echodebug TServer -tree junk</code>
+    * <code>java -Dldap.debug=serverprogress;echodebug TServer -tree junk</code>
+    *  <p>or</p>
+    * <code>java -Dldap.debug=TraceAll TServer -tree junk</code>
     * </ul>
     * @param obj The object to dump
     */

@@ -17,7 +17,7 @@ package com.novell.ldap.asn1;
 
 import java.io.IOException;
 import java.io.InputStream;
-import com.novell.ldap.client.ArrayList;
+import java.util.ArrayList;
 
 /**
  * The ASN1Set class can hold an unordered collection of components with

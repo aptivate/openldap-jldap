@@ -15,7 +15,7 @@
 
 package com.novell.ldap.asn1;
 
-import com.novell.ldap.client.ArrayList;
+import java.util.ArrayList;
 import java.util.Enumeration;
 
 /**

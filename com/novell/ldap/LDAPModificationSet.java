@@ -15,7 +15,8 @@
 
 package com.novell.ldap;
 
-import com.novell.ldap.client.ArrayList;
+
+import java.util.ArrayList;
 
 /**
  * A set of {@link LDAPModification} objects.

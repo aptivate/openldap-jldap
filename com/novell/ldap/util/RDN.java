@@ -14,8 +14,8 @@
  ******************************************************************************/
 
 package com.novell.ldap.util;
-import com.novell.ldap.client.ArrayList;
 import java.util.Vector;
+import java.util.ArrayList;
 
 /**
  * <P>A RDN encapsulates a single object's name of a Distinguished Name(DN).
@@ -57,14 +57,14 @@ public class RDN extends Object
         this.types    = thisRDN.types;
         this.values   = thisRDN.values;
         this.rawValue = thisRDN.rawValue;
-        return;    
+        return;
     }
 
     public RDN(){
         types    = new ArrayList();
         values   = new ArrayList();
         rawValue = "";
-        return;    
+        return;
     }
 
     /**

@@ -21,7 +21,7 @@ import com.novell.ldap.client.*;
  * The <code>MessageVector</code> class implements additional semantics
  * to Vector needed for handling messages.
  */
-public class MessageVector extends Vector2
+public class MessageVector extends java.util.Vector
 {
     public MessageVector( int cap, int incr)
     {

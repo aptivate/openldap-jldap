@@ -14,6 +14,8 @@
  ******************************************************************************/
 package com.novell.ldap.rfc2251;
 
+import java.util.ArrayList;
+
 import com.novell.ldap.asn1.*;
 import com.novell.ldap.*;
 import com.novell.ldap.resources.*;
@@ -66,6 +68,21 @@ public class RfcExtendedRequest extends ASN1Sequence implements RfcRequest {
 										 requestValue, false));
 	}
 
+	/**
+	 * Constructs an extended request from an existing request.
+	 *
+	 * @param requestName The OID for this extended operation.
+	 * @param requestValue An optional request value.
+	 */
+    /* package */
+	public RfcExtendedRequest( ArrayList origRequest)
+            throws LDAPException
+	{
+        for(int i=0; i < origRequest.size(); i++) {
+            content.add(origRequest.get(i));
+        }
+        return;
+    }
 	//*************************************************************************
 	// Accessors
 	//*************************************************************************
@@ -84,9 +101,7 @@ public class RfcExtendedRequest extends ASN1Sequence implements RfcRequest {
     public RfcRequest dupRequest(String base, String filter, boolean request)
             throws LDAPException
     {
-        throw new LDAPException(
-                    ExceptionMessages.NO_DUP_REQUEST,
-                    new Object[] { "extended" },
-                    LDAPException.LDAP_NOT_SUPPORTED);
+        // Just dup the original request
+        return new RfcExtendedRequest( getContent());
     }
 }

@@ -15,7 +15,7 @@
 
 package com.novell.ldap;
 
-import com.novell.ldap.client.ArrayList;    // Make sure we get the right one
+import java.util.ArrayList;
 import com.novell.ldap.LDAPEntry;
 import com.novell.ldap.LDAPException;
 import com.novell.ldap.client.*;
@@ -340,7 +340,7 @@ public class LDAPSearchResults
                         }
 
                         if( cons.getReferralFollowing() ) {
-                           referralConn = conn.checkForReferral(
+                           referralConn = conn.chaseReferral(
                                     queue, cons, msg, refs,
                                     0, true, referralConn);
                         } else {
@@ -373,7 +373,7 @@ public class LDAPSearchResults
                                 Debug.trace( Debug.messages, name +
                                     "following referrals");
                             }
-                            referralConn = conn.checkForReferral(
+                            referralConn = conn.chaseReferral(
                                         queue, cons, resp,
                                         resp.getReferrals(), 0,
                                         false, referralConn);

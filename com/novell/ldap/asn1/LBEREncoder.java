@@ -18,7 +18,7 @@ package com.novell.ldap.asn1;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.ByteArrayOutputStream;
-import com.novell.ldap.client.ArrayList;
+import java.util.ArrayList;
 
 /**
  * This class provides LBER encoding routines for ASN.1 Types. LBER is a
@@ -167,7 +167,7 @@ public class LBEREncoder implements ASN1Encoder {
 
    /* Encoders for ASN.1 structured types
     */
-    
+
    /**
     * Encode an ASN1Structured into the specified outputstream.  This method
     * can be used to encode SET, SET_OF, SEQUENCE, SEQUENCE_OF

@@ -103,7 +103,7 @@ public final class Connection implements Runnable
     private ReferralInfo activeReferral = null;
 
     // Place to save unsolicited message listeners
-    private Vector2 unsolicitedListeners = new Vector2(3,3);
+    private java.util.Vector unsolicitedListeners = new java.util.Vector(3,3);
 
     // The LDAPSocketFactory to be used as the default to create new connections
     static private LDAPSocketFactory socketFactory = null;

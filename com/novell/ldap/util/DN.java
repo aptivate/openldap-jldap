@@ -14,8 +14,8 @@
  ******************************************************************************/
 package com.novell.ldap.util;
 import com.novell.ldap.util.RDN;
-import com.novell.ldap.client.ArrayList;
 import java.util.Vector;
+import java.util.ArrayList;
 
 /**
  * <P>A DN encapsulates a Distinguished Name (an ldap name with context). A DN
@@ -42,7 +42,7 @@ public class DN extends Object
 {
 
     //parser state identifiers.
-    private static final int LOOK_FOR_RDN_ATTR_TYPE = 1;    
+    private static final int LOOK_FOR_RDN_ATTR_TYPE = 1;
     private static final int ALPHA_ATTR_TYPE        = 2;
     private static final int OID_ATTR_TYPE          = 3;
     private static final int LOOK_FOR_RDN_VALUE     = 4;
@@ -51,7 +51,7 @@ public class DN extends Object
     private static final int UNQUOTED_RDN_VALUE     = 7;
 
     /* State transition table:  Parsing starts in state 1.
-    
+
     State   COMMA   DIGIT   "Oid."  ALPHA   EQUAL   QUOTE   SHARP   HEX
     --------------------------------------------------------------------
     1       Err     3       3       2       Err     Err     Err     Err
@@ -61,10 +61,10 @@ public class DN extends Object
     5       1       5       Err     5       Err     1       Err     7
     6       1       6       Err     Err     Err     Err     Err     6
     7       1       7       Err     7       Err     Err     Err     7
-    
-    */      
 
-    
+    */
+
+
     private ArrayList rdnList = new ArrayList();
 
     public DN (){
@@ -100,7 +100,7 @@ public class DN extends Object
         String   rawValue = "";
         int      hexDigitCount = 0;
         RDN      currRDN = new RDN();
-        
+
         //indicates whether an OID number has a first digit of ZERO
         boolean firstDigitZero = false;
 
@@ -180,11 +180,11 @@ public class DN extends Object
             if ( //Check for a leading zero.
                     (isDigit(currChar) && firstDigitZero) ||
                  //Check for zero by itself (except as the last number)
-                    (currChar == '.' && firstDigitZero) ) 
-            {            
+                    (currChar == '.' && firstDigitZero) )
+            {
                 throw new IllegalArgumentException(dnString);
             }
-            
+
             //consume all numbers.
             while (isDigit(currChar) && (currIndex < lastIndex)){
                 tokenBuf[tokenIndex++] = currChar;
@@ -259,7 +259,7 @@ public class DN extends Object
                     else
                         throw new IllegalArgumentException(dnString);
                 }
-                else if (needsEscape(currChar) || currChar == '#' || 
+                else if (needsEscape(currChar) || currChar == '#' ||
                         currChar == '=' || currChar == ' ')
                 {
                     tokenBuf[tokenIndex++] = currChar;
@@ -344,7 +344,7 @@ public class DN extends Object
                     else
                         throw new IllegalArgumentException(dnString);
                 }
-                else if (needsEscape(currChar)|| currChar == '#' || 
+                else if (needsEscape(currChar)|| currChar == '#' ||
                         currChar == '=' || currChar == ' ')
                 {
                     tokenBuf[tokenIndex++] = currChar;
@@ -421,7 +421,7 @@ public class DN extends Object
             currRDN.add(attrType, attrValue, rawValue);
             rdnList.add(currRDN);
         }
-        else 
+        else
         {
             throw new IllegalArgumentException(dnString);
         }
@@ -483,7 +483,7 @@ public class DN extends Object
 
     /**
      * Checks a character to see if it must always be escaped in the
-     * string representation of a DN.  We must tests for space, sharp, and 
+     * string representation of a DN.  We must tests for space, sharp, and
      * equals individually.
      *
      * @param   ch the character to be tested.
@@ -494,7 +494,7 @@ public class DN extends Object
         if (
             (ch == ',') ||
             (ch == '+') ||
-            (ch == '\"') ||                        
+            (ch == '\"') ||
             (ch == ';') ||
             (ch == '<') ||
             (ch == '>') ||

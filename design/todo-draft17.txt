@@ -73,7 +73,7 @@ com org
 [X] [X]      13: bind(): Modify signatures for SASL to take an authzId parameter
 [X] [X]      14: bind(): Use Hashtable, not Properties, in all SASL bind signatures
 [X] [X]      15: bind(): Replace Hashtable as parameter with Map
-[ ] [ ]      13: disconnect(): may take LDAPConstraints parameter
+[X] [X]      13: disconnect(): may take LDAPConstraints parameter
 [X] [X]      13: getAuthenticationPassword(): remove method
 [X] [X]      15: getSaslBindProperties(): Replace Hashtable with Map
 [X] [X]      13: modify(): replace LDAPModificationSet with LDAPModification[]
@@ -360,30 +360,6 @@ com org
 
 [ ] [ ] 13: Security Considerations (Doc issue)
 [ ] [ ]      13: Add implementation guidelines
-
-[ ] [ ] 13: General (Doc issue)
-[ ] [ ] 14: General
-[ ] [ ]      13: Many clarifications and editorial changes
-[ ] [ ]      14: Clarifications and editorial changes
-[ ] [ ]
-
-[ ] [ ] 14: Examples (Doc issue)
-[ ] [ ] 16: Examples
-[ ] [ ]      14: ModifyEmail: Use SASL to bind in synchronous
-                 example
-[ ] [ ]      14: ModifyEmail: Use TLS in to bind in asynchronous
-                 example
-
-[ ] [ ] 13: Implementation Considerations (Doc issue)
-[ ] [ ] 15: Implementation Considerations
-[ ] [ ]      15: Controls: Remove the specification of package name for controls.
-                 The package name may be specified in a follow-on document describing
-                 various controls.
-[ ] [ ]      15: Dependencies: New section
-[ ] [ ]      13: Invalid responses: New section
-[ ] [ ]      13: Level of compatibility: New section
-[ ] [ ]      13: Notice of disconnection: New section
-[ ] [ ]      15: Move the package name up to section 1.
 
 ---
 Outline of changes needed to move from IETF Java LDAP API draft

@@ -17,8 +17,8 @@ package com.novell.ldap.rfc2251;
 import com.novell.ldap.LDAPException;
 import com.novell.ldap.LDAPConnection;
 import com.novell.ldap.asn1.*;
-import com.novell.ldap.client.ArrayList;
 import com.novell.ldap.client.Debug;
+import java.util.ArrayList;
 
 /**
  *       SearchRequest ::= [APPLICATION 3] SEQUENCE {
@@ -82,7 +82,7 @@ public class RfcSearchRequest extends ASN1Sequence implements RfcRequest {
         if( base != null) {
             content.set(0, new RfcLDAPDN(base));
         }
-        // If this is a reencode as a result of a search continuation reference
+        // If this is a reencode of a search continuation reference
         // and if original scope was one-level, we need to change the scope to
         // base so we don't return objects a level deeper than requested
         if( request ) {

@@ -15,9 +15,8 @@
 
 package com.novell.ldap;
 
-import com.novell.ldap.client.ArrayList;
-import com.novell.ldap.client.ReferralInfo;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Map;
@@ -317,7 +316,7 @@ public class LDAPConnection implements Cloneable
         throws LDAPException
     {
         // Disconnect did not come from user API call
-        disconnect(false);
+        disconnect(defSearchCons, false);
         return;
     }
 
@@ -1012,8 +1011,7 @@ public class LDAPConnection implements Cloneable
                     LDAPConstraints cons)
         throws LDAPException
     {
-        LDAPResponseQueue queue =
-            add(entry, (LDAPResponseQueue)null, cons);
+        LDAPResponseQueue queue = add(entry, (LDAPResponseQueue)null, cons);
 
         // Get a handle to the add response
         LDAPResponse addResponse = (LDAPResponse)(queue.getResponse());
@@ -1022,11 +1020,7 @@ public class LDAPConnection implements Cloneable
         synchronized (responseCtlSemaphore) {
             responseCtls = addResponse.getControls();
         }
-
-        // Through any LDAPException as necessary
-        addResponse.chkResultCode();
-
-        //checkForReferral( queue, 0, 0); // Search for referrals
+        chkResultCode( queue, cons, addResponse);
         return;
     }
 
@@ -1115,8 +1109,8 @@ public class LDAPConnection implements Cloneable
     //*************************************************************************
 
     /**
-     * Authenticates to the LDAP server (that the object is currently
-     * connected to) as an LDAPv3 bind, using the specified name and
+     * Synchronously authenticates to the LDAP server (that the object is
+     * currently connected to) as an LDAPv3 bind, using the specified name and
      * password.
      *
      * <p>If the object has been disconnected from an LDAP server,
@@ -1153,8 +1147,9 @@ public class LDAPConnection implements Cloneable
     }
 
     /**
-     * Authenticates to the LDAP server (that the object is currently
-     * connected to) using the specified name, password, and LDAP version.
+     * Synchronously authenticates to the LDAP server (that the object is
+     * currently connected to) using the specified name, password,
+     * and LDAP version.
      *
      * <p>If the object has been disconnected from an LDAP server,
      * this method attempts to reconnect to the server. If the object
@@ -1194,8 +1189,8 @@ public class LDAPConnection implements Cloneable
     }
 
     /**
-     * Authenticates to the LDAP server (that the object is currently
-     * connected to) as an LDAPv3 bind, using the specified name,
+     * Synchronously authenticates to the LDAP server (that the object is
+     * currently connected to) as an LDAPv3 bind, using the specified name,
      * password, and constraints.
      *
      * <p>If the object has been disconnected from an LDAP server,
@@ -1234,8 +1229,8 @@ public class LDAPConnection implements Cloneable
     }
 
     /**
-     * Authenticates to the LDAP server (that the object is currently
-     * connected to) using the specified name, password, LDAP version,
+     * Synchronously authenticates to the LDAP server (that the object is
+     * currently connected to) using the specified name, password, LDAP version,
      * and constraints.
      *
      * <p>If the object has been disconnected from an LDAP server,
@@ -1287,8 +1282,9 @@ public class LDAPConnection implements Cloneable
     }
 
     /**
-     * Authenticates to the LDAP server (that the object is currently
-     * connected to) using the specified name, password, and LDAP version.
+     * Synchronously authenticates to the LDAP server (that the object is
+     * currently connected to) using the specified name, password,
+     * and LDAP version.
      *
      * <p>If the object has been disconnected from an LDAP server,
      * this method attempts to reconnect to the server. If the object
@@ -1321,8 +1317,8 @@ public class LDAPConnection implements Cloneable
 
     /**
      *
-     * Authenticates to the LDAP server (that the object is currently
-     * connected to) using the specified name, password, LDAP version,
+     * Synchronously authenticates to the LDAP server (that the object is
+     * currently connected to) using the specified name, password, LDAP version,
      * and constraints.
      *
      * <p>If the object has been disconnected from an LDAP server,
@@ -1358,13 +1354,12 @@ public class LDAPConnection implements Cloneable
             bind(version, dn, passwd, (LDAPResponseQueue)null, cons);
         LDAPResponse res = (LDAPResponse)queue.getResponse();
         if( res != null) {
-
             // Set local copy of responseControls synchronously if any
             synchronized (responseCtlSemaphore) {
                 responseCtls = res.getControls();
             }
 
-            res.chkResultCode();
+            chkResultCode( queue, cons, res);
         }
         return;
     }
@@ -1488,8 +1483,8 @@ public class LDAPConnection implements Cloneable
     //*************************************************************************
 
     /**
-     * Authenticates to the LDAP server (that the object is currently
-     * connected to) using the specified name and the specified set of
+     * Synchronously authenticates to the LDAP server (that the object is
+     * currently connected to) using the specified name and the specified set of
      * mechanisms.
      *
      * <p>If none of the requested SASL mechanisms is available, an
@@ -1536,8 +1531,8 @@ public class LDAPConnection implements Cloneable
     }
 
     /**
-     * Authenticates to the LDAP server (that the object is currently
-     * connected to) using the specified name and the specified set of
+     * Synchronously authenticates to the LDAP server (that the object is
+     * currently connected to) using the specified name and the specified set of
      * mechanisms.
      *
      * <p>If none of the requested SASL mechanisms is available, an
@@ -1589,8 +1584,8 @@ public class LDAPConnection implements Cloneable
     }
 
     /**
-     * Authenticates to the LDAP server (that the object is currently
-     * connected to) using the specified name and the specified set of
+     * Synchronously authenticates to the LDAP server (that the object is
+     * currently connected to) using the specified name and the specified set of
      * mechanisms.
      *
      * <p>If none of the requested SASL mechanisms is available, an
@@ -1638,8 +1633,8 @@ public class LDAPConnection implements Cloneable
         return;
     }
     /**
-     * Authenticates to the LDAP server (that the object is currently
-     * connected to) using the specified name and the specified set of
+     * Synchronously authenticates to the LDAP server (that the object is
+     * currently connected to) using the specified name and the specified set of
      * mechanisms.
      *
      * <p>If none of the requested SASL mechanisms is available, an
@@ -1729,8 +1724,8 @@ public class LDAPConnection implements Cloneable
 
     /**
      *
-     * Checks to see if an entry contains an attribute with a specified
-     * value, using the specified constraints.
+     * Synchronously checks to see if an entry contains an attribute with a
+     * specified value, using the specified constraints.
      *
      *  @param dn      The distinguished name of the entry to use in the
      *                 comparison.
@@ -1771,14 +1766,12 @@ public class LDAPConnection implements Cloneable
 
         if(res.getResultCode() == LDAPException.COMPARE_TRUE) {
             ret = true;
-        }
-        else if(res.getResultCode() == LDAPException.COMPARE_FALSE) {
+        } else
+        if(res.getResultCode() == LDAPException.COMPARE_FALSE) {
             ret = false;
+        } else {
+            chkResultCode( queue, cons, res);
         }
-        else {
-            res.chkResultCode();
-        }
-
         return ret;
     }
 
@@ -2000,10 +1993,7 @@ public class LDAPConnection implements Cloneable
         synchronized (responseCtlSemaphore) {
             responseCtls = deleteResponse.getControls();
         }
-
-        // Through any LDAPException as necessary
-        deleteResponse.chkResultCode();
-
+        chkResultCode( queue, cons, deleteResponse);
         return;
     }
 
@@ -2097,12 +2087,11 @@ public class LDAPConnection implements Cloneable
         throws LDAPException
     {
         // disconnect from API call
-        disconnect(true);
+        disconnect( defSearchCons, true);
         return;
     }
 
     /**
-     *
      * Synchronously disconnects from the LDAP server.
      *
      * <p>Before the object can perform LDAP operations again, it must
@@ -2120,17 +2109,16 @@ public class LDAPConnection implements Cloneable
         throws LDAPException
     {
         // disconnect from API call
-        disconnect(true);
+        disconnect(cons, true);
         return;
     }
 
     /**
-     * Disconnect from server
+     * Synchronously disconnect from the server
      *
      * @param how true if application call disconnect API, false if finalize.
-     *
      */
-    private void disconnect(boolean how)
+    private void disconnect(LDAPConstraints cons, boolean how)
         throws LDAPException
     {
         // disconnect doesn't affect other clones
@@ -2209,6 +2197,7 @@ public class LDAPConnection implements Cloneable
             responseCtls = response.getControls();
         }
 
+        chkResultCode( queue, cons, response);
         return response;
     }
 
@@ -2505,11 +2494,9 @@ public class LDAPConnection implements Cloneable
             responseCtls = modifyResponse.getControls();
         }
 
-        // Through any LDAPException as necessary
-        modifyResponse.chkResultCode();
+        chkResultCode( queue, cons, modifyResponse);
 
         return;
-
     }
 
     /**
@@ -2996,11 +2983,8 @@ public class LDAPConnection implements Cloneable
             responseCtls = renameResponse.getControls();
         }
 
-        // Through any LDAPException as necessary
-        renameResponse.chkResultCode();
-
+        chkResultCode( queue, cons, renameResponse);
         return;
-
     }
 
     /*
@@ -3689,29 +3673,70 @@ public class LDAPConnection implements Cloneable
         // to be used to follow the referral.
         return refInfo;
     }
+    
+    /**
+     * Check the result code and throw an exception if needed.
+     *
+     * <p>If referral following is enabled, checks if we need to
+     * follow a referral</p>
+     *
+     * @parameter queue - the message queue of the current response
+     *
+     * @parameter cons - the constraints that apply to the request
+     *
+     * @parameter response - the LDAPResponse to check
+     */
+    private void chkResultCode( LDAPMessageQueue queue,
+                                LDAPConstraints cons,
+                                LDAPResponse response)
+                throws LDAPException                         
+     {
+        if( (response.getResultCode() == LDAPException.REFERRAL) &&
+                                    cons.getReferralFollowing()) {
+            // Perform referral following and return
+            ArrayList refConn = null;
+            try {
+                chaseReferral( queue, cons, response, 
+                        response.getReferrals(), 0, false, null );
+            } finally {
+                releaseReferralConnections( refConn);
+            }
+        } else {
+            // Throws exception for non success result
+            response.chkResultCode();
+        }
+        return;
+     }
 
     /**
-     * Check the result code and follow referrals if necessary.
+     * Follow referrals if necessary referral following enabled.
      * This function is called only by synchronous requests.
-     * Search responses only come here if only referral following is
+     * Search responses come here only if referral following is
      * enabled and if we are processing a SearchResultReference
-     * or a SearchResponse with a status of REFERRAL, i.e. we are
+     * or a Response with a status of REFERRAL, i.e. we are
      * going to follow a referral.
+     *
+     * This functions recursively follows a referral until a result
+     * is returned or until the hop limit is reached.  
      *
      * @param queue The LDAPResponseQueue for this request
      * <br><br>
-     * @param hopCount the maximum hops configured for referrals
+     * @param cons The constraints that apply to the request
      * <br><br>
-     * @param referral The referral string from a search response
+     * @param msg The referral or search reference response message
      * <br><br>
-     * @param The current hop count
+     * @param initialReferrals The referral array returned from the
+     *                        initial request.
      * <br><br>
-     * @param The response message
+     * @param hopCount the number of hops already used while
+     *                 following this referral
      * <br><br>
-     * @param An optional array list used to store the LDAPConnection objects
-     *        used in following the referral.
+     * @param searchReference true if the message is a search reference
+     * <br><br>
+     * @param connectionList An optional array list used to store
+     *        the LDAPConnection objects used in following the referral.
      *
-     * @return The array list used to store the LDAPConnection objects
+     * @return The array list used to store the all LDAPConnection objects
      *        used in following the referral.  The list will be empty
      *        if there were none.
      *
@@ -3719,153 +3744,130 @@ public class LDAPConnection implements Cloneable
      *  message and an LDAP error code.
      */
     /* package */
-    ArrayList checkForReferral( LDAPMessageQueue queue,
+    ArrayList chaseReferral( LDAPMessageQueue queue,
                                 LDAPConstraints cons,
                                 LDAPMessage msg,
-                                String[] searchReferral,
+                                String[] initialReferrals,
                                 int hopCount,
                                 boolean searchReference,
-                                ArrayList referralList)
+                                ArrayList connectionList)
                     throws LDAPException
     {
-        ArrayList refList = referralList;
+        ArrayList connList = connectionList;
         LDAPConnection rconn = null; // new conn for following referral
         ReferralInfo rinfo = null;   // referral info
         LDAPMessage origMsg;
 
-        // Get a place to store new connections
-        if( refList == null) {
-            refList = new ArrayList( cons.getHopLimit());
+        if( Debug.LDAP_DEBUG) {
+            Debug.trace( Debug.referrals,   name +
+                "Check for referrals, reference = " + searchReference);
         }
-        if( ! cons.getReferralFollowing()) {
-            if( Debug.LDAP_DEBUG) {
-                if( (searchReferral != null) || (msg != null)) {
-                    // If referral following is off, should never get here
-                    // LDAPCOnnection: checkForReferral: internal error
-                    throw new LDAPReferralException(
-                        ExceptionMessages.REFERRAL_INTERNAL,
-                        LDAPException.LOCAL_ERROR, null);
-                }
-            }
-            /* Only come here for synchronous requests
-             * If we come here, this is NOT a search response.
-             * A search response comes here only if following a referral.
-             * Note: there is never more than one outstanding response
-             * at any one time, for a non search.
-             */
+        // Get a place to store new connections
+        if( connList == null) {
+            connList = new ArrayList( cons.getHopLimit());
+        }
+        // Following referrals or search reference
+        String [] refs;             // referral list
+        if( initialReferrals != null) {
+            // Search continuation reference from a search request
+            refs = initialReferrals;
+            origMsg = msg.getASN1Object().getRequestingMessage();
+        } else { // Not a search request
             LDAPResponse resp = (LDAPResponse)queue.getResponse();
-            // Throws an Exception for any nonzero result code
-            resp.chkResultCode();
-        } else {
+            if( resp.getResultCode() != LDAPException.REFERRAL) {
+                // Not referral result,throw Exception if nonzero result
+                resp.chkResultCode();
+                return connList;
+            }
+            // We have a referral response
+            refs = resp.getReferrals();
+            origMsg = resp.getASN1Object().getRequestingMessage();
+        }
+        LDAPUrl refUrl;             // referral represented as URL
+        try {
+            // increment hop count, check max hops
+            if( hopCount++ > cons.getHopLimit()) {
+                throw new LDAPException("Max hops exceeded",
+                    LDAPException.REFERRAL_LIMIT_EXCEEDED);
+            }
+            // Get a connection to follow the referral
+            rinfo = getReferralConnection( refs, searchReference);
+            rconn = rinfo.getReferralConnection();
+            refUrl = rinfo.getReferralUrl();
+            connList.add( rconn);
+
             if( Debug.LDAP_DEBUG) {
                 Debug.trace( Debug.referrals,   name +
-                    "Check for referrals, reference = " + searchReference);
+                        (searchReference?"Following search reference URL " :
+                        "Following referral URL ") + refUrl.toString());
             }
-            // Following referrals or search reference
-            String [] refs;             // referral list
-            if( (searchReferral != null)) {
-                // Search continuation reference from a search request
-                refs = searchReferral;
-                origMsg = msg.getASN1Object().getRequestingMessage();
-            } else {
-                // Not a search request
-                LDAPResponse resp = (LDAPResponse)queue.getResponse();
-                if( resp.getResultCode() != LDAPException.REFERRAL) {
-                    // Not referral result,throw Exception if nonzero result
-                    resp.chkResultCode();
-                    return refList;
-                }
-                // We have a referral response
-                refs = resp.getReferrals();
-                origMsg = resp.getASN1Object().getRequestingMessage();
+
+            // rebuild msg into new msg changing msgID,dn,scope,filter
+            LDAPMessage newMsg = rebuildRequest( origMsg,
+                                                 refUrl, searchReference);
+
+            if( Debug.LDAP_DEBUG) {
+                Debug.trace( Debug.referrals,   name +
+                    "following referral for " + refUrl.toString());
+                Debug.trace( Debug.referrals,   name +
+                    "request " + newMsg.toString());
             }
-            LDAPUrl refUrl;             // referral represented as URL
+
+            // Send new message on new connection
             try {
-                // increment hop count, check max hops
-                if( hopCount++ > cons.getHopLimit()) {
-                    throw new LDAPException("Max hops exceeded",
-                        LDAPException.REFERRAL_LIMIT_EXCEEDED);
-                }
-                // Get a connection to follow the referral
-                rinfo = getReferralConnection( refs, searchReference);
-                rconn = rinfo.getReferralConnection();
-                refUrl = rinfo.getReferralUrl();
-                refList.add( rconn);
-
-                if( Debug.LDAP_DEBUG) {
-                    Debug.trace( Debug.referrals,   name +
-                            (searchReference?"Following search reference URL " :
-                            "Following referral URL ") + refUrl.toString());
-                }
-
-                // rebuild msg into new msg changing msgID,dn,scope,filter
-                LDAPMessage newMsg = rebuildRequest( origMsg,
-                                                     refUrl, searchReference);
-
-                if( Debug.LDAP_DEBUG) {
-                    Debug.trace( Debug.referrals,   name +
-                        "following referral for " + refUrl.toString());
-                    Debug.trace( Debug.referrals,   name +
-                        "request " + newMsg.toString());
-                }
-
-                // Send new message on new connection
-                try {
-                    MessageAgent agent;
-                    if( queue instanceof LDAPResponseQueue) {
-                        agent=((LDAPResponseQueue)queue).getMessageAgent();
-                    } else {
-                        agent=((LDAPSearchQueue)queue).getMessageAgent();
-                    }
-                    agent.sendMessage( rconn.getConnection(), newMsg,
-                            defSearchCons.getTimeLimit(), queue, null);
-                } catch(LocalException ex) {
-                    // Error ending request to referred server
-                    LDAPReferralException rex = new LDAPReferralException(
-                         ExceptionMessages.REFERRAL_SEND,
-                         LDAPException.CONNECT_ERROR, null, ex);
-                    rex.setReferrals( searchReferral);
-                    ReferralInfo ref=rconn.getConnection().getActiveReferral();
-                    rex.setFailedReferral( ref.getReferralUrl().toString());
-                    throw rex;
-                }
-
-                if( searchReferral == null) {
-                    // For non searches, When all responses are complete,
-                    // the stack unwinds, back to the original and returns
-                    // to the application.
-                    // An exception is thrown for an error
-                    refList = checkForReferral( queue, cons, null, null,
-                                hopCount, false, refList);
+                MessageAgent agent;
+                if( queue instanceof LDAPResponseQueue) {
+                    agent=((LDAPResponseQueue)queue).getMessageAgent();
                 } else {
-                    // For search, just return to LDAPSearchResults object
-                    return refList;
+                    agent=((LDAPSearchQueue)queue).getMessageAgent();
                 }
-            } catch (Exception ex) {
-                if( Debug.LDAP_DEBUG) {
-                    Debug.trace( Debug.referrals, name +
-                            "Throw exception " + ex.toString());
-                }
-
-                if( ex instanceof LDAPReferralException) {
-                    throw (LDAPReferralException)ex;
-                } else {
-
-                    // Connecting to referred server
-                    LDAPReferralException rex = new LDAPReferralException(
-                        ExceptionMessages.REFERRAL_ERROR, ex);
-                    rex.setReferrals( refs);
-                    if( rinfo != null) {
-                        rex.setFailedReferral( rinfo.getReferralUrl().toString());
-                    } else {
-                        rex.setFailedReferral( refs[refs.length - 1]);
-                    }
-                    throw rex;
-                }
+                agent.sendMessage( rconn.getConnection(), newMsg,
+                        defSearchCons.getTimeLimit(), queue, null);
+            } catch(LocalException ex) {
+                // Error ending request to referred server
+                LDAPReferralException rex = new LDAPReferralException(
+                     ExceptionMessages.REFERRAL_SEND,
+                     LDAPException.CONNECT_ERROR, null, ex);
+                rex.setReferrals( initialReferrals);
+                ReferralInfo ref=rconn.getConnection().getActiveReferral();
+                rex.setFailedReferral( ref.getReferralUrl().toString());
+                throw rex;
             }
-            return refList;
+
+            if( initialReferrals == null) {
+                // For operation results, when all responses are complete,
+                // the stack unwinds back to the original and returns
+                // to the application.
+                // An exception is thrown for an error
+                connList = chaseReferral( queue, cons, null, null,
+                            hopCount, false, connList);
+            } else {
+                // For search, just return to LDAPSearchResults object
+                return connList;
+            }
+        } catch (Exception ex) {
+            if( Debug.LDAP_DEBUG) {
+                Debug.trace( Debug.referrals, name +
+                        "Throw exception " + ex.toString());
+            }
+
+            if( ex instanceof LDAPReferralException) {
+                throw (LDAPReferralException)ex;
+            } else {
+
+                // Set referral list and failed referral
+                LDAPReferralException rex = new LDAPReferralException(
+                    ExceptionMessages.REFERRAL_ERROR, ex);
+                rex.setReferrals( refs);
+                if( rinfo != null) {
+                    rex.setFailedReferral( rinfo.getReferralUrl().toString());
+                } else {
+                    rex.setFailedReferral( refs[refs.length - 1]);
+                }
+                throw rex;
+            }
         }
-        return refList;
+        return connList;
     }
 
     /**
@@ -3880,7 +3882,6 @@ public class LDAPConnection implements Cloneable
      *  @exception LDAPException A general exception which includes an error
      *  message and an LDAP error code.
      */
-
     private
     LDAPMessage rebuildRequest( LDAPMessage msg, LDAPUrl url, boolean reference)
             throws LDAPException
@@ -3904,16 +3905,16 @@ public class LDAPConnection implements Cloneable
                 }
                 break;
             // We are allowed to get a referral for the following
-            case RfcProtocolOp.MODIFY_REQUEST:
             case RfcProtocolOp.ADD_REQUEST:
-            case RfcProtocolOp.DEL_REQUEST:
-            case RfcProtocolOp.MODIFY_DN_REQUEST:
-            case RfcProtocolOp.COMPARE_REQUEST:
-            case RfcProtocolOp.EXTENDED_REQUEST:
-                break;
-            // Does a referral even make sense for the following?
-            case RfcProtocolOp.ABANDON_REQUEST:
             case RfcProtocolOp.BIND_REQUEST:
+            case RfcProtocolOp.COMPARE_REQUEST:
+            case RfcProtocolOp.DEL_REQUEST:
+            case RfcProtocolOp.EXTENDED_REQUEST:
+            case RfcProtocolOp.MODIFY_DN_REQUEST:
+            case RfcProtocolOp.MODIFY_REQUEST:
+                break;
+            // The following return no response
+            case RfcProtocolOp.ABANDON_REQUEST:
             case RfcProtocolOp.UNBIND_REQUEST:
             default:
                 throw new LDAPException(
@@ -3933,10 +3934,9 @@ public class LDAPConnection implements Cloneable
     }
 
     /*
-     * Release referral connections
+     * Release connections acquired by following referrals
      *
      * @param list the list of the connections
-     *
      */
     /* package */
    void releaseReferralConnections( ArrayList list)

@@ -22,7 +22,7 @@ import com.novell.ldap.LDAPException;
 import com.novell.ldap.LDAPMessage;
 import com.novell.ldap.asn1.*;
 import com.novell.ldap.client.Debug;
-import com.novell.ldap.client.ArrayList;
+import java.util.ArrayList;
 
 /**
  *       LDAPMessage ::= SEQUENCE {

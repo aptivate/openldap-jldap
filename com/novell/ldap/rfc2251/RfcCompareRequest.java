@@ -1,7 +1,7 @@
 /* **************************************************************************
  * $OpenLDAP$
  *
- * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
+ * Copyright (C) 1999 - 2002 Novell, Inc. All Rights Reserved.
  *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
@@ -13,6 +13,8 @@
  * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
  ******************************************************************************/
 package com.novell.ldap.rfc2251;
+
+import java.util.ArrayList;
 
 import com.novell.ldap.asn1.*;
 import com.novell.ldap.*;
@@ -39,6 +41,24 @@ public class RfcCompareRequest extends ASN1Sequence implements RfcRequest {
 		add(ava);
 	}
 
+    /**
+    * Constructs a new Compare Request copying from the ArrayList of
+    * an existing request.
+    */
+    /* package */
+    RfcCompareRequest(   ArrayList origRequest,
+                         String base)
+            throws LDAPException
+    {
+        for(int i=0; i < origRequest.size(); i++) {
+            content.add(origRequest.get(i));
+        }
+        // Replace the base if specified, otherwise keep original base
+        if( base != null) {
+            content.set(0, new RfcLDAPDN(base));
+        }
+        return;
+    }
 	//*************************************************************************
 	// Accessors
 	//*************************************************************************
@@ -55,9 +75,6 @@ public class RfcCompareRequest extends ASN1Sequence implements RfcRequest {
     public RfcRequest dupRequest(String base, String filter, boolean request)
             throws LDAPException
     {
-        throw new LDAPException(
-                    ExceptionMessages.NO_DUP_REQUEST,
-                    new Object[] { "compare" },
-                    LDAPException.LDAP_NOT_SUPPORTED);
+        return new RfcCompareRequest( content, base);
     }
 }

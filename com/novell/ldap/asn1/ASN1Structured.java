@@ -18,12 +18,12 @@ package com.novell.ldap.asn1;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import com.novell.ldap.client.ArrayList;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.NoSuchElementException;
 
 /**
- * This class serves as the base type for all ASN.1 
+ * This class serves as the base type for all ASN.1
  * structured types.
  */
 public abstract class ASN1Structured extends ASN1Object
@@ -31,7 +31,7 @@ public abstract class ASN1Structured extends ASN1Object
 
    /* An inner class is used to maintain a list of subtypes
     * that this structured type holds. Note the use of our
-    * own enumeration rather than directly using the 
+    * own enumeration rather than directly using the
     * Vector class.
     *
     * We could have used the Vector class but that would
@@ -110,9 +110,9 @@ public abstract class ASN1Structured extends ASN1Object
 
    /**
     * Adds a new ASN1Object to the end of this ASN1Structured
-    * object.  
+    * object.
     *
-    * @param value The ASN1Object to add to this ASN1Structured 
+    * @param value The ASN1Object to add to this ASN1Structured
     * object.  Note the use of the ASN1Object type as the base
     * class for this object.  This allows the programmer to specify
     * an ASN1 Obejct of any sub type.
@@ -124,13 +124,13 @@ public abstract class ASN1Structured extends ASN1Object
    }
 
    /**
-    * Adds a new ASN1Object in the specified index position of 
-    * this ASN1Structured object. 
+    * Adds a new ASN1Object in the specified index position of
+    * this ASN1Structured object.
     *
     * @param index The index into the ASN1Structured object where
     * this new ANS1Object will be added.
     *
-    * @param value The ASN1Object to add to this ASN1Structured 
+    * @param value The ASN1Object to add to this ASN1Structured
     * object.  Note the use of the ASN1Object type as the base
     * class for this object.  This allows the programmer to specify
     * an ASN1 Obejct of any sub type.

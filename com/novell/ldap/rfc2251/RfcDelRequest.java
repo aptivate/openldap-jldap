@@ -1,7 +1,7 @@
 /* **************************************************************************
  * $OpenLDAP$
  *
- * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
+ * Copyright (C) 1999 - 2002 Novell, Inc. All Rights Reserved.
  *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
@@ -37,7 +37,17 @@ public class RfcDelRequest extends RfcLDAPDN implements RfcRequest {
    {
       super(dn);
    }
-
+   
+   /**
+    * Constructs an LDAPv3 delete request protocol operation.
+    *
+    * @param dn The Distinguished Name of the entry to delete.
+    */
+   public RfcDelRequest(byte[] dn)
+   {
+      super(dn);
+   }
+   
    /**
     * Override getIdentifier() to return the appropriate application-wide id
     * representing this delete request. The getIdentifier() method is called
@@ -54,9 +64,10 @@ public class RfcDelRequest extends RfcLDAPDN implements RfcRequest {
     public RfcRequest dupRequest(String base, String filter, boolean request)
             throws LDAPException
     {
-        throw new LDAPException(
-                    ExceptionMessages.NO_DUP_REQUEST,
-                    new Object[] { "delete" },
-                    LDAPException.LDAP_NOT_SUPPORTED);
+        if( base == null) {
+            return new RfcDelRequest( getContent());
+        } else {
+            return new RfcDelRequest( base);
+        }
     }
 }

@@ -15,7 +15,7 @@
 
 package com.novell.ldap.client;
 
-import com.novell.ldap.client.ArrayList;
+import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 import java.util.Enumeration;

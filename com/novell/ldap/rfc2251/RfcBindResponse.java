@@ -1,7 +1,7 @@
 /* **************************************************************************
  * $OpenLDAP$
  *
- * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
+ * Copyright (C) 1999 - 2002 Novell, Inc. All Rights Reserved.
  *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
@@ -90,9 +90,11 @@ public class RfcBindResponse extends ASN1Sequence implements RfcResponse {
 	 */
 	public RfcReferral getReferral()
 	{
-		ASN1Object obj = get(3);
-		if(obj instanceof RfcReferral)
-			return (RfcReferral)obj;
+        if( size() > 3) {
+		    ASN1Object obj = get(3);
+		    if(obj instanceof RfcReferral)
+			    return (RfcReferral)obj;
+        }        
 		return null;
 	}
 
@@ -122,6 +124,4 @@ public class RfcBindResponse extends ASN1Sequence implements RfcResponse {
 		return new ASN1Identifier(ASN1Identifier.APPLICATION, true,
 			                       RfcProtocolOp.BIND_RESPONSE);
 	}
-
 }
-

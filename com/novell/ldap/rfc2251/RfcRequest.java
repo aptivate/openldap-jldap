@@ -14,7 +14,6 @@
  ******************************************************************************/
 package com.novell.ldap.rfc2251;
 
-import com.novell.ldap.client.ArrayList;
 import com.novell.ldap.LDAPException;
 
 /**
