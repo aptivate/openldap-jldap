@@ -1,4 +1,18 @@
-<!-- $Novell: /ldap/src/jldap/build.xml,v 1.29 2001/01/26 23:12:03 vtag Exp $ -->
+<!-- $Novell: /ldap/src/jldap/build.xml,v 1.30 2001/01/29 22:41:54 javed Exp $ -->
+<!--
+ ******************************************************************************
+ * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
+ *
+ * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
+ * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
+ * TO VERSION 2.0.7 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
+ * AVAILABLE AT HTTP://WWW.OPENLDAP.ORG/LICENSE.HTML OR IN THE FILE "LICENSE"
+ * IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
+ * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.7 OF THE OPENLDAP
+ * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
+ * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
+ ******************************************************************************
+-->
 <!-- ======================================================================= -->
 <!-- TOP level build file                                                -->
 <!-- ======================================================================= -->
@@ -17,7 +31,7 @@
 <!--               At the lowest level directory it only compiles java files.-->
 <!--     jar     - Synonym for lib                                           -->
 <!--     all     - Builds everything possible.  At the top directory level it-->
-<!--               builds all, doc, & install.  At one directory level below --> 
+<!--               builds all, doc, & install.  At one directory level below -->
 <!--               the top it builds all, & doc. At the lowest directory     -->
 <!--               level it compiles java files for release and debug.       -->
 <!--     install - Copies build results from all directories and creates the -->
@@ -67,7 +81,7 @@
             <echo message="Cleaning files"/>
 	</target>
 
-    
+
     <!-- =================================================================== -->
     <!-- clean code result files                                                     -->
     <!-- =================================================================== -->
@@ -92,7 +106,7 @@
 	</target>
 
     <!-- =================================================================== -->
-    <!-- clean the pkg directory                                             --> 
+    <!-- clean the pkg directory                                             -->
     <!--       Note: The doc directory is left intact                        -->
 	<!--             ant doc will rebuild it                                 -->
     <!-- =================================================================== -->
@@ -110,7 +124,7 @@
 	</target>
 
     <!-- =================================================================== -->
-    <!-- create javadoc                                                      --> 
+    <!-- create javadoc                                                      -->
     <!-- =================================================================== -->
     <!-- target name="doc" depends="docframework, docldap, docnovell" -->
     <target name="doc" depends="docldap, docnovell"/>
@@ -226,7 +240,7 @@
 	</target>
 
     <!-- =================================================================== -->
-    <!-- create javadoc for IETF ldap classes                                --> 
+    <!-- create javadoc for IETF ldap classes                                -->
     <!-- =================================================================== -->
     <target name="docldap" depends="init">
                 <deltree dir="${pkg.doc}"/>
@@ -248,7 +262,7 @@
     </target>
 
     <!-- =================================================================== -->
-    <!-- create javadoc for LDAP framework classes to                        --> 
+    <!-- create javadoc for LDAP framework classes to                        -->
     <!-- =================================================================== -->
     <target name="docframework" depends="init">
                 <deltree dir="${pkg.doc.framework}"/>
@@ -267,7 +281,7 @@
     </target>
 
     <!-- =================================================================== -->
-    <!-- create javadoc for all LDAP classes for Novell internal use only    --> 
+    <!-- create javadoc for all LDAP classes for Novell internal use only    -->
     <!-- =================================================================== -->
     <target name="docnovell" depends="init">
                 <deltree dir="${doc.novell}"/>

@@ -1,7 +1,19 @@
-// $Novell: /ldap/src/jldap/com/novell/ldap/client/Debug.template,v 1.11 2001/01/26 18:56:51 javed Exp $
+// $Novell: /ldap/src/jldap/com/novell/ldap/client/Debug.template,v 1.12 2001/02/26 19:58:27 vtag Exp $
 // **
 // ** NOTICE: Do NOT edit file Debug.java, the real file is Debug.template
 // **
+/******************************************************************************
+ * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
+ *
+ * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
+ * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
+ * TO VERSION 2.0.7 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
+ * AVAILABLE AT HTTP://WWW.OPENLDAP.ORG/LICENSE.HTML OR IN THE FILE "LICENSE"
+ * IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
+ * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.7 OF THE OPENLDAP
+ * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
+ * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
+ ******************************************************************************/
 
 package com.novell.ldap.client;
 
@@ -53,7 +65,7 @@ import java.util.Date;
  * </ul>
  *
  * @author Steven F. Sonntag
- * @version $Id: Debug.template,v 1.11 2001/01/26 18:56:51 javed Exp $
+ * @version $Id: Debug.template,v 1.12 2001/02/26 19:58:27 vtag Exp $
  */
 
 public abstract class Debug {
@@ -204,10 +216,10 @@ public abstract class Debug {
                  * Properties that turn on VM trace methods
                  */
                 if( tn.equalsIgnoreCase("VMTraceInstructions")) {
-                    VMtraceInstructions = true;                
+                    VMtraceInstructions = true;
                     VMtraceInstructions(true);
                 } else if( tn.equalsIgnoreCase("VMTraceMethodCalls")) {
-                    VMtraceMethodCalls = true;                
+                    VMtraceMethodCalls = true;
                     VMtraceMethodCalls(true);
                 /*
                  * Properties that turn on object dump methods
@@ -237,38 +249,38 @@ public abstract class Debug {
                  */
                 } else if( tn.equalsIgnoreCase(all)) {
                     traceControls = true;
-                    traceRawInput = true;                
-                    traceRawOutput = true;                
-                    traceReferrals = true;                
-                    traceMessages = true;                
-                    traceAPIRequests = true;                
-                    traceBindSemaphore = true;                
-                    traceUrlParse = true;                
-                    traceEncoding = true;                
-                    traceDecoding = true;                
-                    traceConnections = true;                
+                    traceRawInput = true;
+                    traceRawOutput = true;
+                    traceReferrals = true;
+                    traceMessages = true;
+                    traceAPIRequests = true;
+                    traceBindSemaphore = true;
+                    traceUrlParse = true;
+                    traceEncoding = true;
+                    traceDecoding = true;
+                    traceConnections = true;
                 } else if( tn.equalsIgnoreCase(rawInput)) {
-                    traceRawInput = toggle( traceRawInput);                
+                    traceRawInput = toggle( traceRawInput);
                 } else if( tn.equalsIgnoreCase(controls)) {
-                    traceControls = toggle( traceControls);                
+                    traceControls = toggle( traceControls);
                 } else if( tn.equalsIgnoreCase(rawOutput)) {
-                    traceRawOutput = toggle( traceRawOutput);                
+                    traceRawOutput = toggle( traceRawOutput);
                 } else if( tn.equalsIgnoreCase(referrals)) {
-                    traceReferrals = toggle( traceReferrals);                
+                    traceReferrals = toggle( traceReferrals);
                 } else if( tn.equalsIgnoreCase(messages)) {
-                    traceMessages = toggle( traceMessages);                
+                    traceMessages = toggle( traceMessages);
                 } else if( tn.equalsIgnoreCase(apiRequests)) {
-                    traceMessages = toggle( traceAPIRequests);                
+                    traceMessages = toggle( traceAPIRequests);
                 } else if( tn.equalsIgnoreCase(bindSemaphore)) {
-                    traceMessages = toggle( traceBindSemaphore);                
+                    traceMessages = toggle( traceBindSemaphore);
                 } else if( tn.equalsIgnoreCase(urlParse)) {
-                    traceUrlParse = toggle( traceUrlParse);                
+                    traceUrlParse = toggle( traceUrlParse);
                 } else if( tn.equalsIgnoreCase(encoding)) {
-                    traceEncoding = toggle( traceEncoding);                
+                    traceEncoding = toggle( traceEncoding);
                 } else if( tn.equalsIgnoreCase(decoding)) {
-                    traceDecoding = toggle( traceDecoding);                
+                    traceDecoding = toggle( traceDecoding);
                 } else if( tn.equalsIgnoreCase(connections)) {
-                    traceConnections = toggle( traceConnections);                
+                    traceConnections = toggle( traceConnections);
                 }
             }
         }
@@ -467,7 +479,7 @@ public abstract class Debug {
         return VMtraceMethodCalls;
     }
     /**
-    *    Displays trace of each methods called 
+    *    Displays trace of each methods called
     * @param onOff    A boolean that when set to true enables method call
     * tracing and when false disables instruction tracing.
     */
@@ -841,7 +853,7 @@ public abstract class Debug {
     static public void dumpBuffer( String msg, byte[] inBuffer, int fileOffset, int length)
     {
         if( LDAP_DEBUG) {
-            int byteCnt = 0;    
+            int byteCnt = 0;
             byte[] tstLine = new byte[16];    // Place to store the test line
             boolean haveTstLine = false;    // Test line stored
             boolean matchTstLine = false;    // Current line matches test line
@@ -900,7 +912,7 @@ public abstract class Debug {
             byte DOT = 0x2e;                // ascii period
             byte SP = 0x20;                // ascii space
             String hexDigits;
-            int byteCnt = offset;    
+            int byteCnt = offset;
             int itemCnt;
 
             String address = Integer.toHexString( offset + addrOffset);
@@ -952,7 +964,7 @@ public abstract class Debug {
                 System.err.println(e.toString());
                 System.err.println(e.getMessage());
                 System.exit(1);
-            }        
+            }
         }
         return;
     }
