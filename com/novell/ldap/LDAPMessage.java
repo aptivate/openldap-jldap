@@ -488,10 +488,7 @@ public class LDAPMessage
      */
     public boolean isRequest()
     {
-        if( message instanceof RfcRequest) {
-            return true;
-        }
-        return false;
+        return message.isRequest(); 
     }
 
     /**
