@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/client/Message.java,v 1.12 2001/02/26 19:58:27 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/client/Message.java,v 1.13 2001/03/01 00:30:05 cmorris Exp $
 *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -331,6 +331,9 @@ public class Message extends Thread
     /* package */
     Object waitForReply()
     {
+        if( Debug.LDAP_DEBUG) {
+            Debug.trace( Debug.messages, name + "waitForReply()");
+        }
         // sync on message so don't confuse with timer thread
         synchronized( replies ) {
             while( waitForReply ) {
@@ -362,7 +365,7 @@ public class Message extends Thread
                                 Debug.trace( Debug.messages, name +
                                     "Wait for a reply");
                             }
-                            wait();
+                            replies.wait();
                         } catch(InterruptedException ir) {
                             break;
                         }

@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/client/MessageAgent.java,v 1.8 2001/02/26 19:58:28 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/client/MessageAgent.java,v 1.9 2001/03/01 00:30:06 cmorris Exp $
 *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -290,6 +290,10 @@ public class MessageAgent
     public Object getLDAPMessage( Integer msgId)
     {
         Object rfcMsg;
+        if( Debug.LDAP_DEBUG) {
+            Debug.trace( Debug.messages, name +
+                "getLDAPMessage(" + msgId + ")");
+        }
         if( msgId != null ) {
             // Request messages for a specific ID
             // If no messages for this agent, just return null

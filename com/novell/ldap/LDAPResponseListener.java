@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPResponseListener.java,v 1.25 2001/01/04 20:14:47 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPResponseListener.java,v 1.26 2001/03/01 00:29:54 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -124,7 +124,7 @@ public class LDAPResponseListener implements LDAPListener
     public void merge(LDAPResponseListener listener2)
     {
         if( Debug.LDAP_DEBUG) {
-            Debug.trace( Debug.messages, name +
+            Debug.trace( Debug.apiRequests, name +
                 "merge " + listener2.getDebugName());
         }
         agent.merge( listener2.getMessageAgent() );
@@ -166,14 +166,14 @@ public class LDAPResponseListener implements LDAPListener
    public LDAPMessage getResponse(int msgid)
         throws LDAPException
    {
-       return getresp( new Integer(msgid));
+        return getresp( new Integer(msgid));
    }
 
    private LDAPMessage getresp( Integer msgid)
         throws LDAPException
    {
         if( Debug.LDAP_DEBUG) {
-            Debug.trace( Debug.messages, name +
+            Debug.trace( Debug.apiRequests, name +
                 "getResponse(" + msgid + ")");
         }
         Object resp;
