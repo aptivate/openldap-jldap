@@ -19,6 +19,7 @@ import com.novell.ldap.asn1.*;
 import com.novell.ldap.rfc2251.*;
 
 import java.util.Enumeration;
+import java.util.Iterator;
 
 /**
  * Represents an LDAP Add Request.
@@ -88,9 +89,9 @@ public class LDAPAddRequest extends LDAPMessage
         // convert Java-API LDAPEntry to RFC2251 AttributeList
         LDAPAttributeSet attrSet = entry.getAttributeSet();
         RfcAttributeList attrList = new RfcAttributeList(attrSet.size());
-        Enumeration enum = attrSet.getAttributes();
-        while(enum.hasMoreElements()) {
-            LDAPAttribute attr = (LDAPAttribute)enum.nextElement();
+        Iterator itr = attrSet.iterator();
+        while (itr.hasNext())  {
+            LDAPAttribute attr = (LDAPAttribute)itr.next();
             ASN1SetOf vals = new ASN1SetOf(attr.size());
             Enumeration attrEnum = attr.getByteValues();
             while(attrEnum.hasMoreElements()) {
