@@ -1,7 +1,7 @@
 /* **************************************************************************
  * $OpenLDAP$
  *
- * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
+ * Copyright (C) 1999-2002 Novell, Inc. All Rights Reserved.
  *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
@@ -53,8 +53,29 @@ public class SchemaParser{
         int result;
         ArrayList qualifiers = new ArrayList();
 
-	public SchemaParser( String rawString ) throws IOException {
-		this.rawString = rawString;
+	public SchemaParser( String aString ) throws IOException {
+
+        int index;
+        
+        if((index = aString.indexOf( '\\' )) != -1) {
+            /*
+             * Unless we escape the slash, StreamTokenizer will interpret the
+             * single slash and convert it assuming octal values.
+             * Two successive back slashes are intrepreted as one backslash.
+             */ 
+            StringBuffer newString =
+                    new StringBuffer( aString.substring(0,index));
+            for (int i=index; i< aString.length(); i++) {
+                newString.append( aString.charAt(i));
+                if (aString.charAt(i) == '\\') {
+                    newString.append('\\');
+                }
+            }
+            rawString = newString.toString();
+        } else {
+            rawString = aString;
+        }
+
   		StreamTokenizer st2 = new StreamTokenizer(new StringReader(rawString));
                 st2.ordinaryChar('.');
                 st2.ordinaryChars('0', '9');
