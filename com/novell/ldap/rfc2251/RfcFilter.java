@@ -400,9 +400,9 @@ public class RfcFilter extends ASN1Choice
                     // found invalid character
                     throw new com.novell.ldap.LDAPLocalException(
                             ExceptionMessages.INVALID_CHAR_IN_FILTER,
+                            new Object[] { new Character(ch) },
                             LDAPException.FILTER_ERROR);
                 }
-
             }
         }
 

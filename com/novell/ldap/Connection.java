@@ -478,7 +478,7 @@ public final class Connection implements Runnable
                  * application has any queues waiting on messages, we
                  * need wake these up so the application does not hang.
                  * The boolean flag indicates whether the close came
-                 * from an API call or from the objecting being finalized.
+                 * from an API call or from the object being finalized.
                  */
                 LocalException notify = new LocalException(
                     (how ? ExceptionMessages.CONNECTION_CLOSED :

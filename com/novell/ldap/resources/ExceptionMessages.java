@@ -130,7 +130,7 @@ public class ExceptionMessages extends java.util.ListResourceBundle {
       {"MISSING_LEFT_PAREN", "Missing left paren"},
       {"MISSING_RIGHT_PAREN", "Missing right paren"},
       {"INVALID_FILTER", "Invalid filter type"},
-      {"INVALID_CHAR_IN_FILTER", "The invalid character, '{0}', needs to be escaped in a search filter"},
+      {"INVALID_CHAR_IN_FILTER", "The invalid character \"{0}\" needs to be escaped in a search filter"},
       {"NOT_AN_ATTRIBUTE", "Schema element is not an LDAPAttributeSchema object"},
       {"UNEQUAL_LENGTHS","Length of attribute Name array does not equal length of Flags array"},
       {"COMMUNICATE_ERROR","Communication error: {0}"},
