@@ -167,4 +167,13 @@ public class DebugEventData implements EventResponseData {
     public int getDsTime() {
         return dsTime;
     }
+
+	/**
+	 * Returns formatString
+	 *
+	 * @return formatString as String.
+	 */
+	public String getFormatString() {
+		return formatString;
+	}
 }
