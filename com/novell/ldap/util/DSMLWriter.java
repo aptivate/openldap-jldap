@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: DSMLWriter.java,v 1.16 2002/11/04 19:20:31 $
+ * $Novell: DSMLWriter.java,v 1.17 2002/11/11 23:08:46 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -81,10 +81,19 @@ public class DSMLWriter implements LDAPWriter {
 
     public void finish() throws IOException {
         newLine(0);
-        if (state == REQUEST_BATCH){
-            out.write("</batchRequest>");
-        } else if (state == RESPONSE_BATCH){
-            out.write("</batchResponse>");
+        switch(state){
+            case REQUEST_BATCH:
+                out.write("</batchRequest>");
+                break;
+            case RESPONSE_BATCH:
+                out.write("</batchResponse>");
+                break;
+            case SEARCH_TAG:
+                if (indent)
+                    out.write(tabString);
+                out.write("</searchResponse>");
+                newLine(0);
+                out.write("</batchResponse>");
         }
         newLine(0);
         out.flush();
@@ -262,21 +271,7 @@ public class DSMLWriter implements LDAPWriter {
         /* controls: */
         LDAPControl[] controls = result.getControls();
         if (controls != null){
-            for(int i=0; i<controls.length; i++){
-                newLine(indent);
-                out.write("<control numericOID=\"");
-                out.write(controls[i].getID());
-                out.write("\" criticality=\""+controls[i].isCritical()+ "\" ");
-
-                byte value[] = controls[i].getValue();
-                if (value == null){
-                    out.write("/ >");
-                } else {
-                    out.write("xsi:type=\"base64Binary\">");
-                    out.write(Base64.encode(value));
-                    out.write("</control>");
-                }
-            }
+            writeControls(controls, indent);
         }
 
         /* referal: */
@@ -305,6 +300,28 @@ public class DSMLWriter implements LDAPWriter {
             out.write("</errorMessage>");
         }
        return;
+    }
+
+    private void writeControls(LDAPControl[] controls, int indent) throws IOException {
+        for(int i=0; i<controls.length; i++){
+            newLine(indent);
+            out.write("<control numericOID=\"");
+            out.write(controls[i].getID());
+            out.write("\" criticality=\""+controls[i].isCritical()+ "\"");
+
+            byte value[] = controls[i].getValue();
+            if (value == null){
+                out.write(" / >");
+            } else {
+                out.write(">");
+                newLine(indent+1);
+                out.write("<controlValue xsi:type=\"base64Binary\">");
+                out.write(Base64.encode(value));
+                out.write("</controlValue>");
+                newLine(indent);
+                out.write("</control>");
+            }
+        }
     }
 
     private void writeSearchResultReference(LDAPSearchResultReference ref)
@@ -338,6 +355,10 @@ public class DSMLWriter implements LDAPWriter {
         Iterator i = set.iterator();
         while (i.hasNext()){
             writeAttribute( (LDAPAttribute) i.next());
+        }
+        LDAPControl controls[] = result.getControls();
+        if (controls !=null){
+            writeControls(controls, 3);
         }
         newLine(2);
         out.write("</searchResultEntry>");

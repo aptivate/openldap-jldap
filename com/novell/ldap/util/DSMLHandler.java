@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: DSMLHandler.java,v 1.17 2002/10/28 23:16:08 $
+ * $Novell: DSMLHandler.java,v 1.18 2002/10/29 21:11:57 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -53,6 +53,7 @@ public class DSMLHandler implements ContentHandler, ErrorHandler
     private RfcFilter filter;
     private boolean isDNMatching;
     private String matchingRule;
+    private ArrayList controls;
 
     /* The following values are valid states for the parser: the tags they
         represent are in comments to the right */
@@ -95,7 +96,9 @@ public class DSMLHandler implements ContentHandler, ErrorHandler
     private static final int X_NAME = 30;           //<requestName>
     private static final int X_VALUE = 31;          //<requestValue>
 
-    private static final int BATCH_RESPONSE= 32;    //<batchResponse>
+    private static final int CONTROL = 32;          //<control>
+
+    private static final int BATCH_RESPONSE= 34;    //<batchResponse>
     /* The folling are possible states from the BatchResponse state
         .... NOT Implemented ... SearchResponse ...*/
 
@@ -104,9 +107,11 @@ public class DSMLHandler implements ContentHandler, ErrorHandler
     private static final java.util.HashMap requestTags;
     /* valueState indicates the state before an <value> is found */
     private int valueState;
+    private boolean critical;
+    private String oid;
 
     static {  //Initialize requestTags
-        requestTags = new java.util.HashMap(33, (float)0.25);
+        requestTags = new java.util.HashMap(35, (float)0.25);
         //Load factor of 0.25 optimizes for speed rather than size.
 
         requestTags.put("batchRequest", new Integer(BATCH_REQUEST));
@@ -142,6 +147,9 @@ public class DSMLHandler implements ContentHandler, ErrorHandler
         requestTags.put("initial",      new Integer(INITIAL));
         requestTags.put("any",          new Integer(ANY));
         requestTags.put("final",        new Integer(FINAL));
+
+        requestTags.put("control",      new Integer(CONTROL));
+        requestTags.put("controlValue", new Integer(VALUE));
     }
 
     // SAX calls this method when it encounters an element
@@ -152,11 +160,16 @@ public class DSMLHandler implements ContentHandler, ErrorHandler
     {
         Integer elementTag = (Integer)requestTags.get(strSName);
         if (elementTag == null){
+            if (state != START){  //Ignore tags outside of DSML tags
             throw new SAXException("Element name, \"" + strQName
                                 + "\" not recognized");
+            }
         }
         int tag = elementTag.intValue();
-
+        if (tag == CONTROL) {
+            handleControl(attrs);
+            state = CONTROL;
+        }
         switch (state){
             // The following values are valid states for the parser:
             case START:
@@ -259,7 +272,9 @@ public class DSMLHandler implements ContentHandler, ErrorHandler
                     value = new StringBuffer();
                 }
                 break;
+
             //Tags with <value> tags expected:
+            case CONTROL:
             case MODIFICATION:
             case ADD_ATTRIBUTE:
             case ASSERTION:
@@ -287,6 +302,17 @@ public class DSMLHandler implements ContentHandler, ErrorHandler
                     throw new SAXException("invalid tag: " + strSName);
                 break;
         }
+        return;
+    }
+
+    private void handleControl(Attributes attrs) {
+        if (controls == null){
+            controls = new ArrayList();
+        }
+
+        this.oid = attrs.getValue("type");
+        this.critical =
+                "true".equalsIgnoreCase(attrs.getValue("criticality"));
         return;
     }
 
@@ -506,11 +532,12 @@ public class DSMLHandler implements ContentHandler, ErrorHandler
                            String strSName,
                            String strQName) throws SAXException
     {
-
         Integer elementTag = (Integer)requestTags.get(strSName);
         if (elementTag == null){
-            throw new SAXException("Element name, \"" + strQName
+            if (state != START){  //Ignore tags outside of DSML tags
+                throw new SAXException("Element name, \"" + strQName
                                 + "\" not recognized");
+            }
         }
         int tag = elementTag.intValue();
 
@@ -758,9 +785,18 @@ public class DSMLHandler implements ContentHandler, ErrorHandler
                     filter.endSubstrings();
                     break;
                 }
+                case CONTROL:
+                    controls.add(new LDAPControl(oid, critical,
+                            value.toString().getBytes("UTF-8")));
+                    break;
                 case VALUE:
                     state = valueState; //reset state to previous state
-                    attributeValues.add(value.toString());
+                    if (this.isBase64){
+                        attributeValues.add(
+                                Base64.decode(value, 0, value.length()));
+                    } else {
+                        attributeValues.add(value.toString());
+                    }
                     break;
             }
         } catch (LDAPException e) {
