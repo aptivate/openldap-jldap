@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: NamingContextConstants.java,v 1.4 2000/07/27 19:33:21 javed Exp $
+ * $Id: NamingContextConstants.java,v 1.5 2000/07/27 22:04:09 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -40,6 +40,8 @@ public class NamingContextConstants {
     public static final String DELETE_REPLICA_RES           = "2.16.840.1.113719.1.27.100.12";
     public static final String NAMING_CONTEXT_COUNT_REQ     = "2.16.840.1.113719.1.27.100.13";
     public static final String NAMING_CONTEXT_COUNT_RES     = "2.16.840.1.113719.1.27.100.14";
+	public static final String CHANGE_REPLICA_TYPE_REQ		= "2.16.840.1.113719.1.27.100.15";
+	public static final String CHANGE_REPLICA_TYPE_RES		= "2.16.840.1.113719.1.27.100.16";
     
 
 
