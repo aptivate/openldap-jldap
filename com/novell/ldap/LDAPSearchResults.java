@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResults.java,v 1.35 2001/02/27 21:38:45 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResults.java,v 1.36 2001/02/27 22:53:15 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -510,7 +510,8 @@ public class LDAPSearchResults implements Enumeration
 
                         if( cons.getReferralFollowing() ) {
                            referralConn = conn.checkForReferral(
-                                    listener, cons, msg, refs, 0, true, null);
+                                    listener, cons, msg, refs,
+                                    0, true, referralConn);
                         } else {
                             references.addElement( refs );
                             referenceCount++;
@@ -543,7 +544,8 @@ public class LDAPSearchResults implements Enumeration
                             }
                             referralConn = conn.checkForReferral(
                                         listener, cons, resp,
-                                        resp.getReferrals(), 0, false, null);
+                                        resp.getReferrals(), 0,
+                                        false, referralConn);
                         } else
                         if(resultCode != LDAPException.SUCCESS) {
                             // Results in an exception when message read
