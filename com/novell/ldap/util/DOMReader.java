@@ -1,3 +1,17 @@
+/* **************************************************************************
+ * $Novell$
+ *
+ * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
+ *
+ * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
+ * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
+ * TO VERSION 2.0.1 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
+ * AVAILABLE AT HTTP://WWW.OPENLDAP.ORG/LICENSE.HTML OR IN THE FILE "LICENSE"
+ * IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
+ * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.1 OF THE OPENLDAP
+ * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
+ * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
+ */
 
 package com.novell.ldap.util;
 
@@ -9,21 +23,61 @@ import com.novell.ldap.client.DSMLHandler;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
+/**
+ * Reads pre-parsed DSML as LDAPMessages.
+ *
+ * <p>Some applications have access to DSML(Directory Services Markup Language)
+ * pre-parsed into DOM(Document Object Model) objects.  This utility class will
+ * read a DOM structure and translate it into LDAPMessages. If DSML comes from
+ * a stream or file then DSMLReader may also be used.
+ * </p>
+ *
+ * @see DOMWriter
+ * @see DSMLReader
+ * @see LDAPMessage
+ */
 public class DOMReader implements LDAPReader{
     DSMLHandler handler;
     Element root;
     private int messageIndex=0;
 
     /**
-     * Creates a reader that will convert the nodes inside of the specified
-     * element to LDAPMessages.
+     * Creates a reader that read a DOM document and translate it into
+     * LDAPMessages.
+     * <p>The first batchRequest or batchResponse is located and all nodes
+     * within it will be read and translated into LDAPMessages</p>
+     *
+     * @param dsmlDoc  Document with a DSML batchRequest or batchResponse
+     * @throws LDAPLocalException Occurs when no batchRequest or batchResponse
+     * is found, or the document is invalid DSML.
+     */
+    public DOMReader(Document dsmlDoc) throws LDAPLocalException {
+        this.root = (Element)
+                dsmlDoc.getElementsByTagName("batchRequest").item(0);
+        if (this.root == null){
+            this.root = (Element)
+                    dsmlDoc.getElementsByTagName("batchResponse").item(0);
+        }
+        if (this.root == null){
+            throw new IllegalArgumentException(
+                 "DOMReader: could not locate a batchRequest or batchResponse");
+
+        }
+        handler = new DSMLHandler();
+        processNodes(root.getParentNode());
+    }
+
+    /**
+     * Creates a reader that read a DOM element and translate it into
+     * LDAPMessages.
      * <p>Requests or responses must be inside of the batchRequest or
      * batchResponse specified</p>
      * @param root  Element with a name of batchRequest or batchResponse.
+     * @throws LDAPLocalException Occurs when no batchRequest or batchResponse
+     * is found, or the Element is invalid DSML.
      */
     public DOMReader(Element root) throws LDAPLocalException {
         this.root = root;
-        handler = new DSMLHandler();
         String name = root.getNodeName();
         if (!name.equals("batchRequest") &&
             !name.equals("batchResponse") )
@@ -32,10 +86,18 @@ public class DOMReader implements LDAPReader{
                     "DOMReader: specified root element " +
                     "must be a batchRequest or a batchResponse");
         }
+        handler = new DSMLHandler();
         processNodes(root.getParentNode());
         return;
     }
 
+    /**
+     * Recursively processes DOM nodes by pulling out the tag name, attributes
+     * and text values and calling the DSMLHandler methods to construct
+     * LDAPMessages.
+     * @param node DOM Node to process
+     * @throws LDAPLocalException thrown if DSMLHandler finds an error in DSML
+     */
     private void processNodes(Node node) throws LDAPLocalException {
         Node curChild = node.getFirstChild();
         DomAttributesWrapper wrapper = new DomAttributesWrapper();
@@ -96,6 +158,10 @@ public class DOMReader implements LDAPReader{
         return (LDAPMessage) handler.queue.get( this.messageIndex ++ );
     }
 
+    /**
+     * This wrapper class takes an existing set of DOM attributes, NamedNodeMap,
+     * and provides an interface for SAX attributes.
+     */
     static private class DomAttributesWrapper implements org.xml.sax.Attributes {
         NamedNodeMap nnm;
         public void setAttrs(NamedNodeMap domAttributes){
@@ -158,6 +224,5 @@ public class DOMReader implements LDAPReader{
             return value;
             //return nnm.getNamedItem(qName).getNodeValue();
         }
-
-    }
-}
+    }//DomAttributesWrapper
+}//DOMReader
