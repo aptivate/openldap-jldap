@@ -24,7 +24,7 @@ import com.novell.ldap.client.ExtResponseFactory;
  *  It is the common interface for {@link LDAPResponseQueue} and
  *  {@link LDAPSearchQueue}.
  */
-public abstract class LDAPMessageQueue implements LDAPListener
+public abstract class LDAPMessageQueue 
 {
     /**
      * The message agent object associated with this queue
@@ -248,47 +248,5 @@ public abstract class LDAPMessageQueue implements LDAPListener
         return agent.isComplete( msgid);
     }
 
-    // When deprecated classes are removed, move doMerge code under merge
-    // Methods in subclasses are removed. Change LDAPResponseListener
-    // to LDAPResponseQueue
-    /**
-     * Merges two message queues.  It appends the current and
-     *                   future contents from another queue to this one.
-     *
-     *                  <p>After the operation, queue2.getMessageIDs()
-     *                  returns an empty array, and its outstanding responses
-     *                  have been removed and appended to <code>this</code>
-     *                  queue</p>.
-     *
-     * @param queue2    The queue that is merged from.  Following
-     *                  the merge, this queue object will no
-     *                  longer receive any data, and calls made
-     *                  to its methods will fail with a RuntimeException.
-     *                  The queue can be reactivated by using it in an
-     *                  LDAP request, after which it will receive responses
-     *                  for that request..
-     *
-     */
-    public abstract void merge(LDAPMessageQueue queue2);
 
-    /* package */
-    void doMerge(LDAPMessageQueue queue2)
-    {
-        if( queue2 instanceof LDAPResponseListener) {
-            LDAPResponseQueue q = (LDAPResponseQueue)queue2;
-            if( Debug.LDAP_DEBUG) {
-                Debug.trace( Debug.apiRequests, name +
-                    "merge " + q.getDebugName());
-            }
-            agent.merge( q.getMessageAgent() );
-        } else {
-            LDAPSearchQueue q = (LDAPSearchQueue)queue2;
-            if( Debug.LDAP_DEBUG) {
-                Debug.trace( Debug.apiRequests, name +
-                    "merge " + q.getDebugName());
-            }
-            agent.merge( q.getMessageAgent() );
-        }
-        return;
-    }
 }

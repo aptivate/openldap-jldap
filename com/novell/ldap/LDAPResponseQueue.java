@@ -14,13 +14,14 @@
  ******************************************************************************/
 
 package com.novell.ldap;
+import com.novell.ldap.client.Debug;
 
 /**
  *  A mechanism for processing asynchronous messages received from a server.
  *  It represents the message queue associated with a particular asynchronous
  *  LDAP operation or operations.
  */
-public class LDAPResponseQueue extends LDAPResponseListener
+public class LDAPResponseQueue extends LDAPMessageQueue
 {
     /**
      * Constructs a response queue using the specified message agent
@@ -34,8 +35,6 @@ public class LDAPResponseQueue extends LDAPResponseListener
         return;
     }
 
-    // Note: When deprecated methods are removed, remove this method.
-    // Replaced by doMerge in LDAPMessageQueue
     /**
      * Merges two message queues.  It appends the current and
      *                   future contents from another queue to this one.
@@ -52,9 +51,15 @@ public class LDAPResponseQueue extends LDAPResponseListener
      *                  LDAP request, after which it will receive responses
      *                  for that request..
      */
-    public void merge(LDAPResponseQueue queue2)
+    public void merge(LDAPMessageQueue queue2)
     {
-        doMerge( queue2);
+        LDAPResponseQueue q = (LDAPResponseQueue)queue2;
+            if( Debug.LDAP_DEBUG) {
+                Debug.trace( Debug.apiRequests, name +
+                    "merge " + q.getDebugName());
+            }
+        agent.merge( q.getMessageAgent() );
+        
         return;
     }
 }
