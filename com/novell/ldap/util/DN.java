@@ -42,7 +42,7 @@ public class DN extends Object
 {
 
     //parser state identifiers.
-    private static final int LOOK_FOR_RDN_ATTR_TYPE = 1;
+    private static final int LOOK_FOR_RDN_ATTR_TYPE = 1;    
     private static final int ALPHA_ATTR_TYPE        = 2;
     private static final int OID_ATTR_TYPE          = 3;
     private static final int LOOK_FOR_RDN_VALUE     = 4;
@@ -50,9 +50,26 @@ public class DN extends Object
     private static final int HEX_RDN_VALUE          = 6;
     private static final int UNQUOTED_RDN_VALUE     = 7;
 
+    /* State transition table:  Parsing starts in state 1.
+    
+    State   COMMA   DIGIT   "Oid."  ALPHA   EQUAL   QUOTE   SHARP   HEX
+    --------------------------------------------------------------------
+    1       Err     3       3       2       Err     Err     Err     Err
+    2       Err     Err     Err     2       4       Err     Err     Err
+    3       Err     3       Err     Err     4       Err     Err     Err
+    4       Err     7       Err     7       Err     5       6       7
+    5       1       5       Err     5       Err     1       Err     7
+    6       1       6       Err     Err     Err     Err     Err     6
+    7       1       7       Err     7       Err     Err     Err     7
+    
+    */      
+
+    
     private ArrayList rdnList = new ArrayList();
 
-    public DN (){}
+    public DN (){
+        return;
+    }
     /**
      * Constructs a new DN based on the specified string representation of a
      * distinguished name. The syntax of the DN must conform to that specified
@@ -64,6 +81,10 @@ public class DN extends Object
      *               RFC 2253
      */
     public DN(String dnString){
+        /* the empty string is a valid DN */
+        if (dnString.length() == 0)
+            return;
+
         char     currChar;
         char     nextChar;
         int      currIndex;
@@ -79,6 +100,9 @@ public class DN extends Object
         String   rawValue = "";
         int      hexDigitCount = 0;
         RDN      currRDN = new RDN();
+        
+        //indicates whether an OID number has a first digit of ZERO
+        boolean firstDigitZero = false;
 
         tokenIndex = 0;
         currIndex = 0;
@@ -91,6 +115,9 @@ public class DN extends Object
             switch (state)
             {
             case LOOK_FOR_RDN_ATTR_TYPE: //parsing and RDName
+            //skip any spaces
+            while (currChar == ' ' && (currIndex < lastIndex))
+                currChar = dnString.charAt(++currIndex);
             if (isAlpha(currChar))
             {
                 if (dnString.startsWith("oid.", currIndex) ||
@@ -116,7 +143,7 @@ public class DN extends Object
             }
             else if (isDigit(currChar))
             {
-                tokenBuf[tokenIndex++] = currChar;
+                --currIndex;
                 state = OID_ATTR_TYPE;
             }
             else if (!Character.isSpaceChar(currChar))
@@ -128,7 +155,7 @@ public class DN extends Object
                 tokenBuf[tokenIndex++] = currChar;
             else
             {
-                //skip any white space
+                //skip any spaces
                 while ((currChar == ' ') && (currIndex < lastIndex))
                     currChar = dnString.charAt(++currIndex);
                 if (currChar == '=')
@@ -143,12 +170,34 @@ public class DN extends Object
             break;
 
             case OID_ATTR_TYPE:
-            if (isDigit(currChar) || (currChar == '.'))
+              //This state starts on the first digit of each number in an OID.
+            if (!isDigit(currChar))
+                throw new IllegalArgumentException(dnString);
+            firstDigitZero = (currChar == '0') ? true: false;
+            tokenBuf[tokenIndex++] = currChar;
+            currChar = dnString.charAt(++currIndex);
+
+            if ( //Check for a leading zero.
+                    (isDigit(currChar) && firstDigitZero) ||
+                 //Check for zero by itself (except as the last number)
+                    (currChar == '.' && firstDigitZero) ) 
+            {            
+                throw new IllegalArgumentException(dnString);
+            }
+            
+            //consume all numbers.
+            while (isDigit(currChar) && (currIndex < lastIndex)){
                 tokenBuf[tokenIndex++] = currChar;
+                currChar = dnString.charAt(++currIndex);
+            }
+            if (currChar == '.'){
+                tokenBuf[tokenIndex++] = currChar;
+                //The state remains at OID_ATTR_TYPE
+            }
             else
             {
-                //skip any white space
-                while (currChar == ' ')
+                //skip any spaces
+                while (currChar == ' ' && (currIndex < lastIndex))
                     currChar = dnString.charAt(++currIndex);
                 if (currChar == '=')
                 {
@@ -162,7 +211,7 @@ public class DN extends Object
             break;
 
             case LOOK_FOR_RDN_VALUE:
-                //skip any white space
+                //skip any spaces
             while (currChar == ' ')
             {
                 if (currIndex < lastIndex)
@@ -210,7 +259,8 @@ public class DN extends Object
                     else
                         throw new IllegalArgumentException(dnString);
                 }
-                else if (needsEscape(currChar))
+                else if (needsEscape(currChar) || currChar == '#' || 
+                        currChar == '=' || currChar == ' ')
                 {
                     tokenBuf[tokenIndex++] = currChar;
                     trailingSpaceCount = 0;
@@ -232,20 +282,18 @@ public class DN extends Object
                 rawValue =
                     dnString.substring(valueStart, currIndex-trailingSpaceCount);
 
-                //added by cameron
                 currRDN.add(attrType, attrValue, rawValue);
                 if (currChar != '+'){
                     rdnList.add(currRDN);
                     currRDN = new RDN();
                 }
 
-                /*taken out by cameron
-                addRDN(attrType, attrValue, rawValue, levelID);
-                if (currChar != '+')
-                   levelID++;*/
                 trailingSpaceCount = 0;
                 tokenIndex = 0;
                 state = LOOK_FOR_RDN_ATTR_TYPE;
+            }
+            else if (needsEscape( currChar )){
+                throw new IllegalArgumentException(dnString);
             }
             else
             {
@@ -260,7 +308,7 @@ public class DN extends Object
                 rawValue = dnString.substring(valueStart, currIndex+1);
                 if (currIndex < lastIndex)
                     currChar = dnString.charAt(++currIndex);
-                //skip any white space
+                //skip any spaces
                 while ((currChar == ' ') && (currIndex < lastIndex))
                     currChar = dnString.charAt(++currIndex);
                 if ((currChar == ',') ||
@@ -296,7 +344,8 @@ public class DN extends Object
                     else
                         throw new IllegalArgumentException(dnString);
                 }
-                else if (needsEscape(currChar))
+                else if (needsEscape(currChar)|| currChar == '#' || 
+                        currChar == '=' || currChar == ' ')
                 {
                     tokenBuf[tokenIndex++] = currChar;
                     trailingSpaceCount = 0;
@@ -312,12 +361,12 @@ public class DN extends Object
             if ((!isHexDigit(currChar)) || (currIndex > lastIndex))
             {
                 //check for odd number of hex digits
-                if ((hexDigitCount%2) != 0)
+                if ((hexDigitCount%2) != 0 || hexDigitCount == 0)
                     throw new IllegalArgumentException(dnString);
                 else
                 {
                     rawValue = dnString.substring(valueStart, currIndex);
-                    //skip any white space
+                    //skip any spaces
                     while ((currChar == ' ') && (currIndex < lastIndex))
                         currChar = dnString.charAt(++currIndex);
                     if ((currChar == ',') ||
@@ -353,7 +402,10 @@ public class DN extends Object
         }//end while
 
         //check ending state
-        if (state == UNQUOTED_RDN_VALUE || state == HEX_RDN_VALUE)
+        if (state == UNQUOTED_RDN_VALUE ||
+            (state == HEX_RDN_VALUE //if this is hex is must have an even count
+                && (hexDigitCount%2) == 0)
+                && hexDigitCount != 0)
         {
             attrValue =
                 new String(tokenBuf, 0, tokenIndex - trailingSpaceCount);
@@ -362,7 +414,14 @@ public class DN extends Object
             currRDN.add(attrType,attrValue,rawValue);
             rdnList.add(currRDN);
         }
-        else if (state != LOOK_FOR_RDN_ATTR_TYPE)
+        else if (state == LOOK_FOR_RDN_VALUE){
+            //empty value is valid
+            attrValue = "";
+            rawValue = dnString.substring(valueStart);
+            currRDN.add(attrType, attrValue, rawValue);
+            rdnList.add(currRDN);
+        }
+        else 
         {
             throw new IllegalArgumentException(dnString);
         }
@@ -423,23 +482,23 @@ public class DN extends Object
     }
 
     /**
-     * Checks a character to see if it ever needs to be escaped in the
-     * string representation of a DN.
+     * Checks a character to see if it must always be escaped in the
+     * string representation of a DN.  We must tests for space, sharp, and 
+     * equals individually.
      *
      * @param   ch the character to be tested.
      * @return  <code>true</code> if the character needs to be escaped in at
      *            least some instances.
      */
     private boolean needsEscape( char ch) {
-        if ((ch == ' ') || //space (only needs escape at end of value
+        if (
             (ch == ',') ||
-            (ch == ';') ||
-            (ch == '=') ||
-            (ch == '\\') ||
             (ch == '+') ||
+            (ch == '\"') ||                        
+            (ch == ';') ||
             (ch == '<') ||
             (ch == '>') ||
-            (ch == '#'))
+            (ch == '\\'))
             return true;
         else
             return false;
