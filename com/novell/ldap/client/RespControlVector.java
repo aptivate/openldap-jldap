@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/client/RespControlVector.java,v 1.3 2001/01/26 19:07:22 javed Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/client/RespControlVector.java,v 1.4 2001/03/23 19:43:29 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -88,6 +88,9 @@ public class RespControlVector extends Vector2
             }
         }   
         /* The requested control does not have a registered response class */
+		if( Debug.LDAP_DEBUG) {
+			Debug.trace( Debug.controls, "Returned control did not match any registered control. Treating as ordinary LDAPControl.");
+        }
         return null;
     }
       
