@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: GetEffectivePrivilegesRequest.java,v 1.8 2000/09/11 21:05:56 vtag Exp $
+ * $Id: GetEffectivePrivilegesRequest.java,v 1.9 2000/09/25 17:36:04 fzhao Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -20,36 +20,42 @@ import java.io.*;
  
 /**
  *
- * This class is used to get the effective rights of one object on an
- * specific attribute of another object<br><br>
+ * Returns the effective rights of one object to a
+ * specific attribute of another object.
  *
- * To use this class instantiate an object of this class and then call the 
- * extendedOperation method with this object as the required 
- * LDAPExtendedOperation parameter.<br><br>
+ * <p>To use this class, you must instantiate an object of this class and then 
+ * call the extendedOperation method with this object as the required
+ * LDAPExtendedOperation parameter.</p>
  *
- * The returned LDAPExtendedResponse object can then be converted to
- * a GetEffectivePrivilegesRequest object.  The GetEffectivePrivilegesRequest object contains
- * methods for retreiving the effective rights.<br><br>
+ * <p>The returned LDAPExtendedResponse object can then be converted to
+ * a GetEffectivePrivilegesResponse object. The GetEffectivePrivilegesResponse class 
+ * contains methods for retrieving the effective rights.</p>
  *
- *  The OID used for this extended operation is:
- *      "2.16.840.1.113719.1.27.100.33"<br><br>
+ * <p>The GetEffectivePrivilegesRequest operation uses the following OID:<br>
+ *  &nbsp;&nbsp;&nbsp;2.16.840.1.113719.1.27.100.33</p>
  *
- *  The RequestValue has the following ASN:<br>
+ * <p>The RequestValue has the following ASN.1 format:<br>
  *
- *  requestValue ::=<br><br>
- *  &nbsp;&nbsp;&nbsp;&nbsp;    dn          LDAPDN
- *  &nbsp;&nbsp;&nbsp;&nbsp;    trusteeDN   LDAPDN
- *  &nbsp;&nbsp;&nbsp;&nbsp;    attrName    LDAPDN     
+ *  requestValue ::=<br>
+ *  &nbsp;&nbsp;&nbsp;&nbsp;    dn          LDAPDN<br>
+ *  &nbsp;&nbsp;&nbsp;&nbsp;    trusteeDN   LDAPDN<br>
+ *  &nbsp;&nbsp;&nbsp;&nbsp;    attrName    LDAPDN </p>    
  */
  public class GetEffectivePrivilegesRequest extends LDAPExtendedOperation {
  
     /**
-    *      The constructor takes three parameters:<br><br>
+    * Constructs an extended operation object for checking effective rights.
     *
-    * @param dn dn of the entry whose attribute follows
-    * @param trusteeDN dn of the entry whose trustee rights are being returned
-    * @param attrName LDAP attribute name.
+    * @param dn        The distinguished name of the entry whose attribute is 
+    *                  being checked.
+    *<br><br>
+    * @param trusteeDN The distinguished name of the entry whose trustee rights 
+    *                  are being returned
+    *<br><br>
+    * @param attrName  The LDAP attribute name.
     *
+    * @exception LDAPException A general exception which includes an error 
+    *                          message and an LDAP error code.
     */  
 
     public GetEffectivePrivilegesRequest(String dn, String trusteeDN, String attrName) 

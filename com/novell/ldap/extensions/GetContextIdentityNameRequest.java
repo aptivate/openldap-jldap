@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: GetContextIdentityNameRequest.java,v 1.7 2000/09/11 21:05:56 vtag Exp $
+ * $Id: GetContextIdentityNameRequest.java,v 1.8 2000/10/03 22:12:37 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -21,7 +21,7 @@ import java.io.*;
 /**
  *
  *  Returns the distingusihed name of the object your are 
- *  logged in as.<br><br>
+ *  logged in as.
  *
  *  <p>To use this class, you must create an instance of the 
  *  class and then call the extendedOperation method with this
@@ -29,7 +29,7 @@ import java.io.*;
  *
  *  <p>The returned LDAPExtendedResponse object can then be converted to
  *  a GetContextIdentityNameResponse object. This object contains
- *  methods for retreiving the dn.</p>
+ *  methods for retrieving the distinguished name.</p>
  *
  *  <p>The GetContextIdentityNameRequest operation uses the following OID:<br>
  *   &nbsp;&nbsp;&nbsp;2.16.840.1.113719.1.27.100.31</p>
