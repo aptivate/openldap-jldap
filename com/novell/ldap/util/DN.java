@@ -92,7 +92,6 @@ public class DN extends Object
         int      tokenIndex;
         int      lastIndex;
         int      valueStart;
-        boolean  escapedChar = false;
         int      state;
         int      trailingSpaceCount = 0;
         String   attrType = "";
@@ -551,9 +550,9 @@ public class DN extends Object
         String dn = "";
         if (length < 1)
             return null;
-        dn = ((RDN)rdnList.get(0)).toString();
+        dn = rdnList.get(0).toString();
         for (int i=1; i<length; i++)
-            dn += "," + ((RDN)rdnList.get(i)).toString();
+            dn += "," + rdnList.get(i).toString();
         return dn;
     }
 
@@ -625,7 +624,7 @@ public class DN extends Object
      *  but <B>not</B> by "cn=admin" or "cn=admin,ou=marketing,o=corporation"
      *  Note: For users of Netscape's SDK this method is comparable to contains
      *
-     * @param DN of a container
+     * @param containerDN of a container
      * @return true if containerDN contains this DN
      */
     public boolean isDescendantOf(DN containerDN){
@@ -668,7 +667,7 @@ public class DN extends Object
 
     /**
      * Adds the RDN to the beginning of the current DN.
-     * @param an RDN to be added
+     * @param rdn an RDN to be added
      */
     public void addRDN(RDN rdn){
        rdnList.add(0, rdn);
@@ -676,7 +675,7 @@ public class DN extends Object
 
     /**
      * Adds the RDN to the beginning of the current DN.
-     * @param an RDN to be added
+     * @param rdn an RDN to be added
      */
     public void addRDNToFront(RDN rdn){
        rdnList.add(0, rdn);
@@ -684,7 +683,7 @@ public class DN extends Object
 
     /**
      * Adds the RDN to the end of the current DN
-     * @param an RDN to be added
+     * @param rdn an RDN to be added
      */
     public void addRDNToBack(RDN rdn){
         rdnList.add(rdn);

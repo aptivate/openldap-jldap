@@ -43,7 +43,7 @@ public class RDN extends Object
     /**
      * Creates an RDN object from the DN component specified in the string RDN
      *
-     * @param the DN component
+     * @param rdn the DN component
      */
     public RDN(String rdn){
         rawValue = rdn;
@@ -71,7 +71,7 @@ public class RDN extends Object
      * Compares the RDN to the rdn passed.  Note: If an there exist any
      * mulivalues in one RDN they must all be present in the other.
      *
-     * @param the RDN to compare to
+     * @param rdn the RDN to compare to
      *
      * @throws IllegalArgumentException if the application compares a name
      * with an OID.
@@ -132,8 +132,8 @@ public class RDN extends Object
     /**
      * Adds another value to the RDN.  Only one attribute type is allowed for
      * the RDN.
-     * @param Attribute type, could be an OID or String
-     * @param Attribute Value, must be normalized and escaped
+     * @param attrType Attribute type, could be an OID or String
+     * @param attrValue Attribute Value, must be normalized and escaped
      * @param rawValue or text before normalization, can be Null
      */
     public void add(String attrType, String attrValue, String rawValue){
@@ -180,9 +180,10 @@ public class RDN extends Object
 
     /**
      * Returns each multivalued name in the current RDN as an array of Strings.
-     * The attribute type names will be ommitted if the parameter noTypes is
-     * true.
-     * @param Specifies if Attribute types are included.
+     *
+     * @param noTypes Specifies whether Attribute types are included. The attribute
+     *  type names will be ommitted if the parameter noTypes is true.
+     *
      * @return List of multivalued Attributes
      */
     public String[] explodeRDN( boolean noTypes ){
