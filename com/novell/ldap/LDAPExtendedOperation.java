@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPExtendedOperation.java,v 1.5 2000/08/03 22:06:15 smerrill Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPExtendedOperation.java,v 1.6 2000/08/28 22:18:56 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -15,12 +15,14 @@
  
 package com.novell.ldap;
  
-/**
+/*
  * 4.11 public class LDAPExtendedOperation
- *
- *  An LDAPExtendedOperation encapsulates an ID which uniquely identifies
- *  a particular extended operation, known to a particular server, and
- *  the data associated with the operation.
+ */
+ 
+/**
+ *  Encapsulates an ID which uniquely identifies a particular extended 
+ *  operation, known to a particular server, and the data associated 
+ *  with the operation.
  */
 public class LDAPExtendedOperation {
 
@@ -34,11 +36,9 @@ public class LDAPExtendedOperation {
    /**
     * Constructs a new object with the specified object ID and data.
     *
-    * Parameters are:
+    *  @param oid     The unique identifier of the operation.
     *
-    *  oid            The unique identifier of the operation.
-    *
-    *  vals           The operation-specific data of the operation.
+    *  @param vals    The operation-specific data of the operation.
     */
    public LDAPExtendedOperation(String oid, byte[] vals) {
       this.oid = oid;
@@ -51,6 +51,8 @@ public class LDAPExtendedOperation {
 
    /**
     * Returns the unique identifier of the operation.
+    *
+    * @return The OID (object ID) of the operation.
     */
    public String getID() {
       return oid;
@@ -61,14 +63,18 @@ public class LDAPExtendedOperation {
     */
 
    /**
-    * Returns the operation-specific data (not a copy, a reference).
+    * Returns a reference to the operation-specific data.
+    *
+    * @return The operation-specific data.
     */
    public byte[] getValue() {
       return vals;
    }
    
    /**
-    * Not defined in the spec but used by extension code
+    *  Sets the value for the operation-specific data.
+    *
+    *  @param newVals  The byte array of operation-specific data.
     */
    protected void setValue(byte[] newVals) {
         this.vals = newVals;

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPException.java,v 1.5 2000/09/06 14:38:12 judy Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPException.java,v 1.6 2000/09/06 22:36:32 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -927,7 +927,8 @@ public class LDAPException extends Exception {
    };
 
 	/**
-	 *
+	 * When debugging an object class, converts the integer value 
+     * to a string, in the default locale.
 	 */
 	public String toString() {
 		return super.toString() + ": (" + resultCode + ") " +
