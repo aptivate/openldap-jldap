@@ -56,6 +56,17 @@ public class RfcBindRequest extends ASN1Sequence implements RfcRequest {
         return;
     }
 
+    public RfcBindRequest(
+        int     version,
+        String  dn,
+        String  mechanism,
+        byte[]  credentials)
+    {
+        this(new ASN1Integer(version), new RfcLDAPDN(dn),
+         new RfcAuthenticationChoice(mechanism, credentials));
+    
+    }
+    
     /**
      * Constructs a new Bind Request copying the original data from
      * an existing request.
