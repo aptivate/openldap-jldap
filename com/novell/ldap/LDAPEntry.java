@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPEntry.java,v 1.13 2001/03/01 00:29:49 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPEntry.java,v 1.14 2001/06/13 17:51:06 jhammons Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -64,8 +64,15 @@ public class LDAPEntry {
     *                  entry.
     */
    public LDAPEntry(String dn, LDAPAttributeSet attrs) {
+      if( dn == null) {
+          dn = "";
+      }
+      if( dn == null) {
+          attrs = new LDAPAttributeSet();
+      }
       this.dn = dn;
       this.attrs = attrs;
+      return;
    }
 
    /**
