@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: LDIFReader.java,v 1.34 2002/10/28 23:16:12 $
+ * $Novell: LDIFReader.java,v 1.35 2002/10/29 21:11:58 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -29,6 +29,7 @@ import com.novell.ldap.LDAPException;
 import com.novell.ldap.LDAPLocalException;
 import com.novell.ldap.LDAPMessage;
 import com.novell.ldap.LDAPModification;
+import com.novell.ldap.LDAPSearchResult;
 import com.novell.ldap.message.LDAPAddRequest;
 import com.novell.ldap.message.LDAPDeleteRequest;
 import com.novell.ldap.message.LDAPModifyDNRequest;
@@ -143,7 +144,7 @@ public class LDIFReader implements LDAPReader {
         // the first effective line(the version line). check the version line
         if (line.startsWith("version:")) {
             this.version = line.substring("version:".length()).trim();
-            if ( this.version != "1" ) {
+            if ( !this.version.equals( "1") ) {
                 throw new LDAPLocalException(
                     "com.novell.ldap.ldif_dsml.LDIFReader: "
                         + "version: found '" + version + "' (on line "
@@ -177,7 +178,7 @@ public class LDIFReader implements LDAPReader {
         // will check dn field later; now ignore the rest lines of the
         // dn field and read the effective line right after the dn field
         while ( (line = bufReader.readLine()) != null ) {
-        
+
             // ! a part of dn field       ! a comment line
             if ( !line.startsWith(" ") && !line.startsWith("#") ) {
                  // to the end of the first record
@@ -248,7 +249,7 @@ public class LDIFReader implements LDAPReader {
     {
         return requestFile;
     }
-    
+
     /**
      * Sets the request type of the file being read, true if request data
      * or false if content data.
@@ -260,7 +261,7 @@ public class LDIFReader implements LDAPReader {
         requestFile = type;
         return;
     }
-    
+
     /**
      * Read LDAP Requests from the LDIF request (change) file or content file.
      *
@@ -269,11 +270,15 @@ public class LDIFReader implements LDAPReader {
     public LDAPMessage readMessage()
                 throws IOException, LDAPException
     {
-        readRecordFields();  // read record fields
+        readRecordFields();           // read record fields
         if ( this.rFields == null ) { // end of file
             return null;
         }
-        toRecordProperties();  // set record properties
+        toRecordProperties();         // set record properties
+
+        if (!isRequest()) {
+            return new LDAPSearchResult(currentEntry);
+        }
 
         switch( this.reqType ) {
             case LDAPMessage.SEARCH_RESPONSE :
@@ -381,7 +386,7 @@ public class LDIFReader implements LDAPReader {
             this.lNumber++;                      // increase the line number
             this.fNumber = this.rFields.size();  // get number of fields
         }
-        return;    
+        return;
     }
 
 
@@ -469,7 +474,7 @@ public class LDIFReader implements LDAPReader {
                 this.controls = new LDAPControl[this.cList.size()];
             }
         }
-        return;    
+        return;
     }
 
 
@@ -565,7 +570,7 @@ public class LDIFReader implements LDAPReader {
             // decode newrdn
             this.bytes = Base64.decode( currentField, index+2,
                                                         currentField.length());
-            try {                                            
+            try {
                 this.modInfo[0] = new String(this.bytes, "UTF-8");
             } catch( UnsupportedEncodingException ue) {
                 throw new RuntimeException(
@@ -588,7 +593,7 @@ public class LDIFReader implements LDAPReader {
         if (c == '1') {
             this.modInfo[1] = new String("1");
         }
-        else if (c == '1'){
+        else if (c == '0'){
             this.modInfo[1] = new String("0");
         }
         else {
@@ -625,7 +630,7 @@ public class LDIFReader implements LDAPReader {
                 this.modInfo[2] = new String(this.bytes);;
             }
         }
-        return;    
+        return;
     }
 
     /**
@@ -756,7 +761,7 @@ public class LDIFReader implements LDAPReader {
         }
         this.mods = new LDAPModification[modList.size()];
         this.mods = (LDAPModification[])modList.toArray(this.mods);
-        return;    
+        return;
     }
 
     /**
@@ -788,7 +793,7 @@ public class LDIFReader implements LDAPReader {
      * trims confield and constructs control onjects.
      */
     private StringBuffer trimField( StringBuffer line)
-                throws LDAPLocalException 
+                throws LDAPLocalException
     {
         int c, lastChar = 0, charIndex = 0;
         char t;
