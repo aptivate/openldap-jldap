@@ -97,7 +97,11 @@ public class LDAPEntry implements java.lang.Comparable
      */
     public LDAPAttribute getAttribute(String attrName)
     {
-        return new LDAPAttribute(entry.getAttribute(attrName));
+        com.novell.ldap.LDAPAttribute attr;
+        if( (attr = entry.getAttribute(attrName)) == null) {
+            return null;
+        }
+        return new LDAPAttribute( attr);
     }
 
     /**

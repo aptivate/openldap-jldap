@@ -34,6 +34,10 @@ public class LDAPAttribute implements java.lang.Cloneable,
     /* package */
     LDAPAttribute(com.novell.ldap.LDAPAttribute attr)
     {
+       if( attr == null) {
+            throw new 
+            IllegalArgumentException("LDAPAttribute class cannot be null");
+        }
         this.attr = attr;
         return;
     }
