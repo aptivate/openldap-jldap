@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell$
+ * $Novell: DOMReader.java,v 1.2 2002/10/30 16:16:03 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -35,6 +35,7 @@ import org.xml.sax.SAXException;
  * @see DOMWriter
  * @see DSMLReader
  * @see LDAPMessage
+ * @see com.novell.ldap.LDAPConnection#applyToDIT
  */
 public class DOMReader implements LDAPReader{
     DSMLHandler handler;
@@ -42,7 +43,7 @@ public class DOMReader implements LDAPReader{
     private int messageIndex=0;
 
     /**
-     * Creates a reader that read a DOM document and translate it into
+     * Creates a reader that reads a DOM document and translates it into
      * LDAPMessages.
      * <p>The first batchRequest or batchResponse is located and all nodes
      * within it will be read and translated into LDAPMessages</p>
@@ -156,6 +157,71 @@ public class DOMReader implements LDAPReader{
         if (this.messageIndex >= handler.queue.size())
             return null;
         return (LDAPMessage) handler.queue.get( this.messageIndex ++ );
+    }
+
+    /**
+     * Retrieves the optional requestID attribute on a BatchRequests.
+     * @return requestID on a batchRequest or <tt>null</tt> if requestID is not
+     * specified or the content is in a batchResponse.
+     */
+    public String getBatchRequestID(){
+        return this.handler.getBatchRequestID();
+    }
+
+    /**
+     * Indicates whether the requests in a batchRequest can be executed in
+     * parallel.
+     *
+     * <p>This is determined by reading the "processing" attribute on the tag
+     * batchRequest.  This attribute can take on the values of "sequential" or
+     * "parallel" and defaults to "sequential" when the attribute is absent.<p>
+     *
+     * @return <tt>true</tt> if the content is a batchRequest with the attribute
+     * <tt>processing</tt> equal to <tt>parallel</tt>; and false otherwise.
+     *
+     * <p>Other batchRequest properties:<p>
+     * @see #getBatchRequestID
+     * @see #isResponseUnordered
+     * @see #isResumeOnError
+     */
+    public boolean isParallelProcessing(){
+        return this.handler.isParallelProcessing();
+    }
+
+    /**
+     * If requests in a batchRequest can be executed in parallel, this specifies
+     * whether the responses can be written in any order.
+     *
+     * <p>This is determined by reading the "responseOrder" attribute on the tag
+     * batchRequest.  This attribute can take on the values of "sequential" or
+     * "unordered" and defaults to "sequential" when the attribute is absent.<p>
+     *
+     * @return <tt>true</tt> if the content is a batchRequest with the attribute
+     * <tt>responseOrder</tt> equal to <tt>unordered</tt>; and false otherwise.
+     *
+     */
+    public boolean isResponseUnordered(){
+        return this.handler.isResponseUnordered();
+    }
+
+    /**
+     * Indicates whether the execution of requests in a batchRequest should
+     * resume or stop should an error occur.
+     *
+     * <p>This is determined by reading the "onError" attribute on the tag
+     * batchRequest.  This attribute can take on the values of "resume" or
+     * "exit" and defaults to "exit" when the attribute is absent.<p>
+     *
+     * @return <tt>true</tt> if the content is a batchRequest with the attribute
+     * <tt>onError</tt> equal to <tt>resume</tt>; and false otherwise.
+     *
+     * <p>Other batchRequest properties:<p>
+     * @see #getBatchRequestID
+     * @see #isParallelProcessing
+     * @see #isResponseUnordered
+     */
+    public boolean isResumeOnError(){
+        return this.handler.isResumeOnError();
     }
 
     /**

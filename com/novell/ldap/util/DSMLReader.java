@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: DSMLReader.java,v 1.12 2002/10/28 23:16:08 $
+ * $Novell: DSMLReader.java,v 1.13 2002/10/29 21:11:57 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -28,14 +28,38 @@ import org.xml.sax.SAXException;
 import com.novell.ldap.*;
 import com.novell.ldap.client.DSMLHandler;
 
+/**
+ * Reads, parses and converts DSML into LDAPMessages.
+ *
+ * <p>Reads DSML, Directory Service Markup Language, from files, streams and
+ * readers, and returns LDAPMessages.  Note that some XML applications will have
+ * DSML pre-parsed into DOM objects, in which case DOMReader should be used.</p>
+ *
+ * @see DSMLWriter
+ * @see DOMReader
+ * @see LDAPMessage
+ * @see com.novell.ldap.LDAPConnection#applyToDIT
+ */
 
 public class DSMLReader implements LDAPReader {
 
     private int messageIndex = 0;
     private DSMLHandler handler = new DSMLHandler();
     private boolean            requestFile=true;          // request file=true
-    private String version = "2.1";
+    private String version = "2.0";
 
+    /**
+     * Creates a reader that reads from a file containing XML with DSML tags.
+     *
+     * <p>All XML tags before and after batchRequests or batchResponses are
+     * ignored.  All requests or response within batchRequests and
+     * batchResponses are converted into LDAPMessages</p>
+     *
+     * @param dsmlFile  XML file with a DSML batchRequest or batchResponse
+     * @throws LDAPLocalException Occurs when no batchRequest or batchResponse
+     * is found, or the document is invalid DSML.
+     * @throws FileNotFoundException Occurs when the specied file is not found
+     */
     public DSMLReader (String dsmlFile)
                 throws LDAPLocalException, FileNotFoundException
     {
@@ -43,13 +67,35 @@ public class DSMLReader implements LDAPReader {
         return;
     }
 
+    /**
+     * Creates a reader that reads from an inputStream containing xml with DSML
+     * tags.
+     * <p>All XML tags before and after batchRequests or batchResponses are
+     * ignored.  All requests or response within batchRequests and
+     * batchResponses are converted into LDAPMessages</p>
+
+     * @param inputStream Stream of XML with a DSML batchRequest or
+     * batchResponse
+     * @throws LDAPLocalException Occurs when no batchRequest or batchResponse
+     * is found, or the document is invalid DSML.
+     */
     public DSMLReader (java.io.InputStream inputStream) throws LDAPLocalException
     {
         this( new java.io.InputStreamReader(inputStream));
         return;
     }
 
-
+    /**
+     * Creates a reader that reads from a reader containing xml with DSML
+     * tags.
+     * <p>All XML tags before and after batchRequests or batchResponses are
+     * ignored.  All requests or response within batchRequests and
+     * batchResponses are converted into LDAPMessages</p>
+     *
+     * @param reader Reader of XML with a DSML batchRequest or batchResponse
+     * @throws LDAPLocalException Occurs when no batchRequest or batchResponse
+     * is found, or the document is invalid DSML.
+     */
     public DSMLReader (java.io.Reader reader) throws LDAPLocalException
     {
         // Create an XML Parser
@@ -91,13 +137,21 @@ public class DSMLReader implements LDAPReader {
         return;
     }
 
+    /**
+     * Retrieves the current LDAPMessage and advances to the next.
+     *
+     * <p>This method is used to iterate over all DSML tags parsed into
+     * LDAPMessages<p>
+     * @return LDAPMessage found in the DSML source specified in the
+     * constructor.
+     */
     public LDAPMessage readMessage()
     {
         if (this.messageIndex >= handler.queue.size())
             return null;
         return (LDAPMessage) handler.queue.get( this.messageIndex ++ );
     }
-    
+
     /**
      * Gets the version of the LDIF data associated with the input stream
      *
@@ -107,7 +161,7 @@ public class DSMLReader implements LDAPReader {
     {
         return version;
     }
-    
+
     /**
      * Returns true if request data ist associated with the input stream,
      * or false if content data.
@@ -117,5 +171,70 @@ public class DSMLReader implements LDAPReader {
     public boolean isRequest()
     {
         return requestFile;
+    }
+
+    /**
+     * Retrieves the optional requestID attribute on a BatchRequests.
+     * @return requestID on a batchRequest or <tt>null</tt> if requestID is not
+     * specified or the content is in a batchResponse.
+     */
+    public String getBatchRequestID(){
+        return this.handler.getBatchRequestID();
+    }
+
+    /**
+     * Indicates whether the requests in a batchRequest can be executed in
+     * parallel.
+     *
+     * <p>This is determined by reading the "processing" attribute on the tag
+     * batchRequest.  This attribute can take on the values of "sequential" or
+     * "parallel" and defaults to "sequential" when the attribute is absent.<p>
+     *
+     * @return <tt>true</tt> if the content is a batchRequest with the attribute
+     * <tt>processing</tt> equal to <tt>parallel</tt>; and false otherwise.
+     *
+     * <p>Other batchRequest properties:<p>
+     * @see #getBatchRequestID
+     * @see #isResponseUnordered
+     * @see #isResumeOnError
+     */
+    public boolean isParallelProcessing(){
+        return this.handler.isParallelProcessing();
+    }
+
+    /**
+     * If requests in a batchRequest can be executed in parallel, this specifies
+     * whether the responses can be written in any order.
+     *
+     * <p>This is determined by reading the "responseOrder" attribute on the tag
+     * batchRequest.  This attribute can take on the values of "sequential" or
+     * "unordered" and defaults to "sequential" when the attribute is absent.<p>
+     *
+     * @return <tt>true</tt> if the content is a batchRequest with the attribute
+     * <tt>responseOrder</tt> equal to <tt>unordered</tt>; and false otherwise.
+     *
+     */
+    public boolean isResponseUnordered(){
+        return this.handler.isResponseUnordered();
+    }
+
+    /**
+     * Indicates whether the execution of requests in a batchRequest should
+     * resume or stop should an error occur.
+     *
+     * <p>This is determined by reading the "onError" attribute on the tag
+     * batchRequest.  This attribute can take on the values of "resume" or
+     * "exit" and defaults to "exit" when the attribute is absent.<p>
+     *
+     * @return <tt>true</tt> if the content is a batchRequest with the attribute
+     * <tt>onError</tt> equal to <tt>resume</tt>; and false otherwise.
+     *
+     * <p>Other batchRequest properties:<p>
+     * @see #getBatchRequestID
+     * @see #isParallelProcessing
+     * @see #isResponseUnordered
+     */
+    public boolean isResumeOnError(){
+        return this.handler.isResumeOnError();
     }
 }
