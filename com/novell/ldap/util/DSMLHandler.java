@@ -790,8 +790,15 @@ class DSMLHandler extends DefaultHandler implements
                     state = SEARCH_REQUEST;
                     break;
                 case NOT:
+                    filter.endNestedFilter(LDAPSearchRequest.NOT);
+                    state = FILTER;
+                    break;
                 case AND:
+                    filter.endNestedFilter(LDAPSearchRequest.AND);
+                    state = FILTER;
+                    break;
                 case OR:
+                    filter.endNestedFilter(LDAPSearchRequest.OR);
                     state = FILTER;
                     break;
                 case EQUALITY_MATCH:{
@@ -892,6 +899,7 @@ class DSMLHandler extends DefaultHandler implements
                         throw new SAXException("Unexpected closing substring tag");
                     }
                     filter.endSubstrings();
+                    state = FILTER;
                     break;
                 }
                 case CONTROL:
