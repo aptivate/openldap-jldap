@@ -19,23 +19,32 @@ import java.io.IOException;
 import java.net.UnknownHostException;
 import javax.net.SocketFactory;
 import javax.net.ssl.SSLSocketFactory;
-import com.sun.net.ssl.SSLContext;
-
 
 
 /**
- * Represents the socket factory that creates secure socket connections to
+ * Represents a socket factory that creates secure socket connections to
  * LDAP servers using JSSE technology.
  *
+ * @see LDAPConnection#LDAPConnection(LDAPSocketFactory)
  * @see LDAPConnection#setSocketFactory
  */
 public class LDAPJSSESecureSocketFactory
                 implements LDAPSocketFactory, org.ietf.ldap.LDAPSocketFactory
 {
     private SocketFactory factory;
+
     /**
-     * Constructs an LDAPSecureSocketFactory object.
+     * Constructs an LDAPSecureSocketFactory object using the default provider
+     * for a JSSE SSLSocketFactory.
      *
+     * <p>Setting the keystore for the default provider is specific to
+     * the provider implementation.  For Sun's JSSE provider, the property
+     * javax.net.ssl.truststore should be set to the path of a keystore that
+     * holds the trusted root certificate of the directory server.</P>
+     *
+     * For information on creating keystores see the keytool documentation on
+     * <a href="http://java.sun.com/j2se/1.4/docs/tooldocs/tools.html#security">
+     * Java 2, security tools</a>.
      */
     public LDAPJSSESecureSocketFactory()
     {
@@ -43,12 +52,37 @@ public class LDAPJSSESecureSocketFactory
     }
 
     /**
-     * Constructs a SecureSocketFactory using the SSLContext as specified.  Note
-     * that ctx should be initialized by the method init before calling this
-     * method.
+     * Constructs an LDAPSocketFactory object using the
+     * SSLSocketFactory specified.
+     *
+     * For information on using the SSLContext see also
+     * <a href="http://java.sun.com/j2se/1.4/docs/api/javax/net/ssl/SSLSocketFactory.html>
+     * javax.net.ssl.SSLContext</a>
      */
-    public LDAPJSSESecureSocketFactory(SSLContext ctx){
+    public LDAPJSSESecureSocketFactory(SSLSocketFactory factory)
+    {
+        this.factory = factory;
+        return;
+    }
+
+    /**
+     * @deprecated see #LDAPJSSESecureSocketFactory(SSLSocketFactory)
+     * Note: This should not be in this Factory.  Will be removed because
+     * it forces a dependency on Sun's JSSE.
+     *
+     * Constructs a SocketFactory object using the SSLContext as specified.
+     *
+     * <p>Note that ctx should be initialized by the method init before calling
+     * this method.  This method can be used to customize which JSSE provider is
+     * used, which Cipher suites are used, and what trustManagers are used</p>
+     *
+     * For information on using the SSLContext see also
+     * <a href="http://java.sun.com/j2se/1.4/docs/api/javax/net/ssl/SSLContext.html>
+     * javax.net.ssl.SSLContext</a>
+     */
+    public LDAPJSSESecureSocketFactory(com.sun.net.ssl.SSLContext ctx){
         factory = ctx.getSocketFactory();
+        return;
     }
 
     /**
@@ -56,7 +90,8 @@ public class LDAPJSSESecureSocketFactory
      * host name and port number.
      *
      * <p>The secure connection is established to the server when this
-     * call returns.</p>
+     * call returns.  This method is called by the constructor of LDAPConnection
+     * </p>
      *
      * @param host The host name or a dotted string representing the IP address
      *             of the LDAP server to which you want to establish
@@ -66,21 +101,17 @@ public class LDAPJSSESecureSocketFactory
      *             use for this connection. The default LDAP port for SSL
      *             connections is 636.
      *
-     * @return A socket to the LDAP server using the specifiec host name and
+     * @return A socket to the LDAP server using the specific host name and
      *         port number.
      *
      * @exception IOException A socket to the specified host and port
      *                          could not be created.
+     *
      * @exception UnknownHostException The specified host could not be found.
      */
-    public java.net.Socket makeSocket(String host, int port)
+    public java.net.Socket createSocket(String host, int port)
         throws IOException, UnknownHostException
     {
-        try {
-            return factory.createSocket(host, port);
-        }   // For now just turn all exceptions into IOException
-        catch( Exception e) {
-           throw new IOException( e.toString());
-        }
+        return factory.createSocket(host, port);
     }
 }

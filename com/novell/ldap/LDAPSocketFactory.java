@@ -20,21 +20,27 @@ import java.net.UnknownHostException;
 import java.io.IOException;
 
 /**
+ *  Used to construct sockets used in LDAPConnection.
  *
- *  Used to construct a socket connection for use in an LDAPConnection.
- *
- *  <p>Programmers needing to provide or use specialized socket connections,
- *  including Transport Layer Security (TLS) based ones, can provide an
- *  object constructor to implement them using this interface.
+ *  <p>This factory produces sockets that are to be used in an LDAPConnection.
+ *  Programmers needing to provide or use specialized socket connections,
+ *  including sockets based on Transport Layer Security (TLS) can implement
+ *  this interface.
  *  An implementation of this interface may, for example, provide a
  *  TLSSocket connected to a secure server.</p>
+ *  <p> An implementation of this
+ *  factory can be set per connection or globally for all connections.</p>
  *
+ *  @see LDAPConnection#LDAPConnection(LDAPSocketFactory)
+ *  @see LDAPConnection#setSocketFactory
  */
 public interface LDAPSocketFactory {
 
    /**
     * Returns a socket connected using the provided host name and port
     * number.
+    * <p>This method is called in the constructor of LDAPConnection and 
+    * the resulting socket will be used for the duration of the connection.</p>
     *
     *  @param host     The host name or a dotted string representing
     *                  the IP address of the LDAP server to which you want
@@ -47,8 +53,9 @@ public interface LDAPSocketFactory {
     *                        could not be created.
     *
     * @exception UnknownHostException The specified host could not be found.
+    *
+    * @return the new Socket
     */
-   public Socket makeSocket(String host, int port)
+   public Socket createSocket(String host, int port)
       throws IOException, UnknownHostException;
-
 }

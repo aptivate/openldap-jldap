@@ -74,6 +74,11 @@ public class ExceptionMessages extends java.util.ListResourceBundle {
   public final static String SERVER_SHUTDOWN_REQ  = "SERVER_SHUTDOWN_REQ";
   public final static String INVALID_ADDRESS      = "INVALID_ADDRESS";
   public final static String UNKNOWN_RESULT       = "UNKNOWN_RESULT";
+  public final static String OUTSTANDING_OPERATIONS = "OUTSTANDING_OPERATIONS";
+  public final static String WRONG_FACTORY          = "WRONG_FACTORY";
+  public final static String NO_TLS_FACTORY         = "NO_TLS_FACTORY";
+  public final static String NO_STARTTLS            = "NO_STARTTLS";
+  public final static String STOPTLS_ERROR          = "STOPTLS_ERROR";
 
   //End constants
 
@@ -125,7 +130,12 @@ public class ExceptionMessages extends java.util.ListResourceBundle {
       {"NO_MEMORY","All results could not be stored in memory, sort failed"},
 	  {"SERVER_SHUTDOWN_REQ","Received unsolicited notification from server {0}:{1} to shutdown"},
       {"INVALID_ADDRESS","Invalid syntax for address with port; {0}"},
-      {"UNKNOWN_RESULT","Unknown LDAP result code {0}"}
+      {"UNKNOWN_RESULT","Unknown LDAP result code {0}"},
+      {"OUTSTANDING_OPERATIONS", "Cannot start or stop TLS because outstanding LDAP operations exist on this connection" },
+      {"WRONG_FACTORY", "StartTLS cannot use the set socket factory because it does not implement LDAPTLSSocketFactory"},
+      {"NO_TLS_FACTORY", "StartTLS failed because no LDAPTLSSocketFactory has been set for this Connection" },
+      {"NO_STARTTLS", "An attempt to stopTLS on a connection where startTLS had not been called"},
+      {"STOPTLS_ERROR", "Error stopping TLS: Error getting input & output streams from the original socket"}
   // END OF MATERIAL TO LOCALIZE
   };
 }//End ExceptionMessages

@@ -33,9 +33,9 @@ public interface LDAPSocketFactory
      * number.
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPSocketFactory.html
-            #makeSocket(java.lang.String, int)">
-            com.novell.ldap.LDAPSocketFactory.makeSocket(String, int)</a>
+            #createSocket(java.lang.String, int)">
+            com.novell.ldap.LDAPSocketFactory.createSocket(String, int)</a>
      */
-    public Socket makeSocket(String host, int port)
+    public Socket createSocket(String host, int port)
               throws IOException, UnknownHostException;
 }

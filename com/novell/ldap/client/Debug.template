@@ -161,6 +161,11 @@ public abstract class Debug {
      * The string value used to enable display VM method calls.
      */
     public static final String traceMethodCalls = "VMTraceMethodCalls";
+    /**
+     * The string value used to enable display of TLS calls and info for
+     * startTLS and stopTLS.
+     */
+    public static final String TLS = "TraceTLS";
 
     private static boolean dumpBuffer = false;
     private static boolean dumpObject = false;
@@ -182,6 +187,7 @@ public abstract class Debug {
     private static boolean traceAPIRequests = false;
     private static boolean traceUrlParse = false;
     private static boolean traceConnections = false;
+    private static boolean traceTLS = false;
     private static Properties objprop = new Properties();
     private static Runtime run = Runtime.getRuntime(); // for trace, etc.
 
@@ -262,6 +268,7 @@ public abstract class Debug {
                     traceEncoding = true;
                     traceDecoding = true;
                     traceConnections = true;
+                    traceTLS = true;
                 } else if( tn.equalsIgnoreCase(rawInput)) {
                     traceRawInput = toggle( traceRawInput);
                 } else if( tn.equalsIgnoreCase(controls)) {
@@ -284,6 +291,8 @@ public abstract class Debug {
                     traceDecoding = toggle( traceDecoding);
                 } else if( tn.equalsIgnoreCase(connections)) {
                     traceConnections = toggle( traceConnections);
+                } else if( tn.equalsIgnoreCase(TLS)) {
+                    traceTLS = toggle(traceTLS);
                 }
             }
         }
@@ -307,7 +316,8 @@ public abstract class Debug {
                             traceEncoding  ||
                             traceDecoding  ||
                             traceControls  ||
-                            traceConnections );
+                            traceConnections ||
+                            traceTLS);
             } else if( type.equalsIgnoreCase(rawInput)) {
                 return(traceRawInput);
             } else if( type.equalsIgnoreCase(rawOutput)) {
@@ -330,6 +340,8 @@ public abstract class Debug {
                 return(traceControls);
             } else if( type.equalsIgnoreCase(connections)) {
                 return(traceConnections);
+            } else if( type.equalsIgnoreCase(TLS)) {
+                return(traceTLS);
             }
             return false;
         } else {
@@ -356,6 +368,7 @@ public abstract class Debug {
                 traceDecoding  = val;
                 traceConnections = val;
                 traceControls = val;
+                traceTLS = val;
             } else if( type.equalsIgnoreCase(rawInput)) {
                 traceRawInput = val;
             } else if( type.equalsIgnoreCase(controls)) {
@@ -378,6 +391,8 @@ public abstract class Debug {
                 traceDecoding = val;
             } else if( type.equalsIgnoreCase(connections)) {
                 traceConnections = val;
+            } else if( type.equalsIgnoreCase(TLS)) {
+                traceTLS = val;
             }
         }
         return;
@@ -404,7 +419,8 @@ public abstract class Debug {
                             traceEncoding  ||
                             traceDecoding  ||
                             traceControls  ||
-                            traceConnections;
+                            traceConnections ||
+                            traceTLS;
                 tracing="all";
             } else if( type.equalsIgnoreCase(rawInput)) {
                 printit = traceRawInput;
@@ -439,6 +455,9 @@ public abstract class Debug {
             } else if( type.equalsIgnoreCase(connections)) {
                 printit = traceConnections;
                 tracing="traceConnections";
+            } else if( type.equalsIgnoreCase(TLS)) {
+                printit = traceTLS;
+                tracing="traceTLS";
             }
             if( printit) {
                 if( str == null) {

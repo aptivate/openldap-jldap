@@ -299,7 +299,7 @@ public class Message
                     }
                 }
                 // release the bind semaphore and wake up all waiting threads
-                conn.freeBindSemaphore( msgId);
+                conn.freeWriteSemaphore( msgId);
             }
         } else {
             if( Debug.LDAP_DEBUG) {
@@ -438,7 +438,7 @@ public class Message
                 // If a bind, release bind semaphore & wake up waiting threads
                 // Must do before writing abandon message, otherwise deadlock
                 if( bindprops != null) {
-                    conn.freeBindSemaphore( msgId);
+                    conn.freeWriteSemaphore( msgId);
                 }
                 if( Debug.LDAP_DEBUG) {
                     Debug.trace( Debug.messages, name + "Sending abandon request");

@@ -52,13 +52,14 @@ import com.novell.ldap.resources.*;
 public final class Connection implements Runnable
 {
 
-    private Object bindSemaphore = new Object();
-    private int    bindSemaphoreOwner = 0;
-    private int    bindSemaphoreCount = 0;
-    private BindProperties bindProperties = null;
+    private Object writeSemaphore = new Object();
+    private int    writeSemaphoreOwner = 0;
+    private int    writeSemaphoreCount = 0;
+
     // We need a message number for disconnect to grab the semaphore,
     // but may not have one, so we invent a unique one.
     private int fakeId = -1;
+    private BindProperties bindProperties = null;
 
     private Thread reader = null; // New thread that reads data from the server.
     private Thread deadReader = null; // Identity of last reader thread
@@ -67,15 +68,33 @@ public final class Connection implements Runnable
     private LBEREncoder encoder = new LBEREncoder();
     private LBERDecoder decoder = new LBERDecoder();
 
+    /*
+     * socket is the current socket being used.
+     * nonTLSBackup is the backup socket if startTLS is called.
+     * if nonTLSBackup is null then startTLS has not been called,
+     * or stopTLS has been called to end TLS protection
+     */
     private Socket socket = null;
+    private Socket nonTLSBackup = null;
 
     private InputStream in = null;
     private OutputStream out = null;
     // When set to true, app is not notified of connection failures
     private boolean shutdown = false;
 
-	// Tracks server shutdown unsolicited notifications
-	private boolean serverShutdownNotification = false;
+    // Indicates we have received a server shutdown unsolicited notification
+    private boolean serverShutdownNotification = false;
+
+    //  LDAP message IDs are all positive numbers so we can use negative
+    //  numbers as flags.  This are flags assigned to stopReaderMessageID
+    //  to tell the reader what state we are in.
+    private final static int CONTINUE_READING = -99;
+    private final static int STOP_READING = -98;
+    
+    //  Stops the reader thread when a Message with the passed-in ID is read.
+    //  This parameter is set by stopReaderOnReply and stopTLS
+    private int stopReaderMessageID = CONTINUE_READING;
+
 
     // Place to save message information classes
     private MessageVector messages = new MessageVector(5,5);
@@ -92,7 +111,8 @@ public final class Connection implements Runnable
     private LDAPSocketFactory mySocketFactory;
     private String host = null;
     private int port = 0;
-    // Number of clones in addition to original LDAPConnection using this connection.
+    // Number of clones in addition to original LDAPConnection using this
+    // connection.
     private int cloneCount = 0;
     // Connection number & name used only for debug
     private String name = "";
@@ -131,8 +151,8 @@ public final class Connection implements Runnable
     }
 
     /**
-     * Acquire a simple counting semaphore that synchronizes state affecting bind
-     * An fake message value is generated.
+     * Acquire a simple counting semaphore that synchronizes state affecting
+     * bind. This method generates a fake message value (negative number).
      *
      * We bind using the message ID because a different thread may unlock
      * the semaphore than the one that set it.  It is cleared when the
@@ -140,16 +160,16 @@ public final class Connection implements Runnable
      *
      * Returns when the semaphore is acquired
      *
-     * @return the fake message value that identifies the owner of this semaphore
+     * @return the fake message value that identifies semaphore's owner
      */
-    public int acquireBindSemaphore()
+    public int acquireWriteSemaphore()
     {
-        return acquireBindSemaphore(0);
+        return acquireWriteSemaphore(0);
     }
 
     /**
-     * Acquire a simple counting semaphore that synchronizes state affecting bind
-     * The semaphore is held by setting a value in bindSemaphoreOwner.
+     * Acquire a simple counting semaphore that synchronizes state affecting
+     * bind. The semaphore is held by setting a value in writeSemaphoreOwner.
      *
      * We bind using the message ID because a different thread may unlock
      * the semaphore than the one that set it.  It is cleared when the
@@ -161,27 +181,28 @@ public final class Connection implements Runnable
      *
      * @return the semaphore value used to acquire the lock
      */
-    public int acquireBindSemaphore(int msgId)
+    public int acquireWriteSemaphore(int msgId)
     {
         int id = msgId;
-        synchronized( bindSemaphore) {
+        synchronized( writeSemaphore) {
             if( id == 0) {
-                fakeId = ((fakeId == Integer.MIN_VALUE) ? (fakeId = -1) : --fakeId);
+                fakeId =
+                    ((fakeId == Integer.MIN_VALUE) ? (fakeId = -1) : --fakeId);
                 id = fakeId;
             }
             while( true) {
-                if( bindSemaphoreOwner == 0) {
+                if( writeSemaphoreOwner == 0) {
                    // we have acquired the semahpore
-                   bindSemaphoreOwner = id;
+                   writeSemaphoreOwner = id;
                    break;
                 } else {
-                    if( bindSemaphoreOwner == id) {
+                    if( writeSemaphoreOwner == id) {
                         // we already own the semahpore
                         break;
                     }
                     try {
                         // Keep trying for the lock
-                        bindSemaphore.wait();
+                        writeSemaphore.wait();
                         continue;
                     } catch( InterruptedException ex) {
                         // Keep trying for the lock
@@ -189,42 +210,45 @@ public final class Connection implements Runnable
                     }
                 }
             }
-            bindSemaphoreCount++;
+            writeSemaphoreCount++;
         }
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.bindSemaphore, name +
-                "Acquired Bind Semaphore(" + id + ") count " + bindSemaphoreCount);
+                "Acquired Bind Semaphore(" + id + ") count " +
+                writeSemaphoreCount);
         }
         return id;
     }
 
     /**
-     * Release a simple counting semaphore that synchronizes state affecting bind
-     * Frees the semaphore when number of acquires and frees for this thread match
+     * Release a simple counting semaphore that synchronizes state affecting
+     * bind.  Frees the semaphore when number of acquires and frees for this
+     * thread match.
      *
      * @param msgId a value that identifies the owner of this semaphore
      */
-    public void freeBindSemaphore(int msgId)
+    public void freeWriteSemaphore(int msgId)
     {
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.bindSemaphore, name +
-                "Free'd Bind Semaphore(" + msgId + ") count " + (bindSemaphoreCount - 1));
+                "Free'd Bind Semaphore(" + msgId + ") count " +
+                (writeSemaphoreCount - 1));
         }
-        synchronized( bindSemaphore) {
-            if( bindSemaphoreOwner == 0) {
-                throw new RuntimeException("Connection.freeBindSemaphore("
+        synchronized( writeSemaphore) {
+            if( writeSemaphoreOwner == 0) {
+                throw new RuntimeException("Connection.freeWriteSemaphore("
                     + msgId + "): semaphore not owned by any thread");
             } else
-            if( bindSemaphoreOwner != msgId) {
-                throw new RuntimeException("Connection.freeBindSemaphore("
+            if( writeSemaphoreOwner != msgId) {
+                throw new RuntimeException("Connection.freeWriteSemaphore("
                     + msgId + "): thread does not own the semaphore, owned by "
-                    + bindSemaphoreOwner);
+                    + writeSemaphoreOwner);
             }
             // if all instances of this semaphore for this thread are released,
             // wake up all threads waiting.
-            if( --bindSemaphoreCount == 0) {
-                bindSemaphoreOwner = 0;
-                bindSemaphore.notify();
+            if( --writeSemaphoreCount == 0) {
+                writeSemaphoreOwner = 0;
+                writeSemaphore.notify();
             }
         }
         return;
@@ -234,7 +258,7 @@ public final class Connection implements Runnable
      * Wait until the reader thread ID matches the specified parameter.
      * Null = wait for the reader to terminate
      * Non Null = wait for the reader to start
-     * Returns when the ID matches, i.e. reader stopped, or reader starated.
+     * Returns when the ID matches, i.e. reader stopped, or reader started.
      *
      * @param the thread id to match
      */
@@ -243,7 +267,8 @@ public final class Connection implements Runnable
     {
         // wait for previous reader thread to terminate
         while( reader != thread) {
-            // Don't initialize connection while previous reader thread still active.
+            // Don't initialize connection while previous reader thread still
+            // active.
             try {
                 if( Debug.LDAP_DEBUG) {
                     if( thread == null) {
@@ -260,7 +285,9 @@ public final class Connection implements Runnable
                  * for the dead to rise, we leave traces of the deceased.
                  * If the thread is already gone, we throw an exception.
                  */
-                if( (thread != null) && (thread == deadReader)) {
+                if( thread == deadReader) {
+                    if (thread == null) /* then we wanted a shutdown */
+                        return;
                     if( Debug.LDAP_DEBUG) {
                         Debug.trace( Debug.messages, name +
                             "reader already terminated, throw exception");
@@ -270,7 +297,7 @@ public final class Connection implements Runnable
                     deadReader = null;
                     // Reader thread terminated
                     throw new LDAPException(
-				        ExceptionMessages.CONNECTION_READER,
+                        ExceptionMessages.CONNECTION_READER,
                         LDAPException.CONNECT_ERROR, lex);
                 }
                 synchronized( this) {
@@ -309,12 +336,12 @@ public final class Connection implements Runnable
         // Wait for active reader to terminate
         waitForReader(null);
 
-		// Clear the server shutdown notification flag.  This should already
-		// be false unless of course we are reusing the same Connection object
-		// after a server shutdown notification
-		serverShutdownNotification = false;
+        // Clear the server shutdown notification flag.  This should already
+        // be false unless of course we are reusing the same Connection object
+        // after a server shutdown notification
+        serverShutdownNotification = false;
 
-        int semId = acquireBindSemaphore( semaphoreId);
+        int semId = acquireWriteSemaphore( semaphoreId);
 
         // Make socket connection to specified host and port
         if( port == 0) {
@@ -328,12 +355,12 @@ public final class Connection implements Runnable
                         Debug.trace( Debug.messages, name +
                             "connect(socketFactory specified)");
                     }
-                    socket = mySocketFactory.makeSocket(host, port);
+                    socket = mySocketFactory.createSocket(host, port);
                 } else {
                     socket = new Socket(host, port);
                 }
 
-                in = new BufferedInputStream(socket.getInputStream());
+                in = socket.getInputStream();
                 out = socket.getOutputStream();
             } else {
                 if( Debug.LDAP_DEBUG) {
@@ -343,7 +370,7 @@ public final class Connection implements Runnable
             }
         } catch(IOException ioe) {
             // Unable to connect to server host:port
-            freeBindSemaphore(semId);
+            freeWriteSemaphore(semId);
             throw new LDAPException(
                   ExceptionMessages.CONNECTION_ERROR,
                   new Object[] { host, new Integer(port) },
@@ -356,7 +383,7 @@ public final class Connection implements Runnable
         Thread r = new Thread(this);
         r.setDaemon(true); // If this is the last thread running, allow exit.
         r.start();
-        freeBindSemaphore(semId);
+        freeWriteSemaphore(semId);
         // Wait for new reader to start
         waitForReader(r);
 
@@ -418,8 +445,9 @@ public final class Connection implements Runnable
      *
      * @return a Connection object.
      */
-    synchronized public Connection destroyClone( boolean how, String host, int port)
-        throws LDAPException
+    synchronized public Connection
+        destroyClone( boolean how, String host, int port)
+                    throws LDAPException
     {
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.messages, name +
@@ -440,7 +468,8 @@ public final class Connection implements Runnable
                 // Not a clone and connected
                 if( Debug.LDAP_DEBUG) {
                     Debug.trace( Debug.messages, name +
-                        "destroyClone(" + cloneCount + ") destroy old connection");
+                        "destroyClone(" + cloneCount +
+                        ") destroy old connection");
                 }
                 /*
                  * Either the application has called disconnect or connect
@@ -515,7 +544,7 @@ public final class Connection implements Runnable
     {
         messages.addElement( info);
         // For bind requests, if not connected, attempt to reconnect
-        if( info.isBindRequest() && (isConnected() == false) && (host != null)) {
+        if( info.isBindRequest() && (isConnected() == false) && (host != null)){
             connect( host, port, info.getMessageID());
         }
         LDAPMessage msg = info.getRequest();
@@ -541,7 +570,7 @@ public final class Connection implements Runnable
             Debug.trace( Debug.rawInput, name + "RawWrite: " +
                     msg.getASN1Object().toString());
         }
-        acquireBindSemaphore(id);
+        acquireWriteSemaphore(id);
         try {
             if( myOut == null) {
                 throw new IOException("Output stream not initialized");
@@ -556,25 +585,28 @@ public final class Connection implements Runnable
                     " " + ioe.toString());
             }
 
-			// Could this be due to a server shutdown notification which caused
-			// our Connection to quit.  If so we send back a slightly different
-			// error message.  We could have checked this a little earlier in the
-			// method but that would be an expensive check each time we send out
-			// a message.  Since this shutdown request is going to be an infrequent
-			// occurence we check for it only when we get an IOException
-			if (serverShutdownNotification) {
-				throw new LDAPException( ExceptionMessages.SERVER_SHUTDOWN_REQ,
+            /*
+             * This could be due to a server shutdown notification which caused
+             * our Connection to quit.  If so we send back a slightly different
+             * error message.  We could have checked this a little earlier in
+             * the method but that would be an expensive check each time we
+             * send out a message.  Since this shutdown request is going to be
+             * an infrequent occurence we check for it only when we get an
+             * IOException
+             */
+            if (serverShutdownNotification) {
+                throw new LDAPException( ExceptionMessages.SERVER_SHUTDOWN_REQ,
                     new Object[] { host, new Integer(port)},
-					LDAPException.CONNECT_ERROR,
-					ioe);
-			}
+                    LDAPException.CONNECT_ERROR,
+                    ioe);
+            }
 
             // Other I/O Exception on host:port get reported as is
             throw new LDAPException(ExceptionMessages.IO_EXCEPTION,
                 new Object[] {host, new Integer(port)},
                 LDAPException.CONNECT_ERROR, ioe);
         } finally {
-            freeBindSemaphore(id);
+            freeWriteSemaphore(id);
         }
         return;
     }
@@ -611,46 +643,6 @@ public final class Connection implements Runnable
     }
 
     /**
-     *  Set the input stream for this connection
-     *
-     * @param is the InputStream to set.
-     */
-    public void setInputStream(InputStream is)
-    {
-        in = is;
-    }
-
-    /**
-     * Set the output stream for this connection
-     *
-     * @param os the OutputStream to set.
-     */
-    public void setOutputStream(OutputStream os)
-    {
-        out = os;
-    }
-
-    /**
-     * Gets the input stream for this connection.
-     *
-     * @return the InputStream for this connection
-     */
-    public InputStream getInputStream()
-    {
-        return in;
-    }
-
-    /**
-     * Gets the output stream for this connection.
-     *
-     * @return the InputStream for this connection
-     */
-    public OutputStream getOutputStream()
-    {
-        return out;
-    }
-
-    /**
      * Removes a Message class from the Connection's list
      *
      * @param info the Message class to remove from the list
@@ -664,7 +656,7 @@ public final class Connection implements Runnable
                     "Removed Message(" + info.getMessageID() + ")");
             } else {
                 Debug.trace( Debug.messages, name +
-                    "Removing Message(" + info.getMessageID() + ") - not found");
+                   "Removing Message(" + info.getMessageID() + ") - not found");
             }
         }
         return;
@@ -686,10 +678,11 @@ public final class Connection implements Runnable
      * Cleans up resources associated with this connection.
      * This method may be called by finalize() for the connection, or it may
      * be called by LDAPConnection.disconnect().
-     * Should not have a bindSemaphore lock in place, as deadlock can occur
+     * Should not have a writeSemaphore lock in place, as deadlock can occur
      * while abandoning connections.
      */
-    private void shutdown( String reason, int semaphoreId, LocalException notifyUser)
+    private void
+        shutdown( String reason, int semaphoreId, LocalException notifyUser)
     {
         Message info = null;
         if( shutdown) {
@@ -710,7 +703,7 @@ public final class Connection implements Runnable
                 info = (Message)messages.remove(0);
                 if( Debug.LDAP_DEBUG) {
                     Debug.trace( Debug.messages, name +
-                        "Shutdown removed message(" + info.getMessageID() + ")");
+                       "Shutdown removed message(" + info.getMessageID() + ")");
                 }
             } catch( ArrayIndexOutOfBoundsException ex) {
                 // No more messages
@@ -724,13 +717,13 @@ public final class Connection implements Runnable
         }
 
         // Now send unbind before closing socket
-        int semId = acquireBindSemaphore( semaphoreId);
+        int semId = acquireWriteSemaphore( semaphoreId);
         if( (bindProperties != null) && (out != null)) {
             try {
                 LDAPMessage msg = new LDAPMessage( new RfcUnbindRequest(),null);
                 if( Debug.LDAP_DEBUG) {
                     Debug.trace( Debug.messages, name +
-                          "Writing unbind request (" + msg.getMessageID() + ")");
+                         "Writing unbind request (" + msg.getMessageID() + ")");
                     Debug.trace( Debug.rawInput, name + "RawWrite: " +
                             msg.getASN1Object().toString());
                 }
@@ -755,7 +748,7 @@ public final class Connection implements Runnable
             socket = null;
         }
 
-        freeBindSemaphore( semId);
+        freeWriteSemaphore( semId);
         return;
     }
 
@@ -789,12 +782,178 @@ public final class Connection implements Runnable
     }
 
     /**
-     * This thread decodes and processes RfcLDAPMessage's from the server.
+     * This tests to see if there are any outstanding messages.  If no messages
+     * are in the queue it returns true.  Each message will be tested to
+     * verify that it is complete.
+     * <I>The writeSemaphore must be set for this method to be reliable!</I>
+     *
+     * @return true if no outstanding messages
      */
-    /*
+    public boolean areMessagesComplete(){
+        Object[] messages = this.messages.getObjectArray();
+        int length = messages.length;
+
+        if( Debug.LDAP_DEBUG) {
+            Debug.trace( Debug.TLS, "startTLS: areMessagesComplete? " +
+                    "MessageVector size = " + length);
+        }
+        if (length == 0){
+            return true;
+        }
+
+        for(int i=0; i<length; i++){
+            if ( Debug.LDAP_DEBUG){
+                Debug.trace( Debug.TLS, "startTLS: areMessagesComplete? " +
+                        "Message["+i+"].isComplete()=" +
+                        ((Message)messages[i]).isComplete());
+            }
+            if (((Message)messages[i]).isComplete() == false)
+                return false;
+        }
+        return true;
+    }
+
+    /**
+     * The reader thread will stop when a reply is read with an ID equal
+     * to the messageID passed in to this method.  This is used by
+     * LDAPConnection.StartTLS.
+     */
+    public void stopReaderOnReply(int messageID){
+        if( Debug.LDAP_DEBUG) {
+            Debug.trace( Debug.TLS, "startTLS: stopReaderOnReply of " +
+            "message " + messageID);
+        }
+        this.stopReaderMessageID = messageID;
+        return;
+    }
+
+    /**
+     * Indicates if the connection is using TLS protection.
+     *
+     * Returns true if using TLS protection.
+     */
+    public boolean isTLS(){
+        return (this.nonTLSBackup != null);
+    }
+
+    /**
+     * Starts TLS on this connection
+     * The writeSemaphore should already have been acquired,
+     * the reader thread stopped, checked that no messages are outstanding
+     * on this connection.
+     */
+    public void startTLS()
+        throws LDAPException
+    {
+        if (this.mySocketFactory == null){
+            throw new LDAPException( ExceptionMessages.NO_TLS_FACTORY,
+                                     LDAPException.TLS_NOT_SUPPORTED  );
+        }
+        else
+        if ( !(this.mySocketFactory instanceof LDAPTLSSocketFactory )) {
+            throw new LDAPException( ExceptionMessages.WRONG_FACTORY,
+                                     LDAPException.TLS_NOT_SUPPORTED  );
+        }
+
+        try {
+            /*  We need to wait for the reader to terminate or the reader
+             *  will eat up the TLS handshake packets and throw them away.
+             *  LDAPConnection called stopReaderOnReply before calling this
+             *  method, which should have stopped the reader when the 
+             *  response to the startTLS extended request was received..
+             */
+            waitForReader(null);
+            this.nonTLSBackup = this.socket;
+            this.socket = ((LDAPTLSSocketFactory)
+                        this.mySocketFactory).createTLSSocket( this.socket );
+            this.in = socket.getInputStream();
+            this.out = socket.getOutputStream();
+
+            if( Debug.LDAP_DEBUG) {
+                Debug.trace( Debug.TLS, "connection.startTLS, nonTLSBackup:"+
+                        nonTLSBackup +", TLSSocket:"+socket+", input:"+ in +","
+                        +"output:"+out  );
+            }
+
+            // Start Reader Thread
+            Thread r = new Thread(this);
+            r.setDaemon(true); // If the last thread running, allow exit.
+            r.start();
+            waitForReader(r);
+        }
+        catch( java.net.UnknownHostException uhe) {
+            this.nonTLSBackup = null;
+            throw new LDAPException("The host is unknown",
+                LDAPException.CONNECT_ERROR, uhe);
+        }
+        catch( IOException ioe ) {
+            this.nonTLSBackup = null;
+            throw new LDAPException("Could not negotiate a secure connection",
+                LDAPException.CONNECT_ERROR, ioe);
+        }
+        return;
+    }
+
+    /** stopTLS needs to do the following
+     *  1) block writing (acquireWriteSemaphore).
+     *  2) check that no messages are outstanding.
+     *  3) close the current socket
+     *      - This stops the reader thread
+     *      - set STOP_READING flag on stopReaderMessageID so that
+     *        the reader knows that the IOException is planned.
+     *  4) replace the current socket with nonTLSBackup,
+     *  5) and set nonTLSBackup to null;
+     *  6) reset input and outputstreams
+     *  7) restart reader.
+     *
+     *  Note: Sun's JSSE doesn't allow the nonTLSBackup socket to be
+     * used any more, even though autoclose was false: you get an IOException.
+     * IBM's JSSE hangs when you close the JSSE socket.
+     */
+    public void stopTLS() throws LDAPException
+    {
+        int semaphoreID = this.acquireWriteSemaphore();
+        try{
+            if (!this.areMessagesComplete()) {
+                throw new LDAPException(
+                        ExceptionMessages.OUTSTANDING_OPERATIONS,
+                        LDAPException.OPERATIONS_ERROR );
+            }
+
+            this.stopReaderMessageID = this.STOP_READING;
+            this.socket.close();
+            waitForReader(null);
+            this.socket = this.nonTLSBackup;
+            this.in = this.socket.getInputStream();
+            this.out = this.socket.getOutputStream();
+            if( Debug.LDAP_DEBUG) {
+                Debug.trace( Debug.TLS, "connection.stopTLS, nonTLSBackup:"+
+                        nonTLSBackup +", TLSSocket:"+socket+", input:"+ in +","
+                        +"output:" +out  );
+            }
+            // Allow the new reader to start
+            this.stopReaderMessageID = this.CONTINUE_READING;
+            // start the reader thread
+            Thread r = new Thread(this);
+            r.setDaemon(true); // If the last thread running, allow exit.
+            r.start();
+            waitForReader(r);
+        }catch (IOException ioe){
+            throw new LDAPException(ExceptionMessages.STOPTLS_ERROR,
+                        LDAPException.CONNECT_ERROR, ioe);
+        }finally {
+            this.freeWriteSemaphore(semaphoreID);
+        }
+        return;    
+    }
+
+    /**
+     * This thread decodes and processes RfcLDAPMessage's from the server.
+     *
      * Note: This thread needs a graceful shutdown implementation.
      */
-    public void run() {
+    public void run()
+    {
 
         String reason = "reader: thread stopping";
         LocalException notify = null;
@@ -862,58 +1021,66 @@ public final class Connection implements Runnable
                     info.putReply( msg);   // queue & wake up waiting thread
                 } catch ( NoSuchFieldException ex) {
 
-					// We get the NoSuchFieldException when we could not find a matching
-					// message id.  First check to see if this is an unsolicited
-					// notification (msgID == 0). If it is not we throw it away.
-					// If it is we call any unsolicited
-					// listeners that might have been registered to listen for these
-					// messages.
+                    /*
+                     * We get the NoSuchFieldException when we could not find
+                     * a matching message id.  First check to see if this is
+                     * an unsolicited notification (msgID == 0). If it is not
+                     * we throw it away. If it is we call any unsolicited
+                     * listeners that might have been registered to listen for these
+                     * messages.
+                     */
 
 
-					// Note the location of this code.  We could have required that
-					// message ID 0 be just like other message ID's but since
-					// message ID 0 has to be treated specially we have a seperate
-					// check for message ID 0.  Also note that this test is after the
-					// regular message list has been checked for.  We could have always
-					// checked the list of messages after checking if this is an
-					// unsolicited notification but that would have inefficient as
-					// message ID 0 is a rare event (as of this time).
-					if (msgId == 0) {
+                    /* Note the location of this code.  We could have required
+                     * that message ID 0 be just like other message ID's but
+                     * since message ID 0 has to be treated specially we have
+                     * a separate check for message ID 0.  Also note that
+                     * this test is after the regular message list has been
+                     * checked for.  We could have always checked the list
+                     * of messages after checking if this is an unsolicited
+                     * notification but that would have inefficient as
+                     * message ID 0 is a rare event (as of this time).
+                     */
+                    if (msgId == 0) {
 
-						if( Debug.LDAP_DEBUG ) {
-							Debug.trace( Debug.messages, name + "Received message id 0");
-						}
+                        if( Debug.LDAP_DEBUG ) {
+                            Debug.trace( Debug.messages, name +
+                                    "Received message id 0");
+                        }
 
-						// Notify any listeners that might have been registered
-						notifyAllUnsolicitedListeners(msg);
+                        // Notify any listeners that might have been registered
+                        notifyAllUnsolicitedListeners(msg);
 
-						// Was this a server shutdown unsolicited notification.  IF so
-						// we quit. Actually calling the return will first transfer
-						// control to the finally clause which will do the necessary
-						// clean up.  Note this check could get expensive once junta
-						// starts using unsolcited notifications.  But since not many
-						// unsolicited notifications have been defined as of today
-						// we are OK.
-						if (serverShutdownNotification) {
-							notify = new LocalException(
-								ExceptionMessages.SERVER_SHUTDOWN_REQ,
+                        /*
+                         * Was this a server shutdown unsolicited notification.
+                         * IF so we quit. Actually calling the return will
+                         * first transfer control to the finally clause which
+                         * will do the necessary clean up.
+                         */ 
+                        if (serverShutdownNotification) {
+                            notify = new LocalException(
+                                ExceptionMessages.SERVER_SHUTDOWN_REQ,
                                 new Object[] {host, new Integer(port)},
-								LDAPException.CONNECT_ERROR,
-								null, null);
+                                LDAPException.CONNECT_ERROR,
+                                null, null);
 
-							return;
-						}
+                            return;
+                        }
+                    } else {
 
-					}
-					else {
+                        if( Debug.LDAP_DEBUG ) {
+                            Debug.trace( Debug.messages, name +
+                                "reader: message(" + msgId +
+                                ") not found, discarding reply");
+                        }
 
-						if( Debug.LDAP_DEBUG ) {
-							Debug.trace( Debug.messages, name +
-								"reader: message(" + msgId +
-								") not found, discarding reply");
-						}
+                    }
 
-					}
+                }
+                if ((this.stopReaderMessageID == msgId) ||
+                    (this.stopReaderMessageID == this.STOP_READING)) {
+                    // Stop the reader Thread.
+                    return;
                 }
             }
         } catch( IOException ioe) {
@@ -925,7 +1092,7 @@ public final class Connection implements Runnable
             }
 
             ioex = ioe;
-			if( ! shutdown) {
+            if((this.stopReaderMessageID != this.STOP_READING ) && ! shutdown ){
                 // Connection lost waiting for results from host:port
                 notify = new LocalException(
                     ExceptionMessages.CONNECTION_WAIT,
@@ -938,8 +1105,34 @@ public final class Connection implements Runnable
                 Debug.trace( Debug.messages, name +
                 "reader: connection shutdown");
             }
-            // Notify application of exception, if any
-            shutdown(reason, 0, notify);
+            /*
+             * There can be four states that the reader can be in at this point:
+             *  1) We are starting TLS and will be restarting the reader
+             *     after we have negotiated TLS.
+             *      - Indicated by whether stopReaderMessageID does not
+             *        equal CONTINUE_READING.
+             *      - Don't call Shutdown.
+             *  2) We are stoping TLS and will be restarting after TLS is
+             *     stopped.
+             *      - Indicated by an IOException AND stopReaderMessageID equals
+             *        STOP_READING - in which case notify will be null.
+             *      - Don't call Shutdown
+             *  3) We receive a Server Shutdown notification.
+             *      - Indicated by messageID equal to 0.
+             *      - call Shutdown.
+             *  4) Another error occured
+             *      - Indicated by an IOException AND notify is not NULL
+             *      - call Shutdown.
+             */
+            if (shutdown || (notify != null)) {  //#3 & 4
+                shutdown( reason, 0, notify );
+            } else {
+                this.stopReaderMessageID = this.CONTINUE_READING;
+                if( Debug.LDAP_DEBUG ) {       //#1 & #2
+                    Debug.trace( Debug.TLS,
+                        "reader: Stopping thread, retaining the connection");
+                }
+            }            
         }
         deadReaderException = ioex;
         deadReader = reader;
@@ -972,20 +1165,24 @@ public final class Connection implements Runnable
         return activeReferral;
     }
 
-	/** Add the specific object to the list of listeners that want to be notified when
-	 * an unsolicited notification is received.
-	 */
-	public void addUnsolicitedNotificationListener(LDAPUnsolicitedNotificationListener listener)
-	{
-		unsolicitedListeners.add(listener);
-	}
+    /** Add the specific object to the list of listeners that want to be
+     * notified when an unsolicited notification is received.
+     */
+    public void
+      addUnsolicitedNotificationListener(LDAPUnsolicitedNotificationListener listener)
+    {
+        unsolicitedListeners.add(listener);
+        return;    
+    }
 
-	/** Remove the specific object from current list of listeners
-	*/
-	public void removeUnsolicitedNotificationListener(LDAPUnsolicitedNotificationListener listener)
-	{
-		unsolicitedListeners.removeElement(listener);
-	}
+    /** Remove the specific object from current list of listeners
+    */
+    public void
+      removeUnsolicitedNotificationListener(LDAPUnsolicitedNotificationListener listener)
+    {
+        unsolicitedListeners.removeElement(listener);
+        return;    
+    }
 
     /** Inner class defined so that we can spawn off each unsolicited
      *  listener as a seperate thread.  We did not want to call the
@@ -1006,66 +1203,72 @@ public final class Connection implements Runnable
         {
             this.listenerObj = l;
             this.unsolicitedMsg = m;
+            return;    
         }
 
         public void run()
         {
             listenerObj.messageReceived(unsolicitedMsg);
+            return;    
         }
-
     }
 
-	private void notifyAllUnsolicitedListeners(RfcLDAPMessage message)
-	{
-		if( Debug.LDAP_DEBUG ) {
+    private void notifyAllUnsolicitedListeners(RfcLDAPMessage message)
+    {
+        if( Debug.LDAP_DEBUG ) {
             Debug.trace( Debug.messages, name +
             "Calling all Unsolicited Message Listeners");
         }
 
 
-		// MISSING:  If this is a shutdown notification from the server
-		// set a flag in the Connection class so that we can throw an
-		// appropriate LDAPException to the application
-		LDAPMessage extendedLDAPMessage = new LDAPExtendedResponse(message);
-		String notificationOID = ((LDAPExtendedResponse)extendedLDAPMessage).getID();
-		if (notificationOID.equals(LDAPConnection.SERVER_SHUTDOWN_OID)) {
+        // MISSING:  If this is a shutdown notification from the server
+        // set a flag in the Connection class so that we can throw an
+        // appropriate LDAPException to the application
+        LDAPMessage extendedLDAPMessage = new LDAPExtendedResponse(message);
+        String notificationOID = ((LDAPExtendedResponse)extendedLDAPMessage).getID();
+        if (notificationOID.equals(LDAPConnection.SERVER_SHUTDOWN_OID)) {
 
-			if( Debug.LDAP_DEBUG ) {
-				Debug.trace( Debug.messages, name + "Received server shutdown notification!");
-			}
+            if( Debug.LDAP_DEBUG ) {
+                Debug.trace( Debug.messages, name +
+                    "Received server shutdown notification!");
+            }
 
-			serverShutdownNotification = true;
-		}
+            serverShutdownNotification = true;
+        }
 
-		int numOfListeners = unsolicitedListeners.size();
+        int numOfListeners = unsolicitedListeners.size();
 
-		// Cycle through all the listeners
-		for(int i = 0; i < numOfListeners; i++ ) {
+        // Cycle through all the listeners
+        for(int i = 0; i < numOfListeners; i++ ) {
 
-			// Get next listener
-			LDAPUnsolicitedNotificationListener listener = (LDAPUnsolicitedNotificationListener) unsolicitedListeners.get(i);
+            // Get next listener
+            LDAPUnsolicitedNotificationListener listener =
+              (LDAPUnsolicitedNotificationListener) unsolicitedListeners.get(i);
 
 
-			// Create a new ExtendedResponse each time as we do not want each listener
-			// to have its own copy of the message
-			LDAPExtendedResponse tempLDAPMessage = new LDAPExtendedResponse(message);
+            // Create a new ExtendedResponse each time as we do not want each listener
+            // to have its own copy of the message
+            LDAPExtendedResponse tempLDAPMessage =
+                    new LDAPExtendedResponse(message);
 
-			// Spawn a new thread for each listener to go process the message
-			// The reason we create a new thread rather than just call the
-			// the messageReceived method directly is beacuse we do not know
-			// what kind of processing the notification listener class will
-			// do.  We do not want our deamon thread to block waiting for
-			// the notification listener method to return.
-			UnsolicitedListenerThread u = new UnsolicitedListenerThread(listener, tempLDAPMessage);
+            // Spawn a new thread for each listener to go process the message
+            // The reason we create a new thread rather than just call the
+            // the messageReceived method directly is beacuse we do not know
+            // what kind of processing the notification listener class will
+            // do.  We do not want our deamon thread to block waiting for
+            // the notification listener method to return.
+            UnsolicitedListenerThread u =
+                    new UnsolicitedListenerThread(listener, tempLDAPMessage);
             u.start();
-		}
+        }
 
 
         if( Debug.LDAP_DEBUG ) {
-            Debug.trace( Debug.messages, name + "Done calling all Unsolicited Message Listeners");
+            Debug.trace( Debug.messages, name +
+                "Done calling all Unsolicited Message Listeners");
         }
-
-	}
+        return;
+    }
 
     /**
      * Returns the name of this Connection, used for debug only

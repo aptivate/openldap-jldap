@@ -168,7 +168,7 @@ public class LDAPConnection implements Cloneable
      * <p>You can use this string to request the version of the SDK</p>.
      */
     public static final String LDAP_PROPERTY_SDK = "version.sdk";
-    
+
     /**
      * A string that can be passed in to the getProperty method.
      *
@@ -198,6 +198,11 @@ public class LDAPConnection implements Cloneable
      *<p>SERVER_SHUTDOWN_OID = "1.3.6.1.4.1.1466.20036"
      */
     public static final String SERVER_SHUTDOWN_OID = "1.3.6.1.4.1.1466.20036";
+
+    /**
+     * The OID string that identifies a StartTLS request and response.
+     */
+    private static final String START_TLS_OID = "1.3.6.1.4.1.1466.20037";
 
     /*
      * Constructors
@@ -277,7 +282,7 @@ public class LDAPConnection implements Cloneable
 
         //now just duplicate the defSearchCons and responseCtls
         if (defSearchCons != null){
-            newClone.defSearchCons = (LDAPSearchConstraints)defSearchCons.clone();
+            newClone.defSearchCons=(LDAPSearchConstraints)defSearchCons.clone();
         }
         else{
             newClone.defSearchCons = null;
@@ -448,31 +453,20 @@ public class LDAPConnection implements Cloneable
     }
 
     /**
-     * Returns the stream used by the connection object for receiving data
-     * from the LDAP server.
-     *
-     * @return The stream the connection object used for receiving data,
-     * or null if the object has never connected.
-     *
-     * @see #setInputStream
+     * @deprecated Not Implemented.
      */
-    public InputStream getInputStream()
-    {
-        return conn.getInputStream();
+    public InputStream getInputStream() {
+        throw new RuntimeException(
+             "Method LDAPConnection.getInputStream not implemented");
+        
     }
 
     /**
-     * Returns the stream used by the connection object to send data to the
-     * LDAP server.
-     *
-     * @return The stream the connection object used for sending data
-     * or null if the object has never connected.
-     *
-     * @see #setOutputStream
+     * @deprecated Not Implemented.
      */
-    public OutputStream getOutputStream()
-    {
-        return conn.getOutputStream();
+    public OutputStream getOutputStream() {
+        throw new RuntimeException(
+             "Method LDAPConnection.getOutputStream not implemented");
     }
 
     /**
@@ -590,13 +584,19 @@ public class LDAPConnection implements Cloneable
     }
 
     /**
-     * Indicates if the connection uses TLS, i.e. startTLS has completed.
+     * Indicatates if the connection is protected by TLS.
+     *
+     * @return If startTLS has completed this method returns true.
+     * If stopTLS has completed or start tls failed, this method returns false.
+     *
+     * @return  True if the connection is protected by TLS.
      *
      * @see #startTLS
+     * @see #stopTLS
      */
     public boolean isTLS()
     {
-        return false;
+       return this.conn.isTLS();
     }
 
     /**
@@ -622,7 +622,8 @@ public class LDAPConnection implements Cloneable
 
         // We set the constraints this way, so a thread doesn't get an
         // conconsistant view of the referrals.
-        LDAPSearchConstraints newCons = (LDAPSearchConstraints)defSearchCons.clone();
+        LDAPSearchConstraints newCons =
+                    (LDAPSearchConstraints)defSearchCons.clone();
         newCons.setHopLimit(cons.getHopLimit());
         newCons.setTimeLimit(cons.getTimeLimit());
         newCons.setReferralHandler(cons.getReferralHandler());
@@ -659,37 +660,27 @@ public class LDAPConnection implements Cloneable
     }
 
     /**
-     * Sets the stream used by the connection object for receiving data from
-     * the LDAP server.
-     *
-     * @param stream The input stream for receiving data.
-     *
-     * @see #getInputStream()
+     * @deprecated Not implemented.
      */
     public void setInputStream(InputStream stream)
     {
-        conn.setInputStream(stream);
-        return;
+        throw new RuntimeException(
+             "Method LDAPConnection.setInputStream not implemented");
     }
 
     /**
-     * Sets the stream used by the connection object to send data to the
-     * LDAP server.
-     *
-     * @param stream The output stream for sending data.
-     *
-     * @see #getOutputStream()
+     * @deprecated Not implemented.
      */
     public void setOutputStream(OutputStream stream)
     {
-        conn.setOutputStream(stream);
-        return;
+        throw new RuntimeException(
+             "Method LDAPConnection.setOutputStream not implemented");
     }
 
     /**
      * Sets a property of a connection object.
      *
-     * <p>No property names which can be set have been defined at this time. </p>
+     * <p>No property names which can be set have been defined at this time.</p>
      *
      *
      * @param name    Name of the property to set.
@@ -799,25 +790,92 @@ public class LDAPConnection implements Cloneable
     /**
      * Starts Transport Layer Security (TLS) protocol on this connection
      * to enable session privacy.
-     * This affects the connection characteristics and thus will affect
-     * the source object and all clone objects.
      *
-     * @exception LDAPException Thrown if TLS cannot be started.
+     * <p>This affects the LDAPConnection object and all cloned objects. A
+     * socket factory that implements LDAPTLSSocketFactory must be set on the
+     * connection.</p>
      *
-     * @see #isTLS()
+     * @exception LDAPException Thrown if TLS cannot be started.  If a
+     * SocketFactory has been specified that does not implement
+     * LDAPTLSSocketFactory an LDAPException is thrown.
+     *
+     * @see #isTLS
+     * @see #stopTLS
+     * @see #setSocketFactory
      */
     public void startTLS() throws LDAPException
     {
         if( Debug.LDAP_DEBUG) {
-            Debug.trace( Debug.apiRequests, name +
-            "startTLS()");
+            Debug.trace( Debug.apiRequests, name + "startTLS()");
         }
-        throw new LDAPException(ExceptionMessages.NOT_IMPLEMENTED,
-                                new Object[] {"LDAPConnection.startTLS"},
-                                LDAPException.LDAP_NOT_SUPPORTED);
-                        //"Method LDAPConnection.startTLS not implemented"
+
+
+        LDAPMessage startTLS = makeExtendedOperation(
+                new LDAPExtendedOperation( this.START_TLS_OID, null ),
+                        null, //constraints
+                        (LDAPResponseListener) null);
+
+        int tlsID = startTLS.getMessageID();
+
+        conn.acquireWriteSemaphore( tlsID );
+        try {
+            if (!conn.areMessagesComplete()){
+                throw new com.novell.ldap.LDAPException(
+                        ExceptionMessages.OUTSTANDING_OPERATIONS,
+                        LDAPException.OPERATIONS_ERROR );
+            }
+
+            // Stop reader when response to startTLS request received
+            conn.stopReaderOnReply( tlsID );
+
+            // send tls message
+            LDAPResponseListener listener =
+                    sendRequest(
+                        startTLS,
+                        defSearchCons.getTimeLimit(),
+                        (LDAPResponseListener)null, null );
+
+            LDAPExtendedResponse response =
+                    (LDAPExtendedResponse) listener.getResponse();
+            response.chkResultCode();
+
+            conn.startTLS();
+            // Note: We need to add code for the case that if startTLS
+            // fails, we need to restart the reader.
+        }
+        finally {
+            //Free this semaphore no matter what exceptions get thrown
+            conn.freeWriteSemaphore( tlsID ) ;
+        }
+        return;
     }
 
+    /**
+     * Stops Transport Layer Security(TLS) on the LDAPConnection and reverts
+     * back to an anonymous state.
+     *
+     * @throws LDAPException This can occur for the following reasons: <br>
+     *          StartTLS has not been called before stopTLS<br>
+     *          There exists outstanding messages that have not received all
+     *          responses<br>
+     *          The sever was not able to support the operation
+     *
+     * <p>
+     * Note: The Sun and IBM implementions of JSSE do not allow this function
+     * to work correctly.  The alternative is to close the connection
+     * instead of calling stopTLS.</p>
+     *
+     * @see #startTLS
+     * @see #isTLS
+     */
+    public void stopTLS() throws LDAPException {
+        if (!isTLS()){
+            throw new LDAPException(ExceptionMessages.NO_STARTTLS,
+                    LDAPException.OPERATIONS_ERROR );
+        }
+        this.conn.stopTLS();
+        return;
+    }
     //*************************************************************************
     // Below are all of the LDAP protocol operation methods
     //*************************************************************************
@@ -941,8 +999,8 @@ public class LDAPConnection implements Cloneable
     /**
      * Abandons all search operations for a listener.
      *
-     * <p>All operations in progress, which are managed by the specified listener,
-     * are abandoned.</p>
+     * <p>All operations in progress, which are managed by the specified
+     * listener, are abandoned.</p>
      *
      *  @param listener  The handler returned for messages returned on a
      *                   search request.
@@ -1334,13 +1392,16 @@ public class LDAPConnection implements Cloneable
         Connection conn;
         LDAPResponseListener listener =
             bind(version, dn, passwd, (LDAPResponseListener)null, cons);
-        // There can be only one msgId on this listener, find our Connection object
-        // We make sure it is the right one, not one changed by clone/disconnect
+        /*
+         * There can be only one msgId on this listener, find our Connection
+         * object. We make sure it is the right one, not one changed by
+         * clone/disconnect
+         */
         msgId = listener.getMessageIDs()[0];
         LDAPResponse res = (LDAPResponse)listener.getResponse();
         if( res != null) {
 
-            // Set local copy of responseControls synchronously if there were any
+            // Set local copy of responseControls synchronously if any
             synchronized (responseCtlSemaphore) {
                 responseCtls = res.getControls();
             }
@@ -1448,19 +1509,20 @@ public class LDAPConnection implements Cloneable
                         new RfcLDAPDN(dn),
                         new RfcAuthenticationChoice(
                             new ASN1Tagged(
-                                new ASN1Identifier(ASN1Identifier.CONTEXT, false, 0),
+                                new ASN1Identifier(ASN1Identifier.CONTEXT,
+                                            false, 0),
                                 new ASN1OctetString(passwd),
                                 false))), // implicit tagging
                     cons.getServerControls());
 
         msgId = msg.getMessageID();
-        bindProps = new BindProperties( version, dn.trim(), "simple", null, null);
+        bindProps = new BindProperties(version, dn.trim(),"simple", null, null);
 
         // The semaphore is released when the bind response is queued.
-        conn.acquireBindSemaphore( msgId);
+        conn.acquireWriteSemaphore( msgId);
 
-        LDAPResponseListener listen=sendRequest(msg,cons.getTimeLimit(),listener, bindProps);
-
+        LDAPResponseListener listen = sendRequest(
+                            msg,cons.getTimeLimit(), listener, bindProps);
         return listen;
     }
 
@@ -1496,7 +1558,7 @@ public class LDAPConnection implements Cloneable
      */
     public void bind(String dn,
                      Hashtable props,
-                     /*javax.security.auth.callback.CallbackHandler*/ Object cbh)
+                    /*javax.security.auth.callback.CallbackHandler*/ Object cbh)
                      throws LDAPException
     {
         bind( dn, props, cbh, defSearchCons);
@@ -1537,7 +1599,7 @@ public class LDAPConnection implements Cloneable
      */
     public void bind(String dn,
                      Hashtable props,
-                     /*javax.security.auth.callback.CallbackHandler*/ Object cbh,
+                    /*javax.security.auth.callback.CallbackHandler*/ Object cbh,
                      LDAPConstraints cons)
                      throws LDAPException
     {
@@ -1582,7 +1644,7 @@ public class LDAPConnection implements Cloneable
     public void bind(String dn,
                      String[] mechanisms,
                      Hashtable props,
-                     /*javax.security.auth.callback.CallbackHandler*/ Object cbh)
+                    /*javax.security.auth.callback.CallbackHandler*/ Object cbh)
 
                      throws LDAPException
     {
@@ -1624,7 +1686,7 @@ public class LDAPConnection implements Cloneable
     public void bind(String dn,
                      String[] mechanisms,
                      Hashtable props,
-                     /*javax.security.auth.callback.CallbackHandler*/ Object cbh,
+                    /*javax.security.auth.callback.CallbackHandler*/ Object cbh,
                      LDAPConstraints cons)
                      throws LDAPException
     {
@@ -2106,8 +2168,9 @@ public class LDAPConnection implements Cloneable
      *
      * @param op  The object which contains (1) an identifier of an extended
      *            operation which should be recognized by the particular LDAP
-     *            server this client is connected to and (2) an operation-specific
-     *            sequence of octet strings or BER-encoded values.
+     *            server this client is connected to and (2)
+     *            an operation-specific sequence of octet strings
+     *            or BER-encoded values.
      *
      * @return An operation-specific object, containing an ID and either an octet
      * string or BER-encoded values.
@@ -2132,13 +2195,14 @@ public class LDAPConnection implements Cloneable
      *
      * @param op  The object which contains (1) an identifier of an extended
      *            operation which should be recognized by the particular LDAP
-     *            server this client is connected to and (2) an operation-specific
-     *            sequence of octet strings or BER-encoded values.
+     *            server this client is connected to and (2) an
+     *            operation-specific sequence of octet strings
+     *            or BER-encoded values.
      *<br><br>
      * @param cons The constraints specific to the operation.
      *
-     * @return An operation-specific object, containing an ID and either an octet
-     * string or BER-encoded values.
+     * @return An operation-specific object, containing an ID and either an
+     * octet string or BER-encoded values.
      *
      * @exception LDAPException A general exception which includes an error
      *  message and an LDAP error code.
@@ -2150,8 +2214,10 @@ public class LDAPConnection implements Cloneable
     {
 
         // Call asynchronous API and get back handler to reponse listener
-        LDAPResponseListener listener = extendedOperation(op, cons, (LDAPResponseListener)null);
-        LDAPExtendedResponse response = (LDAPExtendedResponse) listener.getResponse();
+        LDAPResponseListener listener = extendedOperation(op, cons,
+                            (LDAPResponseListener)null);
+        LDAPExtendedResponse response =
+                            (LDAPExtendedResponse) listener.getResponse();
 
         // Set local copy of responseControls synchronously - if there were any
         synchronized (responseCtlSemaphore) {
@@ -2172,8 +2238,9 @@ public class LDAPConnection implements Cloneable
      *
      * @param op  The object which contains (1) an identifier of an extended
      *            operation which should be recognized by the particular LDAP
-     *            server this client is connected to and (2) an operation-specific
-     *            sequence of octet strings or BER-encoded values.
+     *            server this client is connected to and (2) an
+     *            operation-specific sequence of octet strings
+     *            or BER-encoded values.
      *<br><br>
      * @param listener  The handler for messages returned from a server in
      *                  response to this request. If it is null, a listener
@@ -2213,8 +2280,8 @@ public class LDAPConnection implements Cloneable
      *<br><br>
      * @param cons      The constraints specific to this operation.
      *
-     * @return An operation-specific object, containing an ID and either an octet
-     * string or BER-encoded values.
+     * @return An operation-specific object, containing an ID and either an
+     * octet string or BER-encoded values.
      *
      * @exception LDAPException A general exception which includes an error
      *  message and an LDAP error code.
@@ -2225,10 +2292,24 @@ public class LDAPConnection implements Cloneable
                                                   LDAPResponseListener listener)
         throws LDAPException
     {
-        if( Debug.LDAP_DEBUG) {
-            Debug.trace( Debug.apiRequests, name +
-            "extendedOperation(" + op.getValue() + ")");
-        }
+        // Use default constraints if none-specified
+        if(cons == null)
+            cons = defSearchCons;
+        LDAPMessage msg = makeExtendedOperation(op, cons, listener);
+        return sendRequest(msg, cons.getTimeLimit(), listener, null);
+    }
+
+    /**
+     * Formulates the extended operation, constraints into an
+     * LDAPMessage and returns the LDAPMessage.  This is used by
+     * extendedOperation and startTLS which needs the LDAPMessage to
+     * get the MessageID.
+     */
+    protected LDAPMessage makeExtendedOperation(LDAPExtendedOperation op,
+                                                LDAPSearchConstraints cons,
+                                                LDAPResponseListener listener)
+        throws LDAPException
+    {
         // Use default constraints if none-specified
         if(cons == null)
             cons = defSearchCons;
@@ -2239,16 +2320,17 @@ public class LDAPConnection implements Cloneable
             throw new LDAPException(ExceptionMessages.OP_PARAM_ERROR,
                                     LDAPException.PARAM_ERROR);
         }
-
+        if( Debug.LDAP_DEBUG) {
+            Debug.trace( Debug.apiRequests, name +
+            "extendedOperation(" + op.getID() + ")");
+        }
         ASN1OctetString value =
             (op.getValue() != null) ? new ASN1OctetString(op.getValue()) : null;
 
-        RfcExtendedRequest er = new RfcExtendedRequest(new RfcLDAPOID(op.getID()),
-                                                value);
+        RfcExtendedRequest er = new RfcExtendedRequest(
+                            new RfcLDAPOID(op.getID()), value);
 
-        LDAPMessage msg = new LDAPMessage(er, cons.getServerControls());
-
-        return sendRequest(msg, cons.getTimeLimit(), listener, null);
+        return new LDAPMessage(er, cons.getServerControls());
     }
 
     //*************************************************************************
@@ -2256,14 +2338,15 @@ public class LDAPConnection implements Cloneable
     //*************************************************************************
 
      /**
-     *  Returns the Server Controls associated with the most recent response to
-     *  a synchronous request on this connection object, or null
+     *  Returns the Server Controls associated with the most recent response
+     *  to a synchronous request on this connection object, or null
      *  if the latest response contained no Server Controls. The method
      *  always returns null for asynchronous requests. For asynchronous
      *  requests, the response controls are available in LDAPMessage.
      *
-     *  @return The server controls associated with the most recent response to a
-     *  synchronous request or null if the response contains no server controls.
+     *  @return The server controls associated with the most recent response
+     *  to a synchronous request or null if the response contains no server
+     *  controls.
      *
      * @see LDAPMessage#getControls()
      */
@@ -2703,7 +2786,7 @@ public class LDAPConnection implements Cloneable
         }
         LDAPConnection conn = new LDAPConnection();
         conn.connect(toGet.getHost(),toGet.getPort());
-        LDAPEntry toReturn = conn.read(toGet.getDN(), toGet.getAttributeArray());
+        LDAPEntry toReturn = conn.read(toGet.getDN(),toGet.getAttributeArray());
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.apiRequests, "read: disconnect()");
         }
@@ -2743,7 +2826,8 @@ public class LDAPConnection implements Cloneable
         }
         LDAPConnection conn = new LDAPConnection();
         conn.connect(toGet.getHost(),toGet.getPort());
-        LDAPEntry toReturn = conn.read(toGet.getDN(), toGet.getAttributeArray(), cons);
+        LDAPEntry toReturn = conn.read(toGet.getDN(),
+                                    toGet.getAttributeArray(), cons);
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.apiRequests, "read: disconnect()");
         }
@@ -3332,8 +3416,9 @@ public class LDAPConnection implements Cloneable
             cons = (LDAPSearchConstraints)cons.clone();
         }
         cons.setBatchSize(0); // Must wait until all results arrive
-        LDAPSearchResults toReturn = conn.search(toGet.getDN(), toGet.getScope(),
-            toGet.getFilter(), toGet.getAttributeArray(), false, cons);
+        LDAPSearchResults toReturn = conn.search(toGet.getDN(),
+                toGet.getScope(), toGet.getFilter(), toGet.getAttributeArray(),
+                false, cons);
         conn.disconnect();
         return toReturn;
     }
@@ -3399,7 +3484,8 @@ public class LDAPConnection implements Cloneable
 
     /**
      * get an LDAPConnection object so that we can follow a referral.
-     * This function is never called if cons.getReferralFollowing() returns false.
+     * This function is never called if cons.getReferralFollowing() returns
+     * false.
      *
      * @param refs the array of referral strings
      *<br><br>
@@ -3439,8 +3525,9 @@ public class LDAPConnection implements Cloneable
                     rconn.connect(url.getHost(),url.getPort());
                     if( rh != null) {
                         // Get application supplied dn and pw
-                        LDAPRebindAuth ra = ((LDAPRebind)rh).getRebindAuthentication(
-                            url.getHost(),url.getPort());
+                        LDAPRebindAuth ra =
+                                ((LDAPRebind)rh).getRebindAuthentication(
+                                    url.getHost(),url.getPort());
                         dn = ra.getDN();
                         pw = ra.getPassword();
                     }
@@ -3455,8 +3542,8 @@ public class LDAPConnection implements Cloneable
                         try {
                             if( Debug.LDAP_DEBUG) {
                                 Debug.trace( Debug.referrals, name +
-                                "getReferralConnection, exception binding for referral" +
-                                lex.toString());
+                                    "getReferralConnection, exception " + 
+                                    "binding for referral" + lex.toString());
                             }
                             rconn.disconnect();
                             rconn = null;
@@ -3490,7 +3577,8 @@ public class LDAPConnection implements Cloneable
                         LDAPUrl url = new LDAPUrl( referrals[idx]);
                         if( Debug.LDAP_DEBUG) {
                             Debug.trace( Debug.referrals, name +
-                                        "getReferralConnection: Compare host port " +
+                                        "getReferralConnection: " +
+                                        "Compare host port " +
                                         url.getHost() + "-" + rconn.getHost() +
                                         " & " +
                                         url.getPort() + "-" + rconn.getPort());
@@ -3552,7 +3640,8 @@ public class LDAPConnection implements Cloneable
             throw rex;
         }
 
-        // We now have an authenticated connection to be used to follow the referral.
+        // We now have an authenticated connection
+        // to be used to follow the referral.
         return refInfo;
     }
 
@@ -3679,9 +3768,9 @@ public class LDAPConnection implements Cloneable
                 try {
                     MessageAgent agent;
                     if( listen instanceof LDAPResponseListener) {
-                        agent = ((LDAPResponseListener)listen).getMessageAgent();
+                        agent=((LDAPResponseListener)listen).getMessageAgent();
                     } else {
-                        agent = ((LDAPSearchListener)listen).getMessageAgent();
+                        agent=((LDAPSearchListener)listen).getMessageAgent();
                     }
                     agent.sendMessage( rconn.getConnection(), newMsg,
                             defSearchCons.getTimeLimit(), listen, null);
@@ -3691,7 +3780,7 @@ public class LDAPConnection implements Cloneable
                          ExceptionMessages.REFERRAL_SEND,
                          LDAPException.CONNECT_ERROR, null, ex);
                     rex.setReferrals( searchReferral);
-                    ReferralInfo ref = rconn.getConnection().getActiveReferral();
+                    ReferralInfo ref=rconn.getConnection().getActiveReferral();
                     rex.setFailedReferral( ref.getReferralUrl().getUrl());
                     throw rex;
                 }
@@ -3786,7 +3875,8 @@ public class LDAPConnection implements Cloneable
                      // "Referral doesn't make sense for command"
                     ExceptionMessages.IMPROPER_REFERRAL,
                     new Object[] {
-                        new Integer(rfcMsg.getProtocolOp().getIdentifier().getTag())
+                        new Integer(
+                            rfcMsg.getProtocolOp().getIdentifier().getTag())
                     },
                     LDAPException.LOCAL_ERROR);
         }
