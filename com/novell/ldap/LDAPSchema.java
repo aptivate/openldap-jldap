@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSchema.java,v 1.11 2000/10/09 19:11:24 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSchema.java,v 1.12 2000/10/10 22:26:23 bgudmundson Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -212,7 +212,9 @@ public class LDAPSchema {
     *  @return The attribute definition, or null if not found.
     */
    public LDAPAttributeSchema getAttribute( String name ) {
-      throw new RuntimeException("Method LDAPSchema.getAttribute not implemented");
+      if( attributeHashtable.isEmpty() == true || attributeHashtable.containsKey(name) == false)
+      	return null;
+      return (LDAPAttributeSchema) attributeHashtable.get(name);
    }
 
    /*
@@ -228,7 +230,9 @@ public class LDAPSchema {
     * @return The object class definition, or null if not found.
     */
    public LDAPObjectClassSchema getObjectClass( String name ) {
-      throw new RuntimeException("Method LDAPSchema.getObjectClass not implemented");
+      if( objectClassHashtable.isEmpty() == true || objectClassHashtable.containsKey(name) == false)
+      	return null;
+      return (LDAPObjectClassSchema) objectClassHashtable.get(name);
    }
 
    /*
@@ -296,7 +300,7 @@ public class LDAPSchema {
     * @return An enumeration of attribute names.
     */
    public Enumeration getAttributeNames() {
-      throw new RuntimeException("Method LDAPSchema.getAttributeNames not implemented");
+      return attributeHashtable.keys();
    }
 
    /*
@@ -309,7 +313,7 @@ public class LDAPSchema {
     * @return An enumeration of object class names.
     */
    public Enumeration getObjectClassNames() {
-      throw new RuntimeException("Method LDAPSchema.getObjectClassNames not implemented");
+      return objectClassHashtable.keys();
    }
 
    /*
