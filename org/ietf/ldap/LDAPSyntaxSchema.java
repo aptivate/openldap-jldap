@@ -18,7 +18,8 @@ package org.ietf.ldap;
 /**
  * Represents a specific syntax definition in the directory schema.
  *
- * @see com.novell.ldap.LDAPSyntaxSchema
+ *  @see <a href="../../../../doc/com/novell/ldap/LDAPSyntaxSchema.html">
+            com.novell.ldap.LDAPSyntaxSchema</a>
  */
 
 public class LDAPSyntaxSchema
@@ -40,7 +41,10 @@ public class LDAPSyntaxSchema
     /**
      * Constructs a syntax for adding to or deleting from the schema.
      *
-     * @see com.novell.ldap.LDAPSyntaxSchema#LDAPSyntaxSchema(String,String)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPSyntaxSchema.html
+            #LDAPSyntaxSchema(java.lang.String, java.lang.String)">
+            com.novell.ldap.LDAPSyntaxSchema.LDAPSyntaxSchema(String,
+            String)</a>
      */
     public LDAPSyntaxSchema(String oid,
                             String description)
@@ -54,7 +58,9 @@ public class LDAPSyntaxSchema
      * Constructs a syntax from the raw string value returned on a schema
      * query for LDAPSyntaxes.
      *
-     * @see com.novell.ldap.LDAPSyntaxSchema#LDAPSyntaxSchema(String)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPSyntaxSchema.html
+            #LDAPSyntaxSchema(java.lang.String)">
+            com.novell.ldap.LDAPSyntaxSchema.LDAPSyntaxSchema(String)</a>
      */
     public LDAPSyntaxSchema(String raw)
     {

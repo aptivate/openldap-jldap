@@ -20,7 +20,8 @@ import java.util.Enumeration;
 /**
  *  The enumerable results of a synchronous search operation.
  *
- * @see com.novell.ldap.LDAPSearchResults
+ *  @see <a href="../../../../doc/com/novell/ldap/LDAPSearchResults.html">
+            com.novell.ldap.LDAPSearchResults</a>
  */
 public class LDAPSearchResults implements Enumeration
 {
@@ -47,7 +48,9 @@ public class LDAPSearchResults implements Enumeration
     /**
      * Returns a count of the entries in the search result.
      *
-     * @see com.novell.ldap.LDAPSearchResults#getCount()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPSearchResults.html
+            #getCount()">
+            com.novell.ldap.LDAPSearchResults.getCount()</a>
      */
     public int getCount()
     {
@@ -59,7 +62,9 @@ public class LDAPSearchResults implements Enumeration
      * in the context of this search request, or null
      * if no server controls were returned.
      *
-     * @see com.novell.ldap.LDAPSearchResults#getResponseControls()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPSearchResults.html
+            #getResponseControls()">
+            com.novell.ldap.LDAPSearchResults.getResponseControls()</a>
      */
     public LDAPControl[] getResponseControls()
     {
@@ -80,7 +85,9 @@ public class LDAPSearchResults implements Enumeration
      * Specifies whether or not there are more search results in the
      * enumeration.
      *
-     * @see com.novell.ldap.LDAPSearchResults#hasMoreElements()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPSearchResults.html
+            #hasMoreElements()">
+            com.novell.ldap.LDAPSearchResults.hasMoreElements()</a>
      */
     public boolean hasMoreElements()
     {
@@ -90,7 +97,9 @@ public class LDAPSearchResults implements Enumeration
     /**
      * Returns the next result in the enumeration as an LDAPEntry.
      *
-     * @see com.novell.ldap.LDAPSearchResults#next()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPSearchResults.html
+            #next()">
+            com.novell.ldap.LDAPSearchResults.next()</a>
      */
     public LDAPEntry next() throws LDAPException
     {
@@ -109,7 +118,9 @@ public class LDAPSearchResults implements Enumeration
     /**
      * Returns the next result in the enumeration as an Object.
      *
-     * @see com.novell.ldap.LDAPSearchResults#nextElement()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPSearchResults.html
+            #nextElement()">
+            com.novell.ldap.LDAPSearchResults.nextElement()</a>
      */
     public Object nextElement()
     {
@@ -134,7 +145,9 @@ public class LDAPSearchResults implements Enumeration
      * Sorts all entries in the results using the provided comparison
      * object.
      *
-     * @see com.novell.ldap.LDAPSearchResults#sort(LDAPEntryComparator)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPSearchResults.html
+            #sort(com.novell.ldap.LDAPEntryComparator)">
+            com.novell.ldap.LDAPSearchResults.sort(LDAPEntryComparator)</a>
      */
     public void sort(LDAPEntryComparator comp)
     {
