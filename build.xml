@@ -1,4 +1,4 @@
-<!-- $Novell: /ldap/src/jldap/build.xml,v 1.31 2001/03/02 21:42:31 cmorris Exp $ -->
+<!-- $Novell: /ldap/src/jldap/build.xml,v 1.32 2001/03/02 22:42:34 vtag Exp $ -->
 <!--
  ******************************************************************************
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
@@ -260,7 +260,7 @@
     <!-- =================================================================== -->
     <!-- create javadoc for IETF ldap classes                                -->
     <!-- =================================================================== -->
-    <target name="docldap" depends="init, jar">
+    <target name="docldap" depends="init, debug">
 		<delete dir="${pkg.doc}"/>
         <echo message="Creating distribution ldap javadoc"/>
         <mkdir dir="${pkg.doc}"/>
