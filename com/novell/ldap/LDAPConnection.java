@@ -2414,6 +2414,9 @@ public class LDAPConnection implements Cloneable
      * <p>The LDAPModification object specifies both the change to be made and
      * the LDAPAttribute value to be changed.</p>
      *
+     * <p>If the request fails with {@link LDAPException#CONNECT_ERROR},
+     * it is indeterminate whether or not the server made the modification.</p>
+     *
      *  @param dn     The distinguished name of the entry to modify.
      *<br><br>
      *  @param mod    A single change to be made to the entry.
@@ -2438,6 +2441,9 @@ public class LDAPConnection implements Cloneable
      *
      * <p>The LDAPModification object specifies both the change to be
      * made and the LDAPAttribute value to be changed.</p>
+     *
+     * <p>If the request fails with {@link LDAPException#CONNECT_ERROR},
+     * it is indeterminate whether or not the server made the modification.</p>
      *
      *  @param dn       The distinguished name of the entry to modify.
      *<br><br>
@@ -2466,6 +2472,12 @@ public class LDAPConnection implements Cloneable
      *
      * <p>For example, this modify method changes attribute values, adds
      * new attribute values, or removes existing attribute values.</p>
+     *   
+     * <p>Because the server applies all changes in a ModificationSet
+     * atomically, the application can expect that no changes
+     * have been performed if an error is returned.
+     * If the request fails with {@link LDAPException#CONNECT_ERROR},
+     * it is indeterminate whether or not the server made the modifications.</p>
      *
      *  @param dn     Distinguished name of the entry to modify.
      *<br><br>
@@ -2487,6 +2499,12 @@ public class LDAPConnection implements Cloneable
      *
      * <p>For example, this modify method changes attribute values, adds new
      * attribute values, or removes existing attribute values.</p>
+     *
+     * <p>Because the server applies all changes in a ModificationSet
+     * atomically, the application can expect that no changes
+     * have been performed if an error is returned.
+     * If the request fails with {@link LDAPException#CONNECT_ERROR},
+     * it is indeterminate whether or not the server made the modifications.</p>
      *
      *  @param dn      The distinguished name of the entry to modify.
      *<br><br>
@@ -2530,6 +2548,9 @@ public class LDAPConnection implements Cloneable
      * <p>The LDAPModification object specifies both the change to be made and
      * the LDAPAttribute value to be changed.</p>
      *
+     * <p>If the request fails with {@link LDAPException#CONNECT_ERROR},
+     * it is indeterminate whether or not the server made the modification.</p>
+     *
      *  @param dn         Distinguished name of the entry to modify.
      *<br><br>
      *  @param mod        A single change to be made to the entry.
@@ -2558,6 +2579,9 @@ public class LDAPConnection implements Cloneable
      *
      * <p>The LDAPModification object specifies both the change to be made
      * and the LDAPAttribute value to be changed.</p>
+     *
+     * <p>If the request fails with {@link LDAPException#CONNECT_ERROR},
+     * it is indeterminate whether or not the server made the modification.</p>
      *
      *  @param dn          Distinguished name of the entry to modify.
      *<br><br>
@@ -2590,6 +2614,12 @@ public class LDAPConnection implements Cloneable
      * <p>For example, this modify method can change attribute values, add new
      * attribute values, or remove existing attribute values.</p>
      *
+     * <p>Because the server applies all changes in a ModificationSet
+     * atomically, the application can expect that no changes
+     * have been performed if an error is returned.
+     * If the request fails with {@link LDAPException#CONNECT_ERROR},
+     * it is indeterminate whether or not the server made the modifications.</p>
+     *
      *  @param dn         The distinguished name of the entry to modify.
      *<br><br>
      *  @param mods       A set of changes to be made to the entry.
@@ -2615,6 +2645,12 @@ public class LDAPConnection implements Cloneable
      *
      * <p>For example, this modify method can change attribute values, add new
      * attribute values, or remove existing attribute values.</p>
+     *
+     * <p>Because the server applies all changes in a ModificationSet
+     * atomically, the application can expect that no changes
+     * have been performed if an error is returned.
+     * If the request fails with {@link LDAPException#CONNECT_ERROR},
+     * it is indeterminate whether or not the server made the modifications.</p>
      *
      *  @param dn         The distinguished name of the entry to modify.
      *<br><br>
