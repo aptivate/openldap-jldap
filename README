@@ -1,3 +1,4 @@
+    $Novell$
 
                               Building JLDAP
 
@@ -15,16 +16,16 @@ For Win32
         set ANT_HOME=d:\jldap/ant
         PATH %ANT_HOME%\bin;%PATH%
 
-    for Linux running shell with this source directory in /usr/home/jldap and java
-    is installed in /local/jdk1.2.2 then:
-		JAVA_HOME=/local/jdk1.2.2
-        ANT_HOME=/usr/home/jldap/ant
-	    PATH="${ANT_HOME}/bin;${PATH}
-	    export ANT_HOME PATH JAVA_HOME
+    for Linux running shell with this source directory in /usr/home/jldap
+    and java is installed in /local/jdk1.2.2 then:
+        ANT_HOME=$PWD/jldap/ant
+        JAVA_HOME=/local/jdk1.2.2
+        PATH=".:$ANT_HOME/bin:$PATH"
+        export ANT_HOME JAVA_HOME PATH
 
 To build everything just invoke ant as follows:
 
-	ant all
+    ant all
 
 
 Targets available are from the top of the tree are:
