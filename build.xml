@@ -24,10 +24,15 @@
 <property name="pkg.lib" value="pkg/lib"/>
 <property name="pkg.lib.debug" value="pkg/lib_debug"/>
 <property name="pkg.doc" value="pkg/doc"/>
+<property name="pkg.doc.framewk" value="pkg/doc/framewk"/>
+<property name="pkg.doc.ldap" value="pkg/doc/ldap"/>
+<property name="pkg.doc.novbp" value="pkg/doc/novbp"/>
 <property name="pkg.samples" value="pkg/samples"/>
 
 <property name="lib" value="lib"/>
 <property name="doc" value="doc"/>
+<property name="doc.framewk" value="doc/framewk"/>
+<property name="doc.ldap" value="doc/ldap"/>
 <property name="lib.debug" value="lib_debug"/>
 <property name="ldap" value="ldap"/>
 <property name="novbp" value="novbp"/>
@@ -72,7 +77,8 @@
   <target name="jar" depends="lib"/>
 
   <target name="install" depends="init">
-	<mkdir dir="${ldap}/${doc}"/>
+	<mkdir dir="${ldap}/${doc.framewk}"/>
+	<mkdir dir="${ldap}/${doc.ldap}"/>
 	<mkdir dir="${ldap}/${lib}"/>
 	<mkdir dir="${ldap}/${lib.debug}"/>
 	<mkdir dir="${novbp}/${doc}"/>
@@ -91,8 +97,9 @@
 	<copydir src="${ldap}/${lib.debug}"   dest="${pkg.lib.debug}"/>
 	<copydir src="${novbp}/${lib.debug}"  dest="${pkg.lib.debug}"/>
 
-	<copydir src="${ldap}/${doc}"         dest="${pkg.doc}/${ldap}"/>
-	<copydir src="${novbp}/${doc}"        dest="${pkg.doc}/${novbp}"/>
+	<copydir src="${ldap}/${doc.framewk}" dest="${pkg.doc.framewk}"/>
+	<copydir src="${ldap}/${doc.ldap}"    dest="${pkg.doc.ldap}"/>
+	<copydir src="${novbp}/${doc}"        dest="${pkg.doc.novbp}"/>
 
 	<copydir src="${novbp}/samples/ldap/ext"  dest="${pkg.samples}/${novbp}/ext"/>
   </target>
