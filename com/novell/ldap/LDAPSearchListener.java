@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/org/ietf/ldap/LDAPSearchListener.java,v 1.7 2000/08/13 21:23:31 smerrill Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/org/ietf/ldap/LDAPSearchListener.java,v 1.8 2000/08/15 00:53:08 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -64,13 +64,13 @@ public class LDAPSearchListener extends LDAPListener {
 
       if(msg.getProtocolOp() instanceof SearchResultEntry) {
          message = new LDAPSearchResult(msg);
-         queue.removeMessageID(message.getMessageID());
       }
       else if(msg.getProtocolOp() instanceof SearchResultReference) {
          message = new LDAPSearchResultReference(msg);
       }
       else { // must be SearchResultDone
          message = new LDAPResponse(msg);
+         queue.removeMessageID(message.getMessageID());
       }
 
       // network error exceptions... (LDAP_TIMEOUT for example)

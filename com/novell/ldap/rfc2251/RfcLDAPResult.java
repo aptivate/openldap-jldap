@@ -168,8 +168,7 @@ public class LDAPResult extends ASN1Sequence implements Response {
     */
    public LDAPDN getMatchedDN()
    {
-//      return new LDAPDN(((ASN1OctetString)get(1)).getContent()); // fix this!!
-      return (LDAPDN)get(1);
+		return new LDAPDN(((ASN1OctetString)get(1)).getString());
    }
 
    /**
@@ -177,8 +176,7 @@ public class LDAPResult extends ASN1Sequence implements Response {
     */
    public LDAPString getErrorMessage()
    {
-//      return new LDAPString(((ASN1OctetString)get(2)).getContent()); // fix this!!
-      return (LDAPString)get(2);
+		return new LDAPString(((ASN1OctetString)get(2)).getString());
    }
 
    /**
@@ -186,7 +184,7 @@ public class LDAPResult extends ASN1Sequence implements Response {
     */
    public Referral getReferral()
    {
-      return (Referral)get(3);
+		return (size() > 3) ? (Referral)get(3) : null;
    }
 }
 
