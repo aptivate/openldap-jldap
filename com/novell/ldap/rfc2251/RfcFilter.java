@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/com/novell/asn1/ldap/Filter.java,v 1.8 2000/08/25 00:19:01 smerrill Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/com/novell/asn1/ldap/Filter.java,v 1.9 2000/08/28 22:18:53 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  ***************************************************************************/
@@ -90,6 +90,7 @@ public class Filter extends ASN1Choice {
    //*************************************************************************
 
    private StringTokenizer st;
+   private FilterTokenizer ft;
 
    //*************************************************************************
    // Constructor for Filter
@@ -120,6 +121,7 @@ public class Filter extends ASN1Choice {
         filterExpr = "(" + filterExpr + ")";
 
       st = new StringTokenizer(filterExpr, "()=", true);
+      ft = new FilterTokenizer(filterExpr);
 
       return parseFilter();
    }
@@ -130,19 +132,19 @@ public class Filter extends ASN1Choice {
    private ASN1Tagged parseFilter()
       throws LDAPException
    {
-		if(!st.nextToken().equals("(")) {
-			throw new LDAPException("Missing opening paren",
-											LDAPException.FILTER_ERROR);
-		}
+      if(!st.nextToken().equals("(")) {
+         throw new LDAPException("Missing opening paren",
+                                 LDAPException.FILTER_ERROR);
+      }
 
       ASN1Tagged filter = parseFilterComp();
-		
-		if(st.countTokens() > 0) {
-			if(!st.nextToken().equals(")")) {
-				throw new LDAPException("Missing closing paren",
-												LDAPException.FILTER_ERROR);
-			}
-		}
+      
+      if(st.countTokens() > 0) {
+         if(!st.nextToken().equals(")")) {
+            throw new LDAPException("Missing closing paren",
+                                    LDAPException.FILTER_ERROR);
+         }
+      }
 
       return filter;
    }
@@ -318,7 +320,7 @@ public class Filter extends ASN1Choice {
       while(st.nextToken("()").trim().equals("("))
       {
          set.add(parseFilterComp());
-			st.nextToken(")");
+         st.nextToken(")");
       }
 
       return set;
@@ -388,6 +390,252 @@ public class Filter extends ASN1Choice {
       }
 
       return sb.toString();
+   }
+
+
+//---------------------------------------------------------------------------
+   /**
+    * 
+    */
+   private ASN1Tagged parseFilter2()
+      throws LDAPException
+   {
+      ft.getLeftParen();
+
+      ASN1Tagged filter = parseFilterComp2();
+      
+      ft.getRightParen();
+
+      return filter;
+   }
+
+   /**
+    * RFC 2254 filter helper method. Will Parse a filter component.
+    */
+   private ASN1Tagged parseFilterComp2()
+      throws LDAPException
+   {
+      ASN1Tagged tag = null;
+      int filterComp = ft.getOpOrAttr();
+
+      switch(filterComp) {
+         case AND:
+         case OR:
+            tag = new ASN1Tagged(
+               new ASN1Identifier(ASN1Identifier.CONTEXT, true, filterComp),
+               parseFilterList(),
+               false);
+         case NOT:
+            tag = new ASN1Tagged(
+               new ASN1Identifier(ASN1Identifier.CONTEXT, true, filterComp),
+               parseFilter(),
+               true);
+         default:
+            int filterType = ft.getFilterType();
+            String value = ft.getValue();
+
+            switch(filterType) {
+               case GREATER_OR_EQUAL:
+               case LESS_OR_EQUAL:
+               case APPROX_MATCH:
+                  tag = new ASN1Tagged(
+                     new ASN1Identifier(ASN1Identifier.CONTEXT, true, filterType),
+                     new AttributeValueAssertion(
+                        new AttributeDescription(ft.getAttr()),
+                        new AssertionValue(escaped2unicode(value))),
+                     false);
+                  break;
+               case EQUALITY_MATCH:
+                  if(value.equals("*")) { // present
+                     tag = new ASN1Tagged(
+                        new ASN1Identifier(ASN1Identifier.CONTEXT, false, PRESENT),
+                        new AttributeDescription(ft.getAttr()),
+                        false);
+                  }
+                  else if(value.indexOf('*') != -1) { // substring
+                     // parse: [initial], *any*, [final] into an ASN1SequenceOf
+                     StringTokenizer sub = new StringTokenizer(value, "*", true);
+                     ASN1SequenceOf seq = new ASN1SequenceOf(5);
+                     int tokCnt = sub.countTokens();
+                     int cnt = 0;
+
+                     while(sub.hasMoreTokens()) {
+                        String subTok = sub.nextToken();
+                        cnt++;
+                        if(subTok.equals("*")) { // delimiter
+                        }
+                        else { // value (LDAPString)
+                           if(cnt == 1) { // initial
+                              seq.add(
+                                 new ASN1Tagged(
+                                    new ASN1Identifier(ASN1Identifier.CONTEXT,
+                                                       false, INITIAL),
+                                    new LDAPString(escaped2unicode(subTok)),
+                                    false));
+                           }
+                           else if(cnt < tokCnt) { // any
+                              seq.add(
+                                 new ASN1Tagged(
+                                    new ASN1Identifier(ASN1Identifier.CONTEXT,
+                                                       false, ANY),
+                                    new LDAPString(escaped2unicode(subTok)),
+                                    false));
+                           }
+                           else { // final
+                              seq.add(
+                                 new ASN1Tagged(
+                                    new ASN1Identifier(ASN1Identifier.CONTEXT,
+                                                       false, FINAL),
+                                    new LDAPString(escaped2unicode(subTok)),
+                                    false));
+                           }
+                        }
+                     }
+
+                     tag = new ASN1Tagged(
+                        new ASN1Identifier(ASN1Identifier.CONTEXT, true,
+                                           SUBSTRINGS),
+                        new SubstringFilter(
+                           new AttributeDescription(ft.getAttr()),
+                           seq),
+                        false);
+                  }
+                  else { // simple
+                     tag = new ASN1Tagged(
+                        new ASN1Identifier(ASN1Identifier.CONTEXT, true,
+                                           EQUALITY_MATCH),
+                        new AttributeValueAssertion(
+                           new AttributeDescription(ft.getAttr()),
+                           new AssertionValue(escaped2unicode(value))),
+                        false);
+                  }
+            }
+      }
+      return tag;
+
+   }
+
+   /**
+    * Must have 1 or more Filters
+    */
+   private ASN1SetOf parseFilterList2()
+      throws LDAPException
+   {
+      ASN1SetOf set = new ASN1SetOf();
+
+      set.add(parseFilter2());
+
+      while(ft.peekChar() == '(') {
+         set.add(parseFilter2());
+      }
+
+      return set;
+   }
+
+}
+
+class FilterTokenizer {
+
+   private String filter;
+   private int i;
+   private int len;
+   private String attr;
+
+   public FilterTokenizer(String filter) {
+      this.filter = filter;
+      this.i = 0;
+      this.len = filter.length();
+   }
+
+   public void getLeftParen()
+      throws LDAPException
+   {
+      if(filter.charAt(i++) != '(') {
+         throw new LDAPException("Missing left paren",
+                                 LDAPException.FILTER_ERROR);
+      }
+   }
+
+   public void getRightParen()
+      throws LDAPException
+   {
+      if(filter.charAt(i++) != ')') {
+         throw new LDAPException("Missing right paren",
+                                 LDAPException.FILTER_ERROR);
+      }
+   }
+
+   public int getOpOrAttr()
+      throws LDAPException
+   {
+      if(filter.charAt(i) == '&') {
+         return Filter.AND;
+      }
+      if(filter.charAt(i) == '|') {
+         return Filter.OR;
+      }
+      if(filter.charAt(i) == '!') {
+         return Filter.NOT;
+      }
+
+      String delims = "=~<>:()";
+      StringBuffer sb = new StringBuffer();
+      while(delims.indexOf(filter.charAt(i)) != -1) {
+         sb.append(filter.charAt(i++));
+      }
+
+      attr = sb.toString().trim();
+      return -1;
+   }
+
+   public int getFilterType()
+      throws LDAPException
+   {
+      if(filter.startsWith(">=")) {
+         i+=2;
+         return Filter.GREATER_OR_EQUAL;
+      }
+      if(filter.startsWith("<=")) {
+         i+=2;
+         return Filter.LESS_OR_EQUAL;
+      }
+      if(filter.startsWith("~=")) {
+         i+=2;
+         return Filter.APPROX_MATCH;
+      }
+      if(filter.charAt(i) == '=') {
+         i++;
+         return Filter.EQUALITY_MATCH;
+      }
+      throw new LDAPException("Invalid filter type",
+                              LDAPException.FILTER_ERROR);
+
+   }
+
+   public String getValue()
+   {
+      StringBuffer sb = new StringBuffer();
+      while(filter.charAt(i) != ')') {
+         sb.append(filter.charAt(i++));
+      }
+      i++;
+
+      return sb.toString().trim();
+   }
+
+   public String getAttr()
+   {
+      return attr;
+   }
+
+   public char peekChar()
+      throws LDAPException
+   {
+      if(i+1 >= len) {
+         throw new LDAPException("Missing right paren",
+                                 LDAPException.FILTER_ERROR);
+      }
+      return filter.charAt(i+1);
    }
 
 }
