@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.57 2001/07/02 16:40:46 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.58 2001/07/20 19:49:45 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -28,28 +28,24 @@ import com.novell.ldap.client.*;
 import com.novell.ldap.resources.*;
 
 /**
- * A thread that creates a connection to an LDAP server. After the
- * connection is made, another thread is created that reads data from the
+ * The class that creates a connection to the LDAP server. After the
+ * connection is made, a thread is created that reads data from the
  * connection.
- * The reader thread will multiplex response messages received from the
-//?? * server to one of many queues. Each ClientListener which registers with
- * this class will have its own message queue. That message queue may be
- * dedicated to a single LDAP operation, or may be shared among many LDAP
- * operations.
- *
-//?? * The applications thread, using an ClientListener, writes data directly
- * to the server using this class. The application thread will then query
-//?? * the ClientListener for a response.
- *
- * The reader thread reads data directly from the server as it decodes
- * an LDAPMessage and writes it to a message queue associated with either
- * an LDAPResponseListener, or an LDAPSearchListener. It uses the message
- * ID from the response to determine which listener is expecting the
- * result. It does this by getting a list of message ID's from each
- * listener, and comparing the message ID from the message just received
- * and adding the message to that listeners queue.
- *
- * Note: the listener thread must not be a "selfish" thread, since some
+ * <p>
+ * The application's thread sends a request to the MessageAgent class, which
+ * creates a Message class.  The Message class calls the writeMessage method
+ * of this class to send the request to the server. The application thread
+ * will then query the MessageAgent class for a response.
+ * <p>
+ * The reader thread multiplexes response messages received from the
+ * server to the appropriate Message class. Each Message class
+ * has its own message queue.
+ * <p>
+ * Unsolicited messages are process separately, and if the application
+ * has registered a handler, a separate thread is created for that
+ * application's handler to process the message.
+ * <p>
+ * Note: the reader thread must not be a "selfish" thread, since some
  * operating systems do not time slice.
  *
  */
