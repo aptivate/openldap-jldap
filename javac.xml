@@ -1,0 +1,82 @@
+<!-- ======================================================================= -->
+<!-- JAVAC build file                                                -->
+<!-- ======================================================================= -->
+<project name="jldap" default="debug" basedir=".">
+<!-- Targets                                                                 -->
+<!--     debug   - Builds debug classes and jar files                        -->
+<!--               At the lowest level directory it only compiles java files.-->
+<!--     release - Builds release classes and jar files                      -->
+<!--               At the lowest level directory it only compiles java files.-->
+
+<property name="ldap" value="ldap"/>
+
+<property name="lib" value="lib"/>
+<property name="lib.debug" value="lib_debug"/>
+
+<property name="build" value="classes"/>
+<property name="build.debug" value="classes_debug"/>
+
+
+    <!-- =================================================================== -->
+    <!-- Initialization                                                      -->
+    <!-- =================================================================== -->
+    <target name="init">
+        <tstamp/>
+		<filter token="COMPILE_DEBUG" value="${DEBUG_VALUE}"/>
+    </target>
+
+    <!-- =================================================================== -->
+    <!-- build debug classes                                                 -->
+    <!-- =================================================================== -->
+    <target name="debug" depends="init">
+
+        <echo message="DEBUG compile in com/novell"/>
+        <mkdir dir="${build.debug}"/>
+        <delete file="com/novell/ldap/client/Debug.java"/>
+        <copyfile src="com/novell/ldap/client/Debug.template" dest="com/novell/ldap/client/Debug.java" filtering="YES"/>
+        <javac srcdir="."
+                                includes="com/novell/**/*.java"
+                destdir="${build.debug}"
+                deprecation="off"
+                debug="on"
+                optimize="off">
+                                <classpath>
+                                        <pathelement location="external/ssl/domestic/nssl1.1_dom.jar"/>
+                                </classpath>
+        </javac>
+
+        <echo message="Creating DEBUG ${lib.debug}/${ldap}.jar file"/>
+        <mkdir dir="${lib.debug}"/>
+        <jar jarfile="${lib.debug}/${ldap}.jar"
+            basedir="${build.debug}"
+        />
+    </target>
+
+    <!-- =================================================================== -->
+    <!-- build release classes                                               -->
+    <!-- =================================================================== -->
+    <target name="release" depends="init">
+
+        <echo message="RELEASE compile in com/novell"/>
+        <mkdir dir="${build}"/>
+        <delete file="com/novell/ldap/client/Debug.java"/>
+        <copyfile src="com/novell/ldap/client/Debug.template" dest="com/novell/ldap/client/Debug.java" filtering="YES"/>
+        <javac srcdir="."
+                                includes="com/novell/**/*.java"
+                destdir="${build}"
+                deprecation="off"
+                debug="off"
+                optimize="on">
+                                <classpath>
+                                        <pathelement location="external/ssl/domestic/nssl1.1_dom.jar"/>
+                                </classpath>
+        </javac>
+
+        <echo message="Creating RELEASE ${lib}/${ldap}.jar file"/>
+        <mkdir dir="${lib}"/>
+        <jar jarfile="${lib}/${ldap}.jar"
+            basedir="${build}"
+        />
+    </target>
+
+</project>

@@ -27,6 +27,7 @@
     <!-- =================================================================== -->
     <target name="clean" depends="init">
 		<delete dir="${top}/${build}/com/novell/ldap/client" includes="*.class"/>
+		<delete file="Debug.java"/>
 	</target>
 
     <!-- =================================================================== -->
@@ -34,6 +35,9 @@
     <!-- =================================================================== -->
     <target name="compile" depends="init">
 		<mkdir dir="${top}/${build}"/>
+		<filter token="COMPILE_DEBUG" value="true"/>
+		<delete file="Debug.java"/>
+		<copyfile src="Debug.template" dest="Debug.java" filtering="YES"/>
         <javac srcdir="${top}"
 				includes="com/novell/ldap/*.java,com/novell/ldap/client/*.java"
                 destdir="${top}/${build}"

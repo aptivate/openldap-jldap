@@ -36,7 +36,7 @@
 <property name="build.tests" value="classes_tests"/>
 
 <property name="doc" value="doc"/>
-<property name="doc.novell" value="${doc}/novell"/>
+<property name="doc.novell" value="${doc}"/>
 
 <property name="pkg" value="pkg"/>
 <property name="pkg.lib" value="${pkg}/${lib}"/>
@@ -66,6 +66,7 @@
     <!-- =================================================================== -->
 	<target name="clean" depends="init">
             <echo message="Cleaning files"/>
+			<delete file="com/novell/ldap/client/Debug.java"/>
             <deltree dir="${doc}"/>
             <deltree dir="${pkg.doc}"/>
             <deltree dir="${lib}"/>
@@ -104,54 +105,18 @@
     <!-- build debug classes                                                 -->
     <!-- =================================================================== -->
     <target name="debug" depends="init">
-            <mkdir dir="${build.debug}"/>
-
-        <echo message="DEBUG compile in com/novell"/>
-
-                <mkdir dir="${build.debug}"/>
-        <javac srcdir="."
-                                includes="com/novell/**/*.java"
-                destdir="${build.debug}"
-                deprecation="off"
-                debug="on"
-                optimize="off">
-                                <classpath>
-                                        <pathelement location="external/ssl/domestic/nssl1.1_dom.jar"/>
-                                </classpath>
-        </javac>
-
-        <echo message="Creating DEBUG ${lib.debug}/${ldap}.jar file"/>
-        <mkdir dir="${lib.debug}"/>
-        <jar jarfile="${lib.debug}/${ldap}.jar"
-            basedir="${build.debug}"
-        />
-        </target>
+		<ant antfile="javac.xml" target="debug">
+			<property name="DEBUG_VALUE" value="true"/>
+		</ant>
+    </target>
 
     <!-- =================================================================== -->
     <!-- build release classes                                               -->
     <!-- =================================================================== -->
     <target name="release" depends="init">
-            <mkdir dir="${build}"/>
-
-        <echo message="RELEASE compile in com/novell"/>
-
-                <mkdir dir="${build}"/>
-        <javac srcdir="."
-                                includes="com/novell/**/*.java"
-                destdir="${build}"
-                deprecation="off"
-                debug="off"
-                optimize="on">
-                                <classpath>
-                                        <pathelement location="external/ssl/domestic/nssl1.1_dom.jar"/>
-                                </classpath>
-        </javac>
-
-        <echo message="Creating RELEASE ${lib}/${ldap}.jar file"/>
-        <mkdir dir="${lib}"/>
-        <jar jarfile="${lib}/${ldap}.jar"
-            basedir="${build}"
-        />
+		<ant antfile="javac.xml" target="release">
+			<property name="DEBUG_VALUE" value="false"/>
+		</ant>
 	</target>
 
     <!-- =================================================================== -->
@@ -280,6 +245,9 @@
                 <deltree dir="${doc.novell}"/>
         <echo message="Creating novell ldap javadoc"/>
         <mkdir dir="${doc.novell}"/>
+		<filter token="COMPILE_DEBUG" value="true"/>
+		<delete file="com/novell/ldap/client/Debug.java"/>
+		<copyfile src="com/novell/ldap/client/Debug.template" dest="com/novell/ldap/client/Debug.java" filtering="YES"/>
         <javadoc sourcepath="${docsrc}"
                         destdir="${doc.novell}"
                         packagenames="com.novell.ldap,com.novell.ldap.asn1,com.novell.ldap.client,com.novell.ldap.protocol,com.novell.ldap.extensions"
