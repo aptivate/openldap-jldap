@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/protocol/Control.java,v 1.6 2000/10/18 16:04:52 javed Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/protocol/Control.java,v 1.7 2000/11/08 00:49:13 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  ***************************************************************************/
@@ -66,11 +66,13 @@ public class Control extends ASN1Sequence {
 	/**
 	 * Constructs a Control object by decoding from an ASN1Sequence
 	 */
-	public Control(ASN1Sequence seq)
+	public Control(ASN1Sequence seqObj)
 		throws IOException
 	{
-		super(3);
-
+	    super(3);
+		int len = seqObj.size();
+		for (int i = 0; i < len; i++)
+		    add(seqObj.get(i));
 	}
 
 	//*************************************************************************
