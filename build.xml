@@ -1,4 +1,4 @@
-<!-- $Novell: /ldap/src/jldap/build.xml,v 1.36 2001/04/20 16:46:15 cmorris Exp $ -->
+<!-- $Novell: /ldap/src/jldap/build.xml,v 1.37 2001/05/01 20:03:50 vtag Exp $ -->
 <!--
  ******************************************************************************
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
@@ -58,8 +58,7 @@
 <property name="pkg.lib.debug" value="${pkg}/${lib}_debug"/>
 <property name="pkg.samples" value="${pkg}/samples"/>
 <property name="pkg.doc" value="${pkg}/${doc}"/>
-<property name="pkg.doc.framework" value="${pkg}/${doc}/framework"/>
-<property name="pkg.doc.ldap" value="${pkg}/${doc}/ldap"/>
+<property name="pkg.apidoc" value="${pkg}/${doc}/api"/>
 
     <!-- =================================================================== -->
     <!-- Initialization                                                      -->
@@ -163,7 +162,6 @@
 		<mkdir dir="${pkg.lib}"/>
 		<mkdir dir="${pkg.lib.debug}"/>
 		<mkdir dir="${pkg.doc}"/>
-		<mkdir dir="${pkg.doc}/${ldap}"/>
 		<mkdir dir="${pkg.samples}"/>
 		<mkdir dir="${pkg.samples}/extensions"/>
 		<mkdir dir="${pkg.samples}/controls"/>
@@ -191,6 +189,11 @@
 		<copy
 			todir="${pkg.samples}/controls">
 			<fileset dir="${src}/samples/controls"/>
+		</copy>
+
+		<copy
+			todir="${pkg.doc}">
+			<fileset dir="${src}/ndkdoc"/>
 		</copy>
 
 		<copy
@@ -265,12 +268,12 @@
     <!-- create javadoc for IETF ldap classes                                -->
     <!-- =================================================================== -->
     <target name="docldap" depends="init, debug">
-		<delete dir="${pkg.doc}"/>
+		<delete dir="${pkg.apidoc}"/>
         <echo message="Creating distribution ldap javadoc"/>
-        <mkdir dir="${pkg.doc}"/>
+        <mkdir dir="${pkg.apidoc}"/>
         <javadoc
         	sourcepath="${docsrc}"
-            destdir="${pkg.doc}"
+            destdir="${pkg.apidoc}"
             classpath="${lib.debug}/${ldap}.jar;external/ssl/domestic/nssl1.2_dom.jar;external/jsse/lib/jcert.jar;external/jsse/lib/jnet.jar;external/jsse/lib/jsse.jar"
             packagenames="com.novell.ldap,com.novell.ldap.extensions,com.novell.ldap.controls,com.novell.ldap.asn1,com.novell.ldap.util"
             overview="overview.html"
