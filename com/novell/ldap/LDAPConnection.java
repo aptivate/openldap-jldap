@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.40 2000/09/29 15:17:13 judy Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.41 2000/10/03 21:43:59 vtag Exp $
 *
 * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
 * 
@@ -51,7 +51,7 @@ public class LDAPConnection implements
    private int authenticationVersion = 3;
    private String authenticationPassword = null;
    private String authenticationDN = null;
-   private String authenticationMethod = new String("none");
+   private String authenticationMethod = "none";
    private Hashtable authenticationHash = null;
 
   /**
@@ -60,8 +60,8 @@ public class LDAPConnection implements
    * <p>Can be set to the following values:</p>
    *<ul>
    *<li>DEREF_NEVER = 0</li>
-   *<li>DEREF_FINDING = 1</li>
-   *<li>DEREF_SEARCHING = 2</li>
+   *<li>DEREF_SEARCHING = 1</li>
+   *<li>DEREF_FINDING = 2</li>
    *<li>DEREF_ALWAYS = 3</li>
    *</ul>
    * <p> Default value: DEREF = 0 </p>
@@ -91,20 +91,6 @@ public class LDAPConnection implements
    /**
    * A setOption key value that specifies the constraint
    * that aliases are dereferenced when
-   * searching for the starting entry but are not dereferenced when
-   * searching the entries beneath the starting point.
-   *
-   * <p> DEREF_FINDING = 2 </p>
-   *
-   * @see LDAPv2#setOption(int, java.lang.Object)
-   * @see LDAPv2#getOption(int)
-   * @see #DEREF
-   */
-   public static final int DEREF_FINDING = 1;
-   
-   /**
-   * A setOption key value that specifies the constraint
-   * that aliases are dereferenced when
    * searching the entries beneath the starting point but not when 
    * searching for the starting entry.
    *
@@ -114,7 +100,21 @@ public class LDAPConnection implements
    * @see LDAPv2#getOption(int)
    * @see #DEREF
    */
-   public static final int DEREF_SEARCHING = 2;
+   public static final int DEREF_SEARCHING = 1;
+   
+   /**
+   * A setOption key value that specifies the constraint
+   * that aliases are dereferenced when
+   * searching for the starting entry but are not dereferenced when
+   * searching the entries beneath the starting point.
+   *
+   * <p> DEREF_FINDING = 2 </p>
+   *
+   * @see LDAPv2#setOption(int, java.lang.Object)
+   * @see LDAPv2#getOption(int)
+   * @see #DEREF
+   */
+   public static final int DEREF_FINDING = 2;
    
   /**
    * A setOption key value that specifies the constraint
@@ -466,7 +466,7 @@ public class LDAPConnection implements
     *
     * @return The Hashtable used for authentication information or null if the 
     * object is not present or not authenticated. The object returned can
-	* be either of type Hashtable or Properties.
+        * be either of type Hashtable or Properties.
     */
    public Hashtable getAuthenticationQualifiers()
    {
