@@ -32,53 +32,31 @@ public class LDAPResponseQueue extends LDAPResponseListener
     /* package */
     LDAPResponseQueue(MessageAgent agent)
     {
-        super( agent);
-        return;
-    }
-    
-    public int[] getMessageIDs()
-    {
-        return super.getMessageIDs();
-    }
-
-    public boolean isResponseReceived()
-    {
-        return super.isResponseReceived();
-    }
-
-    public boolean isResponseReceived(int msgid)
-    {
-        return super.isResponseReceived( msgid);
-    }
-
-   /**
-    * Merges two message queues.  It appends the current and
-    *                   future contents from another queue to this one.
-    *
-    *                  <p>After the operation, queue2.getMessageIDs()
-    *                  returns an empty array, and its outstanding responses
-    *                  have been removed and appended to this queue</p>.
-    *
-    * @param queue2    The queue that is merged from.  Following
-    *                  the merge, this queue object will no
-    *                  longer receive any data, and calls made
-    *                  to its methods will fail with a RuntimeException.
-    */
-    public void merge(LDAPMessageQueue queue2)
-    {
-        super.merge(queue2);
+        super( "LDAPResponseQueue", agent);
         return;
     }
 
-   public LDAPMessage getResponse()
-        throws LDAPException
-   {
-        return super.getResponse();
-   }
-
-   public LDAPMessage getResponse(int msgid)
-        throws LDAPException
-   {
-        return super.getResponse( msgid);
-   }
+    // Note: When deprecated methods are removed, remove this method.
+    // Replaced by doMerge in LDAPMessageQueue
+    /**
+     * Merges two message queues.  It appends the current and
+     *                   future contents from another queue to this one.
+     *
+     *                  <p>After the operation, queue2.getMessageIDs()
+     *                  returns an empty array, and its outstanding responses
+     *                  have been removed and appended to this queue</p>.
+     *
+     * @param queue2    The queue that is merged from.  Following
+     *                  the merge, this queue object will no
+     *                  longer receive any data, and calls made
+     *                  to its methods will fail with a RuntimeException.
+     *                  The queue can be reactivated by using it in an 
+     *                  LDAP request, after which it will receive responses
+     *                  for that request..
+     */
+    public void merge(LDAPResponseQueue queue2)
+    {
+        doMerge( queue2);
+        return;
+    }
 }

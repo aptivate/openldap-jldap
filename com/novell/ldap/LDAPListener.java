@@ -13,6 +13,8 @@
  * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
  ******************************************************************************/
 
+// When deprecated methods are removed, remove this class
+
 package com.novell.ldap;
 
 /**

@@ -36,91 +36,31 @@ public class LDAPSearchQueue extends LDAPSearchListener
     /* package */
     LDAPSearchQueue(MessageAgent agent)
     {
-        super( agent);
+        super( "LDAPSearchQueue", agent);
         return;
     }
 
+    // Note: When deprecated methods are removed, remove this method.
+    // Replaced by doMerge in LDAPMessageQueue
     /**
-     * Returns the name used for debug
+     * Merges two message queues.  It appends the current and
+     *                   future contents from another queue to this one.
      *
-     * @return name of object instance used for debug
+     *                  <p>After the operation, queue2.getMessageIDs()
+     *                  returns an empty array, and its outstanding responses
+     *                  have been removed and appended to this queue</p>.
+     *
+     * @param queue2    The queue that is merged from.  Following
+     *                  the merge, this queue object will no
+     *                  longer receive any data, and calls made
+     *                  to its methods will fail with a RuntimeException.
+     *                  The queue can be reactivated by using it in an 
+     *                  LDAP request, after which it will receive responses
+     *                  for that request..
      */
-    /* package */
-    String getDebugName()
+    public void merge(LDAPSearchQueue queue2)
     {
-        return super.getDebugName();
-    }
-
-   /**
-    * Returns message agent associated with this queue
-    *
-    * @return the message agent associated with this queue
-    */
-    /* package */
-    MessageAgent getMessageAgent()
-    {
-        return super.getMessageAgent();
-    }
-
-    public int[] getMessageIDs()
-    {
-        return super.getMessageIDs();
-    }
-
-    public boolean isResponseReceived()
-    {
-        return super.isResponseReceived();
-    }
-
-    public boolean isResponseReceived(int msgid)
-    {
-        return super.isResponseReceived(msgid);
-    }
-
-   /**
-    * Merges two message queues.  It appends the current and
-    *                   future contents from another queue to this one.
-    *
-    *                  <p>After the operation, queue2.getMessageIDs()
-    *                  returns an empty array, and its outstanding responses
-    *                  have been removed and appended to this queue</p>.
-    *
-    * @param queue2    The queue that is merged from.  Following
-    *                  the merge, this queue object will no
-    *                  longer receive any data, and calls made
-    *                  to its methods will fail with a RuntimeException.
-    */
-    public void merge(LDAPMessageQueue queue2)
-    {
-        super.merge(queue2);
+        doMerge(queue2);
         return;
-    }
-
-    /**
-     * Reports true if all results have been received for a particular
-     * message ID.
-     *
-     * <p>If the search result done has been received from the server for the
-     * message ID, it reports true.  There may still be messages waiting to be
-     * retrieved by the applcation with getResponse.</p>
-     *
-     * @throws IllegalArgumentException if there is no outstanding operation
-     * for the message ID,
-     */
-    public boolean isComplete( int msgid )
-    {
-        return super.isComplete( msgid);
-    }
-
-    public LDAPMessage getResponse()
-        throws LDAPException
-    {
-        return super.getResponse();
-    }
-
-    public LDAPMessage getResponse(int msgid)
-        throws LDAPException
-    {
-        return super.getResponse(msgid);
     }
 }

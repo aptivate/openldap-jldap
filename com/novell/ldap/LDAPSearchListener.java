@@ -13,11 +13,11 @@
  * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
  ******************************************************************************/
 
+// When deprecated methods are removed, remove this class
+
 package com.novell.ldap;
 
 import com.novell.ldap.client.*;
-
-import com.novell.ldap.rfc2251.*;
 
 /**
  *  <p>This class has been renamed to LDAPSearchQueue in IETF
@@ -31,19 +31,8 @@ import com.novell.ldap.rfc2251.*;
  *
  * @deprecated replaced by {@link LDAPSearchQueue}.
  */
-public class LDAPSearchListener implements LDAPMessageQueue
+public class LDAPSearchListener extends LDAPMessageQueue
 {
-
-    // Connection number & name used only for debug
-    private static Object nameLock = new Object(); // protect connNum
-    private static int sQueueNum = 0;
-    private String name = "";
-
-   /**
-    * The client message agent
-    */
-    private MessageAgent agent;
-
     /**
      * Constructs a response queue using a specific message agent
      *
@@ -52,139 +41,44 @@ public class LDAPSearchListener implements LDAPMessageQueue
     /* package */
     LDAPSearchListener(MessageAgent agent)
     {
-        if( Debug.LDAP_DEBUG) {
-            synchronized(nameLock) {
-                name = "LDAPSearchListener(" + ++sQueueNum + "): ";
-            }
-            Debug.trace( Debug.messages, name + "Created");
-        }
-        this.agent = agent;
+        super( "LDAPSearchListener", agent);
         return;
     }
 
+    /* package */
+    LDAPSearchListener(String name, MessageAgent agent)
+    {
+        super( name, agent);
+        return;
+    }
+    
     /**
-     * Returns the name used for debug
+     * Merges two message queues.  It appends the current and
+     *                   future contents from another queue to this one.
      *
-     * @return name of object instance used for debug
+     *                  <p>After the operation, queue2.getMessageIDs()
+     *                  returns an empty array, and its outstanding responses
+     *                  have been removed and appended to this queue</p>.
+     *
+     * @param queue2    The queue that is merged from.  Following
+     *                  the merge, this queue object will no
+     *                  longer receive any data, and calls made
+     *                  to its methods will fail with a RuntimeException.
+     *
+     * @deprecated replaced by {@link LDAPSearchQueue#merge(LDAPMessageQueue)}.
      */
-    /* package */
-    String getDebugName()
-    {
-        return name;
-    }
-
-   /**
-    * Returns the internal client message agent
-    *
-    * @return The internal client message agent
-    */
-    /* package */
-    MessageAgent getMessageAgent()
-    {
-        return agent;
-    }
-
-    public int[] getMessageIDs()
-    {
-        return agent.getMessageIDs();
-    }
-
-    public boolean isResponseReceived()
-    {
-        return agent.isResponseReceived();
-    }
-
-    public boolean isResponseReceived(int msgid)
-    {
-        return agent.isResponseReceived(msgid);
-    }
-
     public void merge(LDAPListener queue2)
     {
-        merge( (LDAPMessageQueue)queue2);
+        doMerge((LDAPMessageQueue)queue2);
         return;
     }
-
+    
+    /**
+     * @see LDAPSearchQueue#merge
+     */
     public void merge(LDAPMessageQueue queue2)
     {
-        if( queue2 instanceof LDAPResponseQueue) {
-            LDAPResponseQueue q = (LDAPResponseQueue)queue2;
-            if( Debug.LDAP_DEBUG) {
-                Debug.trace( Debug.apiRequests, name +
-                    "merge " + q.getDebugName());
-            }
-            agent.merge( q.getMessageAgent());
-        } else {
-            LDAPSearchQueue q = (LDAPSearchQueue)queue2;
-            if( Debug.LDAP_DEBUG) {
-                Debug.trace( Debug.apiRequests, name +
-                    "merge " + q.getDebugName());
-            }
-            agent.merge( q.getMessageAgent());
-        }
+        doMerge(queue2);
         return;
-    }
-
-    /**
-     * Reports true if all results have been received for a particular
-     * message id.
-     *
-     * <p>If the search result done has been received from the server for the
-     * message id, it reports true.  There may still be messages waiting to be
-     * retrieved by the applcation with getResponse.<p>
-     *
-     * @throws IllegalArgumentException if there is no outstanding operation
-     * for the message ID,
-     */
-     public boolean isComplete( int msgid )
-     {
-        return agent.isComplete( msgid);
-     }
-
-    public LDAPMessage getResponse()
-            throws LDAPException
-    {
-        return getResp( null );
-    }
-
-    public LDAPMessage getResponse(int msgid)
-        throws LDAPException
-    {
-        return getResp( new Integer(msgid));
-    }
-
-    private LDAPMessage getResp( Integer msgid)
-    {
-        LDAPMessage message;
-        RfcLDAPMessage msg;
-        Object resp;
-
-        if( Debug.LDAP_DEBUG) {
-            Debug.trace( Debug.apiRequests, name +
-                "getResponse(" + msgid + ")");
-        }
-
-        if( (resp = agent.getLDAPMessage( msgid)) == null) { // blocks
-            return null;  // no messages on this agent
-        }
-
-        // Local error occurred
-        if( resp instanceof LDAPResponse) {
-            return (LDAPMessage)resp;
-        }
-        // Normal message handling
-        msg = (RfcLDAPMessage)resp;
-        switch( msg.getType()) {
-            case LDAPMessage.SEARCH_RESPONSE: // Entry returned from a search
-                message = new LDAPSearchResult(msg);
-                break;
-            case LDAPMessage.SEARCH_RESULT_REFERENCE:
-                message = new LDAPSearchResultReference(msg);
-                break;
-            default:                         // This must be a SearchResultDone
-                message = new LDAPResponse(msg);
-                break;
-        }
-        return message;
     }
 }
