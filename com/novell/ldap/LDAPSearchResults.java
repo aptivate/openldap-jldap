@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResults.java,v 1.30 2000/12/06 19:38:40 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResults.java,v 1.31 2000/12/13 22:31:30 cmorris Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -369,11 +369,12 @@ public class LDAPSearchResults implements Enumeration
 
         // If list is already sorted, just copy from src to dest.  This is an
         // optimization that results in faster sorts for nearly ordered lists.
-/*        if (!c.isGreater((LDAPEntry)src.elementAt(mid-1), (LDAPEntry)src.elementAt(mid))) {
-           System.arraycopy(src, low, dest, low, length);
-
+        if (!c.isGreater((LDAPEntry)src.elementAt(mid-1), (LDAPEntry)src.elementAt(mid))) {
+           //System.arraycopy(src, low, dest, low, length);
+           for(int i=low; i < length; i++)
+              dest.setElementAt(src.elementAt(i),i);
            return;
-        }This optimizaion will be nice but first lets see if this works!*/
+        }//This optimizaion will be nice but first lets see if this works!
 
         // Merge sorted halves (now in src) into dest
         for(int i = low, p = low, q = mid; i < high; i++) {
@@ -384,6 +385,7 @@ public class LDAPSearchResults implements Enumeration
                 dest.setElementAt(src.elementAt(q++),i );
         }
     }
+
 
    /**
    * Used by MergeSort().  Swaps x[a] with x[b], except for Vectors.
