@@ -1,4 +1,4 @@
-<!-- $Novell: /ldap/src/jldap/build.xml,v 1.38 2001/05/08 21:07:27 vtag Exp $ -->
+<!-- $Novell: /ldap/src/jldap/build.xml,v 1.39 2001/05/08 21:56:35 vtag Exp $ -->
 <!--
  ******************************************************************************
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
@@ -163,6 +163,8 @@
 		<mkdir dir="${pkg.lib.debug}"/>
 		<mkdir dir="${pkg.doc}"/>
 		<mkdir dir="${pkg.samples}"/>
+		<mkdir dir="${pkg.samples}/arguments"/>
+		<mkdir dir="${pkg.samples}/asynchronous"/>
 		<mkdir dir="${pkg.samples}/extensions"/>
 		<mkdir dir="${pkg.samples}/controls"/>
 
@@ -174,6 +176,16 @@
 		<copy
 			todir="${pkg.lib.debug}">
 			<fileset dir="${src}/${lib.debug}"/>
+		</copy>
+
+		<copy
+			todir="${pkg.samples}/arguments">
+			<fileset dir="${src}/samples/arguments"/>
+		</copy>
+
+		<copy
+			todir="${pkg.samples}/asynchronous">
+			<fileset dir="${src}/samples/asynchronous"/>
 		</copy>
 
 		<copy
@@ -190,6 +202,14 @@
 			todir="${pkg.samples}/controls">
 			<fileset dir="${src}/samples/controls"/>
 		</copy>
+
+		<delete file="${pkg.samples}/build.xml"/>
+		<delete file="${pkg.samples}/run.bat"/>
+		<delete file="${pkg.samples}/asynchronous/build.xml"/>
+		<delete file="${pkg.samples}/controls/build.xml"/>
+		<delete file="${pkg.samples}/controls/run.bat"/>
+		<delete file="${pkg.samples}/extensions/build.xml"/>
+		<delete file="${pkg.samples}/extensions/run.bat"/>
 
 		<copy
 			todir="${pkg.doc}">
