@@ -1,8 +1,8 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResults.java,v 1.26 2000/11/03 23:30:05 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResults.java,v 1.27 2000/11/22 22:17:39 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
- * 
+ *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
  * TO VERSION 2.0.1 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
@@ -10,7 +10,7 @@
  * IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
  * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.1 OF THE OPENLDAP
  * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
- * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY. 
+ * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
  ***************************************************************************/
 
 package com.novell.ldap;
@@ -55,12 +55,12 @@ public class LDAPSearchResults implements Enumeration
         entries = new Vector( (batchSize == 0) ? 64 : batchSize, vectorIncr );
         entryCount = 0;
         entryIndex = 0;
-        
+
         // setup search reference Vector
         references = new Vector( 5, 5);
         referenceCount = 0;
         referenceIndex = 0;
-        
+
         this.listener = listener;
         this.batchSize = (batchSize == 0) ? Integer.MAX_VALUE : batchSize;
 
@@ -73,16 +73,16 @@ public class LDAPSearchResults implements Enumeration
         }
 
         completed = getBatchOfResults(); // initialize the vector
-        return;    
+        return;
     }
 
     /**
-     * Returns a count of the entries in the search result. 
+     * Returns a count of the entries in the search result.
      *
      * <p>If the search is asynchronous (batch size not 0),
      *  this reports the number of results received so far. </p>
      *
-     * @return The number of search results received so far.  
+     * @return The number of search results received so far.
      */
     public int getCount()
     {
@@ -104,7 +104,7 @@ public class LDAPSearchResults implements Enumeration
 
     /**
      * Specifies whether or not there are more search results in the
-     * enumeration. 
+     * enumeration.
      *
      * @return True, if there are more search results; false, if there are no
      *         more search results.
@@ -140,10 +140,10 @@ public class LDAPSearchResults implements Enumeration
        return;
     }
     /**
-     * Returns the next result in the enumeration as an LDAPEntry. 
+     * Returns the next result in the enumeration as an LDAPEntry.
      *
-     * <p>If automatic referral following is disabled and one or more 
-     * referrals are among the search results, the next method will throw 
+     * <p>If automatic referral following is disabled and one or more
+     * referrals are among the search results, the next method will throw
      * an LDAPReferralException the last time it is called, after all other
      * results have been returned.</p>
      *
@@ -171,7 +171,7 @@ public class LDAPSearchResults implements Enumeration
             if( Debug.LDAP_DEBUG ) {
                 Debug.trace( Debug.messages,
                     name + ".next: returns " +
-                    element.getClass().getName() + "@" + 
+                    element.getClass().getName() + "@" +
                     Integer.toHexString(element.hashCode()) );
             }
             if(element instanceof LDAPResponse) {         // Search done w/bad status
@@ -193,7 +193,7 @@ public class LDAPSearchResults implements Enumeration
                 LDAPException.REFERRAL, refs);
         } else {
             if( Debug.LDAP_DEBUG ) {
-                Debug.trace( Debug.messages, 
+                Debug.trace( Debug.messages,
                     name + ".next: No entry found and request incomplete\n" +
                     "\tentryIndex " + entryIndex +
                     ", entryCount " + entryCount +
@@ -207,7 +207,7 @@ public class LDAPSearchResults implements Enumeration
     }
 
     /**
-     * Returns the next result in the enumeration as an Object. 
+     * Returns the next result in the enumeration as an Object.
      *
      * <p>The nextElement method is the default implementation of the
      * Enumeration.nextElement method. The returned value may be an LDAPEntry
@@ -234,7 +234,7 @@ public class LDAPSearchResults implements Enumeration
             if( Debug.LDAP_DEBUG ) {
                 Debug.trace( Debug.messages,
                     name + ".nextElement: returns " +
-                    element.getClass().getName() + "@" + 
+                    element.getClass().getName() + "@" +
                     Integer.toHexString(element.hashCode()) );
             }
             if(element instanceof LDAPResponse) {             // Search done w/bad status
@@ -242,7 +242,7 @@ public class LDAPSearchResults implements Enumeration
                 ex = ((LDAPResponse)element).getResultException(); // get Exception object
                 if( Debug.LDAP_DEBUG ) {
                     if( ex == null ) {
-                        throw new RuntimeException( 
+                        throw new RuntimeException(
                             name + ".nextElement: got success result from queue");
                     }
                 }
@@ -263,7 +263,7 @@ public class LDAPSearchResults implements Enumeration
                 null, LDAPException.REFERRAL, refs);
         } else {
             if( Debug.LDAP_DEBUG ) {
-                Debug.trace( Debug.messages, 
+                Debug.trace( Debug.messages,
                     name + ".next: No entry found and request incomplete\n" +
                     "\tentryIndex " + entryIndex +
                     ", entryCount " + entryCount +
@@ -278,12 +278,12 @@ public class LDAPSearchResults implements Enumeration
 
     /**
      * Sorts all entries in the results using the provided comparison
-     * object. 
+     * object.
      *
      * <p>If the object has been partially or completely enumerated,
      * only the remaining elements are sorted. Sorting the results requires that
      * they all be present. This implies that LDAPSearchResults.nextElement
-     * method will always block until all results have been retrieved, 
+     * method will always block until all results have been retrieved,
      * after a sort operation.</p>
      *
      * <p>The LDAPCompareAttrNames class is provided to support the common need
@@ -303,8 +303,92 @@ public class LDAPSearchResults implements Enumeration
      *                  LDAPEntry.
      */
     public void sort(LDAPEntryComparator comp) {
-        throw new RuntimeException("LDAPSearchResults: sort not implemented");
+       if (!completed){
+         batchSize = Integer.MAX_VALUE;
+         if ( !getBatchOfResults() )//get all results and sort from this point on.
+         {
+            //we should run out of memory before this happens
+            throw new RuntimeException("All results could not be stored in memory, sort failed");
+         }
+       }
+       //ready to sort from index on.
+        if (entryIndex < entries.size())  //if not all used up This replaces 'rangeCheck' in Java Source 1.2.2 of Arrays.sort(...comparator)
+           mergeSort((Vector)entries.clone(), entries, entryIndex, entries.size(), comp);
+   }
+
+     /** Taken from Java 1.2.2 SourceCode for Arrays:<BR>
+     * Sorts the specified range of the specified array of objects according
+     * to the order induced by the specified comparator.  All elements in the
+     * range must be <i>mutually comparable</i> by the specified comparator
+     * (that is, <tt>c.compare(e1, e2)</tt> must not throw a
+     * <tt>ClassCastException</tt> for any elements <tt>e1</tt> and
+     * <tt>e2</tt> in the range).<p>
+     *
+     * This sort is guaranteed to be <i>stable</i>:  equal elements will
+     * not be reordered as a result of the sort.<p>
+     *
+     * The sorting algorithm is a modified mergesort (in which the merge is
+     * omitted if the highest element in the low sublist is less than the
+     * lowest element in the high sublist).  This algorithm offers guaranteed
+     * n*log(n) performance, and can approach linear performance on nearly
+     * sorted lists.
+     *
+     * @param src the Vector to be sorted.
+     * @param dest the result of Vector.
+     * @param low the index of the first element (inclusive) to be
+     *        sorted.
+     * @param high the index of the last element (exclusive) to be sorted.
+     * @param c the LDAPEntryComparator to determine the order of the Vector.
+     * @throws ClassCastException if the array contains elements that are not
+     *	       <i>LDAPEntry</i>.
+     * @see LDAPComparator or LDAPCompareAttrNames
+     */
+
+    private static void mergeSort(Vector src, Vector dest,
+                                  int low, int high, LDAPEntryComparator c) {
+         int length = high - low;
+
+      	// Insertion sort on smallest arrays
+      	if (length < 7) {
+      	    for (int i=low; i<high; i++)
+      		for (int j=i; j>low && c.isGreater((LDAPEntry)dest.elementAt(j-1), (LDAPEntry)dest.elementAt(j)); j--)
+      		    swap(dest, j, j-1);
+      	    return;
+      	}
+
+        // Recursively sort halves of dest into src
+        int mid = (low + high)/2;
+        mergeSort(dest, src, low, mid, c);
+        mergeSort(dest, src, mid, high, c);
+
+        // If list is already sorted, just copy from src to dest.  This is an
+        // optimization that results in faster sorts for nearly ordered lists.
+/*        if (!c.isGreater((LDAPEntry)src.elementAt(mid-1), (LDAPEntry)src.elementAt(mid))) {
+           System.arraycopy(src, low, dest, low, length);
+
+           return;
+        }This optimizaion will be nice but first lets see if this works!*/
+
+        // Merge sorted halves (now in src) into dest
+        for(int i = low, p = low, q = mid; i < high; i++) {
+            if (q>=high || p<mid && !c.isGreater((LDAPEntry)src.elementAt(p), (LDAPEntry)src.elementAt(q)))
+                dest.setElementAt(src.elementAt(p++),i );
+            else
+                dest.setElementAt(src.elementAt(q++),i );
+        }
     }
+
+   /**
+   * Used by MergeSort().  Swaps x[a] with x[b], except for Vectors.
+   */
+   private static void swap(Vector x, int a, int b) {
+   	Object t = x.elementAt(a);
+   	   x.setElementAt( x.elementAt(b),a);
+   	x.setElementAt(t, b);
+   }
+
+
+
 
     /**
      * @internal
@@ -320,7 +404,7 @@ public class LDAPSearchResults implements Enumeration
     private boolean getBatchOfResults()
     {
         LDAPMessage msg;
-            
+
         for(int i=0; i<batchSize; ) {
             try {
                 if((msg = listener.getResponse()) != null) {
@@ -341,7 +425,7 @@ public class LDAPSearchResults implements Enumeration
                                 " from LDAPMessage@" +
                                 Integer.toHexString(msg.hashCode()) );
                         }
-                    } else 
+                    } else
                     if(msg instanceof LDAPSearchResultReference) { // Search Ref
                         Debug.trace( Debug.messages, "get references");
                         String[] refs = ((LDAPSearchResultReference)msg).getReferrals();
@@ -356,7 +440,7 @@ public class LDAPSearchResults implements Enumeration
                             for( int k=0; k < refs.length; k++ )
                             Debug.trace( Debug.messages,
                                 name + ".read \t" + refs[k]);
-                                
+
                         }
                     } else { // LDAPResponse
                         int resultCode = ((LDAPResponse)msg).getResultCode();
