@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.51 2001/05/03 14:58:06 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.52 2001/05/15 16:49:17 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -997,10 +997,10 @@ public final class Connection implements Runnable
     private class UnsolicitedListenerThread extends Thread
     {
         private LDAPUnsolicitedNotificationListener listenerObj;
-        private LDAPMessage unsolicitedMsg;
+        private LDAPExtendedResponse unsolicitedMsg;
 
         public UnsolicitedListenerThread( LDAPUnsolicitedNotificationListener l,
-                                          LDAPMessage m)
+                                          LDAPExtendedResponse m)
         {
             this.listenerObj = l;
             this.unsolicitedMsg = m;
@@ -1046,7 +1046,7 @@ public final class Connection implements Runnable
 
 			// Create a new ExtendedResponse each time as we do not want each listener
 			// to have its own copy of the message
-			LDAPMessage tempLDAPMessage = new LDAPExtendedResponse(message);
+			LDAPExtendedResponse tempLDAPMessage = new LDAPExtendedResponse(message);
 
 			// Spawn a new thread for each listener to go process the message
 			// The reason we create a new thread rather than just call the

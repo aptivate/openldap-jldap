@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPUnsolicitedNotificationListener.java,v 1.1 2001/02/15 16:56:46 javed Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPUnsolicitedNotificationListener.java,v 1.2 2001/03/01 00:29:58 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -33,7 +33,7 @@ public interface LDAPUnsolicitedNotificationListener
     *  @param msg     An unsolicited message received from the server.
     *<br><br>
     */
-    public void messageReceived(LDAPMessage msg);
+    public void messageReceived(LDAPExtendedResponse msg);
 }
 
 
