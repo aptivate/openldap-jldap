@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Encoder.java,v 1.6 2001/03/01 00:29:59 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Encoder.java,v 1.7 2001/03/15 19:18:30 javed Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -22,15 +22,24 @@ import java.io.*;
  *
  * Encoders which implement this interface may be used to encode any of the
  * ASN1Object data types.
+ *
+ * <p>This package also provides the BEREncoder class that can be used to 
+ * BER encode ASN.1 classes.  However an application might chose to use 
+ * its own encoder class.
+ *
+ * <p>This interface thus allows an application to use this package to
+ * encode ASN.1 objects using other encoding rules if needed.  
+ * 
+ *<p>Note that LDAP packets are required to be BER encoded. Since this package
+ * includes a BER encoder no application provided encoder is needed for 
+ * building LDAP packets.
  */
 public interface ASN1Encoder extends Serializable {
 
-   //*************************************************************************
-   // Encoders for ASN.1 simple types
-   //*************************************************************************
+   /* Encoders for ASN.1 simple types */
 
    /**
-    * Encode an ASN1Boolean directly to a stream.
+    * Encode an ASN1Boolean directly into the provided output stream.
     */
    public void encode(ASN1Boolean b, OutputStream out)
       throws IOException;
@@ -38,7 +47,7 @@ public interface ASN1Encoder extends Serializable {
    /**
     * Encode an ASN1Numeric directly to a stream.
     *
-    * Use a two's complement representation in the fewest number of octets
+    * <p>Use a two's complement representation in the fewest number of octets
     * possible.
     *
     * Will encode INTEGER and ENUMERATED values.
@@ -48,8 +57,8 @@ public interface ASN1Encoder extends Serializable {
 
    /* ASN1 TYPE NOT YET SUPPORTED
     * Encode an ASN1Real directly to a stream.
-   public void encode(ASN1Real r, OutputStream out)
-      throws IOException;
+    * public void encode(ASN1Real r, OutputStream out)
+    * throws IOException;
     */
     
    /**
@@ -60,8 +69,8 @@ public interface ASN1Encoder extends Serializable {
 
    /* ASN1 TYPE NOT YET SUPPORTED
     * Encode an ASN1BitString directly to a stream.
-   public void encode(ASN1BitString bs, OutputStream out)
-      throws IOException;
+    * public void encode(ASN1BitString bs, OutputStream out)
+    * throws IOException;
     */      
 
    /**
@@ -72,19 +81,18 @@ public interface ASN1Encoder extends Serializable {
 
    /* ASN1 TYPE NOT YET SUPPORTED
     * Encode an ASN1ObjectIdentifier directly to a stream.
-   public void encode(ASN1ObjectIdentifier oi, OutputStream out)
-      throws IOException;
+    * public void encode(ASN1ObjectIdentifier oi, OutputStream out)
+    * throws IOException;
     */
 
    /* ASN1 TYPE NOT YET SUPPORTED
     * Encode an ASN1CharacterString directly to a stream.
-   public void encode(ASN1CharacterString cs, OutputStream out)
-      throws IOException;
+    * public void encode(ASN1CharacterString cs, OutputStream out)
+    * throws IOException;
     */
     
-   //*************************************************************************
-   // Encoder for ASN.1 structured types
-   //*************************************************************************
+   /* Encoder for ASN.1 structured types
+    */
 
    /**
     * Encode an ASN1Structured directly to a stream.
@@ -98,13 +106,11 @@ public interface ASN1Encoder extends Serializable {
    public void encode(ASN1Tagged t, OutputStream out)
       throws IOException;
 
-   //*************************************************************************
-   // Encoders for ASN.1 useful types
-   //*************************************************************************
+   /* Encoders for ASN.1 useful types
+    */
 
-   //*************************************************************************
-   // Encoder for ASN.1 Identifier
-   //*************************************************************************
+   /* Encoder for ASN.1 Identifier
+    */
 
    /**
     * Encode an ASN1Identifier directly to a stream.

@@ -3,7 +3,7 @@
 <head>
 <!--
 
-  $Novell: /ldap/src/jldap/com/novell/ldap/asn1/package.html,v 1.4 2000/10/23 23:06:50 vtag Exp $
+  $Novell: /ldap/src/jldap/com/novell/ldap/asn1/package.html,v 1.5 2001/03/02 21:42:33 cmorris Exp $
 
  ******************************************************************************
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
@@ -22,7 +22,16 @@
 </head>
 <body bgcolor="white">
 
-Provides ASN.1 encoding and decoding classes for developing new LDAP controls or extensions.
+The classes provided in this package can be used to encode and decode Abstract Syntax Notation One (ASN.1) object types using BER (Basic Encding Rules). 
+<p>Abstract Syntax Notation One (ASN.1) is the language used by the OSI protocols for describing abstract syntax.  ASN.1 as defined in ISO documents 8824.2 and 8825.2.
+<p>Basic Encoding Rules or BER are historically the original encoding rules for ASN.1.  The LDAP protocol uses the BER encoding format and this package includes classes that allow ASN.1 to be encoded and decoded into the BER format.  
+<p>However the classes have been built to be flexible enought to allow an application to provide its own ASN1 Encoder class.  This class could encode data into any encoding format.
+<p>For example a particular application might want to use PER (Packed Encoding Rules) to encode the supported ASN.1 objects. This application would however be required to supply its own
+PER Encoder and PER Decoder classes. These application provided classes will need to implement the ASN1Encoder and ASN1Decoder interfaces defined in this package.
+<p>Note that LDAP uses BER encoding and the Novell provided package already includes a BEREncoder and BERDEcoder class.
+
+
+<p>These classes can be used by 3rd party developers that wish to develop new LDAP controls or extensions. These classes could also be used by an arbitrary JAVA applcation that wishes to encode and decode data as defined in the ASN.1 format.
 
 
 <h2>Package Specification</h2>
