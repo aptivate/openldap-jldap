@@ -1,0 +1,214 @@
+
+DSML for LDAP
+March 2003
+
+Overview
+
+The LDAP Classes for Java include functionality that enables
+an LDAP server to run as a DSML service. Currently there are
+two DSML service implementations (.war files) that can be 
+generated using the ant build process: dsmlstream.war
+and dsmldom.war. For build instructions, see README. 
+
+Each DSML service consists of a deployable web archive (.war)
+file containing the necessary .jar files and .xml configuration
+files to run DSML v2 on your Web application server.
+
+
+Table of Contents
+
+1.0  Dependencies
+
+2.0  Differences between dsmldom.war and dsmlstream.war
+
+3.0  Deployment
+     3.1  exteNd JBroker Web
+     3.2  exteNd Application Server
+     3.3  Jakarta Tomcat 4
+
+4.0  Configuration
+
+5.0  Enabling TLS (SSL)
+
+6.0  Revision History
+
+
+
+1.0  Dependencies
+
+     Developing and running an application that uses DSML
+     for LDAP requires the following:
+
+     -  dsmlstream.war and/or dsmldom.war. For build instructions
+        see README.
+     
+     -  A Web Application Server or Servlet engine, such as
+        exteNd JBroker Web, Novell exteNd Application
+        Server, or Jakarta Tomcat version 4 (Tomcat 3 is
+        not supported).
+
+     -  JRE 1.4 or higher, required to run an application.
+
+     -  JDK 1.4 or higher, required to develop
+        applications.
+
+     -  An LDAP Server. If you wish to use TLS (SSL) or
+        Start/Stop TLS functionality, you need an LDAP
+        server that supports these features. 
+        
+     -  Novell eDirectory 8.5 or higher if you wish to
+        develop or run applications that use the LDAP
+        extensions for partition and replica management.
+
+
+2.0  Differences between dsmldom.war and dsmlstream.war  
+
+    dsmldom.war - Built by Novell Extend product, JBrokerWeb, this service
+    features more robust SOAP handling.  This service currently does not 
+    support HTTP authentication or SOAP Authentication. By default, this
+    service is accessed at http://[urltoservice]/dsmldom/service, where 
+    [urltoservice] is the URL where the DSML service is deployed (this URL
+    might contain a port).
+
+    dsmlstream.war - Built from a standard servlet, this service features
+    HTTP authentication but not SOAP Authentication, and less robust SOAP
+    handling.  This implementation is an attempt to overcome scalability
+    issues with the DSMLv2 Specification, which specifies that all results
+    to a request be contained in one document.  By default, this service is
+    accessed at http://[urltoservice]/dsmlstream/service, where
+    [urltoservice] is the URL where the DSML service is deployed (this URL
+    might contain a port).
+
+
+
+3.0  Deployment
+
+     This section guides you through deploying DSML for LDAP
+     on exteNd JBroker Web, exteNd Application
+     Server and Jakarta Tomcat 4.
+
+     3.1  exteNd JBroker Web
+
+          The following steps guide you through deploying
+          DSML for LDAP on exteNd JBroker Web. 
+          
+           1. Download and install exteNd JBroker Web. See
+              http://developer.novell.com/ndk/jbroker.htm
+              for information.
+
+           2. Deploy the dsmldom.war file on JBroker
+              using the jwebserv executable.
+
+           3. Browse to http://[urltoservice]/dsmldom/service,
+              where [urltoservice] is the URL where the
+              DSML service is deployed (this URL might
+              contain a port). If the DSML service is
+              installed properly you will see a
+              verification page.
+
+           4. By default, the Web.xml configuration file is
+              set up to access www.nldap.com, which can be
+              used to run DSML samples.
+
+
+     3.2  exteNd Application Server
+
+          The following steps guide you through deploying
+          DSML for LDAP on exteNd Application
+          Server.
+
+           1. Download and install exteNd Application
+              Server. See
+              http://developer.novell.com/ndk/exappserver.htm
+              for information.
+
+           2. Download and install exteNd Workbench. See
+              http://developer.novell.com/ndk/exworkbench.htm
+              for information.
+
+           3. In Workbench, deploy the file by creating a
+              new project of type "deploy only" and specify
+              dsmlstream.war and/or dsmldom.war.
+
+           4. Create a deployment plan and set deployment
+              properties.
+
+           5. Deploy the DSML service to your exteNd
+              Application Server (or another Web
+              application server).
+
+           6. By default, the Web.xml configuration file is
+              set up to access www.nldap.com.
+
+
+     3.3  Jakarta Tomcat 4
+
+          The following steps guide you through deploying
+          DSML for LDAP on Jakarta Tomcat 4.
+
+           1. Download and install Jakarta Tomcat. See
+              http://jakarta.apache.org/tomcat/ for
+              information.
+
+           2. Deploy dsmlstream.war and/or dsmldom.war on
+              Tomcat by placing the file in the tomcat\webapps
+              folder.
+
+           3. Start or restart Tomcat. When Tomcat loads,
+              the .war file(s) are expanded on your server.
+           
+           4. Browse to http://[urltoservice]/dsmlstream/service,
+              where [urltoservice] is the URL where the
+              DSML service is deployed (this URL might
+              contain a port). If the DSML service is
+              installed properly you will see a
+              verification page.
+           
+           5. By default, the Web.xml configuration file is
+              set up to access www.nldap.com.
+
+
+4.0  Configuration
+
+     DSML for LDAP is configured using the WEB-INF\Web.xml. 
+     This file contains several parameters enabling you to
+     customize the behavior of the DSML service. These 
+     parameters are documented within the Web.xml file.
+
+
+5.0  Enabling TLS (SSL)
+
+     In order to use TLS (SSL) with DSML for LDAP you must create
+     a keystore. For instructions on creating a keystore,
+     see the LDAP Classes for Java documentation at
+     http://developer.novell.com/ndk/doc/jldap/jldapenu/data/cchcbejj.html
+     JSSE and the keytool are included with JDK 1.4.
+
+     Once this keystore is created, the path is specified
+     in the ldapKeystore parameter in the Web.xml
+     configuration file:
+
+     <context-param>
+          <param-name>ldapKeystore</param-name>
+          <param-value></param-value>
+     </context-param>
+
+
+6.0  Revision History
+
+     March 2003 initial release.
+
+
+$OpenLDAP$
+ ******************************************************************************
+ * Copyright (C) 1999 - 2003 Novell, Inc. All Rights Reserved.
+ *
+ * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
+ * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
+ * TO VERSION 2.0.1 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
+ * AVAILABLE AT HTTP://WWW.OPENLDAP.ORG/LICENSE.HTML OR IN THE FILE "LICENSE"
+ * IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
+ * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.1 OF THE OPENLDAP
+ * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
+ * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
+ ******************************************************************************

@@ -1,6 +1,6 @@
 
 LDAP Classes for Java
-July 2002
+March 2003
 
 Table of Contents
      1.0  LDAP Classes for Java
@@ -10,6 +10,9 @@ Table of Contents
      5.0  LDAPv2 and LDAPv3 Support
      6.0  Java LDAP Documentation
      7.0  Building JLDAP
+     8.0  Building DSML Services
+          8.1  dsmlstream.war
+          8.2  dsmldom.war
 
 1.0  LDAP Classes for Java
 
@@ -39,7 +42,7 @@ Table of Contents
           The API does not return the exception LDAPLocalException in all
           cases where the exception does not originate from the server.
 
-          The class LDAPExtendedResponse has not yet implement the register
+          The class LDAPExtendedResponse does not yet implement the register
           method.
           
           The sasl bind methods are not yet implemented.
@@ -89,47 +92,76 @@ Table of Contents
 
      Building the Java LDAP API is dependent upon the following:
 
-     -    JDK 1.2 or higher.
+     -    JDK 1.4 or higher, required for building classes that 
+          use the new DSML functionality. Optionally, you can use JDK 1.2
+          or higher by installing the JAXP package and XML parser and
+          by and placing the associated jar files the external directory
+          external/jaxp as follows:
+                external/jaxp/jaxp.jar
+                external/jaxp/xerces.jar
 
-     -    A Sun compliant JSSE implementation, which you place in the
-          directory <javasource_home>/external/jsse/lib.  If you obtain
-          the libraries from the www.sun.com website, you will place
-          three jar files in the external/jsse/lib directory as follows:
+     -    JDK 1.4 or higher, required for building classes that reference
+          TLS(SSL) connections. Optionally, you can download a Sun-compliant 
+          JSSE implementation to compile with JDK 1.2 or higher and place
+          the associated jar files in the external/jsse directory as follows:
                 external/jsse/lib/jcert.jar
                 external/jsse/lib/jnet.jar
                 external/jsse/lib/jsse.jar
 
-     -    The Ant build tool for Java.  Ant was developed by
-          the jakarta.apache.org project and can be obtained
-          from their web site.  We have build this system using
-          Ant version 1.2 compiled on October 24 2000.
+     -    The Ant build tool for Java, required for building the product.
+          Ant was developed by the jakarta.apache.org project and can be
+          obtained from their web site.  We have built this system using
+          Ant version 1.5.1 compiled on October 2 2002.
+
           The ant tool is placed in the following directory structure
           under the root of the source.
-                external/ant/antdoc.html
                 external/ant/LICENSE
-                external/ant/bin
+                external/ant/LICENSE.dom
+                external/ant/LICENSE.sax
+                external/ant/LICENSE.xerces
+                external/ant/welcome.html
                 external/ant/bin/ant
                 external/ant/bin/ant.bat
                 external/ant/bin/antRun
                 external/ant/bin/antRun.bat
                 external/ant/bin/lcp.bat
-                external/ant/bin/runant.pl
+                external/ant/etc/changelog.xsl
+                external/ant/etc/checkstyle-frames.xsl
+                external/ant/etc/coverage-frames.xsl
+                external/ant/etc/jdepend-frames.xsl
+                external/ant/etc/jdepend.xsl
+                external/ant/etc/junit-frames.xsl
+                external/ant/etc/junit-noframes.xsl
+                external/ant/etc/log.xsl
+                external/ant/etc/maudit-frames.xsl
+                external/ant/etc/mmetrics-frames.xsl
+                external/ant/etc/tagdiff.xsl
                 external/ant/lib/ant.jar
-                external/ant/lib/jaxp.jar
-                external/ant/lib/parser.jar
+                external/ant/lib/optional.jar
+                external/ant/lib/xercesImpl.jar
+                external/ant/lib/xml-apis.jar
 
      Running an application that uses the LDAP Classes for
      Java is dependent upon the following:
 
-     -    JRE 1.2 or higher.
+     -    JRE 1.2 or higher, required to run an application.
+          
+     -    JDK/JRE 1.4 or higher, required for running appplications that use
+          the new DSML functionality. Optionally, you can use JDK/JRE 1.2 or
+          higher by installing the JAXP package and setting the associated 
+          jar files in your classpath.
 
-     -    JDK 1.2 Standard Edition or higher.
+     -    JDK/JRE 1.4 or higher, required for running applications that create
+          TLS(SSL) connections. Optionally, you can download a Sun-compliant 
+          JSSE implementation to run with JDK/JRE 1.2 or higher.
 
-     -    A Sun compliant implementation of JSSE to create SSL
-          connections.
+     -    A directory that supports TLS(SSL), required if you wish to
+          run applications that create TLS(SSL) connections.  
+          
+     -    Novell eDirectory 8.5 or higher, required if you wish to run
+          applications that use the LDAP extensions for partition and
+          replica management.
 
-     -    The LDAP extensions for partition and replica management
-          require Novell eDirectory 8.5 or higher.
 
 4.0  Installation
 
@@ -144,17 +176,17 @@ Table of Contents
 
 5.0  LDAPv2 and LDAPv3 Support
 
-          This version of the LDAP Classes for Java
-          supports LDAPv3. Since the consensus in the LDAP
-          community is to encourage everyone to update to
-          LDAPv3, there is no attempt to ensure that these
-          libraries support LDAPv2 servers.
+          This version of the LDAP Classes for Java supports LDAPv3.
+          Since the consensus in the LDAP community is to encourage
+          everyone to update to LDAPv3, there is no attempt to ensure
+          that these libraries support LDAPv2 servers.
 
 6.0  Java LDAP Documentation
 
      Building JLDAP generates javadoc for the Java LDAP Classes.
      There are three directories containing javadoc.  The index.html
-     file is the starting point for all of the javadoc.  The directories are:
+     file is the starting point for the javadoc in each of the directories.
+     The directories are:
      
      pkg/ietfdoc  - contains javadoc for the public classes of the IETF LDAP
                     Java API.  These classes are used by applications needing
@@ -166,10 +198,10 @@ Table of Contents
                     functionality than the IETF classes, and are used by
                     applications needing a full featured API.
                     
-     doc          - contains javadoc for all classes in the LDAP Java API.
-                    This javadoc is typically used by developers building
-                    new functionality, or modifying existing functionality
-                    in the API.
+     doc          - contains javadoc for all classes in the LDAP Java API,
+     				and includes package and private methods and variables.
+                    This javadoc is typically used by developers developing
+                    or modifying the API.
                     
 7.0  Building JLDAP
 
@@ -182,70 +214,56 @@ To set up your environment for ANT, do the following:
 
 For Win32
     Assuming this source directory on win32 is d:\jldap, and java is installed
-    in d:\jdk1.3 then you set in your environment:
+    in d:\j2sdk1.4.1_1 then you set in your environment:
 
-        set JAVA_HOME=d:\jdk1.3
+        set JAVA_HOME=d:\j2sdk1.4.1_1
         set ANT_HOME=d:\jldap\external\ant
         PATH %ANT_HOME%\bin;%JAVA_HOME%\bin;%PATH%
-
-    Note that your SYSTEM path variable (which gets prepended to the above
-    path variable) should not already include the javac.exe compiler.
 
 For Linux / Unix
     Assuming the following:
         1) A Linux system running bourne shell
         2) The source directory is located in /work/jldap
-        3) The Java jdk is installed in /usr/local/jdk1.3
+        3) The Java jdk is installed in /usr/local/j2sdk1.4.1_1
     then export in your environment:
 
         ANT_HOME=/work/jldap/external/ant
-        JAVA_HOME=/usr/local/jdk1.3
+        JAVA_HOME=/usr/local/j2sdk1.4.1_1
         PATH="$ANT_HOME/bin:$JAVA_HOME/bin:$PATH"
         export ANT_HOME JAVA_HOME PATH
 
-To build everything just invoke ant as follows from the top of the source tree:
+To build everything except the DSML services, invoke ant as follows from the
+top of the source tree:
 
     ant all
 
 Targets available at the top of the source tree are:
-     clean   - Cleans all generated files and directories in this and
-               subbordinate directories
-     cleanpkg- Cleans pkg directory
-     doc     - Builds javadoc files
-     debug   - Builds debug classes and jar files
-     release - Builds release classes and jar files
-     lib     - Builds debug & release classes and jar files.
-     jar     - Synonym for lib
-     all     - Builds everything possible. It will build in all directories -
-               debug and release jar files, java doc, samples, test programs,
-               and create an installation directory called pkg.
-     install - Copies build results from all directories and creates the
-               pkg directory.
-     pkg     - Synonym for install
-
-Targets available int the the ldap and novp directories are:
-     clean   - Cleans all generated files and directories in this
-               and subbordinate directories
-     doc     - Builds javadoc files
-     debug   - Builds debug classes and jar files
-     release - Builds release classes and jar files
-     lib     - Builds debug & release classes and jar files
-     jar     - Synonym for lib
-     all     - Builds everything possible in this directory  It will build
-               debug and release jar files, javadoc, samples, and test programs.
-
-Targets available int the the diretories containing java files are:
-     clean   - Cleans all generated class files
-     compile - Builds debug classes and jar files
-     all     - Synonym for compile
-
-
+     clean     - Cleans all generated files and directories in this and
+                 subbordinate directories
+     cleanpkg  - Cleans pkg directory
+     cleanwars - Cleans services/dsml directory 
+     doc       - Builds javadoc files
+     debug     - Builds debug classes and jar files
+     release   - Builds release classes and jar files
+     lib       - Builds debug & release classes and jar files
+     jar       - Synonym for lib
+     all       - Builds everything possible except the DSML services. 
+                 This builds in all directories - debug and release jar files,
+                 java doc, samples, test programs, and creates an installation
+                 directory called pkg.
+     install   - Copies build results from all directories and creates the
+                 pkg directory
+     pkg       - Synonym for install
+     war_stream- Builds dsmlstream.war (see 8.0 Building DSML Services)
+     war_dom   - Builds dsmldom.war (see 8.0 Building DSML Services)
+     wars      - Builds dsmlstream.war and dsmldom.war 
+     
 The following directories are created when "ant all" is run:
 
     Contents of directories in the ldap directory
         jldap/ldap/classes          # Classes used to build lib/ldap.jar 
         jldap/ldap/classes_debug    # Classes used to build lib_debug/ldap.jar 
-        jldap/ldap/doc              # Developer Javadoc for all ldap.jar classes 
+        jldap/ldap/doc              # Developer Javadoc for classes in ldap.jar
         jldap/ldap/lib              # Jar file for ldap - optimized, debug off 
         jldap/ldap/lib_debug        # Jar file for ldap - not optimized, debug on 
 
@@ -256,10 +274,50 @@ The following directories are created when "ant all" is run:
         jldap/pkg/lib               # Jar file for ldap - optimized, debug off 
         jldap/pkg/lib_debug         # Jar file for ldap - not optimized, debug on 
 
+8.0 Building DSML Services
+
+The LDAP Classes for Java include functionality that enables an LDAP server to
+run as a DSML service. Currently there are two DSML service implementations 
+(.war files) that can be generated using the ant build process: dsmlstream.war
+and dsmldom.war. See README.dsml for additional information.
+
+     8.1 dsmldom.war
+     
+     In addition to the dependencies listed in section 3.0, building 
+     dsmldom.war is dependent upon the following:
+     
+     -    Novell eXtend JBroker Web. During the JBroker Web installation, 
+          specify the following install location: 
+          <javasource_home>/external/JBroker. JBroker Web can be obtained
+          at http://developer.novell.com/ndk/jbroker.htm.     
+
+     To build dsmldom.war, invoke ant as follows from the
+     top of the source tree:
+
+     ant war_dom
+
+     8.2 dsmlstream.war
+     
+     In addition to the dependencies listed in section 3.0, building 
+     dsmlstream.war is dependent upon the following:
+     
+     -    servlet.jar. If you have installed JBroker Web, as outlined
+          in 8.1, servlet.jar is already installed.  If not, place the
+          servlet.jar from your application server (JBroker, tomcat, etc.)
+          in the directory <javasource_home>/external/servlet/.
+          
+     To build dsmlstream.war, invoke ant as follows from the
+     top of the source tree:
+
+     ant war_stream
+          
+     You can build both of the above war files by invoking ant as follows:
+
+     ant wars
 
 $OpenLDAP$
  ******************************************************************************
- * Copyright (C) 1999 - 2002 Novell, Inc. All Rights Reserved.
+ * Copyright (C) 1999 - 2003 Novell, Inc. All Rights Reserved.
  *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
