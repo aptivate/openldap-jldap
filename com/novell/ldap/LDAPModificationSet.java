@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPModificationSet.java,v 1.9 2000/10/24 20:38:22 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPModificationSet.java,v 1.10 2000/10/31 23:52:23 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -67,7 +67,7 @@ public class LDAPModificationSet {
     *
     * @param mod The LDAPModification object to add to the set.
     */
-    public void add(LDAPModification mod)
+    /*package*/ void add(LDAPModification mod)
     {
         modSet.addElement(mod);
     }
