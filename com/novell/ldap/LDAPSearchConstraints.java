@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchConstraints.java,v 1.14 2001/02/26 19:58:25 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchConstraints.java,v 1.15 2001/03/01 00:29:56 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -40,7 +40,7 @@ public class LDAPSearchConstraints extends LDAPConstraints {
     private String name;             // String name for debug
 
     /**
-     * Used to indicate that aliases are are never derefrenced.
+     * Used to indicate that aliases are never dereferenced.
      *
      * <p> DEREF_NEVER = 0 </p>
      *
