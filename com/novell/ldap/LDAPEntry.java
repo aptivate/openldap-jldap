@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPEntry.java,v 1.7 2000/10/09 19:11:24 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPEntry.java,v 1.8 2000/10/31 23:52:21 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -70,7 +70,7 @@ public class LDAPEntry {
     * <br><br>               
     * @return An array of LDAPAttribute objects.
     */
-   public LDAPAttribute[] getAttribute(String attrName) {
+   public LDAPAttribute getAttribute(String attrName) {
       throw new RuntimeException("Method LDAPEntry.getAttribute not implemented");
    }
 

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPCompareAttrNames.java,v 1.12 2000/10/31 23:52:18 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPCompareAttrNames.java,v 1.13 2000/11/27 22:45:52 cmorris Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -165,18 +165,19 @@ public class LDAPCompareAttrNames implements LDAPEntryComparator {
       String[] second;
       int compare,i=0;
 
-      throw new RuntimeException("isGreater is not implemented yet");
-      /*do {//while first and second are equal
+      //throw new RuntimeException("isGreater is not implemented yet");
+      do {//while first and second are equal
          first = entry1.getAttribute(sortByNames[i]).getStringValueArray();
          second= entry2.getAttribute(sortByNames[i]).getStringValueArray();
          if (location == null){
-            compare = first[i].compareTo(second[i]);
-         }
+            compare = first[0].compareTo(second[0]);           
+         }//We could also use the other multivalues attributes to break ties and such.
          else{
             throw new RuntimeException("Currently supports only English local (null)");
          }
          i++;
       } while ((compare == 0) && (i < sortByNames.length));
+
 
       if (compare > 0){
          return sortAscending[i-1]; //if we sort up then entry1 is greater otherwise it is lesser
@@ -185,7 +186,7 @@ public class LDAPCompareAttrNames implements LDAPEntryComparator {
          return !sortAscending[i-1];//if we sort up then entry1 is lesser otherwise it is greater
       }
       else return true; //trivial ordering
-      */
+      
    }
 
 
