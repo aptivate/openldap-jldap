@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: GetEffectivePrivilegesResponse.java,v 1.8 2000/09/11 21:05:57 vtag Exp $
+ * $Id: GetEffectivePrivilegesResponse.java,v 1.9 2000/10/04 17:00:49 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -37,10 +37,10 @@ public class GetEffectivePrivilegesResponse implements ParsedExtendedResponse {
     * Constructs an object from the responseValue which contains the effective
     * privileges.
     *
-    *  <p>The constructor parses the responseValue which has the following 
-    *  ASN.1 format:<br>
+    *   <p>The constructor parses the responseValue which has the following 
+    *   format:<br>
     *   responseValue ::=<br>
-    *   &nbsp;&nbsp;&nbsp;&nbsp;    privileges     INTEGER</p>
+    *   &nbsp;&nbsp;&nbsp;&nbsp;  privileges&nbsp;&nbsp;&nbsp;  INTEGER</p>
     *
     * @exception IOException The responseValue could not be decoded.
     */   

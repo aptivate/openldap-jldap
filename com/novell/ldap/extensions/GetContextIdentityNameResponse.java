@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: GetContextIdentityNameResponse.java,v 1.9 2000/09/11 21:05:56 vtag Exp $
+ * $Id: GetContextIdentityNameResponse.java,v 1.10 2000/10/04 17:00:48 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -37,9 +37,9 @@ public class GetContextIdentityNameResponse implements ParsedExtendedResponse {
     * Constructs an object from the responseValue which contains the identity.
     *
     *  <p>The constructor parses the responseValue which has the following 
-    *  ASN.1 format:<br>
+    *  format:<br>
     *  responseValue ::=<br>
-    *  &nbsp;&nbsp;&nbsp;&nbsp;identity    OCTET STRING</p>
+    *  &nbsp;&nbsp;&nbsp;&nbsp;identity &nbsp;&nbsp;&nbsp;  OCTET STRING</p>
     *
     *  @exception IOException The return value could not be decoded.
     */   

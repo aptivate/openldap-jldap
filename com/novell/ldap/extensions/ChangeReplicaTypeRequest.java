@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: ChangeReplicaTypeRequest.java,v 1.10 2000/09/25 17:32:16 fzhao Exp $
+ * $Id: ChangeReplicaTypeRequest.java,v 1.11 2000/10/03 22:12:36 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -30,13 +30,13 @@ import java.io.*;
  *  <p>The change replica type request operation uses the following OID:<br>
  *  &nbsp;&nbsp;&nbsp;2.16.840.1.113719.1.27.100.15</p>
  *
- *  <p>The request value has the following ASN.1 format:<br>
+ *  <p>The requestValue has the following format:<br>
  *
  *  requestValue ::=<br>
- *  &nbsp;&nbsp;&nbsp;&nbsp;       flags - INTEGER<br>
- *  &nbsp;&nbsp;&nbsp;&nbsp;       replicaType - INTEGER<br>
- *  &nbsp;&nbsp;&nbsp;&nbsp;       serverName - LDAPDN<br>
- *  &nbsp;&nbsp;&nbsp;&nbsp;       dn - LDAPDN</p>
+ *  &nbsp;&nbsp;&nbsp;&nbsp; flags &nbsp;&nbsp;&nbsp;&nbsp;       INTEGER<br>
+ *  &nbsp;&nbsp;&nbsp;&nbsp; replicaType&nbsp;&nbsp;&nbsp;&nbsp;  INTEGER<br>
+ *  &nbsp;&nbsp;&nbsp;&nbsp; serverName&nbsp;&nbsp;&nbsp;&nbsp;   LDAPDN<br>
+ *  &nbsp;&nbsp;&nbsp;&nbsp; dn&nbsp;&nbsp;&nbsp;&nbsp;           LDAPDN</p>
  */
 public class ChangeReplicaTypeRequest extends LDAPExtendedOperation {
    

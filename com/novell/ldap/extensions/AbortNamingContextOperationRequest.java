@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: AbortNamingContextOperationRequest.java,v 1.11 2000/09/25 17:30:52 fzhao Exp $
+ * $Id: AbortNamingContextOperationRequest.java,v 1.12 2000/10/03 22:12:36 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -27,11 +27,11 @@ import java.io.*;
  *  <p>The abort naming context operation uses the following OID:<br> 
  *  &nbsp;&nbsp;&nbsp;2.16.840.1.113719.1.27.100.29</p>
  *  
- *  <p>The request value has the following ASN.1 format:<br>
+ *  <p>The requestValue has the following format:<br>
  *  
  *  requestValue ::= <br>
- *  &nbsp;&nbsp;&nbsp;&nbsp;    flags - INTEGER<br>
- *  &nbsp;&nbsp;&nbsp;&nbsp;    partitionDN - LDAPDN </p>
+ *  &nbsp;&nbsp;&nbsp;&nbsp;  flags&nbsp;&nbsp;&nbsp;&nbsp;       INTEGER<br>
+ *  &nbsp;&nbsp;&nbsp;&nbsp;  partitionDN&nbsp;&nbsp;&nbsp;&nbsp; LDAPDN </p>
  */
 public class AbortNamingContextOperationRequest extends LDAPExtendedOperation {
    
@@ -43,10 +43,10 @@ public class AbortNamingContextOperationRequest extends LDAPExtendedOperation {
  *                    partition root.<br><br>
  *
  * @param flags Determines whether all servers in the replica ring must 
- * be up before proceeding. When set to zero, the status of the servers is not 
- * checked. When set to LDAP_ENSURE_SERVERS_UP, all servers must be up for the 
- * operation to proceed.
- *
+ *              be up before proceeding. When set to zero, the status of the
+ *              servers is not checked. When set to LDAP_ENSURE_SERVERS_UP,
+ *              all servers must be up for the operation to proceed.
+ * 
  * @exception LDAPException A general exception which includes an error message 
  *                          and an LDAP error code.
  */   

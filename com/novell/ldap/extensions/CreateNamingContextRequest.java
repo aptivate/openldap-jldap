@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: CreateNamingContextRequest.java,v 1.14 2000/09/25 17:33:03 fzhao Exp $
+ * $Id: CreateNamingContextRequest.java,v 1.15 2000/10/03 22:12:36 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -29,11 +29,11 @@ import java.io.*;
  *  <p>The create naming context request uses the following OID:<br>
  *  &nbsp;&nbsp;&nbsp;2.16.840.1.113719.1.27.100.3</p>
  *
- *  <p>The request value has the following ASN.1 format:<br>
+ *  <p>The requestValue has the following format:<br>
  *
  *  requestValue ::=<br>
- *  &nbsp;&nbsp;&nbsp;&nbsp;    flags   INTEGER<br>
- *  &nbsp;&nbsp;&nbsp;&nbsp;    dn      LDAPDN</p>
+ *  &nbsp;&nbsp;&nbsp;&nbsp; flags &nbsp;&nbsp;&nbsp;&nbsp; INTEGER<br>
+ *  &nbsp;&nbsp;&nbsp;&nbsp; dn    &nbsp;&nbsp;&nbsp;&nbsp; LDAPDN</p>
  */
 public class CreateNamingContextRequest extends LDAPExtendedOperation {
    

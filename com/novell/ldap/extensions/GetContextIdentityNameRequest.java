@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: GetContextIdentityNameRequest.java,v 1.8 2000/10/03 22:12:37 judy Exp $
+ * $Id: GetContextIdentityNameRequest.java,v 1.9 2000/10/04 17:00:48 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -40,7 +40,8 @@ import java.io.*;
  public class GetContextIdentityNameRequest extends LDAPExtendedOperation {
  
     /**
-    *   Constructs an extended operation object for retrieving the context's identity.
+    *   Constructs an extended operation object for retrieving the context's 
+    *   identity.
     *
     *  @exception LDAPException A general exception which includes an error message
     *                           and an LDAP error code. 

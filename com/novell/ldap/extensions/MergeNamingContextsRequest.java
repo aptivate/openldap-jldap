@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: MergeNamingContextsRequest.java,v 1.11 2000/09/11 21:05:57 vtag Exp $
+ * $Id: MergeNamingContextsRequest.java,v 1.12 2000/09/25 17:38:33 fzhao Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -20,19 +20,21 @@ import java.io.*;
  
 /**
  *
- *      This class is used to create a new naming context. (NDS partition).<br><br>
- *  To create a new naming context create an instance of this 
- *  class and then call the extendedOperation method with this
- *  object as the required LDAPExtendedOperation parameter<br><br>
+ *  Merges a child naming context(NDS partition) with its parent naming context.
  *
- *  The OID used for this extended operation is:
- *      "2.16.840.1.113719.1.27.100.5"<br><br>
+ *  <p>To merge a child naming context with its parent, you must create an
+ *  instance of this class and then call the extendedOperation method
+ *  with this object as the required LDAPExtendedOperation parameter.</p>
+ 
  *
- *  The RequestValue has the following ASN:<br><br>
+ *  <p>The MergeNamingContextsRequest operation uses the following OID:<br>
+ *   &nbsp;&nbsp;&nbsp;2.16.840.1.113719.1.27.100.5</p>
  *
- *  requestValue ::=<br><br>
- *  &nbsp;&nbsp;&nbsp;&nbsp;    flags   INTEGER<br>
- *  &nbsp;&nbsp;&nbsp;&nbsp;    dn      LDAPDN<br>
+ *  <p>The requestValue has the following format:<br>
+ *
+ *  requestValue ::=<br>
+ *  &nbsp;&nbsp;&nbsp;&nbsp;    flags &nbsp;&nbsp;&nbsp;  INTEGER<br>
+ *  &nbsp;&nbsp;&nbsp;&nbsp;    dn &nbsp;&nbsp;&nbsp;     LDAPDN</p>
  */
 public class MergeNamingContextsRequest extends LDAPExtendedOperation {
    
@@ -40,14 +42,19 @@ public class MergeNamingContextsRequest extends LDAPExtendedOperation {
     
     
 /**
- *      The constructor takes two parameters:<br><br>
+ * Constructs an extended operation object for merging naming contexts.
  *
- * @param dn  Specify the distinguished name of the child naming
- *                  contexts root - that is to be joined to its parent.<br><br>
- *
- * @param flags  Specifies if all servers in the replica ring must be
- *                  up before proceeding.  Set to LDAP_ENSURE_SERVERS_UP 
- *                  field defined in the NamingContextConstants class.<br><br>
+ * @param dn        The distinguished name of the child naming
+ *                  context's root that is to be joined to its parent.
+ *<br><br>
+ * @param flags     Determines whether all servers in the replica ring must 
+ *                  be up before proceeding. When set to zero, the status of 
+ *                  the servers is not checked. When set to 
+ *                  LDAP_ENSURE_SERVERS_UP, all servers must be up for the
+ *                  operation to proceed.
+ * 
+ * @exception LDAPException A general exception which includes an error 
+ *                          message and an LDAP error code.
  */
  
     public MergeNamingContextsRequest(String dn, int flags) 

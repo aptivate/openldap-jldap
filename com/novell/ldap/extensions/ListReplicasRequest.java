@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: ListReplicasRequest.java,v 1.5 2000/09/11 21:05:57 vtag Exp $
+ * $Id: ListReplicasRequest.java,v 1.6 2000/09/25 17:37:28 fzhao Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -20,27 +20,29 @@ import java.io.*;
  
 /**
  *
- *      This class is used to list all the replicas that reside on the
- *  the specified directory server.  To list replicas create an instance
+ *  Lists all the replicas that reside on the the specified directory server. 
+ *
+ *  <p>To list replicas, you must create an instance
  *  of this class and then call the extendedOperation method with this
- *  object as the required LDAPExtendedOperation parameter<br>
+ *  object as the required LDAPExtendedOperation parameter</p>
  *
- *  The OID used for this extended operation is:
- *      "2.16.840.1.113719.1.27.100.19"<br><br>
+ *  <p>The ListReplicasRequest operation uses the following OID:<br>
+ *  &nbsp;&nbsp;&nbsp;2.16.840.1.113719.1.27.100.19</p>
  *
- *  The RequestValue has the following ASN:<br>
+ *  <p>The requestValue has the following format:<br>
  *
  *  requestValue ::=<br>
- *  &nbsp;&nbsp;&nbsp;&nbsp;    serverName  LDAPDN<br>
+ *  &nbsp;&nbsp;&nbsp;&nbsp;  serverName &nbsp;&nbsp;&nbsp; LDAPDN</p>
  */
 public class ListReplicasRequest extends LDAPExtendedOperation {
    
 /**
+ *  Constructs an extended operation object for listing replicas. 
  *
- *      The constructor takes four parameters:<br><br>
+ * @param serverName The server on which the replica will be added.
  *
- * @param serverName Points to the server on which the replica will be added<br><br>
- *      
+ * @exception LDAPException A general exception which includes an error
+ *                          message and an LDAP error code.     
  */   
  public ListReplicasRequest(String serverName) 
                 throws LDAPException {

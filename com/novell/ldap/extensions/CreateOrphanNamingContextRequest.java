@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: CreateOrphanNamingContextRequest.java,v 1.10 2000/09/25 17:34:16 fzhao Exp $
+ * $Id: CreateOrphanNamingContextRequest.java,v 1.11 2000/10/03 22:12:36 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -29,11 +29,11 @@ import java.io.*;
  * <p>The new naming orphan parition request uses the following OID:<br>
  *  &nbsp;&nbsp;&nbsp;2.16.840.1.113719.1.27.100.39</p>
  *
- *  <p>The request value has the following ASN.1 format:<br>
+ *  <p>The requestValue has the following format:<br>
  *
  *  requestValue ::=<br>
- *  &nbsp;&nbsp;&nbsp;&nbsp;    serverDN - LDAPDN<br>
- *  &nbsp;&nbsp;&nbsp;&nbsp;    contextName - LDAPDN</p>
+ *  &nbsp;&nbsp;&nbsp;&nbsp;  serverDN&nbsp;&nbsp;&nbsp;&nbsp;     LDAPDN<br>
+ *  &nbsp;&nbsp;&nbsp;&nbsp;  contextName&nbsp;&nbsp;&nbsp;&nbsp;  LDAPDN</p>
  */
 public class CreateOrphanNamingContextRequest extends LDAPExtendedOperation {
    

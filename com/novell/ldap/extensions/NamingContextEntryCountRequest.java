@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: NamingContextEntryCountRequest.java,v 1.9 2000/09/11 21:05:58 vtag Exp $
+ * $Id: NamingContextEntryCountRequest.java,v 1.10 2000/09/25 17:39:29 fzhao Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -20,32 +20,36 @@ import java.io.*;
  
 /**
  *
- *      This class returns a count of the number of entries (objects) in the
- *  specified naming context.<br><br>
+ *  Returns a count of the number of entries (objects) in the
+ *  specified naming context.
  *
- *      To get this count create an instance of this 
+ *  <p>To obtain the count of entries, you must create an instance of this 
  *  class and then call the extendedOperation method with this
- *  object as the required LDAPExtendedOperation parameter.<br><br>
+ *  object as the required LDAPExtendedOperation parameter.</p>
  *
- *  The returned LDAPExtendedResponse object can then be converted to
- *  a NamingContextEntryCountResponse object.  This object contains
- *  methods for retreiving the returned count.<br><br>
+ *  <p>The returned LDAPExtendedResponse object can then be converted to
+ *  a NamingContextEntryCountResponse object. This class contains
+ *  methods for retrieving the returned count.</p>
  *
- *  The OID used for this extended operation is:
- *      "2.16.840.1.113719.1.27.100.13"<br><br>
+ *  <p>The NamingContextEntryCountRequest operation uses the following 
+ *  OID:<br>
+ *  &nbsp;&nbsp;&nbsp;2.16.840.1.113719.1.27.100.13</p>
  *
- *  The RequestValue has the following ASN:<br><br>
+ *  <p>The requestValue has the following format:<br>
  *
  *  requestValue ::=<br><br>
- *  &nbsp;&nbsp;&nbsp;&nbsp;    dn          LDAPDN
+ *  &nbsp;&nbsp;&nbsp;&nbsp;    dn &nbsp;&nbsp;&nbsp;     LDAPDN
  */
  public class NamingContextEntryCountRequest extends LDAPExtendedOperation {
  
     /**
-    *      The constructor takes one parameters:<br><br>
+    *  Constructs an extended operation object for counting entries 
+    *  in a naming context.
     *
-    * @param dn  This parameter identifies the naming context.<br>
+    * @param dn  The naming context.
     *
+    * @exception LDAPException A general exception which includes an 
+    *                          error message and an LDAP error code.
     */  
 
     public NamingContextEntryCountRequest(String dn) 

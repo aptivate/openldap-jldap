@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: GetEffectivePrivilegesRequest.java,v 1.9 2000/09/25 17:36:04 fzhao Exp $
+ * $Id: GetEffectivePrivilegesRequest.java,v 1.10 2000/10/04 17:00:48 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -34,12 +34,12 @@ import java.io.*;
  * <p>The GetEffectivePrivilegesRequest operation uses the following OID:<br>
  *  &nbsp;&nbsp;&nbsp;2.16.840.1.113719.1.27.100.33</p>
  *
- * <p>The RequestValue has the following ASN.1 format:<br>
+ * <p>The requestValue has the following format:<br>
  *
  *  requestValue ::=<br>
- *  &nbsp;&nbsp;&nbsp;&nbsp;    dn          LDAPDN<br>
- *  &nbsp;&nbsp;&nbsp;&nbsp;    trusteeDN   LDAPDN<br>
- *  &nbsp;&nbsp;&nbsp;&nbsp;    attrName    LDAPDN </p>    
+ *  &nbsp;&nbsp;&nbsp;&nbsp;  dn &nbsp;&nbsp;&nbsp;        LDAPDN<br>
+ *  &nbsp;&nbsp;&nbsp;&nbsp;  trusteeDN&nbsp;&nbsp;&nbsp;  LDAPDN<br>
+ *  &nbsp;&nbsp;&nbsp;&nbsp;  attrName &nbsp;&nbsp;&nbsp;  LDAPDN </p>    
  */
  public class GetEffectivePrivilegesRequest extends LDAPExtendedOperation {
  

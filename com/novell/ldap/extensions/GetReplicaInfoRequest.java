@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: GetReplicaInfoRequest.java,v 1.5 2000/09/11 21:05:57 vtag Exp $
+ * $Id: GetReplicaInfoRequest.java,v 1.6 2000/09/25 17:36:41 fzhao Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -20,32 +20,34 @@ import java.io.*;
  
 /**
  *
- *      This class is used to read other interesting information 
- *  about a replica.  To read other information about a replica 
+ *  Reads information about a replica.
+ *
+ *  <p>To read other information about a replica, you must 
  *  create an instance of this class and then call the 
  *  extendedOperation method with this object as the required 
- *  LDAPExtendedOperation parameter<br>
+ *  LDAPExtendedOperation parameter</p>
  *
- *  The OID used for this extended operation is:
- *      "2.16.840.1.113719.1.27.100.17"<br><br>
+ *  <p>The GetReplicaInfoRequest operation uses the following OID:<br>
+ *   &nbsp;&nbsp;&nbsp;2.16.840.1.113719.1.27.100.17</p>
  *
- *  The RequestValue has the following ASN:<br>
+ *  <p>The requestValue has the following format:<br>
  *
  *  requestValue ::=<br>
- *  &nbsp;&nbsp;&nbsp;&nbsp;    serverDN      LDAPDN<br>
- *  &nbsp;&nbsp;&nbsp;&nbsp;    partitionDN   LDAPDN<br>    
+ *  &nbsp;&nbsp;&nbsp;&nbsp; serverDN&nbsp;&nbsp;&nbsp;     LDAPDN<br>
+ *  &nbsp;&nbsp;&nbsp;&nbsp; partitionDN&nbsp;&nbsp;&nbsp;  LDAPDN</p>    
  */
 public class GetReplicaInfoRequest extends LDAPExtendedOperation {
    
 /**
  *
- *      The constructor takes two parameters:<br><br>
+ * Constructs an extended operations object for reading replica information.
  *
- * @param serverDN Points to the server on which the replica tobe read
- * resides.<br><br>
- *      
- * @param partitionDN The distinguished name of the replica to be read.<br><br>
+ * @param serverDN The server on which the replica resides.
+ * <br><br>     
+ * @param partitionDN The distinguished name of the replica to be read.
  *
+ * @exception LDAPException A general exception which includes an error 
+ *                          message and an LDAP error code.
  */   
  public GetReplicaInfoRequest(String serverDN, String partitionDN) 
                 throws LDAPException {
