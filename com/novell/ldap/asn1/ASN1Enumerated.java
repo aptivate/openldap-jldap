@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Enumerated.java,v 1.7 2001/03/01 00:29:59 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Enumerated.java,v 1.8 2001/03/01 18:11:25 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -18,7 +18,7 @@ package com.novell.ldap.asn1;
 import java.io.*;
 
 /**
- * Represents the ASN.1 ENUMERATE type.
+ * This class encapsulates the ASN.1 ENUMERATED type.
  */
 public class ASN1Enumerated extends ASN1Numeric {
 
@@ -27,12 +27,15 @@ public class ASN1Enumerated extends ASN1Numeric {
     */
    public static final int TAG = 0x0a;
 
-   //*************************************************************************
-   // Constructors for ASN1Enumerated
-   //*************************************************************************
+   /* Constructors for ASN1Enumerated
+    */
 
    /**
-    * Constructs an ASN1Enumerated object using an int value.
+    * Call this constructor to construct an ASN1Enumerated 
+    * object from an integer value.
+    *
+    * @param content The integer value to be contained in the
+    * this ASN1Enumerated object
     */
    public ASN1Enumerated(int content)
    {
@@ -41,7 +44,11 @@ public class ASN1Enumerated extends ASN1Numeric {
    }
 
    /**
-    * Constructs an ASN1Enumerated object using a long value.
+    * Call this constructor to construct an ASN1Enumerated 
+    * object from a long value.
+    *
+    * @param content The long value to be contained in the
+    * this ASN1Enumerated object
     */
    public ASN1Enumerated(long content)
    {
@@ -50,8 +57,15 @@ public class ASN1Enumerated extends ASN1Numeric {
    }
 
    /**
-    * Constructs an ASN1Enumerated object by decoding data from an input
-    * stream.
+    * Constructs an ASN1Enumerated object by decoding data from an 
+    * input stream.
+    *
+    * @param dec The decoder object to use when decoding the
+    * input stream.  Sometimes a developer might want to pass
+    * in his/her own decoder object<br>
+    *
+    * @param in A byte stream that contains the encoded ASN.1
+    *
     */
    public ASN1Enumerated(ASN1Decoder dec, InputStream in, int len)
       throws IOException
@@ -60,13 +74,15 @@ public class ASN1Enumerated extends ASN1Numeric {
       content = (Long)dec.decodeNumeric(in, len);
    }
 
-   //*************************************************************************
-   // ASN1Object implementation
-   //*************************************************************************
 
    /**
-    * Encodes the contents of this ASN1Enumerated directly to an output
-    * stream.
+    * Call this method to encode the current instance into the 
+    * specified output stream using the specified encoder object.
+    *
+    * @param enc Encoder object to use when encoding self.<br>
+    *
+    * @param out The output stream onto which the encoded byte 
+    * stream is written.
     */
    public void encode(ASN1Encoder enc, OutputStream out)
       throws IOException

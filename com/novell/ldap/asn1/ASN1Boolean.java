@@ -36,7 +36,7 @@ public class ASN1Boolean extends ASN1Simple {
     * Call this constructor to constructs an ASN1Boolean 
     * object from a boolean value.
     *
-    * @param context The boolean value to be contained in the
+    * @param content The boolean value to be contained in the
     * this ASNBoolean object
     */
    public ASN1Boolean(boolean content)
