@@ -975,7 +975,7 @@ public class LDAPException extends Exception
                         Object[] arguments,
                         int resultCode,
                         String serverMsg,
-                        String matchDN,
+                        String matchedDN,
                         Throwable rootException)
    {
       super(ResourcesHandler.getMessage(messageOrKey, arguments));
