@@ -39,10 +39,7 @@ public class LDIFWriter extends LDIF implements LDAPExport {
 
     private int            recordType;                    // record type
     private String         dn;                            // record dn
-    private String         lines;
     private String[]       rLines;                        // record lines
-    private String[]       cFields;                       // control fiields
-    private String         base64String;
     private ArrayList      rFields  = new ArrayList();    // record fields
     private ArrayList      tempList = new ArrayList();
     private Base64Encoder  base64Encoder = new Base64Encoder();
@@ -119,15 +116,15 @@ public class LDIFWriter extends LDIF implements LDAPExport {
     public void writeCommentLine ( String line ) throws IOException {
 
         String   commentLine;
-        String[] lines;
 
         if ( line != null) {
             commentLine = new String( "# " + line);
 
             // berak the line if it contains more than 80 characters
             if ( (commentLine.length()) > 80 ) {
-                lines = toCommentLines( commentLine );
-                writeRecordLines( lines );
+                // borrow rLines to save comments lines
+                this.rLines = toCommentLines( commentLine );
+                writeRecordLines();
             }
             else {
                 bufWriter.write( commentLine, 0, commentLine.length());
@@ -139,15 +136,13 @@ public class LDIFWriter extends LDIF implements LDAPExport {
     }
 
     /**
-     * Used to worite lines of a record into the OutputStream
-     *
-     * @param lines The lines to be written to the OutputStream
+     * Used to write lines of a record into the OutputStream
      */
-    protected void writeRecordLines ( String[] lines ) throws IOException {
+    protected void writeRecordLines () throws IOException {
 
-        if ( lines != null ) {
-            for ( int i = 0; i < lines.length; i++ ) {
-                bufWriter.write( lines[i], 0, (lines[i]).length());
+        if ( this.rLines != null ) {
+            for ( int i = 0; i < this.rLines.length; i++ ) {
+                bufWriter.write( this.rLines[i], 0, (this.rLines[i]).length());
                 // start a new line
                 bufWriter.newLine();
             }
@@ -194,7 +189,7 @@ public class LDIFWriter extends LDIF implements LDAPExport {
         toRecordLines(entry, ctrls);
 
         // write the content line into LDIF file
-        writeRecordLines( this.rLines );
+        writeRecordLines();
 
     }
 
@@ -258,7 +253,7 @@ public class LDIFWriter extends LDIF implements LDAPExport {
             throw new RuntimeException("Not supported change type");
         }
 
-        writeRecordLines( this.rLines );
+        writeRecordLines();
     }
 
     /**
@@ -283,7 +278,7 @@ public class LDIFWriter extends LDIF implements LDAPExport {
     /**
      * Used to generate LDIF content record or LDIF change/add record lines.
      *
-     *<p>Turn LDAPEntry object into LDIF record lines lines</p>
+     * <p>Turn LDAPEntry object into LDIF record</p>
      *
      * @param entry  LDAPREntry object
      */
@@ -354,7 +349,7 @@ public class LDIFWriter extends LDIF implements LDAPExport {
         this.rLines = (String[])this.rFields.toArray(this.rLines);
         
         // to record lines each of which has no more than 80 characters
-        toLines(this.rLines);
+        toLines();
 
     }
 
@@ -448,7 +443,7 @@ public class LDIFWriter extends LDIF implements LDAPExport {
         this.rLines = (String[])this.rFields.toArray(this.rLines);
 
         // to record lines each of which has no more than 80 characters
-        toLines(this.rLines);
+        toLines();
     }
 
 
@@ -496,32 +491,39 @@ public class LDIFWriter extends LDIF implements LDAPExport {
         this.rFields.add(new String("changetype: moddn"));
 
         // save new RDN
-        if ( !isSafeString(modInfo.newRDN) ) {
-            tempString = base64Encoder.encoder(modInfo.newRDN);
-            this.rFields.add(new String("newrdn:" + tempString));
-        }
-        else {        
+        if ( isSafeString(modInfo.newRDN) ) {
             this.rFields.add(new String("newrdn:" + modInfo.newRDN));
         }
+        else {
+            // base64 encod newRDN
+            tempString = base64Encoder.encoder(modInfo.newRDN);
+            // put newRDN into record fields with a trailing space
+            this.rFields.add(new String("newrdn:" + tempString + " "));
+        }        
 
         // save deleteOldRDN
         this.rFields.add(new String("deleteoldrdn:" + modInfo.deleteOldRDN));
         
+        // save newSuperior
         if ( ((modInfo.newSuperior).length()) != 0) {
             
-            if ( !isSafeString(modInfo.newSuperior) ) {
-                tempString = base64Encoder.encoder(modInfo.newSuperior);
-                this.rFields.add(new String("newsuperior:" + tempString));
-            }
-            else {
+            if ( isSafeString(modInfo.newSuperior) ) {
                 this.rFields.add(new String("newsuperior:" + modInfo.newSuperior));
             }
-        }
+            else {
+                // base64 encod newRDN
+                tempString = base64Encoder.encoder(modInfo.newSuperior);
+                // put newSuperior into record fields with a trailing space
+                this.rFields.add(new String("newsuperior:" + tempString));
+            }
+        }        
 
+        // to record lines
         this.rLines = new String[this.rFields.size()];
         this.rLines = (String[])this.rFields.toArray(this.rLines);
 
-        //return toLines( this.rLines );
+        // to record lines each of which has no more than 80 characters
+        toLines();
     }
 
     /**
@@ -552,8 +554,12 @@ public class LDIFWriter extends LDIF implements LDAPExport {
         // save change type
         this.rFields.add(new String("changetype: delete"));
 
+        // to record lines
         this.rLines = new String[this.rFields.size()];
         this.rLines = (String[])this.rFields.toArray( this.rLines );
+
+        // to record lines each of which has no more than 80 characters
+        toLines();
     }
 
 
@@ -594,36 +600,60 @@ public class LDIFWriter extends LDIF implements LDAPExport {
      * lines if it contains more than 80 characters
      *
      * @param ls  The input String array object
-     *
-     * @return String array object
      */
-    public void toLines( String[] ls ) {
+    public void toLines() {
 
         this.tempList.clear();
 
         // break any line that is longer than 80 chars.
-        for ( int i = 0; i < ls.length; i++) {
+        for ( int i = 0; i < this.rLines.length; i++) {
             // field length equals or less than 80, save it
-            if ( ls[i].length() <= 80 ) {
-                this.tempList.add( ls[i] );
+            if ( this.rLines[i].length() <= 80 ) {
+                this.tempList.add( this.rLines[i] );
             }
             else {
                 // field length is longer than 80, break it
-                while ( ls[i].length() > 80 ) {
+                while ( this.rLines[i].length() > 80 ) {
                     // first line of a record has length of 80, the
                     // substring begins at 0 and extends to 79
-                    this.tempList.add( ls[i].substring(0, 80) );
+                    this.tempList.add( this.rLines[i].substring(0, 80) );
                     // any continuation line has length of
                     // 80 and starts with a white space
-                    ls[i] = new String (" " + ls[i].substring(80) );
+                    this.rLines[i] = new String (" " + this.rLines[i].substring(80) );
                 }
                 // save the last part of the field
-                this.tempList.add(ls[i]);
+                this.tempList.add(this.rLines[i]);
             }
         }
 
         this.rLines = new String[tempList.size()];
         this.rLines =  (String[])this.tempList.toArray(this.rLines);
+    }
+
+    
+
+    /**
+     * Add record dn into record fields.
+     *
+     * <p>Check if dn is base64 encoded and use either 'dn:: dn spec ' or
+     * 'dn: dn spec' format</p>
+     */
+    public void addDNToRecordFields() throws UnsupportedEncodingException {
+
+        Base64Encoder base64Encoder = new Base64Encoder();
+
+        if ( !isSafeString( this.dn ) ) {
+            // IF dn contains NON-SAFE-INIT-CHAR or NON-SAFE-CHAR,
+            // it has to be base64 encoded
+            this.dn = base64Encoder.encoder( this.dn );            
+            // base64 encoded dn ended with white spavce
+            this.rFields.add( new String("dn:: " + dn + " "));
+        }
+        else {
+            // add dn to record fileds
+            this.rFields.add( new String("dn: " + dn ));
+        }
+
     }
 
 
@@ -665,27 +695,7 @@ public class LDIFWriter extends LDIF implements LDAPExport {
         }
     }
 
-    /**
-     * Add record dn into record fields.
-     *
-     * <p>Check if dn is base64 encoded and use either 'dn:: dn spec' or
-     * 'dn: dn spec' format</p>
-     */
-    public void addDNToRecordFields() throws UnsupportedEncodingException {
 
-        Base64Encoder base64Encoder = new Base64Encoder();
-
-        if ( !isSafeString( this.dn ) ) {
-            this.dn = base64Encoder.encoder( this.dn );
-            // add encoded dn to record fileds
-            this.rFields.add( new String("dn:: " + dn ));
-        }
-        else {
-            // add dn to record fileds
-            this.rFields.add( new String("dn: " + dn ));
-        }
-
-    }
 
     /**
      * Add record attribute name and value into record fields.
@@ -697,7 +707,7 @@ public class LDIFWriter extends LDIF implements LDAPExport {
     throws UnsupportedEncodingException {
 
         if ( !isSafeString(attrSpec) ) {
-            // attrSpec contains NON-SAFE-INIT-CHAR or NON-SAFE-CHAR,
+            // IF attrSpec contains NON-SAFE-INIT-CHAR or NON-SAFE-CHAR,
             // it has to be base64 encoded
             attrSpec = base64Encoder.encoder(attrSpec);
             // base64 encoded attribute spec ended with white spavce
@@ -709,8 +719,11 @@ public class LDIFWriter extends LDIF implements LDAPExport {
 
     }
 
+
     /**
      * Check if the input String object is a SAFE-STRING
+     *
+     * @param boolean object to incidate that the string is safe or not
      */
     private boolean isSafeString( String value ) {
 
