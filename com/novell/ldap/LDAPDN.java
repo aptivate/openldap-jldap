@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPDN.java,v 1.6 2000/09/29 15:17:13 judy Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPDN.java,v 1.7 2000/10/09 19:11:24 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -16,10 +16,12 @@
 package com.novell.ldap;
  
 /*
- * 4.9 public class LDAPDN
+ * 4.11 public class LDAPDN
  */
  
 /**
+ *  A utility class representing a distinguished name (DN).
+ *
  *  Specifies methods for manipulating a distinguished name (DN)
  *  and a relative distinguished name (RDN).
  */
