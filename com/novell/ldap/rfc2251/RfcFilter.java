@@ -205,7 +205,7 @@ public class RfcFilter extends ASN1Choice
             throw new LDAPLocalException( ExceptionMessages.MISSING_RIGHT_PAREN,
                                           LDAPException.FILTER_ERROR);
         }
-        
+
         if (parenCount < 0) {
             throw new LDAPLocalException( ExceptionMessages.MISSING_LEFT_PAREN,
                                           LDAPException.FILTER_ERROR);
@@ -433,7 +433,8 @@ public class RfcFilter extends ASN1Choice
     private final byte[] unescapeString(String string)
             throws LDAPException
     {
-        byte octets[] = new byte[string.length()];
+        // give octets enough space to grow
+        byte octets[] = new byte[string.length()*3];
         // index for string and octets
         int iString, iOctets;
         // escape==true means we are in an escape sequence.
@@ -442,28 +443,29 @@ public class RfcFilter extends ASN1Choice
         boolean escStart = false;
 
         int ival, length = string.length();
-        char ch, temp = 0;
+        byte utf8Bytes[];
+        char ch;    // Character we are adding to the octet string
+        char ca[] = new char[1]; // used while converting multibyte UTF-8 char
 
-       /*
-        * loop through each character of the string and copy them into octets
-        *  converting escaped sequences when needed
-        */
+        // loop through each character of the string and copy them into octets
+        // converting escaped sequences when needed
        for(iString = 0, iOctets = 0; iString < length; iString++) {
             ch = string.charAt(iString);
             if(escape) {
                 if((ival = hex2int(ch)) < 0) {
-                    // Invalid escape value
+                    // Invalid escape value(not a hex character)
                     throw new LDAPLocalException(
                                       ExceptionMessages.INVALID_ESCAPE,
                                       new Object[] {new Character(ch)},
                                       LDAPException.FILTER_ERROR);
                 } else {
+                    char temp = 0;  // get the value of the excaped sequence
                     // V3 escaped: \\**
                     if(escStart) {
-                        temp = (char)(ival<<4);
+                        temp = (char)(ival<<4); // high bits of escaped char
                         escStart = false;
                     } else {
-                        temp |= (char)(ival);
+                        temp |= (char)(ival);   // all bits of escaped char
                         octets[iOctets++] = (byte) temp;
                         escStart = escape = false;
                     }
@@ -472,22 +474,28 @@ public class RfcFilter extends ASN1Choice
             if(ch == '\\') {
               escStart = escape = true;
             } else {
-                // place the character into octets.
-                byte b = (byte) ch;
-                if (( b >= 0x01 && b <= 0x27 ) ||
-                    ( b >= 0x2B && b <= 0x5B ) ||
-                    ( b >= 0x5D && b <= 0x7F )) {
-
-                    // found valid character = %x01-27 / %x2b-5b / %x5d-7f
-                    octets[iOctets++] = (byte)ch;
-                    escape = false;
-                } else {
-                    // found invalid character
-                    String escString = "";
-                    try {
-                        char[] ca = new char[1];
+                try {
+                    // place the character into octets.
+                    if (( ch >= 0x01 && ch <= 0x27 ) ||
+                        ( ch >= 0x2B && ch <= 0x5B ) ||
+                        ( ch >= 0x5D )) {
+                        // found valid char
+                        if (ch <= 0x7f) { // char = %x01-27 / %x2b-5b / %x5d-7f
+                            octets[iOctets++] = (byte)ch;
+                        }
+                        else { // char > 0x7f, could be encoded in 2 or 3 bytes
+                            ca[0] = ch;
+                            utf8Bytes = new String(ca).getBytes("UTF-8");
+                            // copy utf8 encoded character into octets
+                            System.arraycopy(utf8Bytes, 0, octets, iOctets, utf8Bytes.length);
+                            iOctets = iOctets + utf8Bytes.length;
+                        }
+                        escape = false;
+                    } else {
+                        // found invalid character
+                        String escString = "";
                         ca[0] = ch;
-                        byte[] utf8Bytes = new String(ca).getBytes("UTF-8");
+                        utf8Bytes = new String(ca).getBytes("UTF-8");
                         for( int i=0; i < utf8Bytes.length; i++) {
                             byte u = utf8Bytes[i];
                             if( (u >= 0) && (u < 0x10)) {
@@ -496,15 +504,15 @@ public class RfcFilter extends ASN1Choice
                                 escString = escString + "\\" + Integer.toHexString(u & 0xff);
                             }
                         }
-                    } catch ( UnsupportedEncodingException ue) {
-                        throw new RuntimeException(
-                            "UTF-8 String encoding not supported by JVM");
-                    }
-
-                    throw new LDAPLocalException(
+                        throw new LDAPLocalException(
                             ExceptionMessages.INVALID_CHAR_IN_FILTER,
                             new Object[] { new Character(ch), escString },
                             LDAPException.FILTER_ERROR);
+                    }
+                }
+                catch ( UnsupportedEncodingException ue) {
+                    throw new RuntimeException(
+                        "UTF-8 String encoding not supported by JVM");
                 }
             }
         }
@@ -949,7 +957,7 @@ class FilterTokenizer
                       atIndex == '.' ||
                       atIndex == ';' ||
                       atIndex == ':'    )) {
-                
+
                     if( atIndex == '\\' ) {
                         throw new LDAPLocalException(
                             ExceptionMessages.INVALID_ESC_IN_DESCR,
@@ -959,7 +967,7 @@ class FilterTokenizer
                             ExceptionMessages.INVALID_CHAR_IN_DESCR,
                             new Object[] {new Character(atIndex)},
                             LDAPException.FILTER_ERROR);
-                    }            
+                    }
                 }
             }
 
@@ -1031,10 +1039,10 @@ class FilterTokenizer
         int idx = filter.indexOf( ')', offset);
         if( idx == -1) {
             idx = filterLength;
-        } 
+        }
         String ret = filter.substring( offset, idx);
         offset = idx;
-        
+
         return ret;
     }
 
