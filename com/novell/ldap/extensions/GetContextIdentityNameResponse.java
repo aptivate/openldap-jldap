@@ -22,7 +22,7 @@ import com.novell.ldap.rfc2251.RfcLDAPMessage;
 import java.io.IOException;
 
 /**
- *  deprecated. @See GetBindDNResponse.
+ * @deprecated As of January 2002 SDK, use {@link GetBindDNResponse}
  */
 public class GetContextIdentityNameResponse extends GetBindDNResponse {  
     public GetContextIdentityNameResponse (RfcLDAPMessage rfcMessage)

@@ -17,7 +17,7 @@ package com.novell.ldap.extensions;
 import com.novell.ldap.LDAPException;
 
 /**
- *  deprecated. @see AbortPartitionOperationRequest
+ * @deprecated As of January 2002 SDK, use {@link AbortPartitionOperationRequest}
  */
 public class AbortNamingContextOperationRequest extends AbortPartitionOperationRequest {
    public AbortNamingContextOperationRequest(String partitionDN, int flags)

@@ -20,7 +20,7 @@ import com.novell.ldap.rfc2251.*;
 import java.io.IOException;
 
 /**
- * deprecated. @See PartitionEntryCountResponse.
+ * @deprecated As of January 2002 SDK, use {@link PartitionEntryCountResponse}
  */
 public class NamingContextEntryCountResponse extends PartitionEntryCountResponse { 
    public NamingContextEntryCountResponse (RfcLDAPMessage rfcMessage)

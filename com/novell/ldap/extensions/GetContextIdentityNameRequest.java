@@ -17,8 +17,7 @@ package com.novell.ldap.extensions;
 import com.novell.ldap.LDAPException;
 
 /**
- *  deprecated. @see GetBindDNRequest.
- *
+ * @deprecated As of January 2002 SDK, use {@link GetBindDNRequest}
  */
  public class GetContextIdentityNameRequest extends GetBindDNRequest {   
     public GetContextIdentityNameRequest() throws LDAPException {

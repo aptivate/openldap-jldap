@@ -17,7 +17,7 @@ package com.novell.ldap.extensions;
 import com.novell.ldap.LDAPException;
 
 /**
- * deprecated. @see RemoveOrphanPartitionRequest.
+ * @deprecated As of January 2002 SDK, use {@link RemoveOrphanPartitionRequest}
  */
 public class RemoveOrphanNamingContextRequest extends RemoveOrphanPartitionRequest {
     public RemoveOrphanNamingContextRequest(String serverDN, String contextName)

@@ -17,7 +17,7 @@ package com.novell.ldap.extensions;
 import com.novell.ldap.LDAPException;
 
 /**
- *  deprecated. @see SplitPartitionRequest.
+ * @deprecated As of January 2002 SDK, use {@link SplitPartitionRequest}
  */
 public class CreateNamingContextRequest extends SplitPartitionRequest {
     public CreateNamingContextRequest(String dn, int flags)

@@ -17,7 +17,7 @@ package com.novell.ldap.extensions;
 import com.novell.ldap.LDAPException;
 
 /**
- * deprecated. @see MergePartitionsRequest.
+ * @deprecated As of January 2002 SDK, use {@link MergePartitionsRequest}
  */
 public class MergeNamingContextsRequest extends MergePartitionsRequest { 
     public MergeNamingContextsRequest(String dn, int flags)

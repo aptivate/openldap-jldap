@@ -17,7 +17,7 @@ package com.novell.ldap.extensions;
 import com.novell.ldap.LDAPException;
 
 /**
- * deprecated. @see PartitionSyncRequest.
+ * @deprecated As of January 2002 SDK, use {@link PartitionSyncRequest}
  */
 public class NamingContextSyncRequest extends PartitionSyncRequest {
     public NamingContextSyncRequest(String serverName, String partitionRoot, 

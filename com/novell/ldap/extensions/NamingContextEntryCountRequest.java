@@ -17,7 +17,7 @@ package com.novell.ldap.extensions;
 import com.novell.ldap.LDAPException;
 
 /**
- * deprecated. @see PartitionEntryCountRequest
+ * @deprecated As of January 2002 SDK, use {@link PartitionEntryCountRequest}
  */
  public class NamingContextEntryCountRequest extends PartitionEntryCountRequest {
     public NamingContextEntryCountRequest(String dn) throws LDAPException {
