@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.49 2001/04/19 18:40:34 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.50 2001/05/02 18:51:18 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -104,7 +104,7 @@ public final class Connection implements Runnable
     // method in LDAPConnection.  Future releases might require
     // these to be local variables that can be modified using
     // the setProperty method.
-    public static Float sdk = new Float(1.0);
+    public static Float sdk = new Float(1.5);
     public static Float protocol = new Float(3.0);
     public static String security = "simple";
 
