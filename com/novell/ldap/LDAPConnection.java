@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.89 2001/03/14 19:25:56 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.90 2001/04/18 15:59:24 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -1396,7 +1396,7 @@ public class LDAPConnection implements Cloneable
                     cons.getServerControls());
 
         msgId = msg.getMessageID();
-        bindProps = new BindProperties( version, dn, "simple", null, null);
+        bindProps = new BindProperties( version, dn.trim(), "simple", null, null);
 
         // The semaphore is released when the bind response is queued.
         conn.acquireBindSemaphore( msgId);

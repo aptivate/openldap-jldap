@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.46 2001/03/28 23:23:52 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.47 2001/04/17 21:24:30 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -581,11 +581,16 @@ public final class Connection implements Runnable
     }
 
     /**
-     * Return whether a bind has been performed on this conneciton.
+     * Return whether the application is bound to this connection.
+     * Note: an anonymous bind returns false - not bound
      */
     public boolean isBound()
     {
-        return (bindProperties != null);
+        if( bindProperties != null) {
+            String dn = bindProperties.getAuthenticationDN();
+            return( (dn != null) && (dn.length() != 0));
+        }
+        return false;
     }
 
     /**
