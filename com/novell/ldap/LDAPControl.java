@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPControl.java,v 1.27 2001/06/13 17:51:06 jhammons Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPControl.java,v 1.28 2001/07/20 19:49:39 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -121,6 +121,7 @@ public class LDAPControl implements Cloneable {
     {
         control = new RfcControl(new RfcLDAPOID(id), new ASN1Boolean(critical),
                               new ASN1OctetString(vals));
+        return;
     }
 
     /**
@@ -129,7 +130,7 @@ public class LDAPControl implements Cloneable {
     protected LDAPControl(RfcControl control)
     {
         this.control = control;
-
+        return;
     }
 
     /**
@@ -177,6 +178,7 @@ public class LDAPControl implements Cloneable {
     protected void setValue(byte[] controlValue)
     {
         control.setControlValue(new ASN1OctetString(controlValue));
+        return;
     }
 
 
@@ -271,6 +273,7 @@ public class LDAPControl implements Cloneable {
     public static void register(String oid, Class controlClass)
     {
         registeredControls.registerResponseControl(oid, controlClass);
+        return;
     }
 
     /**

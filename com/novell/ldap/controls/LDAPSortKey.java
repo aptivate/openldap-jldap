@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPSortKey.java,v 1.1 2000/09/19 17:37:09 smerrill Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPSortKey.java,v 1.2 2001/03/01 00:30:07 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -17,13 +17,6 @@ package com.novell.ldap.controls;
 
 /**
  * Encapsulates parameters for sorting search results.
- *
- * Note:
- * This class used to be a part of draft-ietf-ldapext-ldap-java-api-11.txt,
- * but since it is only used by the LDAPSortControl class which is defined
- * in draft-weltman-ldap-java-controls-04.txt, it should be included in that
- * draft. The author of that draft, Rob Weltman, has agreed to include it in
- * the next revision.
  */
 public class LDAPSortKey {
 

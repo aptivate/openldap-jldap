@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPEntryChangeControl.java,v 1.2 2001/03/01 00:30:06 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPEntryChangeControl.java,v 1.3 2001/07/20 19:49:47 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -104,7 +104,6 @@ public class LDAPEntryChangeControl extends LDAPControl
                 throw new IOException("Decoding error get previous DN");
 
             m_previousDN = ((ASN1OctetString)asn1Obj).getString();
-
         }
         else
         {
@@ -120,14 +119,12 @@ public class LDAPEntryChangeControl extends LDAPControl
 
             m_changeNumber = ((ASN1Integer)asn1Obj).getInt();
             m_hasChangeNumber = true;
-
         }
         else
             m_hasChangeNumber = false;
     }
 
     /**
-     *  3.5.1 getHasChangeNumber
      *  returns the record number of the change in the servers change log.
      *
      *  @return  the record number of the change in the server's change log.
@@ -141,7 +138,6 @@ public class LDAPEntryChangeControl extends LDAPControl
     }
 
     /**
-     *  3.5.1 getChangeNumber
      *  returns the record number of the change in the servers change log.
      *
      *  @return  the record number of the change in the server's change log.
@@ -155,7 +151,6 @@ public class LDAPEntryChangeControl extends LDAPControl
     }
 
     /**
-     *  3.5.2 getChangeType
      *  Returns the type of change that occured
      *
      *  @return  returns one of the following values indicating the type of
@@ -171,7 +166,6 @@ public class LDAPEntryChangeControl extends LDAPControl
     }
 
     /**
-     *  3.5.3 getPreviousDN
      *  Returns the previous DN of the entry, if it was renamed.
      *
      *  @return  the previous DN of the entry if the entry was renamed (ie. if the
@@ -183,7 +177,6 @@ public class LDAPEntryChangeControl extends LDAPControl
     }
 
     /**
-     *  toString
      *  Returns a string representation of the control for debugging.
      */
     public java.lang.String toString()

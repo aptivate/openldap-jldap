@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPSortControl.java,v 1.6 2001/03/01 00:30:07 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPSortControl.java,v 1.7 2001/03/29 23:02:26 javed Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -20,11 +20,8 @@ import com.novell.ldap.asn1.*;
 import com.novell.ldap.rfc2251.*;
 
 /**
- * 3.3 public class LDAPSortControl
- *                extends LDAPControl
- *
  *  LDAPSortControl is a Server Control to specify how search results are
- *  to be sorted by the server (see [5]). If a server does not support
+ *  to be sorted by the server. If a server does not support
  *  sorting in general or for a particular query, the results will be
  *  returned unsorted, along with a control indicating why they were not
  *  sorted (or that sort controls are not supported). If the control was
@@ -33,11 +30,9 @@ import com.novell.ldap.rfc2251.*;
  */
 public class LDAPSortControl extends LDAPControl {
 
-    public static final int ORDERING_RULE = 0;
-    public static final int REVERSE_ORDER = 1;
+    private static final int ORDERING_RULE = 0;
+    private static final int REVERSE_ORDER = 1;
     public static final String OID = "1.2.840.113556.1.4.473";
-
-    // 3.3.1 Constructors
 
     /**
      * Constructs a sort control with a single key.
@@ -98,6 +93,4 @@ public class LDAPSortControl extends LDAPControl {
 		setValue (sortKeyList.getEncoding(new LBEREncoder()));
 
     }
-
 }
-

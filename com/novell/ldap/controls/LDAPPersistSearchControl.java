@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPPersistSearchControl.java,v 1.2 2001/03/01 00:30:07 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPPersistSearchControl.java,v 1.3 2001/03/30 01:44:59 javed Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -22,9 +22,6 @@ import com.novell.ldap.client.Debug;
 
 
 /**
- *  public class LDAPPersistSearchControl
- *                extends LDAPControl
- *
  *  LDAPPersistSearchControl is a Server Control that allows a client
  *  to receive notifications from the server of changes to entries within
  *  the searches result set. The client can be notified when an entry is
@@ -33,6 +30,19 @@ import com.novell.ldap.client.Debug;
  */
 public class LDAPPersistSearchControl extends LDAPControl
 {
+    /* private data members */
+    private static final int SEQUENCE_SIZE = 3;
+
+    private static final int CHANGETYPES_INDEX = 0;
+    private static final int CHANGESONLY_INDEX = 1;
+    private static final int RETURNCONTROLS_INDEX = 2;
+
+    private static final LBEREncoder s_encoder = new LBEREncoder();
+
+    private int             m_changeTypes;
+    private boolean         m_changesOnly;
+    private boolean         m_returnControls;
+    private ASN1Sequence    m_sequence;
 
     /**
      *  Change type specifying that you want to track additions of new entries
@@ -68,8 +78,6 @@ public class LDAPPersistSearchControl extends LDAPControl
      * The OID of the persistent search control
      */
     public static java.lang.String OID = "2.16.840.1.113730.3.4.3";
-
-
 
     /* public constructors */
 
@@ -118,7 +126,7 @@ public class LDAPPersistSearchControl extends LDAPControl
         m_changesOnly = changesOnly;
         m_returnControls = returnControls;
 
-        m_sequence = new ASN1Sequence(3);
+        m_sequence = new ASN1Sequence(SEQUENCE_SIZE);
 
         m_sequence.add(new ASN1Integer(m_changeTypes));
         m_sequence.add(new ASN1Boolean(m_changesOnly));
@@ -128,7 +136,6 @@ public class LDAPPersistSearchControl extends LDAPControl
     }
 
     /**
-     *  3.4.2 getChangeTypes
      *  Returns the change types to be monitored as a logical OR of any or
      *  all of these values: ADD, DELETE, MODIFY, and/or MODDN.
      *
@@ -141,7 +148,6 @@ public class LDAPPersistSearchControl extends LDAPControl
     }
 
     /**
-     *  3.4.4 setChangeTypes
      *  Sets the change types to be monitored.
      *
      *  types  The change types to be monitored as a logical OR of any or all
@@ -158,7 +164,6 @@ public class LDAPPersistSearchControl extends LDAPControl
     }
 
     /**
-     *  3.4.3 getReturnControls()
      *  Returns true if entry change controls are to be returned with the
      *  search results.
      *
@@ -171,7 +176,6 @@ public class LDAPPersistSearchControl extends LDAPControl
     }
 
     /**
-     *  3.4.6 setReturnControls
      *  When set to true, requests that entry change controls be returned with
      *  the search results.
      *
@@ -186,9 +190,8 @@ public class LDAPPersistSearchControl extends LDAPControl
     }
 
     /**
-     *  getChangesOnly
-     *  Returns true if only changes are to be returned. Results from
-     *  the initial search are not returned.
+     *  getChangesOnly returns true if only changes are to be returned.
+     *  Results from the initial search are not returned.
      *
      *  @return  true of only changes are to be returned
      */
@@ -198,7 +201,6 @@ public class LDAPPersistSearchControl extends LDAPControl
     }
 
     /**
-     *  3.4.5 setChangesOnly
      *  When set to true, requests that only changes be returned, results from
      *  the initial search are not returned.
      *  @param  changesOnly  true to skip results for the initial search
@@ -228,28 +230,10 @@ public class LDAPPersistSearchControl extends LDAPControl
     }
 
     /**
-     *  setValue
      *  Sets the encoded value of the LDAPControlClass
      */
     private void setValue()
     {
         super.setValue(m_sequence.getEncoding(s_encoder));
     }
-
-    /* private data members */
-
-    private static final int SEQUENCE_SIZE = 3;
-
-    private static final int CHANGETYPES_INDEX = 0;
-    private static final int CHANGESONLY_INDEX = 1;
-    private static final int RETURNCONTROLS_INDEX = 2;
-
-    private static final LBEREncoder s_encoder = new LBEREncoder();
-
-    private int             m_changeTypes;
-    private boolean         m_changesOnly;
-    private boolean         m_returnControls;
-    private ASN1Sequence    m_sequence;
-
-
 } // end class LDAPPersistentSearchControl
