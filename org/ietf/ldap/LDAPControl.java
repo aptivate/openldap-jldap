@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/org/ietf/ldap/LDAPControl.java,v 1.1 2001/06/26 15:48:43 vtag Exp $
+ * $Novell: /ldap/src/jldap/org/ietf/ldap/LDAPControl.java,v 1.2 2001/07/26 15:50:59 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -74,7 +74,7 @@ public class LDAPControl
      */
     public Object clone()
     {
-       return new ControlImpl(control);
+       return new LDAPControl((com.novell.ldap.LDAPControl)control.clone());
     }
 
     /**
