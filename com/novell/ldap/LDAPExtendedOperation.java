@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPExtendedOperation.java,v 1.10 2000/10/31 23:52:21 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPExtendedOperation.java,v 1.11 2001/03/01 00:29:50 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -60,12 +60,14 @@ public class LDAPExtendedOperation {
     *
     *  @param newVals  The byte array of operation-specific data.
     */
-   protected void setValue(byte[] newVals) {
+   public void setValue(byte[] newVals) {
         this.vals = newVals;
    }
 
    /**
     *  Resets the OID for the operation to a new value
+    *
+    *  @deprecated For internal use only
     *
     *  @param newoid  The new OID for the operation
     */
