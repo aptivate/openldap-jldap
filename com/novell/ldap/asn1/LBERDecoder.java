@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/LBERDecoder.java,v 1.8 2001/03/01 00:30:03 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/LBERDecoder.java,v 1.9 2001/03/15 19:18:33 javed Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -21,42 +21,41 @@ import java.io.*;
  * This class provides LBER decoding routines for ASN.1 Types. LBER is a
  * subset of BER as described in the following taken from 5.1 of RFC 2251:
  *
- * 5.1. Mapping Onto BER-based Transport Services
+ * <p>5.1. Mapping Onto BER-based Transport Services
  *
- *  The protocol elements of LDAP are encoded for exchange using the
- *  Basic Encoding Rules (BER) [11] of ASN.1 [3]. However, due to the
- *  high overhead involved in using certain elements of the BER, the
- *  following additional restrictions are placed on BER-encodings of LDAP
- *  protocol elements:
+ * The protocol elements of LDAP are encoded for exchange using the
+ * Basic Encoding Rules (BER) [11] of ASN.1 [3]. However, due to the
+ * high overhead involved in using certain elements of the BER, the
+ * following additional restrictions are placed on BER-encodings of LDAP
+ * protocol elements:
  *
- *  (1) Only the definite form of length encoding will be used.
+ * <li>(1) Only the definite form of length encoding will be used.
  *
- *  (2) OCTET STRING values will be encoded in the primitive form only.
+ * <li>(2) OCTET STRING values will be encoded in the primitive form only.
  *
- *  (3) If the value of a BOOLEAN type is true, the encoding MUST have
- *      its contents octets set to hex "FF".
+ * <li>(3) If the value of a BOOLEAN type is true, the encoding MUST have
+ * its contents octets set to hex "FF".
  *
- *  (4) If a value of a type is its default value, it MUST be absent.
- *      Only some BOOLEAN and INTEGER types have default values in this
- *      protocol definition.
+ * <li>(4) If a value of a type is its default value, it MUST be absent.
+ * Only some BOOLEAN and INTEGER types have default values in this
+ * protocol definition.
  *
- *  These restrictions do not apply to ASN.1 types encapsulated inside of
- *  OCTET STRING values, such as attribute values, unless otherwise
- *  noted.
+ * <p>These restrictions do not apply to ASN.1 types encapsulated inside of
+ * OCTET STRING values, such as attribute values, unless otherwise
+ * noted.
  *
- *  [3] ITU-T Rec. X.680, "Abstract Syntax Notation One (ASN.1) -
- *      Specification of Basic Notation", 1994.
+ * <p>[3] ITU-T Rec. X.680, "Abstract Syntax Notation One (ASN.1) -
+ * Specification of Basic Notation", 1994.
  *
- *  [11] ITU-T Rec. X.690, "Specification of ASN.1 encoding rules: Basic,
- *      Canonical, and Distinguished Encoding Rules", 1994.
+ * <p>[11] ITU-T Rec. X.690, "Specification of ASN.1 encoding rules: Basic,
+ * Canonical, and Distinguished Encoding Rules", 1994.
  *
  */
 public class LBERDecoder implements ASN1Decoder
 {
 
-   //*************************************************************************
-   // Generic decode routines
-   //*************************************************************************
+   /* Generic decode routines
+    */
 
    /**
     * Decode an LBER encoded value into an ASN1Type from a byte array.
@@ -87,9 +86,10 @@ public class LBERDecoder implements ASN1Decoder
    /**
     * Decode an LBER encoded value into an ASN1Object from an InputStream.
     *
-    * Will return the total length of this encoded ASN1Object (length of type
-    * + length of length + length of content) in the parameter len.
-    * This information is helpful when decoding structured types.
+    * <p> This method also returns the total length of this encoded 
+    * ASN1Object (length of type + length of length + length of content) 
+    * in the parameter len. This information is helpful when decoding 
+    * structured types.
     */
    public ASN1Object decode(InputStream in, int len[])
       throws IOException
@@ -150,9 +150,8 @@ public class LBERDecoder implements ASN1Decoder
       }
    }
 
-   //*************************************************************************
-   // Decoders for ASN.1 simple type Contents
-   //*************************************************************************
+   /* Decoders for ASN.1 simple type Contents
+    */
 
    /**
     * Decode a boolean directly from a stream.
@@ -171,9 +170,8 @@ public class LBERDecoder implements ASN1Decoder
    }
 
    /**
-    * Decode a Numeric type directly from a stream.
-    *
-    * Decodes INTEGER and ENUMERATED types.
+    * Decode a Numeric type directly from a stream. Decodes INTEGER 
+    * and ENUMERATED types.
     */
    public Object decodeNumeric(InputStream in, int len)
       throws IOException
@@ -210,11 +208,11 @@ public class LBERDecoder implements ASN1Decoder
     
    /* ASN1 TYPE NOT YET SUPPORTED  
     * Decode a BitString directly from a stream.
-   public Object decodeBitString(InputStream in, int len)
-      throws IOException
-   {
-      return null;
-   }
+    * public Object decodeBitString(InputStream in, int len)
+    *   throws IOException
+    * {
+    *   return null;
+    * }
     */
     
    /**
@@ -237,11 +235,11 @@ public class LBERDecoder implements ASN1Decoder
 
    /* ASN1 TYPE NOT YET SUPPORTED  
     * Decode an ObjectIdentifier directly from a stream.
-   public Object decodeObjectIdentifier(InputStream in, int len)
-      throws IOException
-   {
-      return null;
-   }
+    * public Object decodeObjectIdentifier(InputStream in, int len)
+    * throws IOException
+    * {
+    *   return null;
+    * }
     */
     
    /**
@@ -263,50 +261,48 @@ public class LBERDecoder implements ASN1Decoder
       return new String(octets, "UTF8");
    }
 
-   //*************************************************************************
-   // Decoders for ASN.1 useful type Contents
-   //*************************************************************************
+   /* Decoders for ASN.1 useful type Contents
+    */
 
    /* ASN1 TYPE NOT YET SUPPORTED  
     * Decode a GeneralizedTime directly from a stream.
-   public Object decodeGeneralizedTime(InputStream in, int len)
-      throws IOException
-   {
-      return null;
-   }
+    * public Object decodeGeneralizedTime(InputStream in, int len)
+    *   throws IOException
+    * {
+    *   return null;
+    * }
     */
     
    /* ASN1 TYPE NOT YET SUPPORTED  
     * Decode a UniversalTime directly from a stream.
-   public Object decodeUniversalTime(InputStream in, int len)
-      throws IOException
-   {
-      return null;
-   }
+    * public Object decodeUniversalTime(InputStream in, int len)
+    *   throws IOException
+    * {
+    *   return null;
+    * }
     */
     
    /* ASN1 TYPE NOT YET SUPPORTED  
     * Decode an External directly from a stream.
-   public Object decodeExternal(InputStream in, int len)
-      throws IOException
-   {
-      return null;
-   }
+    * public Object decodeExternal(InputStream in, int len)
+    *   throws IOException
+    * {
+    *   return null;
+    * }
     */
     
    /* ASN1 TYPE NOT YET SUPPORTED  
     * Decode an ObjectDescriptor directly from a stream.
-   public Object decodeObjectDescriptor(InputStream in, int len)
-      throws IOException
-   {
-      return null;
-   }
+    * public Object decodeObjectDescriptor(InputStream in, int len)
+    *   throws IOException
+    * {
+    *      return null;
+    * }
     */
     
     
-   //*************************************************************************
-   // Helper methods for the BERDecoder class
-   //*************************************************************************
+   /* Helper methods for the BERDecoder class
+    */
 
    /*
     * Decodes an ASN1Identifier.
