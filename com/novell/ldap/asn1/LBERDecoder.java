@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/LBERDecoder.java,v 1.12 2001/06/11 21:04:52 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/LBERDecoder.java,v 1.13 2001/06/12 20:34:00 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -110,6 +110,10 @@ public class LBERDecoder implements ASN1Decoder
 
       if(asn1ID.isUniversal()) {
          switch(asn1ID.getTag()) {
+            case ASN1Sequence.TAG:
+               return new ASN1Sequence(this, in, length);
+            case ASN1Set.TAG:
+               return new ASN1Set(this, in, length);
             case ASN1Boolean.TAG:
                return new ASN1Boolean(this, in, length);
             case ASN1Integer.TAG:
@@ -144,10 +148,7 @@ public class LBERDecoder implements ASN1Decoder
             case ASN1GeneralString.TAG:
                return new ASN1GeneralString(this, in, length);
             */
-            case ASN1Sequence.TAG:
-               return new ASN1Sequence(this, in, length);
-            case ASN1Set.TAG:
-               return new ASN1Set(this, in, length);
+
             default:
                throw new EOFException("Unknown tag"); // !!! need a better exception
          }
@@ -230,12 +231,17 @@ public class LBERDecoder implements ASN1Decoder
    {
       byte[] octets = new byte[len];
 
+      if (in.read(octets, 0, len) < len)
+      {
+        throw new EOFException("LBER: OCTET STRING: decode error: EOF");
+      }
+      /*
       for(int i=0; i<len; i++) {
          int ret = in.read(); // blocks
          if(ret == -1)
             throw new EOFException("LBER: OCTET STRING: decode error: EOF");
          octets[i] = (byte)ret;
-      }
+      }*/
 
       return octets;
    }
