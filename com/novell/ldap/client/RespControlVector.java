@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/client/RespControlVector.java,v 1.5 2001/03/30 00:33:43 javed Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/client/RespControlVector.java,v 1.6 2001/07/20 19:49:47 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -52,7 +52,8 @@ public class RespControlVector extends Vector2
     public synchronized void registerResponseControl(String oid, Class controlClass)
     {
         if( Debug.LDAP_DEBUG) {
-            Debug.trace( Debug.controls, "Registered Control with following OID" + oid);
+            Debug.trace( Debug.controls, "Registered Control with OID " + oid
+                    + " for class " + controlClass.toString());
         }
         
         addElement(new RegisteredControl(oid, controlClass));
