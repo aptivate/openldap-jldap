@@ -84,7 +84,7 @@ public class ListReplicasResponse extends LDAPExtendedResponse {
                     throw new IOException("Decoding error");
 
                 // Convert to a string
-             replicaList[i] = new String(asn1_nextReplica.getContent());
+             replicaList[i] = asn1_nextReplica.stringValue();
              if (replicaList[i] == null)
                     throw new IOException("Decoding error");
           }

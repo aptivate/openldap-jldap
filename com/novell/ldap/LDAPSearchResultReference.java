@@ -60,10 +60,10 @@ public class LDAPSearchResultReference extends LDAPMessage {
             Debug.trace( Debug.messages, name + "Enter getReferrals");
         }
         RfcSearchResultReference sresref = (RfcSearchResultReference)message.getProtocolOp();
-        Enumeration references = sresref.elements();
-        srefs = new String[sresref.size()];
-        for( int i=0; sresref.hasMoreElements(); i++) {
-            srefs[i] = (String)sresref.nextElement();
+        ASN1Object[] references = sresref.toArray();
+        srefs = new String[references.length];
+        for( int i=0; i<references.length; i++) {
+            srefs[i] = ((ASN1OctetString)(references[i])).stringValue(); 
             if( Debug.LDAP_DEBUG ) {
                 Debug.trace( Debug.referrals, name + "\t" + srefs[i] );
             }

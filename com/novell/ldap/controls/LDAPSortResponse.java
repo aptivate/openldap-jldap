@@ -98,13 +98,13 @@ public class LDAPSortResponse extends LDAPControl
 
         ASN1Object asn1Enum = ((ASN1Sequence)asnObj).get(0);
         if ( (asn1Enum != null) && (asn1Enum instanceof ASN1Enumerated) )
-             resultCode =((ASN1Enumerated)asn1Enum).getInt();
+             resultCode =((ASN1Enumerated)asn1Enum).intValue();
 
         // Second element is the attributeType
         if ( ((ASN1Sequence)asnObj).size() > 1) {
             ASN1Object asn1String = ((ASN1Sequence)asnObj).get(1);
             if ( (asn1String != null) && (asn1String instanceof ASN1OctetString) )
-                failedAttribute  = ((ASN1OctetString)asn1String).getString();
+                failedAttribute  = ((ASN1OctetString)asn1String).stringValue();
         }
         return;
     }

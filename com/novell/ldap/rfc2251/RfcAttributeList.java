@@ -16,18 +16,24 @@ package com.novell.ldap.rfc2251;
 
 import com.novell.ldap.asn1.*;
 
-/* 
+/**
  * Represents an LDAP Attribute List.
  *
+ *<pre>
  *       AttributeList ::= SEQUENCE OF SEQUENCE {
  *               type    AttributeDescription,
  *               vals    SET OF AttributeValue }
+ *</pre>
  */
 public class RfcAttributeList extends ASN1SequenceOf {
 
 	//*************************************************************************
 	// Constructor for AttributeList
 	//*************************************************************************
+   public RfcAttributeList(int size)
+   {
+       super(size);
+       return;
+   }
 
 }
-

@@ -91,7 +91,7 @@ public class LDAPEntryChangeControl extends LDAPControl
         if ( (asn1Obj == null) || (!(asn1Obj instanceof ASN1Enumerated)) )
             throw new IOException("Decoding error.");
 
-        m_changeType =((ASN1Enumerated)asn1Obj).getInt();
+        m_changeType =((ASN1Enumerated)asn1Obj).intValue();
 
         //check for optional elements
         if ( (sequence.size() > 1) && (m_changeType == 8) ) //8 means modifyDN
@@ -101,7 +101,7 @@ public class LDAPEntryChangeControl extends LDAPControl
             if ( (asn1Obj == null) || (!(asn1Obj instanceof ASN1OctetString)) )
                 throw new IOException("Decoding error get previous DN");
 
-            m_previousDN = ((ASN1OctetString)asn1Obj).getString();
+            m_previousDN = ((ASN1OctetString)asn1Obj).stringValue();
         }
         else
         {
@@ -115,7 +115,7 @@ public class LDAPEntryChangeControl extends LDAPControl
             if ( (asn1Obj == null) || (!(asn1Obj instanceof ASN1Integer)) )
                 throw new IOException("Decoding error getting change number");
 
-            m_changeNumber = ((ASN1Integer)asn1Obj).getInt();
+            m_changeNumber = ((ASN1Integer)asn1Obj).intValue();
             m_hasChangeNumber = true;
         }
         else

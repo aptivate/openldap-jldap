@@ -53,7 +53,7 @@ public class LDAPExtendedResponse extends LDAPResponse {
             ((RfcExtendedResponse)message.getProtocolOp()).getResponseName();
         if (respOID == null)
             return null;
-        return respOID.getString();
+        return respOID.stringValue();
     }
 
     /**
@@ -67,6 +67,6 @@ public class LDAPExtendedResponse extends LDAPResponse {
 		if (tempString == null)
 			return null;
 		else
-			return(tempString.getContent());
+			return(tempString.byteValue());
     }
 }

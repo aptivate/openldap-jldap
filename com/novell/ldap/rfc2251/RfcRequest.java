@@ -16,7 +16,7 @@ package com.novell.ldap.rfc2251;
 
 import com.novell.ldap.LDAPException;
 
-/* 
+/**
  * This interface represents Protocol Operations that are requests from a
  * client.
  */

@@ -52,23 +52,22 @@ public class LDAPSearchResult extends LDAPMessage {
       ASN1Sequence attrList =
          ((RfcSearchResultEntry)message.getProtocolOp()).getAttributes();
 
-      Enumeration seqEnum = attrList.elements();
-      while(seqEnum.hasMoreElements()) {
-         ASN1Sequence seq = (ASN1Sequence)seqEnum.nextElement();
+      ASN1Object[] seqArray = attrList.toArray();
+      for(int i = 0; i < seqArray.length; i++) {
+         ASN1Sequence seq = (ASN1Sequence)seqArray[i];
          LDAPAttribute attr =
-            new LDAPAttribute(((ASN1OctetString)seq.get(0)).getString());
+            new LDAPAttribute(((ASN1OctetString)seq.get(0)).stringValue());
 
          ASN1Set set = (ASN1Set)seq.get(1);
-         Enumeration setEnum = set.elements();
-         while(setEnum.hasMoreElements()) {
-            attr.addValue(((ASN1OctetString)setEnum.nextElement()).getContent());
+         Object[] setArray = set.toArray();
+         for(int j = 0; j < setArray.length; j++) {
+            attr.addValue(((ASN1OctetString)setArray[j]).byteValue());
          }
-
          attrs.add(attr);
       }
 
       return new LDAPEntry(
-         ((RfcSearchResultEntry)message.getProtocolOp()).getObjectName().getString(),
+         ((RfcSearchResultEntry)message.getProtocolOp()).getObjectName().stringValue(),
          attrs);
    }
 }

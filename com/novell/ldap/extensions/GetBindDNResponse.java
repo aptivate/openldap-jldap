@@ -69,7 +69,7 @@ public class GetBindDNResponse extends LDAPExtendedResponse {
                 throw new IOException("Decoding error");
 
             // Convert to normal string object
-            identity = new String(asn1_identity.getContent());
+            identity = asn1_identity.stringValue();
             if (identity == null)
                 throw new IOException("Decoding error");
         }

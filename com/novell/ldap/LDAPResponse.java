@@ -96,7 +96,7 @@ public class LDAPResponse extends LDAPMessage
         if( exception != null) {
             return exception.getLDAPErrorMessage();
         }
-        return ((RfcResponse)message.getProtocolOp()).getErrorMessage().getString();
+        return ((RfcResponse)message.getProtocolOp()).getErrorMessage().stringValue();
     }
 
     /**
@@ -111,7 +111,7 @@ public class LDAPResponse extends LDAPMessage
         if( exception != null) {
             return exception.getMatchedDN();
         }
-        return ((RfcResponse)message.getProtocolOp()).getMatchedDN().getString();
+        return ((RfcResponse)message.getProtocolOp()).getMatchedDN().stringValue();
     }
 
     /**
@@ -131,7 +131,7 @@ public class LDAPResponse extends LDAPMessage
             int size = ref.size();
             referrals = new String[size];
             for(int i=0; i<size; i++) {
-                String aRef = new String(((ASN1OctetString)ref.get(i)).getContent());
+                String aRef = ((ASN1OctetString)ref.get(i)).stringValue();
                 try {
                     // get the referral URL
                     LDAPUrl urlRef = new LDAPUrl( aRef);
@@ -166,7 +166,7 @@ public class LDAPResponse extends LDAPMessage
         if( exception != null) {
             return exception.getLDAPResultCode();
         }
-        return ((RfcResponse)message.getProtocolOp()).getResultCode().getInt();
+        return ((RfcResponse)message.getProtocolOp()).getResultCode().intValue();
     }
 
     /**

@@ -47,7 +47,7 @@ public class ReferralInfo
      *
      * @return the Referral URL
      */
-    public LDAPUrl getReferralUrl()
+    public final LDAPUrl getReferralUrl()
     {
         return referralUrl;
     }
@@ -56,7 +56,7 @@ public class ReferralInfo
      *
      * @return the Referral Connection
      */
-    public LDAPConnection getReferralConnection()
+    public final LDAPConnection getReferralConnection()
     {
         return conn;
     }
@@ -65,7 +65,7 @@ public class ReferralInfo
      *
      * @return the Referral list
      */
-    public String[] getReferralList()
+    public final String[] getReferralList()
     {
         return referralList;
     }

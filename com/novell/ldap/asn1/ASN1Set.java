@@ -17,7 +17,6 @@ package com.novell.ldap.asn1;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 
 /**
  * The ASN1Set class can hold an unordered collection of components with
@@ -48,7 +47,7 @@ public class ASN1Set extends ASN1Structured {
     */
    public ASN1Set()
    {
-      this(5);
+      super(ID);
       return;
    }
 
@@ -62,11 +61,9 @@ public class ASN1Set extends ASN1Structured {
     */
    public ASN1Set(int size)
    {
-      id = ID;
-      content = new ArrayList(size);
+      super(ID, size);
       return;
    }
-
 
    /**
     * Constructs an ASN1Set object by decoding data from an
@@ -82,12 +79,10 @@ public class ASN1Set extends ASN1Structured {
    public ASN1Set(ASN1Decoder dec, InputStream in, int len)
       throws IOException
    {
-      id = ID;
+      super(ID);
       decodeStructured(dec, in, len);
       return;
    }
-
-
 
    /* ASN1Set specific methods
     */

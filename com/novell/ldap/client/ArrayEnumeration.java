@@ -35,14 +35,14 @@ public class ArrayEnumeration implements Enumeration
         this.eArray = eArray;
     }
 
-    public boolean hasMoreElements()
+    public final boolean hasMoreElements()
     {
         if( eArray == null)
             return false;
         return (index < eArray.length);
     }
 
-    public Object nextElement() throws NoSuchElementException
+    public final Object nextElement() throws NoSuchElementException
     {
         if( (eArray == null) || ( index >= eArray.length)) {
             throw new NoSuchElementException();

@@ -83,7 +83,7 @@ public class ASN1Length {
     * @param in A byte stream that contains the encoded ASN.1
     *
     */
-   public void reset(InputStream in)
+   public final void reset(InputStream in)
       throws IOException
    {
         encodedLength = 0;
@@ -109,7 +109,7 @@ public class ASN1Length {
    /**
     * Returns the length of this ASN1Length.
     */
-   public int getLength()
+   public final int getLength()
    {
       return length;
    }
@@ -117,10 +117,8 @@ public class ASN1Length {
    /**
     * Returns the encoded length of this ASN1Length.
     */
-   public int getEncodedLength()
+   public final int getEncodedLength()
    {
       return encodedLength;
    }
-
 }
-

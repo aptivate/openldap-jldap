@@ -48,7 +48,7 @@ public class RfcSearchResultDone extends RfcLDAPResult {
    /**
     * Override getIdentifier to return an application-wide id.
     */
-   public ASN1Identifier getIdentifier()
+   public final ASN1Identifier getIdentifier()
    {
       return new ASN1Identifier(ASN1Identifier.APPLICATION, true,
                                 RfcProtocolOp.SEARCH_RESULT_DONE);

@@ -109,7 +109,7 @@ public class LDAPVirtualListResponse extends LDAPControl
          */
         ASN1Object asn1firstPosition = ((ASN1Sequence)asnObj).get(0);
         if ( (asn1firstPosition != null) && (asn1firstPosition instanceof ASN1Integer) )
-             m_firstPosition =((ASN1Integer)asn1firstPosition).getInt();
+             m_firstPosition =((ASN1Integer)asn1firstPosition).intValue();
         else
             throw new IOException("Decoding error");
 
@@ -118,14 +118,14 @@ public class LDAPVirtualListResponse extends LDAPControl
          */
         ASN1Object asn1ContentCount = ((ASN1Sequence)asnObj).get(1);
         if ( (asn1ContentCount != null) && (asn1ContentCount instanceof ASN1Integer) )
-             m_ContentCount =((ASN1Integer)asn1ContentCount).getInt();
+             m_ContentCount =((ASN1Integer)asn1ContentCount).intValue();
         else
             throw new IOException("Decoding error");
 
         /* The 3rd element is an enum containing the errorcode */
         ASN1Object asn1Enum = ((ASN1Sequence)asnObj).get(2);
         if ( (asn1Enum != null) && (asn1Enum instanceof ASN1Enumerated) )
-             m_resultCode =((ASN1Enumerated)asn1Enum).getInt();
+             m_resultCode =((ASN1Enumerated)asn1Enum).intValue();
         else
             throw new IOException("Decoding error");
 
@@ -135,7 +135,7 @@ public class LDAPVirtualListResponse extends LDAPControl
         if ( ((ASN1Sequence)asnObj).size() > 3) {
             ASN1Object asn1String = ((ASN1Sequence)asnObj).get(3);
             if ( (asn1String != null) && (asn1String instanceof ASN1OctetString) )
-                m_context  = ((ASN1OctetString)asn1String).getString();
+                m_context  = ((ASN1OctetString)asn1String).stringValue();
         }
         return;
     }

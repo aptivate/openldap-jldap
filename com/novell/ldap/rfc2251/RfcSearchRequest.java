@@ -18,9 +18,8 @@ import com.novell.ldap.LDAPException;
 import com.novell.ldap.LDAPConnection;
 import com.novell.ldap.asn1.*;
 import com.novell.ldap.client.Debug;
-import java.util.ArrayList;
 
-/* 
+/**
  * Represents an LDAP Search Request.
  *
  *<pre>
@@ -65,39 +64,38 @@ public class RfcSearchRequest extends ASN1Sequence implements RfcRequest {
 		add(typesOnly);
 		add(filter);
 		add(attributes);
+        return;
 	}
 
     /**
-    * Constructs a new Search Request copying from the ArrayList of
-    * an existing request.
+    * Constructs a new Search Request copying from an existing request.
     */
     /* package */
-    RfcSearchRequest(   ArrayList origRequest,
+    RfcSearchRequest(   ASN1Object[] origRequest,
                         String base,
                         String filter,
                         boolean request)
             throws LDAPException
     {
-        super(origRequest.size());
-        for(int i=0; i < origRequest.size(); i++) {
-            content.add(origRequest.get(i));
-        }
+        super(origRequest, origRequest.length);
+        
         // Replace the base if specified, otherwise keep original base
         if( base != null) {
-            content.set(0, new RfcLDAPDN(base));
+            set( 0, new RfcLDAPDN(base));
         }
+        
         // If this is a reencode of a search continuation reference
         // and if original scope was one-level, we need to change the scope to
         // base so we don't return objects a level deeper than requested
         if( request ) {
-            int scope = ((ASN1Enumerated)origRequest.get(1)).getInt();
+            int scope = ((ASN1Enumerated)origRequest[1]).intValue();
             if( scope == LDAPConnection.SCOPE_ONE) {
-                content.set(1, new ASN1Enumerated( LDAPConnection.SCOPE_BASE));
+                set( 1, new ASN1Enumerated( LDAPConnection.SCOPE_BASE));
             }
         }
         // Replace the filter if specified, otherwise keep original filter
         if( filter != null) {
-            content.set(6, new RfcFilter(filter));
+            set( 6, new RfcFilter(filter));
         }
         return;
     }
@@ -109,21 +107,24 @@ public class RfcSearchRequest extends ASN1Sequence implements RfcRequest {
 	/**
 	 * Override getIdentifier to return an application-wide id.
 	 *
+     *<pre>
 	 * ID = CLASS: APPLICATION, FORM: CONSTRUCTED, TAG: 3. (0x63)
+     *</pre>
 	 */
-	public ASN1Identifier getIdentifier()
+	public final ASN1Identifier getIdentifier()
 	{
 		return new ASN1Identifier(ASN1Identifier.APPLICATION, true,
 			                       RfcProtocolOp.SEARCH_REQUEST);
 	}
 
-    public RfcRequest dupRequest(String base, String filter, boolean request)
+    public final RfcRequest dupRequest(String base, String filter, boolean request)
             throws LDAPException
     {
-        return new RfcSearchRequest( content, base, filter, request);
+        return new RfcSearchRequest( toArray(), base, filter, request);
     }
-    public String getRequestDN()
+    
+    public final String getRequestDN()
     {
-        return ((RfcLDAPDN)getContent().get(0)).getString();
+        return ((RfcLDAPDN)get(0)).stringValue();
     }
 }

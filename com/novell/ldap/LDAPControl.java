@@ -104,7 +104,7 @@ public class LDAPControl implements Cloneable {
      */
     public String getID()
     {
-        return new String(control.getControlType().getContent());
+        return new String(control.getControlType().stringValue());
     }
 
     /**
@@ -118,7 +118,7 @@ public class LDAPControl implements Cloneable {
         byte[] result = null;
         ASN1OctetString val = control.getControlValue();
         if( val != null) {
-            result = val.getContent();
+            result = val.byteValue();
         }
         return result;
     }
@@ -144,7 +144,7 @@ public class LDAPControl implements Cloneable {
      */
     public boolean isCritical()
     {
-        return control.getCriticality().getContent();
+        return control.getCriticality().booleanValue();
     }
 
     /**

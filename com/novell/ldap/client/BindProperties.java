@@ -24,10 +24,10 @@ public class BindProperties
 {
 
     private int version = 3;
-    String dn = null;
-    String method = null;
-    Hashtable bindProperties = null;
-    Object bindCallbackHandler = null;
+    private String dn = null;
+    private String method = null;
+    private Hashtable bindProperties = null;
+    private Object bindCallbackHandler = null;
 
     public BindProperties(   int version,
                              String dn,
@@ -45,7 +45,7 @@ public class BindProperties
     /**
      * gets the protocol version
      */
-    public int getProtocolVersion()
+    public final int getProtocolVersion()
     {
         return version;
     }
@@ -55,7 +55,7 @@ public class BindProperties
      *
      * @return the authentication dn for this connection
      */
-    public String getAuthenticationDN()
+    public final String getAuthenticationDN()
     {
         return dn;
     }
@@ -65,7 +65,7 @@ public class BindProperties
      *
      * @return the authentication method for this connection
      */
-    public String getAuthenticationMethod()
+    public final String getAuthenticationMethod()
     {
         return method;
     }
@@ -75,7 +75,7 @@ public class BindProperties
      *
      * @return the sasl bind properties for this connection
      */
-    public Hashtable getSaslBindProperties()
+    public final Hashtable getSaslBindProperties()
     {
         return bindProperties;
     }
@@ -85,7 +85,7 @@ public class BindProperties
      *
      * @return the sasl callback handler for this connection
      */
-    public Object /* javax.security.auth.callback.CallbackHandler */ getSaslCallbackHandler()
+    public final Object /* javax.security.auth.callback.CallbackHandler */ getSaslCallbackHandler()
     {
         return bindCallbackHandler;
     }

@@ -105,7 +105,7 @@ public class GetReplicationFilterResponse extends LDAPExtendedResponse {
 		     returnedFilter[classNumber] = new String[numberOfAttributes+1];
 
              // Get the classname
-             returnedFilter[classNumber][0] = new String(asn1_className.getContent());
+             returnedFilter[classNumber][0] = asn1_className.stringValue();
              if (returnedFilter[classNumber][0] == null)
                     throw new IOException("Decoding error");
 
@@ -117,7 +117,7 @@ public class GetReplicationFilterResponse extends LDAPExtendedResponse {
                     throw new IOException("Decoding error");
 
 			    // Get attributename string
-			    returnedFilter[classNumber][attributeNumber+1] = new String(asn1_attributeName.getContent());
+			    returnedFilter[classNumber][attributeNumber+1] = asn1_attributeName.stringValue();
 			    if (returnedFilter[classNumber][attributeNumber+1] == null)
                     throw new IOException("Decoding error");
 

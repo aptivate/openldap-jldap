@@ -64,7 +64,7 @@ class RfcMessageID extends ASN1Integer {
      *
      * @return the new message number
      */
-    private static int getMessageID() {
+    private final static int getMessageID() {
         synchronized(lock) {
             return (messageID < Integer.MAX_VALUE) ? ++messageID : (messageID = 1);
         }

@@ -146,7 +146,7 @@ public class ASN1Identifier extends Object implements Cloneable {
     *
     * @param in The input stream to decode from.
     */
-   public void reset(InputStream in)
+   public final void reset(InputStream in)
       throws IOException
    {
       encodedLength = 0;
@@ -189,7 +189,7 @@ public class ASN1Identifier extends Object implements Cloneable {
     * @see #CONTEXT
     * @see #PRIVATE
     */
-   public int getASN1Class()
+   public final int getASN1Class()
    {
       return tagClass;
    }
@@ -199,7 +199,7 @@ public class ASN1Identifier extends Object implements Cloneable {
     *
     * @return true if constructed and false if primitive.
     */
-   public boolean getConstructed()
+   public final boolean getConstructed()
    {
       return constructed;
    }
@@ -207,7 +207,7 @@ public class ASN1Identifier extends Object implements Cloneable {
    /**
     * Returns the TAG of this ASN1Identifier.
     */
-   public int getTag()
+   public final int getTag()
    {
       return tag;
    }
@@ -215,7 +215,7 @@ public class ASN1Identifier extends Object implements Cloneable {
    /**
     * Returns the encoded length of this ASN1Identifier.
     */
-   public int getEncodedLength()
+   public final int getEncodedLength()
    {
       return encodedLength;
    }
@@ -229,7 +229,7 @@ public class ASN1Identifier extends Object implements Cloneable {
     *
     * @see #UNIVERSAL
     */
-   public boolean isUniversal()
+   public final boolean isUniversal()
    {
       return tagClass == UNIVERSAL;
    }
@@ -240,7 +240,7 @@ public class ASN1Identifier extends Object implements Cloneable {
     *
     * @see #APPLICATION
     */
-   public boolean isApplication()
+   public final boolean isApplication()
    {
       return tagClass == APPLICATION;
    }
@@ -251,7 +251,7 @@ public class ASN1Identifier extends Object implements Cloneable {
     *
     * @see #CONTEXT
     */
-   public boolean isContext()
+   public final boolean isContext()
    {
       return tagClass == CONTEXT;
    }
@@ -262,7 +262,7 @@ public class ASN1Identifier extends Object implements Cloneable {
     *
     * @see #PRIVATE
     */
-   public boolean isPrivate()
+   public final boolean isPrivate()
    {
       return tagClass == PRIVATE;
    }

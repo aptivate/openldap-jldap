@@ -40,7 +40,7 @@ public class MessageVector extends java.util.Vector
      * @throws NoSuchFieldException when no object with the corresponding
      * value for the MsgId field can be found.
      */
-    public synchronized Message findMessageById( int msgId)
+    public final synchronized Message findMessageById( int msgId)
                 throws NoSuchFieldException
     {
         Message msg = null;
@@ -61,7 +61,7 @@ public class MessageVector extends java.util.Vector
      *
      * @return the array containing all of the elements.
      */
-    public synchronized Object[] getObjectArray()
+    public final synchronized Object[] getObjectArray()
     {
         Object[] results = new Object[elementCount];
         System.arraycopy( elementData, 0, results, 0, elementCount);

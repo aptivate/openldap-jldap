@@ -14,30 +14,28 @@
  ******************************************************************************/
 package com.novell.ldap.rfc2251;
 
-import java.util.ArrayList;
 
 import com.novell.ldap.asn1.*;
 import com.novell.ldap.*;
 import com.novell.ldap.resources.*;
 
-/*
+/**
  * Represents and LDAP Bind Request.
- *
  *<pre>
  *       BindRequest ::= [APPLICATION 0] SEQUENCE {
  *               version                 INTEGER (1 .. 127),
  *               name                    LDAPDN,
  *               authentication          AuthenticationChoice }
- *<pre>
+ *</pre>
  */
 public class RfcBindRequest extends ASN1Sequence implements RfcRequest {
 
-   /**
-    * ID is added for Optimization.
-    *
-    * <p>ID needs only be one Value for every instance,
-    * thus we create it only once.<p>
-    */
+    /**
+     * ID is added for Optimization.
+     *
+     * <p>ID needs only be one Value for every instance,
+     * thus we create it only once.<p>
+     */
     private static final ASN1Identifier ID =
         new ASN1Identifier(ASN1Identifier.APPLICATION, true, RfcProtocolOp.BIND_REQUEST);
 
@@ -56,23 +54,22 @@ public class RfcBindRequest extends ASN1Sequence implements RfcRequest {
 		add(version);
 		add(name);
 		add(auth);
+        return;
 	}
 
     /**
-    * Constructs a new Bind Request copying from the ArrayList of
-    * an existing request.
-    */
+     * Constructs a new Bind Request copying the original data from
+     * an existing request.
+     */
     /* package */
-    RfcBindRequest(   ArrayList origRequest,
+    RfcBindRequest(   ASN1Object[] origRequest,
                       String base)
             throws LDAPException
     {
-        for(int i=0; i < origRequest.size(); i++) {
-            content.add(origRequest.get(i));
-        }
-        // Replace the base if specified, otherwise keep original base
+        super(origRequest, origRequest.length);
+        // Replace the dn if specified, otherwise keep original base
         if( base != null) {
-            content.set(1, new RfcLDAPDN(base));
+            set( 1, new RfcLDAPDN(base));
         }
         return;
     }
@@ -82,27 +79,30 @@ public class RfcBindRequest extends ASN1Sequence implements RfcRequest {
 	//*************************************************************************
 
 	/**
-	 *
+	 * Sets the protocol version
 	 */
-	public void setVersion(ASN1Integer version)
+	public final void setVersion(ASN1Integer version)
 	{
 		set(0, version);
+        return;
 	}
 
 	/**
-	 *
+	 * 
 	 */
-	public void setName(RfcLDAPDN name)
+	public final void setName(RfcLDAPDN name)
 	{
 		set(1, name);
+        return;
 	}
 
 	/**
 	 *
 	 */
-	public void setAuthenticationChoice(RfcAuthenticationChoice auth)
+	public final void setAuthenticationChoice(RfcAuthenticationChoice auth)
 	{
 		set(2, auth);
+        return;    
 	}
 
 	//*************************************************************************
@@ -112,7 +112,7 @@ public class RfcBindRequest extends ASN1Sequence implements RfcRequest {
 	/**
 	 *
 	 */
-	public ASN1Integer getVersion()
+	public final ASN1Integer getVersion()
 	{
 		return (ASN1Integer)get(0);
 	}
@@ -120,7 +120,7 @@ public class RfcBindRequest extends ASN1Sequence implements RfcRequest {
 	/**
 	 *
 	 */
-	public RfcLDAPDN getName()
+	public final RfcLDAPDN getName()
 	{
 		return (RfcLDAPDN)get(1);
 	}
@@ -128,7 +128,7 @@ public class RfcBindRequest extends ASN1Sequence implements RfcRequest {
 	/**
 	 *
 	 */
-	public RfcAuthenticationChoice getAuthenticationChoice()
+	public final RfcAuthenticationChoice getAuthenticationChoice()
 	{
 		return (RfcAuthenticationChoice)get(2);
 	}
@@ -136,20 +136,22 @@ public class RfcBindRequest extends ASN1Sequence implements RfcRequest {
 	/**
 	 * Override getIdentifier to return an application-wide id.
 	 *
+     *<pre>
 	 * ID = CLASS: APPLICATION, FORM: CONSTRUCTED, TAG: 0. (0x60)
+     *</pre>
 	 */
-	public ASN1Identifier getIdentifier()
+	public final ASN1Identifier getIdentifier()
 	{
 		return ID; // new ASN1Identifier(ASN1Identifier.APPLICATION, true, RfcProtocolOp.BIND_REQUEST);
 	}
 
-    public RfcRequest dupRequest(String base, String filter, boolean request)
+    public final RfcRequest dupRequest(String base, String filter, boolean request)
             throws LDAPException
     {
-        return new RfcBindRequest( content, base);
+        return new RfcBindRequest( toArray(), base);
     }
-    public String getRequestDN()
+    public final String getRequestDN()
     {
-        return ((RfcLDAPDN)getContent().get(1)).getString();
+        return ((RfcLDAPDN)get(1)).stringValue();
     }
 }

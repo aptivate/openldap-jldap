@@ -22,94 +22,95 @@ import java.io.IOException;
 /**
  * This class encapsulates the ASN.1 BOOLEAN type.
  */
-public class ASN1Boolean extends ASN1Simple {
+public class ASN1Boolean extends ASN1Object
+{
 
-   private boolean content;
+    private boolean content;
+ 
+    /**
+     * ASN.1 BOOLEAN tag definition.
+     */
+    public static final int TAG = 0x01;
 
-   /**
-    * ASN.1 BOOLEAN tag definition.
-    */
-   public static final int TAG = 0x01;
+    /**
+     * ID is added for Optimization.
+     *
+     * <p>ID needs only be one Value for every instance,
+     * thus we create it only once.</p>
+     */
+     public static final ASN1Identifier ID =
+            new ASN1Identifier(ASN1Identifier.UNIVERSAL, false, TAG);
+    /* Constructors for ASN1Boolean
+     */
 
-   /**
-    * ID is added for Optimization.
-    *
-    * <p>ID needs only be one Value for every instance,
-    * thus we create it only once.</p>
-    */
-    public static final ASN1Identifier ID =
-        new ASN1Identifier(ASN1Identifier.UNIVERSAL, false, TAG);
-   /* Constructors for ASN1Boolean
-    */
+    /**
+     * Call this constructor to construct an ASN1Boolean
+     * object from a boolean value.
+     *
+     * @param content The boolean value to be contained in the
+     * this ASN1Boolean object
+     */
+    public ASN1Boolean(boolean content)
+    {
+        super(ID);
+        this.content = content;
+        return;
+    }
 
-   /**
-    * Call this constructor to construct an ASN1Boolean
-    * object from a boolean value.
-    *
-    * @param content The boolean value to be contained in the
-    * this ASN1Boolean object
-    */
-   public ASN1Boolean(boolean content)
-   {
-      id = ID;
-      this.content = content;
-   }
-
-   /**
-    * Constructs an ASN1Boolean object by decoding data from an
-    * input stream.
-    *
-    * @param dec The decoder object to use when decoding the
-    * input stream.  Sometimes a developer might want to pass
-    * in his/her own decoder object<br>
-    *
-    * @param in A byte stream that contains the encoded ASN.1
-    *
-    */
-   public ASN1Boolean(ASN1Decoder dec, InputStream in, int len)
+    /**
+     * Constructs an ASN1Boolean object by decoding data from an
+     * input stream.
+     *
+     * @param dec The decoder object to use when decoding the
+     * input stream.  Sometimes a developer might want to pass
+     * in his/her own decoder object<br>
+     *
+     * @param in A byte stream that contains the encoded ASN.1
+     *
+     */
+    public ASN1Boolean(ASN1Decoder dec, InputStream in, int len)
       throws IOException
-   {
+    {
+        super(ID);
+        content = ((Boolean)dec.decodeBoolean(in, len)).booleanValue();
+        return;
+    }
 
-      id = ID;
-      content = ((Boolean)dec.decodeBoolean(in, len)).booleanValue();
-   }
+    /* ASN1Object implementation
+     */
 
-   /* ASN1Object implementation
-    */
-
-   /**
-    * Call this method to encode the current instance into the
-    * specified output stream using the specified encoder object.
-    *
-    * @param enc Encoder object to use when encoding self.<br>
-    *
-    * @param out The output stream onto which the encoded byte
-    * stream is written.
-    */
-   public void encode(ASN1Encoder enc, OutputStream out)
+    /**
+     * Encode the current instance into the
+     * specified output stream using the specified encoder object.
+     *
+     * @param enc Encoder object to use when encoding self.<br>
+     *
+     * @param out The output stream onto which the encoded byte
+     * stream is written.
+     */
+    public final void encode(ASN1Encoder enc, OutputStream out)
       throws IOException
-   {
-      enc.encode(this, out);
-   }
+    {
+        enc.encode(this, out);
+        return;
+    }
 
-   /* ASN1Boolean specific methods
-    */
+    /* ASN1Boolean specific methods
+     */
 
-   /**
-    * Returns the content of this ASN1Boolean as a boolean.
-    */
-   public boolean getContent()
-   {
-      return content;
-   }
+    /**
+     * Returns the content of this ASN1Boolean as a boolean.
+     */
+    public final boolean booleanValue()
+    {
+        return content;
+    }
 
-   /**
-    * Returns a String representation of this ASN1Boolean object.
-    */
-   public String toString()
-   {
-      return super.toString() + "BOOLEAN: " + content;
-   }
-
+    /**
+     * Returns a String representation of this ASN1Boolean object.
+     */
+    public String toString()
+    {
+        return super.toString() + "BOOLEAN: " + content;
+    }
 }
-

@@ -43,8 +43,8 @@ import com.novell.ldap.asn1.*;
  *                       extendedResp    ExtendedResponse },
  *</pre>
  */
-public class RfcProtocolOp extends ASN1Choice {
-
+public class RfcProtocolOp extends ASN1Choice
+{
     /*
      * Protocol Operation application tags
      */

@@ -25,6 +25,7 @@ import com.novell.ldap.*;
 import com.novell.ldap.rfc2251.*;
 import com.novell.ldap.asn1.*;
 import com.novell.ldap.client.*;
+import com.novell.ldap.message.*;
 import com.novell.ldap.resources.*;
 
 /**
@@ -168,7 +169,7 @@ public final class Connection implements Runnable
      *
      * @return the fake message value that identifies semaphore's owner
      */
-    public int acquireWriteSemaphore()
+    public final int acquireWriteSemaphore()
     {
         return acquireWriteSemaphore(0);
     }
@@ -187,7 +188,7 @@ public final class Connection implements Runnable
      *
      * @return the semaphore value used to acquire the lock
      */
-    public int acquireWriteSemaphore(int msgId)
+    public final int acquireWriteSemaphore(int msgId)
     {
         int id = msgId;
         synchronized( writeSemaphore) {
@@ -233,7 +234,7 @@ public final class Connection implements Runnable
      *
      * @param msgId a value that identifies the owner of this semaphore
      */
-    public void freeWriteSemaphore(int msgId)
+    public final void freeWriteSemaphore(int msgId)
     {
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.bindSemaphore, name +
@@ -401,7 +402,7 @@ public final class Connection implements Runnable
      *
      * @return true if clones exist, false otherwise.
      */
-    public boolean isCloned()
+    public final boolean isCloned()
     {
         return( cloneCount > 0);
     }
@@ -411,7 +412,7 @@ public final class Connection implements Runnable
      *
      * @return true if other clones exist
      */
-    synchronized public void createClone()
+    synchronized public final void createClone()
     {
         cloneCount++;
         if( Debug.LDAP_DEBUG) {
@@ -430,7 +431,7 @@ public final class Connection implements Runnable
      *
      * @return a Connection object.
      */
-    public Connection destroyClone(boolean how)
+    public final Connection destroyClone(boolean how)
         throws LDAPException
     {
         return destroyClone(how, null,0);
@@ -447,7 +448,7 @@ public final class Connection implements Runnable
      *
      * @return a Connection object.
      */
-    synchronized public Connection
+    synchronized public final Connection
         destroyClone( boolean how, String host, int port)
                     throws LDAPException
     {
@@ -503,7 +504,7 @@ public final class Connection implements Runnable
      *
      * @param factory the default factory to set
      */
-    public static void setSocketFactory( LDAPSocketFactory factory)
+    public final static void setSocketFactory( LDAPSocketFactory factory)
     {
         /* verify the 'setFactory' permision is set */
         SecurityManager security = System.getSecurityManager();
@@ -519,7 +520,7 @@ public final class Connection implements Runnable
      *
      * @param factory the default factory to set
      */
-    public LDAPSocketFactory getSocketFactory()
+    public final LDAPSocketFactory getSocketFactory()
     {
         return mySocketFactory;
     }
@@ -527,7 +528,7 @@ public final class Connection implements Runnable
     /**
      * gets the host used for this connection
      */
-    public String getHost()
+    public final String getHost()
     {
         return host;
     }
@@ -535,7 +536,7 @@ public final class Connection implements Runnable
     /**
      * gets the port used for this connection
      */
-    public int getPort()
+    public final int getPort()
     {
         return port;
     }
@@ -621,7 +622,7 @@ public final class Connection implements Runnable
     /**
      * Returns the message agent for this msg ID
      */
-    public MessageAgent getMessageAgent( int msgId)
+    public final MessageAgent getMessageAgent( int msgId)
         throws NoSuchFieldException
     {
         Message info  = messages.findMessageById( msgId);
@@ -632,7 +633,7 @@ public final class Connection implements Runnable
      * Return whether the application is bound to this connection.
      * Note: an anonymous bind returns false - not bound
      */
-    public boolean isBound()
+    public final boolean isBound()
     {
         if( bindProperties != null) {
             String dn = bindProperties.getAuthenticationDN();
@@ -644,7 +645,7 @@ public final class Connection implements Runnable
     /**
      * Return whether a connection has been made
      */
-    public boolean isConnected()
+    public final boolean isConnected()
     {
         return (in != null);
     }
@@ -654,7 +655,7 @@ public final class Connection implements Runnable
      *
      * @param info the Message class to remove from the list
      */
-    public void removeMessage( Message info)
+    public final void removeMessage( Message info)
     {
         boolean done = messages.removeElement(info);
         if( Debug.LDAP_DEBUG) {
@@ -727,7 +728,7 @@ public final class Connection implements Runnable
         int semId = acquireWriteSemaphore( semaphoreId);
         if( (bindProperties != null) && (out != null)) {
             try {
-                LDAPMessage msg = new LDAPMessage( new RfcUnbindRequest(),null);
+                LDAPMessage msg = new LDAPUnbindRequest( null);
                 if( Debug.LDAP_DEBUG) {
                     Debug.trace( Debug.messages, name +
                          "Writing unbind request (" + msg.getMessageID() + ")");
@@ -737,7 +738,7 @@ public final class Connection implements Runnable
                 byte[] ber = msg.getASN1Object().getEncoding(encoder);
                 out.write(ber, 0, ber.length);
                 out.flush();
-            } catch( IOException ex) {
+            } catch( Exception ex) {
                 ;  // don't worry about error
             }
         }
@@ -767,7 +768,7 @@ public final class Connection implements Runnable
     *<br><br>
     * @param bindProps   The BindProperties object to set.
     */
-    public void setBindProperties( BindProperties bindProps)
+    public final void setBindProperties( BindProperties bindProps)
     {
         bindProperties = bindProps;
         return;
@@ -782,7 +783,7 @@ public final class Connection implements Runnable
     *<br><br>
     * @param bindProps   The BindProperties object to set.
     */
-    public BindProperties getBindProperties()
+    public final BindProperties getBindProperties()
     {
         return bindProperties;
     }
@@ -795,7 +796,7 @@ public final class Connection implements Runnable
      *
      * @return true if no outstanding messages
      */
-    public boolean areMessagesComplete(){
+    public final boolean areMessagesComplete(){
         Object[] messages = this.messages.getObjectArray();
         int length = messages.length;
 
@@ -824,7 +825,7 @@ public final class Connection implements Runnable
      * to the messageID passed in to this method.  This is used by
      * LDAPConnection.StartTLS.
      */
-    public void stopReaderOnReply(int messageID){
+    public final void stopReaderOnReply(int messageID){
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.TLS, "startTLS: stopReaderOnReply of " +
             "message " + messageID);
@@ -838,7 +839,7 @@ public final class Connection implements Runnable
      *  set or changed.  In particular after client.Connection.startTLS()
      *  It assumes the reader thread is not running.
      */
-    public void startReader() throws LDAPException {
+    public final void startReader() throws LDAPException {
         // Start Reader Thread
         Thread r = new Thread(this);
         r.setDaemon(true); // If the last thread running, allow exit.
@@ -852,7 +853,7 @@ public final class Connection implements Runnable
      *
      * Returns true if using TLS protection.
      */
-    public boolean isTLS(){
+    public final boolean isTLS(){
         return (this.nonTLSBackup != null);
     }
 
@@ -869,7 +870,7 @@ public final class Connection implements Runnable
      * stop and start the reader thread.  Connection.StopTLS will stop
      * and start the reader thread.
      */
-    public void startTLS()
+    public final void startTLS()
         throws LDAPException
     {
         if (this.mySocketFactory == null){
@@ -936,7 +937,7 @@ public final class Connection implements Runnable
      * used any more, even though autoclose was false: you get an IOException.
      * IBM's JSSE hangs when you close the JSSE socket.
      */
-    public void stopTLS() throws LDAPException
+    public final void stopTLS() throws LDAPException
     {
         try{
             this.stopReaderMessageID = this.STOP_READING;
@@ -967,7 +968,7 @@ public final class Connection implements Runnable
      *
      * Note: This thread needs a graceful shutdown implementation.
      */
-    public void run()
+    public final void run()
     {
 
         String reason = "reader: thread stopping";
@@ -1162,7 +1163,7 @@ public final class Connection implements Runnable
      * Sets the current referral active on this connection if created to
      * follow referrals.
      */
-    public void setActiveReferral( ReferralInfo referral)
+    public final void setActiveReferral( ReferralInfo referral)
     {
         activeReferral = referral;
         return;
@@ -1174,7 +1175,7 @@ public final class Connection implements Runnable
      *
      * @return the active referral url
      */
-    public ReferralInfo getActiveReferral()
+    public final ReferralInfo getActiveReferral()
     {
         return activeReferral;
     }
@@ -1182,7 +1183,7 @@ public final class Connection implements Runnable
     /** Add the specific object to the list of listeners that want to be
      * notified when an unsolicited notification is received.
      */
-    public void
+    public final void
       addUnsolicitedNotificationListener(LDAPUnsolicitedNotificationListener listener)
     {
         unsolicitedListeners.add(listener);
@@ -1191,7 +1192,7 @@ public final class Connection implements Runnable
 
     /** Remove the specific object from current list of listeners
     */
-    public void
+    public final void
       removeUnsolicitedNotificationListener(LDAPUnsolicitedNotificationListener listener)
     {
         unsolicitedListeners.removeElement(listener);
@@ -1220,7 +1221,7 @@ public final class Connection implements Runnable
             return;
         }
 
-        public void run()
+        public final void run()
         {
             listenerObj.messageReceived(unsolicitedMsg);
             return;

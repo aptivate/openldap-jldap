@@ -33,11 +33,12 @@ public class RfcUnbindRequest extends ASN1Null implements RfcRequest {
 	//*************************************************************************
 
 	/**
-	 *
+	 * Construct an RfCUnbind Request
 	 */
 	public RfcUnbindRequest()
 	{
 		super();
+        return;
 	}
 
 	//*************************************************************************
@@ -46,16 +47,17 @@ public class RfcUnbindRequest extends ASN1Null implements RfcRequest {
 
 	/**
 	 * Override getIdentifier to return an application-wide id.
-	 *
+	 *<pre>
 	 * ID = CLASS: APPLICATION, FORM: PRIMITIVE, TAG: 2. (0x42)
+     *</pre>
 	 */
-	public ASN1Identifier getIdentifier()
+	public final ASN1Identifier getIdentifier()
 	{
 		return new ASN1Identifier(ASN1Identifier.APPLICATION, false,
 			                       RfcProtocolOp.UNBIND_REQUEST);
 	}
 
-    public RfcRequest dupRequest(String base, String filter, boolean request)
+    public final RfcRequest dupRequest(String base, String filter, boolean request)
             throws LDAPException
     {
         throw new LDAPException(
@@ -63,7 +65,8 @@ public class RfcUnbindRequest extends ASN1Null implements RfcRequest {
                     new Object[] { "unbind" },
                     LDAPException.LDAP_NOT_SUPPORTED);
     }
-    public String getRequestDN()
+    
+    public final String getRequestDN()
     {
         return null;
     }

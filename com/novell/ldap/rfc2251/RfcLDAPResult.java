@@ -127,7 +127,7 @@ public class RfcLDAPResult extends ASN1Sequence implements RfcResponse {
          ASN1Identifier id = obj.getIdentifier();
          if(id.getTag() == RfcLDAPResult.REFERRAL) {
             byte[] content =
-               ((ASN1OctetString)obj.getContent()).getContent();
+               ((ASN1OctetString)obj.taggedValue()).byteValue();
             ByteArrayInputStream bais = new ByteArrayInputStream(content);
             set(3, new RfcReferral(dec, bais, content.length));
          }
@@ -177,7 +177,7 @@ public class RfcLDAPResult extends ASN1Sequence implements RfcResponse {
    /**
     *
     */
-   public ASN1Enumerated getResultCode()
+   public final ASN1Enumerated getResultCode()
    {
       return (ASN1Enumerated)get(0);
    }
@@ -185,23 +185,23 @@ public class RfcLDAPResult extends ASN1Sequence implements RfcResponse {
    /**
     *
     */
-   public RfcLDAPDN getMatchedDN()
+   public final RfcLDAPDN getMatchedDN()
    {
-		return new RfcLDAPDN(((ASN1OctetString)get(1)).getString());
+		return new RfcLDAPDN(((ASN1OctetString)get(1)).byteValue());
    }
 
    /**
     *
     */
-   public RfcLDAPString getErrorMessage()
+   public final RfcLDAPString getErrorMessage()
    {
-		return new RfcLDAPString(((ASN1OctetString)get(2)).getString());
+		return new RfcLDAPString(((ASN1OctetString)get(2)).byteValue());
    }
 
    /**
     *
     */
-   public RfcReferral getReferral()
+   public final RfcReferral getReferral()
    {
 		return (size() > 3) ? (RfcReferral)get(3) : null;
    }

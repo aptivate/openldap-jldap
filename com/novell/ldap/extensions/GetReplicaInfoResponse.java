@@ -86,7 +86,7 @@ public class GetReplicaInfoResponse extends LDAPExtendedResponse {
             if (asn1_partitionID == null)
                 throw new IOException("Decoding error");
 
-            partitionID = asn1_partitionID.getInt();
+            partitionID = asn1_partitionID.intValue();
 
 
             // Parse replicaState
@@ -94,35 +94,35 @@ public class GetReplicaInfoResponse extends LDAPExtendedResponse {
             if (asn1_replicaState == null)
                 throw new IOException("Decoding error");
 
-            replicaState = asn1_replicaState.getInt();
+            replicaState = asn1_replicaState.intValue();
 
             // Parse modificationTime
             ASN1Integer asn1_modificationTime = (ASN1Integer)decoder.decode(currentPtr);
             if (asn1_modificationTime == null)
                 throw new IOException("Decoding error");
 
-            modificationTime = asn1_modificationTime.getInt();
+            modificationTime = asn1_modificationTime.intValue();
 
             // Parse purgeTime
             ASN1Integer asn1_purgeTime = (ASN1Integer)decoder.decode(currentPtr);
             if (asn1_purgeTime == null)
                 throw new IOException("Decoding error");
 
-            purgeTime = asn1_purgeTime.getInt();
+            purgeTime = asn1_purgeTime.intValue();
 
             // Parse localPartitionID
             ASN1Integer asn1_localPartitionID = (ASN1Integer)decoder.decode(currentPtr);
             if (asn1_localPartitionID == null)
                 throw new IOException("Decoding error");
 
-            localPartitionID = asn1_localPartitionID.getInt();
+            localPartitionID = asn1_localPartitionID.intValue();
 
             // Parse partitionDN
             ASN1OctetString asn1_partitionDN = (ASN1OctetString)decoder.decode(currentPtr);
             if (asn1_partitionDN == null)
                 throw new IOException("Decoding error");
 
-            partitionDN = new String(asn1_partitionDN.getContent());
+            partitionDN = asn1_partitionDN.stringValue();
             if (partitionDN == null)
                 throw new IOException("Decoding error");
 
@@ -132,7 +132,7 @@ public class GetReplicaInfoResponse extends LDAPExtendedResponse {
             if (asn1_replicaType == null)
                 throw new IOException("Decoding error");
 
-            replicaType = asn1_replicaType.getInt();
+            replicaType = asn1_replicaType.intValue();
 
 
             // Parse flags
@@ -140,7 +140,7 @@ public class GetReplicaInfoResponse extends LDAPExtendedResponse {
             if (asn1_flags == null)
                 throw new IOException("Decoding error");
 
-            flags = asn1_flags.getInt();
+            flags = asn1_flags.intValue();
         }
         else
         {

@@ -22,9 +22,8 @@ import com.novell.ldap.LDAPException;
 import com.novell.ldap.LDAPMessage;
 import com.novell.ldap.asn1.*;
 import com.novell.ldap.client.Debug;
-import java.util.ArrayList;
 
-/* 
+/**
  * Represents an LDAP Message.
  *
  *<pre>
@@ -75,25 +74,22 @@ public class RfcLDAPMessage extends ASN1Sequence
      * @param origContent the array list to copy
      */
     /* package */
-    RfcLDAPMessage( ArrayList origContent,
+    RfcLDAPMessage( ASN1Object[] origContent,
                     RfcRequest origRequest,
                     String dn,
                     String filter,
                     boolean reference)
             throws LDAPException
     {
-        super( origContent.size());
+        super( origContent, origContent.length);
 
-        content.add(new RfcMessageID()); // MessageID has static counter
+        set(0, new RfcMessageID()); // MessageID has static counter
 
-        RfcRequest req = (RfcRequest)origContent.get(1);
+        RfcRequest req = (RfcRequest)origContent[1];
         RfcRequest newreq = req.dupRequest(dn, filter, reference);
         op = newreq;
-        content.add( newreq);
+        set(1, (ASN1Object)newreq);
 
-        for( int i = 2; i < origContent.size(); i++) {
-            content.add(origContent.get(i));
-        }
         if( Debug.LDAP_DEBUG ) {
             Debug.trace( Debug.referrals,
                 "RfcLDAPMessage created copy of msg with new id " +
@@ -109,6 +105,7 @@ public class RfcLDAPMessage extends ASN1Sequence
     public RfcLDAPMessage(RfcRequest op)
     {
         this(op, null);
+        return;
     }
 
     /**
@@ -123,8 +120,10 @@ public class RfcLDAPMessage extends ASN1Sequence
 
         add(new RfcMessageID()); // MessageID has static counter
         add((ASN1Object)op);
-        if(controls != null)
+        if(controls != null) {
             add(controls);
+        }        
+        return;
     }
 
     /**
@@ -138,13 +137,11 @@ public class RfcLDAPMessage extends ASN1Sequence
         byte[] content;
         ByteArrayInputStream bais;
 
-        //      set(0, new MessageID(((ASN1Integer)get(0)).getInt()));
-
         // Decode implicitly tagged protocol operation from an ASN1Tagged type
         // to its appropriate application type.
         ASN1Tagged protocolOp = (ASN1Tagged)get(1);
         ASN1Identifier protocolOpId = protocolOp.getIdentifier();
-        content = ((ASN1OctetString)protocolOp.getContent()).getContent();
+        content = ((ASN1OctetString)protocolOp.taggedValue()).byteValue();
         bais = new ByteArrayInputStream(content);
 
         if( Debug.LDAP_DEBUG ) {
@@ -182,6 +179,9 @@ public class RfcLDAPMessage extends ASN1Sequence
             case RfcProtocolOp.MODIFY_DN_RESPONSE:
                 set(1, new RfcModifyDNResponse(dec, bais, content.length));
                 break;
+            default:
+                throw new RuntimeException("RfcLDAPMessage: Invalid tag: " +
+                    protocolOpId.getTag());
         }
 
         // decode optional implicitly tagged controls from ASN1Tagged type to
@@ -191,7 +191,7 @@ public class RfcLDAPMessage extends ASN1Sequence
             //   ASN1Identifier controlsId = protocolOp.getIdentifier();
             // we could check to make sure we have controls here....
 
-            content = ((ASN1OctetString)controls.getContent()).getContent();
+            content = ((ASN1OctetString)controls.taggedValue()).byteValue();
             bais = new ByteArrayInputStream(content);
             set(2, new RfcControls(dec, bais, content.length));
         }
@@ -205,23 +205,23 @@ public class RfcLDAPMessage extends ASN1Sequence
     /**
      * Returns this RfcLDAPMessage's messageID as an int.
      */
-    public int getMessageID()
+    public final int getMessageID()
     {
-        return ((ASN1Integer)get(0)).getInt();
+        return ((ASN1Integer)get(0)).intValue();
     }
 
     /**
      * Returns the Protocol Operation for this RfcLDAPMessage.
      */
-    public ASN1Object getProtocolOp()
+    public final ASN1Object getProtocolOp()
     {
-        return get(1);
+        return (ASN1Object)get(1);
     }
 
     /**
      * Returns the optional Controls for this RfcLDAPMessage.
      */
-    public RfcControls getControls()
+    public final RfcControls getControls()
     {
         if(size() > 2)
             return (RfcControls)get(2);
@@ -239,7 +239,7 @@ public class RfcLDAPMessage extends ASN1Sequence
      *
      * @return the object representing the new message
      */
-    public Object dupMessage( String dn, String filter, boolean reference)
+    public final Object dupMessage( String dn, String filter, boolean reference)
         throws LDAPException
     {
         if( (op == null)) {
@@ -250,8 +250,8 @@ public class RfcLDAPMessage extends ASN1Sequence
             throw new LDAPException("DUP_ERROR", LDAPException.LOCAL_ERROR);
         }
 
-        RfcLDAPMessage newMsg = new RfcLDAPMessage( content,
-                                                    (RfcRequest)content.get(1),
+        RfcLDAPMessage newMsg = new RfcLDAPMessage( toArray(),
+                                                    (RfcRequest)get(1),
                                                     dn,
                                                     filter,
                                                     reference);
@@ -261,7 +261,7 @@ public class RfcLDAPMessage extends ASN1Sequence
     /**
      * Returns the dn of the request, may be null
      */
-    public String getRequestDN()
+    public final String getRequestDN()
     {
         return op.getRequestDN();
     }
@@ -271,7 +271,7 @@ public class RfcLDAPMessage extends ASN1Sequence
      *
      * @param msg the original request for this response
      */
-    public void setRequestingMessage( LDAPMessage msg)
+    public final void setRequestingMessage( LDAPMessage msg)
     {
         requestMessage = msg;
         return;
@@ -282,7 +282,7 @@ public class RfcLDAPMessage extends ASN1Sequence
      *
      * @return the original msg request for this response
      */
-    public LDAPMessage getRequestingMessage( )
+    public final LDAPMessage getRequestingMessage( )
     {
         return requestMessage;
     }

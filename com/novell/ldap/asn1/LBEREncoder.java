@@ -18,7 +18,6 @@ package com.novell.ldap.asn1;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
 
 /**
  * This class provides LBER encoding routines for ASN.1 Types. LBER is a
@@ -72,7 +71,7 @@ public class LBEREncoder implements ASN1Encoder {
       out.write(0x01);
 
       /* Encode the boolean content*/
-      out.write(b.getContent() ? (byte) 0xff : (byte) 0x00);
+      out.write(b.booleanValue() ? (byte) 0xff : (byte) 0x00);
 
       return;
    }
@@ -85,12 +84,12 @@ public class LBEREncoder implements ASN1Encoder {
     *
     * <p>Can be used to encode INTEGER and ENUMERATED values.
     */
-   public void encode(ASN1Numeric n, OutputStream out)
+   public final void encode(ASN1Numeric n, OutputStream out)
       throws IOException
    {
       byte[] octets = new byte[8];
       byte len;
-      long value = n.getLong();
+      long value = n.longValue();
       long endValue = (value < 0) ? -1 : 0;
       long endSign = endValue & 0x80;
 
@@ -118,7 +117,7 @@ public class LBEREncoder implements ASN1Encoder {
    /**
     * Encode an ASN1Null directly into the specified outputstream.
     */
-   public void encode(ASN1Null n, OutputStream out)
+   public final void encode(ASN1Null n, OutputStream out)
       throws IOException
    {
       encode(n.getIdentifier(), out);
@@ -138,12 +137,12 @@ public class LBEREncoder implements ASN1Encoder {
    /**
     * Encode an ASN1OctetString directly into the specified outputstream.
     */
-   public void encode(ASN1OctetString os, OutputStream out)
+   public final void encode(ASN1OctetString os, OutputStream out)
       throws IOException
    {
       encode(os.getIdentifier(), out);
-      encodeLength(os.getContent().length, out);
-      out.write(os.getContent());
+      encodeLength(os.byteValue().length, out);
+      out.write(os.byteValue());
       return;
    }
 
@@ -172,18 +171,18 @@ public class LBEREncoder implements ASN1Encoder {
     * Encode an ASN1Structured into the specified outputstream.  This method
     * can be used to encode SET, SET_OF, SEQUENCE, SEQUENCE_OF
     */
-   public void encode(ASN1Structured c, OutputStream out)
+   public final void encode(ASN1Structured c, OutputStream out)
       throws IOException
    {
       encode(c.getIdentifier(), out);
 
-      ArrayList value = c.getContent();
+      ASN1Object[] value = c.toArray();
 
       ByteArrayOutputStream output = new ByteArrayOutputStream();
 
       /* Cycle through each element encoding each element */
-      for( int i=0; i < value.size(); i++) {
-         ((ASN1Object)value.get(i)).encode(this, output);
+      for( int i=0; i < value.length; i++) {
+         (value[i]).encode(this, output);
       }
 
       /* Encode the length */
@@ -197,7 +196,7 @@ public class LBEREncoder implements ASN1Encoder {
    /**
     * Encode an ASN1Tagged directly into the specified outputstream.
     */
-   public void encode(ASN1Tagged t, OutputStream out)
+   public final void encode(ASN1Tagged t, OutputStream out)
       throws IOException
    {
       if(t.isExplicit()) {
@@ -205,13 +204,13 @@ public class LBEREncoder implements ASN1Encoder {
 
          /* determine the encoded length of the base type. */
          ByteArrayOutputStream encodedContent = new ByteArrayOutputStream();
-         t.getContent().encode(this, encodedContent);
+         t.taggedValue().encode(this, encodedContent);
 
          encodeLength(encodedContent.size(), out);
          out.write(encodedContent.toByteArray());
       }
       else {
-         t.getContent().encode(this, out);
+         t.taggedValue().encode(this, out);
       }
       return;
    }
@@ -224,7 +223,7 @@ public class LBEREncoder implements ASN1Encoder {
    /**
     * Encode an ASN1Identifier directly into the specified outputstream.
     */
-   public void encode(ASN1Identifier id, OutputStream out)
+   public final void encode(ASN1Identifier id, OutputStream out)
       throws IOException
    {
       int c = id.getASN1Class();
@@ -249,7 +248,7 @@ public class LBEREncoder implements ASN1Encoder {
    /*
     *  Encodes the specified length into the the outputstream
     */
-   private void encodeLength(int length, OutputStream out)
+   private final void encodeLength(int length, OutputStream out)
       throws IOException
    {
       if(length < 0x80) {
@@ -275,7 +274,7 @@ public class LBEREncoder implements ASN1Encoder {
    /**
     * Encodes the provided tag into the outputstream.
     */
-   private void encodeTagInteger(int value, OutputStream out)
+   private final void encodeTagInteger(int value, OutputStream out)
       throws IOException
    {
       byte[] octets = new byte[5];

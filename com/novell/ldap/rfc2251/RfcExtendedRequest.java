@@ -14,20 +14,18 @@
  ******************************************************************************/
 package com.novell.ldap.rfc2251;
 
-import java.util.ArrayList;
-
 import com.novell.ldap.asn1.*;
 import com.novell.ldap.*;
 import com.novell.ldap.resources.*;
 
-/* 
+/** 
  * Represents an LDAP Extended Request.
  *
  *<pre>
  *       ExtendedRequest ::= [APPLICATION 23] SEQUENCE {
  *               requestName      [0] LDAPOID,
  *               requestValue     [1] OCTET STRING OPTIONAL }
- *<pre>
+ *</pre>
  */
 public class RfcExtendedRequest extends ASN1Sequence implements RfcRequest {
 
@@ -51,7 +49,8 @@ public class RfcExtendedRequest extends ASN1Sequence implements RfcRequest {
 	 */
 	public RfcExtendedRequest(RfcLDAPOID requestName)
 	{
-		this(requestName, null);
+  		this(requestName, null);
+        return;                                     
 	}
 
 	/**
@@ -63,13 +62,14 @@ public class RfcExtendedRequest extends ASN1Sequence implements RfcRequest {
 	public RfcExtendedRequest(RfcLDAPOID requestName, ASN1OctetString requestValue)
 	{
 		super(2);
-		add(new ASN1Tagged(
+        add(new ASN1Tagged(
 			new ASN1Identifier(ASN1Identifier.CONTEXT, false, REQUEST_NAME),
-			                   requestName, false));
+			   requestName, false));
 		if(requestValue != null)
 			add(new ASN1Tagged(
 				new ASN1Identifier(ASN1Identifier.CONTEXT, false, REQUEST_VALUE),
 										 requestValue, false));
+        return;                                     
 	}
 
 	/**
@@ -79,12 +79,10 @@ public class RfcExtendedRequest extends ASN1Sequence implements RfcRequest {
 	 * @param requestValue An optional request value.
 	 */
     /* package */
-	public RfcExtendedRequest( ArrayList origRequest)
+	public RfcExtendedRequest( ASN1Object[] origRequest)
             throws LDAPException
 	{
-        for(int i=0; i < origRequest.size(); i++) {
-            content.add(origRequest.get(i));
-        }
+        super(origRequest, origRequest.length);
         return;
     }
 	//*************************************************************************
@@ -94,21 +92,23 @@ public class RfcExtendedRequest extends ASN1Sequence implements RfcRequest {
 	/**
 	 * Override getIdentifier to return an application-wide id.
 	 *
+     *<pre>
 	 * ID = CLASS: APPLICATION, FORM: CONSTRUCTED, TAG: 23.
+     *</pre>
 	 */
-	public ASN1Identifier getIdentifier()
+	public final ASN1Identifier getIdentifier()
 	{
 		return new ASN1Identifier(ASN1Identifier.APPLICATION, true,
 			                       RfcProtocolOp.EXTENDED_REQUEST);
 	}
 
-    public RfcRequest dupRequest(String base, String filter, boolean request)
+    public final RfcRequest dupRequest(String base, String filter, boolean request)
             throws LDAPException
     {
         // Just dup the original request
-        return new RfcExtendedRequest( getContent());
+        return new RfcExtendedRequest( toArray());
     }
-    public String getRequestDN()
+    public final String getRequestDN()
     {
         return null;
     }

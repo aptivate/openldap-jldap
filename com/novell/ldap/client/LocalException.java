@@ -58,7 +58,7 @@ public class LocalException extends LDAPException
      * @return the message ID.  Returns -1 if no message
      * is associated with this exception.
      */
-    public int getMessageID()
+    public final int getMessageID()
     {
         if( request == null) {
             return -1;
@@ -73,7 +73,7 @@ public class LocalException extends LDAPException
      * @return the message type of the expected reply.  Returns -1
      * if no reply expected.
      */
-    public int getReplyType()
+    public final int getReplyType()
     {
         if( request == null) {
             return -1;

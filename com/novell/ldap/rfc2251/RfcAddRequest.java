@@ -14,18 +14,18 @@
  ******************************************************************************/
 package com.novell.ldap.rfc2251;
 
-import java.util.ArrayList;
-
 import com.novell.ldap.asn1.*;
 import com.novell.ldap.*;
 import com.novell.ldap.resources.*;
 
-/* 
+/**
  * Represents the LDAP Add Request.
  *
+ *<pre>
  *       AddRequest ::= [APPLICATION 8] SEQUENCE {
  *               entry           LDAPDN,
  *               attributes      AttributeList }
+ *</pre>
  */
 public class RfcAddRequest extends ASN1Sequence implements RfcRequest {
 
@@ -34,7 +34,11 @@ public class RfcAddRequest extends ASN1Sequence implements RfcRequest {
 	//*************************************************************************
 
 	/**
-	 *
+	 * Constructs an RFCAddRequest
+     *
+     * @param RfcLDAPDN the DN of the entry
+     *
+     * @param RfcLDAPAttributeList the Attributes making up the Entry
 	 */
 	public RfcAddRequest(RfcLDAPDN entry, RfcAttributeList attributes)
 	{
@@ -45,65 +49,63 @@ public class RfcAddRequest extends ASN1Sequence implements RfcRequest {
 	}
 
     /**
-    * Constructs a new Add Request copying from the ArrayList of
-    * an existing request.
+    * Constructs a new Add Request using data from an existing request.
+    *
+    * @param origRequest the original request data
+    *
+    * @param base if not null, replaces the dn of the original request
     */
     /* package */
-    RfcAddRequest(   ArrayList origRequest,
-                     String base)
+    RfcAddRequest( ASN1Object[] origRequest,
+                   String base)
             throws LDAPException
     {
-        for(int i=0; i < origRequest.size(); i++) {
-            content.add(origRequest.get(i));
-        }
+        super(origRequest, origRequest.length);
         // Replace the base if specified, otherwise keep original base
         if( base != null) {
-            content.set(0, new RfcLDAPDN(base));
+            set(0, new RfcLDAPDN(base));
         }
         return;
     }
-	//*************************************************************************
-	// Mutators
-	//*************************************************************************
-
 	//*************************************************************************
 	// Accessors
 	//*************************************************************************
 
 	/**
-	 *
+	 * Get's the DN of the entry
 	 */
-	public RfcLDAPDN getEntry()
+	public final RfcLDAPDN getEntry()
 	{
 		return (RfcLDAPDN)get(0);
 	}
 
 	/**
-	 *
+	 * Gets the attributes of the entry
 	 */
-	public RfcAttributeList getAttributes()
+	public final RfcAttributeList getAttributes()
 	{
 		return (RfcAttributeList)get(1);
 	}
 
 	/**
 	 * Override getIdentifier to return an application-wide id.
-	 *
+     *<pre>
 	 * ID = CLASS: APPLICATION, FORM: CONSTRUCTED, TAG: 8. (0x68)
+     *</pre>
 	 */
-	public ASN1Identifier getIdentifier()
+	public final ASN1Identifier getIdentifier()
 	{
 		return new ASN1Identifier(ASN1Identifier.APPLICATION, true,
 			                       RfcProtocolOp.ADD_REQUEST);
 	}
 
-    public RfcRequest dupRequest(String base, String filter, boolean request)
+    public final RfcRequest dupRequest(String base, String filter, boolean request)
             throws LDAPException
     {
-        return new RfcAddRequest( content, base);
+        return new RfcAddRequest( toArray(), base);
     }
-    public String getRequestDN()
+    public final String getRequestDN()
     {
-        return ((RfcLDAPDN)getContent().get(0)).getString();
+        return ((RfcLDAPDN)get(0)).stringValue();
     }
 }

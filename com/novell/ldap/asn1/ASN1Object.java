@@ -25,8 +25,14 @@ import java.io.IOException;
  */
 public abstract class ASN1Object implements Serializable {
 
-    protected ASN1Identifier id;
+    private ASN1Identifier id;
 
+    public ASN1Object(ASN1Identifier id)
+    {
+        this.id = id;
+        return;
+    }
+    
     /**
      * Abstract method that must be implemented by each child
      * class to encode itself ( an ASN1Object) directly intto 
@@ -37,7 +43,7 @@ public abstract class ASN1Object implements Serializable {
      */
     abstract public void encode(ASN1Encoder enc, OutputStream out)
         throws IOException;
-
+        
     /**
      * Returns the identifier for this ASN1Object as an ASN1Identifier. 
      * This ASN1Identifier object will include the CLASS, FORM and TAG
@@ -67,7 +73,7 @@ public abstract class ASN1Object implements Serializable {
      * defined in ASN1Object but will usually be implemented
      * in the child ASN1 classses.
      */
-    public byte[] getEncoding(ASN1Encoder enc) {
+    public final byte[] getEncoding(ASN1Encoder enc) {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         try {
             encode(enc, out);

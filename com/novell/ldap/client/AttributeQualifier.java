@@ -46,11 +46,11 @@ public class AttributeQualifier{
         return;
     }
     */
-    public String getName()
+    public final String getName()
     {
         return name;
     }
-    public String[] getValues()
+    public final String[] getValues()
     {
         String[] strValues = null;
         if( values.size() > 0 ) {

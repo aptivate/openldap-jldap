@@ -17,7 +17,6 @@ package com.novell.ldap.asn1;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 
 /**
  * The ASN1Sequence class can hold an ordered collection of components with
@@ -29,75 +28,88 @@ import java.util.ArrayList;
 public class ASN1Sequence extends ASN1Structured
 {
 
-   /**
-    * ASN.1 SEQUENCE tag definition.
-    */
-   public static final int TAG = 0x10;
-
-   /**
-    * ID is added for Optimization.
-    * 
-    * id needs only be one Value for every instance Thus we create it only once.
-    */
-   private static final ASN1Identifier ID =
-        new ASN1Identifier(ASN1Identifier.UNIVERSAL, true, TAG);
-   /* Constructors for ASN1Sequence
-    */
-
-   /**
-    * Constructs an ASN1Sequence object with no actual ASN1Objects in it.
-    *
-    * Assumes a default size of 5 elements.
-    */
-   public ASN1Sequence()
-   {
-      this(5);
-      return;
-   }
-
-   /**
-    * Constructs an ASN1Sequence object with the specified
-    * number of placeholders for ASN1Objects.
-    *
-    * It should be noted there are no actual ASN1Objects in this
-    * SequenceOf object.
-    *
-    * @param size Specifies the initial size of the collection.
-    */
-   public ASN1Sequence(int size)
-   {
-      id = ID;
-      content = new ArrayList(size);
-      return;
-   }
+    /**
+     * ASN.1 SEQUENCE tag definition.
+     */
+    public static final int TAG = 0x10;
 
     /**
-    * Constructs an ASN1Sequence object by decoding data from an
-    * input stream.
-    *
-    * @param dec The decoder object to use when decoding the
-    * input stream.  Sometimes a developer might want to pass
-    * in his/her own decoder object<br>
-    *
-    * @param in A byte stream that contains the encoded ASN.1
-    *
-    */
-   public ASN1Sequence(ASN1Decoder dec, InputStream in, int len)
+     * ID is added for Optimization.
+     * 
+     * id needs only be one Value for every instance Thus we create it only once.
+     */
+    private static final ASN1Identifier ID =
+        new ASN1Identifier(ASN1Identifier.UNIVERSAL, true, TAG);
+    /* Constructors for ASN1Sequence
+     */
+
+    /**
+     * Constructs an ASN1Sequence object with no actual ASN1Objects in it.
+     *
+     * Assumes a default size of 10 elements.
+     */
+    public ASN1Sequence()
+    {
+        super(ID, 10);
+        return;
+    }
+
+    /**
+     * Constructs an ASN1Sequence object with the specified
+     * number of placeholders for ASN1Objects.
+     *
+     * It should be noted there are no actual ASN1Objects in this
+     * SequenceOf object.
+     *
+     * @param size Specifies the initial size of the collection.
+     */
+    public ASN1Sequence(int size)
+    {
+        super(ID, size);
+        return;
+    }
+
+    /**
+     * Constructs an ASN1Sequence object with an array representing an
+     * ASN1 sequence.
+     *
+     * @param newContent the array containing the ASN1 data for the sequence
+     *
+     * @param size Specifies the number of items in the array
+     */
+    public ASN1Sequence(ASN1Object[] newContent, int size)
+    {
+        super(ID, newContent, size);
+        return;
+    }
+
+     /**
+     * Constructs an ASN1Sequence object by decoding data from an
+     * input stream.
+     *
+     * @param dec The decoder object to use when decoding the
+     * input stream.  Sometimes a developer might want to pass
+     * in his/her own decoder object<br>
+     *
+     * @param in A byte stream that contains the encoded ASN.1
+     *
+     */
+    public ASN1Sequence(ASN1Decoder dec, InputStream in, int len)
       throws IOException
-   {
-      id = ID;
-      decodeStructured(dec, in, len);
-      return;
-   }
+    {
+        super(ID);
+        decodeStructured(dec, in, len);
+        return;
+    }
 
-   /* ASN1Sequence specific methods
-    */
+    /* ASN1Sequence specific methods
+     */
 
-   /**
-    * Return a String representation of this ASN1Sequence.
-    */
-   public String toString()
-   {
-      return super.toString("SEQUENCE: { ");
-   }
+    /**
+     * Return a String representation of this ASN1Sequence.
+     */
+    public String toString()
+    {
+        return super.toString("SEQUENCE: { ");
+    }
 }

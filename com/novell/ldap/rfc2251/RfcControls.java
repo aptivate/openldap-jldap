@@ -69,7 +69,7 @@ public class RfcControls extends ASN1SequenceOf {
 	/**
 	 * Override add() of ASN1SequenceOf to only accept a Control type.
 	 */
-	public void add(RfcControl control)
+	public final void add(RfcControl control)
 	{
 
 		super.add((ASN1Object)control);
@@ -78,7 +78,7 @@ public class RfcControls extends ASN1SequenceOf {
 	/**
 	 * Override set() of ASN1SequenceOf to only accept a Control type.
 	 */
-	public void set(int index, RfcControl control)
+	public final void set(int index, RfcControl control)
 	{
 		super.set(index, control);
 	}
@@ -90,7 +90,7 @@ public class RfcControls extends ASN1SequenceOf {
 	/**
 	 * Override getIdentifier to return a context specific id.
 	 */
-	public ASN1Identifier getIdentifier()
+	public final ASN1Identifier getIdentifier()
 	{
 		return new ASN1Identifier(ASN1Identifier.CONTEXT, true, CONTROLS);
 	}

@@ -25,7 +25,7 @@ package com.novell.ldap.client;
 
 public class EnumeratedIterator implements java.util.Enumeration
 {
-    public java.util.Iterator i;
+    private java.util.Iterator i;
 
     public EnumeratedIterator( java.util.Iterator iterator){
         i=iterator;
@@ -35,14 +35,14 @@ public class EnumeratedIterator implements java.util.Enumeration
     /**
      * Enumeration method that maps to Iterator.hasNext()
      */
-    public boolean hasMoreElements(){
+    public final boolean hasMoreElements(){
         return i.hasNext();
     }
 
     /**
      * Enumeration method that maps to Iterator.next()
      */
-    public Object nextElement(){
+    public final Object nextElement(){
         return i.next();
     }
 }

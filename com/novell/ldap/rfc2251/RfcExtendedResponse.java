@@ -66,7 +66,7 @@ public class RfcExtendedResponse extends ASN1Sequence implements RfcResponse {
 				switch(id.getTag()) {
 					case RfcLDAPResult.REFERRAL:
 						byte[] content =
-							((ASN1OctetString)obj.getContent()).getContent();
+							((ASN1OctetString)obj.taggedValue()).byteValue();
 						ByteArrayInputStream bais =
 							new ByteArrayInputStream(content);
 						set(i, new RfcReferral(dec, bais, content.length));
@@ -74,11 +74,11 @@ public class RfcExtendedResponse extends ASN1Sequence implements RfcResponse {
 						break;
 					case RESPONSE_NAME:
 						set(i, new RfcLDAPOID(
-							((ASN1OctetString)obj.getContent()).getContent()));
+							((ASN1OctetString)obj.taggedValue()).byteValue()));
 						responseNameIndex = i;
 						break;
 					case RESPONSE:
-						set(i, (ASN1OctetString)obj.getContent());
+						set(i, (ASN1OctetString)obj.taggedValue());
 						responseIndex = i;
 						break;
 				}
@@ -94,7 +94,7 @@ public class RfcExtendedResponse extends ASN1Sequence implements RfcResponse {
 	/**
 	 *
 	 */
-	public ASN1Enumerated getResultCode()
+	public final ASN1Enumerated getResultCode()
 	{
 		return (ASN1Enumerated)get(0);
 	}
@@ -102,23 +102,23 @@ public class RfcExtendedResponse extends ASN1Sequence implements RfcResponse {
 	/**
 	 *
 	 */
-	public RfcLDAPDN getMatchedDN()
+	public final RfcLDAPDN getMatchedDN()
 	{
-		return new RfcLDAPDN(((ASN1OctetString)get(1)).getContent());
+		return new RfcLDAPDN(((ASN1OctetString)get(1)).byteValue());
 	}
 
 	/**
 	 *
 	 */
-	public RfcLDAPString getErrorMessage()
+	public final RfcLDAPString getErrorMessage()
 	{
-		return new RfcLDAPString(((ASN1OctetString)get(2)).getContent());
+		return new RfcLDAPString(((ASN1OctetString)get(2)).byteValue());
 	}
 
 	/**
 	 *
 	 */
-	public RfcReferral getReferral()
+	public final RfcReferral getReferral()
 	{
 		return (referralIndex != 0) ? (RfcReferral)get(referralIndex) : null;
 	}
@@ -126,7 +126,7 @@ public class RfcExtendedResponse extends ASN1Sequence implements RfcResponse {
 	/**
 	 *
 	 */
-	public RfcLDAPOID getResponseName()
+	public final RfcLDAPOID getResponseName()
 	{
 		return (responseNameIndex != 0) ? (RfcLDAPOID)get(responseNameIndex)
 		                                : null;
@@ -135,7 +135,7 @@ public class RfcExtendedResponse extends ASN1Sequence implements RfcResponse {
 	/**
 	 *
 	 */
-	public ASN1OctetString getResponse()
+	public final ASN1OctetString getResponse()
 	{
 		return (responseIndex != 0) ? (ASN1OctetString)get(responseIndex)
 		                            : null;
@@ -144,7 +144,7 @@ public class RfcExtendedResponse extends ASN1Sequence implements RfcResponse {
 	/**
 	 * Override getIdentifier to return an application-wide id.
 	 */
-	public ASN1Identifier getIdentifier()
+	public final ASN1Identifier getIdentifier()
 	{
 		return new ASN1Identifier(ASN1Identifier.APPLICATION, true,
 			                       RfcProtocolOp.EXTENDED_RESPONSE);

@@ -69,7 +69,7 @@ public class PartitionEntryCountResponse extends LDAPExtendedResponse {
            if (asn1_count == null)
                throw new IOException("Decoding error");
 
-           count = asn1_count.getInt();
+           count = asn1_count.intValue();
         }
         else
         {

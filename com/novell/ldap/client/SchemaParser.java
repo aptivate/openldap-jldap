@@ -345,83 +345,83 @@ public class SchemaParser{
             }
 	}
 
-	public void setRawString( String rawString ) {
+	public final void setRawString( String rawString ) {
 		this.rawString = rawString;
 	}
 
-	public String getRawString(){
+	public final String getRawString(){
 		return rawString;
 	}
 
-	public String[] getNames(){
+	public final String[] getNames(){
 		return names;
 	}
 
-    public Enumeration getQualifiers(){
+    public final Enumeration getQualifiers(){
         return new ArrayEnumeration(qualifiers.toArray());
     }
 
-    public String getID() {
+    public final String getID() {
 		return id;
 	}
-    public String getDescription() {
+    public final String getDescription() {
 		return description;
 	}
-    public String getSyntax() {
+    public final String getSyntax() {
 		return syntax;
 	}
-    public String getSuperior() {
+    public final String getSuperior() {
 		return superior;
 	}
-    public boolean getSingle() {
+    public final boolean getSingle() {
 		return single;
 	}
-    public boolean getObsolete() {
+    public final boolean getObsolete() {
 		return obsolete;
 	}
-    public String getEquality() {
+    public final String getEquality() {
         return equality;
     }
-    public String getOrdering() {
+    public final String getOrdering() {
         return ordering;
     }
-    public String getSubstring() {
+    public final String getSubstring() {
         return substring;
     }
-    public boolean getCollective(){
+    public final boolean getCollective(){
         return collective;
     }
-    public boolean getUserMod() {
+    public final boolean getUserMod() {
         return userMod;
     }
-    public int getUsage() {
+    public final int getUsage() {
         return usage;
     }
- 	public int getType() {
+ 	public final int getType() {
 		return type;
 	}
- 	public String[] getSuperiors() {
+ 	public final String[] getSuperiors() {
 		return superiors;
 	}
- 	public String[] getRequired() {
+ 	public final String[] getRequired() {
 		return required;
 	}
- 	public String[] getOptional() {
+ 	public final String[] getOptional() {
 		return optional;
     }
-	public String[] getAuxiliary() {
+	public final String[] getAuxiliary() {
 		return auxiliary;
     }
-	public String[] getPrecluded() {
+	public final String[] getPrecluded() {
 		return precluded;
     }
-	public String[] getApplies() {
+	public final String[] getApplies() {
 		return applies;
 	}
-	public String getNameForm() {
+	public final String getNameForm() {
         return nameForm;
     }
-	public String getObjectClass() {
+	public final String getObjectClass() {
         return nameForm;
     }
 

@@ -14,13 +14,11 @@
  ******************************************************************************/
 package com.novell.ldap.rfc2251;
 
-import java.util.ArrayList;
-
 import com.novell.ldap.asn1.*;
 import com.novell.ldap.*;
 import com.novell.ldap.resources.*;
 
-/* 
+/**
  * Represents an LDAP Modify Request.
  *
  *<pre>
@@ -48,6 +46,7 @@ public class RfcModifyRequest extends ASN1Sequence implements RfcRequest {
 		super(2);
 		add(object);
 		add(modification);
+        return;
 	}
 
     /**
@@ -55,16 +54,14 @@ public class RfcModifyRequest extends ASN1Sequence implements RfcRequest {
     * an existing request.
     */
     /* package */
-    RfcModifyRequest(   ArrayList origRequest,
+    RfcModifyRequest(   ASN1Object[] origRequest,
                         String base)
             throws LDAPException
     {
-        for(int i=0; i < origRequest.size(); i++) {
-            content.add(origRequest.get(i));
-        }
+        super( origRequest, origRequest.length);
         // Replace the base if specified, otherwise keep original base
         if( base != null) {
-            content.set(0, new RfcLDAPDN(base));
+            set( 0, new RfcLDAPDN(base));
         }
         return;
     }
@@ -75,19 +72,20 @@ public class RfcModifyRequest extends ASN1Sequence implements RfcRequest {
 	/**
 	 * Override getIdentifier to return an application-wide id.
 	 */
-	public ASN1Identifier getIdentifier()
+	public final ASN1Identifier getIdentifier()
 	{
 		return new ASN1Identifier(ASN1Identifier.APPLICATION, true,
 			                       RfcProtocolOp.MODIFY_REQUEST);
 	}
 
-    public RfcRequest dupRequest(String base, String filter, boolean request)
+    public final RfcRequest dupRequest(String base, String filter, boolean request)
             throws LDAPException
     {
-        return new RfcModifyRequest( content, base);
+        return new RfcModifyRequest( toArray(), base);
     }
-    public String getRequestDN()
+    
+    public final String getRequestDN()
     {
-        return ((RfcLDAPDN)getContent().get(0)).getString();
+        return ((RfcLDAPDN)get(0)).stringValue();
     }
 }

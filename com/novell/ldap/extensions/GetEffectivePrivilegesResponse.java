@@ -66,7 +66,7 @@ public class GetEffectivePrivilegesResponse extends LDAPExtendedResponse {
             if (asn1_privileges == null)
                 throw new IOException("Decoding error");
 
-            privileges = asn1_privileges.getInt();
+            privileges = asn1_privileges.intValue();
         }
         else
         {

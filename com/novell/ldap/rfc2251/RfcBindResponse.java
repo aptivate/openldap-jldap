@@ -53,7 +53,7 @@ public class RfcBindResponse extends ASN1Sequence implements RfcResponse {
 			ASN1Identifier id = obj.getIdentifier();
 			if(id.getTag() == RfcLDAPResult.REFERRAL) {
 				byte[] content =
-					((ASN1OctetString)obj.getContent()).getContent();
+					((ASN1OctetString)obj.taggedValue()).byteValue();
 				ByteArrayInputStream bais = new ByteArrayInputStream(content);
 				set(3, new RfcReferral(dec, bais, content.length));
 			}
@@ -68,7 +68,7 @@ public class RfcBindResponse extends ASN1Sequence implements RfcResponse {
 	/**
 	 *
 	 */
-	public ASN1Enumerated getResultCode()
+	public final ASN1Enumerated getResultCode()
 	{
 		return (ASN1Enumerated)get(0);
 	}
@@ -76,23 +76,23 @@ public class RfcBindResponse extends ASN1Sequence implements RfcResponse {
 	/**
 	 *
 	 */
-	public RfcLDAPDN getMatchedDN()
+	public final RfcLDAPDN getMatchedDN()
 	{
-		return new RfcLDAPDN(((ASN1OctetString)get(1)).getContent());
+		return new RfcLDAPDN(((ASN1OctetString)get(1)).byteValue());
 	}
 
 	/**
 	 *
 	 */
-	public RfcLDAPString getErrorMessage()
+	public final RfcLDAPString getErrorMessage()
 	{
-		return new RfcLDAPString(((ASN1OctetString)get(2)).getContent());
+		return new RfcLDAPString(((ASN1OctetString)get(2)).byteValue());
 	}
 
 	/**
 	 *
 	 */
-	public RfcReferral getReferral()
+	public final RfcReferral getReferral()
 	{
         if( size() > 3) {
 		    ASN1Object obj = get(3);
@@ -106,15 +106,15 @@ public class RfcBindResponse extends ASN1Sequence implements RfcResponse {
 	 * Returns the OPTIONAL serverSaslCreds of a BindResponse if it exists
 	 * otherwise null.
 	 */
-	public ASN1OctetString getServerSaslCreds()
+	public final ASN1OctetString getServerSaslCreds()
 	{
 		if(size() == 5)
-			return (ASN1OctetString)((ASN1Tagged)get(4)).getContent();
+			return (ASN1OctetString)((ASN1Tagged)get(4)).taggedValue();
 
 		if(size() == 4) { // could be referral or serverSaslCreds
 			ASN1Object obj = get(3);
 			if(obj instanceof ASN1Tagged)
-				return (ASN1OctetString)((ASN1Tagged)obj).getContent();
+				return (ASN1OctetString)((ASN1Tagged)obj).taggedValue();
 		}
 
 		return null;
@@ -123,7 +123,7 @@ public class RfcBindResponse extends ASN1Sequence implements RfcResponse {
 	/**
 	 * Override getIdentifier to return an application-wide id.
 	 */
-	public ASN1Identifier getIdentifier()
+	public final ASN1Identifier getIdentifier()
 	{
 		return new ASN1Identifier(ASN1Identifier.APPLICATION, true,
 			                       RfcProtocolOp.BIND_RESPONSE);

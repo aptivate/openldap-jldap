@@ -114,7 +114,9 @@ public class RfcFilter extends ASN1Choice {
    public RfcFilter(String filter)
       throws LDAPException
    {
-      setContent(parse(filter));
+      super(null);
+      setChoiceValue(parse(filter));
+      return;
    }
 
    //*************************************************************************
@@ -124,7 +126,7 @@ public class RfcFilter extends ASN1Choice {
    /**
     * Parses an RFC 2251 filter string into an ASN.1 LDAP Filter object.
     */
-   private ASN1Tagged parse(String filterExpr)
+   private final ASN1Tagged parse(String filterExpr)
       throws LDAPException
    {
       if(filterExpr == null || filterExpr.equals("")) {
@@ -142,7 +144,7 @@ public class RfcFilter extends ASN1Choice {
    /**
     * Will parse an RFC 2254 filter
     */
-   private ASN1Tagged parseFilter()
+   private final ASN1Tagged parseFilter()
       throws LDAPException
    {
       ft.getLeftParen();
@@ -157,7 +159,7 @@ public class RfcFilter extends ASN1Choice {
    /**
     * RFC 2254 filter helper method. Will Parse a filter component.
     */
-   private ASN1Tagged parseFilterComp()
+   private final ASN1Tagged parseFilterComp()
       throws LDAPException
    {
       ASN1Tagged tag = null;
@@ -303,7 +305,7 @@ public class RfcFilter extends ASN1Choice {
    /**
     * Must have 1 or more Filters
     */
-   private ASN1SetOf parseFilterList()
+   private final ASN1SetOf parseFilterList()
       throws LDAPException
    {
       ASN1SetOf set = new ASN1SetOf();
@@ -321,7 +323,7 @@ public class RfcFilter extends ASN1Choice {
     * Convert hex character to an integer. Return -1 if char is something
     * other than a hex char.
     */
-   private int hex2int(char c)
+   private final int hex2int(char c)
    {
       return
          (c >= '0' && c <= '9') ? c - '0'      :
@@ -340,7 +342,7 @@ public class RfcFilter extends ASN1Choice {
     *
     * @return octet-string encoding of the specified string.
     */
-   private byte[] unescapeString(String string)
+   private final byte[] unescapeString(String string)
       throws LDAPException
    {
       byte octets[] = new byte[string.length()];
@@ -456,7 +458,7 @@ class FilterTokenizer {
     * Reads the current char and throws an Exception if it is not a left
     * parenthesis.
     */
-   public void getLeftParen()
+   public final void getLeftParen()
       throws LDAPException
    {
       if(i >= len)
@@ -472,7 +474,7 @@ class FilterTokenizer {
     * Reads the current char and throws an Exception if it is not a right
     * parenthesis.
     */
-   public void getRightParen()
+   public final void getRightParen()
       throws LDAPException
    {
       if(i >= len)
@@ -495,7 +497,7 @@ class FilterTokenizer {
     * and a -1 is returned. Otherwise, the int value of the operator read is
     * returned.</p>
     */
-   public int getOpOrAttr()
+   public final int getOpOrAttr()
       throws LDAPException
    {
       if(i >= len)
@@ -531,7 +533,7 @@ class FilterTokenizer {
     * Reads an RFC 2251 filter type from the filter string and returns its
     * int value.
     */
-   public int getFilterType()
+   public final int getFilterType()
       throws LDAPException
    {
       if(i >= len)
@@ -566,7 +568,7 @@ class FilterTokenizer {
     * Reads a value from a filter string and returns it after trimming any
     * superfluous spaces from the beginning or end of the value.
     */
-   public String getValue()
+   public final String getValue()
       throws LDAPException
    {
       if(i >= len)
@@ -584,7 +586,7 @@ class FilterTokenizer {
    /**
     * Returns the current attribute identifier.
     */
-   public String getAttr()
+   public final String getAttr()
    {
       return attr;
    }
@@ -594,7 +596,7 @@ class FilterTokenizer {
     * used by ParseFilterList when determining if there are any more
     * Filters in the list.
     */
-   public char peekChar()
+   public final char peekChar()
       throws LDAPException
    {
       if(i >= len)
@@ -603,6 +605,4 @@ class FilterTokenizer {
 
       return filter.charAt(i);
    }
-
 }
-

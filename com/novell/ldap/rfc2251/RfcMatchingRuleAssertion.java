@@ -16,7 +16,7 @@ package com.novell.ldap.rfc2251;
 
 import com.novell.ldap.asn1.*;
 
-/*
+/**
  * Represents an LDAP Matching Rule Assertion.
  *
  *<pre>
@@ -75,11 +75,10 @@ public class RfcMatchingRuleAssertion extends ASN1Sequence {
 
 		// if dnAttributes if false, that is the default value and we must not
 		// encode it. (See RFC 2251 5.1 number 4)
-		if(dnAttributes != null && dnAttributes.getContent())
+		if(dnAttributes != null && dnAttributes.booleanValue())
 			add(new ASN1Tagged(
 				new ASN1Identifier(ASN1Identifier.CONTEXT, false, 4),
 										 dnAttributes, false));
+        return;                                     
 	}
-
 }
-

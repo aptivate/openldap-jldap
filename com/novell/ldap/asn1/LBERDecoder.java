@@ -167,7 +167,7 @@ public class LBERDecoder implements ASN1Decoder
    /**
     * Decode a boolean directly from a stream.
     */
-   public Object decodeBoolean(InputStream in, int len)
+   public final Object decodeBoolean(InputStream in, int len)
       throws IOException
    {
       byte[] lber = new byte[len];
@@ -184,7 +184,7 @@ public class LBERDecoder implements ASN1Decoder
     * Decode a Numeric type directly from a stream. Decodes INTEGER
     * and ENUMERATED types.
     */
-   public Object decodeNumeric(InputStream in, int len)
+   public final Object decodeNumeric(InputStream in, int len)
       throws IOException
    {
       long l = 0;
@@ -208,28 +208,10 @@ public class LBERDecoder implements ASN1Decoder
       return new Long(l);
    }
 
-   /* ASN1 TYPE NOT YET SUPPORTED
-    * Decode a Real directly from a stream.
-   public Object decodeReal(InputStream in, int len)
-      throws IOException
-   {
-      return null;
-   }
-    */
-
-   /* ASN1 TYPE NOT YET SUPPORTED
-    * Decode a BitString directly from a stream.
-    * public Object decodeBitString(InputStream in, int len)
-    *   throws IOException
-    * {
-    *   return null;
-    * }
-    */
-
    /**
     * Decode an OctetString directly from a stream.
     */
-   public Object decodeOctetString(InputStream in, int len)
+   public final Object decodeOctetString(InputStream in, int len)
       throws IOException
    {
       byte[] octets = new byte[len];
@@ -243,19 +225,10 @@ public class LBERDecoder implements ASN1Decoder
       return octets;
    }
 
-   /* ASN1 TYPE NOT YET SUPPORTED
-    * Decode an ObjectIdentifier directly from a stream.
-    * public Object decodeObjectIdentifier(InputStream in, int len)
-    * throws IOException
-    * {
-    *   return null;
-    * }
-    */
-
    /**
     * Decode a CharacterString directly from a stream.
     */
-   public Object decodeCharacterString(InputStream in, int len)
+   public final Object decodeCharacterString(InputStream in, int len)
       throws IOException
    {
       byte[] octets = new byte[len];
@@ -270,119 +243,4 @@ public class LBERDecoder implements ASN1Decoder
 
       return new String(octets, "UTF8");
    }
-
-   /* Decoders for ASN.1 useful type Contents
-    */
-
-   /* ASN1 TYPE NOT YET SUPPORTED
-    * Decode a GeneralizedTime directly from a stream.
-    * public Object decodeGeneralizedTime(InputStream in, int len)
-    *   throws IOException
-    * {
-    *   return null;
-    * }
-    */
-
-   /* ASN1 TYPE NOT YET SUPPORTED
-    * Decode a UniversalTime directly from a stream.
-    * public Object decodeUniversalTime(InputStream in, int len)
-    *   throws IOException
-    * {
-    *   return null;
-    * }
-    */
-
-   /* ASN1 TYPE NOT YET SUPPORTED
-    * Decode an External directly from a stream.
-    * public Object decodeExternal(InputStream in, int len)
-    *   throws IOException
-    * {
-    *   return null;
-    * }
-    */
-
-   /* ASN1 TYPE NOT YET SUPPORTED
-    * Decode an ObjectDescriptor directly from a stream.
-    * public Object decodeObjectDescriptor(InputStream in, int len)
-    *   throws IOException
-    * {
-    *      return null;
-    * }
-    */
-
-
-   /* Helper methods for the BERDecoder class
-    */
-
-   /*
-    * Decodes an ASN1Identifier.
-    *
-    * @param len An int array in which the length of this Identifier is
-    *            returned.
-    */
-/*
-   private int decodeIdentifier(InputStream in, int[] len)
-      throws IOException
-   {
-      int r = in.read();
-      len[0]++; // increment return length
-      if(r < 0)
-         throw new EOFException("BERDecoder: decode: EOF in Identifier");
-      int ccf = r >> 5;    // save CLASS & FORM bits.
-      int tag = r & 0x1F;  // single or multiple octet variant?
-      if(tag == 0x1F)      // if true, its a multiple octet identifier.
-         tag = decodeTagNumber(in, len);
-      return (ccf << asn1ID.FORM_SHIFT) | tag;
-   }
-*/
-
-   /*
-    * In the case that we have a tag number that is greater than 30, we need
-    * to decode a multiple octet tag number.
-    */
-/*
-   private int decodeTagNumber(InputStream in, int[] len)
-      throws IOException
-   {
-      int n = 0;
-      while(true) {
-         int r = in.read();
-         len[0]++;  // increment return length
-         if(r < 0)
-            throw new EOFException("BERDecoder: decode: EOF in tag number");
-         n = (n<<7) + (r & 0x7F);
-         if((r & 0x80) == 0)
-            break;
-      }
-      return n;
-   }
-*/
-
-   /*
-    *
-    */
-/*
-   private int decodeLength(InputStream in, int[] len)
-      throws IOException
-   {
-      int r = in.read();
-      len[0]++; // increment return length
-      if(r == 128)
-         return -1;
-      if(r < 128)
-         return r;
-
-      int l=0;
-      for(r = r & 0x7F; r > 0; r--) {
-         int part = in.read();
-         len[0]++; // increment return length
-         if(part < 0)
-            throw new EOFException("BERDecoder: decode: EOF in length");
-         l = (l << 8) + part;
-      }
-      return l;
-   }
-*/
-
 }
-

@@ -49,7 +49,7 @@ public class RespControlVector extends java.util.Vector
     /* Adds a control to the current list of registered response controls.
      *
      */
-    public synchronized void registerResponseControl(String oid, Class controlClass)
+    public final synchronized void registerResponseControl(String oid, Class controlClass)
     {
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.controls, "Registered Control with OID " + oid
@@ -63,7 +63,7 @@ public class RespControlVector extends java.util.Vector
      * search using the OID string.  If a match is found we return the
      * Class name that was provided to us on registration.
      */
-    public synchronized Class findResponseControl(String searchOID)
+    public final synchronized Class findResponseControl(String searchOID)
                 throws NoSuchFieldException
     {
         RegisteredControl ctl = null;

@@ -32,16 +32,13 @@ public class RfcAbandonRequest extends RfcMessageID implements RfcRequest {
 	//*************************************************************************
 
 	/**
-	 *
+	 * Constructs an RfcAbandonRequest
 	 */
 	public RfcAbandonRequest(int msgId)
 	{
 		super(msgId);
+        return;
 	}
-
-	//*************************************************************************
-	// Mutators
-	//*************************************************************************
 
 	//*************************************************************************
 	// Accessors
@@ -49,16 +46,17 @@ public class RfcAbandonRequest extends RfcMessageID implements RfcRequest {
 
 	/**
 	 * Override getIdentifier to return an application-wide id.
-	 *
+	 *<pre>
 	 * ID = CLASS: APPLICATION, FORM: CONSTRUCTED, TAG: 16. (0x50)
+     *</pre>
 	 */
-	public ASN1Identifier getIdentifier()
+	public final ASN1Identifier getIdentifier()
 	{
 		return new ASN1Identifier(ASN1Identifier.APPLICATION, false,
 			                       RfcProtocolOp.ABANDON_REQUEST);
 	}
 
-    public RfcRequest dupRequest(String base, String filter, boolean reference)
+    public final RfcRequest dupRequest(String base, String filter, boolean reference)
             throws LDAPException
     {
         throw new LDAPException(
@@ -66,7 +64,7 @@ public class RfcAbandonRequest extends RfcMessageID implements RfcRequest {
                     new Object[] { "abandon" },
                     LDAPException.LDAP_NOT_SUPPORTED);
     }
-    public String getRequestDN()
+    public final String getRequestDN()
     {
         return null;
     }

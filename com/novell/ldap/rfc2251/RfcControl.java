@@ -62,7 +62,7 @@ public class RfcControl extends ASN1Sequence {
 	{
 		super(3);
 		add(controlType);
-		if(criticality.getContent() == true)
+		if(criticality.booleanValue() == true)
 			add(criticality);
 		if(controlValue != null)
 			add(controlValue);
@@ -96,7 +96,7 @@ public class RfcControl extends ASN1Sequence {
 	/**
 	 *
 	 */
-	public ASN1OctetString getControlType()
+	public final ASN1OctetString getControlType()
 	{
 		return (ASN1OctetString)get(0);
 	}
@@ -106,7 +106,7 @@ public class RfcControl extends ASN1Sequence {
 	 *
 	 * If no value present, return the default value of FALSE.
 	 */
-	public ASN1Boolean getCriticality()
+	public final ASN1Boolean getCriticality()
 	{
 		if(size() > 1) { // MAY be a criticality
 			ASN1Object obj = get(1);
@@ -122,7 +122,7 @@ public class RfcControl extends ASN1Sequence {
 	 * to see if one is available. Remember that if criticality is of default
 	 * value, it will not be present.
 	 */
-	public ASN1OctetString getControlValue()
+	public final ASN1OctetString getControlValue()
 	{
 		if(size() > 2) { // MUST be a control value
 			return (ASN1OctetString)get(2);
@@ -140,7 +140,7 @@ public class RfcControl extends ASN1Sequence {
 	 * Called to set/replace the ControlValue.  Will normally be called by
 	 * the child classes after the parent has been instantiated.
 	 */
-	public void setControlValue(ASN1OctetString controlValue)
+	public final void setControlValue(ASN1OctetString controlValue)
 	{
 
 		if (controlValue == null)

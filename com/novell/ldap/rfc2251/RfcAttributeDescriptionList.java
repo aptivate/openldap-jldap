@@ -16,7 +16,8 @@ package com.novell.ldap.rfc2251;
 
 import com.novell.ldap.asn1.*;
 
-/* 
+/**
+ *<pre>
  * The AttributeDescriptionList is used to list attributes to be returned in
  * a search request.
  *
@@ -29,43 +30,37 @@ import com.novell.ldap.asn1.*;
  * @see ASN1SequenceOf
  * @see RfcSearchRequest
  */
-public class RfcAttributeDescriptionList extends ASN1SequenceOf {
+public class RfcAttributeDescriptionList extends ASN1SequenceOf
+{
+    /**
+     *
+     */
+    public RfcAttributeDescriptionList(int size)
+    {
+        super(size);
+        return;
+    }
 
-   /**
-    *
-    */
-   public RfcAttributeDescriptionList()
-   {
-      super();
-   }
+    /**
+     * Convenience constructor. This constructor will construct an
+     * AttributeDescriptionList using the supplied array of Strings.
+     */
+    public RfcAttributeDescriptionList(String[] attrs)
+    {
+        super(attrs == null ? 0 : attrs.length);
 
-   /**
-    *
-    */
-   public RfcAttributeDescriptionList(int size)
-   {
-      super(size);
-   }
+        if(attrs != null) {
+		    for(int i=0; i<attrs.length; i++) {
+			    add(new RfcAttributeDescription(attrs[i]));
+		    }
+	    }
+        return;
+    }
 
-   /**
-    * Convenience constructor. This constructor will construct an
-    * AttributeDescriptionList using the supplied array of Strings.
-    */
-   public RfcAttributeDescriptionList(String[] attrs)
-   {
-      super(attrs == null ? 0 : attrs.length);
-
-		if(attrs != null) {
-			for(int i=0; i<attrs.length; i++) {
-				add(new RfcAttributeDescription(attrs[i]));
-			}
-		}
-   }
-
-   /*
-    * Override add() to only accept types of AttributeDescription
-    *
-    * @exception ASN1InvalidTypeException
-    */
+    /*
+     * Override add() to only accept types of AttributeDescription
+     *
+     * @exception ASN1InvalidTypeException
+     */
 
 }

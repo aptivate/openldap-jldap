@@ -15,9 +15,10 @@
 
 package com.novell.ldap.client;
 
+import com.novell.ldap.*;
+import com.novell.ldap.message.*;
 import com.novell.ldap.client.*;
 import com.novell.ldap.rfc2251.*;
-import com.novell.ldap.*;
 
 /**
  * Encapsulates an LDAP message, its state, and its replies.
@@ -89,7 +90,7 @@ public class Message
      * When the message is sent, the timer thread is started to time
      * the message.
      */
-     public void sendMessage()
+     public final void sendMessage()
                 throws LDAPException
      {
         if( Debug.LDAP_DEBUG) {
@@ -272,7 +273,7 @@ public class Message
         if( message.getProtocolOp() instanceof RfcResponse) {
             int res;
             if( Debug.LDAP_DEBUG) {
-                res = ((RfcResponse)message.getProtocolOp()).getResultCode().getInt();
+                res = ((RfcResponse)message.getProtocolOp()).getResultCode().intValue();
                 Debug.trace( Debug.messages, name +
                     "Queued LDAPResult (" + replies.size() +
                     " in queue), message complete stopping timer, status " + res);
@@ -286,7 +287,7 @@ public class Message
                 if( Debug.LDAP_DEBUG) {
                     Debug.trace( Debug.messages, name + "Bind properties found");
                 }
-                res = ((RfcResponse)message.getProtocolOp()).getResultCode().getInt();
+                res = ((RfcResponse)message.getProtocolOp()).getResultCode().intValue();
                 if(res == LDAPException.SUCCESS) {
                     // Set bind properties into connection object
                     conn.setBindProperties(bindprops);
@@ -444,7 +445,7 @@ public class Message
                     Debug.trace( Debug.messages, name + "Sending abandon request");
                 }
                 // Create the abandon message, but don't track it.
-                LDAPMessage msg = new LDAPMessage( new RfcAbandonRequest( msgId));
+                LDAPMessage msg = new LDAPAbandonRequest( msgId, cons);
                 // Send abandon message to server
                 conn.writeMessage( msg);
             } catch (LDAPException ex) {
@@ -529,7 +530,7 @@ public class Message
      *
      * @return true if a bind request
      */
-    public boolean isBindRequest()
+    public final boolean isBindRequest()
     {
         return (bindprops != null);
     }
@@ -537,7 +538,7 @@ public class Message
     /**
      * finalize
      */
-    protected void finalize() throws Throwable
+    protected final void finalize() throws Throwable
     {
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.messages, name + "finalize");
@@ -551,7 +552,7 @@ public class Message
      * Timer class to provide timing for messages.  Only called
      * if time to wait is non zero.
      */
-    private class Timeout extends Thread
+    private final class Timeout extends Thread
     {
         private int timeToWait = 0;
         private Message message;
@@ -568,7 +569,7 @@ public class Message
          * The timeout thread.  If it wakes from the sleep, future input
          * is stopped and the request is timed out.
         */
-        public void run()
+        public final void run()
         {
             try {
                 if( Debug.LDAP_DEBUG) {

@@ -59,23 +59,23 @@ public class RfcDelRequest extends RfcLDAPDN implements RfcRequest {
     *
     * Identifier = CLASS: APPLICATION, FORM: CONSTRUCTED, TAG: 10
     */
-   public ASN1Identifier getIdentifier()
+   public final ASN1Identifier getIdentifier()
    {
       return new ASN1Identifier(ASN1Identifier.APPLICATION, false,
                                 RfcProtocolOp.DEL_REQUEST);
    }
 
-    public RfcRequest dupRequest(String base, String filter, boolean request)
+    public final RfcRequest dupRequest(String base, String filter, boolean request)
             throws LDAPException
     {
         if( base == null) {
-            return new RfcDelRequest( getContent());
+            return new RfcDelRequest( byteValue());
         } else {
             return new RfcDelRequest( base);
         }
     }
-    public String getRequestDN()
+    public final String getRequestDN()
     {
-        return super.getString();
+        return super.stringValue();
     }
 }

@@ -14,13 +14,11 @@
  ******************************************************************************/
 package com.novell.ldap.rfc2251;
 
-import java.util.ArrayList;
-
 import com.novell.ldap.asn1.*;
 import com.novell.ldap.*;
 import com.novell.ldap.resources.*;
 
-/* 
+/**
  * Represents and LDAP Compare Request.
  *
  *<pre>
@@ -43,23 +41,22 @@ public class RfcCompareRequest extends ASN1Sequence implements RfcRequest {
 		super(2);
 		add(entry);
 		add(ava);
+        return;
 	}
 
     /**
-    * Constructs a new Compare Request copying from the ArrayList of
+    * Constructs a new Compare Request copying from the data of
     * an existing request.
     */
     /* package */
-    RfcCompareRequest(   ArrayList origRequest,
-                         String base)
+    RfcCompareRequest( ASN1Object[] origRequest,
+                       String base)
             throws LDAPException
     {
-        for(int i=0; i < origRequest.size(); i++) {
-            content.add(origRequest.get(i));
-        }
+        super(origRequest, origRequest.length);
         // Replace the base if specified, otherwise keep original base
         if( base != null) {
-            content.set(0, new RfcLDAPDN(base));
+            set( 0, new RfcLDAPDN(base));
         }
         return;
     }
@@ -70,19 +67,19 @@ public class RfcCompareRequest extends ASN1Sequence implements RfcRequest {
 	/**
 	 * Override getIdentifier to return an application-wide id.
 	 */
-	public ASN1Identifier getIdentifier()
+	public final ASN1Identifier getIdentifier()
 	{
 		return new ASN1Identifier(ASN1Identifier.APPLICATION, true,
 			                       RfcProtocolOp.COMPARE_REQUEST);
 	}
 
-    public RfcRequest dupRequest(String base, String filter, boolean request)
+    public final RfcRequest dupRequest(String base, String filter, boolean request)
             throws LDAPException
     {
-        return new RfcCompareRequest( content, base);
+        return new RfcCompareRequest( toArray(), base);
     }
-    public String getRequestDN()
+    public final String getRequestDN()
     {
-        return ((RfcLDAPDN)getContent().get(0)).getString();
+        return ((RfcLDAPDN)get(0)).stringValue();
     }
 }

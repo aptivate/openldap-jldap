@@ -16,11 +16,10 @@ package com.novell.ldap.rfc2251;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Enumeration;
 import java.util.NoSuchElementException;
 import com.novell.ldap.asn1.*;
 
-/*
+/**
  * Represents an LDAP Search Result Reference.
  *
  *<pre>
@@ -28,13 +27,12 @@ import com.novell.ldap.asn1.*;
  *</pre>
  */
 public class RfcSearchResultReference extends ASN1SequenceOf
-                                    implements Enumeration {
+{
 
     //*************************************************************************
     // Constructors for SearchResultReference
     //*************************************************************************
 
-    private Enumeration references = null;
     private String name = "SearchResultReference@" + Integer.toHexString(hashCode());
     /**
      * The only time a client will create a SearchResultReference is when it is
@@ -54,28 +52,9 @@ public class RfcSearchResultReference extends ASN1SequenceOf
     /**
      * Override getIdentifier to return an application-wide id.
      */
-    public ASN1Identifier getIdentifier()
+    public final ASN1Identifier getIdentifier()
     {
         return new ASN1Identifier(ASN1Identifier.APPLICATION, true,
                                 RfcProtocolOp.SEARCH_RESULT_REFERENCE);
-    }
-
-    public Enumeration elements()
-    {
-        references = super.elements();
-        return this;
-    }
-
-    public boolean hasMoreElements()
-    {
-        if( references == null )
-            return false;
-        return references.hasMoreElements();
-    }
-    public Object nextElement()
-    {
-        if( references == null )
-            throw new NoSuchElementException(name + "Enumeration not initialized");
-        return  ((ASN1OctetString)(references.nextElement())).getString();
     }
 }
