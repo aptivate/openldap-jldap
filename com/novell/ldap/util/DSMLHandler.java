@@ -1,10 +1,9 @@
 package com.novell.ldap.ldif_dsml;
 
 import com.novell.ldap.*;
-import com.novell.ldap.message.LDAPSearchRequest;
-import com.novell.ldap.message.LDAPCompareRequest;
-
+import com.novell.ldap.message.*;
 import java.util.ArrayList;
+import java.io.UnsupportedEncodingException;
 
 import org.xml.sax.*;
 
@@ -13,10 +12,12 @@ class DSMLHandler implements ContentHandler, ErrorHandler
 {
     public ArrayList queue = new ArrayList();
     /* variables used for message information */
-    private LDAPMessage message;
-    private LDAPAttribute attr;
+    private LDAPMessage message = null;
+    private LDAPEntry entry = null;
+    private LDAPAttributeSet attrSet = null;
     private ArrayList attributes = new ArrayList();
-    private LDAPSearchConstraints searchCons;
+    private LDAPSearchConstraints searchCons = null;
+    private String attrName = null;
     private String dn, filter;
     private StringBuffer value;
     private boolean typesOnly;
@@ -28,43 +29,47 @@ class DSMLHandler implements ContentHandler, ErrorHandler
     private static final int BATCH_REQUEST=1;       //batchRequest
 
     /* The following are possible states from the batchRequest state */
-    private static final int AUTH_REQUEST=2;        //authRequest
-    private static final int MODIFY_REQUEST=3;      //modifyRequest
-    private static final int SEARCH_REQUEST=4;      //searchRequest
-    private static final int ADD_REQUEST=5;         //addRequest
-    private static final int DELETE_REQUEST=6;      //deleteRequest
-    private static final int MODIFY_DN_REQUEST=7;   //modifyDNRequest
-    private static final int COMPARE_REQUEST=8;     //compareRequest
-    private static final int EXTENDED_REQUEST=9;    //extendedRequest
+    private static final int AUTH_REQUEST=2;        //<authRequest>
+    private static final int MODIFY_REQUEST=3;      //<modifyRequest>
+    private static final int SEARCH_REQUEST=4;      //<searchRequest>
+    private static final int ADD_REQUEST=5;         //<addRequest>
+    private static final int DELETE_REQUEST=6;      //<delRequest>
+    private static final int MODIFY_DN_REQUEST=7;   //<modDNRequest>
+    private static final int COMPARE_REQUEST=8;     //<compareRequest>
+    private static final int EXTENDED_REQUEST=9;    //<extendedRequest>
 
     /* The following are possible states from filter, compare and search */
-    private static final int ASSERTION = 10;        //assertion
-    private static final int VALUE = 11;            //value
-    private static final int ATTRIBUTES = 12;       //attributes
-    private static final int ATTRIBUTE  = 13;       //attribute
-    private static final int FILTER = 14;           //filter
-    private static final int SUBSTRINGS = 15;       //substrings
-    private static final int FINAL = 16;            //final
+    private static final int ASSERTION = 10;        //<assertion>
+    private static final int VALUE = 11;            //<value>
+    private static final int VALUE_COMPLETE = 12;   //</value>
+    private static final int ATTRIBUTES = 13;       //<attributes>
+    private static final int ATTRIBUTE  = 14;       //<attribute>
+    private static final int FILTER = 15;           //<filter>
+    private static final int SUBSTRINGS = 16;       //<substrings>
+    private static final int FINAL = 17;            //<final>
 
-
-    private static final int BATCH_RESPONSE=17;
+    /* miscelaneous tags :*/
+    private static final int ADD_ATTRIBUTE = 18;    //<attr>
+    private static final int BATCH_RESPONSE= 19;    //<batchResponse>
     /* The folling are possible states from the BatchResponse state
         .... SearchResponse ...*/
 
     /** state contains the internal parsing state **/
     private int state = START;
     private static java.util.HashMap requestTags = null;
-    static {
+
+
+    static {  //Initialize requestTags
         if (requestTags == null){
-            requestTags = new java.util.HashMap(18, 9999);
+            requestTags = new java.util.HashMap(20, 9999);
             //High load factor means optimized for lookup time
             requestTags.put("batchRequest", new Integer(BATCH_REQUEST));
             requestTags.put("authRequest",  new Integer(AUTH_REQUEST));
             requestTags.put("modifyRequest",new Integer(MODIFY_REQUEST));
             requestTags.put("searchRequest",new Integer(SEARCH_REQUEST));
             requestTags.put("addRequest",   new Integer(ADD_REQUEST));
-            requestTags.put("deleteRequest",new Integer(DELETE_REQUEST));
-            requestTags.put("modifyDNRequest",  new Integer(MODIFY_DN_REQUEST));
+            requestTags.put("delRequest",new Integer(DELETE_REQUEST));
+            requestTags.put("modDNRequest",  new Integer(MODIFY_DN_REQUEST));
             requestTags.put("compareRequest",   new Integer(COMPARE_REQUEST));
             requestTags.put("extendedRequest",  new Integer(EXTENDED_REQUEST));
             requestTags.put("batchResponse",new Integer(BATCH_RESPONSE));
@@ -75,6 +80,7 @@ class DSMLHandler implements ContentHandler, ErrorHandler
             requestTags.put("filter",       new Integer(FILTER));
             requestTags.put("substrings",   new Integer(SUBSTRINGS));
             requestTags.put("final",        new Integer(FINAL));
+            requestTags.put("attr",         new Integer(ADD_ATTRIBUTE));
         }
     }
 
@@ -104,6 +110,9 @@ class DSMLHandler implements ContentHandler, ErrorHandler
                 break;
             case BATCH_REQUEST:
                 state = tag;
+                if (tag == ADD_REQUEST){
+                    attrSet = new LDAPAttributeSet();
+                }
                 parseTagAttributes( tag, attrs );
                 break;
             case SEARCH_REQUEST:
@@ -115,16 +124,24 @@ class DSMLHandler implements ContentHandler, ErrorHandler
             case AUTH_REQUEST:
             case MODIFY_REQUEST:
             case ADD_REQUEST:
+                if (tag == ADD_ATTRIBUTE){
+                    state = tag;
+                    attrName = attrs.getValue("name");
+                }
+                break;
             case DELETE_REQUEST:
+                break;
             case MODIFY_DN_REQUEST:
+                break;
             case COMPARE_REQUEST:
                 if (tag == ASSERTION) {
-                    attr = new LDAPAttribute( attrs.getValue("name") );
+                    attrName =  attrs.getValue("name") ;
                     state = tag;
                 }
                 else //I may not have to check for this if decide to validate
                     throw new SAXException("incomplete compareRequest tag");
                 break;
+            case ADD_ATTRIBUTE:
             case ASSERTION:
                 if (tag == VALUE){
                     state = tag;
@@ -201,7 +218,7 @@ class DSMLHandler implements ContentHandler, ErrorHandler
                         sizeLimit,  //maxResults
                         false,      //doReferrals
                         0,          //batchSize
-                        (LDAPReferralHandler) null, //referralHandler,
+                        null, //referralHandler,
                         0);
 
                 //the following are parameters to LDAPSearchRequest
@@ -287,76 +304,95 @@ class DSMLHandler implements ContentHandler, ErrorHandler
         }
         int tag = elementTag.intValue();
 
-        switch (state){
-            case BATCH_REQUEST:
-            case BATCH_RESPONSE:
-                state = START;
-                break;
-            case SEARCH_REQUEST:
-                //queue up search
-                state = BATCH_REQUEST;
-                try {
+        try {
+            switch (tag){
+                case BATCH_REQUEST:
+                case BATCH_RESPONSE:
+                    state = START;
+                    break;
+                case SEARCH_REQUEST:
+                    //queue up search
+                    state = BATCH_REQUEST;
                     message = new LDAPSearchRequest(dn, scope, filter,
-                            (String[]) attributes.toArray(
-                                    new String[ attributes.size() ] ),
-                            typesOnly, searchCons );
-                } catch (LDAPException e) {
-                    throw new SAXException( e );
-                }
-                queue.add(message);
-                break;
-            case ATTRIBUTES:
-                state = SEARCH_REQUEST;
-                break;
-            case ATTRIBUTE:
-                state = ATTRIBUTES;
-                break;
-            case AUTH_REQUEST:
-                //bind
-                state = BATCH_REQUEST;
-                break;
-            case MODIFY_REQUEST:
-                //queue up modify
-                state = BATCH_REQUEST;
-                break;
-            case ADD_REQUEST:
-                //queue up add
-                state = BATCH_REQUEST;
-                break;
-            case DELETE_REQUEST:
-                //queue up delete
-                state = BATCH_REQUEST;
-                break;
-            case MODIFY_DN_REQUEST:
-                //queue up modify
-                state = BATCH_REQUEST;
-                break;
-            case COMPARE_REQUEST:
-                //queue up compare
-                try {
-                    message = new LDAPCompareRequest(dn, attr.getName(),
-                            attr.getByteValue(), null);
+                                (String[]) attributes.toArray(
+                                        new String[ attributes.size() ] ),
+                                typesOnly, searchCons );
                     queue.add(message);
-                } catch (LDAPException e) {
-                    throw new SAXException(e);
-                }
-                state = BATCH_REQUEST;
-                break;
-            case ASSERTION:
-                //attrs is already complete.
-                state = COMPARE_REQUEST;
-                break;
-            case VALUE:
-                attr.addValue(value.toString());
-                state = ASSERTION;
-                break;
-            case FILTER:
-                //RfcFilter filter = new RfcFilter(
-                break;
-            case EXTENDED_REQUEST:
-                //queue up x-operation
-                state = BATCH_REQUEST;
-                break;
+                    break;
+                case ATTRIBUTES:
+                    state = SEARCH_REQUEST;
+                    break;
+                case ATTRIBUTE:
+                    state = ATTRIBUTES;
+                    break;
+                case AUTH_REQUEST:
+                    //bind
+                    state = BATCH_REQUEST;
+                    break;
+                case MODIFY_REQUEST:
+                    //queue up modify
+                    state = BATCH_REQUEST;
+                    break;
+                case ADD_REQUEST:
+                    //queue up add
+                    state = BATCH_REQUEST;
+                    entry = new LDAPEntry(dn, attrSet);
+                    message = new LDAPAddRequest( entry, null );
+                    queue.add(message);
+                    break;
+                case DELETE_REQUEST:
+                    //queue up delete
+                    state = BATCH_REQUEST;
+                    message = new LDAPDeleteRequest(dn, null);
+                    queue.add(message);
+                    break;
+                case MODIFY_DN_REQUEST:
+                    //queue up modify
+                    state = BATCH_REQUEST;
+                    break;
+                case COMPARE_REQUEST:
+                    //queue up compare
+                    state = BATCH_REQUEST;
+                    try {
+                        message = new LDAPCompareRequest(dn, attrName,
+                                value.toString().getBytes("UTF8"), null);
+                    } catch (UnsupportedEncodingException e) {
+                        throw new RuntimeException("UTF8 not supported by JVM");
+                    }
+                    queue.add(message);
+                    break;
+                case ASSERTION:
+                    //attrs is already complete.
+                    state = COMPARE_REQUEST;
+                    break;
+                case ADD_ATTRIBUTE:
+                    {
+                        state = ADD_REQUEST;
+                        LDAPAttribute attr = attrSet.getAttribute(attrName);
+                        if (attr == null){
+                            //create a new attribute
+                            attr = new LDAPAttribute(attrName,
+                                    value.toString());
+                            attrSet.add(attr);
+                        } else {
+                            attr.addValue(value.toString());
+                        }
+                    }
+                    break;
+                case FILTER:
+                    state = SEARCH_REQUEST;
+                    //RfcFilter filter = new RfcFilter(
+                    break;
+                case EXTENDED_REQUEST:
+                    //queue up x-operation
+                    state = BATCH_REQUEST;
+                    break;
+                case VALUE:
+                    state = VALUE_COMPLETE;
+                    break;
+            }
+        } catch (LDAPException e) {
+            throw new SAXException(e);
         }
         return;
     }
