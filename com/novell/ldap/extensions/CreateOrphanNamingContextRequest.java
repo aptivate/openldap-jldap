@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: CreateOrphanNamingContextRequest.java,v 1.9 2000/09/11 21:05:56 vtag Exp $
+ * $Id: CreateOrphanNamingContextRequest.java,v 1.10 2000/09/25 17:34:16 fzhao Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -20,32 +20,36 @@ import java.io.*;
  
 /**
  *
- * This class is used to create a new naming orphan partition.<br><br>
+ * Creates a new naming orphan partition.
  *
- * To create an instance of this class and then call the extendedOperation method with this
- * object as the required LDAPExtendedOperation parameter.<br><br>
+ * <p>To create a new naming orphan parition, you must create an instance of 
+ *  this class and then call the extendedOperation method with this object
+ *  as the required LDAPExtendedOperation parameter.</p>
  *
- * The OID used for this extended operation is:
- *      "2.16.840.1.113719.1.27.100.39"<br><br>
+ * <p>The new naming orphan parition request uses the following OID:<br>
+ *  &nbsp;&nbsp;&nbsp;2.16.840.1.113719.1.27.100.39</p>
  *
- *  The RequestValue has the following ASN:<br><br>
+ *  <p>The request value has the following ASN.1 format:<br>
  *
  *  requestValue ::=<br>
- *  &nbsp;&nbsp;&nbsp;&nbsp;    serverDN    LDAPDN<br>
- *  &nbsp;&nbsp;&nbsp;&nbsp;    contextName LDAPDN<br>
+ *  &nbsp;&nbsp;&nbsp;&nbsp;    serverDN - LDAPDN<br>
+ *  &nbsp;&nbsp;&nbsp;&nbsp;    contextName - LDAPDN</p>
  */
 public class CreateOrphanNamingContextRequest extends LDAPExtendedOperation {
    
 /**
  *
- *      The constructor takes two parameters:<br><br>
+ * Constructs an extended operation object for creating a naming orphan partition.
  *
  * 
- * @param serverDN:    Specify the distinguished name of the 
- * server on which the new orphan parition will reside.<br><br>
+ * @param serverDN    The distinguished name of the server on which 
+ *                    the new orphan parition will reside.
+ *<br><br>
+ * @param contextName The distinguished name of the 
+ *                    new orphan partition.
  *
- * @param contextName: Specifies the distinguished name of the 
- * new orphan partition.<br><br>
+ * @exception LDAPException A general exception which includes an error message 
+ *                          and an LDAP error code.
  */   
  public CreateOrphanNamingContextRequest(String serverDN, String contextName) 
                 throws LDAPException {

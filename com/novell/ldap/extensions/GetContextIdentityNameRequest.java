@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: GetContextIdentityNameRequest.java,v 1.6 2000/08/28 22:19:19 vtag Exp $
+ * $Id: GetContextIdentityNameRequest.java,v 1.7 2000/09/11 21:05:56 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -20,29 +20,30 @@ import java.io.*;
  
 /**
  *
- *      This class returns the distingusihed name of the object your are 
+ *  Returns the distingusihed name of the object your are 
  *  logged in as.<br><br>
  *
- *  To use this API create an instance of this 
+ *  <p>To use this class, you must create an instance of the 
  *  class and then call the extendedOperation method with this
- *  object as the required LDAPExtendedOperation parameter.<br><br>
+ *  object as the required LDAPExtendedOperation parameter.</p>
  *
- *  The returned LDAPExtendedResponse object can then be converted to
- *  a GetContextIdentityNameResponse object.  This object contains
- *  methods for retreiving the dn.<br><br>
+ *  <p>The returned LDAPExtendedResponse object can then be converted to
+ *  a GetContextIdentityNameResponse object. This object contains
+ *  methods for retreiving the dn.</p>
  *
- *  The OID used for this extended operation is:
- *      "2.16.840.1.113719.1.27.100.31"<br><br>
+ *  <p>The GetContextIdentityNameRequest operation uses the following OID:<br>
+ *   &nbsp;&nbsp;&nbsp;2.16.840.1.113719.1.27.100.31</p>
  *
- *  The RequestValue has a value of null<br>
+ *  <p>The request value has a value of null.</p>
  *
  */
  public class GetContextIdentityNameRequest extends LDAPExtendedOperation {
  
     /**
-    *      The constructor takes four parameters:<br><br>
+    *   Constructs an extended operation object for retrieving the context's identity.
     *
-    *   This API takes no parameters.  
+    *  @exception LDAPException A general exception which includes an error message
+    *                           and an LDAP error code. 
     *
     */  
 
