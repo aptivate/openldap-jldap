@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: LDIFWriter.java,v 1.29 2002/10/22 22:15:59 $
+ * $Novell: LDIFWriter.java,v 1.30 2002/10/28 23:16:13 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -52,7 +52,7 @@ public class LDIFWriter implements LDAPWriter
     private String          version;
 
     /**
-     * Constructs an LDIFWriter object.  It allows the setting of the 
+     * Constructs an LDIFWriter object.  It allows the setting of the
      * OutputStreamReader object, and assumes the LDIF version is "1".
      * The type of file written is determined by the first message written
      * to the file.
@@ -78,7 +78,7 @@ public class LDIFWriter implements LDAPWriter
     }
 
     /**
-     * Constructs an LDIFWriter object.  It allows the setting of the 
+     * Constructs an LDIFWriter object.  It allows the setting of the
      * OutputStreamReader object, the LDIF version, and the type of LDIF file.
      *
      * @param out     The OutputStream where the LDIF data will be written.
@@ -96,9 +96,9 @@ public class LDIFWriter implements LDAPWriter
         this( out, version, new Boolean(request));
         return;
     }
-    
+
     /**
-     * Constructs an LDIFWriter object.  It allows the setting of the 
+     * Constructs an LDIFWriter object.  It allows the setting of the
      * OutputStreamReader object, the LDIF version, and the type of LDIF file.
      *
      * <p>You are not allowed to mix request data and content data</p>
@@ -156,8 +156,8 @@ public class LDIFWriter implements LDAPWriter
                 throws IOException
     {
         LDAPControl[]  controls = request.getControls();
-        
-        // Check for valid type
+
+        // check for valid type
         switch( request.getType()) {
         case LDAPMessage.SEARCH_RESPONSE:
             if( requestFile == null) {
@@ -217,7 +217,7 @@ public class LDIFWriter implements LDAPWriter
             // write to outputStream
             writeModifyRequest( mreq.getDN(), mreq.getModifications(), controls );
             break;
-        }            
+        }
         // write an empty line to separate records
         bufWriter.newLine();
         return;
@@ -228,25 +228,25 @@ public class LDIFWriter implements LDAPWriter
      *
      * <p> an '#' char is added to the front of each line to indicate that
      * the line is a comment line. If a line contains more than 78
-     * chars, it will be split into multiple lines that start
-     * with '#' chars.</p>
+     * chars, it will be split into multiple lines each of which starts
+     * with '#' </p>
      *
      * @param lines The comment lines to be written to the OutputStream
      *
      * @throws IOException if an I/O error occurs.
      */
-    public void writeComments (String lines) throws IOException
+    public void writeComments (String line) throws IOException
     {
-        if (lines != null && lines.length() != 0) {
+        if (line != null && line.length() != 0) {
 
-            if (lines.length() <= 78) {
+            if (line.length() <= 78) {
                 // short line, write it out
-                bufWriter.write("# " + lines, 0, lines.length()+2);
+                bufWriter.write("# " + line, 0, line.length()+2);
             }
             else {
                 // berak long line
                 StringBuffer longLine = new StringBuffer();
-                longLine.append(lines);
+                longLine.append(line);
 
                 while(longLine.length() > 78) {
                     // write "# " and the starting 78 chars
@@ -254,7 +254,6 @@ public class LDIFWriter implements LDAPWriter
                     // start a new line
                     bufWriter.newLine();
                     // remove the chars that already been written out
-
                     longLine.delete(0, 78);
                 }
 
@@ -287,7 +286,7 @@ public class LDIFWriter implements LDAPWriter
     {
         return requestFile.booleanValue();
     }
-    
+
     /**
      * Check if the input byte array object is safe to make a String.
      *
@@ -313,7 +312,7 @@ public class LDIFWriter implements LDAPWriter
         }
         return true;
     }
-    
+
     /**
      * Write the version line of LDIF file into the OutputStream.
      *
@@ -338,8 +337,8 @@ public class LDIFWriter implements LDAPWriter
      * Write a line into the OutputStream.
      *
      * <p>If the line contains more than 80 chars, it will be splited into
-     * multiple lines that start with a space ( ASCII ' ') except the
-     * first one.</p>
+     * multiple lines each of which starts with a space ( ASCII ' ') except
+     * the first one.</p>
      *
      * @param line The line to be written to the OutputStream
      *
@@ -508,7 +507,7 @@ public class LDIFWriter implements LDAPWriter
     {
         // Write the dn field
         writeDN(dn);
-        
+
         // write controls if there is any
         if ( ctrls != null ) {
             writeControls( ctrls );
@@ -518,28 +517,18 @@ public class LDIFWriter implements LDAPWriter
         writeLine("changetype: moddn");
 
         // save new RDN
-        if ( Base64.isLDIFSafe(newRDN)) {
-            writeLine("newrdn:" + newRDN);
-        }
-        else {
-            // base64 encod newRDN
-            // put newRDN into record fields
-            writeLine("newrdn:: " + Base64.encode(newRDN));
-        }
+        writeLine( Base64.isLDIFSafe(newRDN)?
+            "newrdn: "  + newRDN:
+            "newrdn:: " + Base64.encode(newRDN));
 
         // save deleteOldRDN
         writeLine("deleteoldrdn:" + deleteOldRDN);
 
         // save newSuperior
         if ( newSuperior != null) {
-            if ( Base64.isLDIFSafe(newSuperior) ) {
-                writeLine("newsuperior:" + newSuperior);
-            }
-            else {
-                // base64 encod newRDN
-                // put newSuperior into record fields
-                writeLine("newsuperior:: " +  Base64.encode(newSuperior));
-            }
+            writeLine( Base64.isLDIFSafe(newSuperior)?
+                "newsuperior: "  + newSuperior:
+                "newsuperior:: " +  Base64.encode(newSuperior));
         }
         return;
     }
@@ -580,12 +569,7 @@ public class LDIFWriter implements LDAPWriter
     private void writeDN(String dn)
                 throws IOException
     {
-        if ( Base64.isLDIFSafe(dn) ) { // safe
-            writeLine("dn: " + dn);
-        }
-        else { // not safe
-            writeLine("dn:: " + Base64.encode(dn));
-        }
+        writeLine(Base64.isLDIFSafe(dn)? "dn: "+dn: "dn:: "+ Base64.encode(dn));
         return;
     }
 
@@ -600,17 +584,11 @@ public class LDIFWriter implements LDAPWriter
         for ( int i = 0; i < ctrls.length; i++ ) {
             // get control value
             byte[] cVal = ctrls[i].getValue();
-
-            if ( cVal != null && cVal.length > 0 ) {
-                // always encode control value(s) ?
-                writeLine( "control: " + ctrls[i].getID() + " "
-                                       + ctrls[i].isCritical() + ":: "
-                                       + Base64.encode(cVal));
-            }
-            else {
-                writeLine("control: " + ctrls[i].getID() + " "
-                                      + ctrls[i].isCritical());
-            }
+            // write control value
+            writeLine( (cVal != null && cVal.length > 0)?
+                "control: " + ctrls[i].getID() + " " + ctrls[i].isCritical()
+                            + ":: " + Base64.encode(cVal):
+                "control: " + ctrls[i].getID() + " " + ctrls[i].isCritical() );
         }
         return;
     }
@@ -619,20 +597,15 @@ public class LDIFWriter implements LDAPWriter
      * Write attribute name and value into outputStream.
      *
      * <p>Check if attrVal starts with NUL, LF, CR, ' ', ':', or '<'
-     * or contains any NUL, LF, or CR and then write it out</p>
+     * or contains any NUL, LF, or CR, and then write it out</p>
      */
     private void writeAttribute(String attrName, String attrVal)
                 throws IOException
     {
         if (attrVal != null) {
-            if ( Base64.isLDIFSafe(attrVal) ) {
-                writeLine( attrName + ": " + attrVal );
-            }
-            else {
-                // IF attrVal contains NON-SAFE-INIT-CHAR or NON-SAFE-CHAR,
-                // it has to be base64 encoded
-                writeLine(attrName + ":: " + Base64.encode(attrVal));
-            }
+            writeLine( Base64.isLDIFSafe(attrVal)?
+                attrName + ": "  + attrVal :
+                attrName + ":: " + Base64.encode(attrVal) );
         }
         return;
     }
@@ -648,15 +621,17 @@ public class LDIFWriter implements LDAPWriter
                 throws IOException
     {
         if (attrVal != null) {
-            if ( Base64.isLDIFSafe(attrVal) && isPrintable(attrVal) ) {
-                // safe to make a String value
-                writeLine( attrName + ": " + new String(attrVal, "UTF-8") );
-            }
-            else {
-                // not safe
-                writeLine(attrName + ":: " + Base64.encode(attrVal));
-            }
+            writeLine( (Base64.isLDIFSafe(attrVal) && isPrintable(attrVal))?
+                attrName + ": " + new String(attrVal, "UTF-8"):
+                attrName + ":: " + Base64.encode(attrVal) );
         }
         return;
+    }
+
+    /**
+     * Close the outputStream
+     */
+    public void close() throws IOException {
+        bufWriter.close();
     }
 }
