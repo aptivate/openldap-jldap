@@ -18,15 +18,30 @@ package com.novell.ldap.rfc2251;
 import java.io.UnsupportedEncodingException;
 import java.util.StringTokenizer;
 import java.util.Stack;
+import java.util.Iterator;
 
 import com.novell.ldap.asn1.*;
 import com.novell.ldap.LDAPException;
 import com.novell.ldap.LDAPLocalException;
+import com.novell.ldap.LDAPSearchRequest;
 import com.novell.ldap.resources.*;
 
 /**
  * Represents an LDAP Filter.
  *
+ * <p>This filter object can be created from a String or can be built up
+ * programatically by adding filter components one at a time.  Existing filter
+ * components can be iterated though.</p>
+ *
+ * <p>Each filter component has an integer identifier defined in this class.
+ * The following are basic filter components: {@link #EQUALITY_MATCH},
+ * {@link #GREATER_OR_EQUAL}, {@link #LESS_OR_EQUAL}, {@link #SUBSTRINGS},
+ * {@link #PRESENT}, {@link #APPROX_MATCH}, {@link #EXTENSIBLE_MATCH}.</p>
+ *
+ * <p>More filters can be nested together into more complex filters with the
+ * following filter components: {@link #AND}, {@link #OR}, {@link #NOT} </p>
+ *
+ * <p>Substrings can have three components:
  *<pre>
  *       Filter ::= CHOICE {
  *               and             [0] SET OF Filter,
@@ -48,58 +63,58 @@ public class RfcFilter extends ASN1Choice
     //*************************************************************************
 
     /**
-     * Context-specific TAG for AND component.
+     * Identifier for AND component.
      */
-    public final static int AND = 0;
+    public final static int AND = LDAPSearchRequest.AND;
     /**
-     * Context-specific TAG for OR component.
+     * Identifier for OR component.
      */
-    public final static int OR = 1;
+    public final static int OR = LDAPSearchRequest.OR;
     /**
-     * Context-specific TAG for NOT component.
+     * Identifier for NOT component.
      */
-    public final static int NOT = 2;
+    public final static int NOT = LDAPSearchRequest.NOT;
     /**
-     * Context-specific TAG for EQUALITY_MATCH component.
+     * Identifier for EQUALITY_MATCH component.
      */
-    public final static int EQUALITY_MATCH = 3;
+    public final static int EQUALITY_MATCH = LDAPSearchRequest.EQUALITY_MATCH;
     /**
-     * Context-specific TAG for SUBSTRINGS component.
+     * Identifier for SUBSTRINGS component.
      */
-    public final static int SUBSTRINGS = 4;
+    public final static int SUBSTRINGS = LDAPSearchRequest.SUBSTRINGS;
     /**
-     * Context-specific TAG for GREATER_OR_EQUAL component.
+     * Identifier for GREATER_OR_EQUAL component.
      */
-    public final static int GREATER_OR_EQUAL = 5;
+    public final static int GREATER_OR_EQUAL = LDAPSearchRequest.GREATER_OR_EQUAL;
     /**
-     * Context-specific TAG for LESS_OR_EQUAL component.
+     * Identifier for LESS_OR_EQUAL component.
      */
-    public final static int LESS_OR_EQUAL = 6;
+    public final static int LESS_OR_EQUAL = LDAPSearchRequest.LESS_OR_EQUAL;
     /**
-     * Context-specific TAG for PRESENT component.
+     * Identifier for PRESENT component.
      */
-    public final static int PRESENT = 7;
+    public final static int PRESENT = LDAPSearchRequest.PRESENT;
     /**
-     * Context-specific TAG for APPROX_MATCH component.
+     * Identifier for APPROX_MATCH component.
      */
-    public final static int APPROX_MATCH = 8;
+    public final static int APPROX_MATCH = LDAPSearchRequest.APPROX_MATCH;
     /**
-     * Context-specific TAG for EXTENSIBLE_MATCH component.
+     * Identifier for EXTENSIBLE_MATCH component.
      */
-    public final static int EXTENSIBLE_MATCH = 9;
+    public final static int EXTENSIBLE_MATCH = LDAPSearchRequest.EXTENSIBLE_MATCH;
 
     /**
-     * Context-specific TAG for INITIAL component.
+     * Identifier for INITIAL component.
      */
-    public final static int INITIAL = 0;
+    public final static int INITIAL = LDAPSearchRequest.INITIAL;
     /**
-     * Context-specific TAG for ANY component.
+     * Identifier for ANY component.
      */
-    public final static int ANY = 1;
+    public final static int ANY = LDAPSearchRequest.ANY;
     /**
-     * Context-specific TAG for FINAL component.
+     * Identifier for FINAL component.
      */
-    public final static int FINAL = 2;
+    public final static int FINAL = LDAPSearchRequest.FINAL;
 
     //*************************************************************************
     // Private variables for Filter
@@ -535,7 +550,8 @@ public class RfcFilter extends ASN1Choice
      ***********************************************************************/
 
     /**
-     * Called by sequential filter building methods to add to a filter.
+     * Called by sequential filter building methods to add to a filter
+     * component.
      *
      * <p>Verifies that the specified ASN1Object can be added, then adds the
      * object to the filter.</p>
@@ -545,6 +561,9 @@ public class RfcFilter extends ASN1Choice
      */
     private void addObject(ASN1Object current) throws LDAPLocalException
     {
+        if (filterStack == null){
+            filterStack = new Stack();
+        }
         if ( choiceValue() == null ) {
             //ChoiceValue is the root ASN1 node
             setChoiceValue(current);
@@ -557,68 +576,17 @@ public class RfcFilter extends ASN1Choice
             } else if (value instanceof ASN1Set) {
                 ((ASN1Set)value).add( current );
                 //don't add this to the stack:
-            } else if (value.getIdentifier().getTag() == RfcFilter.NOT){
+            } else if (value.getIdentifier().getTag() == LDAPSearchRequest.NOT){
                 throw new LDAPLocalException(
                         "Attemp to create more than one 'not' sub-filter",
                         LDAPException.FILTER_ERROR);
             }
         }
         int type = current.getIdentifier().getTag();
-        if (type == RfcFilter.AND || type == RfcFilter.OR ||
-                type == RfcFilter.NOT ){
+        if (type == AND || type == OR ||
+                type == NOT ){
             filterStack.add(current);
         }
-        return;
-    }
-
-    /**
-     * Creates and adds the ASN1Tagged value for a nestedFilter: AND, OR, or
-     * NOT.
-     *
-     * <p>Note that a Not nested filter can only have one filter, where AND
-     * and OR do not</p>
-     *
-     * @param rfcType Filter type:
-     *              [RfcFilter.AND | RfcFilter.OR | RfcFilter.NOT]
-     * @throws LDAPLocalException
-     */
-    public void startNestedFilter(int rfcType) throws LDAPLocalException
-    {
-        ASN1Object current;
-        if (rfcType == RfcFilter.AND || rfcType == RfcFilter.OR){
-            current = new ASN1Tagged(
-                    new ASN1Identifier(ASN1Identifier.CONTEXT, true, rfcType),
-                    new ASN1Set(),  //content to be set later
-                    false);
-        } else if (rfcType == RfcFilter.NOT){
-            current = new ASN1Tagged(
-                    new ASN1Identifier(ASN1Identifier.CONTEXT, true, rfcType),
-                    null,  //content to be set later
-                    true);
-        } else {
-            throw new LDAPLocalException(
-                "Attempt to create a nested filter other than AND, OR or NOT",
-                LDAPException.FILTER_ERROR);
-        }
-        addObject(current);
-        return;
-    }
-
-    /**
-     * Completes a nested filter and checks for the valid filter type.
-     * @param rfcType  Type of filter to complete.
-     * @throws LDAPLocalException  Occurs when the specified type differs from
-     * the current filter component.
-     */
-    public void endNestedFilter(int rfcType) throws LDAPLocalException
-    {
-        int topOfStackType = ((ASN1Object)
-                filterStack.peek()).getIdentifier().getTag();
-        if (topOfStackType != rfcType){
-            throw new LDAPLocalException("Missmatched ending of nested filter",
-                    LDAPException.FILTER_ERROR);
-        }
-        filterStack.pop();
         return;
     }
 
@@ -626,8 +594,8 @@ public class RfcFilter extends ASN1Choice
      * Creates and addes a substrings filter component.
      *
      * <p>startSubstrings must be immediatly followed by at least one
-     * addSubstring method and one terminating endSubstrings method</p>
-     * @throws LDAPLocalException
+     * {@link #addSubstring} method and one {@link #endSubstrings} method</p>
+     * @throws com.novell.ldap.LDAPLocalException
      * Occurs when this component is created out of sequence.
      */
     public void startSubstrings(String attrName) throws LDAPLocalException
@@ -635,7 +603,7 @@ public class RfcFilter extends ASN1Choice
         finalFound = false;
         ASN1SequenceOf seq = new ASN1SequenceOf(5);
         ASN1Object current = new ASN1Tagged(
-                        new ASN1Identifier(ASN1Identifier.CONTEXT, true, RfcFilter.SUBSTRINGS),
+                        new ASN1Identifier(ASN1Identifier.CONTEXT, true, SUBSTRINGS),
                         new RfcSubstringFilter(
                             new RfcAttributeDescription(attrName), seq),
                             //this sequence will be filled in later
@@ -656,7 +624,7 @@ public class RfcFilter extends ASN1Choice
      * 'FINAL' substrings either.  However, when a filter does contain a 'FINAL'
      * substring only one can be added, and it must be the last substring added.
      * </p>
-     * @param type Substring type: RfcFilter.[INITIAL | ANY | FINAL]
+     * @param type Substring type: INITIAL | ANY | FINAL]
      * @param value Value to use for matching
      * @throws LDAPLocalException   Occurs if this method is called out of
      * sequence or the type added is out of sequence.
@@ -666,13 +634,13 @@ public class RfcFilter extends ASN1Choice
     {
         try {
             ASN1SequenceOf substringSeq = (ASN1SequenceOf)filterStack.peek();
-            if (type != RfcFilter.INITIAL && type != RfcFilter.ANY &&
-                    type != RfcFilter.FINAL){
+            if (type != INITIAL && type != ANY &&
+                    type != FINAL){
                 throw new LDAPLocalException("Attempt to add an invalid " +
                         "substring type", LDAPException.FILTER_ERROR);
             }
 
-            if (type == RfcFilter.INITIAL && substringSeq.size() !=0)
+            if (type == INITIAL && substringSeq.size() !=0)
             {
                 throw new LDAPLocalException("Attempt to add an initial " +
                         "substring match after the first substring",
@@ -683,7 +651,7 @@ public class RfcFilter extends ASN1Choice
                         "match after a final substring match",
                         LDAPException.FILTER_ERROR);
             }
-            if (type == RfcFilter.FINAL){
+            if (type == FINAL){
                 finalFound = true;
             }
             substringSeq.add(
@@ -724,7 +692,7 @@ public class RfcFilter extends ASN1Choice
     /**
      * Creates and adds an AttributeValueAssertion to the filter.
      *
-     * @param rfcType Filter type: RfcFilter.[EQUALITY_MATCH | GREATER_OR_EQUAL
+     * @param rfcType Filter type: EQUALITY_MATCH | GREATER_OR_EQUAL
      *  | LESS_OR_EQUAL | APPROX_MATCH ]
      * @param attrName Name of the attribute to be asserted
      * @param value Value of the attribute to be asserted
@@ -734,17 +702,17 @@ public class RfcFilter extends ASN1Choice
     public void addAttributeValueAssertion(int rfcType,
                       String attrName, byte[] value) throws LDAPLocalException
     {
-        if (!filterStack.empty() &&
+        if (filterStack != null && !filterStack.empty() &&
              filterStack.peek() instanceof ASN1SequenceOf)
         { //If a sequenceof is on the stack then substring is left on the stack
             throw new LDAPLocalException(
                     "Cannot insert an attribute assertion in a substring",
                     LDAPException.FILTER_ERROR);
         }
-        if ((rfcType != RfcFilter.EQUALITY_MATCH) &&
-            (rfcType != RfcFilter.GREATER_OR_EQUAL) &&
-            (rfcType != RfcFilter.LESS_OR_EQUAL) &&
-            (rfcType != RfcFilter.APPROX_MATCH)) {
+        if ((rfcType != EQUALITY_MATCH) &&
+            (rfcType != GREATER_OR_EQUAL) &&
+            (rfcType != LESS_OR_EQUAL) &&
+            (rfcType != APPROX_MATCH)) {
             throw new LDAPLocalException(
                     "Invalid filter type for AttributeValueAssertion",
                     LDAPException.FILTER_ERROR);
@@ -770,7 +738,7 @@ public class RfcFilter extends ASN1Choice
     {
         ASN1Object current = new ASN1Tagged(
                 new ASN1Identifier(ASN1Identifier.CONTEXT, false,
-                        RfcFilter.PRESENT),
+                        PRESENT),
                 new RfcAttributeDescription(attrName),
                 false);
         addObject(current);
@@ -794,7 +762,7 @@ public class RfcFilter extends ASN1Choice
     {
         ASN1Object current = new ASN1Tagged(
             new ASN1Identifier(ASN1Identifier.CONTEXT, true,
-                    RfcFilter.EXTENSIBLE_MATCH),
+                    EXTENSIBLE_MATCH),
             new RfcMatchingRuleAssertion(
                 (matchingRule==null) ? null:new RfcMatchingRuleId(matchingRule),
                 (attrName==null) ? null:new RfcAttributeDescription(attrName),
@@ -805,10 +773,335 @@ public class RfcFilter extends ASN1Choice
         addObject(current);
         return;
     }
+
+    /**
+     * Creates and adds the ASN1Tagged value for a nestedFilter: AND, OR, or
+     * NOT.
+     *
+     * <p>Note that a Not nested filter can only have one filter, where AND
+     * and OR do not</p>
+     *
+     * @param rfcType Filter type:
+     *              [AND | OR | NOT]
+     * @throws com.novell.ldap.LDAPLocalException
+     */
+    public void startNestedFilter(int rfcType) throws LDAPLocalException
+    {
+        ASN1Object current;
+        if (rfcType == AND || rfcType == OR){
+            current = new ASN1Tagged(
+                    new ASN1Identifier(ASN1Identifier.CONTEXT, true, rfcType),
+                    new ASN1Set(),  //content to be set later
+                    false);
+        } else if (rfcType == NOT){
+            current = new ASN1Tagged(
+                    new ASN1Identifier(ASN1Identifier.CONTEXT, true, rfcType),
+                    null,  //content to be set later
+                    true);
+        } else {
+            throw new LDAPLocalException(
+                "Attempt to create a nested filter other than AND, OR or NOT",
+                LDAPException.FILTER_ERROR);
 }
+        addObject(current);
+        return;
+    }
 
 /**
-  * This class will tokenize the components of an RFC 2254 search filter.
+     * Completes a nested filter and checks for the valid filter type.
+     * @param rfcType  Type of filter to complete.
+     * @throws com.novell.ldap.LDAPLocalException  Occurs when the specified
+     * type differs from the current filter component.
+  */
+    public void endNestedFilter(int rfcType) throws LDAPLocalException
+    {
+        int topOfStackType = ((ASN1Object)
+                filterStack.peek()).getIdentifier().getTag();
+        if (topOfStackType != rfcType){
+            throw new LDAPLocalException("Missmatched ending of nested filter",
+                    LDAPException.FILTER_ERROR);
+        }
+        filterStack.pop();
+        return;
+    }
+
+    /**
+     * Creates an iterator over the preparsed segments of a filter.
+     *
+     * <p>The first object returned by an iterator is an integer indicating the
+     * type of filter components.  Subseqence values are returned.  If a
+     * component is of type 'AND' or 'OR' or 'NOT' then the value
+     * returned is another iterator.  This iterator is used by toString.</p>
+     *
+     * @return Iterator over filter segments
+     */
+    public Iterator getFilterIterator(){
+        return new FilterIterator((ASN1Tagged)this.choiceValue());
+    }
+
+    /**
+     * Creates and returns a String representation of this filter.
+     */
+    public String filterToString(){
+        StringBuffer filter = new StringBuffer();
+        stringFilter(this.getFilterIterator(), filter);
+        return filter.toString();
+    }
+
+    /**
+     * Uses a filterIterator to create a string representation of a filter.
+     *
+     * @param itr Iterator of filter components
+     * @param filter Buffer to place a string representation of the filter
+     * @see #getFilterIterator
+     */
+    private static void stringFilter(Iterator itr, StringBuffer filter) {
+        int op=-1;
+        filter.append('(');
+        while (itr.hasNext()){
+            Object filterpart = itr.next();
+            if (filterpart instanceof Integer){
+                op = ((Integer)filterpart).intValue();
+                switch (op){
+                    case AND:
+                        filter.append('&');
+                        break;
+                    case OR:
+                        filter.append('|');
+                        break;
+                    case NOT:
+                        filter.append('!');
+                        break;
+                    case EQUALITY_MATCH:{
+                        filter.append((String)itr.next());
+                        filter.append('=');
+                        byte[] value = (byte[])itr.next();
+                        filter.append(byteString(value));
+                        break;
+                    }
+                    case GREATER_OR_EQUAL:{
+                        filter.append((String)itr.next());
+                        filter.append(">=");
+                        byte[] value = (byte[])itr.next();
+                        filter.append(byteString(value));
+                        break;
+                    }
+                    case LESS_OR_EQUAL:{
+                        filter.append((String)itr.next());
+                        filter.append("<=");
+                        byte[] value = (byte[])itr.next();
+                        filter.append(byteString(value));
+                        break;
+                    }
+                    case PRESENT:
+                        filter.append((String)itr.next());
+                        filter.append("=*");
+                        break;
+                    case APPROX_MATCH:
+                        filter.append((String)itr.next());
+                        filter.append("~=");
+                        byte[] value = (byte[])itr.next();
+                        filter.append(byteString(value));
+                        break;
+                    case EXTENSIBLE_MATCH:
+                        String oid = (String)itr.next();
+
+                        filter.append((String)itr.next());
+                        filter.append(':');
+                        filter.append(oid);
+                        filter.append(":=");
+                        filter.append((String)itr.next());
+                        break;
+                    case SUBSTRINGS:{
+                        filter.append((String)itr.next());
+                        filter.append('=');
+                        boolean noStarLast = false;
+                        while (itr.hasNext()){
+                            op = ((Integer)itr.next()).intValue();
+                            switch(op){
+                                case INITIAL:
+                                    filter.append((String)itr.next());
+                                    filter.append('*');
+                                    noStarLast = false;
+                                    break;
+                                case ANY:
+                                    if( noStarLast)
+                                        filter.append('*');
+                                    filter.append((String)itr.next());
+                                    filter.append('*');
+                                    noStarLast = false;
+                                    break;
+                                case FINAL:
+                                    if( noStarLast)
+                                        filter.append('*');
+                                    filter.append((String)itr.next());
+                                    break;
+                            }
+                        }
+                        break;
+                    }
+                }
+            } else if (filterpart instanceof Iterator){
+                stringFilter((Iterator)filterpart, filter);
+            }
+        }
+        filter.append(')');
+    }
+
+    /**
+     * Convert a UTF8 encoded string, or binary data, into a String encoded for
+     * a string filter.
+     */
+    private static String byteString(byte[] value) {
+        String toReturn = null;
+        if (com.novell.ldap.util.Base64.isValidUTF8(value, true)) {
+            try {
+                toReturn = new String(value, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                throw new RuntimeException(
+                        "Default JVM does not support UTF-8 encoding" + e);
+            }
+        } else {
+            StringBuffer binary = new StringBuffer();
+            for (int i=0; i<value.length; i++){
+                //TODO repair binary output
+                //Every octet needs to be escaped
+                if (value[i] >=0) {
+                    //one character hex string
+                    binary.append("\\0");
+                    binary.append(Integer.toHexString(value[i]));
+                } else {
+                    //negative (eight character) hex string
+                    binary.append("\\"+
+                            Integer.toHexString(value[i]).substring(6));
+                }
+            }
+            toReturn = binary.toString();
+        }
+        return toReturn;
+    }
+
+    /**
+     * This inner class wrappers the Search Filter with an iterator.
+     * This iterator will give access to all the individual components
+     * preparsed.  The first call to next will return an Integer identifying
+     * the type of filter component.  Then the component values will be returned
+     * AND, NOT, and OR components values will be returned as Iterators.
+     */
+    private class FilterIterator implements Iterator{
+        ASN1Tagged root;
+        /** indicates if the identifier for a component has been returned yet */
+        boolean tagReturned = false;
+        /** indexes the several parts a component may have */
+        int index = -1;
+        private boolean hasMore = true;
+
+        public FilterIterator(ASN1Tagged root){
+            this.root = root;
+        }
+        public boolean hasNext() {
+            return hasMore;
+        }
+
+        /**
+         * Returns filter identifiers and components of a filter.
+         *
+         * The first object returned is an Integer identifying
+         * its type.
+         */
+        public Object next() {
+            Object toReturn = null;
+            if (!tagReturned){
+                tagReturned = true;
+                toReturn = new Integer(root.getIdentifier().getTag());
+            } else {
+                ASN1Object asn1 = root.taggedValue();
+
+                if (asn1 instanceof RfcLDAPString){
+                    //one value to iterate
+                    hasMore = false;
+                    toReturn = ((RfcLDAPString)asn1).stringValue();
+                } else if (asn1 instanceof RfcSubstringFilter){
+
+                    RfcSubstringFilter sub = (RfcSubstringFilter) asn1;
+                    if (index == -1){
+                            //return attribute name
+                        index=0;
+                        RfcAttributeDescription attr = (RfcAttributeDescription)
+                                sub.get(0);
+                        toReturn = attr.stringValue();
+                    } else if (index % 2 == 0) {
+                            //return substring identifier
+                        ASN1SequenceOf substrs = (ASN1SequenceOf) sub.get(1);
+                        toReturn = new Integer( ((ASN1Tagged)
+                                substrs.get(index/2)).getIdentifier().getTag());
+                        index++;
+                    } else {
+                            //return substring value
+                        ASN1SequenceOf substrs = (ASN1SequenceOf) sub.get(1);
+                        ASN1Tagged tag = (ASN1Tagged)substrs.get(index/2);
+                        RfcLDAPString value = (RfcLDAPString) tag.taggedValue();
+                        toReturn = value.stringValue();
+                        index++;
+                    }
+                    if (index / 2 >= ((ASN1SequenceOf) sub.get(1)).size()){
+                        hasMore = false;
+                    }
+                } else if (asn1 instanceof RfcAttributeValueAssertion){
+                    // components: =,>=,<=,~=
+                    RfcAttributeValueAssertion assertion =
+                            (RfcAttributeValueAssertion)asn1;
+
+                    if (index == -1){
+                        toReturn = assertion.getAttributeDescription();
+                        index = 1;
+                    } else if (index == 1){
+                        toReturn = assertion.getAssertionValue();
+                        index = 2;
+                        hasMore = false;
+                    }
+                } else if (asn1 instanceof RfcMatchingRuleAssertion){
+                    //Extensible match
+                    RfcMatchingRuleAssertion exMatch =
+                            (RfcMatchingRuleAssertion) asn1;
+                    if (index == -1){
+                        index = 0;
+                    }
+                    toReturn = ((ASN1OctetString)
+                                ((ASN1Tagged)
+                                    exMatch.get(index++)
+                                ).taggedValue()
+                               ).stringValue();
+                    if (index > 2){
+                        hasMore = false;
+                    }
+                } else if (asn1 instanceof ASN1SetOf){
+                    //AND and OR nested components
+                    ASN1SetOf set = (ASN1SetOf)asn1;
+                    if (index == -1){
+                        index = 0;
+                    }
+                    toReturn = new FilterIterator((ASN1Tagged)set.get(index++));
+                    if (index >= set.size()){
+                        this.hasMore = false;
+                    }
+                } else if (asn1 instanceof ASN1Tagged) {
+                    //NOT nested component.
+                    toReturn = new FilterIterator((ASN1Tagged)asn1);
+                    this.hasMore = false;
+                }
+            }
+            return toReturn;
+        }
+
+        public void remove() {
+            throw new java.lang.UnsupportedOperationException(
+                    "Remove is not supported on a filter iterator");
+        }
+    }
+
+/**
+  * This inner class will tokenize the components of an RFC 2254 search filter.
   */
 class FilterTokenizer
 {
@@ -907,15 +1200,15 @@ class FilterTokenizer
         int testChar = filter.charAt(offset);
         if(testChar == '&') {
             offset++;
-            ret = RfcFilter.AND;
+            ret = AND;
         }
         else if(testChar == '|') {
             offset++;
-            ret = RfcFilter.OR;
+            ret = OR;
         }
         else if(testChar == '!') {
             offset++;
-            ret = RfcFilter.NOT;
+            ret = NOT;
         }
         else {
             if (filter.startsWith(":=", offset) == true) {
@@ -998,23 +1291,23 @@ class FilterTokenizer
         int ret;
         if(filter.startsWith(">=", offset)) {
             offset+=2;
-            ret = RfcFilter.GREATER_OR_EQUAL;
+            ret = GREATER_OR_EQUAL;
         } else
         if(filter.startsWith("<=", offset)) {
             offset+=2;
-            ret = RfcFilter.LESS_OR_EQUAL;
+            ret = LESS_OR_EQUAL;
         } else
         if(filter.startsWith("~=", offset)) {
             offset+=2;
-            ret = RfcFilter.APPROX_MATCH;
+            ret = APPROX_MATCH;
         } else
         if(filter.startsWith(":=", offset)) {
             offset+=2;
-            ret = RfcFilter.EXTENSIBLE_MATCH;
+            ret = EXTENSIBLE_MATCH;
         } else
         if(filter.charAt(offset) == '=') {
             offset++;
-            ret = RfcFilter.EQUALITY_MATCH;
+            ret = EQUALITY_MATCH;
         } else {
             //"Invalid comparison operator",
             throw new LDAPLocalException(
@@ -1070,4 +1363,5 @@ class FilterTokenizer
         return filter.charAt(offset);
     }
 
+    }
 }
