@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Structured.java,v 1.11 2001/03/01 00:30:02 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Structured.java,v 1.12 2001/04/13 22:35:47 javed Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -98,7 +98,8 @@ public abstract class ASN1Structured extends ASN1Object
    }
 
    /**
-    *
+    * Returns the individual ASN.1 elements in this ASN1Structed
+    * object as an array of ASN1 Objects.
     */
    public ArrayList getContent()
    {
@@ -106,7 +107,13 @@ public abstract class ASN1Structured extends ASN1Object
    }
 
    /**
+    * Adds a new ASN1Object to the end of this ASN1Structured
+    * object.  
     *
+    * @param value The ASN1Object to add to this ASN1Structured 
+    * object.  Note the use of the ASN1Object type as the base
+    * class for this object.  This allows the programmer to specify
+    * an ASN1 Obejct of any sub type.
     */
    public void add(ASN1Object value)
    {
@@ -115,7 +122,16 @@ public abstract class ASN1Structured extends ASN1Object
    }
 
    /**
+    * Adds a new ASN1Object in the specified index position of 
+    * this ASN1Structured object. 
     *
+    * @param index The index into the ASN1Structured object where
+    * this new ANS1Object will be added.
+    *
+    * @param value The ASN1Object to add to this ASN1Structured 
+    * object.  Note the use of the ASN1Object type as the base
+    * class for this object.  This allows the programmer to specify
+    * an ASN1 Obejct of any sub type.
     */
    public void set(int index, ASN1Object value)
    {
@@ -124,7 +140,8 @@ public abstract class ASN1Structured extends ASN1Object
    }
 
    /**
-    *
+    * Returns the ASN1Objects in this ASN1Structured object as an
+    * Enumeration.
     */
    public Enumeration elements()
    {
@@ -132,7 +149,10 @@ public abstract class ASN1Structured extends ASN1Object
    }
 
    /**
+    * Gets a specific ASN1Object in this structred object.
     *
+    * param index The index of the ASN1Object to get from
+    * this ASN1Structured object.
     */
    public ASN1Object get(int index)
    {
@@ -140,7 +160,10 @@ public abstract class ASN1Structured extends ASN1Object
    }
 
    /**
+    * Removes an ASN1Object at a specific index location
     *
+    * param index The index of the ASN1Object to remove from
+    * this ASN1Structured object.
     */
    public void remove(int index)
    {
@@ -148,7 +171,8 @@ public abstract class ASN1Structured extends ASN1Object
    }
 
    /**
-    *
+    * Returns the number of ASN1Obejcts that have been encoded
+    * into this ASN1Structured class.
     */
    public int size()
    {
@@ -157,6 +181,7 @@ public abstract class ASN1Structured extends ASN1Object
 
    /**
     * Return a String representation of this ASN1Structured.
+    * object.
     */
    public String toString(String type)
    {

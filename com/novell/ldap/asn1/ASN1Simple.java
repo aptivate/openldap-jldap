@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Simple.java,v 1.5 2000/09/11 21:05:54 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Simple.java,v 1.6 2001/03/01 00:30:02 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -16,7 +16,9 @@
 package com.novell.ldap.asn1;
 
 /**
- * Common type to all ASN.1 Simple types.
+ * Abstract base class that is the parent class for
+ * all ASN.1 Simple types.  Developers should not
+ * need to use this class directly.
  */
 abstract class ASN1Simple extends ASN1Object {
 }
