@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResultReference.java,v 1.15 2000/11/09 23:50:40 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResultReference.java,v 1.16 2000/11/10 16:50:04 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -29,7 +29,9 @@ import java.util.*;
 public class LDAPSearchResultReference extends LDAPMessage {
 
     private String[] srefs;
-    private String name = "LDAPSearchResultReference@" + Integer.toHexString(hashCode());
+    private static Object nameLock = new Object(); // protect agentNum
+    private static int refNum = 0;  // Debug, LDAPConnection number
+    private String name;             // String name for debug
 	/**
      * Constructs an LDAPSearchResultReference object.
      * 
@@ -38,6 +40,12 @@ public class LDAPSearchResultReference extends LDAPMessage {
 	/*package*/ LDAPSearchResultReference(RfcLDAPMessage message)
 	{
         super(message);
+        if( Debug.LDAP_DEBUG) {
+            synchronized(nameLock) {
+                name = "SearchResultReference(" + ++refNum + "): ";
+            }
+            Debug.trace( Debug.referrals, name + "Created");
+        }
         return;
 	}
 
@@ -47,13 +55,16 @@ public class LDAPSearchResultReference extends LDAPMessage {
     * @return The URLs.
     */
    public String[] getReferrals() {
+        if( Debug.LDAP_DEBUG ) {
+            Debug.trace( Debug.messages, name + "Enter getReferrals");
+        }
         RfcSearchResultReference sresref = (RfcSearchResultReference)message.getProtocolOp();
         Enumeration references = sresref.elements();
         srefs = new String[sresref.size()];
         for( int i=0; sresref.hasMoreElements(); i++) {
             srefs[i] = (String)sresref.nextElement(); 
             if( Debug.LDAP_DEBUG ) {
-                Debug.trace( Debug.messages, name + srefs[i] );
+                Debug.trace( Debug.referrals, name + "\t" + srefs[i] );
             }
         }
         return( srefs );

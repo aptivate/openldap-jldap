@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.35 2001/02/16 22:42:50 javed Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.36 2001/02/23 18:11:55 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -70,9 +70,15 @@ public final class Connection implements Runnable
 
     private InputStream in = null;
     private OutputStream out = null;
+    // When set to true, app is not notified of connection failures
+    private boolean shutdown = false;
 
     // Place to save message information classes
     private MessageVector messages = new MessageVector(5,5);
+
+    // Connection created to follow referral
+    private String[] referralList = null;
+    private String activeReferral = null;
 
     // Place to save unsolicited message listeners
     private Vector unsolicitedListeners = new Vector(3,3);
@@ -86,9 +92,9 @@ public final class Connection implements Runnable
     // Number of clones in addition to original LDAPConnection using this connection.
     private int cloneCount = 0;
     // Connection number & name used only for debug
+    private String name = "";
     private static Object nameLock = new Object(); // protect connNum
     private static int connNum = 0;
-    private String name;
 
     // These attributes can be retreived using the getProperty
     // method in LDAPConnection.  Future releases might require
@@ -302,9 +308,10 @@ public final class Connection implements Runnable
                 }
             }
         } catch(IOException ioe) {
+            // Unable to connect to server host:port
             throw new LDAPException(
-              LDAPExceptionMessageResource.CONNECT_ERROR,
-              new Object[] { host },
+              LDAPExceptionMessageResource.CONNECTION_ERROR,
+              new Object[] { host, new Integer(port) },
               LDAPException.CONNECT_ERROR);
         }
         // Set host and port
@@ -321,6 +328,7 @@ public final class Connection implements Runnable
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.messages, name + " connect: setup complete");
         }
+        shutdown = false; // Allow app to be notified of connection failures
         return;
     }
 
@@ -360,10 +368,10 @@ public final class Connection implements Runnable
      *
      * @return a Connection object.
      */
-    public Connection destroyClone()
+    public Connection destroyClone(boolean how)
         throws LDAPException
     {
-        return destroyClone(null,0);
+        return destroyClone(how, null,0);
     }
 
     /**
@@ -375,12 +383,12 @@ public final class Connection implements Runnable
      *
      * @return a Connection object.
      */
-    public Connection destroyClone( String host, int port)
+    public Connection destroyClone( boolean how, String host, int port)
         throws LDAPException
     {
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.messages, name +
-                "destroyClone(" + host + "," + port + ")");
+                "destroyClone(" + how + "," + host + "," + port + ")");
         }
         Connection conn = this;
         int semId = acquireBindSemaphore();
@@ -400,7 +408,14 @@ public final class Connection implements Runnable
                     Debug.trace( Debug.messages, name +
                         "destroyClone(" + cloneCount + ") destroy old connection");
                 }
-                shutdown("Destroy Clone", semId);
+
+                // Connection closed
+                LocalException notify = new LocalException(
+                    (how ? LDAPExceptionMessageResource.CONNECTION_CLOSED :
+                           LDAPExceptionMessageResource.CONNECTION_FINALIZED),
+                           new Object[] { host, new Integer(port)},
+                           LDAPException.CONNECT_ERROR, null, null);
+                shutdown("destroy clone", semId, notify);
             }
         }
         if( host != null) {
@@ -452,8 +467,9 @@ public final class Connection implements Runnable
     *
     * @param msg the Message containing the message to write.
     */
-    /* package */ void writeMessage(Message info)
-        throws IOException
+    /* package */
+    void writeMessage(Message info)
+        throws LDAPException
     {
         messages.addElement( info);
         LDAPMessage msg = info.getRequest();
@@ -467,23 +483,38 @@ public final class Connection implements Runnable
     *
     * @param msg the message to write.
     */
-    /* package */ void writeMessage(LDAPMessage msg)
-        throws IOException
+    /* package */
+    void writeMessage(LDAPMessage msg)
+        throws LDAPException
     {
-        OutputStream myOut = out;
-        if( myOut == null) {
-            throw new IOException("Output stream not initialized");
-        }
         int id = msg.getMessageID();
-        byte[] ber = msg.getASN1Object().getEncoding(encoder);
-        acquireBindSemaphore(id);
-        if( Debug.LDAP_DEBUG) {
-            Debug.trace( Debug.messages, name +
-                "Writing Message(" + id + ")");
+        try {
+            OutputStream myOut = out;
+            byte[] ber = msg.getASN1Object().getEncoding(encoder);
+            acquireBindSemaphore(id);
+            if( myOut == null) {
+                throw new IOException("Output stream not initialized");
+            }
+            if( Debug.LDAP_DEBUG) {
+                Debug.trace( Debug.messages, name +
+                    "Writing Message(" + id + ")");
+            }
+            myOut.write(ber, 0, ber.length);
+            myOut.flush();
+        } catch( IOException ioe) {
+            String reason = "I/O Exception on " + host + ":" + port;
+            if( Debug.LDAP_DEBUG ) {
+                Debug.trace( Debug.messages, name +
+                    "I/O Excepiton on " + host + ":" + port +
+                    " " + ioe.toString());
+            }        
+            // I/O Exception on host:port
+            throw new LDAPException(LDAPExceptionMessageResource.IO_EXCEPTION,
+                new Object[] {host, new Integer(port)},
+                LDAPException.CONNECT_ERROR, ioe);
+        } finally {
+            freeBindSemaphore(id);
         }
-        myOut.write(ber, 0, ber.length);
-        myOut.flush();
-        freeBindSemaphore(id);
         return;
     }
 
@@ -582,7 +613,7 @@ public final class Connection implements Runnable
             Debug.trace( Debug.messages, name +
                 "finalize: shutdown connection");
         }
-        shutdown("Finalize",0);
+        shutdown("Finalize",0, null);
         return;
     }
     /**
@@ -591,21 +622,21 @@ public final class Connection implements Runnable
      * be called by LDAPConnection.disconnect().
      *
      */
-    private void shutdown( String reason, int semaphoreId)
+    private void shutdown( String reason, int semaphoreId, LocalException notifyUser)
     {
         Message info = null;
-        if( in == null) {
+        if( shutdown) {
             if( Debug.LDAP_DEBUG) {
                 Debug.trace( Debug.messages, name +
                     "shutdown: already shut down - " + reason);
             }
             return;
         }
-
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.messages, name +
                 "shutdown: Shutting down connection - " + reason);
         }
+        shutdown = true;
         while( true ) {
             // remove messages from connection list and send abandon
             try {
@@ -622,7 +653,7 @@ public final class Connection implements Runnable
                 }
                 break;
             }
-            info.abandon( null, false );
+            info.abandon( null, notifyUser);
         }
 
         // Now send unbind before closing socket
@@ -697,6 +728,8 @@ public final class Connection implements Runnable
     public void run() {
 
         String reason = "reader: thread stopping";
+        LocalException notify = null;
+        Message info = null;
 
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.messages, name + "reader: thread starting");
@@ -707,7 +740,6 @@ public final class Connection implements Runnable
                 // ------------------------------------------------------------
                 // Decode an RfcLDAPMessage directly from the socket.
                 // ------------------------------------------------------------
-                Message info;
                 ASN1Identifier asn1ID;
                 InputStream myIn;
                 /* get current value of in, keep value consistant
@@ -748,22 +780,11 @@ public final class Connection implements Runnable
                 //??               int cnt = ldapListeners.size();
                 try {
                     info = messages.findMessageById( msgId);
-                    if( info.acceptsReplies()) {
-                        if( Debug.LDAP_DEBUG ) {
-                            Debug.trace( Debug.messages, name +
-                                "reader: queue message(" + msgId + ")");
-                            Debug.trace( Debug.buffer, name +
-                                "reader: message(" + msgId + ")=" +
-                                msg.toString());
-                        }
-                        info.putReply( msg);   // queue & wake up waiting thread
-                    } else {
-                        if( Debug.LDAP_DEBUG ) {
-                            Debug.trace( Debug.messages, name +
-                                "reader: message(" + msgId +
-                                ") not accepting replies, discarding reply");
-                        }
+                    if( Debug.LDAP_DEBUG ) {
+                        Debug.trace( Debug.messages, name +
+                            "reader: queue message(" + msgId + ")");
                     }
+                    info.putReply( msg);   // queue & wake up waiting thread
                 } catch ( NoSuchFieldException ex) {
 
 					// We get the NoSuchFieldException when we could not find a matching
@@ -805,24 +826,73 @@ public final class Connection implements Runnable
             }
         } catch( IOException ioe) {
             if( Debug.LDAP_DEBUG ) {
-                reason = "reader: Connection lost for " + host + ":" + port + " " + ioe.toString();
-                Debug.trace( Debug.messages, name + reason);
+                Debug.trace( Debug.messages, name +
+                    "Connection lost waiting for results from " +
+                    host + ":" + port + ", shutdown=" + shutdown +
+                    "\n\t" + ioe.toString());
+            }        
+            if( ! shutdown) {
+                // Connection lost waiting for results from host:port
+                notify = new LocalException(
+                    LDAPExceptionMessageResource.CONNECTION_WAIT,
+                            new Object[] { host, new Integer(port)},
+                            LDAPException.CONNECT_ERROR,
+                            ioe, info);
             }
         } finally {
             if( Debug.LDAP_DEBUG ) {
                 Debug.trace( Debug.messages, name +
                 "reader: connection shutdown");
-            }
-            shutdown(reason, 0);
+            }        
+            // Notify application of exception, if any
+            shutdown(reason, 0, notify);
         }
         reader = null;
         if( Debug.LDAP_DEBUG ) {
             Debug.trace( Debug.messages, name +
             "reader: thread terminated");
-        }
+        }        
+        return;
+    }
+    /**
+     * Marks this LDAPConnection as one created to follow a referral
+     */
+    public void setReferralList( String[] referrals)
+    {
+        referralList = referrals;
         return;
     }
 
+    /**
+     * Returns the referral list if this connection used to follow a referral
+     *
+     * @return the referral list
+     */
+    public String[] getReferralList()
+    {
+        return referralList;
+    }
+
+    /**
+     * Sets the current referral active on this connection if created to 
+     * follow referrals.
+     */
+    public void setActiveReferral( String referral)
+    {
+        activeReferral = referral;
+        return;
+    }
+
+    /**
+     * Gets the current referral active on this connection if created to 
+     * follow referrals.
+     *
+     * @return the active referral url
+     */
+    public String getActiveReferral()
+    {
+        return activeReferral;
+    }
 
 	/** Add the specific object to the list of listeners that want to be notified when
 	 * an unsolicited notification is received.
@@ -911,4 +981,15 @@ public final class Connection implements Runnable
         }
 
 	}
+
+    /**
+     * Returns the name of this Connection, used for debug only
+     *
+     * @return the name of this connection
+     */
+    /*package*/
+    String getConnectionName()
+    {
+        return name;
+    }
 }

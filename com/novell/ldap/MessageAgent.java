@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/client/MessageAgent.java,v 1.6 2001/01/02 23:28:31 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/client/MessageAgent.java,v 1.7 2001/01/04 20:14:49 vtag Exp $
 *
 * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
 * 
@@ -59,15 +59,21 @@ public class MessageAgent
     {
         Object[] msgs = fromAgent.getMessageArray();
         for(int i = 0; i < msgs.length; i++) {
+            messages.addElement( msgs[i]);
+            ((Message)(msgs[i])).setAgent( this);
             if( Debug.LDAP_DEBUG) {
                 Message info = (Message)msgs[i];
                 Debug.trace( Debug.messages, name +
-                "Merging Message(" + info.getMessageID() + ")");
+                    "Merging Message(" + info.getMessageID() + "), total " +
+                    messages.size());
             }
-            ((Message)(msgs[i])).setAgent( this);
-            messages.addElement( msgs[i]);
         }
         synchronized(messages) {
+            if( Debug.LDAP_DEBUG) {
+                Debug.trace( Debug.messages, name +
+                    "Messages in queue");
+                debugDisplayMessages();
+            }
             if( msgs.length > 1) {
                 messages.notifyAll();  // wake all threads waiting for messages
             } else
@@ -76,7 +82,8 @@ public class MessageAgent
             }
         }    
         return;
-        }
+    }
+
 
     /**
      * Wakes up any threads waiting for messages in the message agent
@@ -139,21 +146,20 @@ public class MessageAgent
      *<br><br>
      * @param informUser true if user must be informed of operation
      */
-    public void abandon(int msgId, LDAPConstraints cons, boolean informUser)
+    public void abandon(int msgId, LDAPConstraints cons) //, boolean informUser)
     {
         Message info = null;
         try {
             // Send abandon request and remove from connection list
             info = messages.findMessageById( msgId);
-            info.abandon( cons, informUser );
-            // Don't remove from list only if user requires notification
-            if( informUser) {
-                // Message complete and no more replies, remove from id list
-                messages.remove( info);
-            }
+            info.abandon( cons, null);
+            messages.remove( info);  // This message is now dead
+
             if( Debug.LDAP_DEBUG) {
                 Debug.trace( Debug.messages, name +
-                "abandon: Removed abandoned Message(" + info.getMessageID() + ")");
+                    "abandon: Removed abandoned Message(" +
+                    info.getMessageID() + ")" + " Messages in queue");
+                debugDisplayMessages();
             }
             return;
         } catch( NoSuchFieldException ex ) {
@@ -168,6 +174,7 @@ public class MessageAgent
     /**
      * Abandon all requests on this MessageAgent
      */
+     // ????????? needs synchronization on messages
     public void abandonAll()
     {
         int size = messages.size();
@@ -176,13 +183,18 @@ public class MessageAgent
 
         for( int i = 0; i < size; i++ ) {
             info = (Message)messages.elementAt(i);
-            info.abandon( null, false );
             // Message complete and no more replies, remove from id list
-            messages.remove( info);
             if( Debug.LDAP_DEBUG) {
                 Debug.trace( Debug.messages, name +
-                "abandonAll: Removed abandoned Message(" + info.getMessageID() + ")");
+                "abandonAll: Removing abandoned Message(" + info.getMessageID() + ")");
             }
+            info.abandon( null, null);
+            messages.remove( info);
+        }
+        if( Debug.LDAP_DEBUG) {
+            Debug.trace( Debug.messages, name +
+                "Messages in queue");
+            debugDisplayMessages();
         }
         return;        
     }
@@ -254,13 +266,19 @@ public class MessageAgent
                             int             timeOut,
                             LDAPListener    listen,
                             BindProperties  bindProps)
-            throws IOException
+            throws LDAPException
     {
         // creating a messageInfo causes the message to be sent
         // and a timer to be started if needed.
         Message message = new Message( msg, timeOut, conn,
                                     this, listen, bindProps);
         messages.addElement( message);
+        if( Debug.LDAP_DEBUG) {
+            Debug.trace( Debug.messages, name +
+              "sendMessage: Added new Message(" + message.getMessageID() + ")");
+            debugDisplayMessages();
+        }
+        message.sendMessage(); // Now send message to server
         return;
     }
                             
@@ -286,7 +304,10 @@ public class MessageAgent
                     messages.remove( info);
                     if( Debug.LDAP_DEBUG) {
                         Debug.trace( Debug.messages, name +
-                        "getLDAPMessage: Remove Message(" + info.getMessageID() + ")");
+                            "getLDAPMessage: By ID Return Message(" +
+                            info.getMessageID() + ")");
+                        debugDisplayMessages();
+
                     }
                 }
                 return rfcMsg;
@@ -297,6 +318,11 @@ public class MessageAgent
             // A msgId was NOT specified, any message will do
             synchronized( messages ) {
                 while( true) {
+                    if( Debug.LDAP_DEBUG) {
+                        Debug.trace( Debug.messages, name +
+                            "getLDAPMessage: Look for replies, " +
+                            messages.size() + " messages active");
+                    }
                     // If no messages for this agent, just return null
                     if( messages.size() == 0) {
                         return null;
@@ -305,20 +331,21 @@ public class MessageAgent
                     int next = indexLastRead + 1;
                     Message info;
                     for( int i = 0; i < size; i++) {
-                       if( next == size ) {
+                       if( next >= size ) {
                            next = 0;
                        }
                        info = (Message)messages.elementAt(next);
+                       indexLastRead = next++;
                        try {
                           rfcMsg = info.getReply();
-                          indexLastRead = next;
                           if( ! info.acceptsReplies() & ! info.hasReplies()) {
                              // Message complete & no more replies, remove from id list
                              messages.remove( info);
                              if( Debug.LDAP_DEBUG) {
                                 Debug.trace( Debug.messages, name +
-                                "getLDAPMessage: Remove Message(" +
-                                info.getMessageID() + ")");
+                                    "getLDAPMessage: Return Message(" +
+                                    info.getMessageID() + ")");
+                                debugDisplayMessages();
                              }
                           }
                           return rfcMsg;
@@ -353,5 +380,35 @@ public class MessageAgent
                 }
             }
         }
+    }
+    
+    /**
+     * Get the maessage agent number for debugging
+     *
+     * @return the agent number
+     */
+    /*packge*/
+    String getAgentName()
+    {
+        return name;
+    }
+
+    /**
+     * Debug code to print messages in message vector
+     */
+    private void debugDisplayMessages()
+    {
+        if( Debug.LDAP_DEBUG) {
+            Object[] dbgmsgs = messages.toArray();
+            if( dbgmsgs.length == 0) {
+                Debug.trace( Debug.messages, "\t" + "No messages queued");
+            }                
+            for(int i = 0; i < dbgmsgs.length; i++) {
+                Message m = (Message)dbgmsgs[i];
+                Debug.trace( Debug.messages, "\t" + i +
+                    ".: Message(" + m.getMessageID() + ")");
+            }
+        }
+        return;
     }
 }

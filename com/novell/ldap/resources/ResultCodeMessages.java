@@ -1,3 +1,4 @@
+// $Novell$
 package com.novell.ldap;
 
 public class LDAPExceptionErrorCodeResource extends java.util.ListResourceBundle {
@@ -67,7 +68,8 @@ public class LDAPExceptionErrorCodeResource extends java.util.ListResourceBundle
       {"94", "No Results Returned"},
       {"95", "More Results To Return"},
       {"96", "Client Loop"},
-      {"97", "Referral Limit Exceeded"}
+      {"97", "Referral Limit Exceeded"},
+      {"112", "TLS not supported"}
   // END OF MATERIAL TO LOCALIZE
   };
 }//End LDAPExceptionErrorCodeResource

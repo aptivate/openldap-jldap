@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchConstraints.java,v 1.12 2000/11/03 23:16:32 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchConstraints.java,v 1.13 2001/01/04 16:59:49 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -14,6 +14,8 @@
  ***************************************************************************/
 
 package com.novell.ldap;
+
+import com.novell.ldap.client.Debug;
 
 /** 
  *
@@ -33,6 +35,9 @@ public class LDAPSearchConstraints extends LDAPConstraints {
     private int serverTimeLimit = 0;
     private int maxResults = 1000;
     private int batchSize = 1;
+    private static Object nameLock = new Object(); // protect agentNum
+    private static int lSConsNum = 0;  // Debug, LDAPConnection number
+    private String name;             // String name for debug
 
     /**
      * Used to indicate that aliases are are never derefrenced.
@@ -87,6 +92,14 @@ public class LDAPSearchConstraints extends LDAPConstraints {
     public LDAPSearchConstraints()
     {
         super();
+        // Get a unique connection name for debug
+        if( Debug.LDAP_DEBUG) {
+            synchronized( nameLock) {
+                name = "LDAPSearchConstraints(" + ++lSConsNum + "): ";
+            }
+            Debug.trace( Debug.apiRequests, name +
+                    "Created");
+        }
     }
 
     /**
@@ -151,6 +164,14 @@ public class LDAPSearchConstraints extends LDAPConstraints {
         this.dereference = dereference;
         this.maxResults = maxResults;
         this.batchSize = batchSize;
+        // Get a unique connection name for debug
+        if( Debug.LDAP_DEBUG) {
+            synchronized( nameLock) {
+                name = "LDAPSearchConstraints(" + ++lSConsNum + "): ";
+            }
+            Debug.trace( Debug.apiRequests, name +
+                    "Created");
+        }
     }
 
     /**

@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/client/Message.java,v 1.10 2001/01/04 20:55:56 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/client/Message.java,v 1.11 2001/01/26 23:34:33 vtag Exp $
 *
 * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
 * 
@@ -35,7 +35,7 @@ public class Message extends Thread
     private MessageVector replies = new MessageVector(5,5); // place to store replies
     private int msgId;                   // message ID of this request
     private boolean acceptReplies = true;// false if no longer accepting replies
-    private boolean terminate = false;   // true if don't wait for reply
+    private boolean waitForReply = true;   // true if wait for reply
     private boolean complete = false;    // true LDAPResult received
     private String name;                 // String name used for Debug
     private BindProperties bindprops;    // Bind properties if a bind request
@@ -60,7 +60,6 @@ public class Message extends Thread
                         MessageAgent   agent,
                         LDAPListener   listen,
                         BindProperties bindprops)
-                throws IOException
     {
         this.msg = msg;
         this.conn = conn;
@@ -74,6 +73,29 @@ public class Message extends Thread
             name = "Message(" + this.msgId + "): ";
             Debug.trace( Debug.messages, name +
                 " Created with mslimit " + this.mslimit);
+        }
+        return;
+    }
+    
+    /**
+     * This method write the message on the wire.  It MUST never be called
+     * more than once.  Previously we were sending the message in the
+     * constructor, but that opens a small timing window where a reply
+     * could return before the code returns and this object gets queued
+     * on the MessageAgentQueue.  In that small case, the application
+     * would not wake up on the reply.  Making this method separate, closes
+     * that window but opens the possibility for misuse.  We do not
+     * enforce the requirement that it be called only once as that adds
+     * extra synchronization.  We depend on the interal API to act correctly.
+     * When the message is sent, the timer thread is started to time
+     * the message.
+     */
+     public void sendMessage()
+                throws LDAPException
+     {
+        if( Debug.LDAP_DEBUG) {
+            Debug.trace( Debug.messages, name + "Sending request to " +
+                conn.getConnectionName());
         }
         conn.writeMessage( this );
         // Start the timer thread
@@ -90,8 +112,7 @@ public class Message extends Thread
             }
         }
         return;
-    }
-
+    }    
     /**
      * Returns true if replies are queued
      *
@@ -153,7 +174,8 @@ public class Message extends Thread
     private void sleepersAwake()
     {
         if( Debug.LDAP_DEBUG) {
-            Debug.trace( Debug.messages, name + "Sleepers Awake");
+            Debug.trace( Debug.messages, name + "Sleepers Awake, " +
+                agent.getAgentName());
         }
         // Notify any thread waiting for this message id
         synchronized( replies) {
@@ -209,9 +231,9 @@ public class Message extends Thread
     }
 
     /**
-     * gets the RfcLDAPMessage request associated with this message
+     * gets the LDAPMessage request associated with this message
      *
-     * @return the RfcLDAPMessage request associated with this message
+     * @return the LDAPMessage request associated with this message
      */
     public LDAPMessage getRequest()
     {
@@ -248,15 +270,24 @@ public class Message extends Thread
     /* package */
     void putReply( RfcLDAPMessage message)
     {
-        stopTimer();
+        if( ! acceptReplies) {
+            if( Debug.LDAP_DEBUG ) {
+                Debug.trace( Debug.messages, name +
+                    "not accepting replies, discarding reply");
+            }
+            return;
+        }
         replies.addElement( message); 
+        message.setRequestingMessage( msg); // Save request message info
         if( message.getProtocolOp() instanceof RfcResponse) {
             int res;
             if( Debug.LDAP_DEBUG) {
                 res = ((RfcResponse)message.getProtocolOp()).getResultCode().getInt();
                 Debug.trace( Debug.messages, name +
-                    "LDAPResult Queued, message complete, status " + res);
+                    "Queued LDAPResult (" + replies.size() + 
+                    " in queue), message complete stopping timer, status " + res);
             }
+            stopTimer();
             // Accept no more results for this message
             // Leave on connection queue so we can abandon if necessary
             acceptReplies = false;
@@ -282,7 +313,8 @@ public class Message extends Thread
             }
         } else {
             if( Debug.LDAP_DEBUG) {
-                Debug.trace( Debug.messages, name + "Reply Queued");
+                Debug.trace( Debug.messages, name +
+                    "Reply Queued (" + replies.size() + " in queue)");
             }
         }
         // wake up waiting threads
@@ -290,24 +322,6 @@ public class Message extends Thread
         return;
     }
     
-    /**
-     * Puts an exception on the reply queue
-     *
-     * @param ex the LDAPException to put on the reply queue.
-     */
-    /* package */
-    void putException( LocalException ex)
-    {
-        replies.addElement( new LDAPResponse(ex));
-        if( Debug.LDAP_DEBUG) {
-            Debug.trace( Debug.messages, name + "Queuing exception response: " +
-                ex.getLDAPErrorMessage());
-        }
-        // wake up waiting threads
-        sleepersAwake();
-        return;
-    }
-
     /**
      * Gets the next reply from the reply queue or waits until one is there
      *
@@ -318,7 +332,7 @@ public class Message extends Thread
     {
         // sync on message so don't confuse with timer thread
         synchronized( replies ) {  
-            while( ! terminate ) {
+            while( waitForReply ) {
                 try {
                     Object msg;
                     // We use remove and catch the exception because
@@ -328,7 +342,8 @@ public class Message extends Thread
                     msg = replies.remove(0); // Atomic get and remove
                     if( Debug.LDAP_DEBUG) {
                         Debug.trace( Debug.messages, name +
-                            "Got reply from queue");
+                            "Got reply from queue(" +
+                            replies.size() + " remaining in queue)");
                     }
                     if( (complete || ! acceptReplies) && replies.isEmpty()) {
                         // Remove msg from connection queue when last reply read
@@ -338,9 +353,9 @@ public class Message extends Thread
                 } catch( ArrayIndexOutOfBoundsException ex ) {
                     if( Debug.LDAP_DEBUG) {
                         Debug.trace( Debug.messages, name +
-                            "No replies queued, terminate=" + terminate);
+                            "No replies queued, waitForReply=" + waitForReply);
                     }
-                    if( ! terminate) {
+                    if( waitForReply) {
                         try {
                             if( Debug.LDAP_DEBUG) {
                                 Debug.trace( Debug.messages, name +
@@ -377,7 +392,9 @@ public class Message extends Thread
             try {
                 msg = replies.remove(0); // Atomic get and remove
                 if( Debug.LDAP_DEBUG) {
-                    Debug.trace( Debug.messages, name + "Got reply from queue");
+                    Debug.trace( Debug.messages, name +
+                            "Got reply from queue(" +
+                            replies.size() + " remaining in queue)");
                 }
                 if( (complete || ! acceptReplies) && replies.isEmpty()) {
                     // Remove msg from connection queue when last reply read
@@ -386,8 +403,9 @@ public class Message extends Thread
             } catch( ArrayIndexOutOfBoundsException ex ) {
                 if( Debug.LDAP_DEBUG) {
                     Debug.trace( Debug.messages, name +
-                        "No replies for id, throw ArrayIndexOutOfBoundsException");
+                        "No replies queued for message");
                 }
+                // ArrayIndexOutOfBoundsException signifies no replies queued
                 throw ex;
             }
             return msg;
@@ -402,21 +420,22 @@ public class Message extends Thread
      *
      * @param cons and LDAPConstraints associated with the abandon.
      *<br><br>
-     * @param informUser true if user must be informed of operation
+     * @param informUserEx true if user must be informed of operation
      */
     /* package */
-    void abandon( LDAPConstraints cons, boolean informUser)
+    void abandon( LDAPConstraints cons, LocalException informUserEx)
     {
-        if( terminate) {
-            return;
-        }
-        acceptReplies = false;  // don't listen to anyone 
-        terminate = true;       // don't let sleeping threads lie 
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.messages, name + "Abandon request, complete="
                 + complete + ", bind=" + (bindprops != null) +
-                ", informUser=" + informUser);
+                ", informUser=" + (informUserEx != null) +
+                ", waitForReply=" + waitForReply);
         }
+        if( ! waitForReply) {
+            return;
+        }
+        acceptReplies = false;  // don't listen to anyone 
+        waitForReply = false;   // don't let sleeping threads lie 
         if( ! complete) {
             try {
                 // If a bind, release bind semaphore & wake up waiting threads
@@ -424,23 +443,38 @@ public class Message extends Thread
                 if( bindprops != null) {
                     conn.freeBindSemaphore( msgId);
                 }
+                if( Debug.LDAP_DEBUG) {
+                    Debug.trace( Debug.messages, name + "Sending abandon request");
+                }
                 // Create the abandon message, but don't track it. 
                 LDAPMessage msg = new LDAPMessage( new RfcAbandonRequest( msgId));
                 // Send abandon message to server       
                 conn.writeMessage( msg);
-            } catch (IOException ex) {
+            } catch (LDAPException ex) {
                 ; // do nothing
             }
             complete = true;
-            // If not informing user, remove message from Connection list & agent
-            if( ! informUser) {
-                conn.removeMessage( this);
-                agent.abandon( msgId, null, false);
+            // If not informing user, remove message from agent
+            if( informUserEx == null) {
+                agent.abandon( msgId, null);
             }
+            conn.removeMessage( this);
         }
         // Get rid of all replies queued
         cleanup();
-        if( ! informUser) {
+        if( informUserEx != null) {
+            replies.addElement( new LDAPResponse( informUserEx,
+                    conn.getReferralList(), conn.getActiveReferral()));
+            if( Debug.LDAP_DEBUG) {
+                Debug.trace( Debug.messages, name +
+                        "Queued exception as LDAPResponse (" + replies.size() +
+                        " in queue):" +
+                        " following referral=" + (conn.getReferralList() != null) + 
+                        "\n\texception: " + informUserEx.getLDAPErrorMessage());
+            }
+            // wake up waiting threads
+            sleepersAwake();
+        } else {
             // Wake up any waiting threads, so they can terminate.
             // If informing the user, we wake sleepers after
             // caller queues dummy response with error status
@@ -466,9 +500,8 @@ public class Message extends Thread
                 Debug.trace( Debug.messages, name + "client timed out");
             }
             // Note: Abandon clears the bind semaphore after failed bind.
-            abandon( null, true);
-            putException( new LocalException("Client request timed out",
-                LDAPException.LDAP_TIMEOUT, this));
+            abandon( null, new LocalException("Client request timed out", null,
+                                LDAPException.LDAP_TIMEOUT, null, this));
         } catch ( InterruptedException ie ) {
             if( Debug.LDAP_DEBUG) {
                 Debug.trace( Debug.messages, name + "timer stopped");

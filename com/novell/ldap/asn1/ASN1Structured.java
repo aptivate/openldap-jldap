@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Structured.java,v 1.8 2001/02/01 20:34:21 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Structured.java,v 1.9 2001/02/12 15:49:35 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  ***************************************************************************/
@@ -8,7 +8,6 @@ package com.novell.ldap.asn1;
 
 import java.io.*;
 import com.novell.ldap.client.ArrayList;
-import com.novell.ldap.client.Debug;
 import java.util.Enumeration;
 import java.util.NoSuchElementException;
 
@@ -24,9 +23,6 @@ public abstract class ASN1Structured extends ASN1Object
  
        public boolean hasMoreElements()
        {
-          if( Debug.LDAP_DEBUG) {
-              Debug.trace( Debug.messages, "asn1.hasMoreElements()");
-          }
           if( (enumerationIndex >= content.size()) || (enumerationIndex < 0)) {
              return false;
           }   

@@ -1,4 +1,4 @@
-// $Novell: /ldap/src/jldap/com/novell/ldap/client/Debug.template,v 1.10 2001/01/26 18:45:56 vtag Exp $
+// $Novell: /ldap/src/jldap/com/novell/ldap/client/Debug.template,v 1.11 2001/01/26 18:56:51 javed Exp $
 // **
 // ** NOTICE: Do NOT edit file Debug.java, the real file is Debug.template
 // **
@@ -9,6 +9,8 @@ import java.io.*;
 import java.lang.reflect.*;
 import java.util.Properties;
 import java.util.StringTokenizer;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * The <code>Debug</code> class contains several useful debugging class (static)
@@ -51,11 +53,12 @@ import java.util.StringTokenizer;
  * </ul>
  *
  * @author Steven F. Sonntag
- * @version $Id: Debug.template,v 1.10 2001/01/26 18:45:56 vtag Exp $
+ * @version $Id: Debug.template,v 1.11 2001/01/26 18:56:51 javed Exp $
  */
 
 public abstract class Debug {
 
+    static SimpleDateFormat formatter = new SimpleDateFormat ("HH:mm:ss.SSS");
     /**
      * The value for this variable is set during compile time
      *  TRUE = Debug build, FALSE = Release build
@@ -426,7 +429,9 @@ public abstract class Debug {
                 if( str == null) {
                     System.err.println("  \nprintDebug: Cannot print NULL string");
                 } else {
-                    System.err.println( tracing + ": " + str);
+			        Date time = new Date();
+			        String dateString = formatter.format(time);
+                    System.err.println( dateString + " " + tracing + ": " + str);
                 }
             }
         }

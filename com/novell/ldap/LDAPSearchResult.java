@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResult.java,v 1.18 2000/11/09 23:50:40 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResult.java,v 1.19 2000/11/10 16:50:03 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -31,7 +31,8 @@ public class LDAPSearchResult extends LDAPMessage {
     *
     * @param message The RfcLDAPMessage with a search result.
     */
-   /*package*/ LDAPSearchResult(RfcLDAPMessage message)
+   /*package*/
+   LDAPSearchResult(RfcLDAPMessage message)
    {
       super(message);
    }
@@ -68,6 +69,4 @@ public class LDAPSearchResult extends LDAPMessage {
          ((RfcSearchResultEntry)message.getProtocolOp()).getObjectName().getString(),
          attrs);
    }
-
 }
-

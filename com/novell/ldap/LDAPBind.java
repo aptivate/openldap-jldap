@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPBind.java,v 1.7 2000/10/31 23:52:18 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPBind.java,v 1.8 2001/01/25 16:34:06 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -59,9 +59,9 @@ public interface LDAPBind extends LDAPReferralHandler
     * @return       An established connection to one of the ldap servers
     *               in the referral list.
     *
-    * @exception  LDAPException A general exception which includes an error
-    * message and an LDAP error code.
+    * @exception  LDAPReferralException An LDAPreferralException is thrown
+    * with appropriate fields set to give the reason for the failure.
     */
    public LDAPConnection bind (String[] ldapurl, LDAPConnection conn)
-            throws LDAPException;
+            throws LDAPReferralException;
 }

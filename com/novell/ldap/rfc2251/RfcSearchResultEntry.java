@@ -3,6 +3,7 @@ package com.novell.ldap.rfc2251;
 
 import java.io.*;
 import com.novell.ldap.asn1.*;
+import com.novell.ldap.client.Debug;
 
 /**
  *       SearchResultEntry ::= [APPLICATION 4] SEQUENCE {
@@ -43,6 +44,10 @@ public class RfcSearchResultEntry extends ASN1Sequence {
     */
    public ASN1OctetString getObjectName()
    {
+        if( Debug.LDAP_DEBUG) {
+            Debug.trace( Debug.messages, "RfcSearchResultEntry - Object name: " +
+                ((ASN1OctetString)get(0)).toString());
+        }
       return (ASN1OctetString)get(0);
    }
 

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPEntry.java,v 1.10 2000/12/05 20:33:12 javed Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPEntry.java,v 1.11 2000/12/07 16:31:01 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -32,6 +32,7 @@ public class LDAPEntry {
     * Constructs an empty entry.
     */
    public LDAPEntry() {
+      this(null,null);
    }
 
    /**
@@ -44,7 +45,7 @@ public class LDAPEntry {
     *
     */
    public LDAPEntry(String dn) {
-      this.dn = dn;
+      this( dn, null);
    }
 
    /**

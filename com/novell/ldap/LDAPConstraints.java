@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConstraints.java,v 1.14 2001/01/04 16:59:48 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConstraints.java,v 1.15 2001/01/25 16:34:05 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -14,6 +14,8 @@
  ***************************************************************************/
 
 package com.novell.ldap;
+
+import com.novell.ldap.client.Debug;
 
 /**
  *
@@ -31,12 +33,23 @@ public class LDAPConstraints implements Cloneable {
     private LDAPReferralHandler refHandler = null;
     private LDAPControl[] clientCtls = null;
     private LDAPControl[] serverCtls = null;
+    private static Object nameLock = new Object(); // protect agentNum
+    private static int lConsNum = 0;  // Debug, LDAPConstraints number
+    private String name;             // String name for debug
 
     /**
      * Constructs an LDAPConstraints object, using the default
      * option values.
      */
     public LDAPConstraints() {
+        // Get a unique connection name for debug
+        if( Debug.LDAP_DEBUG) {
+            synchronized( nameLock) {
+                name = "LDAPConstraints(" + ++lConsNum + "): ";
+            }
+            Debug.trace( Debug.apiRequests, name +
+                    "Created, follow referrals = " + doReferrals);
+        }
         return;
     }
 
@@ -78,6 +91,14 @@ public class LDAPConstraints implements Cloneable {
         this.doReferrals = doReferrals;
         this.refHandler = binder;
         this.hopLimit = hop_limit;
+        // Get a unique connection name for debug
+        if( Debug.LDAP_DEBUG) {
+            synchronized( nameLock) {
+                name = "LDAPConstraints(" + ++lConsNum + "): ";
+            }
+            Debug.trace( Debug.apiRequests, name +
+                    "Created, follow referrals = " + doReferrals);
+        }
         return;
     }
 
@@ -170,6 +191,10 @@ public class LDAPConstraints implements Cloneable {
      */
     public void setReferralFollowing(boolean doReferrals) {
         this.doReferrals = doReferrals;
+        if( Debug.LDAP_DEBUG) {
+            Debug.trace( Debug.apiRequests, name +
+                    "Follow referrals = " + doReferrals);
+        }
         return;
     }
 
