@@ -442,11 +442,11 @@ public class LDIFReader extends LDIF implements LDAPImport {
         String integer = ((content[1]).substring(content[1].indexOf((int)':')+ 1)).trim();
         if(this.content.length == 2) {
             //this.ldapmodrdn = new LDAPModRDN(content[0], Integer.parseInt(integer), new String(""));
-            mi = new ModInfo(content[0], Integer.parseInt(integer), new String(""));
+            mi = new ModInfo(content[0], (Integer.parseInt(integer) == 1), new String(""));
         }
         else {
            //this.ldapmodrdn = new LDAPModRDN(content[0], Integer.parseInt(integer), content[2]);
-            mi = new ModInfo(content[0], Integer.parseInt(integer), content[2]);
+            mi = new ModInfo(content[0], (Integer.parseInt(integer) == 1), content[2]);
         }
 
         return mi;
