@@ -8,6 +8,7 @@ import com.novell.ldap.rfc2251.RfcAssertionValue;
 import com.novell.ldap.asn1.ASN1Set;
 import com.novell.ldap.asn1.ASN1Identifier;
 import com.novell.ldap.asn1.ASN1Tagged;
+import com.novell.ldap.asn1.ASN1Object;
 import com.novell.ldap.message.*;
 import java.util.ArrayList;
 import java.util.Stack;
@@ -293,13 +294,13 @@ class DSMLHandler implements ContentHandler, ErrorHandler
             case AND:
                 current = new ASN1Tagged(
                         new ASN1Identifier(ASN1Identifier.CONTEXT, true, RfcFilter.AND),
-                        null,  //content to be set later
+                        new ASN1Set(),  //content to be set later
                         false);
                 break;
             case OR:
                 current = new ASN1Tagged(
                         new ASN1Identifier(ASN1Identifier.CONTEXT, true, RfcFilter.OR),
-                        null,  //content to be set later
+                        new ASN1Set(),  //content to be set later
                         false);
                 break;
             case NOT:
@@ -314,6 +315,10 @@ class DSMLHandler implements ContentHandler, ErrorHandler
                         null,  //content to be set later
                         false);
                 this.attrName = attrs.getValue("name");
+                if (this.attrName == null){
+                    throw new SAXException("The mandatory attribute 'name' "+
+                            "is missing from tag <equalityMatch>");
+                }
                 break;
             case SUBSTRINGS:
                 current = new ASN1Tagged(
@@ -367,7 +372,13 @@ class DSMLHandler implements ContentHandler, ErrorHandler
             filterStack.removeAllElements();
         } else {
             //if we have the root filter then this tag must go inside of top element on the stack
-            ((ASN1Tagged)filterStack.peek()).setTaggedValue(current);
+            ASN1Tagged topOfStack = (ASN1Tagged)filterStack.peek();
+            ASN1Object value = topOfStack.taggedValue();
+            if (value == null)
+                topOfStack.setTaggedValue(current);
+            else if (value instanceof ASN1Set) {
+                ((ASN1Set)value).add( current );
+            }
         }
         filterStack.add(current);
         return;
@@ -652,10 +663,6 @@ class DSMLHandler implements ContentHandler, ErrorHandler
                         }
                     }
                     break;
-                case FILTER:
-                    state = SEARCH_REQUEST;
-                    filter = new RfcFilter(rootFilterNode);
-                    break;
                 case EXTENDED_REQUEST:
                     //queue up x-operation
                     message = new LDAPExtendedRequest(
@@ -675,9 +682,19 @@ class DSMLHandler implements ContentHandler, ErrorHandler
                         requestValue = Base64.decoder(value, 0, value.length());
                         break;
                     }
+                case FILTER:
+                    state = SEARCH_REQUEST;
+                    filter = new RfcFilter(rootFilterNode);
+                    break;
+                case NOT:
+                case AND:
+                case OR:
+                    state = FILTER;
+                    filterStack.pop();
+                    break;
                 case EQUALITY_MATCH:{
                     //verify that Equality Match is on the stack
-                    ASN1Tagged topOfStack = (ASN1Tagged)filterStack.peek();
+                    ASN1Tagged topOfStack = (ASN1Tagged)filterStack.pop();
                     if ((topOfStack == null) ||
                         !verifyType(topOfStack, RfcFilter.EQUALITY_MATCH)) {
                         throw new SAXException("Unexpected tag: "+ strSName);
@@ -687,20 +704,22 @@ class DSMLHandler implements ContentHandler, ErrorHandler
                             new RfcAttributeDescription(attrName),
                             new RfcAssertionValue(
                                     (value.toString().getBytes("UTF-8")))));
-                    filterStack.pop();
+                    state = FILTER;
+                    //The finish state could also represent an OR, AND, or NOT
                     break;
                 }
                 case GREATER_OR_EQUAL:
                 case LESS_OR_EQUAL:
                 case PRESENT:{
                     //verify that Present is on the stack
-                    ASN1Tagged topOfStack = (ASN1Tagged)filterStack.peek();
+                    ASN1Tagged topOfStack = (ASN1Tagged)filterStack.pop();
                     if ((topOfStack == null) ||
                         !verifyType(topOfStack, RfcFilter.PRESENT)) {
                         throw new SAXException("Unexpected tag: "+ strSName);
                     }
                     topOfStack.setTaggedValue( new RfcAttributeDescription(attrName));
-                    filterStack.pop();
+                    state = FILTER;
+                    //The finish state could also represent an OR, AND, or NOT
                     break;
                 }
                 case APPROXIMATE_MATCH:
