@@ -401,14 +401,14 @@ public class LDAPConstraints implements Cloneable {
     public Object clone()
     {
         try {
-            LDAPConstraints lc = (LDAPConstraints)super.clone();
+            Object newObj = super.clone();
             if( controls != null) {
-                lc.controls = (LDAPControl[])controls.clone();
+                ((LDAPConstraints)newObj).controls = (LDAPControl[])controls.clone();
             }
             if( properties != null) {
-                lc.properties = (Hashtable)properties.clone();
+                ((LDAPConstraints)newObj).properties = (Hashtable)properties.clone();
             }
-            return lc;
+            return newObj;
         } catch( CloneNotSupportedException ce) {
             throw new RuntimeException("Internal error, cannot create clone");
         }

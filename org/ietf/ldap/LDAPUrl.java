@@ -90,9 +90,9 @@ public class LDAPUrl implements Cloneable {
     public Object clone()
     {
         try {
-            LDAPUrl newUrl = (LDAPUrl)super.clone();
-            newUrl.url = (com.novell.ldap.LDAPUrl)this.url.clone();
-            return newUrl;
+            Object newObj = super.clone();
+            ((LDAPUrl)newObj).url = (com.novell.ldap.LDAPUrl)this.url.clone();
+            return newObj;
         } catch( CloneNotSupportedException ce) {
             throw new RuntimeException("Internal error, cannot create clone");
         }

@@ -76,9 +76,9 @@ public class LDAPConstraints implements Cloneable
     public Object clone()
     {
         try {
-            LDAPConstraints newCons = (LDAPConstraints)super.clone();
-            newCons.cons = (com.novell.ldap.LDAPConstraints)this.cons.clone();
-            return newCons;
+            Object newObj = super.clone();
+            ((LDAPConstraints)newObj).cons = (com.novell.ldap.LDAPConstraints)this.cons.clone();
+            return newObj;
         } catch( CloneNotSupportedException ce) {
             throw new RuntimeException("Internal error, cannot create clone");
         }

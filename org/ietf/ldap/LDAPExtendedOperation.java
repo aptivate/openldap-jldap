@@ -60,9 +60,9 @@ public class LDAPExtendedOperation implements Cloneable
     public Object clone()
     {
         try {
-            LDAPExtendedOperation newOp = (LDAPExtendedOperation)super.clone();
-            newOp.exop = new ExOp( exop.getID(), exop.getValue());
-            return newOp;
+            Object newObj = super.clone();
+            ((LDAPExtendedOperation)newObj).exop = new ExOp( getID(), getValue());
+            return newObj;
         } catch( CloneNotSupportedException ce) {
             throw new RuntimeException("Internal error, cannot create clone");
         }

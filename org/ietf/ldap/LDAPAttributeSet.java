@@ -76,9 +76,9 @@ public class LDAPAttributeSet implements java.lang.Cloneable,
             throws CloneNotSupportedException
     {
         try {
-            LDAPAttributeSet set = (LDAPAttributeSet)super.clone();
-            set.attrSet = (com.novell.ldap.LDAPAttributeSet)attrSet.clone();
-            return set;
+            Object newObj = super.clone();
+            ((LDAPAttributeSet)newObj).attrSet = (com.novell.ldap.LDAPAttributeSet)attrSet.clone();
+            return newObj;
         } catch( CloneNotSupportedException ce) {
             throw new RuntimeException("Internal error, cannot create clone");
         }

@@ -278,8 +278,10 @@ public class LDAPConnection implements Cloneable
     public Object clone()
     {
         LDAPConnection newClone;
+        Object newObj;
         try {
-            newClone = (LDAPConnection)super.clone();
+            newObj = super.clone();
+            newClone = (LDAPConnection)newObj;
         } catch( CloneNotSupportedException ce) {
             throw new RuntimeException("Internal error, cannot create clone");
         }
@@ -306,7 +308,7 @@ public class LDAPConnection implements Cloneable
             newClone.responseCtls = null;
         }
         conn.incrCloneCount();     // Increment the count of clones
-        return newClone;
+        return newObj;
     }
 
     /**

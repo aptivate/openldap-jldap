@@ -351,9 +351,9 @@ public class LDAPAttribute implements java.lang.Cloneable,
     public Object clone()
     {
         try {
-            LDAPAttribute newAttr = (LDAPAttribute)super.clone();
-            newAttr.attr = (com.novell.ldap.LDAPAttribute)this.attr.clone();
-            return attr;
+            Object newObj = super.clone();
+            ((LDAPAttribute)newObj).attr = (com.novell.ldap.LDAPAttribute)this.attr.clone();
+            return newObj;
         } catch( CloneNotSupportedException ce) {
             throw new RuntimeException("Internal error, cannot create clone");
         }

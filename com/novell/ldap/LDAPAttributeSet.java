@@ -67,12 +67,12 @@ public class LDAPAttributeSet
     public Object clone()
     {
         try {
-            LDAPAttributeSet newAttrs = (LDAPAttributeSet)super.clone();
+            Object newObj = super.clone();
             Iterator i = this.iterator();
             while (i.hasNext()){
-                newAttrs.add( ((LDAPAttribute)i.next()).clone());
+                ((LDAPAttributeSet)newObj).add( ((LDAPAttribute)i.next()).clone());
             }
-            return newAttrs;
+            return newObj;
         } catch( CloneNotSupportedException ce) {
             throw new RuntimeException("Internal error, cannot create clone");
         }
