@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: DSMLWriter.java,v 1.17 2002/11/11 23:08:46 $
+ * $Novell: DSMLWriter.java,v 1.18 2002/11/12 17:37:29 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -97,7 +97,6 @@ public class DSMLWriter implements LDAPWriter {
         }
         newLine(0);
         out.flush();
-        out.close();
     }
 
     public void writeComments( String lines) throws IOException {
