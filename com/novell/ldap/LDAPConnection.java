@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.71 2001/01/24 20:26:52 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.72 2001/01/25 16:34:17 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -937,6 +937,7 @@ public class LDAPConnection implements Cloneable
         LDAPResponseListener listener =
             add(entry, (LDAPResponseListener)null, cons);
         ((LDAPResponse)(listener.getResponse())).chkResultCode();
+        //checkForReferral( listener, 0, 0); // Search for referrals
         return;
     }
 
@@ -1241,7 +1242,7 @@ public class LDAPConnection implements Cloneable
         Connection conn;
         LDAPResponseListener listener =
             bind(version, dn, passwd, (LDAPResponseListener)null, cons);
-        // There can be only one msgid on this listener, find our Connection object
+        // There can be only one msgId on this listener, find our Connection object
         // We make sure it is the right one, not one changed by clone/disconnect
         msgId = listener.getMessageIDs()[0];
         try {
@@ -3091,14 +3092,17 @@ public class LDAPConnection implements Cloneable
      *
      * @return the new LDAPConnection object
      */
-    private LDAPConnection getReferralConnection(
+    /* package*/
+    LDAPConnection getReferralConnection(
                                     String[] referrals,
                                     boolean search) throws LDAPReferralException
     {
         LDAPConnection rconn = null;
         Exception ex = null;
         LDAPReferralHandler rh = defSearchCons.getReferralHandler();
-        Debug.trace( Debug.referrals, name + "getReferralConnection");
+        if( Debug.LDAP_DEBUG) {
+            Debug.trace( Debug.referrals, name + "getReferralConnection");
+        }
         // Check if we use LDAPRebind to get authentication credentials
         if( (rh == null) || (rh instanceof LDAPRebind)) {
             for( int i = 0; i < referrals.length; i++) {
@@ -3106,9 +3110,11 @@ public class LDAPConnection implements Cloneable
                 String dn = null;
                 String pw = null;
                 try {
-                    Debug.trace( Debug.referrals,   name +
+                    if( Debug.LDAP_DEBUG) {
+                        Debug.trace( Debug.referrals,   name +
                                                     "getReferralConnection: " + 
                                                     "url=" + referrals[i]);
+                    }
                     rconn = new LDAPConnection( conn.getSocketFactory());
                     rconn.setConstraints( defSearchCons);
                     if( search) {
@@ -3141,11 +3147,14 @@ public class LDAPConnection implements Cloneable
             }
         }
         // Check if application gets connection and does bind
-        if( rh instanceof LDAPBind) {
+        else {
+        //if( rh instanceof LDAPBind) {
             try {
-                Debug.trace( Debug.referrals,   name +
+                if( Debug.LDAP_DEBUG) {
+                    Debug.trace( Debug.referrals,   name +
                                                 "getReferralConnection: " + 
                                                 "Call LDAPBind.bind()");
+                }
                 rconn = ((LDAPBind)rh).bind( referrals, this);
             } catch( LDAPException lex) {
                 rconn = null;
@@ -3163,12 +3172,68 @@ public class LDAPConnection implements Cloneable
             throw new LDAPReferralException( "Error connecting to server",
                                              ldapex, referrals); 
         }
-        if( rconn == null) {
-            throw new LDAPReferralException("No connection found", 
+
+        if( Debug.LDAP_DEBUG) {
+            if( rconn == null) {
+                throw new LDAPReferralException("No connection found", 
                                             LDAPException.LOCAL_ERROR,
                                             referrals);
+            }
         }
         // We now have an authenticated connection to be used to follow the referral.
         return rconn; 
     }
+    
+    /**
+     * Check the result code and follow referrals if necessary.
+     * This function is called only by synchronous requests.
+     *
+     * @param listen The LDAPResponseListener for this request
+     *
+     */
+    /* package */
+    void checkForReferral( LDAPResponseListener listen,
+                                  int msgId,
+                                  int hops)
+            throws LDAPException
+    {
+        LDAPResponse resp;
+        if( msgId == 0) {
+            resp = (LDAPResponse)listen.getResponse();
+        } else {
+            resp = (LDAPResponse)listen.getResponse(msgId);
+        }
+        if( ! defSearchCons.getReferralFollowing()) {
+            resp.chkResultCode(); // throws Exception for non zero result code
+        } else {
+            if( resp.getResultCode() != LDAPException.REFERRAL) {
+                resp.chkResultCode(); // throws Exception for non zero result code
+            } else {
+                try {
+                    // increment hop count, check for max hops (stored in original msg)
+                    if( hops++ > defSearchCons.getHopLimit()) {
+                        throw new LDAPException("Max hops exceeded",
+                            LDAPException.REFERRAL_LIMIT_EXCEEDED);
+                    }
+                    // Follow referral
+                    LDAPConnection rconn = 
+                        getReferralConnection(resp.getReferrals(), false);
+                    MessageAgent agent = listen.getMessageAgent();
+                    // get the original message sent
+                    LDAPMessage origMsg = agent.getMessage(listen.getMessageIDs()[0]).getRequest();
+                
+                    // reencode msg into a new msg changing dn, scope, etc.
+                    // Send message on new connection
+                    // get message number from listener
+                    // merge new listener with passed in listener
+                    // wait for response by id - call checkResultCode(msgId, follow)
+                } catch (Exception ex) {
+                    throw new LDAPReferralException();
+                }
+
+                return;
+            }
+        }
+        return;
+    }        
 }

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/src/com/novell/ldap/asn1/ASN1Tagged.java,v 1.4 2000/09/03 06:43:08 smerrill Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Tagged.java,v 1.5 2000/09/11 21:05:54 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  ***************************************************************************/
@@ -7,7 +7,6 @@
 package com.novell.ldap.asn1;
 
 import java.io.*;
-import java.util.Vector;
 
 /**
  * The ASN1Tagged class can hold a base ASN1Object with a distinctive tag
@@ -39,6 +38,7 @@ public class ASN1Tagged extends ASN1Object {
    public ASN1Tagged(ASN1Identifier identifier, ASN1Object object)
    {
       this(identifier, object, true);
+      return;
    }
 
    /**
@@ -54,7 +54,7 @@ public class ASN1Tagged extends ASN1Object {
       if(!explicit) {
          content.setIdentifier(id); // replace object's id with new tag.
       }
-
+      return;
    }
 
    /**
@@ -71,6 +71,7 @@ public class ASN1Tagged extends ASN1Object {
       // into an ASN1OctetString type and pass it back to the application who
       // will be able to create the appropriate ASN.1 type for this tag.
       content = new ASN1OctetString(dec, in, len);
+      return;
    }
 
    //*************************************************************************
@@ -118,10 +119,7 @@ public class ASN1Tagged extends ASN1Object {
       if(explicit) {
          return super.toString() + content.toString();
       }
-      else { // implicit tagging
-         return content.toString();
-      }
+      // implicit tagging
+      return content.toString();
    }
-
 }
-

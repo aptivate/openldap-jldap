@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/src/com/novell/ldap/asn1/LBEREncoder.java,v 1.2 2000/09/03 06:43:09 smerrill Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/LBEREncoder.java,v 1.3 2000/09/11 21:05:54 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  ***************************************************************************/
@@ -7,7 +7,7 @@
 package com.novell.ldap.asn1;
 
 import java.io.*;
-import java.util.*;
+import com.novell.ldap.client.ArrayList;
 
 /**
  * This class provides LBER encoding routines for ASN.1 Types. LBER is a
@@ -58,6 +58,7 @@ public class LBEREncoder implements ASN1Encoder {
       encode(b.getIdentifier(), out);
       out.write(0x01); // length
       out.write(b.getContent() ? (byte) 0xff : (byte) 0x00);
+      return;
    }
 
    /**
@@ -86,6 +87,7 @@ public class LBEREncoder implements ASN1Encoder {
       out.write(len);                  // Length
       for(int i=len-1; i>=0; i--)      // Content
          out.write(octets[i]);
+      return;
    }
 
    /**
@@ -94,6 +96,7 @@ public class LBEREncoder implements ASN1Encoder {
    public void encode(ASN1Real r, OutputStream out)
       throws IOException
    {
+      throw new RuntimeException("encode to a stream not implemented");
    }
 
    /**
@@ -104,6 +107,7 @@ public class LBEREncoder implements ASN1Encoder {
    {
       encode(n.getIdentifier(), out);
       out.write(0x00);                 // Length (with no Content)
+      return;
    }
 
    /**
@@ -112,6 +116,7 @@ public class LBEREncoder implements ASN1Encoder {
    public void encode(ASN1BitString bs, OutputStream out)
       throws IOException
    {
+      throw new RuntimeException("encode to a stream not implemented");
    }
 
    /**
@@ -123,6 +128,7 @@ public class LBEREncoder implements ASN1Encoder {
       encode(os.getIdentifier(), out);
       encodeLength(os.getContent().length, out);
       out.write(os.getContent());
+      return;
    }
 
    /**
@@ -131,6 +137,7 @@ public class LBEREncoder implements ASN1Encoder {
    public void encode(ASN1ObjectIdentifier oi, OutputStream out)
       throws IOException
    {
+      throw new RuntimeException("encode to a stream not implemented");
    }
 
    /**
@@ -139,6 +146,7 @@ public class LBEREncoder implements ASN1Encoder {
    public void encode(ASN1CharacterString cs, OutputStream out)
       throws IOException
    {
+      throw new RuntimeException("encode to a stream not implemented");
    }
 
    //*************************************************************************
@@ -155,25 +163,24 @@ public class LBEREncoder implements ASN1Encoder {
    {
       encode(c.getIdentifier(), out);
 
-      Vector value = c.getContent();
-      Vector codes = new Vector();
+      ArrayList value = c.getContent();
+      ArrayList codes = new ArrayList(value.size());
       int length = 0;
 
-      Enumeration e = value.elements();
-      while(e.hasMoreElements()) {   // determine the size of the SET.
-         ByteArrayOutputStream code = new ByteArrayOutputStream();
-         ((ASN1Object)e.nextElement()).encode(this, code);
-         codes.addElement(code);
-         length += code.size();
+      for( int i=0; i < value.size(); i++) {
+         ByteArrayOutputStream output = new ByteArrayOutputStream();
+         ((ASN1Object)value.get(i)).encode(this, output);
+         codes.add(output);
+         length += output.size();
       }
 
       encodeLength(length, out);     // Length
 
-      e = codes.elements();
-      while(e.hasMoreElements()) {   // Content
-         ByteArrayOutputStream code = (ByteArrayOutputStream)e.nextElement();
-         out.write(code.toByteArray());
+      for( int i=0; i< codes.size(); i++) {
+          ByteArrayOutputStream output = (ByteArrayOutputStream)codes.get(i);
+          out.write(output.toByteArray());
       }
+      return;
    }
 
    /**
@@ -195,7 +202,7 @@ public class LBEREncoder implements ASN1Encoder {
       else {
          t.getContent().encode(this, out);
       }
-
+      return;
    }
 
    //*************************************************************************
@@ -222,6 +229,7 @@ public class LBEREncoder implements ASN1Encoder {
          out.write(ccf | 0x1F);
          encodeTagInteger(t, out);
       }
+      return;
    }
 
    //*************************************************************************
@@ -250,6 +258,7 @@ public class LBEREncoder implements ASN1Encoder {
          for(int i=n-1; i>=0; i--)
             out.write(octets[i]);
       }
+      return;
    }
 
    /**
@@ -268,7 +277,6 @@ public class LBEREncoder implements ASN1Encoder {
          out.write(octets[i] | 0x80);
       }
       out.write(octets[0]);
+      return;
    }
-
 }
-

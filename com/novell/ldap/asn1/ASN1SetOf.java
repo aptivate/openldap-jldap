@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/src/com/novell/ldap/asn1/ASN1SetOf.java,v 1.3 2000/09/03 19:55:55 smerrill Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1SetOf.java,v 1.4 2000/09/11 21:05:53 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  ***************************************************************************/
@@ -7,7 +7,8 @@
 package com.novell.ldap.asn1;
 
 import java.io.*;
-import java.util.*;
+import com.novell.ldap.client.ArrayList;
+import java.util.Enumeration;
 
 /**
  * The ASN1SetOf class can hold an unordered collection of components with
@@ -30,6 +31,7 @@ public class ASN1SetOf extends ASN1Structured {
    public ASN1SetOf()
    {
       this(5);
+      return;
    }
 
    /**
@@ -40,7 +42,8 @@ public class ASN1SetOf extends ASN1Structured {
    public ASN1SetOf(int size)
    {
       id = new ASN1Identifier(ASN1Identifier.UNIVERSAL, true, TAG);
-      content = new Vector(size);
+      content = new ArrayList(size);
+      return;
    }
 
    /**
@@ -56,11 +59,12 @@ public class ASN1SetOf extends ASN1Structured {
    public ASN1SetOf(ASN1Set set)
    {
       id = new ASN1Identifier(ASN1Identifier.UNIVERSAL, true, TAG);
-      content = new Vector(set.size());
+      content = new ArrayList(set.size());
       Enumeration e = set.elements();
       while(e.hasMoreElements()) {
          add((ASN1Object)e.nextElement());
       }
+      return;
    }
 
    //*************************************************************************
@@ -74,6 +78,4 @@ public class ASN1SetOf extends ASN1Structured {
    {
       return super.toString("SET OF: { ");
    }
-
 }
-

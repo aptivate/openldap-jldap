@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/src/com/novell/ldap/asn1/ASN1Sequence.java,v 1.3 2000/09/03 19:55:54 smerrill Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Sequence.java,v 1.4 2000/09/11 21:05:53 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  ***************************************************************************/
@@ -7,13 +7,14 @@
 package com.novell.ldap.asn1;
 
 import java.io.*;
-import java.util.Vector;
+import com.novell.ldap.client.ArrayList;
 
 /**
  * The ASN1Sequence class can hold an ordered collection of components with
  * distinct type.
  */
-public class ASN1Sequence extends ASN1Structured {
+public class ASN1Sequence extends ASN1Structured
+{
 
    /**
     * ASN.1 SEQUENCE tag definition.
@@ -30,6 +31,7 @@ public class ASN1Sequence extends ASN1Structured {
    public ASN1Sequence()
    {
       this(5);
+      return;
    }
 
    /**
@@ -40,7 +42,8 @@ public class ASN1Sequence extends ASN1Structured {
    public ASN1Sequence(int size)
    {
       id = new ASN1Identifier(ASN1Identifier.UNIVERSAL, true, TAG);
-      content = new Vector(size);
+      content = new ArrayList(size);
+      return;
    }
 
    /**
@@ -52,6 +55,7 @@ public class ASN1Sequence extends ASN1Structured {
    {
       id = new ASN1Identifier(ASN1Identifier.UNIVERSAL, true, TAG);
       decodeStructured(dec, in, len);
+      return;
    }
 
    //*************************************************************************
@@ -65,6 +69,4 @@ public class ASN1Sequence extends ASN1Structured {
    {
       return super.toString("SEQUENCE: { ");
    }
-
 }
-

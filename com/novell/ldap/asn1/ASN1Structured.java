@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Structured.java,v 1.5 2000/09/11 21:05:54 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Structured.java,v 1.6 2000/11/28 19:07:29 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  ***************************************************************************/
@@ -7,15 +7,19 @@
 package com.novell.ldap.asn1;
 
 import java.io.*;
-import java.util.*;
+import com.novell.ldap.client.ArrayList;
+import java.util.Enumeration;
+import java.util.NoSuchElementException;
 
 /**
  * Base type for all ASN.1 structured types.
  */
 public abstract class ASN1Structured extends ASN1Object
+                        implements Enumeration
 {
 
-   protected Vector content;
+   protected ArrayList content;
+   private int enumerationIndex = 0;
 
    /**
     * Encodes the contents of this ASN1Structured directly to an output
@@ -25,6 +29,7 @@ public abstract class ASN1Structured extends ASN1Object
       throws IOException
    {
       enc.encode(this, out);
+      return;
    }
 
    /**
@@ -33,7 +38,7 @@ public abstract class ASN1Structured extends ASN1Object
    protected void decodeStructured(ASN1Decoder dec, InputStream in, int len)
       throws IOException
    {
-      content = new Vector();
+      content = new ArrayList();
       int[] componentLen = new int[1]; // collects length of component
 
       while(len > 0) {
@@ -45,7 +50,7 @@ public abstract class ASN1Structured extends ASN1Object
    /**
     *
     */
-   public Vector getContent()
+   public ArrayList getContent()
    {
       return content;
    }
@@ -55,7 +60,8 @@ public abstract class ASN1Structured extends ASN1Object
     */
    public void add(ASN1Object value)
    {
-      content.addElement(value);
+      content.add(value);
+      return;
    }
 
    /**
@@ -63,7 +69,8 @@ public abstract class ASN1Structured extends ASN1Object
     */
    public void set(int index, ASN1Object value)
    {
-      content.setElementAt(value, index);
+      content.set(index, value);
+      return;
    }
 
    /**
@@ -71,7 +78,29 @@ public abstract class ASN1Structured extends ASN1Object
     */
    public Enumeration elements()
    {
-      return content.elements();
+      enumerationIndex = 0;
+      return (Enumeration)this;
+   }
+   
+   public boolean hasMoreElements()
+   {
+       if( (enumerationIndex >= content.size()) || (enumerationIndex < 0)) {
+          return false;
+       }   
+       return true;
+   }
+   
+   public Object nextElement()
+       throws NoSuchElementException
+   {
+       Object obj;
+       try {
+           obj = content.get( enumerationIndex++);
+       } catch ( IndexOutOfBoundsException ex) {
+           throw new NoSuchElementException("ASN1Structured: no such element " +
+               enumerationIndex);
+       }
+       return obj;
    }
 
    /**
@@ -79,7 +108,7 @@ public abstract class ASN1Structured extends ASN1Object
     */
    public ASN1Object get(int index)
    {
-      return (ASN1Object)content.elementAt(index);
+      return (ASN1Object)content.get(index);
    }
 
    /**
@@ -87,7 +116,7 @@ public abstract class ASN1Structured extends ASN1Object
     */
    public void remove(int index)
    {
-      content.removeElementAt(index);
+      content.remove(index);
    }
 
    /**
@@ -110,7 +139,7 @@ public abstract class ASN1Structured extends ASN1Object
       int len = content.size();
       for(int i=0; i < len; i++)
       {
-         sb.append(content.elementAt(i));
+         sb.append(content.get(i));
          if(i != len-1)
             sb.append(", ");
       }
@@ -118,5 +147,4 @@ public abstract class ASN1Structured extends ASN1Object
 
       return super.toString() + sb.toString();
    }
-
 }
