@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResults.java,v 1.33 2001/01/26 20:25:04 javed Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResults.java,v 1.34 2001/02/26 19:58:26 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -290,10 +290,10 @@ public class LDAPSearchResults implements Enumeration
                 }
             }
             // Search result reference received and referral following is off
-            element = new LDAPReferralException( 
+            element = new LDAPReferralException(
                 LDAPExceptionMessageResource.REFERENCE_NOFOLLOW);
             ((LDAPReferralException)element).setReferrals( refs);
-        } else        
+        } else
         if( entryIndex < entryCount ) {
             // Check for Search Entries and the Search Response
             element = entries.elementAt( entryIndex++ );
@@ -318,7 +318,7 @@ public class LDAPSearchResults implements Enumeration
             }
         } else {
             if( Debug.LDAP_DEBUG ) {
-                Debug.trace( Debug.messages, name + 
+                Debug.trace( Debug.messages, name +
                     "nextElement: No entry found and request incomplete\n" +
                     "\tentryIdx " + entryIndex +
                     ", entryCnt " + entryCount +
@@ -333,32 +333,32 @@ public class LDAPSearchResults implements Enumeration
         return element;
     }
 
-    /**
-     * Sorts all entries in the results using the provided comparison
-     * object.
-     *
-     * <p>If the object has been partially or completely enumerated,
-     * only the remaining elements are sorted. Sorting the results requires that
-     * they all be present. This implies that LDAPSearchResults.nextElement
-     * method will always block until all results have been retrieved,
-     * after a sort operation.</p>
-     *
-     * <p>The LDAPCompareAttrNames class is provided to support the common need
-     * to collate by single or multiple attribute values, in ascending or
-     * descending order.  Examples: </p>
-     *<ul>
-     *   <li>res.sort(new LDAPCompareAttrNames("cn"));</li>
-     *
-     *   <li>res.sort(new LDAPCompareAttrNames("cn", false));</li>
-     *
-     *   <li>String[] attrNames = { "sn", "givenname" };
-     *   res.sort(new LDAPCompareAttrNames(attrNames));</li>
-     *</ul>
-     *
-     *  @param comp     An object that implements the LDAPEntryComparator
-     *                  interface to compare two objects of type
-     *                  LDAPEntry.
-     */
+     /**
+      * Sorts all entries in the results using the provided comparison
+      * object.
+      *
+      * <p>If the object has been partially or completely enumerated,
+      * only the remaining elements are sorted. Sorting the results requires that
+      * they all be present. This implies that LDAPSearchResults.nextElement
+      * method will always block until all results have been retrieved,
+      * after a sort operation.</p>
+      *
+      * <p>The LDAPCompareAttrNames class is provided to support the common need
+      * to collate by single or multiple attribute values, in ascending or
+      * descending order.  Examples: </p>
+      *<ul>
+      *   <li>res.sort(new LDAPCompareAttrNames("cn"));</li>
+      *
+      *   <li>res.sort(new LDAPCompareAttrNames("cn", false));</li>
+      *
+      *   <li>String[] attrNames = { "sn", "givenname" };
+      *   res.sort(new LDAPCompareAttrNames(attrNames));</li>
+      *</ul>
+      *
+      *  @param comp     An object that implements the LDAPEntryComparator
+      *                  interface to compare two objects of type
+      *                  LDAPEntry.
+      */
     public void sort(LDAPEntryComparator comp) {
        if (!completed){
          batchSize = Integer.MAX_VALUE;
@@ -376,76 +376,66 @@ public class LDAPSearchResults implements Enumeration
            mergeSort((Vector)entries.clone(), entries, entryIndex, entries.size(), comp);
    }
 
-     /** Taken from Java 1.2.2 SourceCode for Arrays:<BR>
-     * Sorts the specified range of the specified array of objects according
-     * to the order induced by the specified comparator.  All elements in the
-     * range must be <i>mutually comparable</i> by the specified comparator
-     * (that is, <tt>c.compare(e1, e2)</tt> must not throw a
-     * <tt>ClassCastException</tt> for any elements <tt>e1</tt> and
-     * <tt>e2</tt> in the range).<p>
-     *
-     * This sort is guaranteed to be <i>stable</i>:  equal elements will
-     * not be reordered as a result of the sort.<p>
-     *
-     * The sorting algorithm is a modified mergesort (in which the merge is
-     * omitted if the highest element in the low sublist is less than the
-     * lowest element in the high sublist).  This algorithm offers guaranteed
-     * n*log(n) performance, and can approach linear performance on nearly
-     * sorted lists.
-     *
-     * @param src the Vector to be sorted.
-     * @param dest the result of Vector.
-     * @param low the index of the first element (inclusive) to be
-     *        sorted.
-     * @param high the index of the last element (exclusive) to be sorted.
-     * @param c the LDAPEntryComparator to determine the order of the Vector.
-     * @throws ClassCastException if the array contains elements that are not
-     *	       <i>LDAPEntry</i>.
-     * @see LDAPEntryComparator
-     * @see LDAPCompareAttrNames
-     */
+     /**
+      * @internal
+      *
+      * Vector Sort Utility function to aide sort
+      * Sorts the source vector into the destination vector according to
+      * LDAPEntryComparator.  This sort is a mergesort for large Vectors and an
+      * insertion sort for small Vectors.
+      *
+      * @param source the Vector to be sorted.
+      * @param destination the result of Vector. (Clone of source??)
+      * @param low index of the first sorted element
+      * @param high index of the last sorted element
+      * @param comp the LDAPEntryComparator to determine the order of the Vector.
+      * @see LDAPCompareAttrNames
+      */
+    private static void mergeSort(Vector source, Vector destination,
+                                int low, int high, LDAPEntryComparator comp){
+        int size = low - high;
 
-    private static void mergeSort(Vector src, Vector dest,
-                                  int low, int high, LDAPEntryComparator c) {
-        int length = high - low;
-        int j = 0;
-      	// Insertion sort on smallest arrays
-      	if (length < 7) {
-      	    for (int i=low; i<high; i++)
-     		for (j=i; j>low && !(dest.elementAt(j) instanceof LDAPResponse) &&
-                c.isGreater((LDAPEntry)dest.elementAt(j-1), (LDAPEntry)dest.elementAt(j)); j--)
-      		    swap(dest, j, j-1);
-      	    return;
-      	}
+        //For small sizes simply do an Insertion Sort
+        if (size < 7) {
+            int j=0;
+            for( int i=low; i<high; i++){
+                for(j=i; j>low &&
+                    !(destination.elementAt(j) instanceof LDAPResponse) &&
+                    comp.isGreater((LDAPEntry)destination.elementAt(j-1),
+                    (LDAPEntry)destination.elementAt(j)); j--){
+                        swap(destination, j, j-1);
+                }
+            }
+            return;
+        }
 
-        // Recursively sort halves of dest into src
-        int mid = (low + high)/2;
-        mergeSort(dest, src, low, mid, c);
-        mergeSort(dest, src, mid, high, c);
+        int middle = (low + high)/2;
+        mergeSort(destination, source, low, middle, comp);  //sort left into source
+        mergeSort(destination, source, middle, high, comp); //sort right into source
 
-        // If list is already sorted, just copy from src to dest.  This is an
-        // optimization that results in faster sorts for nearly ordered lists.
-        if (!c.isGreater((LDAPEntry)src.elementAt(mid-1), (LDAPEntry)src.elementAt(mid))) {
-           //System.arraycopy(src, low, dest, low, length);
-           for(int i=low; i < length; i++)
-              dest.setElementAt(src.elementAt(i),i);
-           return;
-        }//This optimizaion will be nice but first lets see if this works!
-
-        // Merge sorted halves (now in src) into dest
-        for(int i = low, p = low, q = mid; i < high; i++) {
-            if (q>=high || p<mid && ((src.elementAt(q) instanceof LDAPResponse)
-              || !c.isGreater((LDAPEntry)src.elementAt(p), (LDAPEntry)src.elementAt(q))))
-                dest.setElementAt(src.elementAt(p++),i );
+        //Now Merge Left and right into destination
+        for(int i=low, j=low, k=middle; j<high; i++){
+            if (k>=high || j<middle && (
+                (source.elementAt(k) instanceof LDAPResponse) ||
+                !comp.isGreater((LDAPEntry)source.elementAt(j),
+                                (LDAPEntry)source.elementAt(k))))
+                destination.setElementAt(source.elementAt(j++),i );
             else
-                dest.setElementAt(src.elementAt(q++),i );
+                destination.setElementAt(source.elementAt(k++),i );
         }
     }
 
 
+
    /**
-   * Used by MergeSort().  Swaps x[a] with x[b], except for Vectors.
-   */
+    * @internal
+    *
+    * Util function used by MergeSort.  Swaps the elements at index A with B
+    * in the Vector
+    * @param x  Vector in which elements will be swapped
+    * @param a  Index to one of the elements
+    * @patam b  Index to the other element
+    */
    private static void swap(Vector x, int a, int b) {
    	Object t = x.elementAt(a);
    	   x.setElementAt( x.elementAt(b),a);
@@ -476,9 +466,9 @@ public class LDAPSearchResults implements Enumeration
                     // Only save controls if there are some
                     LDAPControl[] ctls = msg.getControls();
                     if( ctls != null ) {
-                        
+
                         if( Debug.LDAP_DEBUG) {
-                            Debug.trace( Debug.controls, name + 
+                            Debug.trace( Debug.controls, name +
                                 "Saving returned controls in " +
                                 "LDAPSearchResults local variable.");
                         }
@@ -507,7 +497,7 @@ public class LDAPSearchResults implements Enumeration
                             for( int k=0; k < refs.length; k++ ) {
                                 Debug.trace( Debug.messages,
                                     name + "reference " + k + "\t" + refs[k]);
-                            }            
+                            }
                         }
 
                         if( cons.getReferralFollowing() ) {
@@ -523,7 +513,7 @@ public class LDAPSearchResults implements Enumeration
                         // Check for an embedded exception
                         if( resp.hasException()) {
                             // Fake it, results in an exception when msg read
-                            resultCode = LDAPException.CONNECT_ERROR;    
+                            resultCode = LDAPException.CONNECT_ERROR;
                             if( Debug.LDAP_DEBUG ) {
                                 Debug.trace( Debug.messages, name +
                                     "LDAPResponse with embeddedException");
@@ -535,8 +525,8 @@ public class LDAPSearchResults implements Enumeration
                                 Integer.toHexString(resp.hashCode()) +
                                 ", result " + resultCode);
                         }
-                        
-                        if( (resultCode == LDAPException.REFERRAL) && 
+
+                        if( (resultCode == LDAPException.REFERRAL) &&
                                         cons.getReferralFollowing() ) {
                             // Following referrals
                             if( Debug.LDAP_DEBUG ) {
