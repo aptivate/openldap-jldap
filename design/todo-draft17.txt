@@ -23,7 +23,7 @@ com org
     [X]      15: Remove Constructor that takes "String name" and "String[] aliases".
 [X] [X]      15: Add Constructor that takes "String[] names, and no aliases"
 [X]          14: isModifiable(): Deprecate & Rename to isUserModifiable()
-    [ ]      14: isModifiable(): Delete method
+    [X]      14: isModifiable(): Delete method
 [X]          14: deprecate getValue(): use superclass toString()
     [X]      14: delete getValue()
 [X]          14: deprecate add()
@@ -32,6 +32,7 @@ com org
     [X]      14: delete modify()
 [X]          14: deprecate remove()
     [X]      14: delete remove()
+[ ]          17: Remove internal usage of LDAPModificationSet
 
 [ ] [ ] 15: LDAPAttributeSet
 [ ] [ ]      15: Implements Cloneable.
@@ -75,7 +76,8 @@ com org
 [ ] [ ]      13: disconnect(): may take LDAPConstraints parameter
 [X] [X]      13: getAuthenticationPassword(): remove method
 [X] [X]      15: getSaslBindProperties(): Replace Hashtable with Map
-[ ] [ ]      13: modify(): replace LDAPModificationSet with LDAPModification[]
+[X] [X]      13: modify(): replace LDAPModificationSet with LDAPModification[]
+[X]          13: modify(): deprecate methods using LDAPModificationSet
 [X] [X]      13: read(): throws LDAPException with AMBIGUOUS_RESPONSE
                  if there is than one result
 [X] [X]      14: rename(): takes newParentdn before deleteOldRdn (one of the eight
@@ -193,7 +195,8 @@ com org
 [ ] [ ]      15: Implements Serializable
 
 [ ] [ ] 15: LDAPModificationSet
-[ ] [ ]      15: Remove class: (replace with LDAPModification[] as parameter
+[X]          15: Deprecate class 
+    [X]      15: Remove class: (replace with LDAPModification[] as parameter
                  where referenced, see LDAPConnection.modify()).
 
 [X] [X] 15: LDAPNameFormSchema
@@ -217,6 +220,7 @@ com org
     [X]      14: delete modify()
 [X]          14: deprecate remove()
     [X]      14: delete remove()
+[ ]          17: Remove internal usage of LDAPModificationSet
 
 [X] [X] 15: LDAPRebind
 [X] [X]      15: Rename class to LDAPAuthHandler.
@@ -282,6 +286,7 @@ com org
 [X] [X]      15: modify(): Add method
 [X] [X]      15: remove(): Add method
 [X] [X]      15: saveSchema(): Add method
+[ ]          17: Remove internal usage of LDAPModificationSet
 
 [ ] [ ] 15: LDAPSchemaElement
 [ ] [ ]      15: Implements Serializable
@@ -334,6 +339,7 @@ com org
     [X]      14: delete modify()
 [X]          14: deprecate remove()
     [X]      14: delete remove()
+[ ]          17: Remove internal usage of LDAPModificationSet
 
 [ ] [ ] 13: LDAPUnsolicitedNotificationListener
 [ ] [ ]      13: The argument to messageReceived() is LDAPExtendedResponse

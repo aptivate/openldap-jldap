@@ -19,15 +19,15 @@ package com.novell.ldap;
  *
  * A single add, delete, or replace operation to an LDAPAttribute.
  *
- * <p>LDAPModifications contain information on the type of modification
+ * <p>An LDAPModification contains information on the type of modification
  * being performed, the name of the attribute to be replaced and the new
- * value.
+ * value.  Multiple modifications are expressed as an array of modifications,
+ * viz. <code>LDAPModification[]</code>.</p>
  *
  *  <p>Sample Code: <a href="http://developer.novell.com/ndk/doc/samplecode/
  *jldap_sample/jldap_sample/ModifyAttrs.java.html">ModifyAttrs.java</p>
  *
  * @see LDAPConnection#modify
- * @see LDAPModificationSet
  * @see LDAPAttribute
  *
  */

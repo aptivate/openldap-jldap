@@ -20,8 +20,13 @@ import com.novell.ldap.client.ArrayList;
 /**
  * A set of {@link LDAPModification} objects.
  *
+ *  @deprecated replaced by {@link LDAPModification}[].  This class
+ *  has been removed as of draft 17 of the Java LDAP API
+ *  (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
+ *  from the Java LDAP API jar file in fall of 2003.
+ *
  * @see LDAPModification
- * @see LDAPConnection#modify(String, LDAPModificationSet)
+ * @see LDAPConnection#modify(String, LDAPModification[])
  */
 public class LDAPModificationSet {
 
@@ -130,5 +135,14 @@ public class LDAPModificationSet {
         return modSet.size();
     }
 
+    /**
+     * Returns an the modifications as an array
+     *
+     * @return The modifications as an array
+     */
+    /* package */ LDAPModification[] toArray()
+    {
+        LDAPModification[] mods = new LDAPModification[modSet.size()];
+        return (LDAPModification[])modSet.toArray(mods);
+    }
 }
-

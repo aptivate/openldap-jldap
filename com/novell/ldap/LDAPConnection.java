@@ -2424,7 +2424,8 @@ public class LDAPConnection implements Cloneable
      * @exception LDAPException A general exception which includes an error
      *  message and an LDAP error code.
      */
-    public void modify(String dn, LDAPModification mod)
+    public void modify( String dn,
+                        LDAPModification mod)
         throws LDAPException
     {
         modify(dn, mod, defSearchCons);
@@ -2454,13 +2455,13 @@ public class LDAPConnection implements Cloneable
      * @exception LDAPException A general exception which includes an error
      *  message and an LDAP error code.
      */
-    public void modify(String dn,
-                       LDAPModification mod,
-                       LDAPConstraints cons)
+    public void modify( String dn,
+                        LDAPModification mod,
+                        LDAPConstraints cons)
         throws LDAPException
     {
-        LDAPModificationSet mods = new LDAPModificationSet();
-        mods.add(mod);
+        LDAPModification[] mods = new LDAPModification[1];
+        mods[0] = mod;
         modify(dn, mods, cons);
         return;
     }
@@ -2473,7 +2474,7 @@ public class LDAPConnection implements Cloneable
      * <p>For example, this modify method changes attribute values, adds
      * new attribute values, or removes existing attribute values.</p>
      *   
-     * <p>Because the server applies all changes in a ModificationSet
+     * <p>Because the server applies all changes in an LDAPModification array
      * atomically, the application can expect that no changes
      * have been performed if an error is returned.
      * If the request fails with {@link LDAPException#CONNECT_ERROR},
@@ -2481,12 +2482,13 @@ public class LDAPConnection implements Cloneable
      *
      *  @param dn     Distinguished name of the entry to modify.
      *<br><br>
-     *  @param mods   A set of changes to be made to the entry.
+     *  @param mods   The changes to be made to the entry.
      *
      * @exception LDAPException A general exception which includes an error
      *  message and an LDAP error code.
      */
-    public void modify(String dn, LDAPModificationSet mods)
+    public void modify( String dn,
+                        LDAPModification[] mods)
         throws LDAPException
     {
         modify(dn, mods, defSearchCons);
@@ -2500,7 +2502,7 @@ public class LDAPConnection implements Cloneable
      * <p>For example, this modify method changes attribute values, adds new
      * attribute values, or removes existing attribute values.</p>
      *
-     * <p>Because the server applies all changes in a ModificationSet
+     * <p>Because the server applies all changes in an LDAPModification array
      * atomically, the application can expect that no changes
      * have been performed if an error is returned.
      * If the request fails with {@link LDAPException#CONNECT_ERROR},
@@ -2508,16 +2510,16 @@ public class LDAPConnection implements Cloneable
      *
      *  @param dn      The distinguished name of the entry to modify.
      *<br><br>
-     *  @param mods    A set of changes to be made to the entry.
+     *  @param mods    The changes to be made to the entry.
      *<br><br>
      *  @param cons    The constraints specific to the operation.
      *
      * @exception LDAPException A general exception which includes an
      *                          error message and an LDAP error code.
      */
-    public void modify(String dn,
-                       LDAPModificationSet mods,
-                       LDAPConstraints cons)
+    public void modify( String dn,
+                        LDAPModification[] mods,
+                        LDAPConstraints cons)
         throws LDAPException
     {
         LDAPResponseQueue queue =
@@ -2602,8 +2604,8 @@ public class LDAPConnection implements Cloneable
                                     LDAPConstraints cons)
         throws LDAPException
     {
-        LDAPModificationSet mods = new LDAPModificationSet();
-        mods.add(mod);
+        LDAPModification[] mods = new LDAPModification[1];
+        mods[0] = mod;
         return modify(dn, mods, queue, cons);
     }
     
@@ -2614,7 +2616,7 @@ public class LDAPConnection implements Cloneable
      * <p>For example, this modify method can change attribute values, add new
      * attribute values, or remove existing attribute values.</p>
      *
-     * <p>Because the server applies all changes in a ModificationSet
+     * <p>Because the server applies all changes in an LDAPModification array
      * atomically, the application can expect that no changes
      * have been performed if an error is returned.
      * If the request fails with {@link LDAPException#CONNECT_ERROR},
@@ -2622,7 +2624,7 @@ public class LDAPConnection implements Cloneable
      *
      *  @param dn         The distinguished name of the entry to modify.
      *<br><br>
-     *  @param mods       A set of changes to be made to the entry.
+     *  @param mods       The changes to be made to the entry.
      *<br><br>
      *  @param queue      The handler for messages returned from a server in
      *                    response to this request. If it is null, a
@@ -2632,7 +2634,7 @@ public class LDAPConnection implements Cloneable
      * message and an LDAP error code.
      */
     public LDAPResponseQueue modify(String dn,
-                                    LDAPModificationSet mods,
+                                    LDAPModification[] mods,
                                     LDAPResponseQueue queue)
         throws LDAPException
     {
@@ -2646,7 +2648,7 @@ public class LDAPConnection implements Cloneable
      * <p>For example, this modify method can change attribute values, add new
      * attribute values, or remove existing attribute values.</p>
      *
-     * <p>Because the server applies all changes in a ModificationSet
+     * <p>Because the server applies all changes in an LDAPModification array
      * atomically, the application can expect that no changes
      * have been performed if an error is returned.
      * If the request fails with {@link LDAPException#CONNECT_ERROR},
@@ -2654,7 +2656,7 @@ public class LDAPConnection implements Cloneable
      *
      *  @param dn         The distinguished name of the entry to modify.
      *<br><br>
-     *  @param mods       A set of changes to be made to the entry.
+     *  @param mods       The changes to be made to the entry.
      *<br><br>
      *  @param queue      The handler for messages returned from a server in
      *                    response to this request. If it is null, a
@@ -2666,14 +2668,14 @@ public class LDAPConnection implements Cloneable
      *  message and an LDAP error code.
      */
     public LDAPResponseQueue modify(String dn,
-                                    LDAPModificationSet mods,
+                                    LDAPModification[] mods,
                                     LDAPResponseQueue queue,
                                     LDAPConstraints cons)
         throws LDAPException
     {
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.apiRequests, name +
-            "modify(" + dn + ")");
+            "modify(" + dn + "), " + mods.length + " modifications");
         }
         if(dn == null) {
             // Invalid DN parameter
@@ -2684,10 +2686,10 @@ public class LDAPConnection implements Cloneable
         if(cons == null)
             cons = defSearchCons;
 
-        // Convert Java-API LDAPModificationSet to RFC2251 SEQUENCE OF SEQUENCE
+        // Convert Java-API LDAPModification[] to RFC2251 SEQUENCE OF SEQUENCE
         ASN1SequenceOf rfcMods = new ASN1SequenceOf();
-        for(int i=0; i<mods.size(); i++) {
-            LDAPModification mod = mods.elementAt(i);
+        for(int i=0; i<mods.length; i++) {
+            LDAPModification mod = mods[i];
             LDAPAttribute attr = mod.getAttribute();
 
             // place modification attribute values in ASN1SetOf
@@ -4231,7 +4233,7 @@ public class LDAPConnection implements Cloneable
                                        LDAPResponseListener queue)
         throws LDAPException
     {
-        return modify(dn, mods, (LDAPResponseQueue)queue);
+        return modify(dn, mods.toArray(), (LDAPResponseQueue)queue);
     }
     
     /**
@@ -4251,9 +4253,45 @@ public class LDAPConnection implements Cloneable
                                        LDAPConstraints cons)
         throws LDAPException
     {
-        return modify(dn, mods, (LDAPResponseQueue)queue, cons);
+        return modify(dn, mods.toArray(), (LDAPResponseQueue)queue, cons);
     }
     
+    /**
+     * Synchronously makes a set of changes to an existing entry in the
+     * directory.
+     *
+     * @deprecated see #modify(String, LDAPModification[])
+     * This method has been changed to use the LDAPModificaton[] parameter
+     * as of IETF draft 17 of the Java LDAP API
+     * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
+     * in fall of 2003.
+     */
+    public void modify(String dn, LDAPModificationSet mods)
+        throws LDAPException
+    {
+        modify(dn, mods.toArray(), defSearchCons);
+        return;
+    }
+
+    /**
+     * Synchronously makes a set of changes to an existing entry in the
+     * directory, using the specified constraints.
+     *
+     * @deprecated see #modify(String, LDAPModification[], LDAPConstraints)
+     * This method has been changed to use the LDAPModificaton[] parameter
+     * as of IETF draft 17 of the Java LDAP API
+     * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
+     * in fall of 2003.
+     */
+    public void modify(String dn,
+                       LDAPModificationSet mods,
+                       LDAPConstraints cons)
+        throws LDAPException
+    {
+        modify( dn, mods.toArray(), cons);
+        return;
+    }
+
     /**
      * Asynchronously renames an existing entry in the directory.
      *

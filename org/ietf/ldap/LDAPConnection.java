@@ -1647,15 +1647,20 @@ public class LDAPConnection implements Cloneable
      * directory.
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #modify(java.lang.String, com.novell.ldap.LDAPModificationSet">
+            #modify(java.lang.String, com.novell.ldap.LDAPModification[]">
             com.novell.ldap.LDAPConnection.modify(String,
-            LDAPModificationSet)</a>
+            LDAPModification[])</a>
      */
-    public void modify(String dn, LDAPModificationSet mods)
+    public void modify(String dn, LDAPModification[] mods)
         throws LDAPException
     {
         try {
-            conn.modify( dn, mods.getWrappedObject());
+            com.novell.ldap.LDAPModification[] lmods = 
+                            new com.novell.ldap.LDAPModification[mods.length];
+            for( int i = 0; i< mods.length; i++) {
+                lmods[i] = mods[i].getWrappedObject();
+            }
+            conn.modify( dn, lmods);
         } catch( com.novell.ldap.LDAPException ex) {
             if( ex instanceof com.novell.ldap.LDAPReferralException) {
                 throw new LDAPReferralException(
@@ -1672,20 +1677,23 @@ public class LDAPConnection implements Cloneable
      * directory, using the specified constraints.
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #modify(java.lang.String, com.novell.ldap.LDAPModificationSet,
+            #modify(java.lang.String, com.novell.ldap.LDAPModification[],
             com.novell.ldap.LDAPConstraints)">
-            com.novell.ldap.LDAPConnection.modify(String, LDAPModificationSet,
+            com.novell.ldap.LDAPConnection.modify(String, LDAPModification[],
             LDAPConstraints)</a>
      */
     public void modify(String dn,
-                       LDAPModificationSet mods,
+                       LDAPModification[] mods,
                        LDAPConstraints cons)
         throws LDAPException
     {
         try {
-            conn.modify( dn,
-                         mods.getWrappedObject(),
-                         cons.getWrappedObject());
+            com.novell.ldap.LDAPModification[] lmods = 
+                            new com.novell.ldap.LDAPModification[mods.length];
+            for( int i = 0; i< mods.length; i++) {
+                lmods[i] = mods[i].getWrappedObject();
+            }
+            conn.modify( dn, lmods, cons.getWrappedObject());
 
         } catch( com.novell.ldap.LDAPException ex) {
             if( ex instanceof com.novell.ldap.LDAPReferralException) {
@@ -1767,21 +1775,24 @@ public class LDAPConnection implements Cloneable
      * directory.
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #modify(java.lang.String, com.novell.ldap.LDAPModificationSet,
+            #modify(java.lang.String, com.novell.ldap.LDAPModification[],
             com.novell.ldap.LDAPResponseQueue)">
-            com.novell.ldap.LDAPConnection.modify(String, LDAPModificationSet,
+            com.novell.ldap.LDAPConnection.modify(String, LDAPModification[],
             LDAPResponseQueue)</a>
      */
     public LDAPResponseQueue modify(String dn,
-                                    LDAPModificationSet mods,
+                                    LDAPModification[] mods,
                                     LDAPResponseQueue queue)
         throws LDAPException
     {
         try {
+            com.novell.ldap.LDAPModification[] lmods = 
+                            new com.novell.ldap.LDAPModification[mods.length];
+            for( int i = 0; i< mods.length; i++) {
+                lmods[i] = mods[i].getWrappedObject();
+            }
             return new LDAPResponseQueue(
-                   conn.modify( dn,
-                                mods.getWrappedObject(),
-                                queue.getWrappedObject()));
+                   conn.modify( dn, lmods, queue.getWrappedObject()));
         } catch( com.novell.ldap.LDAPException ex) {
             if( ex instanceof com.novell.ldap.LDAPReferralException) {
                 throw new LDAPReferralException(
@@ -1797,22 +1808,27 @@ public class LDAPConnection implements Cloneable
      * directory, using the specified constraints and queue.
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPConnection.html
-            #modify(java.lang.String, com.novell.ldap.LDAPModificationSet,
+            #modify(java.lang.String, com.novell.ldap.LDAPModification[],
             com.novell.ldap.LDAPResponseQueue,
             com.novell.ldap.LDAPConstraints)">
-            com.novell.ldap.LDAPConnection.modify(String, LDAPModificationSet,
+            com.novell.ldap.LDAPConnection.modify(String, LDAPModification[],
             LDAPResponseQueue, LDAPConstraints)</a>
      */
     public LDAPResponseQueue modify(String dn,
-                                       LDAPModificationSet mods,
+                                       LDAPModification[] mods,
                                        LDAPResponseQueue queue,
                                        LDAPConstraints cons)
         throws LDAPException
     {
         try {
+            com.novell.ldap.LDAPModification[] lmods = 
+                            new com.novell.ldap.LDAPModification[mods.length];
+            for( int i = 0; i< mods.length; i++) {
+                lmods[i] = mods[i].getWrappedObject();
+            }
             return new LDAPResponseQueue(
                    conn.modify( dn,
-                                mods.getWrappedObject(),
+                                lmods,
                                 queue.getWrappedObject(),
                                 cons.getWrappedObject()));
         } catch( com.novell.ldap.LDAPException ex) {
