@@ -529,8 +529,10 @@ public class LDIFReader implements LDAPReader {
             }
             else {
                 // string value
-                attrSet.getAttribute(attrName).addValue(currentField.
-                                                           substring(index+1));
+                String vals=currentField.substring(index+1).trim();
+                attrSet.getAttribute(attrName).addValue(vals);
+//                attrSet.getAttribute(attrName).addValue(currentField.
+//                                                           substring(index+1));
             }
 
         }
@@ -850,10 +852,26 @@ public class LDIFReader implements LDAPReader {
                 }
             }
 
+			// for case like attr: <value>
+			boolean nonfile=false;
+		    String fredir= line.substring(c);            
+		    if(fredir.charAt(0) != '<'){
+			         String cstr=fredir.trim();
+			         if(cstr.charAt(0) == '<'){
+                          nonfile=true;
+                     }
+                }
+                
             // eliminate any space(s) after ':' or '<'
             while( (c <= lastChar) && (line.charAt(c) == ' ')) {
                 c++;
             }
+            
+			// for case like attr: <value>            
+			if(nonfile==true){
+			    c--;
+			}
+            
 
             if( c <= lastChar) {  // thers is a value specified
                 // copy field value
