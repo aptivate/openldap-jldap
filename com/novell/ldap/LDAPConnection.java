@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.80 2001/03/01 00:29:46 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.81 2001/03/01 18:11:23 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -2085,7 +2085,26 @@ public class LDAPConnection implements Cloneable
             Debug.trace( Debug.apiRequests, name +
             "getResponseControls()");
         }
-        return responseCtls;
+		
+		// We have to clone the control just in case 
+		// we have two client threads that end up retreiving the
+		// same control.
+		LDAPControl [] clonedControl = new LDAPControl [responseCtls.length];
+
+		// Also note we synchronize access to the local response
+		// control object just in case another message containing controls
+		// comes in from the server while we are busy duplicating
+		// this one.
+		synchronized (responseCtls) {
+			for(int i = 0; i < responseCtls.length; i++) {
+       			clonedControl[i] = (LDAPControl) (responseCtls[i]).clone();
+			}
+		}
+        
+		// Return the cloned copy.  Note we have still left the 
+		// control in the local responseCtls variable just in case
+		// somebody requests it again.
+		return clonedControl;
     }
 
     //*************************************************************************
