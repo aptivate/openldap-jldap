@@ -327,8 +327,8 @@ public class LDAPResponse extends LDAPMessage
      *  @exception LDAPException A general exception which includes an error
      *  message and an LDAP error code.
      */
-    /* package */
-    void chkResultCode() throws LDAPException
+    /* public */
+    public void chkResultCode() throws LDAPException
     {
         if( exception != null) {
             throw exception;

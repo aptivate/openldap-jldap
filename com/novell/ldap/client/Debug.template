@@ -176,6 +176,11 @@ public abstract class Debug {
      * The string value used to enable display VM method calls.
      */
     public static final String traceMethodCalls = "VMTraceMethodCalls";
+	/**
+	* The string value used to enable display of Events Calls.
+	*/
+    public static final String EventsCalls = "EventsTrace";
+
     
     /*
      * Write the debug text to this PrintStream
@@ -204,6 +209,7 @@ public abstract class Debug {
     private static boolean traceConnections = false;
     private static boolean traceTLS = false;
     private static boolean traceSaslBind = false;
+    private static boolean traceevents = false;
     private static Properties objprop = new Properties();
     private static Runtime run = Runtime.getRuntime(); // for trace, etc.
 
@@ -370,7 +376,10 @@ public abstract class Debug {
                 return(traceSaslBind);
             } else if( type.equalsIgnoreCase(TLS)) {
                 return(traceTLS);
+	    } else if (type.equalsIgnoreCase(EventsCalls)){
+		return (traceevents);
             }
+
             return false;
         } else {
             return false;
@@ -513,6 +522,9 @@ public abstract class Debug {
             } else if( type.equalsIgnoreCase(TLS)) {
                 printit = traceTLS;
                 tracing="traceTLS";
+             } else if (type.equalsIgnoreCase(EventsCalls)){
+                printit = traceevents;
+                tracing="traceEvents";
             }
             if( printit) {
                 if( str == null) {
