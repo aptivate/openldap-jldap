@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: DOMReader.java,v 1.2 2002/10/30 16:16:03 $
+ * $Novell: DOMReader.java,v 1.3 2002/11/13 23:54:20 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -35,7 +35,7 @@ import org.xml.sax.SAXException;
  * @see DOMWriter
  * @see DSMLReader
  * @see LDAPMessage
- * @see com.novell.ldap.LDAPConnection#applyToDIT
+ * @see com.novell.ldap.LDAPConnection#sendRequest
  */
 public class DOMReader implements LDAPReader{
     DSMLHandler handler;

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: DSMLReader.java,v 1.13 2002/10/29 21:11:57 $
+ * $Novell: DSMLReader.java,v 1.14 2002/11/13 23:54:20 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -38,7 +38,7 @@ import com.novell.ldap.client.DSMLHandler;
  * @see DSMLWriter
  * @see DOMReader
  * @see LDAPMessage
- * @see com.novell.ldap.LDAPConnection#applyToDIT
+ * @see com.novell.ldap.LDAPConnection#sendRequest
  */
 
 public class DSMLReader implements LDAPReader {
