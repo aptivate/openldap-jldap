@@ -323,9 +323,9 @@ public class LDAPConnection implements Cloneable
     {
         BindProperties prop = conn.getBindProperties();
         if( prop == null) {
-            return "";
+            return null;
         }
-        return conn.getBindProperties().getAuthenticationDN();
+        return prop.getAuthenticationDN();
     }
 
     /**
