@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPConnection.java,v 1.22 2000/08/25 23:54:11 judy Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPConnection.java,v 1.23 2000/08/28 22:18:55 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -42,7 +42,7 @@ import com.novell.asn1.ldap.*;
  *
  */
 public class LDAPConnection implements
-   LDAPv3, LDAPAsynchronousConnection, Cloneable {
+   LDAPv3, Cloneable {
 
    private Connection conn = null;
    private LDAPSocketFactory socketFactory = null;
