@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPCompareAttrNames.java,v 1.6 2000/08/31 19:48:39 judy Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPCompareAttrNames.java,v 1.7 2000/09/26 20:56:28 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -26,6 +26,9 @@ import java.util.Locale;
  *
  *  Represents an object that supports sorting search results by attribute
  *  name, in ascending or descending order.
+ *
+ * <p>NDS supports only ascending sort order (A,B,C ...) and allows sorting only 
+ * by one attribute. The NDS server must be configured to index this attribute.</p>
  */
 public class LDAPCompareAttrNames implements LDAPEntryComparator {
 
@@ -47,10 +50,12 @@ public class LDAPCompareAttrNames implements LDAPEntryComparator {
     * Constructs an object that sorts results by a single attribute, in
     * either ascending or descending order.
     *
+    * <p> NDS does not support descending sort order (Z,Y,X...).</p>
+    *
     * @param attrName       Name of an attribute to sort by.
     *<br><br>
     * @param ascendingFlag  True specifies ascending order; false specifies
-    *                 descending order.
+    *                       descending order.
     */
    public LDAPCompareAttrNames(String attrName, boolean ascendingFlag) {
    }
@@ -59,6 +64,9 @@ public class LDAPCompareAttrNames implements LDAPEntryComparator {
    /**
     * Constructs an object that sorts by one or more attributes, in the
     * order provided, in ascending order.
+    *
+    * <p> NDS allows sorting only by one attribute. The NDS server must also be 
+    * configured to index the specified attribute.</p>
     *
     * @param attrNames      Array of names of attributes to sort by.
     *
@@ -70,6 +78,11 @@ public class LDAPCompareAttrNames implements LDAPEntryComparator {
     * Constructs an object that sorts by one or more attributes, in the
     * order provided, in either ascending or descending order for each
     * attribute.
+    *
+    * <p>NDS supports only ascending sort order (A,B,C ...) and allows sorting  
+    * only by one attribute. The NDS server must be configured to index this 
+    * attribute.</p>
+    *
     *
     * @param attrNames      Array of names of attributes to sort by.
     *<br><br>

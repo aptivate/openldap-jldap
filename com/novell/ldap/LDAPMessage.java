@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/src/com/novell/ldap/LDAPMessage.java,v 1.9 2000/09/08 23:43:50 judy Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPMessage.java,v 1.10 2000/09/11 21:05:50 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -18,11 +18,16 @@ package com.novell.ldap;
 //import com.novell.ldap.asn1.ASN1Object;
 import com.novell.ldap.protocol.*;
 
+//4.19 public class LDAPMessage
+
 /**
  *  Base class for asynchronous LDAP request and response messages.
  */
 public class LDAPMessage {
 
+  /**
+   * A request or response message for an asynchronous LDAP operation.
+   */
 	protected com.novell.ldap.protocol.LDAPMessage message;
 
   /**
@@ -51,7 +56,7 @@ public class LDAPMessage {
    public final static int SEARCH_RESPONSE         = 4;
    
   /**
-   * A search result message operation.
+   * A search result message.
    */
    public final static int SEARCH_RESULT           = 5;
    
@@ -130,6 +135,8 @@ public class LDAPMessage {
 	 * Creates an LDAPMessage when sending a protocol operation.
      *
      * @param op The operation type of message.
+     *
+     * @see #getType
 	 */
 	public LDAPMessage(Request op)
 	{
@@ -143,6 +150,8 @@ public class LDAPMessage {
      * @param op The operation type of message.
      *<br><br>
      * @param controls The controls to use with the operation.
+     *
+     * @see #getType
 	 */
 	public LDAPMessage(Request op, LDAPControl[] controls)
 	{

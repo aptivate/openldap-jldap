@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/src/com/novell/ldap/LDAPListener.java,v 1.9 2000/09/08 23:43:50 judy Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPListener.java,v 1.10 2000/09/11 21:05:50 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -52,7 +52,7 @@ public abstract class LDAPListener implements TimerListener {
     * Returns the message IDs for all outstanding requests. 
     *
     * <p>The last ID in the array is the messageID of the 
-    * latest submitted request.</p>
+    * last submitted request.</p>
     *
     * @return The message IDs for all outstanding requests.
     */
@@ -79,7 +79,8 @@ public abstract class LDAPListener implements TimerListener {
    /**
     * Reports whether a response has been received from the server.
     *
-    * @return True if a response has been received from the server. 
+    * @return True if a response has been received from the server; false if
+    *         a response has not been received. 
     */
    public boolean isResponseReceived()
 	{
@@ -155,8 +156,8 @@ public abstract class LDAPListener implements TimerListener {
 
 	/**
 	 * @exclude
-	 * called by LDAPSearchResults
-	 * Will abandon all message IDs for this LDAPListener.
+	 * Called by LDAPSearchResults
+	 * This abandon method abandons all message IDs for this LDAPListener.
 	 */
 	public void abandonAll()
 	{

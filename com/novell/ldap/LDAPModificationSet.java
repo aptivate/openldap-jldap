@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPModificationSet.java,v 1.6 2000/09/14 20:32:30 smerrill Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPModificationSet.java,v 1.7 2000/09/28 21:15:06 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -62,7 +62,7 @@ public class LDAPModificationSet {
      *         <li>LDAPModification.REPLACE - The value should replace all
      *                                        existing values of the
      *                                        attribute </li>
-     *</ul><br><br>
+     *</ul><br>
      *  @param attr     The attribute to modify.
      */
     public synchronized void add(int op, LDAPAttribute attr)
@@ -111,7 +111,7 @@ public class LDAPModificationSet {
      * Removes the first attribute with the specified name in the set of
      * modifications.
      *
-     *  @param name    Name of the attribute to be removed.
+     *  @param name    Name of the attribute to remove.
      */
     public synchronized void remove(String name)
     {
@@ -132,7 +132,7 @@ public class LDAPModificationSet {
      * Removes a particular LDAPModification object at the position
      * specified by the index.
      *
-     *  @param index     Index of the modification to remove.
+     *  @param index     Index of the modification object to remove.
      *
      * @exception ArrayIndexOutOfBoundsException The index value is out of
      *            range for the array.

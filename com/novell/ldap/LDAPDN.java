@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPDN.java,v 1.4 2000/08/28 22:18:56 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPDN.java,v 1.5 2000/08/31 21:58:06 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -21,30 +21,31 @@ package com.novell.ldap;
  
 /**
  *  Specifies methods for manipulating a distinguished name (DN)
- *  and a relative distinguished name (RDN)).
+ *  and a relative distinguished name (RDN).
  */
 public class LDAPDN {
 
    /*
-    * 4.9.1 equals
+    * 4.11.1 equals
     */
 
    /**
     * Normalizes the names (if appropriate) and then determines whether the 
     * two distinguished names are the same.
     *
-    *  @param dn1            String form of first DN to compare.
+    *  @param dn1            String form of the first DN to compare.
     *<br><br>
-    *  @param dn2            String form of second DN to compare.
+    *  @param dn2            String form of the second DN to compare.
     *
-    * @return Returns true if the two strings correspond to the same DN, 
+    * @return Returns true if the two strings correspond to the same DN; false
+    *         if the DNs are different. 
     */
    public static boolean equals (String dn1, String dn2) {
       return false;
    }
 
    /*
-    * 4.9.2 escapeRDN
+    * 4.11.2 escapeRDN
     */
 
    /**
@@ -62,7 +63,7 @@ public class LDAPDN {
    }
 
    /*
-    * 4.9.3 unescapeRDN
+    * 4.11.3 unescapeRDN
     */
 
    /**
@@ -80,7 +81,7 @@ public class LDAPDN {
    }
 
    /*
-    * 4.9.4 explodeDN
+    * 4.11.4 explodeDN
     */
 
    /**
@@ -103,7 +104,7 @@ public class LDAPDN {
    }
 
    /*
-    * 4.9.5 explodeRDN
+    * 4.11.5 explodeRDN
     */
 
    /**

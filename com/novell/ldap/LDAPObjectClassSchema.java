@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPObjectClassSchema.java,v 1.5 2000/08/28 22:18:57 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPObjectClassSchema.java,v 1.6 2000/09/11 22:47:49 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -23,9 +23,9 @@ package com.novell.ldap;
  *
  *  Represents the definition of an object class. 
  *
- *  <p>The LDAPObjectClassSchema class is used to query the syntax of an object
- *  class, and to add or delete an object class definition from a directory's
- *  schema. </p>
+ *  <p>The LDAPObjectClassSchema class is used to query for the definition of an 
+ *  object class, and to add or delete an object class definition from a 
+ *  directory's schema. </p>
  *
  */
 public class LDAPObjectClassSchema extends LDAPSchemaElement{
@@ -36,11 +36,15 @@ public class LDAPObjectClassSchema extends LDAPSchemaElement{
 
  /**
   * This class definition defines an abstract schema class.
+  *
+  * <p>This is equivalent to setting the NDS effective class flag to true.</p>
   */
   public final static int ABSTRACT = 0;
   
  /**
   * This class definition defines a structural schema class.
+  *
+  * <p>This is equivalent to setting the NDS effective class flag to true.</p>
   */
   public final static int STRUCTURAL = 1;
   

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttributeSet.java,v 1.8 2000/09/14 20:32:29 smerrill Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttributeSet.java,v 1.9 2000/09/26 20:56:27 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -104,6 +104,9 @@ public class LDAPAttributeSet implements Cloneable {
     * <p>In both cases, null is returned if there is no exact match to the
     * specified attrName.</p>
     *
+    * <p>NDS does not yet support language subtypes. It does support the "binary"
+    *  subtype.</p>
+    *
     * @param attrName   The name of an attribute to retrieve, with or without
     * subtype specifications. For example, "cn", "cn;phonetic", and 
     * cn;binary" are valid attribute names.
@@ -164,6 +167,9 @@ public class LDAPAttributeSet implements Cloneable {
     *   <li>getAttribute( "cn", "lang-ja" )   returns null.</li>
     *   <li>getAttribute( "sn", "lang-en" )   returns the "sn" attribute.</li>
     *  </ul>
+    *
+    * <p>NDS does not yet support language subtypes. It does support the "binary"
+    *  subtype.</p>
     *
     * @param attrName  The name of an attribute to retrieve, with or without
     * subtype specifications. For example, "cn", "cn;phonetic", and 
@@ -228,6 +234,9 @@ public class LDAPAttributeSet implements Cloneable {
     * <li> "binary;lang-ja" specifies only Japanese language subtypes
     *       which also are binary</li> 
     * </ul>               
+    *
+    * <p>NDS does not yet support language subtypes. It does support the "binary"
+    *  subtype.</p>
     * 
     * @return An attribute set containing the attributes that match the specified
     *         subtype.                                         

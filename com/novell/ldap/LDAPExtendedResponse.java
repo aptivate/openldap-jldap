@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPExtendedResponse.java,v 1.14 2000/09/11 21:05:50 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPExtendedResponse.java,v 1.15 2000/09/28 20:25:34 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -34,11 +34,11 @@ import com.novell.ldap.protocol.*;
 public class LDAPExtendedResponse extends LDAPResponse {
 
     /**
-     * Creates a Java-API LDAPExtendedResponse (which is a Java-API
-     * LDAPMessage) when receiving an LDAPMessage from a server.
+     * Creates an LDAPExtendedResponse object which encapsulates
+     * a server response to an asynchronous extended operation request.
      *
-     * @param message  The LDAPMessage to convert to a Java-API
-     *                 LDAPExtendedResponse
+     * @param message  The LDAPMessage to convert to an 
+     *                 LDAPExtendedResponse object.
      */
     public LDAPExtendedResponse(com.novell.ldap.protocol.LDAPMessage message)
     {
@@ -50,7 +50,7 @@ public class LDAPExtendedResponse extends LDAPResponse {
      */
 
     /**
-     * Returns the OID of the response.
+     * Returns the message identifier of the response.
      *
      * @return OID of the response.
      */
@@ -64,7 +64,7 @@ public class LDAPExtendedResponse extends LDAPResponse {
      */
 
     /**
-     * Returns the raw bytes of the value part of the response.
+     * Returns the value part of the response in raw bytes.
      *
      * @return The value of the response.
      */

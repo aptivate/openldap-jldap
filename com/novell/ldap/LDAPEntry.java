@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPEntry.java,v 1.4 2000/08/28 22:18:56 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPEntry.java,v 1.5 2000/09/06 14:38:11 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -16,7 +16,7 @@
 package com.novell.ldap;
  
 /*
- * 4.10 public class LDAPEntry
+ * 4.12 public class LDAPEntry
  */
  
 /**
@@ -33,7 +33,7 @@ public class LDAPEntry {
    private LDAPAttributeSet attrs;
 
    /*
-    * 4.10.1 Constructors
+    * 4.12.1 Constructors
     */
 
    /**
@@ -83,7 +83,7 @@ public class LDAPEntry {
    }
 
    /*
-    * 4.10.3 getAttributeSet
+    * 4.12.3 getAttributeSet
     */
 
    /**
@@ -126,11 +126,13 @@ public class LDAPEntry {
    }
 
    /*
-    * 4.10.4 getDN
+    * 4.12.4 getDN
     */
 
    /**
     * Returns the distinguished name of the entry.
+    *
+    * @return The distinguished name of the entry.
     */
    public String getDN() {
       return dn;

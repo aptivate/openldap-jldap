@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPMatchingRuleSchema.java,v 1.4 2000/08/28 22:18:56 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPMatchingRuleSchema.java,v 1.5 2000/09/08 23:43:50 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -16,7 +16,7 @@
 package com.novell.ldap;
  
 /*
- * 4.14 public class LDAPMatchingRuleSchema
+ * 4.17 public class LDAPMatchingRuleSchema
  *                 extends LDAPSchemaElement
  */
  
@@ -29,7 +29,7 @@ package com.novell.ldap;
 public class LDAPMatchingRuleSchema extends LDAPSchemaElement {
 
    /*
-    * 4.14.1 Constructors
+    * 4.17.1 Constructors
     */
 
    /**
@@ -77,7 +77,7 @@ public class LDAPMatchingRuleSchema extends LDAPSchemaElement {
    }
 
    /*
-    * 4.14.2 getAttributes
+    * 4.17.2 getAttributes
     */
 
    /**

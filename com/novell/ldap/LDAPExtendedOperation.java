@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPExtendedOperation.java,v 1.6 2000/08/28 22:18:56 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPExtendedOperation.java,v 1.7 2000/09/07 17:37:46 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -16,13 +16,13 @@
 package com.novell.ldap;
  
 /*
- * 4.11 public class LDAPExtendedOperation
+ * 4.13 public class LDAPExtendedOperation
  */
  
 /**
  *  Encapsulates an ID which uniquely identifies a particular extended 
  *  operation, known to a particular server, and the data associated 
- *  with the operation.
+ *  with the extended operation.
  */
 public class LDAPExtendedOperation {
 
@@ -30,7 +30,7 @@ public class LDAPExtendedOperation {
    private byte[] vals;
 
    /*
-    * 4.11.1 Constructors
+    * 4.13.1 Constructors
     */
 
    /**
@@ -46,7 +46,7 @@ public class LDAPExtendedOperation {
    }
 
    /*
-    * 4.11.2 getID
+    * 4.13.2 getID
     */
 
    /**
@@ -59,7 +59,7 @@ public class LDAPExtendedOperation {
    }
 
    /*
-    * 4.11.3 getValue
+    * 4.13.3 getValue
     */
 
    /**

@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.38 2000/09/27 22:04:57 judy Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.39 2000/09/29 01:23:22 vtag Exp $
 *
 * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
 * 
@@ -166,7 +166,7 @@ public class LDAPConnection implements
    * is to wait when returning search results.
    *
    * <p>This option is only recoginzed on search operations.</p>
-   *
+   * <p> If this option is set to 0, there is no maximum time limit.</p>
    * <p> The value must be an Integer.</p>
    * <p>Default value: 0 
    *
@@ -176,10 +176,15 @@ public class LDAPConnection implements
    public static final int SERVER_TIMELIMIT = 5;
    
   /**
-   * A setOption key which
-   * specifies the maximum number of encoding formats for strings.
+   * A setOption key which specifies the 
+   * encoding format for strings.
    *
-   * <p>By default, the value of this options is LDAPConnection.UTF8.</p>
+   * <p>Can be set to the following values:</p>
+   * <ul>
+   *   <li>UTF8</li>
+   *   <li>T61</li>
+   * </ul>
+   * <p> Default value: UTF8
    *
    * @see LDAPv2#setOption(int, java.lang.Object)
    * @see LDAPv2#getOption(int)
@@ -190,21 +195,25 @@ public class LDAPConnection implements
 
   /**
    * A setOption key value which specifies that
-   * strings are encoded as UTF8.
+   * strings are encoded in UTF8 format.
    *
    * @see LDAPv2#setOption(int, java.lang.Object)
    * @see LDAPv2#getOption(int)
    * @see #T61
+   * @see #STRING_FORMAT
    */
    public static final int UTF8 = 0;
 
   /**
    * A setOption key which specifies that
-   * strings are encoded as T61.
+   * strings are encoded in T61 format.
+   *
+   * <p>T61 is LDAPv2 encoding. NDS does not support this type of encoding.</p>
    *
    * @see LDAPv2#setOption(int, java.lang.Object)
    * @see LDAPv2#getOption(int)
    * @see #UTF8
+   * @see #STRING_FORMAT
    */
    public static final int T61 = 1;
    
