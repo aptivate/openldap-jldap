@@ -14,21 +14,23 @@
  ******************************************************************************/
 package com.novell.ldap.extensions;
 
-import com.novell.ldap.*;
-import com.novell.ldap.asn1.*;
-import com.novell.ldap.resources.*;
+import com.novell.ldap.LDAPExtendedOperation;
+import com.novell.ldap.LDAPException;
+import com.novell.ldap.asn1.ASN1Integer;
+import com.novell.ldap.asn1.ASN1OctetString;
+import com.novell.ldap.asn1.LBEREncoder;
+import com.novell.ldap.resources.ExceptionMessages;
 import java.io.IOException;
 import java.io.ByteArrayOutputStream;
 
 /**
+ *  Creates a new partition.
  *
- *  Creates a new naming context (or in NDS terminology, a new partition).
- *
- *  <p>To create a new naming context, you must create an instance of this
+ *  <p>To split a new partition, you must create an instance of this
  *  class and then call the extendedOperation method with this
  *  object as the required LDAPExtendedOperation parameter.</p>
  *
- *  <p>The createPartitionRequest extension uses the following OID:<br>
+ *  <p>The SplitPartitionRequest extension uses the following OID:<br>
  *  &nbsp;&nbsp;&nbsp;2.16.840.1.113719.1.27.100.3</p>
  *
  *  <p>The requestValue has the following format:<br>
@@ -43,8 +45,8 @@ public class SplitPartitionRequest extends LDAPExtendedOperation {
  *
  *  Constructs an extended operation object for splitting partition.
  *
- * @param dn      The distinguished name of the container where the new naming
- *                context root should be located.
+ * @param dn      The distinguished name of the container where the new 
+ *                partition  root should be located.
  *<br><br>
  * @param flags Specifies whether all servers in the replica ring must be up before
  *              proceeding. When set to zero, the status of the servers is not

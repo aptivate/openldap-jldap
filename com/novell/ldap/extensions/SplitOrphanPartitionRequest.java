@@ -14,14 +14,15 @@
  ******************************************************************************/
 package com.novell.ldap.extensions;
 
-import com.novell.ldap.*;
-import com.novell.ldap.asn1.*;
-import com.novell.ldap.resources.*;
+import com.novell.ldap.LDAPExtendedOperation;
+import com.novell.ldap.LDAPException;
+import com.novell.ldap.asn1.ASN1OctetString;
+import com.novell.ldap.asn1.LBEREncoder;
+import com.novell.ldap.resources.ExceptionMessages;
 import java.io.IOException;
 import java.io.ByteArrayOutputStream;
 
 /**
- *
  * Splits a new orphan partitiont.
  *
  * <p>To split a new orphan partition, you must create an instance of
