@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPDITStructureRuleSchema.java,v 1.8 2001/03/01 00:29:49 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPDITStructureRuleSchema.java,v 1.9 2001/04/23 21:09:30 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -31,9 +31,9 @@ import java.io.IOException;
 public class LDAPDITStructureRuleSchema
                 extends LDAPSchemaElement
 {
-	private int ruleID;
-	private String nameForm;
-	private String[] superiorIDs;
+	private int ruleID = 0;
+	private String nameForm = "";
+	private String[] superiorIDs = {""};
 
     /**  Constructs a DIT structure rule for adding to or deleting from the
      *   schema.
@@ -99,7 +99,7 @@ public class LDAPDITStructureRuleSchema
 			    super.name = new String(parser.getName());
 	        super.aliases = parser.getAliases();
 	        if( parser.getID() != null)
-	            ruleID = Integer.getInteger(parser.getID()).intValue();
+	            ruleID = Integer.parseInt(parser.getID());
 	        if( parser.getDescription() != null)
 	            super.description = new String(parser.getDescription());
 	        if( parser.getSuperiors() != null)

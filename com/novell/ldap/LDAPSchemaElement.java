@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSchemaElement.java,v 1.15 2001/06/28 15:12:16 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSchemaElement.java,v 1.16 2001/06/29 21:52:17 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -32,27 +32,27 @@ public abstract class LDAPSchemaElement {
    /**
     * The name for the schema element.
     */
-    protected String name;
+    protected String name = "";
 
    /**
     * The OID for the schema element.
     */
-	protected String oid;
+	protected String oid = "";
 
    /**
     * The description for the schema element.
     */
-	protected String description;
+	protected String description = "";
 
    /**
     * A string array of alternative names for the schema element.
     */
-	protected String[] aliases;
+	protected String[] aliases = {""};
 
    /**
     * If present, indicates that the element is obsolete.
     */
-    protected boolean obsolete;
+    protected boolean obsolete = false;
 
    /**
     * A string array of optional, or vendor-specific, qualifiers for the
@@ -61,13 +61,13 @@ public abstract class LDAPSchemaElement {
     * <p> These optional qualifiers begin with "X-"; the NDS-specific qualifiers
     * begin with "X-NDS". </p>
     */
-	protected String[] qualifier;
+	protected String[] qualifier = {""};
 
    /**
     * A string value for the schema element in a format that can be used to add
     * the element to the directory.
     */
-	protected String value;
+	protected String value = "";
 
    /**
    * A hash table that contains the vendor-specific qualifiers (for example,

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPDITContentRuleSchema.java,v 1.8 2001/04/23 21:09:30 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPDITContentRuleSchema.java,v 1.9 2001/06/13 17:51:06 jhammons Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -33,10 +33,10 @@ import java.io.IOException;
 public class LDAPDITContentRuleSchema
                 extends LDAPSchemaElement
 {
-	private String[] auxiliary;
-    private String[] required;
-    private String[] optional;
-    private String[] precluded;
+	private String[] auxiliary = {""};
+    private String[] required = {""};
+    private String[] optional = {""};
+    private String[] precluded = {""};
 
     /**
      * Constructs a DIT content rule for adding to or deleting from the
