@@ -12,7 +12,7 @@
  * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
  * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
  ******************************************************************************/
-package com.novell.ldap.ldif_dsml;
+package com.novell.ldap.util;
 
 import java.io.UnsupportedEncodingException;
 
