@@ -1,4 +1,4 @@
-<!-- $Novell: /ldap/src/jldap/build.xml,v 1.37 2001/05/01 20:03:50 vtag Exp $ -->
+<!-- $Novell: /ldap/src/jldap/build.xml,v 1.38 2001/05/08 21:07:27 vtag Exp $ -->
 <!--
  ******************************************************************************
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
@@ -202,7 +202,7 @@
         />
 		<copy
         	file="ietf/draft-sermersheim-nds-ldap-schema-01.txt"
-        	tofile="${pkg}/draft-sermersheim-nds-ldap-schema-01.txt"
+        	tofile="${pkg.doc}/draft-sermersheim-nds-ldap-schema-01.txt"
         />
 	</target>
 
