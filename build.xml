@@ -94,10 +94,12 @@
 
   <target name="pkg" depends="install"/>
 
-  <target name="all" depends="init">
+  <target name="all.subdir" depends="init">
     <ant dir="${basedir}/${ldap}" target="all" />
     <ant dir="${basedir}/${novbp}" target="all" />
   </target>
+
+  <target name="all" depends="init, all.subdir, cleanpkg, install" />
 
   <target name="samples" depends="init">
     <ant dir="${basedir}/${ldap}" target="samples" />
