@@ -21,7 +21,6 @@ Java LDAP API development that needs to be done (not in any order)
     - IETF Draft 18 support.  Currently the code is very close to draft 18.
       Functionality not yet implemented from draft 18:
          
-        - Implement the sasl bind methods in LDAPConnection.
 
         - Object Serialization. The following objects need to implement
           Serializable.
