@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPObjectClassSchema.java,v 1.17 2000/10/31 23:52:23 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPObjectClassSchema.java,v 1.18 2000/12/04 22:59:52 bgudmundson Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -479,12 +479,10 @@ public class LDAPObjectClassSchema extends LDAPSchemaElement{
                         	// modify the attribute
                             LDAPAttribute modValue = new LDAPAttribute(
                                         "objectClasses", newValue.getValue());
-                            LDAPModification lModify = new LDAPModification(
-                                LDAPModification.DELETE,modValue);
-                            ld.modify(schemaDN,lModify);
-                            lModify = new LDAPModification(
-                                LDAPModification.ADD, modValue);
-                            ld.modify(schemaDN,lModify);
+							LDAPModificationSet mods = new LDAPModificationSet();
+                            mods.add(LDAPModification.DELETE, modValue);
+							mods.add(LDAPModification.ADD, modValue);
+                            ld.modify(schemaDN,mods);
                     }
 		            continue;
               }

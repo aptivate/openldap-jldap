@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPMatchingRuleSchema.java,v 1.12 2000/12/04 22:59:51 bgudmundson Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPMatchingRuleSchema.java,v 1.13 2000/12/05 23:46:13 bgudmundson Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -368,12 +368,10 @@ public class LDAPMatchingRuleSchema extends LDAPSchemaElement {
                             // modify the attribute
                             LDAPAttribute modValue = new LDAPAttribute(
                                         "matchingRules", newValue.getValue());
-                            LDAPModification lModify = new LDAPModification(
-                                LDAPModification.DELETE,modValue);
-                            ld.modify(schemaDN,lModify);
-                            lModify = new LDAPModification(
-                                LDAPModification.ADD, modValue);
-                            ld.modify(schemaDN,lModify);
+                            LDAPModificationSet mods = new LDAPModificationSet();
+                            mods.add(LDAPModification.DELETE, modValue);
+							mods.add(LDAPModification.ADD, modValue);
+                            ld.modify(schemaDN,mods);
                         }
 		                continue;
                   }

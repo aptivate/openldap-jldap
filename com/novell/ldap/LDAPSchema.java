@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSchema.java,v 1.16 2000/12/04 22:59:52 bgudmundson Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSchema.java,v 1.17 2000/12/08 16:27:54 bgudmundson Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -88,6 +88,11 @@ public class LDAPSchema {
     */
    public void fetchSchema(LDAPConnection ld,
                            String dn) throws LDAPException {
+
+		objectClassHashtable.clear();
+		attributeHashtable.clear();
+		matchingRuleHashtable.clear();
+		matchingRuleUseHashtable.clear();
 
 		try{
 

@@ -311,12 +311,10 @@ public class LDAPMatchingRuleUseSchema
                             // modify the attribute
                             LDAPAttribute modValue = new LDAPAttribute(
                                         "matchingRuleUse", newValue.getValue());
-                            LDAPModification lModify = new LDAPModification(
-                                LDAPModification.DELETE,modValue);
-                            ld.modify(schemaDN,lModify);
-                            lModify = new LDAPModification(
-                                LDAPModification.ADD, modValue);
-                            ld.modify(schemaDN,lModify);
+                            LDAPModificationSet mods = new LDAPModificationSet();
+                            mods.add(LDAPModification.DELETE, modValue);
+							mods.add(LDAPModification.ADD, modValue);
+                            ld.modify(schemaDN,mods);
                         }
 		                continue;
                   }
