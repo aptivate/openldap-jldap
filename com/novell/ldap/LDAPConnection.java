@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.100 2001/05/29 19:24:57 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.101 2001/06/13 17:51:06 jhammons Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -515,7 +515,7 @@ public class LDAPConnection implements Cloneable
      * @return The set of default search contraints that apply to
      * this connection.
      *
-     * @see #setSearchConstraints
+     * @see #setConstraints
      * @see #search( String, int, String, String[], boolean, LDAPSearchConstraints)
      */
     public LDAPSearchConstraints getSearchConstraints()
@@ -574,14 +574,24 @@ public class LDAPConnection implements Cloneable
     /**
      * Sets the constraints that apply to all operations performed through
      * this connection (unless a different set of constraints is specified
-     * when calling an operation method).
+     * when calling an operation method).  An LDAPSearchConstraints object
+     * which is passed to this method sets all constraints, while an
+     * LDAPConstraints object passed to this method sets only base constraints.
      *
-     * @param cons  Object containint the contraint values to set
+     * @param cons  An LDAPConstraints or LDAPSearchConstraints Object
+     * containing the contstraint values to set.
      *
      * @see #getConstraints()
+     * @see #getSearchConstraints()
      */
     public void setConstraints(LDAPConstraints cons)
     {
+        // Set all constraints, replace the object with a new one
+        if( cons instanceof LDAPSearchConstraints) {
+            defSearchCons = (LDAPSearchConstraints)cons.clone();
+            return;
+        }
+
         // We set the constraints this way, so a thread doesn't get an
         // conconsistant view of the referrals.
         LDAPSearchConstraints newCons = (LDAPSearchConstraints)defSearchCons.clone();
@@ -599,6 +609,25 @@ public class LDAPConnection implements Cloneable
         }
         defSearchCons = newCons;
         return;
+    }
+
+    /**
+     * Sets the constraints that apply to all operations performed through
+     * this connection (unless a different set of constraints is specified
+     * when calling an operation method).  An LDAPSearchConstraints object
+     * which is passed to this method sets all constraints, while an
+     * LDAPConstraints object passed to this method sets only base constraints.
+     *
+     * @param cons  An LDAPSearchConstraints Object containing the contstraint
+     * values to set.
+     *
+     * @see #getSearchConstraints()
+     * @deprecated replaced by {@link #setConstraints(LDAPConstraints)}
+     */
+    public void setSearchConstraints(LDAPSearchConstraints cons)
+    {
+        setConstraints( cons);
+        return; 
     }
 
     /**
@@ -650,25 +679,6 @@ public class LDAPConnection implements Cloneable
         // Requested property is not supported
         throw new LDAPException(LDAPExceptionMessageResource.NO_SUP_PROPERTY,
                 LDAPException.PARAM_ERROR);
-    }
-
-    /**
-     * Sets the constraints that apply to all search operations performed
-     * through this connection (unless a different set of constraints is
-     * specified when calling a search operation method).
-     *
-     * <p>Typically, the setSearchConstraints method is used to create a
-     * slightly different set of search constraints to apply to a particular
-     * search.</p>
-     *
-     * @param cons The search constraints to set.
-     *
-     * @see #getSearchConstraints()
-     */
-    public void setSearchConstraints(LDAPSearchConstraints cons)
-    {
-        defSearchCons = (LDAPSearchConstraints)cons.clone();
-        return;
     }
 
     /**
@@ -1452,7 +1462,7 @@ public class LDAPConnection implements Cloneable
      *                  such as additional credentials.
      */
     public void bind(String dn,
-                     Properties props,
+                     Hashtable props,
                      /*javax.security.auth.callback.CallbackHandler*/ Object cbh)
                      throws LDAPException
     {
@@ -1490,7 +1500,7 @@ public class LDAPConnection implements Cloneable
      *  @param cons      Constraints specific to the operation.
      */
     public void bind(String dn,
-                     Properties props,
+                     Hashtable props,
                      /*javax.security.auth.callback.CallbackHandler*/ Object cbh,
                      LDAPConstraints cons)
                      throws LDAPException
@@ -1992,6 +2002,29 @@ public class LDAPConnection implements Cloneable
      *
      */
     public void disconnect()
+        throws LDAPException
+    {
+        // disconnect from API call
+        disconnect(true);
+        return;
+    }
+
+    /**
+     *
+     * Synchronously disconnects from the LDAP server.
+     *
+     * <p>Before the object can perform LDAP operations again, it must
+     * reconnect to the server by calling connect.</p>
+     *
+     * <p>The disconnect method abandons any outstanding requests, issues an
+     * unbind request to the server, and then closes the socket.</p>
+     *
+     * @param cons LDPConstraints to be set with the unbind request
+     *
+     * @exception LDAPException A general exception which includes an error
+     *  message and an LDAP error code.
+     */
+    public void disconnect( LDAPConstraints cons)
         throws LDAPException
     {
         // disconnect from API call
@@ -3354,9 +3387,6 @@ public class LDAPConnection implements Cloneable
                     }
                     rconn = new LDAPConnection( conn.getSocketFactory());
                     rconn.setConstraints( defSearchCons);
-                    if( search) {
-                        rconn.setSearchConstraints( defSearchCons);
-                    }
                     LDAPUrl url = new LDAPUrl(referrals[i]);
                     rconn.connect(url.getHost(),url.getPort());
                     if( rh != null) {
