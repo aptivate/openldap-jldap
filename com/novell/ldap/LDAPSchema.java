@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSchema.java,v 1.25 2001/07/20 19:49:40 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSchema.java,v 1.26 2001/08/09 16:57:37 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -498,7 +498,14 @@ public class LDAPSchema {
     * @return An enumeration of attribute names.
     */
    public Enumeration getAttributeNames() {
-      return attributeHashtable.keys();
+      java.util.Vector names = new java.util.Vector(attributeHashtable.size());
+      Enumeration elements = attributeHashtable.elements();
+
+      while (elements.hasMoreElements()){
+        LDAPSchemaElement el = (LDAPSchemaElement)elements.nextElement();
+        names.add(el.getName());
+      }
+      return names.elements();
    }
 
    /**
@@ -507,7 +514,14 @@ public class LDAPSchema {
     * @return An enumeration of object class names.
     */
    public Enumeration getObjectClassNames() {
-      return objectClassHashtable.keys();
+      java.util.Vector names = new java.util.Vector(objectClassHashtable.size());
+      Enumeration elements = objectClassHashtable.elements();
+
+      while (elements.hasMoreElements()){
+        LDAPSchemaElement el = (LDAPSchemaElement)elements.nextElement();
+        names.add(el.getName());
+      }
+      return names.elements();
    }
 
    /**
@@ -516,7 +530,14 @@ public class LDAPSchema {
     * @return An enumeration of matching rule names.
     */
    public Enumeration getMatchingRuleNames() {
-      return matchingRuleHashtable.keys();
+      java.util.Vector names = new java.util.Vector(matchingRuleHashtable.size());
+      Enumeration elements = matchingRuleHashtable.elements();
+
+      while (elements.hasMoreElements()){
+        LDAPSchemaElement el = (LDAPSchemaElement)elements.nextElement();
+        names.add(el.getName());
+      }
+      return names.elements();
    }
 
    /**
@@ -525,7 +546,14 @@ public class LDAPSchema {
     * @return An enumeration of matching rule use names.
     */
    public Enumeration getMatchingRuleUseNames() {
-      return matchingRuleUseHashtable.keys();
+      java.util.Vector names = new java.util.Vector(matchingRuleUseHashtable.size());
+      Enumeration elements = matchingRuleUseHashtable.elements();
+
+      while (elements.hasMoreElements()){
+        LDAPSchemaElement el = (LDAPSchemaElement)elements.nextElement();
+        names.add(el.getName());
+      }
+      return names.elements();
    }
 
    /**
@@ -534,7 +562,14 @@ public class LDAPSchema {
     * @return An enumeration of DIT structure rule names.
     */
    public Enumeration getDITStructureRuleNames() {
-      return dITStructureRuleHashtable.keys();
+      java.util.Vector names = new java.util.Vector(dITStructureRuleHashtable.size());
+      Enumeration elements = dITStructureRuleHashtable.elements();
+
+      while (elements.hasMoreElements()){
+        LDAPSchemaElement el = (LDAPSchemaElement)elements.nextElement();
+        names.add(el.getName());
+      }
+      return names.elements();
    }
 
   /**
@@ -543,7 +578,14 @@ public class LDAPSchema {
     * @return An enumeration of DIT content rule names.
     */
    public Enumeration getDITContentRuleNames() {
-      return dITContentRuleHashtable.keys();
+      java.util.Vector names = new java.util.Vector(dITContentRuleHashtable.size());
+      Enumeration elements = dITContentRuleHashtable.elements();
+
+      while (elements.hasMoreElements()){
+        LDAPSchemaElement el = (LDAPSchemaElement)elements.nextElement();
+        names.add(el.getName());
+      }
+      return names.elements();
    }
 
   /**
@@ -552,6 +594,13 @@ public class LDAPSchema {
     * @return An enumeration of name form names.
     */
    public Enumeration getNameFormNames() {
-      return nameFormHashtable.keys();
+      java.util.Vector names = new java.util.Vector(nameFormHashtable.size());
+      Enumeration elements = nameFormHashtable.elements();
+
+      while (elements.hasMoreElements()){
+        LDAPSchemaElement el = (LDAPSchemaElement)elements.nextElement();
+        names.add(el.getName());
+      }
+      return names.elements();
    }
 }
