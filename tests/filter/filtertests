@@ -13,6 +13,10 @@
 # THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
 #******************************************************************************/
 #
+# The filter assertions in this file came from the following URL:
+#
+# http://www.openldap.org/ietf/ldapbis/filters.txt
+#
 # Used with the Filter test program which reads a file of filters
 # and expected generated values (this file).
 #

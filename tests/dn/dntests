@@ -13,6 +13,10 @@
 # THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
 #******************************************************************************/
 #
+# The dn assertions in this file came from the following URL:
+#
+# http://www.openldap.org/ietf/ldapbis/dn.txt
+#
 # Used with the DN test program which reads a file of DNs
 #
 # File format
