@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPException.java,v 1.13 2000/10/31 23:52:21 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPException.java,v 1.14 2000/11/03 21:43:42 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -149,7 +149,7 @@ public class LDAPException extends Exception {
     *  @param resultCode     The result code returned.
 
     */
-   /*package*/ LDAPException(String errorMessage, String matchedDN,
+   public LDAPException(String errorMessage, String matchedDN,
                         int resultCode) {
       super(errorMessage);
       this.errorMessage = errorMessage;
