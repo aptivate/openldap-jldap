@@ -71,14 +71,6 @@ public class RfcAddRequest extends ASN1Sequence implements RfcRequest {
     //*************************************************************************
 
     /**
-     * Get's the DN of the entry
-     */
-    public final RfcLDAPDN getEntry()
-    {
-        return (RfcLDAPDN)get(0);
-    }
-
-    /**
      * Gets the attributes of the entry
      */
     public final RfcAttributeList getAttributes()

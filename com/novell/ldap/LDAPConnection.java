@@ -3345,8 +3345,8 @@ public class LDAPConnection implements Cloneable
      * @exception    LDAPException A general exception which includes an error
      *               message and an LDAP error code.
      */
-    public LDAPSearchQueue applyToDIT( LDAPMessage request,
-                            LDAPSearchQueue queue,
+    public LDAPMessageQueue applyToDIT( LDAPMessage request,
+                            LDAPMessageQueue queue,
                             LDAPConstraints cons)
             throws LDAPException
     {
@@ -3363,12 +3363,20 @@ public class LDAPConnection implements Cloneable
             cons = defSearchCons;
 
         MessageAgent agent;
-        LDAPSearchQueue myqueue = queue;
+        LDAPMessageQueue myqueue = queue;
         if(myqueue == null) {
             agent = new MessageAgent();
-            myqueue = new LDAPSearchQueue( agent );
+            if( request.getType() == LDAPMessage.SEARCH_REQUEST) {
+                myqueue = new LDAPSearchQueue( agent );
+            } else {
+                myqueue = new LDAPResponseQueue( agent );
+            }
         } else {
-            agent = queue.getMessageAgent();
+            if( request.getType() == LDAPMessage.SEARCH_REQUEST) {
+                agent = ((LDAPSearchQueue)queue).getMessageAgent();
+            } else {
+                agent = ((LDAPResponseQueue)queue).getMessageAgent();
+            }
         }
 
         try {

@@ -15,8 +15,6 @@ import com.novell.ldap.rfc2251.*;
  */
 public class LDAPModifyDNRequest extends LDAPMessage
 {
-    private String dn;
-    
     /**
      */
     public LDAPModifyDNRequest( String dn,
@@ -26,7 +24,6 @@ public class LDAPModifyDNRequest extends LDAPMessage
                                 LDAPConstraints cons)
         throws LDAPException
     {
-
         super( LDAPMessage.MODIFY_RDN_REQUEST,
                new RfcModifyDNRequest(
                    new RfcLDAPDN(dn),
@@ -35,8 +32,71 @@ public class LDAPModifyDNRequest extends LDAPMessage
                    (newParentdn != null) ?
                        new RfcLDAPDN(newParentdn) : null),
                (cons != null) ? cons.getControls() : null);
-
-        this.dn = dn;
         return;
+    }
+
+    /**
+     * Returns the dn of the entry to rename or move in the directory
+     *
+     * @return the dn of the entry to rename or move
+     */
+    public String getDN()
+    {
+        return getASN1Object().getRequestDN();
+    }
+
+    /**
+     * Returns the newRDN of the entry to rename or move in the directory
+     *
+     * @return the newRDN of the entry to rename or move
+     */
+    public String getNewRDN()
+    {
+        // Get the RFC request object for this request
+        RfcModifyDNRequest req = (RfcModifyDNRequest)getASN1Object().getRequest();
+        RfcRelativeLDAPDN relDN = (RfcRelativeLDAPDN)req.toArray()[1];
+        return relDN.stringValue();
+    }
+
+    /**
+     * Returns the DeleteOldRDN flag that applies to the entry to rename or
+     * move in the directory
+     *
+     * @return the DeleteOldRDN flag for the entry to rename or move
+     */
+    public boolean getDeleteOldRDN()
+    {
+        // Get the RFC request object for this request
+        RfcModifyDNRequest req = (RfcModifyDNRequest)getASN1Object().getRequest();
+        ASN1Boolean delOld = (ASN1Boolean)req.toArray()[2];
+        return delOld.booleanValue();
+    }
+
+    /**
+     * Returns the ParentDN for the entry move in the directory
+     *
+     * @return the ParentDN for the entry to move, or <dd>null</dd>
+     * if the request is not a move.
+     */
+    public String getParentDN()
+    {
+        // Get the RFC request object for this request
+        RfcModifyDNRequest req = (RfcModifyDNRequest)getASN1Object().getRequest();
+        ASN1Object[] seq = req.toArray();
+        if( (seq.length < 4)  || (seq[3] == null)) {
+            return null;
+        }
+        RfcLDAPDN parentDN = (RfcLDAPDN)req.toArray()[3];
+        return parentDN.stringValue();
+    }
+
+    /**
+     * Return an ASN1 representation of this mod DN request
+     *
+     * #return an ASN1 representation of this object
+     */
+    public String toString()
+    {
+        return getASN1Object().toString();
     }
 }

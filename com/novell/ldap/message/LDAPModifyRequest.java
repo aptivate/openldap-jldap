@@ -37,21 +37,27 @@ public class LDAPModifyRequest extends LDAPMessage
         super( LDAPMessage.MODIFY_REQUEST,
                new RfcModifyRequest(
                    new RfcLDAPDN(dn),
-                   getModifications(mods)),
+                   encodeModifications(mods)),
                (cons != null) ? cons.getControls() : null);
 
         this.dn = dn;
         return;
     }
         
+    /**
+     * Encode an array of LDAPModifications to ASN.1.
+     *
+     * @param mods an array of LDAPModification objects
+     *
+     * @return an ASN1SequenceOf object containing the modifications.
+     */
     final static
-    private ASN1SequenceOf getModifications( LDAPModification[] mods)
+    private ASN1SequenceOf encodeModifications( LDAPModification[] mods)
     {
         // Convert Java-API LDAPModification[] to RFC2251 SEQUENCE OF SEQUENCE
         ASN1SequenceOf rfcMods = new ASN1SequenceOf(mods.length);
         for(int i=0; i<mods.length; i++) {
-            LDAPModification mod = mods[i];
-            LDAPAttribute attr = mod.getAttribute();
+            LDAPAttribute attr = mods[i].getAttribute();
 
             // place modification attribute values in ASN1SetOf
             ASN1SetOf vals = new ASN1SetOf(attr.size());
@@ -64,7 +70,7 @@ public class LDAPModifyRequest extends LDAPMessage
 
             // create SEQUENCE containing mod operation and attr type and vals
             ASN1Sequence rfcMod = new ASN1Sequence(2);
-            rfcMod.add(new ASN1Enumerated(mod.getOp()));
+            rfcMod.add(new ASN1Enumerated(mods[i].getOp()));
             rfcMod.add(new RfcAttributeTypeAndValues(
                 new RfcAttributeDescription(attr.getName()), vals));
 
@@ -72,5 +78,71 @@ public class LDAPModifyRequest extends LDAPMessage
             rfcMods.add(rfcMod);
         }
         return rfcMods;    
+    }
+    
+    /**
+     * Returns of the dn of the entry to modify in the directory
+     *
+     * @return the dn of the entry to modify
+     */
+    public String getDN()
+    {
+        return getASN1Object().getRequestDN();
+    }        
+
+    /**
+     * Constructs the modifications associated with this request
+     *
+     * @return an array of LDAPModification objects
+     */
+    public LDAPModification[] getModifications()
+    {
+        // Get the RFC request object for this request
+        RfcModifyRequest req = (RfcModifyRequest)getASN1Object().getRequest();
+        // get beginning sequenceOf modifications
+        ASN1SequenceOf seqof = req.getModifications();
+        ASN1Object[] mods = seqof.toArray();
+        LDAPModification[] modifications = new LDAPModification[mods.length];
+        // Process each modification
+        for( int m=0; m < mods.length; m++) {
+            // Each modification consists of a mod type and a sequence
+            // containing the attr name and a set of values
+            ASN1Sequence opSeq = (ASN1Sequence)mods[m];
+            if( opSeq.size() != 2) {
+                throw new RuntimeException(
+                    "LDAPModifyRequest: modification " + m +
+                    " is wrong size: " + opSeq.size());
+            }
+            // Contains operation and sequence for the attribute
+            ASN1Object[] opArray = opSeq.toArray();
+            ASN1Enumerated asn1op = (ASN1Enumerated)opArray[0];
+            // get the operation
+            int op = asn1op.intValue();
+            ASN1Sequence attrSeq = (ASN1Sequence)opArray[1];
+            ASN1Object[] attrArray = attrSeq.toArray();
+            RfcAttributeDescription aname = (RfcAttributeDescription)attrArray[0];
+            String name = aname.stringValue();
+            ASN1SetOf avalue = (ASN1SetOf)attrArray[1];
+            ASN1Object[] valueArray = avalue.toArray();
+            LDAPAttribute attr = new LDAPAttribute( name);
+            
+            for( int v=0; v<valueArray.length; v++) {
+                RfcAttributeValue rfcV = (RfcAttributeValue)valueArray[v];
+                attr.addValue( rfcV.byteValue());
+            }
+            
+            modifications[m] = new LDAPModification( op, attr);
+        }
+        return modifications;
+    }
+    
+    /**
+     * Return an ASN1 representation of this modify request
+     *
+     * #return an ASN1 representation of this object
+     */
+    public String toString()
+    {
+        return getASN1Object().toString();
     }
 }

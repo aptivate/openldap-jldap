@@ -153,7 +153,7 @@ public class LDAPMessage
      */
     public final static int ABANDON_REQUEST         = 16;
 
-  
+
     /**
      * A search result reference operation.
      *
@@ -174,7 +174,7 @@ public class LDAPMessage
      *<p>EXTENDED_RESONSE = 24</p>
      */
     public final static int EXTENDED_RESPONSE       = 24;
-    
+
     /**
      * A request or response message for an asynchronous LDAP operation.
      */
@@ -183,22 +183,21 @@ public class LDAPMessage
     /**
      * Lock object to protect counter for message numbers
      */
-    /* 
+    /*
     private static Object msgLock = new Object();
     */
-    
+
     /**
      * Counters used to construct request message #'s, unique for each request
      * Will be enabled after ASN.1 conversion
      */
-    /* 
+    /*
     private static int msgNum = 0; // LDAP Request counter
     */
     private int imsgNum = -1;     // This instance LDAPMessage number
-    
+
     private int messageType = -1;
-    private boolean ifRequest = false;
-    
+
     /**
      * Creates an LDAPMessage when sending a protocol operation.
      *
@@ -241,15 +240,15 @@ public class LDAPMessage
                  RfcRequest op,
                  LDAPControl[] controls)
     {
-        
+
         // Get a unique number for this request message
         /* Turn on after ASN.1 conversion
         synchronized( msgLock) {
              msgNum += 1;
              imsgNum = msgNum;
-        }    
+        }
         */
-    
+
         messageType = type;
         RfcControls asn1Ctrls = null;
         if(controls != null) {
@@ -274,13 +273,13 @@ public class LDAPMessage
      *
      * @param message A response message.
      */
-    protected 
+    protected
     LDAPMessage(RfcLDAPMessage message)
     {
         this.message = message;
         return;
     }
-    
+
     /**
      * Returns a mutated clone of this LDAPMessage,
      * replacing base dn, filter.
@@ -297,25 +296,25 @@ public class LDAPMessage
     final LDAPMessage clone( String dn, String filter, boolean reference)
             throws LDAPException
     {
-        return new LDAPMessage( 
+        return new LDAPMessage(
             (RfcLDAPMessage)message.dupMessage( dn, filter, reference));
     }
 
     /**
      * Returns the LDAPMessage request associated with this response
      */
-    /* package */ 
+    /* package */
     final LDAPMessage getRequestingMessage()
     {
         if( Debug.LDAP_DEBUG) {
-            if( isRequest()) { 
+            if( isRequest()) {
                 throw new RuntimeException("LDAPMessage: Cannot retrieve " +
                     "requesting message for an LDAP Request Message");
-            }            
+            }
         }
         return message.getRequestingMessage();
     }
-    
+
     /**
      * Returns any controls in the message.
      */
@@ -357,7 +356,7 @@ public class LDAPMessage
         }
         return controls;
     }
-    
+
     /**
      * Instantiates an LDAPControl.  We search through our list of
      * registered controls.  If we find a matchiing OID we instantiate
@@ -480,7 +479,7 @@ public class LDAPMessage
         }
         return messageType;
     }
-    
+
     /**
      * Indicates whether the message is a request or a response
      *
@@ -489,10 +488,12 @@ public class LDAPMessage
      */
     public boolean isRequest()
     {
-        getName();
-        return ifRequest;
+        if( message instanceof RfcRequest) {
+            return true;
+        }
+        return false;
     }
-    
+
     /**
      * Returns the RFC 2251 LDAPMessage composed in this object.
      *
@@ -512,62 +513,75 @@ public class LDAPMessage
     {
         return getName() + "(" + getMessageID() + "): " + message.toString();
     }
-    
+
     private final
     String getName()
     {
+        String name;
         switch(getType()) {
             case SEARCH_RESPONSE:
-                return "LDAPSearchResponse";
+                name = "LDAPSearchResponse";
+                break;
             case SEARCH_RESULT:
-                return "LDAPSearchResult";
+                name = "LDAPSearchResult";
+                break;
             case SEARCH_REQUEST:
-                ifRequest = true;
-                return "LDAPSearchRequest";
+                name = "LDAPSearchRequest";
+                break;
             case MODIFY_REQUEST:
-                ifRequest = true;
-                return "LDAPModifyRequest";
+                name = "LDAPModifyRequest";
+                break;
             case MODIFY_RESPONSE:
-                return "LDAPModifyResponse";
+                name = "LDAPModifyResponse";
+                break;
             case ADD_REQUEST:
-                ifRequest = true;
-                return "LDAPAddRequest";
+                name = "LDAPAddRequest";
+                break;
             case ADD_RESPONSE:
-                return "LDAPAddResponse";
+                name = "LDAPAddResponse";
+                break;
             case DEL_REQUEST:
-                ifRequest = true;
-                return "LDAPDelRequest";
+                name = "LDAPDelRequest";
+                break;
             case DEL_RESPONSE:
-                return "LDAPDelResponse";
+                name = "LDAPDelResponse";
+                break;
             case MODIFY_RDN_REQUEST:
-                ifRequest = true;
-                return "LDAPModifyRDNRequest";
+                name = "LDAPModifyRDNRequest";
+                break;
             case MODIFY_RDN_RESPONSE:
-                return "LDAPModifyRDNResponse";
+                name = "LDAPModifyRDNResponse";
+                break;
             case COMPARE_REQUEST:
-                ifRequest = true;
-                return "LDAPCompareRequest";
+                name = "LDAPCompareRequest";
+                break;
             case COMPARE_RESPONSE:
-                return "LDAPCompareResponse";
+                name = "LDAPCompareResponse";
+                break;
             case BIND_REQUEST:
-                ifRequest = true;
-                return "LDAPBindRequest";
+                name = "LDAPBindRequest";
+                break;
             case BIND_RESPONSE:
-                return "LDAPBindResponse";
+                name = "LDAPBindResponse";
+                break;
             case UNBIND_REQUEST:
-                ifRequest = true;
-                return "LDAPUnbindRequest";
+                name = "LDAPUnbindRequest";
+                break;
             case ABANDON_REQUEST:
-                ifRequest = true;
-                return "LDAPAbandonRequest";
+                name = "LDAPAbandonRequest";
+                break;
             case SEARCH_RESULT_REFERENCE:
-                return "LDAPSearchResultReference";
+                name = "LDAPSearchResultReference";
+                break;
             case EXTENDED_REQUEST:
-                ifRequest = true;
-                return "LDAPExtendedRequest";
+                name = "LDAPExtendedRequest";
+                break;
             case EXTENDED_RESPONSE:
-                return "LDAPExtendedResponse";
+                name = "LDAPExtendedResponse";
+                break;
+            default:
+                throw new RuntimeException("LDAPMessage: Unknown Type " + getType());
         }
-        return "Message type: " + getType();
+        return name;
     }
 }

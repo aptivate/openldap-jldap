@@ -10,9 +10,13 @@ import com.novell.ldap.rfc2251.*;
  */
 public class LDAPDeleteRequest extends LDAPMessage
 {
-    private String dn;
-    
     /**
+     * Constructs a request to delete an entry from the directory
+     *
+     * @param dn the dn of the entry to delete
+     *
+     * @param cons the LDAPConstraints object containing any
+     * controls associated with this request.
      */
     public LDAPDeleteRequest( String dn,
                               LDAPConstraints cons)
@@ -21,7 +25,26 @@ public class LDAPDeleteRequest extends LDAPMessage
         super( LDAPMessage.DEL_REQUEST,
                new RfcDelRequest(dn),
                (cons != null) ? cons.getControls() : null);
-        this.dn = dn;
         return;
+    }
+    
+    /**
+     * Returns of the dn of the entry to delete from the directory
+     *
+     * @return the dn of the entry to delete
+     */
+    public String getDN()
+    {
+        return getASN1Object().getRequestDN();
+    }        
+    
+    /**
+     * Return an ASN1 representation of this delete request
+     *
+     * #return an ASN1 representation of this object
+     */
+    public String toString()
+    {
+        return getASN1Object().toString();
     }
 }

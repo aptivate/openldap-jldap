@@ -83,8 +83,23 @@ public class RfcModifyRequest extends ASN1Sequence implements RfcRequest {
         return new RfcModifyRequest( toArray(), base);
     }
     
+    /**
+     * Return the String value of the DN associated with this request
+     *
+     * @return the DN for this request.
+     */
     public final String getRequestDN()
     {
         return ((RfcLDAPDN)get(0)).stringValue();
+    }
+    
+    /**
+     * Return the Modifications for this request
+     *
+     * @return the modifications for this request.
+     */
+    public final ASN1SequenceOf getModifications()
+    {
+        return (ASN1SequenceOf)get(1);
     }
 }
