@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: DSMLReader.java,v 1.15 2002/11/14 19:36:30 $
+ * $Novell: DSMLReader.java,v 1.16 2003/01/15 23:14:55 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -26,7 +26,6 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.SAXException;
 
 import com.novell.ldap.*;
-import com.novell.ldap.client.DSMLHandler;
 
 /**
  * Reads, parses and converts DSML into LDAPMessages.

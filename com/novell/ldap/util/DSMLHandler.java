@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: DSMLHandler.java,v 1.23 2002/12/19 16:46:22 $
+ * $Novell: DSMLHandler.java,v 1.24 2003/01/15 23:14:52 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -12,7 +12,7 @@
  * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
  * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
  */
-package com.novell.ldap.client;
+package com.novell.ldap.util;
 
 import com.novell.ldap.*;
 import com.novell.ldap.rfc2251.*;
@@ -23,11 +23,13 @@ import java.io.UnsupportedEncodingException;
 import org.xml.sax.*;
 import org.xml.sax.helpers.DefaultHandler;
 
-public class DSMLHandler extends DefaultHandler implements
+/* package */
+class DSMLHandler extends DefaultHandler implements
         ContentHandler, ErrorHandler
 {
     /** Holds parsed LDAPMessages ready for use */
-    public ArrayList queue = new ArrayList();
+    /* package */
+    ArrayList queue = new ArrayList();
 
     /* variables used for message information */
     private LDAPMessage message = null;
@@ -910,16 +912,19 @@ public class DSMLHandler extends DefaultHandler implements
         return;
     }
 
+    
     public void warning(SAXParseException e) throws SAXException
     {
         System.out.println("warning: " + e.toString());
         throw e;
     }
+
     public void error(SAXParseException e) throws SAXException
     {
         System.out.println("error: " + e.toString());
         throw e;
     }
+    
     public void fatalError(SAXParseException e) throws SAXException
     {
         System.out.println("fatal error: " + e.toString());
@@ -962,7 +967,7 @@ public class DSMLHandler extends DefaultHandler implements
      * @see org.xml.sax.ContentHandler#startDocument
      */
     public void startDocument ()
-	throws SAXException
+			throws SAXException
     {
 	    // no op
         return;
@@ -982,7 +987,7 @@ public class DSMLHandler extends DefaultHandler implements
      * @see org.xml.sax.ContentHandler#endDocument
      */
     public void endDocument ()
-	throws SAXException
+			throws SAXException
     {
 	// no op
     }
@@ -1002,7 +1007,7 @@ public class DSMLHandler extends DefaultHandler implements
      * @see org.xml.sax.ContentHandler#startPrefixMapping
      */
     public void startPrefixMapping (String prefix, String uri)
-	throws SAXException
+			throws SAXException
     {
 	    // no op
         return;
@@ -1022,7 +1027,7 @@ public class DSMLHandler extends DefaultHandler implements
      * @see org.xml.sax.ContentHandler#endPrefixMapping
      */
     public void endPrefixMapping (String prefix)
-	throws SAXException
+			throws SAXException
     {
 	// no op
     }
@@ -1045,7 +1050,7 @@ public class DSMLHandler extends DefaultHandler implements
      * @see org.xml.sax.ContentHandler#ignorableWhitespace
      */
     public void ignorableWhitespace (char ch[], int start, int length)
-	throws SAXException
+			throws SAXException
     {
 	    // no op
         return;
@@ -1068,7 +1073,7 @@ public class DSMLHandler extends DefaultHandler implements
      * @see org.xml.sax.ContentHandler#processingInstruction
      */
     public void processingInstruction (String target, String data)
-	throws SAXException
+			throws SAXException
     {
 	    // no op
         return;
@@ -1089,25 +1094,29 @@ public class DSMLHandler extends DefaultHandler implements
      * @see org.xml.sax.ContentHandler#processingInstruction
      */
     public void skippedEntity (String name)
-	throws SAXException
+			throws SAXException
     {
 	    // no op
         return;
     }
 
-    public String getBatchRequestID() {
+    /* package */
+    String getBatchRequestID() {
         return this.batchRequestID;
     }
 
-    public boolean isParallelProcessing() {
+    /* package */
+    boolean isParallelProcessing() {
         return this.isParallel;
     }
 
-    public boolean isResponseUnordered() {
+    /* package */
+    boolean isResponseUnordered() {
         return this.isUnordered;
     }
 
-    public boolean isResumeOnError() {
+    /* package */
+    boolean isResumeOnError() {
         return this.isResumeOnError;
     }
 

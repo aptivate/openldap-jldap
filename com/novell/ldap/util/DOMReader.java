@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: DOMReader.java,v 1.5 2003/01/03 22:33:23 $
+ * $Novell: DOMReader.java,v 1.6 2003/01/10 19:09:19 $
  *
  * Copyright (C) 2002 - 2003 Novell, Inc. All Rights Reserved.
  *
@@ -18,7 +18,6 @@ package com.novell.ldap.util;
 import com.novell.ldap.LDAPMessage;
 import com.novell.ldap.LDAPException;
 import com.novell.ldap.LDAPLocalException;
-import com.novell.ldap.client.DSMLHandler;
 
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
