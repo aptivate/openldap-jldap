@@ -16,6 +16,7 @@
 package com.novell.ldap.rfc2251;
 
 import java.util.StringTokenizer;
+import java.util.Stack;
 
 import com.novell.ldap.asn1.*;
 import com.novell.ldap.LDAPException;
@@ -104,6 +105,8 @@ public class RfcFilter extends ASN1Choice
     //*************************************************************************
 
     private FilterTokenizer ft;
+    private Stack filterStack;
+    private boolean finalFound;
 
     //*************************************************************************
     // Constructor for Filter
@@ -121,12 +124,11 @@ public class RfcFilter extends ASN1Choice
     }
 
     /**
-     * Constructs a Filter object accepting an already parsed filter
-     * as an ASN1Tagged object.
-     */
-    public RfcFilter(ASN1Tagged rootFilterTag) {
+     * Constructs a Filter object that will be built up piece by piece.   */
+    public RfcFilter() {
         super(null);
-        setChoiceValue(rootFilterTag);
+        filterStack = new Stack();
+        //The choice value must be set later: setChoiceValue(rootFilterTag)
         return;
     }
 
@@ -443,8 +445,282 @@ public class RfcFilter extends ASN1Choice
         return toReturn;
     }
 
+    /* **********************************************************************
+     *  The following methods aid in building filters sequentially,
+     *  and is used by DSMLHandler:
+     ***********************************************************************/
 
+    /**
+     * Called by sequential filter building methods to add to a filter.
+     *
+     * <p>Verifies that the specified ASN1Object can be added, then adds the
+     * object to the filter.</p>
+     * @param current   Filter component to be added to the filter
+     * @throws LDAPLocalException Occurs when an invalid component is added, or
+     * when the component is out of sequence.
+     */
+    private void addObject(ASN1Object current) throws LDAPLocalException
+    {
+        if ( choiceValue() == null ) {
+            //ChoiceValue is the root ASN1 node
+            setChoiceValue(current);
+        } else {
+            ASN1Tagged topOfStack = (ASN1Tagged)filterStack.peek();
+            ASN1Object value = topOfStack.taggedValue();
+            if (value == null){
+                topOfStack.setTaggedValue(current);
+                filterStack.add(current);
+            } else if (value instanceof ASN1Set) {
+                ((ASN1Set)value).add( current );
+                //don't add this to the stack:
+            } else if (value.getIdentifier().getTag() == RfcFilter.NOT){
+                throw new LDAPLocalException(
+                        "Attemp to create more than one 'not' sub-filter",
+                        LDAPException.FILTER_ERROR);
+            }
+        }
+        int type = current.getIdentifier().getTag();
+        if (type == RfcFilter.AND || type == RfcFilter.OR ||
+                type == RfcFilter.NOT ){
+            filterStack.add(current);
+        }
+        return;
+    }
 
+    /**
+     * Creates and adds the ASN1Tagged value for a nestedFilter: AND, OR, or
+     * NOT.
+     *
+     * <p>Note that a Not nested filter can only have one filter, where AND
+     * and OR do not</p>
+     *
+     * @param rfcType Filter type:
+     *              [RfcFilter.AND | RfcFilter.OR | RfcFilter.NOT]
+     * @throws LDAPLocalException
+     */
+    public void startNestedFilter(int rfcType) throws LDAPLocalException
+    {
+        ASN1Object current;
+        if (rfcType == RfcFilter.AND || rfcType == RfcFilter.OR){
+            current = new ASN1Tagged(
+                    new ASN1Identifier(ASN1Identifier.CONTEXT, true, rfcType),
+                    new ASN1Set(),  //content to be set later
+                    false);
+        } else if (rfcType == RfcFilter.NOT){
+            current = new ASN1Tagged(
+                    new ASN1Identifier(ASN1Identifier.CONTEXT, true, rfcType),
+                    null,  //content to be set later
+                    true);
+        } else {
+            throw new LDAPLocalException(
+                "Attempt to create a nested filter other than AND, OR or NOT",
+                LDAPException.FILTER_ERROR);
+        }
+        addObject(current);
+        return;
+    }
+
+    /**
+     * Completes a nested filter and checks for the valid filter type.
+     * @param rfcType  Type of filter to complete.
+     * @throws LDAPLocalException  Occurs when the specified type differs from
+     * the current filter component.
+     */
+    public void endNestedFilter(int rfcType) throws LDAPLocalException
+    {
+        int topOfStackType = ((ASN1Object)
+                filterStack.peek()).getIdentifier().getTag();
+        if (topOfStackType != rfcType){
+            throw new LDAPLocalException("Missmatched ending of nested filter",
+                    LDAPException.FILTER_ERROR);
+        }
+        filterStack.pop();
+        return;
+    }
+
+    /**
+     * Creates and addes a substrings filter component.
+     *
+     * <p>startSubstrings must be immediatly followed by at least one
+     * addSubstring method and one terminating endSubstrings method</p>
+     * @throws LDAPLocalException
+     * Occurs when this component is created out of sequence.
+     */
+    public void startSubstrings(String attrName) throws LDAPLocalException
+    {
+        finalFound = false;
+        ASN1SequenceOf seq = new ASN1SequenceOf(5);
+        ASN1Object current = new ASN1Tagged(
+                        new ASN1Identifier(ASN1Identifier.CONTEXT, true, RfcFilter.SUBSTRINGS),
+                        new RfcSubstringFilter(
+                            new RfcAttributeDescription(attrName), seq),
+                            //this sequence will be filled in later
+                        false);
+        addObject(current);
+        filterStack.push(seq);
+        return;
+    }
+
+    /**
+     * Adds a Substring component of initial, any or final substring matching.
+     *
+     * <p>This method can be invoked only if startSubString was the last filter-
+     * building method called.  A substring is not required to have an 'INITIAL'
+     * substring.  However, when a filter contains an 'INITIAL' substring only
+     * one can be added, and it must be the first substring added. Any number of
+     * 'ANY' substrings can be added. A substring is not required to have a
+     * 'FINAL' substrings either.  However, when a filter does contain a 'FINAL'
+     * substring only one can be added, and it must be the last substring added.
+     * </p>
+     * @param type Substring type: RfcFilter.[INITIAL | ANY | FINAL]
+     * @param value Value to use for matching
+     * @throws LDAPLocalException   Occurs if this method is called out of
+     * sequence or the type added is out of sequence.
+     */
+    public void addSubstring(int type, byte[] value)
+            throws LDAPLocalException
+    {
+        try {
+            ASN1SequenceOf substringSeq = (ASN1SequenceOf)filterStack.peek();
+            if (type != RfcFilter.INITIAL && type != RfcFilter.ANY &&
+                    type != RfcFilter.FINAL){
+                throw new LDAPLocalException("Attempt to add an invalid " +
+                        "substring type", LDAPException.FILTER_ERROR);
+            }
+
+            if (type == RfcFilter.INITIAL && substringSeq.size() !=0)
+            {
+                throw new LDAPLocalException("Attempt to add an initial " +
+                        "substring match after the first substring",
+                        LDAPException.FILTER_ERROR);
+            }
+            if (finalFound){
+                throw new LDAPLocalException("Attempt to add a substring " +
+                        "match after a final substring match",
+                        LDAPException.FILTER_ERROR);
+            }
+            if (type == RfcFilter.FINAL){
+                finalFound = true;
+            }
+            substringSeq.add(
+                new ASN1Tagged(
+                    new ASN1Identifier(ASN1Identifier.CONTEXT, false, type),
+                    new RfcLDAPString(value),
+                    false));
+        } catch (ClassCastException e){
+            throw new LDAPLocalException("A call to addSubstring occured " +
+                "without calling startSubstring", LDAPException.FILTER_ERROR);
+        }
+        return;
+    }
+
+    /**
+     * Completes a SubString filter component.
+     *
+     * @throws LDAPLocalException Occurs when this is called out of sequence,
+     * or the substrings filter is empty.
+     */
+    public void endSubstrings() throws LDAPLocalException
+    {
+        try {
+            finalFound = false;
+            ASN1SequenceOf substringSeq = (ASN1SequenceOf) filterStack.peek();
+            if (substringSeq.size() == 0){
+                throw new LDAPLocalException("Empty substring filter",
+                        LDAPException.FILTER_ERROR);
+            }
+        } catch (ClassCastException e){
+            throw new LDAPLocalException("Missmatched ending of substrings",
+                        LDAPException.FILTER_ERROR);
+        }
+        filterStack.pop();
+        return;
+    }
+
+    /**
+     * Creates and adds an AttributeValueAssertion to the filter.
+     *
+     * @param rfcType Filter type: RfcFilter.[EQUALITY_MATCH | GREATER_OR_EQUAL
+     *  | LESS_OR_EQUAL | APPROX_MATCH ]
+     * @param attrName Name of the attribute to be asserted
+     * @param value Value of the attribute to be asserted
+     * @throws LDAPLocalException
+     *  Occurs when the filter type is not a valid attribute assertion.
+     */
+    public void addAttributeValueAssertion(int rfcType,
+                      String attrName, byte[] value) throws LDAPLocalException
+    {
+        if (!filterStack.empty() &&
+             filterStack.peek() instanceof ASN1SequenceOf)
+        { //If a sequenceof is on the stack then substring is left on the stack
+            throw new LDAPLocalException(
+                    "Cannot insert an attribute assertion in a substring",
+                    LDAPException.FILTER_ERROR);
+        }
+        if ((rfcType != RfcFilter.EQUALITY_MATCH) &&
+            (rfcType != RfcFilter.GREATER_OR_EQUAL) &&
+            (rfcType != RfcFilter.LESS_OR_EQUAL) &&
+            (rfcType != RfcFilter.APPROX_MATCH)) {
+            throw new LDAPLocalException(
+                    "Invalid filter type for AttributeValueAssertion",
+                    LDAPException.FILTER_ERROR);
+        }
+        ASN1Object current = new ASN1Tagged(
+                    new ASN1Identifier(ASN1Identifier.CONTEXT, true, rfcType),
+                    new RfcAttributeValueAssertion(
+                            new RfcAttributeDescription(attrName),
+                            new RfcAssertionValue(value)),
+                    false);
+        addObject(current);
+        return;
+    }
+
+    /**
+     * Creates and adds a present matching to the filter.
+     *
+     * @param attrName Name of the attribute to check for presence.
+     * @throws LDAPLocalException
+     *      Occurs if addPresent is called out of sequence.
+     */
+    public void addPresent(String attrName) throws LDAPLocalException
+    {
+        ASN1Object current = new ASN1Tagged(
+                new ASN1Identifier(ASN1Identifier.CONTEXT, false,
+                        RfcFilter.PRESENT),
+                new RfcAttributeDescription(attrName),
+                false);
+        addObject(current);
+        return;
+    }
+
+    /**
+     * Adds an extensible match to the filter.
+     *
+     * @param matchingRule
+     *      OID or name of the matching rule to use for comparison
+     * @param attrName  Name of the attribute to match.
+     * @param value  Value of the attribute to match against.
+     * @param useDNMatching Indicates whether DN matching should be used.
+     * @throws LDAPLocalException
+     *      Occurs when addExtensibleMatch is called out of sequence.
+     */
+    public void addExtensibleMatch(String matchingRule, String attrName,
+                                   byte[] value, boolean useDNMatching)
+            throws LDAPLocalException
+    {
+        ASN1Object current = new ASN1Tagged(
+            new ASN1Identifier(ASN1Identifier.CONTEXT, true,
+                    RfcFilter.EXTENSIBLE_MATCH),
+            new RfcMatchingRuleAssertion(
+                (matchingRule==null) ? null:new RfcMatchingRuleId(matchingRule),
+                (attrName==null) ? null:new RfcAttributeDescription(attrName),
+                new RfcAssertionValue(value),
+                (useDNMatching == false) ? null :
+                new ASN1Boolean(true)),
+            false);
+        addObject(current);
+        return;
+    }
 }
 
 /**
@@ -651,4 +927,5 @@ class FilterTokenizer
         }
         return filter.charAt(i);
     }
+
 }
