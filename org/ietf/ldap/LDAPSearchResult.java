@@ -19,7 +19,8 @@ package org.ietf.ldap;
  *  Encapsulates a single search result that is in response to an asynchronous
  *  search operation.
  *
- * @see com.novell.ldap.LDAPSearchResult
+ *  @see <a href="../../../../doc/com/novell/ldap/LDAPSearchResult.html">
+            com.novell.ldap.LDAPSearchResult</a>
  */
 public class LDAPSearchResult extends LDAPMessage
 {

@@ -19,7 +19,8 @@ package org.ietf.ldap;
  *  A low-level mechanism for queuing asynchronous search results
  *  and references received from a server.
  *
- * @see com.novell.ldap.LDAPSearchListener
+ *  @see <a href="../../../../doc/com/novell/ldap/LDAPSearchListener.html">
+            com.novell.ldap.LDAPSearchListener</a>
  */
 public class LDAPSearchListener implements LDAPListener
 {
@@ -38,6 +39,7 @@ public class LDAPSearchListener implements LDAPListener
     /**
      * Returns a com.novell.ldap.LDAPSearchListener object
      */
+    /* package */
     com.novell.ldap.LDAPSearchListener getWrappedObject()
     {
         return listener;
@@ -46,7 +48,9 @@ public class LDAPSearchListener implements LDAPListener
    /**
     * Returns the message IDs for all outstanding requests.
     *
-    * @see com.novell.ldap.LDAPSearchListener#getMessageIDs()
+    * @see <a href="../../../../doc/com/novell/ldap/LDAPSearchListener.html
+            #getMessageIDs()">
+            com.novell.ldap.LDAPSearchListener.getMessageIDs()</a>
     */
     public int[] getMessageIDs()
     {
@@ -57,7 +61,9 @@ public class LDAPSearchListener implements LDAPListener
     * Reports whether a response has been received from the server and
     * not yet retrieved with getResponse.
     *
-    * @see com.novell.ldap.LDAPSearchListener#isResponseReceived()
+    * @see <a href="../../../../doc/com/novell/ldap/LDAPSearchListener.html
+            #isResponseReceived()">
+            com.novell.ldap.LDAPSearchListener.isResponseReceived()</a>
     */
     public boolean isResponseReceived()
     {
@@ -68,7 +74,9 @@ public class LDAPSearchListener implements LDAPListener
     * Reports whether a response has been received from the server and
     * not yet retrieved with getResponse.
     *
-    * @see com.novell.ldap.LDAPSearchListener#isResponseReceived(int)
+    * @see <a href="../../../../doc/com/novell/ldap/LDAPSearchListener.html
+            #isResponseReceived(int)">
+            com.novell.ldap.LDAPSearchListener.isResponseReceived(int)</a>
     */
     public boolean isResponseReceived(int msgid)
     {
@@ -79,7 +87,10 @@ public class LDAPSearchListener implements LDAPListener
     * Merges two response listeners by moving the contents from another
     * listener to this one.
     *
-    * @see com.novell.ldap.LDAPSearchListener#merge(LDAPResponseListener)
+    * @see <a href="../../../../doc/com/novell/ldap/LDAPSearchListener.html
+            #merge(com.novell.ldap.LDAPResponseListener)">
+            com.novell.ldap.LDAPSearchListener.merge(
+            LDAPResponseListener)</a>
     */
     public void merge(LDAPResponseListener listener2)
     {
@@ -94,7 +105,9 @@ public class LDAPSearchListener implements LDAPListener
      * Reports true if all results have been received for a particular
      * message id.
      *
-     * @see com.novell.ldap.LDAPSearchListener#isComplete(int)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPSearchListener.html
+            #isComplete(int)">
+            com.novell.ldap.LDAPSearchListener.isComplete(int)</a>
      */
     public boolean isComplete( int msgid )
     {
@@ -106,7 +119,9 @@ public class LDAPSearchListener implements LDAPListener
      * associated with the object have completed or been canceled, and
      * returns the response.
      *
-     * @see com.novell.ldap.LDAPSearchListener#getResponse(int)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPSearchListener.html
+            #getResponse()">
+            com.novell.ldap.LDAPSearchListener.getResponse()</a>
      */
     public LDAPMessage getResponse()
             throws LDAPException
@@ -129,7 +144,9 @@ public class LDAPSearchListener implements LDAPListener
      * associated with the object have completed or been canceled, and
      * returns the response.
      *
-     * @see com.novell.ldap.LDAPSearchListener#getResponse(int)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPSearchListener.html
+            #getResponse(int)">
+            com.novell.ldap.LDAPSearchListener.getResponse(int)</a>
      */
     public LDAPMessage getResponse(int msgid)
             throws LDAPException
