@@ -16,13 +16,42 @@
 package com.novell.ldap;
 
 /**
- *
  * A single add, delete, or replace operation to an LDAPAttribute.
  *
  * <p>An LDAPModification contains information on the type of modification
- * being performed, the name of the attribute to be replaced and the new
+ * being performed, the name of the attribute to be replaced, and the new
  * value.  Multiple modifications are expressed as an array of modifications,
- * viz. <code>LDAPModification[]</code>.</p>
+ * i.e., <code>LDAPModification[]</code>.</p>
+ *
+ * <p>An LDAPModification or an LDAPModification array enable you to modify
+ * an attribute of an LDAP entry. The entire array of modifications must
+ * be performed by the server as a single atomic operation in the order they
+ * are listed. No changes are made to the directory unless all the operations
+ * succeed. If all succeed, a success result is returned to the application.
+ * It should be noted that if the connection fails during a modification,
+ * it is indeterminate whether the modification occurred or not.</p>
+ *
+ * <p>There are three types of modification operations: Add, Delete,
+ * and Replace.</p>
+ *
+ * <p><b>Add: </b>Creates the attribute if it doesn't exist, and adds
+ * the specified values. This operation must contain at least one value, and
+ * all values of the attribute must be unique.</p>
+ *
+ * <p><b>Delete: </b>Deletes specified values from the attribute. If no
+ * values are specified, or if all existing values of the attribute are
+ * specified, the attribute is removed. Mandatory attributes cannot be
+ * removed.</p>
+ *
+ * <p><b>Replace: </b>Creates the attribute if necessary, and replaces
+ * all existing values of the attribute with the specified values.
+ * If you wish to keep any existing values of a multi-valued attribute,
+ * you must include these values in the replace operation.
+ * A replace operation with no value will remove the entire attribute if it
+ * exists, and is ignored if the attribute does not exist.</p>
+ *
+ * <p>Additional information on LDAP modifications is available in section 4.6
+ * of <a href="http://www.ietf.org/rfc/rfc2251.txt">rfc2251.txt</a></p>
  *
  *  <p>Sample Code:
  *     <DT>Adding, replacing, or deleting individual attribute values
@@ -33,7 +62,6 @@ package com.novell.ldap;
  *
  * @see LDAPConnection#modify
  * @see LDAPAttribute
- *
  */
 public class LDAPModification {
 
