@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Encoder.java,v 1.5 2000/09/11 21:05:52 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Encoder.java,v 1.6 2001/03/01 00:29:59 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -46,23 +46,23 @@ public interface ASN1Encoder extends Serializable {
    public void encode(ASN1Numeric n, OutputStream out)
       throws IOException;
 
-   /**
+   /* ASN1 TYPE NOT YET SUPPORTED
     * Encode an ASN1Real directly to a stream.
-    */
    public void encode(ASN1Real r, OutputStream out)
       throws IOException;
-
+    */
+    
    /**
     * Encode an ASN1Null directly to a stream.
     */
    public void encode(ASN1Null n, OutputStream out)
       throws IOException;
 
-   /**
+   /* ASN1 TYPE NOT YET SUPPORTED
     * Encode an ASN1BitString directly to a stream.
-    */
    public void encode(ASN1BitString bs, OutputStream out)
       throws IOException;
+    */      
 
    /**
     * Encode an ASN1OctetString directly to a stream.
@@ -70,18 +70,18 @@ public interface ASN1Encoder extends Serializable {
    public void encode(ASN1OctetString os, OutputStream out)
       throws IOException;
 
-   /**
+   /* ASN1 TYPE NOT YET SUPPORTED
     * Encode an ASN1ObjectIdentifier directly to a stream.
-    */
    public void encode(ASN1ObjectIdentifier oi, OutputStream out)
       throws IOException;
-
-   /**
-    * Encode an ASN1CharacterString directly to a stream.
     */
+
+   /* ASN1 TYPE NOT YET SUPPORTED
+    * Encode an ASN1CharacterString directly to a stream.
    public void encode(ASN1CharacterString cs, OutputStream out)
       throws IOException;
-
+    */
+    
    //*************************************************************************
    // Encoder for ASN.1 structured types
    //*************************************************************************

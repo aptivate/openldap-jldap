@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Decoder.java,v 1.4 2000/09/11 21:05:52 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Decoder.java,v 1.5 2001/03/01 00:29:59 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -66,17 +66,17 @@ public interface ASN1Decoder extends Serializable {
    public Object decodeNumeric(InputStream in, int len)
       throws IOException;
 
-   /**
+   /* ASN1 TYPE NOT YET SUPPORTED  
     * Decode a REAL directly from a stream.
-    */
    public Object decodeReal(InputStream in, int len)
       throws IOException;
-
-   /**
-    * Decode a BIT_STRING directly from a stream.
     */
+    
+   /* ASN1 TYPE NOT YET SUPPORTED  
+    * Decode a BIT_STRING directly from a stream.
    public Object decodeBitString(InputStream in, int len)
       throws IOException;
+    */
 
    /**
     * Decode an OCTET_STRING directly from a stream.
@@ -84,11 +84,11 @@ public interface ASN1Decoder extends Serializable {
    public Object decodeOctetString(InputStream in, int len)
       throws IOException;
 
-   /**
+   /* ASN1 TYPE NOT YET SUPPORTED  
     * Decode an OBJECT_IDENTIFIER directly from a stream.
-    */
    public Object decodeObjectIdentifier(InputStream in, int len)
       throws IOException;
+    */
 
    /**
     * Decode a CharacterString directly from a stream.
@@ -107,28 +107,30 @@ public interface ASN1Decoder extends Serializable {
    // Decoders for ASN.1 useful types
    //*************************************************************************
 
-   /**
+   /* ASN1 TYPE NOT YET SUPPORTED  
     * Decode a GENERALIZED_TIME directly from a stream.
-    */
    public Object decodeGeneralizedTime(InputStream in, int len)
       throws IOException;
+     */
 
-   /**
+   /* ASN1 TYPE NOT YET SUPPORTED  
     * Decode a UNIVERSAL_TIME directly from a stream.
-    */
    public Object decodeUniversalTime(InputStream in, int len)
       throws IOException;
+      */
 
-   /**
+   /* ASN1 TYPE NOT YET SUPPORTED  
     * Decode an EXTERNAL directly from a stream.
-    */
    public Object decodeExternal(InputStream in, int len)
       throws IOException;
-
-   /**
-    * Decode an OBJECT_DESCRIPTOR directly from a stream.
     */
+      
+
+   /* ASN1 TYPE NOT YET SUPPORTED  
+    * Decode an OBJECT_DESCRIPTOR directly from a stream.
    public Object decodeObjectDescriptor(InputStream in, int len)
       throws IOException;
+    */
+      
 }
 

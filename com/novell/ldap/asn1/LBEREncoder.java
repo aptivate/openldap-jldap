@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/LBEREncoder.java,v 1.5 2001/02/28 16:04:42 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/LBEREncoder.java,v 1.6 2001/03/01 00:30:04 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -99,15 +99,15 @@ public class LBEREncoder implements ASN1Encoder {
       return;
    }
 
-   /**
+   /* ASN1 TYPE NOT YET SUPPORTED
     * Encode an ASN1Real directly to a stream.
-    */
    public void encode(ASN1Real r, OutputStream out)
       throws IOException
    {
       throw new IOException("LBEREncoder: Encode to a stream not implemented");
    }
-
+   */
+    
    /**
     * Encode an ASN1Null directly to a stream.
     */
@@ -119,15 +119,15 @@ public class LBEREncoder implements ASN1Encoder {
       return;
    }
 
-   /**
+   /* ASN1 TYPE NOT YET SUPPORTED
     * Encode an ASN1BitString directly to a stream.
-    */
    public void encode(ASN1BitString bs, OutputStream out)
       throws IOException
    {
       throw new IOException("LBEREncoder: Encode to a stream not implemented");
    }
-
+   */
+   
    /**
     * Encode an ASN1OctetString directly to a stream.
     */
@@ -140,24 +140,25 @@ public class LBEREncoder implements ASN1Encoder {
       return;
    }
 
-   /**
+   /* ASN1 TYPE NOT YET SUPPORTED
     * Encode an ASN1ObjectIdentifier directly to a stream.
-    */
    public void encode(ASN1ObjectIdentifier oi, OutputStream out)
       throws IOException
    {
       throw new IOException("LBEREncoder: Encode to a stream not implemented");
    }
+   */
+   
 
-   /**
+   /* ASN1 TYPE NOT YET SUPPORTED
     * Encode an ASN1CharacterString directly to a stream.
-    */
    public void encode(ASN1CharacterString cs, OutputStream out)
       throws IOException
    {
       throw new IOException("LBEREncoder: Encode to a stream not implemented");
    }
-
+   */
+    
    //*************************************************************************
    // Encoders for ASN.1 structured types
    //*************************************************************************
