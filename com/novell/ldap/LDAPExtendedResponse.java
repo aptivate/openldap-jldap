@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: LDAPExtendedResponse.java,v 1.3 2000/03/14 18:17:27 smerrill Exp $
+ * $Id: LDAPExtendedResponse.java,v 1.4 2000/07/26 16:48:25 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -26,6 +26,11 @@ import com.novell.ldap.client.protocol.lber.*;
  *
  *  An LDAPExtendedResponse object encapsulates a server response to an
  *  extended operation request.
+ *
+ *  Extended Response ::= [APPLICATION 24] SEQUENCE {
+ *      COMPONENTS OF LDAPResult,
+ *      reponseName [10]    LDAPOID OPTIONAL
+ *      response    [11]    OCTET STRING OPTIONAL }
  */
 public class LDAPExtendedResponse extends LDAPResponse {
 
