@@ -58,15 +58,15 @@ public class LDIFReader extends LDIF implements LDAPImport {
     private String           changeField;               // record change field
     private String           changeOperation;           //
     private String           line;
-    private StringBuffer     bLine = new StringBuffer();
+    private StringBuffer     bLine = null;//new StringBuffer();
     private byte[]           byteValue = new byte[0];   // for any bytes
     private boolean          hasControls = false;       //
     private boolean          isBase64Encoded;           //
     private boolean          criticality;               // control criticaliry
-    private ArrayList        rLines = new ArrayList();             // record lines/fields
+    private ArrayList        rLines = new ArrayList();  // record lines/fields
     private BufferedReader   bufReader;
     private LDAPControl[]    controls = null;
-    private LDAPAttributeSet as = null;
+    private LDAPAttributeSet attrSet = null;
     private LDAPEntry        currentEntry = null;
     private LDAPOperation    currentChange = null;
     private Base64Decoder    base64Decoder = new Base64Decoder();
@@ -246,7 +246,7 @@ public class LDIFReader extends LDIF implements LDAPImport {
         toRecordProperties();
 
         // create LDAPentry object
-        currentEntry = new LDAPEntry(this.entryDN, this.as);
+        currentEntry = new LDAPEntry(this.entryDN, this.attrSet);
 
         return currentEntry;
     }
@@ -281,86 +281,86 @@ public class LDIFReader extends LDIF implements LDAPImport {
         toRecordProperties();
 
         switch( operationType ) {
-                    // construct a specific change record object and let the
-                    // super class object reference it
-                    case LDAPOperation.LDAP_ADD :
-                        currentEntry = toLDAPEntry();
-                        if (controls == null)
-                            currentChange = new LDAPAdd(currentEntry);
-                        else
-                            currentChange = new LDAPAdd(currentEntry, controls);
-                        break;
+            // construct a specific change record object and let the
+            // super class object reference it
+            case LDAPOperation.LDAP_ADD :
+                currentEntry = toLDAPEntry();
+                if (controls == null)
+                    currentChange = new LDAPAdd(currentEntry);
+                else
+                    currentChange = new LDAPAdd(currentEntry, controls);
+                break;
 
-                    case LDAPOperation.LDAP_DELETE :
-                        if (controls == null)
-                            currentChange = new LDAPDelete(this.deleteDN);
-                        else
-                            currentChange =
-                                  new LDAPDelete(this.deleteDN, controls);
-                        break;
+            case LDAPOperation.LDAP_DELETE :
+                if (controls == null)
+                    currentChange = new LDAPDelete(this.deleteDN);
+                else
+                    currentChange =
+                          new LDAPDelete(this.deleteDN, controls);
+                break;
 
-                    case LDAPOperation.LDAP_MODDN :
-                        String[] modInfo = toModInfo();
-                        boolean  delOldRdn;
+            case LDAPOperation.LDAP_MODDN :
+                String[] modInfo = toModInfo();
+                boolean  delOldRdn;
 
-                        if ( Integer.parseInt(modInfo[1]) == 1 ) {
-                            delOldRdn = true;
-                        }
-                        else {
-                            delOldRdn = false;
-                        }
+                if ( Integer.parseInt(modInfo[1]) == 1 ) {
+                    delOldRdn = true;
+                }
+                else {
+                    delOldRdn = false;
+                }
 
-                        String sup = modInfo[2];
-                        if (controls == null) {
-                            if( sup.length() == 0 ) {
-                                currentChange = new LDAPModDN(
-                                                    this.entryDN,
-                                                    modInfo[0],
-                                                    delOldRdn);
-                            }
-                            else {
-                                currentChange = new LDAPModDN(
-                                                    this.entryDN,
-                                                    modInfo[0],
-                                                    delOldRdn,
-                                                    modInfo[2]);
-                            }
-                        }
-                        else {
-                            if((sup.length())==0 ) {
-                                currentChange = new LDAPModDN(
-                                                    this.entryDN,
-                                                    modInfo[0],
-                                                    delOldRdn,
-                                                    controls);
-                            }
-                            else {
-                                currentChange = new LDAPModDN(this.entryDN,
-                                                    modInfo[0],
-                                                    delOldRdn,
-                                                    modInfo[2],
-                                                    controls);
-                            }
+                String sup = modInfo[2];
+                if (controls == null) {
+                    if( sup.length() == 0 ) {
+                        currentChange = new LDAPModDN(
+                                            this.entryDN,
+                                            modInfo[0],
+                                            delOldRdn);
+                    }
+                    else {
+                        currentChange = new LDAPModDN(
+                                            this.entryDN,
+                                            modInfo[0],
+                                            delOldRdn,
+                                            modInfo[2]);
+                    }
+                }
+                else {
+                    if((sup.length())==0 ) {
+                        currentChange = new LDAPModDN(
+                                            this.entryDN,
+                                            modInfo[0],
+                                            delOldRdn,
+                                            controls);
+                    }
+                    else {
+                        currentChange = new LDAPModDN(this.entryDN,
+                                            modInfo[0],
+                                            delOldRdn,
+                                            modInfo[2],
+                                            controls);
+                    }
 
-                        }
-                        break;
+                }
+                break;
 
-                    case LDAPOperation.LDAP_MODIFY :
+            case LDAPOperation.LDAP_MODIFY :
 
-                        LDAPModification[] mods = toLDAPModifications();
-                        if (controls == null) {
-                            currentChange = new LDAPModify(this.entryDN, mods);
-                        }
-                        else {
-                            currentChange =
-                                  new LDAPModify(this.entryDN, mods, controls);
-                        }
-                        break;
+                LDAPModification[] mods = toLDAPModifications();
+                if (controls == null) {
+                    currentChange = new LDAPModify(this.entryDN, mods);
+                }
+                else {
+                    currentChange =
+                          new LDAPModify(this.entryDN, mods, controls);
+                }
+                break;
 
-                    default:
-                        // unknown change type
-                        throw new IOException("com.novell.ldap.ldif_dsml."
-                                          + "LDIFReader: Unknown change type");
+            default:
+                // unknown change type
+                throw new IOException("com.novell.ldap.ldif_dsml."
+                                  + "LDIFReader: Unknown change type");
                 }
 
         return currentChange;
@@ -433,7 +433,7 @@ public class LDIFReader extends LDIF implements LDAPImport {
 
         int i, j, k, index, len;
 
-        len = this.fieldNumber;
+        len = this.rLines.size();
 
         // remove the leading space of any continuation line
         // and concatinate it with the previous line
@@ -450,7 +450,7 @@ public class LDIFReader extends LDIF implements LDAPImport {
         }
 
         // clean the leading spaces between ': and value' or between '::'
-        // and value; the spaces in controld field need special treat
+        // and value; the spaces in controld fields need more treatment
         for ( i=0; i<len; i++ ) {
 
             // if the line starts with '-', nothing to do
@@ -487,34 +487,38 @@ public class LDIFReader extends LDIF implements LDAPImport {
         for ( i=1; i<this.controlNumber+1; i++ ) {
 
             // j references the first colon in control field,
-            // skip it and search again
             j = 8; // length of 'control:'
-            for ( ; j<((StringBuffer)this.rLines.get(i)).length(); j++) {
-                if( (((StringBuffer)this.rLines.get(i)).charAt(j) ==
-                                                                   (int)':')) {
-                        break;
+
+            if (((StringBuffer)this.rLines.get(i)).charAt(j-1)!=(int)':') {
+                throw new RuntimeException(
+                        "com.novell.ldap.ldif_dsml.LDIFReader: "
+                                 + "malformated control field: " + i);
+            }
+
+            // any space between "control:'  and contro OID has been removed.
+            // now look for ':' or '::' before value.
+            for (; j<((StringBuffer)this.rLines.get(i)).length(); j++) {
+
+                if (((StringBuffer)this.rLines.get(i)).charAt(j)==(int)':') {
+                    break;
                 }
             }
 
-                if ( j<((StringBuffer)this.rLines.get(i)).length()-2 ) {
-
-                    if ( (((StringBuffer)this.rLines.get(i)).charAt(j+1))
-                                                                 == (int)':') {
-                        // remove any spaces between '::' and encoded value
-                        while( ((StringBuffer)this.rLines.get(i)).charAt(j+2)
-                                                                == (int)' ' ) {
-                            ((StringBuffer)this.rLines.get(i)).delete(j+2, j+3);
-                        }
+            if ( j<((StringBuffer)this.rLines.get(i)).length()-2 ) {
+                if (((StringBuffer)this.rLines.get(i)).charAt(j+1)==(int)':') {
+                    // remove any spaces between ':' and base64 encoded value
+                    while(((StringBuffer)this.rLines.get(i)).charAt(j+2)==(int)' ') {
+                        ((StringBuffer)this.rLines.get(i)).delete(j+2, j+3);
                     }
-                    else {
-                        // remove any spaces between ':' and value
-                        while( ((StringBuffer)this.rLines.get(i)).charAt(j+1)
-                                                               == (int)' ' ) {
-                            ((StringBuffer)this.rLines.get(i)).delete(j+1, j+2);
-                        }
+                }
+                else {
+                    // remove any spaces between ':' and value
+                    while(((StringBuffer)this.rLines.get(i)).charAt(j+1)==(int)' ') {
+                        ((StringBuffer)this.rLines.get(i)).delete(j+1, j+2);
                     }
                 }
             }
+        }
 
 
         // get the number of fields in the current record
@@ -551,7 +555,7 @@ public class LDIFReader extends LDIF implements LDAPImport {
             this.byteValue = this.base64Decoder.decoder(
                                  (StringBuffer)this.rLines.get(0),
                                  4,
-                                 ((StringBuffer)this.rLines.get(0)).length());
+                                 len);
             this.entryDN = new String(this.byteValue, "UTF8");
         }
 
@@ -571,7 +575,7 @@ public class LDIFReader extends LDIF implements LDAPImport {
 
                     // there is no leading space in front of contro OID
                     // the loop breaks if it sees a space or a colon
-                    for( j=8;
+                    for( j=8; // skip over 'control:'
                          j<((StringBuffer)this.rLines.get(i)).length();
                          j++) {
                         if ((((StringBuffer)this.rLines.get(i)).charAt(j)
@@ -736,11 +740,15 @@ public class LDIFReader extends LDIF implements LDAPImport {
         int i,index;
 
         // index points to the first char of change value
-        index = 11;
-        // skip any space, controlNumber+1 points to changetype field
-        while( ((StringBuffer)this.rLines.get(this.controlNumber+1))
-                                                  .charAt(index) == (int)' ' ){
-             index++;
+        index = 11; // length of 'changetype:'
+
+        // controlNumber+1 points to changetype field
+        if(((StringBuffer)this.rLines.get(this.controlNumber+1))
+                                                 .charAt(index-1) != (int)':' ){
+             throw new RuntimeException(
+                 "com.novell.ldap.ldif_dsml.LDIFReader: "
+                     + "malformated controltype field: "
+                            + "field " + this.controlNumber+1);
         }
 
         this.changeOperation = ((StringBuffer)this.rLines.
@@ -782,7 +790,7 @@ public class LDIFReader extends LDIF implements LDAPImport {
         String attrName = null, attrValue = null;
 
         len = this.rLines.size();
-        this.as = new LDAPAttributeSet();
+        this.attrSet = new LDAPAttributeSet();
 
         if ( isContent() ) {
             startIndex = 1;
@@ -826,31 +834,31 @@ public class LDIFReader extends LDIF implements LDAPImport {
                              ((StringBuffer)this.rLines.get(i)).length());
             }
 
-            if ( this.as.getAttribute(attrName) == null ) {
+            if ( this.attrSet.getAttribute(attrName) == null ) {
 
                 // this is a new attribute
                 if ( this.isBase64Encoded ) {
-                    this.as.add(new LDAPAttribute(attrName, this.byteValue));
+                    this.attrSet.add(new LDAPAttribute(attrName, this.byteValue));
                     this.isBase64Encoded = false;
                 }
                 else {
-                    this.as.add(new LDAPAttribute(attrName, attrValue));
+                    this.attrSet.add(new LDAPAttribute(attrName, attrValue));
                 }
             }
             else {
 
                 // this attribute is already added into the attribute set
                 if ( this.isBase64Encoded ) {
-                    this.as.getAttribute(attrName).addValue(this.byteValue);
+                    this.attrSet.getAttribute(attrName).addValue(this.byteValue);
                     this.isBase64Encoded = false;
                 }
                 else {
-                    this.as.getAttribute(attrName).addValue(attrValue);
+                    this.attrSet.getAttribute(attrName).addValue(attrValue);
                 }
             }
         }
 
-        return new LDAPEntry(this.entryDN, this.as);
+        return new LDAPEntry(this.entryDN, this.attrSet);
     }
 
     /**
@@ -982,7 +990,8 @@ public class LDIFReader extends LDIF implements LDAPImport {
      */
     public LDAPModification[] toLDAPModifications () throws IOException {
 
-        int        i, j, k, index;
+        int        i, index;
+        int        j;                       // number of attrs for an operation
         int        modNumber = 0;           // number of mod operations
         int        startIndex;              // where to find mod operations
         String     attrName, opName;
@@ -1008,7 +1017,7 @@ public class LDIFReader extends LDIF implements LDAPImport {
         // populate the LDAPModification array object
         for (i=startIndex; i<this.fieldNumber; i+=j+1) {
 
-            // index is used to find mod operation name and attr name
+            // find mod operation name and attr name.
             for ( index=0;
                   index<((StringBuffer)this.rLines.get(i)).length();
                   index++ ) {
@@ -1018,13 +1027,16 @@ public class LDIFReader extends LDIF implements LDAPImport {
                 }
             }
 
+            // index points to ':' between mod operation name and attr name
             opName = ((StringBuffer)this.rLines.get(i)).substring(0, index);
             // already removed leading space; no trailing space
             attrName = ((StringBuffer)this.rLines.get(i)).substring(index+1);
 
+            // build each LDAPModification object and add it ot modList
+            j = 1;
             if (((StringBuffer)this.rLines.get(i+1)).charAt(0) != (int)'-') {
                 // there is at least one attribute value specified
-                for ( j=1;
+                for ( ;
                       ((StringBuffer)this.rLines.get(i+j)).charAt(0)!=(int)'-';
                       j++) {
 
@@ -1066,7 +1078,6 @@ public class LDIFReader extends LDIF implements LDAPImport {
                 }
             }
             else {
-                j=1;
                 // there is no attribute value specified; this could be
                 // true for 'delete' and 'replace'
                 attr = new LDAPAttribute(attrName);
@@ -1084,7 +1095,7 @@ public class LDIFReader extends LDIF implements LDAPImport {
                 else {
                     throw new IOException(
                         "com.novell.ldap.ldif_dsml.LDIFReader:"
-                                    + "Not supported modify operation");
+                                    + "No attribute value specified");
                 }
             }
         }
