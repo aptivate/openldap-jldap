@@ -1,8 +1,8 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPCompareAttrNames.java,v 1.11 2000/10/26 18:03:46 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPCompareAttrNames.java,v 1.12 2000/10/31 23:52:18 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
- * 
+ *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
  * TO VERSION 2.0.1 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
@@ -10,25 +10,29 @@
  * IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
  * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.1 OF THE OPENLDAP
  * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
- * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY. 
+ * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
  ***************************************************************************/
- 
+
 package com.novell.ldap;
 
 import java.util.Locale;
+import java.lang.RuntimeException;
+import com.novell.ldap.*;
 
 /**
  *
  *  Represents an object that supports sorting search results by one or more
  *  attributes, in ascending or descending order.
  *
- *  <p>NDS supports only ascending sort order (A,B,C ...) and allows sorting only 
+ *  <p>NDS supports only ascending sort order (A,B,C ...) and allows sorting only
  *  by one attribute. The NDS server must be configured to index this attribute.</p>
  *
  *  @see LDAPEntryComparator
  */
 public class LDAPCompareAttrNames implements LDAPEntryComparator {
-
+   private String[] sortByNames;  //names to to sort by.
+   private boolean[] sortAscending; //true if sorting ascending
+   private Locale location = null;
    /**
     * Constructs an object that sorts results by a single attribute, in
     * ascending order.
@@ -37,7 +41,10 @@ public class LDAPCompareAttrNames implements LDAPEntryComparator {
     *
     */
    public LDAPCompareAttrNames(String attrName) {
-      throw new RuntimeException("Class LDAPAttrNames not implemented");
+      sortByNames = new String[1];
+      sortByNames[0] = attrName;
+      sortAscending = new boolean[1];
+      sortAscending[0] = true;
    }
 
    /**
@@ -52,7 +59,10 @@ public class LDAPCompareAttrNames implements LDAPEntryComparator {
     *                       descending order.
     */
    public LDAPCompareAttrNames(String attrName, boolean ascendingFlag) {
-      throw new RuntimeException("Class LDAPAttrNames not implemented");
+      sortByNames = new String[1];
+      sortByNames[0] = attrName;
+      sortAscending = new boolean[1];
+      sortAscending[0] = ascendingFlag;
    }
 
 
@@ -60,14 +70,19 @@ public class LDAPCompareAttrNames implements LDAPEntryComparator {
     * Constructs an object that sorts by one or more attributes, in the
     * order provided, in ascending order.
     *
-    * <p> NDS allows sorting only by one attribute. The NDS server must also be 
+    * <p> NDS allows sorting only by one attribute. The NDS server must also be
     * configured to index the specified attribute.</p>
     *
     * @param attrNames      Array of names of attributes to sort by.
     *
     */
    public LDAPCompareAttrNames(String[] attrNames) {
-      throw new RuntimeException("Class LDAPAttrNames not implemented");
+      sortByNames = new String[attrNames.length];
+      sortAscending = new boolean[attrNames.length];
+      for(int i=0; i<attrNames.length; i++){
+         sortByNames[i] = attrNames[i];
+         sortAscending[i] = true;
+      }
    }
 
    /**
@@ -75,8 +90,8 @@ public class LDAPCompareAttrNames implements LDAPEntryComparator {
     * order provided, in either ascending or descending order for each
     * attribute.
     *
-    * <p>NDS supports only ascending sort order (A,B,C ...) and allows sorting  
-    * only by one attribute. The NDS server must be configured to index this 
+    * <p>NDS supports only ascending sort order (A,B,C ...) and allows sorting
+    * only by one attribute. The NDS server must be configured to index this
     * attribute.</p>
     *
     *
@@ -88,18 +103,28 @@ public class LDAPCompareAttrNames implements LDAPEntryComparator {
     *                the length of ascendingFlags is not greater than
     *                or equal to the length of attrNames.
     *
-    * @exception LDAPException A general exception which includes an error 
+    * @exception LDAPException A general exception which includes an error
     * message and an LDAP error code.
+    *
     */
    public LDAPCompareAttrNames(String[] attrNames,
                                boolean[] ascendingFlags)
                                throws LDAPException {
-      throw new RuntimeException("Class LDAPAttrNames not implemented");
+      if (attrNames.length != ascendingFlags.length){
+         throw new LDAPException("Length of attribute Name array does not equal length of Flags array", 18);
+         //RFC 2251 lists error code. #18 == inappropriateMatching
+      }
+      sortByNames = new String[attrNames.length];
+      sortAscending = new boolean[ascendingFlags.length];
+      for(int i=0; i<attrNames.length; i++){
+         sortByNames[i] = attrNames[i];
+         sortAscending[i] = ascendingFlags[i];
+      }
    }
 
    /**
     * Returns the locale to be used for sorting, if a locale has been
-    * specified. 
+    * specified.
     *
     * <p>If locale is null, a basic String.compareTo method is used for collation.
     * If non-null, a locale-specific collation is used. </p>
@@ -107,7 +132,8 @@ public class LDAPCompareAttrNames implements LDAPEntryComparator {
     * @return The locale if one has been specified
     */
    public Locale getLocale () {
-      throw new RuntimeException("Method LDAPAttrNames.getLocale not implemented");
+      //currently supports only English local.
+      return null;
    }
 
    /**
@@ -116,13 +142,17 @@ public class LDAPCompareAttrNames implements LDAPEntryComparator {
     * @param locale   The locale to be used for sorting.
     */
    public void setLocale (Locale locale) {
-      throw new RuntimeException("Method LDAPAttrNames.setLocale not implemented");
+      if (locale != null){
+         throw new RuntimeException("Currently supports only English local (null)");
+      }
    }
 
    /**
     * Returns true if entry1 is to be considered greater than entry2, for
     * the purpose of sorting, based on the attribute name or names provided
-    * on object construction.
+    * on object construction.  Currently multivalues attributes compare on the
+    * first value only.  If all attributes to be compared to are the same then
+    * isGreater returns true.
     *
     * @param entry1         Target entry for comparison.
     *<br><br>
@@ -131,6 +161,32 @@ public class LDAPCompareAttrNames implements LDAPEntryComparator {
     * @return True if entry1 is greater than enter2; otherwise, false.
     */
    public boolean isGreater (LDAPEntry entry1, LDAPEntry entry2) {
-      throw new RuntimeException("Method LDAPAttrNames.isGreater not implemented");
+      String[] first;   //these are arrays because of multivalued attributes, which are ignored.
+      String[] second;
+      int compare,i=0;
+
+      throw new RuntimeException("isGreater is not implemented yet");
+      /*do {//while first and second are equal
+         first = entry1.getAttribute(sortByNames[i]).getStringValueArray();
+         second= entry2.getAttribute(sortByNames[i]).getStringValueArray();
+         if (location == null){
+            compare = first[i].compareTo(second[i]);
+         }
+         else{
+            throw new RuntimeException("Currently supports only English local (null)");
+         }
+         i++;
+      } while ((compare == 0) && (i < sortByNames.length));
+
+      if (compare > 0){
+         return sortAscending[i-1]; //if we sort up then entry1 is greater otherwise it is lesser
+      }
+      else if (compare < 0){
+         return !sortAscending[i-1];//if we sort up then entry1 is lesser otherwise it is greater
+      }
+      else return true; //trivial ordering
+      */
    }
+
+
 }
