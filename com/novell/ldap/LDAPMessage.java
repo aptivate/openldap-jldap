@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPMessage.java,v 1.22 2001/03/01 00:29:52 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPMessage.java,v 1.23 2001/06/13 17:51:06 jhammons Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -17,6 +17,11 @@ package com.novell.ldap;
 
 import com.novell.ldap.rfc2251.*;
 import com.novell.ldap.asn1.*;
+import com.novell.ldap.client.RespControlVector;
+import com.novell.ldap.client.Debug;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Constructor;
 
 /**
  * The base class for LDAP request and response messages.
@@ -225,27 +230,109 @@ public class LDAPMessage {
 		    controls = new LDAPControl[asn1Ctrls.size()];
 		    for(int i=0; i<asn1Ctrls.size(); i++) {
 
-		        // At this point we have an RfcControl which needs to be
-		        // converted to the appropriate Response Control.  This requires calling
-		        // the newInstance static method defined in LDAPControl class in the
-		        // draft.  The newInstance method will search the list of registered
-		        // controls and if a match is found will call the constructor for that
-		        // child LDAPControl.   Otherwise it will return a regular LDAPControl
-		        // object.
-		        // Question: Why did we not call the newInstance
-		        // method when we were parsing the control. Answer: By the time the
-		        // login in the code realizes that we have a control it is already
-		        // too late.
-		        RfcControl tempRfcControl = (RfcControl)asn1Ctrls.get(i);
+                /*
+		         * At this point we have an RfcControl which needs to be
+		         * converted to the appropriate Response Control.  This requires
+		         * calling the constructor of a class that extends LDAPControl.
+                 * The controlFactory method searches the list of registered
+		         * controls and if a match is found calls the constructor
+		         * for that child LDAPControl. Otherwise, it returns a regular
+		         * LDAPControl object.
+                 *
+		         * Question: Why did we not call the controlFactory method when
+		         * we were parsing the control. Answer: By the time the
+		         * code realizes that we have a control it is already too late.
+                 */
+		        RfcControl rfcCtl = (RfcControl)asn1Ctrls.get(i);
+                String oid = rfcCtl.getControlType().getString();
+                byte[] value = rfcCtl.getControlValue().getContent();
+                boolean critical = rfcCtl.getCriticality().getContent();
 
-		        // Return from this call should return either an LDAPControl or a
-		        // child of LDAPControl corresponding to the appropriate registered
-		        // response control
-		        controls[i] = LDAPControl.newInstance(tempRfcControl);
+		        /* Return from this call should return either an LDAPControl
+		         * or a class extending LDAPControl that implements the
+		         * appropriate registered response control
+                 */
+		        controls[i] = controlFactory(oid, critical, value);
 		    }
 	    }
 	    return controls;
    }
+    /**
+     * Instantiates an LDAPControl.  We search through our list of
+     * registered controls.  If we find a matchiing OID we instantiate
+     * that control by calling its contructor.  Otherwise we default to
+     * returning a regular LDAPControl object
+     *
+     * @depreacted.  Not to be used by application programs.
+     *
+     * @param data A RfcControl object that encodes the returned control.
+     */
+    private LDAPControl controlFactory(String oid,boolean critical,byte[] value)
+    {
+        RespControlVector regControls = LDAPControl.getRegisteredControls();
+        try {
+            /*
+             * search through the registered extension list to find the
+             * response control class
+             */
+            Class respCtlClass = regControls.findResponseControl(oid);
+
+            // Did not find a match so return default LDAPControl
+            if ( respCtlClass == null)
+                return new LDAPControl(oid, critical, value);
+
+            if( Debug.LDAP_DEBUG) {
+                Debug.trace( Debug.controls,
+                 "For oid " + oid + ", found class " + respCtlClass.toString());
+
+            }
+
+            /* If found, get LDAPControl constructor */
+            Class[] argsClass = { String.class, boolean.class, byte[].class };
+            Object[] args = new Object[] {oid, new Boolean(critical), value};
+            Exception ex = null;
+            try {
+                Constructor ctlConstructor =
+                                         respCtlClass.getConstructor(argsClass);
+
+                try {
+                    /* Call the control constructor for a registered Class*/
+                    Object ctl = null;
+                    ctl = ctlConstructor.newInstance(args);
+                    return (LDAPControl)ctl;
+                } catch (InstantiationException e) {
+                    // Could not create the ResponseControl object
+                    // All possible exceptions are ignored. We fall through
+                    // and create a default LDAPControl object
+                    ex = e;
+                } catch (IllegalAccessException e) {
+                    ex = e;
+                } catch (InvocationTargetException e) {
+                    ex = e;
+                }
+            } catch (NoSuchMethodException e) {
+                // bad class was specified, fall through and return a
+                // default LDAPControl object
+                ex = e;
+            }
+            if( Debug.LDAP_DEBUG) {
+                Debug.trace( Debug.controls,
+                      "Unable to create new instance of child LDAPControl");
+                Debug.trace( Debug.controls,
+                   ex.toString());
+            }
+        } catch (NoSuchFieldException e) {
+            // No match with the OID
+            // Do nothing. Fall through and construct a default LDAPControl object.
+            if( Debug.LDAP_DEBUG) {
+                Debug.trace( Debug.controls,
+                      "Oid " + oid + " not registered");
+            }
+        }
+        // If we get here we did not have a registered response control
+        // for this oid.  Return a default LDAPControl object.
+        return new LDAPControl( oid, critical, value);
+    }
 
    /**
     * Returns the message ID.

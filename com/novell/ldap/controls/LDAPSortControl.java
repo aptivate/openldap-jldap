@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPSortControl.java,v 1.8 2001/07/25 23:42:04 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPSortControl.java,v 1.9 2001/07/26 22:13:52 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -16,9 +16,8 @@
 package com.novell.ldap.controls;
 
 import com.novell.ldap.*;
-import com.novell.ldap.client.Debug;
 import com.novell.ldap.asn1.*;
-import com.novell.ldap.rfc2251.*;
+import com.novell.ldap.client.Debug;
 
 /**
  *  LDAPSortControl is a Server Control to specify how search results are
@@ -100,14 +99,14 @@ public class LDAPSortControl extends LDAPControl {
 
 			ASN1Sequence key = new ASN1Sequence();
 
-            key.add(new RfcAttributeDescription(keys[i].getKey()));
+            key.add(new ASN1OctetString(keys[i].getKey()));
 
 			if(keys[i].getMatchRule() != null) {
                 key.add(
                     new ASN1Tagged(
                         new ASN1Identifier(ASN1Identifier.CONTEXT, false,
                                            ORDERING_RULE),
-                        new RfcMatchingRuleId(keys[i].getMatchRule()),
+                        new ASN1OctetString(keys[i].getMatchRule()),
                         false));
             }
 

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPControl.java,v 1.29 2001/07/25 23:42:03 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPControl.java,v 1.30 2001/07/26 22:14:47 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -15,8 +15,6 @@
 
 package com.novell.ldap;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Constructor;
 import com.novell.ldap.controls.*;
 import com.novell.ldap.client.*;
 import com.novell.ldap.asn1.*;
@@ -39,25 +37,26 @@ import com.novell.ldap.rfc2251.*;
  */
 public class LDAPControl implements Cloneable {
 
-    private static RespControlVector registeredControls = new RespControlVector(5, 5);
+    private static RespControlVector registeredControls =
+                                                    new RespControlVector(5, 5);
 
     private RfcControl control; // An RFC 2251 Control
 
     /**
      * Constructs a new LDAPControl object using the specified values.
      *
-     *  @param id     The ID of the control, as a dotted string.
+     *  @param oid     The OID of the control, as a dotted string.
      *<br><br>
      *  @param critical   True if the LDAP operation should be discarded if
      *                    the control is not supported. False if
      *                    the operation can be processed without the control.
      *<br><br>
-     *  @param vals     The control-specific data.
+     *  @param values     The control-specific data.
      */
-    public LDAPControl(String id, boolean critical, byte[] vals)
+    public LDAPControl(String oid, boolean critical, byte[] values)
     {
-        control = new RfcControl(new RfcLDAPOID(id), new ASN1Boolean(critical),
-                              new ASN1OctetString(vals));
+        control = new RfcControl(new RfcLDAPOID(oid), new ASN1Boolean(critical),
+                              new ASN1OctetString(values));
         return;
     }
 
@@ -132,71 +131,6 @@ public class LDAPControl implements Cloneable {
     }
 
     /**
-     * Instantiates an LDAPControl.  We search through our list of
-     * registered controls.  If we find a matchiing OID we instantiate
-     * that control by calling its contructor.  Otherwise we default to
-     * returning a regular LDAPControl object
-     *
-     * @depreacted.  Not to be used by application programs.
-     *
-     * @param data A RfcControl object that encodes the returned control.
-     */
-    public static LDAPControl newInstance(RfcControl rfcCtl)
-    {
-        String oid = rfcCtl.getControlType().getString();
-
-        try {
-            /* search through the registered extension list to find the response control class */
-            Class responseControlClass = registeredControls.findResponseControl(oid);
-
-            // Did not find a match so return default LDAPControl
-            if ( responseControlClass == null)
-                return new LDAPControl(rfcCtl);
-
-            /* If found get default 1 parameter LDAPControl constructor */
-            Class[] ArgsClass = new Class[] {rfcCtl.getClass()};
-            Object[] Args = new Object[] {rfcCtl};
-            try {
-                Constructor defaultConstructor = responseControlClass.getConstructor(ArgsClass);
-
-                try {
-                    /* Call the default constructor for registered Class*/
-                    Object ctl = null;
-                    ctl = defaultConstructor.newInstance(Args);
-                    return (LDAPControl) ctl;
-                }
-                // Could not create the ResponseControl object
-                // All possible exceptions are ignored. We fall through
-                // and create a default LDAPControl object
-                catch (InstantiationException e) {
-                    ;
-                } catch (IllegalAccessException e) {
-                    ;
-                } catch (InvocationTargetException e) {
-                    ;
-                }
-            } catch (NoSuchMethodException e) {
-                // bad class was specified, fall through and return a
-                // default LDAPControl object
-                if( Debug.LDAP_DEBUG) {
-                    Debug.trace( Debug.controls, "Could not find default constructor in registered LDAPControl class");
-                }
-
-            }
-
-        } catch (NoSuchFieldException ex) {
-            ; // Do nothing. Fall through and construct a default LDAPControl object.
-
-        }
-        // If we get here we did not have a registered response control
-        // for this oid.  Return a default LDAPControl object.
-        if( Debug.LDAP_DEBUG) {
-            Debug.trace( Debug.controls, "Could not instantiate child LDAPControl. Returning default LDAPControl class");
-        }
-        return new LDAPControl(rfcCtl);
-    }
-
-    /**
      * Registers a class to be instantiated on receipt of a control with the
      * given OID.
      *
@@ -213,6 +147,12 @@ public class LDAPControl implements Cloneable {
         return;
     }
 
+    /* package */
+    static RespControlVector getRegisteredControls()
+    {
+        return registeredControls;
+    }
+    
     /**
      * Returns the RFC 2251 Control object.
      *

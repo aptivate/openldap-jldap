@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPVirtualListControl.java,v 1.5 2001/04/02 17:30:18 javed Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPVirtualListControl.java,v 1.6 2001/07/26 22:13:52 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -16,9 +16,8 @@
 package com.novell.ldap.controls;
 
 import com.novell.ldap.*;
-import com.novell.ldap.client.Debug;
 import com.novell.ldap.asn1.*;
-import com.novell.ldap.rfc2251.*;
+import com.novell.ldap.client.Debug;
 
 /**
  * LDAPVirtualListControl is a Server Control used to specify 
@@ -218,7 +217,7 @@ public class LDAPVirtualListControl extends LDAPControl {
 		m_vlvRequest.add(new ASN1Tagged(new ASN1Identifier( ASN1Identifier.CONTEXT, 
 		                                                    false,
 											                GREATERTHANOREQUAL),
-										new RfcAssertionValue(m_jumpTo),
+										new ASN1OctetString(m_jumpTo),
 										false));
 
 		/* Add the optional context string if one is available.

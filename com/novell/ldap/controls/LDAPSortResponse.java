@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPSortResponse.java,v 1.5 2001/07/20 19:49:47 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPSortResponse.java,v 1.6 2001/07/26 22:13:52 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -17,14 +17,10 @@ package com.novell.ldap.controls;
 
 import java.io.IOException;
 import com.novell.ldap.*;
-import com.novell.ldap.client.*;
 import com.novell.ldap.asn1.*;
-import com.novell.ldap.rfc2251.*;
+import com.novell.ldap.client.Debug;
 
 /**
- * 3.3 public class LDAPSortResponse
- *                extends LDAPControl
- *
  *  LDAPSortResponse - will be added in newer version of LDAP
  *  Controls draft-- add descritption from draft here.
  */
@@ -35,14 +31,13 @@ public class LDAPSortResponse extends LDAPControl
     private int resultCode;
 
     /**
-     * @deprecated For internal use only.  Should not be used by applications.
-     *
      * This constructor is usually called by the SDK to instantiate an
      * a LDAPControl corresponding to the Server response to a LDAP
      * Sort Control request.  Application programmers should not have
      * any reason to call the constructor.  This constructor besides
      * constructing a LDAPControl object parses the contents of the response
      * control.
+     * <br>
      * RFC 2891 defines this response control as follows:
      *
      * The controlValue is an OCTET STRING, whose
@@ -71,15 +66,20 @@ public class LDAPSortResponse extends LDAPControl
              other                    (80)
              },
          attributeType [0] AttributeDescription OPTIONAL }
-      */
-    public LDAPSortResponse(RfcControl rfcCtl)
+     *
+     *
+     *  @param oid     The OID of the control, as a dotted string.
+     *<br><br>
+     *  @param critical   True if the LDAP operation should be discarded if
+     *                    the control is not supported. False if
+     *                    the operation can be processed without the control.
+     *<br><br>
+     *  @param values     The control-specific data.
+     */
+    public LDAPSortResponse(String oid, boolean critical, byte[] values)
                     throws IOException
     {
-        super(rfcCtl);
-
-        // Get the control value
-        byte [] tempCtlData = this.getValue();
-
+        super(oid, critical, values);
 
         // Create a decoder object
         LBERDecoder decoder = new LBERDecoder();
@@ -87,7 +87,7 @@ public class LDAPSortResponse extends LDAPControl
             throw new IOException("Decoding error");
 
 		// We should get back an enumerated type
-        ASN1Object asnObj = decoder.decode(tempCtlData);
+        ASN1Object asnObj = decoder.decode(values);
 
         if ( (asnObj == null) || (!(asnObj instanceof ASN1Sequence)) )
             throw new IOException("Decoding error");
@@ -106,10 +106,8 @@ public class LDAPSortResponse extends LDAPControl
             if ( (asn1String != null) && (asn1String instanceof ASN1OctetString) )
                 failedAttribute  = ((ASN1OctetString)asn1String).getString();
         }
+        return;
     }
-
-
-    // 3.3.2 getFailedAttribute
 
     /**
      *  If not null, this returns the attribute that caused the sort
@@ -120,17 +118,12 @@ public class LDAPSortResponse extends LDAPControl
         return failedAttribute;
     }
 
-
-    // 3.3.3 getResultCode
-
     /**
-     * Returns the result code from the sort, as defined in [1], section
-     * 4.1.10.
+     * Returns the result code from the sort
      */
     public int getResultCode()
     {
         return resultCode;
     }
-
 }
 

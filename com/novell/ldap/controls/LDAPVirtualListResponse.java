@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPVirtualListResponse.java,v 1.3 2001/07/20 19:49:47 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPVirtualListResponse.java,v 1.4 2001/07/26 22:13:53 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -17,9 +17,8 @@ package com.novell.ldap.controls;
 
 import java.io.IOException;
 import com.novell.ldap.*;
-import com.novell.ldap.client.*;
+import com.novell.ldap.client.Debug;
 import com.novell.ldap.asn1.*;
-import com.novell.ldap.rfc2251.*;
 
 /**
  *   
@@ -44,8 +43,6 @@ public class LDAPVirtualListResponse extends LDAPControl
 	private String m_context = null;
 
     /**
-     * @deprecated For internal use only.  Should not be used by applications.
-     *
      * This constructor is usually called by the SDK to instantiate an
      * a LDAPControl corresponding to the Server response to a LDAP
      * VLV Control request.  Application programmers should not have
@@ -74,17 +71,19 @@ public class LDAPVirtualListResponse extends LDAPControl
      *      other (80) },
      *      contextID     OCTET STRING OPTIONAL }
 	 *
+     *
+     *  @param oid     The OID of the control, as a dotted string.
+     *<br><br>
+     *  @param critical   True if the LDAP operation should be discarded if
+     *                    the control is not supported. False if
+     *                    the operation can be processed without the control.
+     *<br><br>
+     *  @param values     The control-specific data.
      */
-    public LDAPVirtualListResponse(RfcControl rfcCtl)
+    public LDAPVirtualListResponse(String oid, boolean critical, byte[] values)
                     throws IOException
     {
-        super(rfcCtl);
-
-        /* Get the control value - a byte array containing the data
-         * returned by the server controls
-         */
-        byte [] tempCtlData = this.getValue();
-
+        super(oid, critical, values);
 
         /* Create a decoder object */
         LBERDecoder decoder = new LBERDecoder();
@@ -92,7 +91,7 @@ public class LDAPVirtualListResponse extends LDAPControl
             throw new IOException("Decoding error");
 
 		/* We should get back an ASN.1 Sequence object */
-        ASN1Object asnObj = decoder.decode(tempCtlData);
+        ASN1Object asnObj = decoder.decode(values);
         if ( (asnObj == null) || (!(asnObj instanceof ASN1Sequence)) )
             throw new IOException("Decoding error");
 
@@ -134,22 +133,17 @@ public class LDAPVirtualListResponse extends LDAPControl
             if ( (asn1String != null) && (asn1String instanceof ASN1OctetString) )
                 m_context  = ((ASN1OctetString)asn1String).getString();
         }
+        return;
     }
-
-
     
 	/** 
-	 *
 	 * Returns the size of the virtual search results list.  This integer as
 	 * the servers current estimate of what the search result size.
-	 *
 	 */
 	 public int getContentCount () 
 	 {
 		return m_ContentCount;
 	 }
-
-    
     
 	/** 
 	 * Returns the index of the first entry in the returned list.  The server uses
@@ -163,8 +157,6 @@ public class LDAPVirtualListResponse extends LDAPControl
 
 	 }
     
-
-
 	/**
 	 * Returns the result code for the virtual list search request.
 	 */
@@ -173,8 +165,6 @@ public class LDAPVirtualListResponse extends LDAPControl
 		return m_resultCode;
 
 	 }
-
-
 
 	 /**
 	  * Returns the cookie used by some servers to optimize the processing of 
@@ -185,6 +175,4 @@ public class LDAPVirtualListResponse extends LDAPControl
 	  {
 		return	m_context;
 	  }
-
 }
-

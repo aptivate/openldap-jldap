@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPPersistSearchControl.java,v 1.4 2001/07/25 23:42:04 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPPersistSearchControl.java,v 1.5 2001/07/26 22:13:52 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -16,9 +16,7 @@
 package com.novell.ldap.controls;
 
 import com.novell.ldap.*;
-import com.novell.ldap.client.Debug;
 import com.novell.ldap.asn1.*;
-import com.novell.ldap.rfc2251.*;
 import com.novell.ldap.client.Debug;
 
 
