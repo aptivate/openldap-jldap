@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: LDAPConnection.java,v 1.6 2000/03/14 18:17:26 smerrill Exp $
+ * $Id: LDAPConnection.java,v 1.7 2000/04/04 20:21:38 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -374,7 +374,8 @@ public class LDAPConnection implements
    public static LDAPEntry read(LDAPUrl toGet)
 		throws LDAPException
 	{
-      return null;
+		LDAPSearchConstraints defSearchCons = new LDAPSearchConstraints();
+      	return read( toGet, defSearchCons);
    }
 
    /**
@@ -972,7 +973,7 @@ public class LDAPConnection implements
                          LDAPSearchConstraints cons)
 		throws LDAPException
 	{
-      return null;
+      return read(dn, (String[]) null, cons);
    }
 
    /**
@@ -1013,7 +1014,19 @@ public class LDAPConnection implements
                          LDAPSearchConstraints cons)
 		throws LDAPException
 	{
-      return null;
+	  	try{
+	  		LDAPSearchResults sr = search( dn, LDAPv2.SCOPE_BASE,
+	  											"objectclass=*",
+												attrs, false, cons);
+			if(sr.hasMoreElements())
+				return sr.next();
+		}
+		catch( LDAPException e){
+			throw(e);
+		}
+
+		return null;
+
    }
 
    /**
