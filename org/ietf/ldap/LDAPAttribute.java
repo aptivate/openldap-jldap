@@ -45,7 +45,7 @@ public class LDAPAttribute {
      */
     public LDAPAttribute(LDAPAttribute attr) {
         com.novell.ldap.LDAPAttribute at = null;
-        if( at != null) {
+        if( attr != null) {
             at = attr.getWrappedObject();
         }
         this.attr = new com.novell.ldap.LDAPAttribute(at);
