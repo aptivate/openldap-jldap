@@ -69,8 +69,8 @@ public class LDAPResponse extends LDAPMessage
     }
 
     /**
-     * Creates an LDAPMessage when receiving an asynchronous response from a
-     * server.
+     * Creates a response LDAPMessage when receiving an asynchronous
+     * response from a server.
      *
      *  @param message  The RfcLDAPMessage from a server.
      */
@@ -79,6 +79,130 @@ public class LDAPResponse extends LDAPMessage
     {
         super(message);
         return;
+    }
+
+    /**
+     * Creates a SUCCESS response LDAPMessage. Typically the response
+     * comes from a source other than a BER encoded LDAP message,
+     * such as from DSML.  Other values which are allowed in a response
+     * are set to their empty values.
+     *
+     * @param type  The message type as defined in LDAPMessage.
+     *
+     * @see LDAPMessage
+     */
+    public LDAPResponse( int type)
+    {
+        this(type, LDAPException.SUCCESS, null, null, null, null);
+        return;
+    }
+
+    /**
+     * Creates a response LDAPMessage from parameters. Typically the data
+     * comes from a source other than a BER encoded LDAP message,
+     * such as from DSML.
+     *
+     * @param type  The message type as defined in LDAPMessage.
+     *
+     * @param resultCode  The result code as defined in LDAPException.
+     *
+     * @param matchedDN   The name of the lowest entry that was matched
+     *                    for some error result codes, an empty string
+     *                    or <code>null</code> if none.
+     *
+     * @param serverMessage  A diagnostic message returned by the server,
+     *                       an empty string or <code>null</code> if none.
+     *
+     * @param referrals   The referral URLs returned for a REFERRAL result
+     *                    code or <code>null</code> if none.
+     *
+     * @param controls    Any controls returned by the server or
+     *                    <code>null</code> if none.
+     *
+     * @see LDAPMessage
+     * @see LDAPException
+     */
+    public LDAPResponse( int type,
+                         int resultCode,
+                         String matchedDN,
+                         String serverMessage,
+                         String[] referrals,
+                         LDAPControl[] controls)
+    {
+
+        super( new RfcLDAPMessage(
+                RfcResultFactory( type, resultCode, matchedDN,
+                                  serverMessage, referrals)) );
+
+        return;
+    }
+
+    private static ASN1Sequence RfcResultFactory(   int type,
+                                                    int resultCode,
+                                                    String matchedDN,
+                                                    String serverMessage,
+                                                    String[] referrals)
+    {
+        ASN1Sequence ret;
+        
+        if( matchedDN == null)
+            matchedDN = "";
+        if( serverMessage == null)
+            serverMessage = "";
+            
+        switch( type) {
+        case SEARCH_RESULT:
+            ret = new RfcSearchResultDone( new ASN1Enumerated( resultCode),
+                                           new RfcLDAPDN( matchedDN),
+                                           new RfcLDAPString( serverMessage),
+                                           null /*new RfcReferral( referrals)*/);
+            break;
+        case BIND_RESPONSE:
+            ret = null;                     // Not yet implemented
+            break;                                   
+        case SEARCH_RESPONSE:
+            ret = null;                     // Not yet implemented
+            break;                                   
+        case MODIFY_RESPONSE:
+            ret = new RfcModifyResponse(   new ASN1Enumerated( resultCode),
+                                           new RfcLDAPDN( matchedDN),
+                                           new RfcLDAPString( serverMessage),
+                                           null /*new RfcReferral( referrals)*/);
+            break;                                   
+        case ADD_RESPONSE:
+            ret = new RfcAddResponse(      new ASN1Enumerated( resultCode),
+                                           new RfcLDAPDN( matchedDN),
+                                           new RfcLDAPString( serverMessage),
+                                           null /*new RfcReferral( referrals)*/);
+            break;                                   
+        case DEL_RESPONSE:
+            ret = new RfcDelResponse(      new ASN1Enumerated( resultCode),
+                                           new RfcLDAPDN( matchedDN),
+                                           new RfcLDAPString( serverMessage),
+                                           null /*new RfcReferral( referrals)*/);
+            break;                                   
+        case MODIFY_RDN_RESPONSE:
+            ret = new RfcModifyDNResponse( new ASN1Enumerated( resultCode),
+                                           new RfcLDAPDN( matchedDN),
+                                           new RfcLDAPString( serverMessage),
+                                           null /*new RfcReferral( referrals)*/);
+            break;                                   
+        case COMPARE_RESPONSE:
+            ret = new RfcCompareResponse(  new ASN1Enumerated( resultCode),
+                                           new RfcLDAPDN( matchedDN),
+                                           new RfcLDAPString( serverMessage),
+                                           null /*new RfcReferral( referrals)*/);
+            break;                                   
+        case SEARCH_RESULT_REFERENCE:
+            ret = null;                     // Not yet implemented
+            break;                                   
+        case EXTENDED_RESPONSE:
+            ret = null;                     // Not yet implemented
+            break;                                   
+        default:
+            throw new RuntimeException("Type " + type + " Not Supported");
+        }
+        return ret;
     }
 
     /**
@@ -143,7 +267,7 @@ public class LDAPResponse extends LDAPMessage
                     ;
                 } finally {
                     referrals[i] = aRef;
-                }        
+                }
             }
         }
         return referrals;
