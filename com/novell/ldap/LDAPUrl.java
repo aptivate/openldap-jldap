@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPUrl.java,v 1.20 2000/11/29 21:35:15 cmorris Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPUrl.java,v 1.21 2000/11/29 21:48:50 cmorris Exp $
 *
 * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
 *
@@ -347,7 +347,7 @@ public class LDAPUrl {
     }
     
     /** 
-    * Returns true is the URL is of the type ldaps (LDAP over SSL, a predecessor
+    * Returns true if the URL is of the type ldaps (LDAP over SSL, a predecessor
     * to startTls)
     *
     * @return whether this is a secure LDAP url or not.
