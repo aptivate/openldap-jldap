@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPException.java,v 1.4 2000/08/28 22:18:56 vtag Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPException.java,v 1.5 2000/09/06 14:38:12 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -753,57 +753,73 @@ public class LDAPException extends Exception {
    public final static int PARAM_ERROR = 89;
    
   /**
-   * Indicates that a dynamic memory allocation function failed when 
-   * calling an LDAP method.
+   * Indicates that a dynamic memory allocation method failed when calling 
+   * an LDAP method.
    *
    * <p>NO_MEMORY = 90</p>
    */
    public final static int NO_MEMORY = 90;
    
   /**
-   *
+   * Indicates that the LDAP client has lost either its connection or 
+   * cannot establish a connection to the LDAP server.
    *
    * <p>CONNECT_ERROR = 91</p>
    */
    public final static int CONNECT_ERROR = 91;
    
   /**
-   *
+   * Indicates that the requested functionality is not supported by the 
+   * client. For example, if the LDAP client is established as an LDAPv2 
+   * client, the libraries set this error code when the client requests 
+   * LDAPv3 functionality.
    *
    * <p>LDAP_NOT_SUPPORTED = 92</p>
    */
    public final static int LDAP_NOT_SUPPORTED = 92;
    
   /**
-   *
+   * Indicates that the client requested a control that the libraries 
+   * cannot find in the list of supported controls sent by the LDAP server.
    *
    * <p>CONTROL_NOT_FOUND = 93</p>
    */
    public final static int CONTROL_NOT_FOUND = 93;
    
   /**
-   *
+   * Indicates that the LDAP server sent no results. 
    *
    * <p>NO_RESULTS_RETURNED = 94</p>
    */
    public final static int NO_RESULTS_RETURNED = 94;
    
   /**
-   *
+   * Indicates that more results are chained in the result message.
    *
    * <p>MORE_RESULTS_TO_RETURN = 95</p>
    */
    public final static int MORE_RESULTS_TO_RETURN = 95;
    
   /**
-   *
+   * Indicates the LDAP libraries detected a loop. Usually this happens 
+   * when following referrals.
    *
    * <p>CLIENT_LOOP = 96</p>
    */
    public final static int CLIENT_LOOP = 96;
    
   /**
+   * Indicates that the referral exceeds the hop limit. 
    *
+   * <p>The hop limit determines how many servers the client can hop through to retrieve data. For example, suppose the following conditions:</p>
+   * <ul>
+   * <li>The hop limit is two.</li>
+   * <li> The referral is to server D which can be contacted only through 
+          server B (1 hop) which contacts server C (2 hops) which contacts
+          server D (3 hops).</li>
+   * </ul> 
+   * <p> With these conditions, the hop limit is exceeded and the LDAP 
+   * libraries set this code.</p>
    *
    * <p>REFERRAL_LIMIT_EXCEEDED = 97</p>
    */
