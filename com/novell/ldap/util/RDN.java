@@ -144,16 +144,20 @@ public class RDN extends Object
 
     /**
      * Creates a string that represents this RDN, according to RFC 2253
-     * @returns An RDN string
+     *
+     * @return An RDN string
      */
     public String toString(){
         return toString(false);
     }
 
     /**
-     * Creates a string that represents this RDN.  If noTypes if true then
-     * Atribute types will be ommited.
-     * @noTypes
+     * Creates a string that represents this RDN.
+     *
+     * If noTypes is true then Atribute types will be ommited.
+     *
+     * @param noTypes true if attribute types will be omitted.
+     *
      * @return An RDN string
      */
     public String toString(boolean noTypes){

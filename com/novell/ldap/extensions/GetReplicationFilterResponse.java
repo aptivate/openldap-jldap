@@ -38,7 +38,7 @@ public class GetReplicationFilterResponse extends LDAPExtendedResponse {
 
    /**
     * Constructs an object from the responseValue which contains the replication
-    * filter
+    * filter.
     *
     *  <p>The constructor parses the responseValue which has the following
     *  format:<br>

@@ -656,7 +656,7 @@ public class DN extends Object
 
     /**
      * Returns the Parent of this DN
-     * @returns Parent DN
+     * @return Parent DN
      */
     public DN getParent(){
        DN parent = new DN();
