@@ -223,11 +223,23 @@ public class RfcFilter extends ASN1Choice
                     int tokCnt = sub.countTokens();
                     int cnt = 0;
 
+                    String lastTok = new String("");
+
                     while(sub.hasMoreTokens()) {
                         String subTok = sub.nextToken();
                         cnt++;
                         if(subTok.equals("*")) {
-                             // delimiter
+                            // if previous token was '*', and since the current
+                            // token is a '*', we need to insert 'any'
+                            if (lastTok.equals(subTok)) {
+                                // '**'
+                                seq.add(
+                                    new ASN1Tagged(
+                                        new ASN1Identifier(ASN1Identifier.CONTEXT,
+                                                    false, ANY),
+                                        new RfcLDAPString(unescapeString("")),
+                                        false));
+                            }
                         } else {
                             // value (RfcLDAPString)
                             if(cnt == 1) {
@@ -257,6 +269,7 @@ public class RfcFilter extends ASN1Choice
                                         false));
                             }
                         }
+                        lastTok = subTok;
                     }
 
                     tag = new ASN1Tagged(
@@ -287,7 +300,8 @@ public class RfcFilter extends ASN1Choice
                     if(first && !s.equals(":")) {
                         type = s;
                     } else
-                    if(s.equalsIgnoreCase("dn")) {
+                    // dn must be lower case to be considered dn of the Entry.
+                    if(s.equals("dn")) {
                         dnAttributes = true;
                     } else
                     if(!s.equals(":")) {
@@ -610,7 +624,8 @@ class FilterTokenizer
             sb.append(filter.charAt(i++));
         }
 
-        return sb.toString().trim();
+        // new lines end here
+        return sb.toString();
     }
 
     /**
