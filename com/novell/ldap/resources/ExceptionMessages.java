@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/resources/ExceptionMessages.java,v 1.16 2001/06/29 21:52:22 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/resources/ExceptionMessages.java,v 1.17 2001/07/02 16:40:47 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -25,7 +25,7 @@ public class ExceptionMessages extends java.util.ListResourceBundle {
   public Object[][] getContents() {
       return contents;
   }
-  //static strings to aide lookup and guarentee accuracy:
+  //static strings to aide lookup and guarantee accuracy:
   //DO NOT include these strings in other Locales
   public final static String TOSTRING             = "TOSTRING";
   public final static String CONNECTION_ERROR     = "CONNECTION_ERROR";
