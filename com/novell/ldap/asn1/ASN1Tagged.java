@@ -19,107 +19,104 @@ import java.util.Vector;
  */
 public class ASN1Tagged extends ASN1Object {
 
-	private boolean explicit;
-	private ASN1Object content;
+   private boolean explicit;
+   private ASN1Object content;
 
-	//*************************************************************************
-	// Constructors for ASN1Tagged
-	//*************************************************************************
+   //*************************************************************************
+   // Constructors for ASN1Tagged
+   //*************************************************************************
 
-	/**
-	 * Constructs an ASN1Tagged object.
-	 *
-	 * The explicit flag defaults to true as per the spec.
-	 */
-	public ASN1Tagged(ASN1Identifier identifier, ASN1Object object)
-	{
-		this(identifier, object, true);
-	}
+   /**
+    * Constructs an ASN1Tagged object.
+    *
+    * The explicit flag defaults to true as per the spec.
+    */
+   public ASN1Tagged(ASN1Identifier identifier, ASN1Object object)
+   {
+      this(identifier, object, true);
+   }
 
-	/**
-	 * Constructs an ASN1Tagged object.
-	 */
-	public ASN1Tagged(ASN1Identifier identifier, ASN1Object object,
-		               boolean explicit)
-	{
-		this.id = identifier;
-		this.content = object;
-		this.explicit = explicit;
+   /**
+    * Constructs an ASN1Tagged object.
+    */
+   public ASN1Tagged(ASN1Identifier identifier, ASN1Object object,
+                     boolean explicit)
+   {
+      this.id = identifier;
+      this.content = object;
+      this.explicit = explicit;
 
-		if(!explicit) {
-			content.setIdentifier(id); // replace object's id with new tag.
-		}
+      if(!explicit) {
+         content.setIdentifier(id); // replace object's id with new tag.
+      }
 
-	}
+   }
 
-	/**
-	 * Constructs an ASN1Tagged object by decoding data from an input stream.
-	 */
-	public ASN1Tagged(ASN1Decoder dec, InputStream in, int len,
-		               ASN1Identifier identifier)
-		throws IOException
-	{
-		this.id = identifier;
+   /**
+    * Constructs an ASN1Tagged object by decoding data from an input stream.
+    */
+   public ASN1Tagged(ASN1Decoder dec, InputStream in, int len,
+                     ASN1Identifier identifier)
+      throws IOException
+   {
+      this.id = identifier;
 
-		// If we are decoding an implicit tag, there is no way to know at this
-		// low level what the base type really is. We can place the content
-		// into an ASN1OctetString type and pass it back to the application who
-		// will be able to create the appropriate ASN.1 type for this tag.
-		content = new ASN1OctetString(dec, in, len);
-	}
+      // If we are decoding an implicit tag, there is no way to know at this
+      // low level what the base type really is. We can place the content
+      // into an ASN1OctetString type and pass it back to the application who
+      // will be able to create the appropriate ASN.1 type for this tag.
+      content = new ASN1OctetString(dec, in, len);
+   }
 
-	//*************************************************************************
-	// ASN1Object implementation
-	//*************************************************************************
+   //*************************************************************************
+   // ASN1Object implementation
+   //*************************************************************************
 
-	/**
-	 * Encode this ASN1Object directly to a stream.
-	 *
-	 * @param out The stream into which the encoding will go.
-	 */
-	public void encode(ASN1Encoder enc, OutputStream out)
-		throws IOException
-	{
-		if(explicit) {
-			enc.encodeIdentifier(id, out);
-		}
+   /**
+    * Encode this ASN1Tagged directly to a stream.
+    *
+    * @param enc The encoder to use to encode this object.
+    * @param out The stream into which the encoding will go.
+    */
+   public void encode(ASN1Encoder enc, OutputStream out)
+      throws IOException
+   {
+      enc.encode(this, out);
+   }
 
-		content.encode(enc, out);
-	}
+   //*************************************************************************
+   // ASN1Tagged specific methods
+   //*************************************************************************
 
-	//*************************************************************************
-	// ASN1Tagged specific methods
-	//*************************************************************************
+   /**
+    * Returns the Tagged value stored in this ASN1Tagged.
+    */
+   public ASN1Object getContent()
+   {
+      return content;
+   }
 
-	/**
-	 * Returns the Tagged value stored in this ASN1Tagged.
-	 */
-	public ASN1Object getContent()
-	{
-		return content;
-	}
+   /**
+    * Returns a boolean value indicating if this object uses
+    * EXPLICIT tagging.
+    */
+   public boolean isExplicit()
+   {
+      return explicit;
+   }
 
-	/**
-	 * Returns a boolean value indicating if this object uses
-	 * EXPLICIT tagging.
-	 */
-	public boolean isExplicit()
-	{
-		return explicit;
-	}
-
-	/**
-	 * Return a String representation of this ASN1Object.
-	 */
-	public String toString()
-	{
-		if(explicit) {
-			return super.toString() + content.toString();
-		}
-		else { // implicit tagging
-			return content.toString();
-		}
-	}
+   /**
+    * Return a String representation of this ASN1Object.
+    */
+   public String toString()
+   {
+      if(explicit) {
+         return super.toString() + content.toString();
+      }
+      else { // implicit tagging
+         return content.toString();
+      }
+   }
 
 }
 

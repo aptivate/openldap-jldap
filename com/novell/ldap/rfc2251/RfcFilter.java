@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/com/novell/asn1/ldap/Filter.java,v 1.11 2000/08/30 02:19:23 smerrill Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/com/novell/asn1/ldap/Filter.java,v 1.12 2000/08/30 23:46:05 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  ***************************************************************************/
@@ -108,9 +108,9 @@ public class Filter extends ASN1Choice {
    // Helper methods for RFC 2254 Search Filter parsing.
    //*************************************************************************
 
-	/**
-	 * Parses an RFC 2251 filter string into an ASN.1 LDAP Filter object.
-	 */
+   /**
+    * Parses an RFC 2251 filter string into an ASN.1 LDAP Filter object.
+    */
    private ASN1Tagged parse(String filterExpr)
       throws LDAPException
    {
@@ -158,16 +158,16 @@ public class Filter extends ASN1Choice {
                new ASN1Identifier(ASN1Identifier.CONTEXT, true, filterComp),
                parseFilterList(),
                false);
-				break;
+            break;
          case NOT:
             tag = new ASN1Tagged(
                new ASN1Identifier(ASN1Identifier.CONTEXT, true, filterComp),
                parseFilter(),
                true);
-				break;
+            break;
          default:
             int filterType = ft.getFilterType();
-				String value = ft.getValue();
+            String value = ft.getValue();
 
             switch(filterType) {
                case GREATER_OR_EQUAL:
@@ -175,7 +175,7 @@ public class Filter extends ASN1Choice {
                case APPROX_MATCH:
                   tag = new ASN1Tagged(
                      new ASN1Identifier(ASN1Identifier.CONTEXT, true,
-								                filterType),
+                                        filterType),
                      new AttributeValueAssertion(
                         new AttributeDescription(ft.getAttr()),
                         new AssertionValue(escaped2unicode(value))),
@@ -185,15 +185,15 @@ public class Filter extends ASN1Choice {
                   if(value.equals("*")) { // present
                      tag = new ASN1Tagged(
                         new ASN1Identifier(ASN1Identifier.CONTEXT, false,
-									                PRESENT),
+                                           PRESENT),
                         new AttributeDescription(ft.getAttr()),
                         false);
                   }
                   else if(value.indexOf('*') != -1) { // substrings
                      // parse: [initial], *any*, [final] into an
-							// ASN1SequenceOf
+                     // ASN1SequenceOf
                      StringTokenizer sub =
-								new StringTokenizer(value, "*", true);
+                        new StringTokenizer(value, "*", true);
                      ASN1SequenceOf seq = new ASN1SequenceOf(5);
                      int tokCnt = sub.countTokens();
                      int cnt = 0;
@@ -248,40 +248,40 @@ public class Filter extends ASN1Choice {
                            new AssertionValue(escaped2unicode(value))),
                         false);
                   }
-						break;
-					case EXTENSIBLE_MATCH:
-						String type = null, matchingRule = null;
-						boolean dnAttributes = false;
-						StringTokenizer st =
-							new StringTokenizer(ft.getAttr(), ":", true);
+                  break;
+               case EXTENSIBLE_MATCH:
+                  String type = null, matchingRule = null;
+                  boolean dnAttributes = false;
+                  StringTokenizer st =
+                     new StringTokenizer(ft.getAttr(), ":", true);
 
-						boolean first = true;
-						while(st.hasMoreTokens()) {
-							String s = st.nextToken().trim();
-							if(first && !s.equals(":")) {
-								type = s;
-							}
-							else if(s.equals("dn")) {
-								dnAttributes = true;
-							}
-							else if(!s.equals(":")) {
-								matchingRule = s;
-							}
-							first = false;
-						}
+                  boolean first = true;
+                  while(st.hasMoreTokens()) {
+                     String s = st.nextToken().trim();
+                     if(first && !s.equals(":")) {
+                        type = s;
+                     }
+                     else if(s.equals("dn")) {
+                        dnAttributes = true;
+                     }
+                     else if(!s.equals(":")) {
+                        matchingRule = s;
+                     }
+                     first = false;
+                  }
 
-						tag = new ASN1Tagged(
-							new ASN1Identifier(ASN1Identifier.CONTEXT, true,
-													 EXTENSIBLE_MATCH),
-							new MatchingRuleAssertion(
-								(matchingRule == null) ? null :
-							       new MatchingRuleId(matchingRule),
-						      (type == null) ? null :
-							       new AttributeDescription(type),
-							   new AssertionValue(escaped2unicode(value)),
-							   (dnAttributes == false) ? null :
-									 new ASN1Boolean(true)),
-							false);
+                  tag = new ASN1Tagged(
+                     new ASN1Identifier(ASN1Identifier.CONTEXT, true,
+                                        EXTENSIBLE_MATCH),
+                     new MatchingRuleAssertion(
+                        (matchingRule == null) ? null :
+                            new MatchingRuleId(matchingRule),
+                        (type == null) ? null :
+                            new AttributeDescription(type),
+                        new AssertionValue(escaped2unicode(value)),
+                        (dnAttributes == false) ? null :
+                            new ASN1Boolean(true)),
+                     false);
             }
       }
       return tag;
@@ -391,9 +391,9 @@ class FilterTokenizer {
    // Constructor
    //*************************************************************************
 
-	/**
-	 * Constructs a FilterTokenizer for a filter.
-	 */
+   /**
+    * Constructs a FilterTokenizer for a filter.
+    */
    public FilterTokenizer(String filter) {
       this.filter = filter;
       this.i = 0;
@@ -404,10 +404,10 @@ class FilterTokenizer {
    // Tokenizer methods
    //*************************************************************************
 
-	/**
-	 * Reads the current char and throws an Exception if it is not a left
-	 * parenthesis.
-	 */
+   /**
+    * Reads the current char and throws an Exception if it is not a left
+    * parenthesis.
+    */
    public void getLeftParen()
       throws LDAPException
    {
@@ -420,10 +420,10 @@ class FilterTokenizer {
                                  LDAPException.FILTER_ERROR);
    }
 
-	/**
-	 * Reads the current char and throws an Exception if it is not a right
-	 * parenthesis.
-	 */
+   /**
+    * Reads the current char and throws an Exception if it is not a right
+    * parenthesis.
+    */
    public void getRightParen()
       throws LDAPException
    {
@@ -436,13 +436,13 @@ class FilterTokenizer {
                                  LDAPException.FILTER_ERROR);
    }
 
-	/**
-	 * Reads either an operator (&, |, !), or an attribute, whichever is
-	 * next in the filter string. If the next component is an attribute, it
-	 * is read and stored in the attr field of this class which may be
-	 * retrieved with getAttr() and a -1 is returned. Otherwise, the int
-	 * value of the operator read is returned.
-	 */
+   /**
+    * Reads either an operator (&, |, !), or an attribute, whichever is
+    * next in the filter string. If the next component is an attribute, it
+    * is read and stored in the attr field of this class which may be
+    * retrieved with getAttr() and a -1 is returned. Otherwise, the int
+    * value of the operator read is returned.
+    */
    public int getOpOrAttr()
       throws LDAPException
    {
@@ -451,34 +451,34 @@ class FilterTokenizer {
                                  LDAPException.FILTER_ERROR);
 
       if(filter.charAt(i) == '&') {
-			i++;
+         i++;
          return Filter.AND;
       }
       if(filter.charAt(i) == '|') {
-			i++;
+         i++;
          return Filter.OR;
       }
       if(filter.charAt(i) == '!') {
-			i++;
+         i++;
          return Filter.NOT;
       }
 
-		// get first component of 'item' (attr or :dn or :matchingrule)
+      // get first component of 'item' (attr or :dn or :matchingrule)
       String delims = "=~<>()";
-		StringBuffer sb = new StringBuffer();
-		while(delims.indexOf(filter.charAt(i)) == -1 &&
-				filter.startsWith(":=", i) == false) {
-			sb.append(filter.charAt(i++));
-		}
+      StringBuffer sb = new StringBuffer();
+      while(delims.indexOf(filter.charAt(i)) == -1 &&
+            filter.startsWith(":=", i) == false) {
+         sb.append(filter.charAt(i++));
+      }
 
       attr = sb.toString().trim();
       return -1;
    }
 
-	/**
-	 * Reads an RFC 2251 filter type from the filter string and returns its
-	 * int value.
-	 */
+   /**
+    * Reads an RFC 2251 filter type from the filter string and returns its
+    * int value.
+    */
    public int getFilterType()
       throws LDAPException
    {
@@ -498,10 +498,10 @@ class FilterTokenizer {
          i+=2;
          return Filter.APPROX_MATCH;
       }
-		if(filter.startsWith(":=", i)) {
+      if(filter.startsWith(":=", i)) {
          i+=2;
          return Filter.EXTENSIBLE_MATCH;
-		}
+      }
       if(filter.charAt(i) == '=') {
          i++;
          return Filter.EQUALITY_MATCH;
@@ -510,12 +510,12 @@ class FilterTokenizer {
                               LDAPException.FILTER_ERROR);
    }
 
-	/**
-	 * Reads a value from a filter string and returns it after trimming any
-	 * superfluous spaces from the beginning or end of the value.
-	 */
+   /**
+    * Reads a value from a filter string and returns it after trimming any
+    * superfluous spaces from the beginning or end of the value.
+    */
    public String getValue()
-		throws LDAPException
+      throws LDAPException
    {
       if(i >= len)
          throw new LDAPException("Unexpected end of filter",
@@ -529,19 +529,19 @@ class FilterTokenizer {
       return sb.toString().trim();
    }
 
-	/**
-	 * Returns the current attribute identifier.
-	 */
+   /**
+    * Returns the current attribute identifier.
+    */
    public String getAttr()
    {
       return attr;
    }
 
-	/**
-	 * Return the current char without advancing the offset pointer. This is
-	 * used by ParseFilterList when determining if there are any more
-	 * Filters in the list.
-	 */
+   /**
+    * Return the current char without advancing the offset pointer. This is
+    * used by ParseFilterList when determining if there are any more
+    * Filters in the list.
+    */
    public char peekChar()
       throws LDAPException
    {
