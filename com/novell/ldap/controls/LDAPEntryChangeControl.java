@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPEntryChangeControl.java,v 1.3 2001/07/20 19:49:47 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPEntryChangeControl.java,v 1.4 2001/07/25 23:42:03 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -29,12 +29,6 @@ import com.novell.ldap.rfc2251.*;
  */
 public class LDAPEntryChangeControl extends LDAPControl
 {
-
-    /**
-     * The OID of the entry change control
-     */
-    public static java.lang.String OID = "2.16.840.1.113730.3.4.7";
-
     private int     m_changeType;
     private String  m_previousDN;
     private boolean m_hasChangeNumber;

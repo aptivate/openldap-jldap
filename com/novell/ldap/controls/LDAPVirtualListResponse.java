@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPVirtualListResponse.java,v 1.2 2001/04/02 17:30:18 javed Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPVirtualListResponse.java,v 1.3 2001/07/20 19:49:47 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -33,10 +33,8 @@ import com.novell.ldap.rfc2251.*;
  * <li> an optional context field to be returned to the server with
  * subsequent VLV request.
  */
-public class LDAPVirtualListResponse extends LDAPControl {
-
-    public static final String OID = "2.16.840.1.113730.3.4.10";
-
+public class LDAPVirtualListResponse extends LDAPControl
+{
 	/* The parsed fields are stored in these private variables */	
 	private int m_firstPosition;
 	private int m_ContentCount;

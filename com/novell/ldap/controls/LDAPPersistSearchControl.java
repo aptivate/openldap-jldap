@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPPersistSearchControl.java,v 1.3 2001/03/30 01:44:59 javed Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPPersistSearchControl.java,v 1.4 2001/07/25 23:42:04 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -16,6 +16,7 @@
 package com.novell.ldap.controls;
 
 import com.novell.ldap.*;
+import com.novell.ldap.client.Debug;
 import com.novell.ldap.asn1.*;
 import com.novell.ldap.rfc2251.*;
 import com.novell.ldap.client.Debug;
@@ -31,18 +32,28 @@ import com.novell.ldap.client.Debug;
 public class LDAPPersistSearchControl extends LDAPControl
 {
     /* private data members */
-    private static final int SEQUENCE_SIZE = 3;
+    private static int SEQUENCE_SIZE = 3;
 
-    private static final int CHANGETYPES_INDEX = 0;
-    private static final int CHANGESONLY_INDEX = 1;
-    private static final int RETURNCONTROLS_INDEX = 2;
+    private static int CHANGETYPES_INDEX = 0;
+    private static int CHANGESONLY_INDEX = 1;
+    private static int RETURNCONTROLS_INDEX = 2;
 
-    private static final LBEREncoder s_encoder = new LBEREncoder();
+    private static LBEREncoder s_encoder = new LBEREncoder();
 
     private int             m_changeTypes;
     private boolean         m_changesOnly;
     private boolean         m_returnControls;
     private ASN1Sequence    m_sequence;
+    
+    /**
+     * The requestOID of the persistent search control
+     */
+    private static java.lang.String requestOID = "2.16.840.1.113730.3.4.3";
+
+    /**
+     * The responseOID of the psersistent search - entry change control
+     */
+    private static java.lang.String responseOID = "2.16.840.1.113730.3.4.7";
 
     /**
      *  Change type specifying that you want to track additions of new entries
@@ -74,11 +85,31 @@ public class LDAPPersistSearchControl extends LDAPControl
      */
     public static final int ANY = ADD | DELETE | MODIFY | MODDN;
 
-    /**
-     * The OID of the persistent search control
+    /*
+     * This is where we register the control response
      */
-    public static java.lang.String OID = "2.16.840.1.113730.3.4.3";
-
+    static
+    {
+		/* Register the Entry Change control class which is returned by the
+		 * server in response to a persistent search request
+		 */
+		try {
+			// Register LDAPEntryChangeControl
+			LDAPControl.register(responseOID,
+			  Class.forName("com.novell.ldap.controls.LDAPEntryChangeControl"));
+			if( Debug.LDAP_DEBUG) {
+				Debug.trace( Debug.controls,
+							 "Registered class for Entry Change control.");
+			}
+		} catch (ClassNotFoundException e) {
+			if( Debug.LDAP_DEBUG) {
+				Debug.trace( Debug.controls,
+				 "Could not register class for Entry Change control" +
+				 " - class not found");
+			}
+		}
+    }
+    
     /* public constructors */
 
     /**
@@ -89,6 +120,7 @@ public class LDAPPersistSearchControl extends LDAPControl
     public LDAPPersistSearchControl()
     {
         this(ANY, true, true, true);
+        return;
     }
 
     /**
@@ -120,7 +152,7 @@ public class LDAPPersistSearchControl extends LDAPControl
         boolean returnControls,
         boolean isCritical)
     {
-        super(OID, isCritical, null);
+        super(requestOID, isCritical, null);
 
         m_changeTypes = changeTypes;
         m_changesOnly = changesOnly;
@@ -133,6 +165,7 @@ public class LDAPPersistSearchControl extends LDAPControl
         m_sequence.add(new ASN1Boolean(m_returnControls));
 
         setValue();
+        return;
     }
 
     /**
@@ -161,6 +194,7 @@ public class LDAPPersistSearchControl extends LDAPControl
         m_changeTypes = changeTypes;
         m_sequence.set(CHANGETYPES_INDEX, new ASN1Integer(m_changeTypes));
         setValue();
+        return;
     }
 
     /**
@@ -187,6 +221,7 @@ public class LDAPPersistSearchControl extends LDAPControl
         m_returnControls = returnControls;
         m_sequence.set(RETURNCONTROLS_INDEX, new ASN1Boolean(m_returnControls));
         setValue();
+        return;
     }
 
     /**
@@ -211,6 +246,7 @@ public class LDAPPersistSearchControl extends LDAPControl
         m_changesOnly = changesOnly;
         m_sequence.set(CHANGESONLY_INDEX, new ASN1Boolean(m_changesOnly));
         setValue();
+        return;
     }
 
     public String toString()
@@ -235,5 +271,6 @@ public class LDAPPersistSearchControl extends LDAPControl
     private void setValue()
     {
         super.setValue(m_sequence.getEncoding(s_encoder));
+        return;
     }
 } // end class LDAPPersistentSearchControl

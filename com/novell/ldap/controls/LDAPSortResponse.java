@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPSortResponse.java,v 1.4 2001/03/01 00:30:07 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPSortResponse.java,v 1.5 2001/07/20 19:49:47 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -28,11 +28,11 @@ import com.novell.ldap.rfc2251.*;
  *  LDAPSortResponse - will be added in newer version of LDAP
  *  Controls draft-- add descritption from draft here.
  */
-public class LDAPSortResponse extends LDAPControl {
+public class LDAPSortResponse extends LDAPControl
+{
 
     private String failedAttribute;
     private int resultCode;
-    public static final String OID = "1.2.840.113556.1.4.474";
 
     /**
      * @deprecated For internal use only.  Should not be used by applications.

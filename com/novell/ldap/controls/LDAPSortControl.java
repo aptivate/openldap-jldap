@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPSortControl.java,v 1.7 2001/03/29 23:02:26 javed Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPSortControl.java,v 1.8 2001/07/25 23:42:04 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -16,6 +16,7 @@
 package com.novell.ldap.controls;
 
 import com.novell.ldap.*;
+import com.novell.ldap.client.Debug;
 import com.novell.ldap.asn1.*;
 import com.novell.ldap.rfc2251.*;
 
@@ -30,10 +31,41 @@ import com.novell.ldap.rfc2251.*;
  */
 public class LDAPSortControl extends LDAPControl {
 
-    private static final int ORDERING_RULE = 0;
-    private static final int REVERSE_ORDER = 1;
-    public static final String OID = "1.2.840.113556.1.4.473";
+    private static int ORDERING_RULE = 0;
+    private static int REVERSE_ORDER = 1;
+    /**
+     * The requestOID of the sort control
+     */
+    private static String requestOID = "1.2.840.113556.1.4.473";
+    
+    /**
+     * The responseOID of the sort control
+     */
+    private static String responseOID = "1.2.840.113556.1.4.474";
 
+    /*
+     * This is where we register the control responses
+     */
+    static
+    {
+		/*
+         * Register the Server Sort Control class which is returned by the
+		 * server in response to a Sort Request
+		 */
+        try {
+            LDAPControl.register(responseOID,
+                    Class.forName("com.novell.ldap.controls.LDAPSortResponse"));
+            if( Debug.LDAP_DEBUG) {
+                Debug.trace( Debug.controls,
+                  "Registered Sort Control Response Class");
+            }
+        } catch (ClassNotFoundException e) {
+            if( Debug.LDAP_DEBUG) {
+                Debug.trace( Debug.controls,
+                  "Could not register Sort Control Response - Class not found");
+            }
+        }
+    }
     /**
      * Constructs a sort control with a single key.
      *
@@ -46,6 +78,7 @@ public class LDAPSortControl extends LDAPControl {
     public LDAPSortControl(LDAPSortKey key, boolean critical)
     {
         this(new LDAPSortKey[]{key}, critical);
+        return;
     }
 
     /**
@@ -59,7 +92,7 @@ public class LDAPSortControl extends LDAPControl {
      */
     public LDAPSortControl(LDAPSortKey[] keys, boolean critical)
     {
-        super(OID, critical, null);
+        super(requestOID, critical, null);
 
         ASN1SequenceOf sortKeyList = new ASN1SequenceOf();
 
@@ -91,6 +124,6 @@ public class LDAPSortControl extends LDAPControl {
         }
 
 		setValue (sortKeyList.getEncoding(new LBEREncoder()));
-
+        return;
     }
 }

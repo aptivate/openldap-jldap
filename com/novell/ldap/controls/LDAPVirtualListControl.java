@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPVirtualListControl.java,v 1.4 2001/04/02 15:21:38 javed Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPVirtualListControl.java,v 1.5 2001/04/02 17:30:18 javed Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -16,11 +16,11 @@
 package com.novell.ldap.controls;
 
 import com.novell.ldap.*;
+import com.novell.ldap.client.Debug;
 import com.novell.ldap.asn1.*;
 import com.novell.ldap.rfc2251.*;
 
 /**
- *  
  * LDAPVirtualListControl is a Server Control used to specify 
  * that results from a search are to be returned in pages - which are
  * subsets of the entire virtual result set.<br>
@@ -50,16 +50,22 @@ public class LDAPVirtualListControl extends LDAPControl {
 	/* The ASN.1 for the VLV Request has CHOICE field. These private 
 	 * variables represent differnt ids for these different options
 	 */
-	private static final int BYOFFSET = 0;
-	private static final int GREATERTHANOREQUAL = 1;
+	private static int BYOFFSET = 0;
+	private static int GREATERTHANOREQUAL = 1;
 	
 	
-	/** The OID for a VLV Request is stored in this static variable.
+	/**
+     * The Request OID for a VLV Request
 	 */
-    public static final String OID = "2.16.840.1.113730.3.4.9";
-
+    private static String requestOID = "2.16.840.1.113730.3.4.9";
+    
+    /*
+     * The Response stOID for a VLV Response
+     */ 
+    private static String responseOID = "2.16.840.1.113730.3.4.10";
 	
-	/* The encoded ASN.1 VLV Control is stored in this variable
+	/*
+     * The encoded ASN.1 VLV Control is stored in this variable
 	 */
     private ASN1Sequence m_vlvRequest;
 
@@ -78,6 +84,28 @@ public class LDAPVirtualListControl extends LDAPControl {
 	private int m_startIndex = 0;
 	private	int m_contentCount = -1;
 
+    /*
+     * This is where we register the control responses
+     */
+    static
+    {
+		/* Register the VLV Sort Control class which is returned by the server
+		 * in response to a VLV Sort Request
+		 */
+		try {
+            LDAPControl.register(responseOID,
+             Class.forName("com.novell.ldap.controls.LDAPVirtualListResponse"));
+            if( Debug.LDAP_DEBUG) {
+                Debug.trace( Debug.controls,
+                   "Registered VLV Control Response Class");
+            }
+        } catch (ClassNotFoundException e) {
+            if( Debug.LDAP_DEBUG) {
+                Debug.trace( Debug.controls,
+                   "Could not register VLV Control Response - Class not found");
+            }
+        }
+    }
    
    /**
 	* Constructs a virtual list control using the specified filter 
@@ -107,6 +135,7 @@ public class LDAPVirtualListControl extends LDAPControl {
 	    /* Set the OPTIONAL context field to null 
 		 */
 		this(jumpTo, beforeCount, afterCount, null);
+        return;
 	}
  
 
@@ -147,7 +176,7 @@ public class LDAPVirtualListControl extends LDAPControl {
 		 * true value for the criticality when calling parent 
 		 * constructor
 		 */
-        super(OID, true, null);
+        super(requestOID, true, null);
 
 		/* Save off the fields in local variables
 		 */
@@ -165,6 +194,7 @@ public class LDAPVirtualListControl extends LDAPControl {
 		 * appended to the search request when the control is sent.
 		 */
 		setValue (m_vlvRequest.getEncoding(new LBEREncoder()));
+        return;
 	}
 
 	/** Private method used to construct the ber encoded control
@@ -196,6 +226,7 @@ public class LDAPVirtualListControl extends LDAPControl {
 		if (m_context != null)
 			m_vlvRequest.add(new ASN1OctetString(m_context));
 
+        return;
 	}
 
   /**
@@ -223,6 +254,7 @@ public class LDAPVirtualListControl extends LDAPControl {
 	    /* Set the OPTIONAL context field to null 
 		 */
 		this(startIndex, beforeCount, afterCount, contentCount, null);
+        return;
 	}
 
 
@@ -260,7 +292,7 @@ public class LDAPVirtualListControl extends LDAPControl {
 		 * true value for the criticality when calling parent 
 		 * constructor
 		 */
-        super(OID, true, null);
+        super(requestOID, true, null);
 
         
 		/* Save off the fields in local variables
@@ -280,7 +312,7 @@ public class LDAPVirtualListControl extends LDAPControl {
 		 * appended to the search request when the control is sent.
 		 */
 		setValue (m_vlvRequest.getEncoding(new LBEREncoder()));
-
+        return;
 	}
     
 	/** Private method used to construct the ber encoded control
@@ -316,6 +348,7 @@ public class LDAPVirtualListControl extends LDAPControl {
 		if (m_context != null)
 			m_vlvRequest.add(new ASN1OctetString(m_context));
 
+        return;
 	}
 
 
@@ -504,7 +537,4 @@ public class LDAPVirtualListControl extends LDAPControl {
 		setValue (m_vlvRequest.getEncoding(new LBEREncoder()));
 		
    }
-   
-    
 }
-
