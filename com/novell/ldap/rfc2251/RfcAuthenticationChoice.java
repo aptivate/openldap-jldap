@@ -39,4 +39,25 @@ public class RfcAuthenticationChoice extends ASN1Choice {
     {
         super(choice);
     }
+
+	public RfcAuthenticationChoice(
+        String mechanism,
+        byte[] credentials)
+    {
+        super( new ASN1Tagged(
+                         new ASN1Identifier(ASN1Identifier.CONTEXT, true, 3),
+                         new RfcSaslCredentials(
+                                new RfcLDAPString(mechanism),            
+                                credentials != null ? 
+                                   new ASN1OctetString(credentials) : null),
+                         false)); // implicit tagging
+    }
+
+	//*************************************************************************
+	// Mutators
+	//*************************************************************************
+
+	//*************************************************************************
+	// Accessors
+	//*************************************************************************
 }
