@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/client/ClientListener.java,v 1.5 2000/11/09 23:50:40 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/client/ClientListener.java,v 1.6 2000/11/10 16:50:04 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -167,7 +167,7 @@ public class ClientListener implements TimerListener {
     {
         exceptions.addElement(
             new LDAPException("Client timeout", LDAPException.LDAP_TIMEOUT));
-        queue.removeTimer(msgId); // timer thread does not need to be stopped.
+        queue.removeTimer(msgId); // timer thread has already terminated
         try {
             conn.writeMessage(new LDAPMessage(new RfcAbandonRequest(msgId)));
 //                new AbandonRequest(conn.getMessageID(), msgId,

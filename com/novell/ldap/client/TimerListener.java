@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id$
+ * $Id: TimerListener.java,v 1.2 2000/03/14 18:17:32 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -15,6 +15,6 @@
  
 package com.novell.ldap.client;
 
-public interface TimerListener {
-	void timedOut(int msgId);
+/* package */ interface TimerListener {
+	/* package */ void timedOut(int msgId);
 }
