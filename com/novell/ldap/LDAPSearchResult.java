@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/org/ietf/ldap/LDAPSearchResult.java,v 1.4 2000/08/03 22:06:18 smerrill Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/org/ietf/ldap/LDAPSearchResult.java,v 1.5 2000/08/10 17:53:03 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -18,7 +18,7 @@ package org.ietf.ldap;
 import java.io.IOException;
 import java.util.*;
 
-import com.novell.ldap.client.protocol.lber.*;
+//import com.novell.ldap.client.protocol.lber.*;
 
 /**
  * 4.7 public class LDAPSearchResult extends LDAPMessage
