@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPPersistSearchControl.java,v 1.5 2001/07/26 22:13:52 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPPersistSearchControl.java,v 1.6 2001/07/27 18:47:03 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -26,6 +26,9 @@ import com.novell.ldap.client.Debug;
  *  the searches result set. The client can be notified when an entry is
  *  added to the result set, when an entry is deleted from the result set,
  *  when a DN has been changed or when and attribute value has been changed.
+ *
+ *  <p><a href="../../../overview-summary.html#sc">Sample Code:</a>
+ *  controls\SearchPersist.java</p>
  */
 public class LDAPPersistSearchControl extends LDAPControl
 {
@@ -42,7 +45,7 @@ public class LDAPPersistSearchControl extends LDAPControl
     private boolean         m_changesOnly;
     private boolean         m_returnControls;
     private ASN1Sequence    m_sequence;
-    
+
     /**
      * The requestOID of the persistent search control
      */
@@ -107,7 +110,7 @@ public class LDAPPersistSearchControl extends LDAPControl
 			}
 		}
     }
-    
+
     /* public constructors */
 
     /**

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSchema.java,v 1.26 2001/08/09 16:57:37 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSchema.java,v 1.27 2001/08/09 20:21:06 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -21,12 +21,14 @@ import java.util.Hashtable;
 /**
  *  The schema of a particular directory server.
  *
- *  <p>It supports querying a directory server for its schema
- *  and for definitions of individual schema elements.
+ * <p>It supports querying a directory server for its schema
+ * and for definitions of individual schema elements.
  *
  * <p>The fetchSchema methods are the only methods that interact with a
  * directory server. The other methods access information acquired
  * through fetchSchema.</p>
+ *
+ * <p><a href="../../../overview-summary.html#sc">Sample Code</a>: ExtendSchema.java</p>
  *
  * @see LDAPAttributeSchema
  */

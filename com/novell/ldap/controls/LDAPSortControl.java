@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPSortControl.java,v 1.9 2001/07/26 22:13:52 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPSortControl.java,v 1.10 2001/07/27 18:47:03 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -27,6 +27,9 @@ import com.novell.ldap.client.Debug;
  *  sorted (or that sort controls are not supported). If the control was
  *  marked "critical", the whole search operation will fail if the sort
  *  control is not supported.
+ *
+ *  <p><a href="../../../overview-summary.html#sc">Sample Code:</a>
+ *  controls\SortControl.java</p>
  */
 public class LDAPSortControl extends LDAPControl {
 
@@ -36,7 +39,7 @@ public class LDAPSortControl extends LDAPControl {
      * The requestOID of the sort control
      */
     private static String requestOID = "1.2.840.113556.1.4.473";
-    
+
     /**
      * The responseOID of the sort control
      */

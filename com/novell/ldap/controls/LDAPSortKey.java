@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPSortKey.java,v 1.2 2001/03/01 00:30:07 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPSortKey.java,v 1.3 2001/07/25 23:42:04 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -17,6 +17,9 @@ package com.novell.ldap.controls;
 
 /**
  * Encapsulates parameters for sorting search results.
+ *
+ *  <p><a href="../../../overview-summary.html#sc">Sample Code:</a>
+ *  controls\SortControl.java</p>
  */
 public class LDAPSortKey {
 

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttributeSchema.java,v 1.24 2001/06/29 21:52:13 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttributeSchema.java,v 1.25 2001/07/09 17:44:50 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -23,15 +23,17 @@ import java.io.IOException;
 
 /**
  * The definition of an attribute type in the schema.
- * 
+ *
  * <p>LDAPAttributeSchema is used to discover an attribute's
  * syntax, and add or delete an attribute definition.
  * RFC 2252, "Lightweight Directory Access Protocol (v3):
  * Attribute Syntax Definitions" contains a description
- * of the information on the LDAP representation of schema. 
+ * of the information on the LDAP representation of schema.
  * Draft-sermerseim-nds-ldap-schema-01, "LDAP Schema for NDS"
  * defines the schema descriptions and non-standard syntaxes
  * used by NDS.
+ *
+ *  <p><a href="../../../overview-summary.html#sc">Sample Code</a>: ExtendSchema.java</p>
  *
  * @see LDAPSchema
  */

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.104 2001/07/20 19:49:38 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.105 2001/07/20 22:18:18 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -34,18 +34,21 @@ import com.novell.ldap.resources.*;
  * The central class that encapsulates the connection
  * to a directory server through the LDAP protocol.
  * LDAPConnection objects are used to perform common LDAP
- * operations such as search, modify and add. 
+ * operations such as search, modify and add.
  *
  * <p>In addition, LDAPConnection objects allow you to bind to an
  * LDAP server, set connection and search constraints, and perform
  * several other tasks.
- *  
+ *
  * <p>An LDAPConnection object is not connected on
  * construction and can only be connected to one server at one
  * port. Multiple threads may share this single connection, typically
  * by cloning the connection object, one for each thread. An
  * application may have more than one LDAPConnection object, connected
  * to the same or different directory servers.</p>
+ *
+ * <p><a href="../../../overview-summary.html#sc">Sample Code</a>:
+ * GraceLogin.java, Search.java</p>
  *
  */
 public class LDAPConnection implements Cloneable
@@ -631,7 +634,7 @@ public class LDAPConnection implements Cloneable
     public void setSearchConstraints(LDAPSearchConstraints cons)
     {
         setConstraints( cons);
-        return; 
+        return;
     }
 
     /**

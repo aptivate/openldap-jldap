@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResults.java,v 1.46 2001/06/29 21:52:17 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResults.java,v 1.47 2001/07/20 19:49:40 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -27,6 +27,9 @@ import java.util.NoSuchElementException;
 /**
  *
  *  The enumerable results of a synchronous search operation.
+ *
+ *  <p><a href="../../../overview-summary.html#sc">Sample Code:</a>
+ *  asynchronous\Searchas.java</p>
  *
  * @see LDAPConnection#search
  */

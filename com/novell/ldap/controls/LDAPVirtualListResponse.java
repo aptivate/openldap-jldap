@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPVirtualListResponse.java,v 1.4 2001/07/26 22:13:53 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPVirtualListResponse.java,v 1.5 2001/07/27 18:47:04 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -21,8 +21,8 @@ import com.novell.ldap.client.Debug;
 import com.novell.ldap.asn1.*;
 
 /**
- *   
- * LDAPVirtualListResponse is a Server Control returned by the server in 
+ *
+ * LDAPVirtualListResponse is a Server Control returned by the server in
  * response to a virtual list search request.<br><br>
  *
  * <p>In response to a VLV Search request the server returns an error code
@@ -31,14 +31,17 @@ import com.novell.ldap.asn1.*;
  * <li> an estimate of the total number of elements in the search result
  * <li> an optional context field to be returned to the server with
  * subsequent VLV request.
+ *
+ *  <p><a href="../../../overview-summary.html#sc">Sample Code:</a>
+ *  controls\VLVControl.java</p>
  */
 public class LDAPVirtualListResponse extends LDAPControl
 {
-	/* The parsed fields are stored in these private variables */	
+	/* The parsed fields are stored in these private variables */
 	private int m_firstPosition;
 	private int m_ContentCount;
 	private int m_resultCode;
-	
+
 	/* The context field if one was returned by the server */
 	private String m_context = null;
 
@@ -52,7 +55,7 @@ public class LDAPVirtualListResponse extends LDAPControl
      *
      * <p>RFC 2891 defines this response control as follows:
      *
-     * The controlValue is an OCTET STRING, whose value is the BER 
+     * The controlValue is an OCTET STRING, whose value is the BER
      * encoding of a value of the following ASN.1:<br><br>
 	 *
      * VirtualListViewResponse ::= SEQUENCE {
@@ -100,7 +103,7 @@ public class LDAPVirtualListResponse extends LDAPControl
             Debug.trace( Debug.controls, "LDAPVLVResponse Control Value =" + asnObj.toString());
         }
 
-		/* Get the 1st element which should be an integer containing the 
+		/* Get the 1st element which should be an integer containing the
 		 * targetPosition (firstPosition)
 		 */
 		ASN1Object asn1firstPosition = ((ASN1Sequence)asnObj).get(0);
@@ -109,7 +112,7 @@ public class LDAPVirtualListResponse extends LDAPControl
 		else
 			throw new IOException("Decoding error");
 
-		/* Get the 2nd element which should be an integer containing the 
+		/* Get the 2nd element which should be an integer containing the
 		 * current estimate of the contentCount
 		 */
 		ASN1Object asn1ContentCount = ((ASN1Sequence)asnObj).get(1);
@@ -135,43 +138,43 @@ public class LDAPVirtualListResponse extends LDAPControl
         }
         return;
     }
-    
-	/** 
+
+	/**
 	 * Returns the size of the virtual search results list.  This integer as
 	 * the servers current estimate of what the search result size.
 	 */
-	 public int getContentCount () 
+	 public int getContentCount ()
 	 {
 		return m_ContentCount;
 	 }
-    
-	/** 
+
+	/**
 	 * Returns the index of the first entry in the returned list.  The server uses
 	 * the clients request information in conjunction with its current search result
 	 * list to estimate what list of entries the client is requesting.  This integer
 	 * is the index into the search results that is returned to the client.
-	 */    
-	 public int getFirstPosition () 
+	 */
+	 public int getFirstPosition ()
 	 {
 	 	return m_firstPosition;
 
 	 }
-    
+
 	/**
 	 * Returns the result code for the virtual list search request.
 	 */
-	 public int getResultCode () 
+	 public int getResultCode ()
 	 {
 		return m_resultCode;
 
 	 }
 
 	 /**
-	  * Returns the cookie used by some servers to optimize the processing of 
+	  * Returns the cookie used by some servers to optimize the processing of
 	  * virtual list requests. Subsequent VLV requests to the same server
 	  * should return this String to the server.
 	  */
-	  public String getContext() 
+	  public String getContext()
 	  {
 		return	m_context;
 	  }

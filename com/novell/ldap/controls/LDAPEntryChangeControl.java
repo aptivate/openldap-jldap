@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPEntryChangeControl.java,v 1.6 2001/07/27 18:47:03 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPEntryChangeControl.java,v 1.7 2001/07/30 15:09:30 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -25,6 +25,9 @@ import com.novell.ldap.client.Debug;
  *  of the client in response to a persistent search request. It
  *  contains additional information about a change such as what type of
  *  change occurred.
+ *
+ *  <p><a href="../../../overview-summary.html#sc">Sample Code:</a>
+ *  controls\SearchPersist.java</p>
  */
 public class LDAPEntryChangeControl extends LDAPControl
 {

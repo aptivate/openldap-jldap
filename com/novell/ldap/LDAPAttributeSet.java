@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttributeSet.java,v 1.25 2001/06/13 17:51:06 jhammons Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttributeSet.java,v 1.26 2001/07/20 19:49:37 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -20,7 +20,7 @@ import com.novell.ldap.client.ArrayEnumeration;
 import java.util.Enumeration;
 
 /**
- *  
+ *
  * A set of {@link LDAPAttribute} objects.
  *
  * <p>An LDAPAttributeSet can be used when constructing an object, by
@@ -28,7 +28,9 @@ import java.util.Enumeration;
  * when the object is created. LDAPAttributeSet objects can also be retrieved from
  * LDAPEntry objects when performing searches, allowing you to iterate
  * through all of an entry's attributes.
- * 
+ *
+ *  <p><a href="../../../overview-summary.html#sc">Sample Code</a>: AddEntry.java</p>
+ *
  * @see LDAPAttribute
  * @see LDAPEntry
  */

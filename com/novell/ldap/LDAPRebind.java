@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPRebind.java,v 1.9 2001/01/25 16:34:06 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPRebind.java,v 1.10 2001/03/01 00:29:53 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -27,6 +27,9 @@ package com.novell.ldap;
  *  Referrals of any type other than to an LDAP server (i.e. a
  *  referral URL other than ldap://something) are ignored on automatic referral
  *  following.</p>
+ *
+ *  <p><a href="../../../overview-summary.html#sc">Sample Code:</a>
+ *  SearchUtil.java</p>
  *
  *  @see LDAPBind
  *  @see LDAPConstraints#setReferralFollowing(boolean)

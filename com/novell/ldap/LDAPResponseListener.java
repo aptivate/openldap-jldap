@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPResponseListener.java,v 1.26 2001/03/01 00:29:54 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPResponseListener.java,v 1.27 2001/03/06 19:19:12 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -25,6 +25,9 @@ import com.novell.ldap.rfc2251.*;
  *  received from a server.  It
  *  represents the message queue associated with a particular asynchronous LDAP
  *  operation or operations.
+ *
+ *  <p><a href="../../../overview-summary.html#sc">Sample Code:</a>
+ *  asynchronous\Searchas.java</p>
  */
 public class LDAPResponseListener implements LDAPListener
 {

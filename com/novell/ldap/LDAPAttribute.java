@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttribute.java,v 1.23 2001/06/13 17:51:06 jhammons Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttribute.java,v 1.24 2001/07/20 19:49:37 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -23,12 +23,14 @@ import java.util.StringTokenizer;
 import java.io.UnsupportedEncodingException;
 /**
  * The name and values of one attribute of a directory entry.
- * 
+ *
  * <p>LDAPAttribute objects are used when searching for, adding,
  * modifying, and deleting attributes from the directory.
  * LDAPAttributes are often used in conjunction with an
  * {@link LDAPAttributeSet} when retrieving or adding multiple
  * attributes to an entry.
+ *
+ *  <p><a href="../../../overview-summary.html#sc">Sample Code</a>: AddEntry.java</p>
  *
  * @see LDAPEntry
  * @see LDAPAttributeSet

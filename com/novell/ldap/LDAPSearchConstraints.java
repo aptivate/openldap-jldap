@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchConstraints.java,v 1.16 2001/04/27 21:47:17 dsteck Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchConstraints.java,v 1.17 2001/06/22 16:03:06 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -24,6 +24,10 @@ import com.novell.ldap.client.Debug;
  *  <p>An LDAPSearchConstraints object is always associated with an LDAPConnection
  *  object; its values can be changed with the LDAPConnection.setOption method,
  *  or overridden by passing an LDAPConstraints object to the search operation. </p>
+ *
+ *
+ *  <p><a href="../../../overview-summary.html#sc">Sample Code:</a>
+ *  Search.java</p>
  *
  *  @see LDAPConstraints
  *  @see LDAPConnection#setConstraints(LDAPConstraints)
