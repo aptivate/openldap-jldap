@@ -20,7 +20,118 @@
 </head>
 <body bgcolor="white">
 
-Provides utility classes to building LDAP applications.
+<p> Provides utility classes for use by LDAP applications.  This package includes
+the
+<a href="DN.html" target=>DN class</a>
+and
+<a href="RDN.html" target=>RDN class</a>
+supporting DN and RDN encapsulation respectively. The package also
+includes classes supporting the export and import of directory data
+via DSML v2.0 and LDIF version 1.</p>
+
+<p>The import and export of directory data is accomplished by classes that
+implement the interfaces <a href="LDAPReader.html" target=>LDAPReader</a>
+and <a href="LDAPWriter.html" target=>LDAPWriter</a>.
+The LDAPReader interface designates the framework used for
+reading modifications and entries from exported sources and applying them to
+the directory.
+The LDAPWriter interface designates the framework used for
+writing directory entries and modifications to a destination supporting an
+exported format.
+</p>
+
+<p>
+LDIF supports two data types, content and change.  DSML supports two
+corresponding data types, request and response.
+LDIF content represents only LDAP search
+response entries (i.e. the data returned from a search) and LDIF change data
+supports only add, delete, modify, and rename (modifyDN) LDAP requests.  On the other hand,
+DSML represents all the LDAP requests and responses.  Thus, LDIF content
+corresponds in a limited way to DSML response data and LDIF change data 
+corresponds in a limited way to DSML request data.  You cannot mix response
+data and request data.
+</p>
+<p>To represent request data, additional classes have been added to the 
+<a href="../package-summary.html" target=>com.novell.ldap</a> package.
+These classes are:</p>
+<p>
+<li><a href="../LDAPAbandonRequest.html" target=>LDAPAbandonRequest</a>
+<li><a href="../LDAPAddRequest.html" target=>LDAPAddRequest</a>
+<li><a href="../LDAPBindRequest.html" target=>LDAPBindRequest</a>
+<li><a href="../LDAPCompareRequest.html" target=>LDAPCompareRequest</a>
+<li><a href="../LDAPDeleteRequest.html" target=>LDAPDeleteRequest</a>
+<li><a href="../LDAPExtendedRequest.html" target=>LDAPExtendedRequest</a>
+<li><a href="../LDAPModifyDNRequest.html" target=>LDAPModifyDNRequest</a>
+<li><a href="../LDAPModifyRequest.html" target=>LDAPModifyRequest</a>
+<li><a href="../LDAPSearchRequest.html" target=>LDAPSearchRequest</a>
+<li><a href="../LDAPUnbindRequest.html" target=>LDAPUnbindRequest</a>
+</p>
+
+<p>Requests received from an exported source are decoded and read by 
+calling the
+<A HREF="LDAPReader.html#readMessage()">readMessage</A> method of a
+class that implements the
+<a href="LDAPReader.html" target=>LDAPReader</a>
+interface.
+This package provides three classes that implement the LDAPReader interface:
+<br><li><a href="DOMReader.html" target=>DOMReader</a>
+<li><a href="DSMLReader.html" target=>DSMLReader</a>
+<li><a href="LDIFReader.html" target=>LDIFReader</a>
+<br>
+The message is returned by
+<A HREF="LDAPReader.html#readMessage()">readMessage</A>
+to the application as one of the
+above request classes and can be applied to the directory using the
+<A HREF="../LDAPConnection.html#sendRequest(com.novell.ldap.LDAPMessage, com.novell.ldap.LDAPMessageQueue)">sendRequest</A>
+method of 
+<A HREF="../LDAPConnection.html">LDAPConnection</A>.
+</p><p>LDAP entries read from the directory as 
+<A HREF="../LDAPMessage.html">LDAPMessage</A>
+objects or
+<A HREF="../LDAPEntry.html">LDAPEntry</A>
+objects are written to an export
+destination via the 
+<A HREF="LDAPWriter.html#writeEntry(com.novell.ldap.LDAPEntry)">writeEntry</A>
+or the
+<A HREF="LDAPWriter.html#writeMessage(com.novell.ldap.LDAPMessage)">writeMessage</A>
+methods of classes that implement the
+<a href="LDAPWriter.html" target=>LDAPWriter</a>.
+interface.
+This package provides three classes that implement the LDAPWriter interface:
+<br>
+<li><a href="DOMWriter.html" target=>DOMWriter</a>
+<li><a href="DSMLWriter.html" target=>DSMLWriter</a>
+<li><a href="LDIFWriter.html" target=>LDIFWriter</a>
+</p>
+
+<p>The following code snippet demonstrates reading exported request
+data, submitting the request to the directory, and writing the response to
+a destination.
+<pre>
+            LDAPMessage inMessage, outMessage;
+            inMessage = in.readMessage();  // Read first message
+            while( inMessage != null ){
+                LDAPMessageQueue queue =
+                    lc.sendRequest( inMessage, null, null); // Send to directory
+                while (( outMessage = queue.getResponse()) != null ) {
+                    out.writeMessage( outMessage );  // Write and export
+                }
+                inMessage = in.readMessage(); // Read next message
+            }
+</pre></p>
+
+<p>There are several samples that demonstrate how to use this functionality.</p>
+
+<p>
+<li><a href="http://developer.novell.com/ndk/doc/samplecode/jldap_sample/dsml_ldif/DOMDsml2Ldap.java.html">DOMDsml2Ldap.java</a>
+<li><a href="http://developer.novell.com/ndk/doc/samplecode/jldap_sample/dsml_ldif/Dsml2Ldap.java.html">Dsml2Ldap.java</a>
+<li><a href="http://developer.novell.com/ndk/doc/samplecode/jldap_sample/dsml_ldif/Ldap2Ldif.java.html">Ldap2Ldif.java</a>
+<li><a href="http://developer.novell.com/ndk/doc/samplecode/jldap_sample/dsml_ldif/Ldif2Ldap.java.html">Ldif2Ldap.java</a>
+</p>
+
+<p>The jldapsearch utility can display search results in DSML or LDIF format
+to standard output, which can be redirected to a file.  The utilities are
+found in the bin directory of the API download.</p>
 
 <h2>Package Specification</h2>
 
