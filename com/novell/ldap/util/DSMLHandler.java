@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: DSMLHandler.java,v 1.16 2002/10/25 18:09:58 $
+ * $Novell: DSMLHandler.java,v 1.17 2002/10/28 23:16:08 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -12,7 +12,7 @@
  * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
  * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
  */
-package com.novell.ldap.util;
+package com.novell.ldap.client;
 
 import com.novell.ldap.*;
 import com.novell.ldap.rfc2251.*;
@@ -23,8 +23,7 @@ import java.io.UnsupportedEncodingException;
 
 import org.xml.sax.*;
 
-/*package public*/
-class DSMLHandler implements ContentHandler, ErrorHandler
+public class DSMLHandler implements ContentHandler, ErrorHandler
 {
     /** Holds parsed LDAPMessages ready for use */
     public ArrayList queue = new ArrayList();

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: LDIFReader.java,v 1.33 2002/10/24 19:30:14 $
+ * $Novell: LDIFReader.java,v 1.34 2002/10/28 23:16:12 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -262,19 +262,13 @@ public class LDIFReader implements LDAPReader {
     }
     
     /**
-     * Read the LDAP Requests from the LDIF change file.
+     * Read LDAP Requests from the LDIF request (change) file or content file.
      *
      * @return LDAPMessage specified by the record
      */
     public LDAPMessage readMessage()
                 throws IOException, LDAPException
     {
-
-        if( !isRequest()) {
-            throw new LDAPLocalException("Cannot read requests from LDIF"
-                + " content file", LDAPException.LOCAL_ERROR);
-        }
-
         readRecordFields();  // read record fields
         if ( this.rFields == null ) { // end of file
             return null;
@@ -282,6 +276,9 @@ public class LDIFReader implements LDAPReader {
         toRecordProperties();  // set record properties
 
         switch( this.reqType ) {
+            case LDAPMessage.SEARCH_RESPONSE :
+                this.currentRequest = new LDAPAddRequest(currentEntry, controls);
+                break;
             case LDAPMessage.ADD_REQUEST :
                 this.currentRequest = new LDAPAddRequest(currentEntry, controls);
                 break;

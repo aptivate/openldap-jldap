@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: DSMLReader.java,v 1.11 2002/10/22 22:15:46 $
+ * $Novell: DSMLReader.java,v 1.12 2002/10/28 23:16:08 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -26,6 +26,7 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.SAXException;
 
 import com.novell.ldap.*;
+import com.novell.ldap.client.DSMLHandler;
 
 
 public class DSMLReader implements LDAPReader {
