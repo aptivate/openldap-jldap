@@ -5,7 +5,9 @@ import java.io.*;
 
 /**
  * The ASN1Choice object represents the choice of any ASN1Object. All
- * ASN1Object methods are delegated to the object this ASN1Choice represents.
+ * ASN1Object methods are delegated to the object this ASN1Choice contains.
+ *
+ * Can a CHOICE contain anything BUT a TAGGED Type?
  */
 public class ASN1Choice extends ASN1Object {
 
@@ -21,6 +23,14 @@ public class ASN1Choice extends ASN1Object {
 	public ASN1Choice(ASN1Object content)
 	{
 		this.content = content;
+	}
+
+	/**
+	 * No arg Constructor. This is used by Filter, who subsequently sets the
+	 * content after parsing the RFC 2254 Search Filter String.
+	 */
+	protected ASN1Choice()
+	{
 	}
 
 	/**
@@ -55,6 +65,14 @@ public class ASN1Choice extends ASN1Object {
 	public ASN1Object getContent()
 	{
 		return content;
+	}
+
+	/**
+	 * Sets the CHOICE value stored in this ASN1Choice.
+	 */
+	protected void setContent(ASN1Object content)
+	{
+		this.content = content;
 	}
 
 	/**

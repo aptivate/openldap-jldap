@@ -10,6 +10,15 @@ import org.ietf.asn1.*;
  */
 public class ExtendedRequest extends ASN1Sequence implements Request {
 
+	/**
+	 * Context-specific TAG for optional requestName.
+	 */
+	public final static int REQUEST_NAME = 0;
+	/**
+	 * Context-specific TAG for optional requestValue.
+	 */
+	public final static int REQUEST_VALUE = 1;
+
 	//*************************************************************************
 	// Constructors for ExtendedRequest
 	//*************************************************************************
@@ -34,11 +43,11 @@ public class ExtendedRequest extends ASN1Sequence implements Request {
 	{
 		super(2);
 		add(new ASN1Tagged(
-			new ASN1Identifier(ASN1Identifier.CONTEXT, false, 0),
+			new ASN1Identifier(ASN1Identifier.CONTEXT, false, REQUEST_NAME),
 			                   requestName, false));
 		if(requestValue != null)
 			add(new ASN1Tagged(
-				new ASN1Identifier(ASN1Identifier.CONTEXT, false, 1),
+				new ASN1Identifier(ASN1Identifier.CONTEXT, false, REQUEST_VALUE),
 										 requestValue, false));
 	}
 
