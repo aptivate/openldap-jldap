@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.77 2001/02/16 18:58:47 javed Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.78 2001/02/26 19:58:21 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -3419,7 +3419,8 @@ public class LDAPConnection implements Cloneable
                 
                 if( Debug.LDAP_DEBUG) {
                     Debug.trace( Debug.referrals,   name +
-                        listen.getMessageIDs().length + "Referral URL " + refUrl.toString());
+                            (searchReference?"Following search reference URL " :
+                            "Following referral URL ") + refUrl.toString());
                 }
                 
                 // rebuild msg into new msg changing msgID,dn,scope,filter
@@ -3465,6 +3466,11 @@ public class LDAPConnection implements Cloneable
                     return refList;
                 }
             } catch (Exception ex) {
+                if( Debug.LDAP_DEBUG) {
+                    Debug.trace( Debug.referrals, name +
+                            "Throw exception " + ex.toString());
+                }
+                
                 if( ex instanceof LDAPReferralException) {
                     throw (LDAPReferralException)ex;
                 } else {
@@ -3498,13 +3504,15 @@ public class LDAPConnection implements Cloneable
 
     private
     LDAPMessage rebuildRequest( LDAPMessage msg, LDAPUrl url, boolean reference)
-            throws LDAPException, CloneNotSupportedException
+            throws LDAPException
     {
         RfcLDAPMessage rfcMsg = msg.getASN1Object();
         ASN1Identifier id = rfcMsg.getProtocolOp().getIdentifier();
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.referrals, name +
-            "rebuildRequest: original request = " + id.getTag());
+                "rebuildRequest: original request = " +
+                "message(" + msg.getMessageID() + "), request type " +
+                id.getTag());
         }
 
         String dn = url.getDN(); // new base

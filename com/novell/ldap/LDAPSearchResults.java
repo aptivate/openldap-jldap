@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResults.java,v 1.34 2001/02/26 19:58:26 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResults.java,v 1.35 2001/02/27 21:38:45 cmorris Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -234,8 +234,16 @@ public class LDAPSearchResults implements Enumeration
                         throw rex;
                     }
                 }
-                ((LDAPResponse)element).chkResultCode(); // will throw an exception
-            }
+                // Throw an exception if not success
+                ((LDAPResponse)element).chkResultCode();
+            } else
+            if( element instanceof LDAPException) {
+                if( Debug.LDAP_DEBUG ) {
+                    Debug.trace( Debug.messages, name +
+                        "next: LDAPException "+((LDAPException)element).toString());
+                }
+                throw (LDAPException)element;
+            } 
         } else {
             // If not a Search Entry, Search Result, or search continuation
             // we are very confused.
@@ -572,18 +580,19 @@ public class LDAPSearchResults implements Enumeration
                         continue;
                     }
                 } else {
-                    // how can we arrive here?
-                    // we would have to have no responses, no message IDs and no
-                    // exceptions
-                    throw new LDAPException( null, LDAPException.LDAP_TIMEOUT );
+                    // We get here if the connection timed out
+                    // we have no responses, no message IDs and no exceptions
+                    throw new LDAPException( null, LDAPException.LDAP_TIMEOUT);
                 }
-            } catch(LDAPException e) { // network error
-                // ?? Shouldn't exception be returned to application????
-                // could be a client timeout result
-                //          LDAPResponse response = new LDAPResponse(e.getLDAPResultCode());
-                //          entries.addElement(response);
-                return true; // search has been interrupted with an error
+            } catch(LDAPException e) {
+                if( Debug.LDAP_DEBUG ) {
+                    Debug.trace( Debug.messages, name +
+                        "Caught exception: " + e.toString());
+                }
+                // Hand exception off to user
+                entries.addElement( e);
             }
+            continue;        
         }
         return false; // search not completed
     }

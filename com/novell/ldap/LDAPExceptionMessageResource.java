@@ -1,4 +1,4 @@
-// $Novell$
+// $Novell: /ldap/src/jldap/com/novell/ldap/LDAPExceptionMessageResource.java,v 1.5 2001/02/26 19:58:24 vtag Exp $
 package com.novell.ldap;
 
 public class LDAPExceptionMessageResource extends java.util.ListResourceBundle {
@@ -12,6 +12,7 @@ public class LDAPExceptionMessageResource extends java.util.ListResourceBundle {
   public final static String CONNECTION_WAIT      = "CONNECTION_WAIT";
   public final static String CONNECTION_FINALIZED = "CONNECTION_FINALIZED";
   public final static String CONNECTION_CLOSED    = "CONNECTION_CLOSED";
+  public final static String DUP_ERROR            = "DUP_ERROR";
   public final static String NO_CONNECT           = "NO_CONNECT";
   public final static String REFERRAL_ERROR       = "REFERRAL_ERROR";
   public final static String REFERRAL_LOCAL       = "REFERRAL_LOCAL";
@@ -49,8 +50,9 @@ public class LDAPExceptionMessageResource extends java.util.ListResourceBundle {
   // LOCALIZE THIS
       {"TOSTRING", "{0} : ({1}) {2}"},
       {"CONNECTION_WAIT", "Connection lost waiting for results from {0}:{1}"},
-      {"CONNECTION_CLOSED", "Connection closed by the application disconnecting"},
       {"CONNECTION_FINALIZED", "Connection closed by the application finalizing the object"},
+      {"CONNECTION_CLOSED", "Connection closed by the application disconnecting"},
+      {"DUP_ERROR", "Cannot duplicate message built from the input stream"},
       {"REFERENCE_ERROR","Error attempting to follow a search continuation reference"},
       {"REFERRAL_ERROR","Error attempting to follow a referral"},
       {"REFERRAL_LOCAL", "LDAPSearchResults.{0}(): No entry found & request is not complete"},

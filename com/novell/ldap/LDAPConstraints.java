@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConstraints.java,v 1.15 2001/01/25 16:34:05 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConstraints.java,v 1.16 2001/02/26 19:58:23 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -290,8 +290,12 @@ public class LDAPConstraints implements Cloneable {
             return lc;
         }
         catch(CloneNotSupportedException e) {
-            // cannot happen; we support clone as does arrays.
-            throw new InternalError(e.toString());
+            /*
+             * This cannot happen; we support clone as does arrays.
+             * Since this method throws no exceptions, we must
+             * throw a RuntimeException
+             */
+            throw new RuntimeException(e.toString());
         }
     }
 

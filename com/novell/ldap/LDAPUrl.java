@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPUrl.java,v 1.21 2000/11/29 21:48:50 cmorris Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPUrl.java,v 1.22 2000/12/04 17:31:08 cmorris Exp $
 *
 * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
 *
@@ -434,7 +434,12 @@ public class LDAPUrl {
 		}
 		return url.toString();
     }
-
+    
+    public String toString()
+    {
+        return "com.novell.ldap.LDAPUrl:" + getUrl();
+    }
+    
     private String[] parseList( String listStr,    // input String
                                 char delimiter,    // list item delimiter
                                 int listStart,     // start of list

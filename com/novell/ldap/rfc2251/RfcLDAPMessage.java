@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/rfc2251/RfcLDAPMessage.java,v 1.17 2001/02/05 16:33:16 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/rfc2251/RfcLDAPMessage.java,v 1.18 2001/02/26 19:58:28 vtag Exp $
 *
 * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
 ***************************************************************************/
@@ -245,18 +245,21 @@ public class RfcLDAPMessage extends ASN1Sequence
      * @return the object representing the new message
      */
     public Object dupMessage( String dn, String filter, Integer scope)
-        throws CloneNotSupportedException, LDAPException
+        throws LDAPException
     {
         if( (op == null)) {
-            throw new CloneNotSupportedException(
-                "Cannot clone object built from the input stream");
+            if( Debug.LDAP_DEBUG ) {
+                Debug.trace( Debug.referrals,
+                    "RfcLDAPMessage op == null, cannot dupMessage");
+            }
+            throw new LDAPException("DUP_ERROR", LDAPException.LOCAL_ERROR);
         }
 
         RfcLDAPMessage newMsg = new RfcLDAPMessage( content,
                                                     (RfcRequest)content.get(1),
                                                     dn,
                                                     filter,
-                                                    scope);
+                                                    scope);                                               
         return newMsg;
     }
 
