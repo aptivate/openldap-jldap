@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: RemoveOrphanNamingContextRequest.java,v 1.9 2000/09/11 21:05:58 vtag Exp $
+ * $Id: RemoveOrphanNamingContextRequest.java,v 1.10 2000/09/25 17:42:27 fzhao Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -19,30 +19,34 @@ import com.novell.ldap.asn1.*;
 import java.io.*;
  
 /**
- *      This class is used to delete an orphan partition.
- *  To delete an orphan partition create an instance of this 
+ *  Deletes an orphan naming context (NDS partition).
+ *
+ *  <p>To delete an orphan partition, you must create an instance of this 
  *  class and then call the extendedOperation method with this
- *  object as the required LDAPExtendedOperation parameter.<br><br>
+ *  object as the required LDAPExtendedOperation parameter.</p>
  *
- *  The OID used for this extended operation is:
- *      "2.16.840.1.113719.1.27.100.41"<br><br>
+ *  <p>The RemoveOrphanNamingContextRequest operation uses the following OID:<br>
+ *  &nbsp;&nbsp;&nbsp;2.16.840.1.113719.1.27.100.41</p>
  *
- *  The RequestValue has the following ASN:<br><br>
+ *  The requestValue has the following format:<br><br>
  *
  *  requestValue ::=
- * &nbsp;&nbsp;&nbsp;&nbsp;        serverDN    LDAPDN
- * &nbsp;&nbsp;&nbsp;&nbsp;        contextName LDAPDN
+ * &nbsp;&nbsp;&nbsp;&nbsp;      serverDN &nbsp;&nbsp;&nbsp;    LDAPDN
+ * &nbsp;&nbsp;&nbsp;&nbsp;      contextName &nbsp;&nbsp;&nbsp; LDAPDN
  */
 public class RemoveOrphanNamingContextRequest extends LDAPExtendedOperation {
    
 /**
- *      The constructor takes two parameters:<br><br>
+ * Constructs an extended operation object for deleting an orphan naming context.
  *
- * @param serverDN:    Specify the distinguished name of the 
- * server on which the orphan parition resides.<br><br>
+ * @param serverDN   The distinguished name of the server
+ *                   on which the orphan naming context resides.
+ *<br><br>
+ * @param contextName  The distinguished name of the orphan
+ *                     naming context to delete.
  *
- * @param contextName: Specifies the distinguished name of the 
- * orphan partition to delete.<br><br>
+ * @exception LDAPException A general exception which includes an error message 
+ *                          and an LDAP error code.
  */   
  public RemoveOrphanNamingContextRequest(String serverDN, String contextName) 
                 throws LDAPException {

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: RefreshLDAPServerRequest.java,v 1.7 2000/08/28 22:19:20 vtag Exp $
+ * $Id: RefreshLDAPServerRequest.java,v 1.8 2000/09/11 21:05:58 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -20,19 +20,23 @@ import java.io.*;
  
 /**
  *
- *      This class is used to reload the ldap server.<br><br>
+ *  Reloads the LDAP server.
  *
- *  The OID used for this extended operation is:
- *      "2.16.840.1.113719.1.27.100.7"<br><br>
+ *  <p>The RefreshLDAPServerRequest operation uses the following OID:<br>
+ *  &nbsp;&nbsp;&nbsp;2.16.840.1.113719.1.27.100.9</p>
  *
- *  The RequestValue is set to null<br><br>
+ *  <p>The requestValue is set to null.</p>
  */
 public class RefreshLDAPServerRequest extends LDAPExtendedOperation {
    
 /**
  *
- *      The constructor does not have any parametes.  We merely set the OID.
+ *  Constructs an extended operation object for reloading the LDAP server.
  *
+ *  <p>The constructor sets the OID.</p>
+ *
+ *  @exception LDAPException A general exception which includes an error 
+ *                           message and an LDAP error code.
  */   
  public RefreshLDAPServerRequest() 
                 throws LDAPException {

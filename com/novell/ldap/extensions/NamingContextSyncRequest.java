@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: NamingContextSyncRequest.java,v 1.9 2000/09/11 21:05:58 vtag Exp $
+ * $Id: NamingContextSyncRequest.java,v 1.10 2000/09/25 17:40:18 fzhao Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -20,32 +20,36 @@ import java.io.*;
  
 /**
  *
- *      This class is used to synchronize all replicas in a partition ring<br><br>
+ *  Synchronizes all replicas of a naming context.
  *
- *  The OID used for this extended operation is:
- *      "2.16.840.1.113719.1.27.100.25"<br><br>
+ *  The NamingContextSyncRequest operation uses the following OID:<br>
+ *  &nbsp;&nbsp;&nbsp;2.16.840.1.113719.1.27.100.25<br>
  *
- *  The RequestValue has the following ASN:<br><br>
+ *  <p>The requestValue has the following format:<br>
  *
  *  requestValue ::=<br>
  *  &nbsp;&nbsp;&nbsp;&nbsp;    serverName      LDAPDN<br>
  *  &nbsp;&nbsp;&nbsp;&nbsp;    partitionRoot   LDAPDN<br>
- *  &nbsp;&nbsp;&nbsp;&nbsp;    delay           INTEGER<br>
+ *  &nbsp;&nbsp;&nbsp;&nbsp;    delay           INTEGER</p>
  */
 public class NamingContextSyncRequest extends LDAPExtendedOperation {
    
 /**
  *
- *      The constructor takes four parameters:<br><br>
+ *   Constructs an extended operation object for synchronizing the replicas 
+ *   of a naming context.
  *
- * @param serverName     The server to sync from<br><br>
+ * @param serverName     The distinquished name of server containing the 
+ *                       naming context.
+ * <br><br>
+ * @param partitionRoot  The distinguished name of the naming context
+ *                       to synchronize.
+ *<br><br>
+ * @param delay          The time, in seconds, to delay before the synchronization 
+ *                       should start.
  *
- * @param partitionRoot   Specify the distinguished name of the replica
- *                              that will be synchronized<br><br>
- *
- * @param delay              The time in seconds after which the synchronization 
- *                              should start.
- *
+ * @exception LDAPException A general exception which includes an error message 
+ *                          and an LDAP error code.
  */   
  public NamingContextSyncRequest(String serverName, String partitionRoot, int delay) 
                 throws LDAPException {

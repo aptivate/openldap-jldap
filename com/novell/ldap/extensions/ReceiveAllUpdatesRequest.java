@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: ReceiveAllUpdatesRequest.java,v 1.9 2000/09/11 21:05:58 vtag Exp $
+ * $Id: ReceiveAllUpdatesRequest.java,v 1.10 2000/09/25 17:40:54 fzhao Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -19,32 +19,35 @@ import com.novell.ldap.asn1.*;
 import java.io.*;
  
 /**
- *      This class is used to schedule a specified directory server to receive
- *  updates from another directory server for a specific partition.<br><br>
+ *  Schedules a specified directory server to receive updates from another
+ *  directory server for a specific replica.
  *
- *  The OID used for this extended operation is:
- *      "2.16.840.1.113719.1.27.100.21"<br><br>
+ *  <p>The ReceiveAllUpdatesRequest operation uses the following OID:<br>
+ *  &nbsp;&nbsp;&nbsp;2.16.840.1.113719.1.27.100.21</p>
  *
- *  The RequestValue has the following ASN:<br><br>
+ *  <p>The requestValue has the following format:<br>
  *
  *  requestValue ::=<br>
- * &nbsp;&nbsp;&nbsp;&nbsp;     partitionRoot   LDAPDN<br>
- * &nbsp;&nbsp;&nbsp;&nbsp;     toServerDN      LDAPDN<br>
- * &nbsp;&nbsp;&nbsp;&nbsp;     fromServerDN    LDAPDN<br>
+ * &nbsp;&nbsp;&nbsp;&nbsp;   partitionRoot &nbsp;&nbsp;&nbsp;   LDAPDN<br>
+ * &nbsp;&nbsp;&nbsp;&nbsp;   toServerDN &nbsp;&nbsp;&nbsp;      LDAPDN<br>
+ * &nbsp;&nbsp;&nbsp;&nbsp;   fromServerDN &nbsp;&nbsp;&nbsp;    LDAPDN</p>
  */
 public class ReceiveAllUpdatesRequest extends LDAPExtendedOperation {
    
 /**
  *
- *      The constructor takes four parameters:<br><br>
+ * Constructs an extended operation object for receiving all updates from 
+ * another directory server of a specific replica.
  *
- * @param partitionRoot   Specify the distinguished name of the replica
- *                              that will be updated<br><br>
+ * @param partitionRoot   The distinguished name of the replica
+ *                        that will be updated.
+ *<br><br>
+ * @param toServerDN      The server holding the replica to be updated.
+ * <br><br>     
+ * @param fromServerDN    The server from which updates are sent.
  *
- * @param toServerDN      The server holding the replica to be updated<br><br>
- *      
- * @param fromServerDN    The server from which updates are sent out.
- *
+ * @exception LDAPException A general exception which includes an error message 
+ *                          and an LDAP error code.
  */   
  public ReceiveAllUpdatesRequest(String partitionRoot, String toServerDN, String fromServerDN) 
                 throws LDAPException {

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: SendAllUpdatesRequest.java,v 1.9 2000/09/11 21:05:58 vtag Exp $
+ * $Id: SendAllUpdatesRequest.java,v 1.10 2000/09/25 17:44:39 fzhao Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -20,29 +20,32 @@ import java.io.*;
  
 /**
  *
- *      This class is used to schedule an updated request to be sent to all
- *  directory servers in a partition ring.<br>
+ *  Schedules an updated request to be sent to all directory servers in a 
+ *  replica ring.
+ * 
+ *  <p>The SendAllUpdatesRequest operation uses the following OID:<br>
+ *  &nbsp;&nbsp;&nbsp;2.16.840.1.113719.1.27.100.23</p>
  *
- *  The OID used for this extended operation is:
- *      "2.16.840.1.113719.1.27.100.23"<br>
- *
- *  The RequestValue has the following ASN:<br><br>
+ *  <p>The requestValue has the following format:<br>
  *
  *  requestValue ::=<br>
  *  &nbsp;&nbsp;&nbsp;&nbsp;partitionRoot   LDAPDN<br>
- *  &nbsp;&nbsp;&nbsp;&nbsp;origServerDN    LDAPDN<br>
+ *  &nbsp;&nbsp;&nbsp;&nbsp;origServerDN    LDAPDN</p>
  */
 public class SendAllUpdatesRequest extends LDAPExtendedOperation {
    
 /**
  *
- *      The constructor takes four parameters:<br><br>
+ * Constructs an extended operation object for sending updates to a replica ring.
  *
- * @param partitionRoot Specify the distinguished name of the replica
- * that will be updated<br><br>
+ * @param partitionRoot The distinguished name of the replica
+ *                      that will be updated.
+ *<br><br>
+ * @param origServerDN  The distinguished name of the server that sends the 
+ *                      updates to the replica ring.
  *
- * @param origServerDN      The server holding the replica to be updated
- *
+ * @exception LDAPException A general exception which includes an error message 
+ *                          and an LDAP error code.
  */   
  public SendAllUpdatesRequest(String partitionRoot, String origServerDN) 
                 throws LDAPException {
