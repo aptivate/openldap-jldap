@@ -22,7 +22,6 @@ import javax.xml.parsers.SAXParser;
 
 import javax.xml.parsers.*;
 import org.xml.sax.InputSource;
-import org.xml.sax.XMLReader;
 import org.xml.sax.SAXException;
 
 import com.novell.ldap.*;
