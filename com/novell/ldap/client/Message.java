@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.57 2000/11/10 17:08:14 javed Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/client/Message.java,v 1.1 2000/11/22 22:17:41 vtag Exp $
 *
 * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
 * 
@@ -26,18 +26,18 @@ import java.io.*;
  */
 public class Message extends Thread
 {
-    static LDAPMessage msg;             // msg request sent to server
-    static Connection conn;             // Connection object where msg sent
-    static MessageAgent agent;          // MessageAgent handling this request
-    static LDAPListener listen;         // Application listener 
-    static int mslimit;                 // client time limit in milliseconds
+    private LDAPMessage msg;             // msg request sent to server
+    private Connection conn;             // Connection object where msg sent
+    private MessageAgent agent;          // MessageAgent handling this request
+    private LDAPListener listen;         // Application listener 
+    private int mslimit;                 // client time limit in milliseconds
     // Note: MessageVector is synchronized
-    static MessageVector replies = new MessageVector(5,5); // place to store replies
-    static int msgId;                   // message ID of this request
-    static boolean acceptReplies = true;// false if no longer accepting replies
-    static boolean terminate = false;   // true if don't wait for reply
-    static boolean complete = false;    // true LDAPResult received
-    static String name;                 // String name used for Debug
+    private MessageVector replies = new MessageVector(5,5); // place to store replies
+    private int msgId;                   // message ID of this request
+    private boolean acceptReplies = true;// false if no longer accepting replies
+    private boolean terminate = false;   // true if don't wait for reply
+    private boolean complete = false;    // true LDAPResult received
+    private String name;                 // String name used for Debug
 
     /**
      * Constructs a Message class encapsulating information about this message.

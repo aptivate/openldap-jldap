@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.22 2000/11/10 16:50:04 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.23 2000/11/22 22:17:40 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -66,6 +66,8 @@ public final class Connection implements Runnable
 
     // Place to save message information classes
     private MessageVector messages = new MessageVector(5,5);
+    // place to store unsolicited notifications
+    private MessageVector reply0 = new MessageVector(5,5);
 
     // The LDAPSocketFactory to be used as the default to create new connections
     static private LDAPSocketFactory socketFactory = null;
@@ -579,7 +581,8 @@ public final class Connection implements Runnable
                 int msgId = msg.getMessageID();
 
                 if(msgId == 0) {
-                    // Process Unsolicited Notification
+                    // Unsolicited Notification
+                    reply0.addElement( msg); 
                 } else {
                     // Find the message which requested this response.
                     // It is possible to receive a response for a request which

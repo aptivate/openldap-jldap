@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.57 2000/11/10 17:08:14 javed Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.58 2000/11/22 22:17:38 vtag Exp $
 *
 * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
 * 
@@ -406,7 +406,7 @@ public class LDAPConnection implements Cloneable
     public Object /* javax.security.auth.callback.CallbackHandler */
            getSaslBindCallbackHandler() 
     {
-      throw new RuntimeException("Method LDAPConnection.getSaslBindCallbackHandler not implemented");
+        return conn.getSaslCallbackHandler();
     }
 
 
@@ -422,7 +422,7 @@ public class LDAPConnection implements Cloneable
     */
     public boolean getUnsolicitedNotifications()
     {
-      throw new RuntimeException("Method LDAPConnection.getUnsolicitedNotifications not implemented");
+        return conn.getUnsolicitedNotifications();
     }
     
     
@@ -478,7 +478,7 @@ public class LDAPConnection implements Cloneable
     */
    public boolean isConnected()
    {
-      return conn != null;
+      return conn.isConnected();
    }
 
    /**
@@ -521,9 +521,7 @@ public class LDAPConnection implements Cloneable
     */
    public void setInputStream(InputStream stream)
    {
-      if(isConnected()) {
-         conn.setInputStream(stream);
-      }
+      conn.setInputStream(stream);
       return;
    }
 
@@ -537,9 +535,7 @@ public class LDAPConnection implements Cloneable
     */
    public void setOutputStream(OutputStream stream)
    {
-      if(isConnected()) {
-         conn.setOutputStream(stream);
-      }
+      conn.setOutputStream(stream);
       return;
    }
 
@@ -637,7 +633,7 @@ public class LDAPConnection implements Cloneable
     */
    public void setUnsolicitedNotifications (boolean allow) 
    {
-      throw new RuntimeException("Method LDAPConnection.setUnsolicitedNotifications not implemented");
+      conn.setUnsolicitedNotifications(allow);
    }
    
    /**
