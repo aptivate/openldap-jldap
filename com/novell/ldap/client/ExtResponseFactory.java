@@ -56,6 +56,8 @@ public class ExtResponseFactory {
         // Get the oid stored in the Extended response
         String inOID = tempResponse.getID();
 
+        if (inOID == null)
+            return tempResponse;
         // Is this an OID we support, if yes then build the
         // detailed LDAPExtendedResponse object
         try {
