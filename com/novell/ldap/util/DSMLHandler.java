@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: DSMLHandler.java,v 1.12 2002/10/15 16:28:40 $
+ * $Novell: DSMLHandler.java,v 1.13 2002/10/15 22:31:00 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -22,14 +22,8 @@ import com.novell.ldap.LDAPException;
 import com.novell.ldap.LDAPMessage;
 import com.novell.ldap.LDAPModification;
 import com.novell.ldap.LDAPSearchConstraints;
-import com.novell.ldap.rfc2251.RfcFilter;
-import com.novell.ldap.rfc2251.RfcAttributeDescription;
-import com.novell.ldap.rfc2251.RfcAttributeValueAssertion;
-import com.novell.ldap.rfc2251.RfcAssertionValue;
-import com.novell.ldap.asn1.ASN1Set;
-import com.novell.ldap.asn1.ASN1Identifier;
-import com.novell.ldap.asn1.ASN1Tagged;
-import com.novell.ldap.asn1.ASN1Object;
+import com.novell.ldap.rfc2251.*;
+import com.novell.ldap.asn1.*;
 import com.novell.ldap.message.*;
 import com.novell.ldap.util.Base64;
 import java.util.ArrayList;
@@ -64,6 +58,14 @@ class DSMLHandler implements ContentHandler, ErrorHandler
     private StringBuffer value;
     private boolean typesOnly, deleteOldRDN, isBase64;
     private int scope, operation;
+
+    /* filter variabls: */
+    private ASN1Tagged rootFilterNode;
+    private Stack filterStack = new Stack();
+    private boolean dnAttributes;
+    private String matchingRule;
+    private ASN1SequenceOf subStrings;
+    private boolean seenFinal;
 
     /* The following values are valid states for the parser: tags are in
     comments*/
@@ -114,11 +116,6 @@ class DSMLHandler implements ContentHandler, ErrorHandler
     /** state contains the internal parsing state **/
     private int state = START;
     private static final java.util.HashMap requestTags;
-    private ASN1Tagged rootFilterNode;
-    private Stack filterStack = new Stack();
-    private String dnAttributes;
-    private String matchingRule;
-
 
     static {  //Initialize requestTags
         requestTags = new java.util.HashMap(34, (float)0.25);
@@ -150,11 +147,13 @@ class DSMLHandler implements ContentHandler, ErrorHandler
         requestTags.put("approxMatch",  new Integer(APPROXIMATE_MATCH));
         requestTags.put("extensibleMatch", new Integer(EXTENSIBLE_MATCH));
 
-        requestTags.put("final",        new Integer(FINAL));
         requestTags.put("attr",         new Integer(ADD_ATTRIBUTE));
         requestTags.put("modification", new Integer(MODIFICATION));
         requestTags.put("requestName",  new Integer(X_NAME));
         requestTags.put("requestValue", new Integer(X_VALUE));
+        requestTags.put("initial",       new Integer(INITIAL));
+        requestTags.put("any",          new Integer(ANY));
+        requestTags.put("final",        new Integer(FINAL));
 
     }
 
@@ -253,6 +252,8 @@ class DSMLHandler implements ContentHandler, ErrorHandler
             case SUBSTRINGS:
                 if ((tag == INITIAL) || (tag == ANY)  || (tag == FINAL)){
                     state = tag;
+                    value = new StringBuffer();
+                    seenFinal = false;
                 }
                 else {
                     throw new SAXException("invalid substrings tag: " + strSName);
@@ -283,11 +284,7 @@ class DSMLHandler implements ContentHandler, ErrorHandler
             case PRESENT:
             case APPROXIMATE_MATCH:
             case EXTENSIBLE_MATCH:
-            //The following states are in a substring tag and should contain values
-            case INITIAL:
-            case ANY:
-            case FINAL:
-                if (tag == VALUE){
+                if (tag == VALUE) {
                     state = tag;
                     value = new StringBuffer();
                     String temp = attrs.getValue("type");
@@ -348,6 +345,11 @@ class DSMLHandler implements ContentHandler, ErrorHandler
                         null,  //content to be set later
                         false);
                 this.attrName = attrs.getValue("name");
+                if (this.attrName == null){
+                    throw new SAXException("The mandatory attribute 'name' "+
+                            "is missing from tag <substrings>");
+                }
+                subStrings = new ASN1SequenceOf(5);
                 break;
             case GREATER_OR_EQUAL:
                 current = new ASN1Tagged(
@@ -355,6 +357,10 @@ class DSMLHandler implements ContentHandler, ErrorHandler
                         null,  //content to be set later
                         false);
                 this.attrName = attrs.getValue("name");
+                if (this.attrName == null){
+                    throw new SAXException("The mandatory attribute 'name' "+
+                            "is missing from tag <greaterOrEqual>");
+                }
                 break;
             case LESS_OR_EQUAL:
                 current = new ASN1Tagged(
@@ -362,6 +368,10 @@ class DSMLHandler implements ContentHandler, ErrorHandler
                         null,  //content to be set later
                         false);
                 this.attrName = attrs.getValue("name");
+                if (this.attrName == null){
+                    throw new SAXException("The mandatory attribute 'name' "+
+                            "is missing from tag <lessOrEqual>");
+                }
                 break;
             case PRESENT:
                 current = new ASN1Tagged(
@@ -369,6 +379,10 @@ class DSMLHandler implements ContentHandler, ErrorHandler
                         null,  //content to be set later
                         false);
                 this.attrName = attrs.getValue("name");
+                if (this.attrName == null){
+                    throw new SAXException("The mandatory attribute 'name' "+
+                            "is missing from tag <present>");
+                }
                 break;
             case APPROXIMATE_MATCH:
                 current = new ASN1Tagged(
@@ -376,6 +390,10 @@ class DSMLHandler implements ContentHandler, ErrorHandler
                         null,  //content to be set later
                         false);
                 this.attrName = attrs.getValue("name");
+                if (this.attrName == null){
+                    throw new SAXException("The mandatory attribute 'name' "+
+                            "is missing from tag <approxMatch>");
+                }
                 break;
             case EXTENSIBLE_MATCH:
                 current = new ASN1Tagged(
@@ -383,7 +401,11 @@ class DSMLHandler implements ContentHandler, ErrorHandler
                         null,  //content to be set later
                         false);
                 this.attrName = attrs.getValue("name");
-                this.dnAttributes = attrs.getValue("dnAttributes");
+                if (attrs.getValue("dnAttributes").equalsIgnoreCase("true")) {
+                    this.dnAttributes = true;
+                } else {
+                    this.dnAttributes = false;
+                }
                 this.matchingRule = attrs.getValue("matchingRule");
                 break;
             default:
@@ -553,12 +575,9 @@ class DSMLHandler implements ContentHandler, ErrorHandler
                            int s,
                            int l)
     {
-        switch (state){
-            case X_NAME:
-            case X_VALUE:
-            case VALUE:
+        if (state == INITIAL || state == ANY || state == FINAL ||
+            state == X_NAME  || state == X_VALUE || state == VALUE) {
                 value.append(a, s, l);
-                break;
         }
         return;
     }
@@ -730,8 +749,6 @@ class DSMLHandler implements ContentHandler, ErrorHandler
                     //The finish state could also represent an OR, AND, or NOT
                     break;
                 }
-                case GREATER_OR_EQUAL:
-                case LESS_OR_EQUAL:
                 case PRESENT:{
                     //verify that Present is on the stack
                     ASN1Tagged topOfStack = (ASN1Tagged)filterStack.pop();
@@ -744,13 +761,127 @@ class DSMLHandler implements ContentHandler, ErrorHandler
                     //The finish state could also represent an OR, AND, or NOT
                     break;
                 }
-                case APPROXIMATE_MATCH:
-                case EXTENSIBLE_MATCH:
+                case GREATER_OR_EQUAL: {
+                    //verify that the matching tag is on the stack
+                    ASN1Tagged topOfStack = (ASN1Tagged)filterStack.pop();
+                    if ((topOfStack == null) ||
+                        !verifyType(topOfStack, RfcFilter.GREATER_OR_EQUAL)) {
+                        throw new SAXException("Unexpected tag: "+ strSName);
+                    }
+                    topOfStack.setTaggedValue(
+                            new RfcAttributeValueAssertion(
+                                new RfcAttributeDescription(attrName),
+                                new RfcAssertionValue(
+                                        value.toString().getBytes("UTF-8"))));
+                    state = FILTER;
+                    break;
+                }
+                case LESS_OR_EQUAL: {
+                    //verify that the matching tag is on the stack
+                    ASN1Tagged topOfStack = (ASN1Tagged)filterStack.pop();
+                    if ((topOfStack == null) ||
+                        !verifyType(topOfStack, RfcFilter.LESS_OR_EQUAL)) {
+                        throw new SAXException("Unexpected tag: "+ strSName);
+                    }
+                    topOfStack.setTaggedValue(
+                            new RfcAttributeValueAssertion(
+                                new RfcAttributeDescription(attrName),
+                                new RfcAssertionValue(
+                                        value.toString().getBytes("UTF-8"))));
+                    state = FILTER;
+                    break;
+                }
+                case APPROXIMATE_MATCH: {
+                    //verify that the matching tag is on the stack
+                    ASN1Tagged topOfStack = (ASN1Tagged)filterStack.pop();
+                    if ((topOfStack == null) ||
+                        !verifyType(topOfStack, RfcFilter.APPROX_MATCH)) {
+                        throw new SAXException("Unexpected tag: "+ strSName);
+                    }
+                    topOfStack.setTaggedValue(
+                            new RfcAttributeValueAssertion(
+                                new RfcAttributeDescription(attrName),
+                                new RfcAssertionValue(
+                                        value.toString().getBytes("UTF-8"))));
+                    state = FILTER;
+                    break;
+                }
+                case EXTENSIBLE_MATCH:{
+                    //verify that the matching tag is on the stack
+                    ASN1Tagged topOfStack = (ASN1Tagged)filterStack.pop();
+                    if ((topOfStack == null) ||
+                        !verifyType(topOfStack, RfcFilter.EXTENSIBLE_MATCH)) {
+                        throw new SAXException("Unexpected tag: "+ strSName);
+                    }
+                    topOfStack.setTaggedValue(
+                        new RfcMatchingRuleAssertion(
+                            (matchingRule == null) ? null : new RfcMatchingRuleId(matchingRule),
+                            (attrName == null) ? null : new RfcAttributeDescription(attrName),
+                            new RfcAssertionValue(value.toString().getBytes("UTF-8")),
+                            (dnAttributes == false) ? null :
+                            new ASN1Boolean(true))
+                    );
+                    state = FILTER;
+                    break;
+                }
+
                 //The following states are in a substring tag and should contain values
                 case INITIAL:
-                case ANY:
-                case FINAL:
+                    if (subStrings.size() != 0){
+                        throw new SAXException("The initial tag can only be " +
+                                "the first tag of a substring match");
+                    }
+                    subStrings.add(
+                        new ASN1Tagged(
+                            new ASN1Identifier(ASN1Identifier.CONTEXT, false, RfcFilter.INITIAL),
+                            new RfcLDAPString(value.toString().getBytes("UTF-8")),
+                            false)
+                    );
+                    state = SUBSTRINGS;
                     break;
+                case ANY:
+                    if (seenFinal){
+                        throw new SAXException("The any tag cannot follow a final tag in "+
+                                "a substring match");
+                    }
+                    subStrings.add(
+                        new ASN1Tagged(
+                            new ASN1Identifier(ASN1Identifier.CONTEXT, false, RfcFilter.ANY),
+                            new RfcLDAPString(value.toString().getBytes("UTF-8")),
+                            false)
+                    );
+                    state = SUBSTRINGS;
+                    break;
+                case FINAL:
+                    if (seenFinal){
+                        throw new SAXException("The final tag cannot follow a final tag in "+
+                                "a substring match");
+                    }
+                    seenFinal = true;
+                    subStrings.add(
+                        new ASN1Tagged(
+                            new ASN1Identifier(ASN1Identifier.CONTEXT, false, RfcFilter.FINAL),
+                            new RfcLDAPString(value.toString().getBytes("UTF-8")),
+                            false)
+                    );
+                    state = FINAL;  //this state indicates that the substrings should be complete
+                    break;
+                case SUBSTRINGS:{
+                    if (state != FINAL && state != SUBSTRINGS){
+                        throw new SAXException("Unexpected closing substring tag");
+                    }
+                    ASN1Tagged topOfStack = (ASN1Tagged)filterStack.pop();
+                    if ((topOfStack == null) ||
+                        !verifyType(topOfStack, RfcFilter.SUBSTRINGS)) {
+                        throw new SAXException("Unexpected tag: "+ strSName);
+                    }
+                    topOfStack.setTaggedValue(
+                            new RfcSubstringFilter(
+                                new RfcAttributeDescription(attrName), subStrings));
+                    subStrings = null;
+                    state = FILTER;
+                    break;
+                }
                 case VALUE:
                     state = VALUE_COMPLETE;
                     attributeValues.add(value.toString());
