@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.70 2001/01/24 17:39:23 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.71 2001/01/24 20:26:52 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -559,7 +559,7 @@ public class LDAPConnection implements Cloneable
         newCons.setHopLimit(cons.getHopLimit());
         newCons.setTimeLimit(cons.getTimeLimit());
         newCons.setReferralHandler(cons.getReferralHandler());
-        newCons.setReferrals(cons.getReferrals());
+        newCons.setReferralFollowing(cons.getReferralFollowing());
         LDAPControl[] lcc = cons.getClientControls();
         if( lcc != null) {
             newCons.setClientControls((LDAPControl)lcc.clone());

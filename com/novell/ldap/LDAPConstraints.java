@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConstraints.java,v 1.13 2000/11/03 17:54:14 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConstraints.java,v 1.14 2001/01/04 16:59:48 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -105,12 +105,12 @@ public class LDAPConstraints implements Cloneable {
     }
 
     /**
-     * Returns whether referrals are followed automatically.
+     * Returns true if referrals are to be followed automatically.
      *
      * @return  True if referrals are to be followed automatically, or 
      * false if referrals are to throw an LDAPReferralException.</p>
      */
-    public boolean getReferrals() {
+    public boolean getReferralFollowing() {
         return doReferrals;
     }
 
@@ -168,7 +168,7 @@ public class LDAPConstraints implements Cloneable {
      *                        False to throw an LDAPReferralException if
      *                        the server returns a referral.
      */
-    public void setReferrals(boolean doReferrals) {
+    public void setReferralFollowing(boolean doReferrals) {
         this.doReferrals = doReferrals;
         return;
     }

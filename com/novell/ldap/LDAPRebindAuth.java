@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPRebindAuth.java,v 1.6 2000/09/29 15:55:27 judy Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPRebindAuth.java,v 1.7 2000/10/31 23:52:23 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -22,7 +22,7 @@ package com.novell.ldap;
  *
  *  @see LDAPRebind
  *  @see LDAPBind
- *  @see LDAPConstraints#setReferrals(boolean)
+ *  @see LDAPConstraints#setReferralFollowing(boolean)
  */
 public class LDAPRebindAuth {
 
