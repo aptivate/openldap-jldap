@@ -43,7 +43,6 @@ import com.novell.ldap.ldif_dsml.Base64;
 public class LDIFWriter extends LDIF implements LDAPWriter {
 
     private String         dn;                            // record dn
-    private Base64         base64 = new Base64();
     private BufferedWriter bufWriter;
     private LDAPControl[]  currentControls;
     private LDAPEntry      currentEntry = null;
@@ -519,7 +518,7 @@ public class LDIFWriter extends LDIF implements LDAPWriter {
         }
         else {
             // base64 encod newRDN
-            tempString = base64.encoder(modInfo[0]);
+            tempString = Base64.encoder(modInfo[0]);
             // put newRDN into record fields with a trailing space
             writeLine(new String("newrdn:" + tempString + " "));
         }
@@ -535,7 +534,7 @@ public class LDIFWriter extends LDIF implements LDAPWriter {
             }
             else {
                 // base64 encod newRDN
-                tempString = base64.encoder(modInfo[2]);
+                tempString = Base64.encoder(modInfo[2]);
                 // put newSuperior into record fields with a trailing space
                 writeLine("newsuperior:" + tempString);
             }
@@ -574,7 +573,7 @@ public class LDIFWriter extends LDIF implements LDAPWriter {
             writeLine("dn: " + dn);
         }
         else { // not safe
-            writeLine("dn:: " + base64.encoder(dn) + " ");
+            writeLine("dn:: " + Base64.encoder(dn) + " ");
         }
     }
 
@@ -594,7 +593,7 @@ public class LDIFWriter extends LDIF implements LDAPWriter {
 
             if ( cVal != null && cVal.length > 0 ) {
                 // always encode control value(s) ?
-                cVal = base64.encoder(cVal);
+                cVal = Base64.encoder(cVal);
                 String controlValue = new String(cVal);
                 // a trailing space is add to the end
                 writeLine( "control: " + ctrls[i].getID() + " "
@@ -624,7 +623,7 @@ public class LDIFWriter extends LDIF implements LDAPWriter {
             else {
                 // IF attrSpec contains NON-SAFE-INIT-CHAR or NON-SAFE-CHAR,
                 // it has to be base64 encoded
-                attrVal = base64.encoder(attrVal);
+                attrVal = Base64.encoder(attrVal);
                 // base64 encoded attribute spec ended with white spavce
                 writeLine(attrName + ":: " + attrVal + " " );
             }
@@ -649,7 +648,7 @@ public class LDIFWriter extends LDIF implements LDAPWriter {
             }
             else {
                 // not safe
-                attrVal = base64.encoder(attrVal);
+                attrVal = Base64.encoder(attrVal);
                 // base64 encoded attriVal ends with white space
                 writeLine(attrName + ":: " + new String(attrVal, "UTF-8") + " " );
             }

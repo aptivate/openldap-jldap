@@ -468,9 +468,8 @@ class DSMLHandler implements ContentHandler, ErrorHandler
                     state = BATCH_REQUEST;
                     try {
                         if (isBase64){
-                            Base64 base64 = new Base64();
                             message = new LDAPCompareRequest(dn, attrName,
-                                    base64.decoder(value, 0, value.length()),
+                                    Base64.decoder(value, 0, value.length()),
                                     null);
                         }
                         message = new LDAPCompareRequest(dn, attrName,
@@ -489,8 +488,7 @@ class DSMLHandler implements ContentHandler, ErrorHandler
                     {
                         byte[] byteValue;
                         if (isBase64){
-                            Base64 base64 = new Base64();
-                            byteValue = base64.decoder(value, 0, value.length());
+                            byteValue = Base64.decoder(value, 0, value.length());
                         } else {
                             try {
                                 byteValue = value.toString().getBytes("UTF8");
@@ -530,8 +528,7 @@ class DSMLHandler implements ContentHandler, ErrorHandler
                 case X_VALUE:
                     {
                         state = EXTENDED_REQUEST;
-                        Base64 base64 = new Base64();
-                        requestValue = base64.decoder(value, 0, value.length());
+                        requestValue = Base64.decoder(value, 0, value.length());
                         break;
                     }
                 case VALUE:
