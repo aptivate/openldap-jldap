@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: DOMReader.java,v 1.3 2002/11/13 23:54:20 $
+ * $Novell: DOMReader.java,v 1.4 2002/11/14 19:36:29 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -79,7 +79,7 @@ public class DOMReader implements LDAPReader{
      */
     public DOMReader(Element root) throws LDAPLocalException {
         this.root = root;
-        String name = root.getNodeName();
+        String name = root.getLocalName();
         if (!name.equals("batchRequest") &&
             !name.equals("batchResponse") )
         {
@@ -104,7 +104,7 @@ public class DOMReader implements LDAPReader{
         DomAttributesWrapper wrapper = new DomAttributesWrapper();
         try {
             while(curChild!=null){
-                String simpleName = curChild.getNodeName();
+                String simpleName = curChild.getLocalName();
                 if (curChild instanceof Element){
                     wrapper.setAttrs(curChild.getAttributes());
                     handler.startElement(
