@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttributeSchema.java,v 1.10 2000/10/17 22:09:52 bgudmundson Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttributeSchema.java,v 1.11 2000/10/21 19:33:07 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -47,9 +47,21 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
     private boolean userMod = true;
     private int usage = USER_APPLICATIONS;
 
+ /**
+  * This attribute definition defines that the attribute usage is applications.
+  */
     public final static int USER_APPLICATIONS = 0;
+ /**
+  * This attribute definition defines the attribute usage is directory operations.
+  */
     public final static int DIRECTORY_OPERATION = 1;
+ /**
+  * This attribute definition defines the attribute usage is shared dsa.
+  */
     public final static int DISTRIBUTED_OPERATION = 2;
+/**
+  * This class definition defines the attribute usage is local dsa.
+  */
     public final static int DSA_OPERATION = 3;
 
    /*
@@ -79,6 +91,26 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
     * @param aliases   Optional list of additional names by which the
     *              attribute may be known; null if there are no
     *              aliases.
+	*<br><br>
+    * @param obsolete  True if the attribute is obsolete.
+    *<br><br>
+    * @param equality  Optional matching rule name; null if there is not
+	*				an equality matching rule for this attribute.
+	*<br><br>
+    * @param ordering	Optional matching rule name; null if there is not
+	*				an ordering matching rule for this attribute.
+	*<br><br>
+    * @param substring	Optional matching rule name; null if there is not
+	*				a substring matching rule for this attribute.
+	*<br><br>
+    * @param collective	True of this attribute is a collective attribute
+	*<br><br>
+    * @param userMod	False if this attribute is a read-only attribute
+	*<br><br>
+    * @param useage		Describes what the attribute is used for. Must be
+	*				one of the following: USER_APPLICATIONS, 
+	*				DIRECTORY_OPERATION, DISTRIBUTED_OPERATION or
+	*				DSA_OPERATION.
     */
    public LDAPAttributeSchema(String name, String oid, String description,
                               String syntaxString, boolean single,
@@ -189,12 +221,25 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
     * 4.2.5 getEqualityMatchingRule
     */
 
+   /**
+    * Returns the matching rule for this attribute.
+    *
+    * @return The attribute's equality matching rule; null if it has no equality 
+    *		  matching rule. 
+    */
    public String getEqualityMatchingRule() {
       return equality;
    }
 
    /*
     * 4.2.6 getOrderingMatchingRule
+    */
+
+   /**
+    * Returns the ordering matching rule for this attribute.
+    *
+    * @return The attribute's ordering matching rule; null if it has no ordering  
+    *		  matching rule. 
     */
 
    public String getOrderingMatchingRule() {
@@ -205,12 +250,26 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
     * 4.2.7 getSubstringMatchingRule
     */
 
+  /**
+    * Returns the substring matching rule for this attribute.
+    *
+    * @return The attribute's substring matching rule; null if it has no substring  
+    *		  matching rule. 
+    */
+
    public String getSubstringMatchingRule() {
       return substring;
    }
 
    /*
     * 4.2.8 isCollective
+    */
+
+   /**
+    * Returns true if the attribute is a collective attribute.
+    *
+    * @return True if the attribute is a collective; false if the attribute
+    *         is not a collective attribute.
     */
 
    public boolean isCollective() {
@@ -220,6 +279,12 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
    /*
     * 4.2.9 isModifiable
     */
+   /**
+    * Returns false if the attribute is read-only.
+    *
+    * @return False if the attribute is read-only; true if the attribute
+    *         is read-write.
+    */
 
    public boolean isModifiable() {
       return userMod;
@@ -227,6 +292,13 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
 
    /*
     * 4.2.10 getUsage
+    */
+   /**
+    * Returns the usage of the attribute.
+    *
+    * @return Returns one of the following values: USER_APPLICATIONS, 
+	*		  DIRECTORY_OPERATION, DISTRIBUTED_OPERATION or
+	*		  DSA_OPERATION.  
     */
 
    public int getUsage() {

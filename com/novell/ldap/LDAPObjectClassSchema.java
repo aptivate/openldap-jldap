@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPObjectClassSchema.java,v 1.13 2000/10/18 22:43:57 bgudmundson Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPObjectClassSchema.java,v 1.14 2000/10/18 23:31:13 bgudmundson Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -88,6 +88,8 @@ public class LDAPObjectClassSchema extends LDAPSchemaElement{
     *  @param aliases        Optional list of additional names by which the
     *                        object class may be known; null if there are no
     *                        aliases.
+	*<br><br>
+    *  @param obsolete       true if this object is obsolete
     *
     */
    public LDAPObjectClassSchema(String name,
