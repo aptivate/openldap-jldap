@@ -19,7 +19,8 @@ package org.ietf.ldap;
  *
  *  Used to do explicit bind processing on a referral.
  *
- * @see <a href="../../../../doc/com/novell/ldap/LDAPBind.html">com.novell.ldap.LDAPBind</a>
+ * @see <a href="../../../../doc/com/novell/ldap/LDAPBind.html">
+            com.novell.ldap.LDAPBind</a>
  */
 public interface LDAPBind extends LDAPReferralHandler
 {

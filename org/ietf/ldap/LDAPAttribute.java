@@ -20,7 +20,8 @@ import java.io.UnsupportedEncodingException;
 /**
  * Represents the name and values of one attribute of a directory entry.
  *
- * @see com.novell.ldap.LDAPAttribute
+ * @see <a href="../../../../doc/com/novell/ldap/LDAPAttribute.html">
+            com.novell.ldap.LDAPAttribute</a>
  */
 public class LDAPAttribute {
     private com.novell.ldap.LDAPAttribute attr;
@@ -38,7 +39,9 @@ public class LDAPAttribute {
      * Constructs an attribute with copies of all values of the input
      * attribute.
      *
-     * @see com.novell.ldap.LDAPAttribute#LDAPAttribute(LDAPAttribute)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttribute.html
+            #LDAPAttribute(com.novell.ldap.LDAPAttribute)">
+            com.novell.ldap.LDAPAttribute.LDAPAttribute(LDAPAttribute)</a>
      */
     public LDAPAttribute(LDAPAttribute attr) {
         com.novell.ldap.LDAPAttribute at = null;
@@ -52,7 +55,9 @@ public class LDAPAttribute {
     /**
      * Constructs an attribute with no values.
      *
-     * @see com.novell.ldap.LDAPAttribute#LDAPAttribute(String)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttribute.html
+            #LDAPAttribute(java.lang.String)">
+            com.novell.ldap.LDAPAttribute.LDAPAttribute(String)</a>
      */
     public LDAPAttribute(String attrName) {
         this.attr = new com.novell.ldap.LDAPAttribute(attrName);
@@ -62,7 +67,9 @@ public class LDAPAttribute {
     /**
      * Constructs an attribute with a byte-formatted value.
      *
-     * @see com.novell.ldap.LDAPAttribute#LDAPAttribute(String, byte[])
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttribute.html
+            #LDAPAttribute(java.lang.String, byte[])">
+            com.novell.ldap.LDAPAttribute.LDAPAttribute(String, byte[])</a>
      */
     public LDAPAttribute(String attrName, byte[] attrBytes) {
         this.attr = new com.novell.ldap.LDAPAttribute(attrName, attrBytes);
@@ -72,7 +79,9 @@ public class LDAPAttribute {
     /**
      * Constructs an attribute that has a single string value.
      *
-     * @see com.novell.ldap.LDAPAttribute#LDAPAttribute(String, String)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttribute.html
+            #LDAPAttribute(java.lang.String, java.lang.String)">
+            com.novell.ldap.LDAPAttribute.LDAPAttribute(String, String)</a>
      */
     public LDAPAttribute(String attrName, String attrString) {
         this.attr = new com.novell.ldap.LDAPAttribute(attrName, attrString);
@@ -82,7 +91,9 @@ public class LDAPAttribute {
     /**
      * Constructs an attribute that has an array of string values.
      *
-     * @see com.novell.ldap.LDAPAttribute#LDAPAttribute(String, String[])
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttribute.html
+            #LDAPAttribute(java.lang.String, java.lang.String[])">
+            com.novell.ldap.LDAPAttribute.LDAPAttribute(String, String[])</a>
      */
     public LDAPAttribute(String attrName, String[] attrStrings) {
         this.attr = new com.novell.ldap.LDAPAttribute(attrName, attrStrings);
@@ -103,7 +114,9 @@ public class LDAPAttribute {
     /**
      * Adds a string value to the attribute.
      *
-     * @see com.novell.ldap.LDAPAttribute#addValue(String)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttribute.html
+            #addValue(java.lang.String)">
+            com.novell.ldap.LDAPAttribute.addValue(String)</a>
      */
     public void addValue(String attrString) {
         attr.addValue( attrString);
@@ -113,7 +126,9 @@ public class LDAPAttribute {
     /**
      * Adds a byte-formatted value to the attribute.
      *
-     * @see com.novell.ldap.LDAPAttribute#addValue(byte[])
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttribute.html
+            #addValue(byte[])">
+            com.novell.ldap.LDAPAttribute.addValue(byte[])</a>
      */
     public void addValue(byte[] attrBytes) {
         attr.addValue( attrBytes);
@@ -124,7 +139,9 @@ public class LDAPAttribute {
      * Returns an enumerator for the values of the attribute in byte
      * format.
      *
-     * @see com.novell.ldap.LDAPAttribute#getByteValues()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttribute.html
+            #getByteValues()">
+            com.novell.ldap.LDAPAttribute.getByteValues()</a>
      */
     public Enumeration getByteValues() {
         return attr.getByteValues();
@@ -133,7 +150,9 @@ public class LDAPAttribute {
     /**
      * Returns an enumerator for the string values of an attribute.
      *
-     * @see com.novell.ldap.LDAPAttribute#getStringValues()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttribute.html
+            #getStringValues()">
+            com.novell.ldap.LDAPAttribute.getStringValues()</a>
      */
     public Enumeration getStringValues() {
         return attr.getStringValues();
@@ -142,7 +161,9 @@ public class LDAPAttribute {
     /**
      * Returns the values of the attribute as an array of bytes.
      *
-     * @see com.novell.ldap.LDAPAttribute#getByteValueArray()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttribute.html
+            #getByteValueArray()">
+            com.novell.ldap.LDAPAttribute.getByteValueArray()</a>
      */
     public byte[][] getByteValueArray() {
         return attr.getByteValueArray();
@@ -151,7 +172,9 @@ public class LDAPAttribute {
     /**
      * Returns the values of the attribute as an array of strings.
      *
-     * @see com.novell.ldap.LDAPAttribute#getStringValueArray()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttribute.html
+            #getStringValueArray()">
+            com.novell.ldap.LDAPAttribute.getStringValueArray()</a>
      */
     public String[] getStringValueArray() {
         return attr.getStringValueArray();
@@ -160,7 +183,9 @@ public class LDAPAttribute {
     /**
      * Returns the language subtype of the attribute, if any.
      *
-     * @see com.novell.ldap.LDAPAttribute#getLangSubtype()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttribute.html
+            #getLangSubtype()">
+            com.novell.ldap.LDAPAttribute.getLangSubtype()</a>
      */
     public String getLangSubtype() {
         return attr.getLangSubtype();
@@ -169,7 +194,9 @@ public class LDAPAttribute {
     /**
      * Returns the base name of the attribute.
      *
-     * @see com.novell.ldap.LDAPAttribute#getBaseName()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttribute.html
+            #getBaseName()">
+            com.novell.ldap.LDAPAttribute.getBaseName()</a>
      */
     public String getBaseName() {
         return attr.getBaseName();
@@ -178,7 +205,9 @@ public class LDAPAttribute {
     /**
      * Returns the base name of the specified attribute.
      *
-     * @see com.novell.ldap.LDAPAttribute#getBaseName(String)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttribute.html
+            #getBaseName(java.lang.String)">
+            com.novell.ldap.LDAPAttribute.getBaseName(String)</a>
      */
     public static String getBaseName(String attrName) {
         return com.novell.ldap.LDAPAttribute.getBaseName(attrName);
@@ -187,7 +216,9 @@ public class LDAPAttribute {
     /**
      * Returns the name of the attribute.
      *
-     * @see com.novell.ldap.LDAPAttribute#getName()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttribute.html
+            #getName()">
+            com.novell.ldap.LDAPAttribute.getName()</a>
      */
     public String getName() {
         return attr.getName();
@@ -196,7 +227,9 @@ public class LDAPAttribute {
     /**
      * Extracts the subtypes from the attribute name.
      *
-     * @see com.novell.ldap.LDAPAttribute#getName()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttribute.html
+            #getSubtypes()">
+            com.novell.ldap.LDAPAttribute.getSubtypes()</a>
      */
     public String[] getSubtypes() {
         return attr.getSubtypes();
@@ -205,7 +238,9 @@ public class LDAPAttribute {
     /**
      * Extracts the subtypes from the specified attribute name.
      *
-     * @see com.novell.ldap.LDAPAttribute#getSubtypes(String)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttribute.html
+            #getSubtypes(java.lang.String)">
+            com.novell.ldap.LDAPAttribute.getSubtypes(String)</a>
      */
     public static String[] getSubtypes(String attrName) {
         return com.novell.ldap.LDAPAttribute.getSubtypes(attrName);
@@ -214,7 +249,9 @@ public class LDAPAttribute {
     /**
      * Reports if the attribute name contains the specified subtype.
      *
-     * @see com.novell.ldap.LDAPAttribute#hasSubtype(String)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttribute.html
+            #hasSubtype(java.lang.String)">
+            com.novell.ldap.LDAPAttribute.hasSubtype(String)</a>
      */
     public boolean hasSubtype(String subtype) {
         return attr.hasSubtype(subtype);
@@ -223,7 +260,9 @@ public class LDAPAttribute {
     /**
      * Reports if the attribute name contains all the specified subtypes.
      *
-     * @see com.novell.ldap.LDAPAttribute#hasSubtypes(String[])
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttribute.html
+            #hasSubtypes(java.lang.String[])">
+            com.novell.ldap.LDAPAttribute.hasSubtypes(String[])</a>
      */
     public boolean hasSubtypes(String[] subtypes) {
         return attr.hasSubtypes(subtypes);
@@ -232,7 +271,9 @@ public class LDAPAttribute {
     /**
      * Removes a string value from the attribute.
      *
-     * @see com.novell.ldap.LDAPAttribute#removeValue(String)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttribute.html
+            #removeValue(java.lang.String)">
+            com.novell.ldap.LDAPAttribute.removeValue(String)</a>
      */
     public void removeValue(String attrString) {
         attr.removeValue(attrString);
@@ -242,7 +283,9 @@ public class LDAPAttribute {
     /**
      * Removes a byte-formatted value from the attribute.
      *
-     * @see com.novell.ldap.LDAPAttribute#removeValue(byte[])
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttribute.html
+            #removeValue(byte[])">
+            com.novell.ldap.LDAPAttribute.removeValue(byte[])</a>
      */
     public void removeValue(byte[] attrBytes) {
         attr.removeValue(attrBytes);
@@ -252,7 +295,9 @@ public class LDAPAttribute {
     /**
      * Returns the number of values in the attribute.
      *
-     * @see com.novell.ldap.LDAPAttribute#size()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttribute.html
+            #size()">
+            com.novell.ldap.LDAPAttribute.size()</a>
      */
     public int size() {
         return attr.size();
