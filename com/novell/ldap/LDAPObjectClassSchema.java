@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPObjectClassSchema.java,v 1.12 2000/10/10 22:26:23 bgudmundson Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPObjectClassSchema.java,v 1.13 2000/10/18 22:43:57 bgudmundson Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -105,15 +105,21 @@ public class LDAPObjectClassSchema extends LDAPSchemaElement{
       this.type = type;
 	  this.obsolete = obsolete;
       if( superiors != null){
-        this.superiors = new String[superiors.length];
-	for( int i = 0; i < this.superiors.length; i++ ){
-	  this.superiors[i] = superiors[i];
+      	this.superiors = new String[superiors.length];
+		for( int i = 0; i < this.superiors.length; i++ ){
+	  	this.superiors[i] = superiors[i];
+       	 }
+      }
+	  if( required != null){
+        this.required = new String[required.length];
+		for( int i = 0; i < this.required.length; i++ ){
+	  		this.required[i] = required[i];
         }
       }
       if( optional != null){
         this.optional = new String[optional.length];
-	for( int i = 0; i < this.optional.length; i++ ){
-	  this.optional[i] = optional[i];
+		for( int i = 0; i < this.optional.length; i++ ){
+	  		this.optional[i] = optional[i];
         }
       }
 
