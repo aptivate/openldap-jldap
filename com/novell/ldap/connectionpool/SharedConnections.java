@@ -19,6 +19,11 @@ import java.util.Arrays;
 /**
  * A list of connections sharing one physical connection.
  *
+ * <p> This helper class mannages connections that
+ * share the same physical connection. This class extends ArrayList.
+ * The password and DN for the physical connection are saved and available
+ * from this class. Connection retrieval methods are available.</p>  
+ *
  * @see PoolManager
  */
 /* package */
@@ -134,4 +139,3 @@ class SharedConnections extends ArrayList
         return Arrays.equals(ba1 ,ba2);
     }
 }
-

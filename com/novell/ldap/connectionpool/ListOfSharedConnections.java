@@ -18,9 +18,7 @@ import java.util.LinkedList;
 /**
  * List of Shared Connections
  *
- * <p>This is a helper class to manage SharedConnection. A SharedConnection
- * is an ArrayList of connections (original and clones) bound to the same
- * DN and password.</p>
+ * <p>This is a helper class to manage SharedConnections.</p>
  *
  * @see SharedConnections
  */
@@ -28,9 +26,8 @@ class ListOfSharedConnections extends LinkedList
 {
 
     /**
-     * getSharedConns
-     *
-     * <p>Find a SharedConnection that has the proper DN/PW</p>
+     * Find a SharedConnections object that shares the physical connection
+     * to the proper DN and Password
      */
     public SharedConnections getSharedConns(String DN, byte[] PW)
     {
@@ -46,9 +43,7 @@ class ListOfSharedConnections extends LinkedList
     }
 
     /**
-     * getSharedConns
-     *
-     * <p>Find a SharedConnection that a connection in it.</p>
+     * Find a SharedConnections object that contain the desired connection.
      */
     public SharedConnections getSharedConns(Connection conn)
     {
@@ -63,10 +58,9 @@ class ListOfSharedConnections extends LinkedList
     }
 
     /**
-     * getAvailableConnection
-     *
-     * <p>Search all of the SharedConnection that are bound to a DN/PW
-     * and return a connection that is not inuse.</p>
+     * Search the list of SharedConnections for a SharedConnections object 
+     * who's physical connection is bound to the desired DN and Password.
+     * Return a connection from the SharedConnections object that is available.
      */
     public Connection getAvailableConnection(String DN, byte[] PW)
     {

@@ -13,13 +13,36 @@
  * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
  ******************************************************************************/
 package com.novell.ldap.connectionpool;
-import com.novell.ldap.LDAPSocketFactory;
+
 import com.novell.ldap.LDAPConnection;
 import com.novell.ldap.LDAPException;
 import com.novell.ldap.LDAPJSSESecureSocketFactory;
+import com.novell.ldap.LDAPSocketFactory;
+import com.novell.ldap.LDAPTLSSocketFactory;
 
 /**
  * Manages connections to an LDAP Server.
+ *
+ * <p><code>PoolManager</code> manages connections to a single LDAP server.
+ * The pool consists of a finite number of physical connections to the LDAP
+ * server (parameter <code>maxConns</code>) and a finite number of
+ * LDAPConnection objects sharing a physical connection
+ * (parameter <code>maxSharedConns</code>),
+ * see the {@link #PoolManager(String, int, int, int, com.novell.ldap.LDAPSocketFactory) PoolManager}
+ * constructor.</p> 
+ * <p>A physical connection, and its shared LDAPConnection objects are associated
+ * with an LDAP DN and password (DN/PW).
+ * {@link #getBoundConnection(String, byte[]) getBoundConnection}
+ * searches for a physical connection associated with a given DN/PW
+ * and returns an available LDAPConnection object associated with
+ * that DN/PW.
+ * If none are available it searches for
+ * an unused physical connection, binds using the given DN/PW,
+ * and returns an LDAPConnection object.
+ * If no physical connection is available then it waits.
+ * Once an LDAPConnection object is no longer needed the 
+ * {@link #makeConnectionAvailable(LDAPConnection) makeConnectionAvailable}
+ * function must be called to make the LDAPConnection available to other threads.</p>
  */
 public class PoolManager
 {
@@ -31,38 +54,34 @@ public class PoolManager
     private boolean shuttingDown;
 
     /**
-     * Initialize connection pool.
+     * Initialize the connection pool.
      *
-     * <p>Initialize the connection pool by setting the host, port, max
-     * number of connection and max number of shared connections.</p>
-     *
-     * @param host - Host name
-     * @param port - Port number
-     * @param maxConns - Max number of connection allowed to this host.
-     * @param maxSharedConns - Max number of shared connections per DN
-     * @param keyStore - Used for keystore in LDAPConnection
+     * @param host - Host name associated with this connection pool 
+     * (see {@link com.novell.ldap.LDAPConnection#connect(String, int) LDAPConnection.connect()}).
+     * @param port - Port number for the host associated with this connection
+     *   pool.
+     * (see {@link com.novell.ldap.LDAPConnection#connect(String, int) LDAPConnection.connect()}).
+     * @param maxConns - Maximum number of physical connections allowed for
+     *             this host.
+     * @param maxSharedConns - Maximum number of shared connections per physical
+     *             connection.
+     * @param factory - A socket factory used to set an encrypted connection,
+     *           or null if none.  If the factory is an instance of
+     * {@link com.novell.ldap.LDAPTLSSocketFactory} then a startTLS is
+     * performed after the connection to the server is established.
+     *           <code>LDAPTLSSocketFactory</code>
+     * (see {@link com.novell.ldap.LDAPConnection#setSocketFactory(com.novell.ldap.LDAPSocketFactory) LDAPConnection.setSocketFactory()}).
      */
     public PoolManager(String host,
                           int port,
                           int maxConns,
                           int maxSharedConns,
-                          String keyStore)
+                          LDAPSocketFactory factory)
         throws LDAPException
     {
         LDAPSocketFactory fac = null;
 
         // Use the keystore file if it is there.
-        if(null != keyStore)
-        {
-            // To set the JSSE provider see the security.properties files
-            // Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider());
-
-            // Dynamically set the property that JSSE uses to identify
-            // the keystore that holds trusted root certificates
-            System.setProperty("javax.net.ssl.trustStore", keyStore);
-
-            fac = new LDAPJSSESecureSocketFactory();
-        }
 
         inUseListOfSharedConnections = new ListOfSharedConnections();
         availableListOfSharedConnections = new ListOfSharedConnections();
@@ -72,9 +91,12 @@ public class PoolManager
         {
             SharedConnections sharedConns = new SharedConnections(maxSharedConns);
             // Create connection. Initialy anonymous
-            Connection conn = new Connection(fac);
+            Connection conn = new Connection(factory);
             // At this point all of the connections anonymous
             conn.connect(host, port);
+            if( factory instanceof LDAPTLSSocketFactory) {
+                conn.startTLS();
+            }
             sharedConns.add(conn);
             // Clone the connections to make all of the sharedConns.
             for (int j = 1; j < maxSharedConns; j++)
@@ -88,7 +110,7 @@ public class PoolManager
     }
 
     /**
-     * getBoundConnection - Get a bound connection.
+     * Get a bound connection.
      * <p>This returns a bound (bind) connection for the desired DN and
      * password.</p>
      * @param DN  Authentication DN used for bind and key.
@@ -157,20 +179,19 @@ public class PoolManager
     }
 
     /**
-     * makeConnectionAvailable - Make this connection available.
-     * <p></p>
-     * @param baseConn  LDAPConnection to be made available.
+     * Make this connection available.
+     * @param conn LDAPConnection to be made available.
      */
-    public void makeConnectionAvailable(LDAPConnection baseConn)
+    public void makeConnectionAvailable(LDAPConnection conn)
     {
         SharedConnections sharedConns = null;
 
         synchronized(inUseListOfSharedConnections)
         {
             // Mark this connection available.
-            ((Connection)baseConn).clearInUse();
+            ((Connection)conn).clearInUse();
 
-            sharedConns = inUseListOfSharedConnections.getSharedConns((Connection)baseConn);
+            sharedConns = inUseListOfSharedConnections.getSharedConns((Connection)conn);
 
             // If all connections in this instance are available move to
             // from in use to available.
@@ -198,7 +219,7 @@ public class PoolManager
     }
 
     /**
-     * finalize - free connections.
+     * Free connections.
      * <p> Tell all waiting threads that we are shutting down.
      * Clean up the in use and available connections.</p>
      *
