@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/util/RDN.java,v 1.4 2001/03/22 18:24:35 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/util/RDN.java,v 1.5 2001/03/26 23:43:51 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -80,16 +80,37 @@ public class RDN extends Object
             j=0;
             //May need a more intellegent compare
             while ( j<values.size() && (
-                    !((String)this.types.elementAt(i)).equalsIgnoreCase(
-                      (String) rdn.types.elementAt(j)) ||
                     !((String)this.values.elementAt(i)).equalsIgnoreCase(
-                      (String) rdn.values.elementAt(j)) )){
+                      (String) rdn.values.elementAt(j)) ||
+                    !equalAttrType((String)this.types.elementAt(i),
+                                   (String) rdn.types.elementAt(j)))){
                 j++;
             }
             if (j >= rdn.values.size()) //couldn't find first value
                 return false;
         }
         return true;
+    }
+
+    /**
+     * Internal function used by equal to compare Attribute types.  Because
+     * attribute types could either be an OID or a name.  There needs to be a
+     * Translation mechanism.  This function will absract this functionality.
+     *
+     * Currently if types differ (Oid and number) then UnsupportedOperation is
+     * thrown, either one or the other must used.  In the future an OID to name
+     * translation can be used.
+     *
+     *
+     */
+    private boolean equalAttrType(String attr1, String attr2){
+        if (java.lang.Character.isDigit(attr1.charAt(0))  ^ //XOR
+            java.lang.Character.isDigit(attr2.charAt(0)) )
+            //isDigit tests if it is an OID
+            throw new UnsupportedOperationException("OID numbers are not " +
+                "currently compared to attribute types");
+
+        return attr1.equalsIgnoreCase(attr2);
     }
 
     /**
