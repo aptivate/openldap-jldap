@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResultReference.java,v 1.8 2000/09/11 21:05:51 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResultReference.java,v 1.9 2000/09/12 22:50:13 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -15,8 +15,11 @@
  
 package com.novell.ldap;
 
+import com.novell.ldap.protocol.*;
+import com.novell.ldap.asn1.*;
+import com.novell.ldap.client.Debug;
 import java.io.IOException;
-import java.util.Vector;
+import java.util.*;
 
 //import com.novell.ldap.client.protocol.lber.*;
 
@@ -32,8 +35,10 @@ import java.util.Vector;
 public class LDAPSearchResultReference extends LDAPMessage {
 
 //	private LberDecoder lber;
-	private Vector URLs; // referrals
+//	private Vector URLs; // referrals
 
+    private String[] srefs;
+    private String name = "LDAPSearchResultReference@" + Integer.toHexString(hashCode());
 	/**
      * Constructs an LDAPSearchResultReference object.
      * 
@@ -41,73 +46,9 @@ public class LDAPSearchResultReference extends LDAPMessage {
 	 */
 	public LDAPSearchResultReference(com.novell.ldap.protocol.LDAPMessage message)
 	{
-		super(message);
+        super(message);
+        return;
 	}
-
-/*
-	public LDAPSearchResultReference(int messageID, LberDecoder lber,
-		                              boolean isLdapv3)
-		throws IOException
-	{
-		super(messageID, SEARCH_RESULT_REFERENCE);
-		this.lber = lber;
-
-		URLs = new Vector(5);
-
-		// It is possible that some LDAP servers will
-		// encode the SEQUENCE OF tag in the SearchResultRef
-		if(lber.peekByte() ==
-			(Lber.ASN_SEQUENCE | Lber.ASN_CONSTRUCTOR)) {
-			lber.parseSeq(null);
-		}
-
-		while((lber.bytesLeft() > 0) &&
-				(lber.peekByte() == Lber.ASN_OCTET_STR)) {
-
-			URLs.addElement(lber.parseString(isLdapv3));
-		}
-
-		// parse any optional controls
-		if(isLdapv3) parseControls();
-	}
-
-   private void parseControls()
-		throws IOException
-	{
-      // handle LDAPv3 controls (if present)
-      if((lber.bytesLeft() > 0) &&
-			(lber.peekByte() == LDAP_CONTROLS)) {
-         controls = new Vector(4);
-         String controlOID;
-         boolean criticality = false; // default
-         byte[] controlValue = null;  // optional
-         int[] seqlen = new int[1];
-
-         lber.parseSeq(seqlen);
-         int endseq = lber.getParsePosition() + seqlen[0];
-         while((lber.getParsePosition() < endseq) &&
-               (lber.bytesLeft() > 0)) {
-
-            lber.parseSeq(null);
-            controlOID = lber.parseString(true);
-
-            if((lber.bytesLeft() > 0) &&
-               (lber.peekByte() == Lber.ASN_BOOLEAN)) {
-               criticality = lber.parseBoolean();
-            }
-            if((lber.bytesLeft() > 0) &&
-               (lber.peekByte() == Lber.ASN_OCTET_STR)) {
-               controlValue =
-               lber.parseOctetString(Lber.ASN_OCTET_STR, null);
-            }
-            if(controlOID != null) {
-               controls.addElement(
-						new LDAPControl(controlOID, criticality, controlValue));
-            }
-         }
-      }
-   }
-*/	
 
    /*
     * 4.8.1 getUrls
@@ -118,15 +59,16 @@ public class LDAPSearchResultReference extends LDAPMessage {
     *
     * @return The URLs.
     */
-/*
    public String[] getUrls() {
-		int urlCnt = URLs.size();
-		String[] urls = new String[urlCnt];
-		for(int i=0; i<urlCnt; i++) {
-			urls[i] = (String)URLs.elementAt(i);
-		}
-		return urls;
+        SearchResultReference sresref = (SearchResultReference)message.getProtocolOp();
+        Enumeration references = sresref.elements();
+        srefs = new String[sresref.size()];
+        for( int i=0; sresref.hasMoreElements(); i++) {
+            srefs[i] = (String)sresref.nextElement(); 
+            if( Debug.LDAP_DEBUG ) {
+                Debug.trace( Debug.messages, name + srefs[i] );
+            }
+        }
+        return( srefs );
    }
-*/	
-
 }
