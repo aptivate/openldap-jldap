@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: GetContextIdentityNameResponse.java,v 1.3 2000/08/08 19:43:55 javed Exp $
+ * $Id: GetContextIdentityNameResponse.java,v 1.4 2000/08/08 21:28:51 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -61,7 +61,7 @@ public class GetContextIdentityNameResponse implements ParsedExtendedResponse {
    }
    
    /** 
-    * @param String value specifying the identity returned by the server
+    * @return String value specifying the identity returned by the server
     */
    public String getIdentity() {
         return identity;
