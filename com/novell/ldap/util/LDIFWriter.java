@@ -460,7 +460,8 @@ public class LDIFWriter implements LDAPWriter
     {
 
         int i, modOp, len = mods.length;
-        String attrName, attrValue;
+        String attrName;
+        byte[][] attrValue;
         LDAPAttribute attr;
 
         // Write the dn field
@@ -479,7 +480,7 @@ public class LDIFWriter implements LDAPWriter
             modOp = mods[i].getOp();
             attr =  mods[i].getAttribute();
             attrName = attr.getName();
-            attrValue = attr.getStringValue();
+            attrValue = attr.getByteValueArray();
 
             switch ( modOp )  {
                 case LDAPModification.ADD:
@@ -495,7 +496,9 @@ public class LDIFWriter implements LDAPWriter
             }
 
             // add attribute names and values to record fields
-            writeAttribute(attrName, attrValue);
+            for(int j = 0;j < attrValue.length;j++)
+            	writeAttribute(attrName, attrValue[j]);
+
 
             // add separators between different modify operations
             writeLine("-");
