@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPSocketFactory.java,v 1.3 2000/08/03 22:06:18 smerrill Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSocketFactory.java,v 1.4 2000/08/28 22:18:59 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -18,8 +18,11 @@ package com.novell.ldap;
 import java.net.*;
 import java.io.IOException;
 
+/*
+ * 4.36 public interface LDAPSocketFactory
+ */
+ 
 /**
- * 4.25 public interface LDAPSocketFactory
  *
  *  Used to construct a socket connection for use in an LDAPConnection.
  *  An implementation of this interface may, for example, provide a
@@ -28,23 +31,24 @@ import java.io.IOException;
 public interface LDAPSocketFactory {
 
    /*
-    * 4.25.1 makeSocket
+    * 4.36.1 makeSocket
     */
 
    /**
     * Returns a socket connected using the provided host name and port
     * number.
     *
-    * There may be additional makeSocket methods defined when interfaces to
-    * establish TLS and SASL authentication in the java environment have
-    * been standardized.
-    * Parameters are:
-    *  host           Contains a hostname or dotted string representing
+    *  @param host     The hostname or dotted string representing
     *                  the IP address of a host running an LDAP server
     *                  to connect to.
-    *
-    *  port           Contains the TCP or UDP port number to connect to
+    *<br><br>
+    *  @param port     The TCP or UDP port number to connect to
     *                  or contact. The default LDAP port is 389.
+    *
+    * @exception IOException The socket to the specified host and port
+    *                        could not be created.
+    * 
+    * @exception UnknownHostException The specified host could not be found.
     */
    public Socket makeSocket(String host, int port)
       throws IOException, UnknownHostException;

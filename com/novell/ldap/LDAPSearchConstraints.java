@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPSearchConstraints.java,v 1.4 2000/08/28 22:18:58 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchConstraints.java,v 1.5 2000/09/11 22:47:50 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -175,8 +175,10 @@ public class LDAPSearchConstraints extends LDAPConstraints {
 
    /**
     * Returns the number of results to block on during enumeration of
-    * search results. This should be 0 if intermediate results are not
-    * needed, and 1 if results are to be processed as they come in.
+    * search results. 
+    *
+    * <p>This should be 0 if intermediate results are not
+    * needed, and 1 if results are to be processed as they come in. </p>
     */
    public int getBatchSize() {
       return batchSize;
@@ -187,9 +189,17 @@ public class LDAPSearchConstraints extends LDAPConstraints {
     */
 
    /**
-    * Specifies when aliases should be dereferenced. Returns either
-    * LDAP_DEREF_NEVER, LDAP_DEREF_FINDING, LDAP_DEREF_SEARCHING, or
-    * LDAP_DEREF_ALWAYS from LDAPv2.
+    * Specifies when aliases should be dereferenced. 
+    *
+    * <p>Returns one of the following:
+    * <ul>
+    *   <li>LDAP_DEREF_NEVER</li>
+    *   <li>LDAP_DEREF_FINDING</li>
+    *   <li>LDAP_DEREF_SEARCHING</li>
+    *   <li>LDAP_DEREF_ALWAYS</li> 
+    * </ul>
+    *
+    * @return When aliases are dereferenced.
     */
    public int getDereference() {
       return dereference;
@@ -202,6 +212,8 @@ public class LDAPSearchConstraints extends LDAPConstraints {
    /**
     * Returns the maximum number of search results to be returned; 0 means
     * no limit.
+    *
+    * @return The limit for the maximum number of results.
     */
    public int getMaxResults() {
       return maxResults;
@@ -213,7 +225,9 @@ public class LDAPSearchConstraints extends LDAPConstraints {
 
    /**
     * Reports the maximum number of seconds that the server is to wait when
-    * returning search results while using this constraint object
+    * returning search results while using this constraint object.
+    *
+    * @return The maximum time the server can wait for search results.
     */
    public int getServerTimeLimit() {
       return serverTimeLimit;
@@ -225,13 +239,14 @@ public class LDAPSearchConstraints extends LDAPConstraints {
 
    /**
     * Sets the suggested number of results to block on during enumeration
-    * of search results. This should be 0 if intermediate results are not
+    * of search results. 
+    *
+    * <p>This should be 0 if intermediate results are not
     * needed, and 1 if results are to be processed as they come in.  The
     * default is 1.
     *
-    * Parameters are:
     *
-    *  batchSize      Blocking size on search enumerations.
+    *  @param batchSize      Blocking size on search enumerations.
     */
    public void setBatchSize(int batchSize) {
 		this.batchSize = batchSize;
@@ -245,11 +260,18 @@ public class LDAPSearchConstraints extends LDAPConstraints {
     * Sets a preference indicating whether or not aliases should be
     * dereferenced, and if so, when.
     *
-    * Parameters are:
     *
-    *  dereference    Either LDAP_DEREF_NEVER, LDAP_DEREF_FINDING,
-    *                  LDAP_DEREF_SEARCHING, or LDAP_DEREF_ALWAYS from
-    *                  LDAPv2.
+    *  @param dereference  One of the following dereference values:
+    * <ul>
+    *                  <li>LDAP_DEREF_NEVER - do not dereference aliases</li>
+    *                  <li>LDAP_DEREF_FINDING - dereference aliases when finding
+    *                            the base object to start the search</li>
+    *                  <li>LDAP_DEREF_SEARCHING - dereference aliases when 
+    *                                 searching but not when finding the base 
+    *                                 object to start the search</li>
+    *                  <li>LDAP_DEREF_ALWAYS - dereference aliases when finding 
+    *                         the base object and when searching</li>
+    * </ul>
     */
    public void setDereference(int dereference) {
 		this.dereference = dereference;
@@ -263,9 +285,7 @@ public class LDAPSearchConstraints extends LDAPConstraints {
     * Sets the maximum number of search results to be returned; 0 means no
     * limit.  The default is 1000.
     *
-    * Parameters are:
-    *
-    *  maxResults     Maxumum number of search results to return.
+    *  @param maxResults     Maxumum number of search results to return.
     */
    public void setMaxResults(int maxResults) {
 		this.maxResults = maxResults;
@@ -277,8 +297,11 @@ public class LDAPSearchConstraints extends LDAPConstraints {
 
    /**
     * Sets the maximum number of seconds that the server is to wait when
-    * returning search results. The parameter is only recognized on search
-    * operations.
+    * returning search results. 
+    *
+    * <p>The parameter is only recognized on search operations. </p>
+    *
+    * @param seconds The number of seconds to wait for search results.
     */
    public void setServerTimeLimit(int seconds) {
 		this.serverTimeLimit = seconds;

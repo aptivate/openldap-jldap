@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPSortKey.java,v 1.3 2000/08/03 22:06:18 smerrill Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSortKey.java,v 1.4 2000/08/28 22:18:59 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -15,10 +15,13 @@
  
 package com.novell.ldap;
  
+/*
+ *  public class LDAPSortKey
+ */
+ 
 /**
- * 4.26 public class LDAPSortKey
  *
- *  Encapsulates parameters for sorting search results.
+ *  Encapsulates parameters for sorting search results on the server.
  */
 public class LDAPSortKey {
 
@@ -27,45 +30,49 @@ public class LDAPSortKey {
     */
 
    /**
-    * Constructs a new LDAPSortKey object using a, possibly complex,
-    * sorting specification.
+    * Constructs a new LDAPSortKey object using an attribute as the sort key.
+    *
+    * @param keyDescription The single attribute to use for sorting. If the 
+    *                       name is preceded by a minus sign (-), the sorting 
+    *                       is done in reverse order. The Novell LDAP server 
+    *                       does not support reverse order sorting. Examples:
+    *<ul>
+    *  <li> "cn" (sorts by the cn attribute)</li>
+    *  <li> "-cn" (sorts, in reverse order, by the cn attribute) </li>
+    *</ul> 
     */
    public LDAPSortKey( String keyDescription ) {
    }
 
 
    /**
-    * Constructs a new LDAPSortKey object using an attribute name and a
-    * sort order.
+    * Constructs a new LDAPSortKey object with the specified attribute name 
+    * and sort order.
+    *
+    * @param key     The single attribute to use for sorting.
+    *<br><br>
+    * @param reverse If true, sorting is done in descending order. If false,
+    *                sorting is done in ascending order. The Novell LDAP server
+    *                does not support ascending order sorting.
     */
    public LDAPSortKey( String key, boolean reverse) {
    }
 
    /**
-    * Constructs a new LDAPSortKey object using an attribute name, a sort
-    * order, and a matching rule.
+    * Constructs a new LDAPSortKey object with the specified attribute name, 
+    * sort order, and a matching rule.
     *
-    * Parameters are:
-    *
-    *  keyDescription A single attribute specification to sort by. If
-    *                  prefixed with "-", reverse order sorting is
-    *                  requested. A matching rule OID may be appended
-    *                  following ":".
-    *
-    *                  Examples:
-    *                     "cn"
-    *                     "-cn"
-    *                     "-cn:1.2.3.4.5"
-    *
-    *  key            An attribute name, e.g. "cn".
-    *
-    *  reverse        True to sort in reverse collation order.
-    *
-    *  matchRule      The object ID (OID) of a matching rule used for
-    *                  collation. If the object will be used to request
-    *                  server-side sorting of search results, it should
-    *                  be the OID of a matching rule known to be
-    *                  supported by that server.
+    *  @param key     The attribute name (for example, "cn") to use for sorting.
+    *<br><br>
+    *  @param reverse   If true, sorting is done in descending order. If false,
+    *                sorting is done in ascending order. The Novell LDAP server
+    *                does not support ascending order sorting.
+    *<br><br>
+    *  @param matchRule   The object ID (OID) of a matching rule used for
+    *                     collation. If the object will be used to request
+    *                     server-side sorting of search results, it should
+    *                     be the OID of a matching rule known to be
+    *                     supported by that server.
     */
    public LDAPSortKey( String key, boolean reverse, String matchRule) {
    }
@@ -75,7 +82,9 @@ public class LDAPSortKey {
     */
 
    /**
-    * Returns the attribute to be used for collation.
+    * Returns the attribute to used for sorting.
+    *
+    * @return The name of the attribute used for sorting.
     */
    public String getKey() {
       return null;
@@ -86,7 +95,10 @@ public class LDAPSortKey {
     */
 
    /**
-    * Returns true if the sort key specifies reverse-order sorting.
+    * Returns the sorting order, ascending or descending.
+    *
+    * @return True if the sorting is done is descending order; false, if the 
+    *         sorting is done is ascending order.
     */
    public boolean getReverse() {
       return false;
@@ -97,7 +109,9 @@ public class LDAPSortKey {
     */
 
    /**
-    * Returns the OID to be used as matching rule, or null if none is to be
+    * Returns the OID to be used as a matching rule.
+    *
+    * @return The OID to be used as matching rule, or null if none is to be
     * used.
     */
    public String getMatchRule() {

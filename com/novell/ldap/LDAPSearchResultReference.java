@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/src/com/novell/ldap/LDAPSearchResultReference.java,v 1.7 2000/08/28 22:18:59 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResultReference.java,v 1.8 2000/09/11 21:05:51 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -20,11 +20,14 @@ import java.util.Vector;
 
 //import com.novell.ldap.client.protocol.lber.*;
 
+/*
+ * 4.34 public class LDAPSearchResultReference extends LDAPMessage
+ */
+ 
 /**
- * 4.8 public class LDAPSearchResultReference extends LDAPMessage
  *
- *  An LDAPSearchResultReference object encapsulates a continuation
- *  reference from a search operation.
+ *  Encapsulates a continuation reference from a search operation.
+ *  
  */
 public class LDAPSearchResultReference extends LDAPMessage {
 
@@ -32,6 +35,9 @@ public class LDAPSearchResultReference extends LDAPMessage {
 	private Vector URLs; // referrals
 
 	/**
+     * Constructs an LDAPSearchResultReference object.
+     * 
+     * @param message The LDAPMessage with a search reference.
 	 */
 	public LDAPSearchResultReference(com.novell.ldap.protocol.LDAPMessage message)
 	{
@@ -109,6 +115,8 @@ public class LDAPSearchResultReference extends LDAPMessage {
 
    /**
     * Returns any URLs in the object.
+    *
+    * @return The URLs.
     */
 /*
    public String[] getUrls() {

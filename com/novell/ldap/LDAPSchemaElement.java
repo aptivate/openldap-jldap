@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPSchemaElement.java,v 1.5 2000/08/28 22:18:58 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSchemaElement.java,v 1.6 2000/09/11 22:47:50 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -196,7 +196,7 @@ public abstract class LDAPSchemaElement {
     */
 
    /**
-    * Returns true if the element is obsolete and has the OBSOLETE qualifier
+    * Returns true if the element has the OBSOLETE qualifier
     * in its LDAP definition.
     *
     * @return True if the LDAP definition contains the OBSOLETE qualifier; 
