@@ -16,28 +16,40 @@ import org.ietf.asn1.*;
  */
 public class AttributeDescriptionList extends ASN1SequenceOf {
 
-	/**
-	 *
-	 */
-	public AttributeDescriptionList()
-	{
-		super();
-	}
+   /**
+    *
+    */
+   public AttributeDescriptionList()
+   {
+      super();
+   }
 
-	/**
-	 *
-	 */
-	public AttributeDescriptionList(int size)
-	{
-		super(size);
-	}
+   /**
+    *
+    */
+   public AttributeDescriptionList(int size)
+   {
+      super(size);
+   }
 
-	/**
-	 * Override add() to only accept types of AttributeDescription
-	 *
-	 * @exception ASN1InvalidTypeException
-	 */
+   /**
+    * Convenience constructor. This constructor will construct an
+    * AttributeDescriptionList using the supplied array of Strings.
+    */
+   public AttributeDescriptionList(String[] attrs)
+   {
+      super(attrs.length);
+
+      for(int i=0; i<attrs.length; i++) {
+         add(new AttributeDescription(attrs[i]));
+      }
+   }
+
+   /**
+    * Override add() to only accept types of AttributeDescription
+    *
+    * @exception ASN1InvalidTypeException
+    */
 
 }
-
 
