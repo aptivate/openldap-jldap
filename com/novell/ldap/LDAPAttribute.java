@@ -17,10 +17,17 @@ package com.novell.ldap;
 
 
 import com.novell.ldap.client.ArrayEnumeration;
+import com.novell.ldap.util.Base64;
 
-import java.util.*;
-import java.util.StringTokenizer;
+import java.io.FileReader;
+import java.io.InputStream;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.StringTokenizer;
+import java.util.Enumeration;
 /**
  * The name and values of one attribute of a directory entry.
  *
@@ -177,7 +184,7 @@ public class LDAPAttribute implements java.lang.Cloneable,
     /**
      * Adds a string value to the attribute.
      *
-     * @param attrString Value of the attribute as a string.
+     * @param attrString Value of the attribute as a String.
      *
      * @throws IllegalArgumentException if attrString is null
      */
@@ -209,7 +216,152 @@ public class LDAPAttribute implements java.lang.Cloneable,
             throw new IllegalArgumentException("Attribute value cannot be null");
         }
         this.add(attrBytes);
+        return;
+    }
+
+    /**
+     * Adds a base64 encoded value to the attribute.
+     * The value will be decoded and stored as bytes.  String
+     * data encoded as a base64 value must be UTF-8 characters.
+     *
+     * @param attrString The base64 value of the attribute as a String.
+     *
+     * @throws IllegalArgumentException if attrString is null
+     */
+    public void addBase64Value(String attrString)
+    {
+        if( attrString == null) {
+            throw new IllegalArgumentException("Attribute value cannot be null");
+        }
+        
+        this.add( Base64.decode(attrString));
+        return;
+    }
+
+    /**
+     * Adds a base64 encoded value to the attribute.
+     * The value will be decoded and stored as bytes.  Character
+     * data encoded as a base64 value must be UTF-8 characters.
+     *
+     * @param attrString The base64 value of the attribute as a StringBuffer.
+     * @param start  The start index of base64 encoded part, inclusive.
+     * @param end  The end index of base encoded part, exclusive.
+     *
+     * @throws IllegalArgumentException if attrString is null
+     */
+    public void addBase64Value(StringBuffer attrString, int start, int end)
+    {
+        if( attrString == null) {
+            throw new IllegalArgumentException("Attribute value cannot be null");
+        }
+        
+        this.add( Base64.decode(attrString, start, end));
+        
+        return;
+    }
+
+    /**
+     * Adds a base64 encoded value to the attribute.
+     * The value will be decoded and stored as bytes.  Character
+     * data encoded as a base64 value must be UTF-8 characters.
+     *
+     * @param attrChars The base64 value of the attribute as an array of
+     * characters.
+     *
+     * @throws IllegalArgumentException if attrString is null
+     */
+    public void addBase64Value(char[] attrChars)
+    {
+        if( attrChars == null) {
+            throw new IllegalArgumentException("Attribute value cannot be null");
+        }
+        
+        this.add( Base64.decode(attrChars));
+        return;
+    }
+
+    /**
+     * Adds a URL, indicating a file or other resource that contains
+     * the value of the attribute.
+     *
+     * @param url String value of a URL pointing to the resource containing
+     * the value of the attribute.
+     *
+     * @throws IllegalArgumentException if url is null
+     */
+    public void addURLValue(String url) throws MalformedURLException, IOException
+    {
+        if( url == null) {
+            throw new IllegalArgumentException("Attribute URL cannot be null");
+        }
+        addURLValue( new URL( url));
         return;    
+    }
+    
+    /**
+     * Adds a URL, indicating a file or other resource that contains
+     * the value of the attribute.
+     *
+     * @param url A URL class pointing to the resource containing the value
+     * of the attribute.
+     *
+     * @throws IllegalArgumentException if url is null
+     */
+    public void addURLValue(URL url) throws MalformedURLException, IOException
+    {
+        // Class to encapsulate the data bytes and the length
+        class URLData
+        {
+            private int length;
+            private byte[] data;
+            private URLData(byte[] data, int length)
+            {
+                this.length = length;
+                this.data = data;
+                return;
+            }
+            private int getLength()
+            {
+                return length;
+            }
+            private byte[] getData()
+            {
+                return data;
+            }
+        }
+        if( url == null) {
+            throw new IllegalArgumentException("Attribute URL cannot be null");
+        }
+        try {
+            // Get InputStream from the URL
+            InputStream in = url.openStream();
+            // Read the bytes into buffers and store the them in an arraylist
+            ArrayList bufs = new ArrayList();
+            byte[] buf = new byte[4096];
+            int len, totalLength = 0;
+            while( (len = in.read(buf,0, 4096)) != -1) {
+                bufs.add( new URLData(buf, len));
+                buf = new byte[4096];
+                totalLength += len;
+            }
+            /*
+             * Now that the length is known, allocate an array to hold all 
+             * the bytes of data and copy the data to that array, store
+             * it in this LDAPAttribute
+             */
+            byte[] data = new byte[totalLength];
+            int offset = 0; // 
+            for( int i=0; i < bufs.size(); i++) {
+                URLData b = (URLData)bufs.get(i);
+                len = b.getLength();
+                System.arraycopy( b.getData(), 0, data, offset, len);
+                offset += len;
+            }
+            this.add( data);
+        } catch( UnsupportedEncodingException ue ) {
+            throw new RuntimeException( ue.toString());
+        }
+        return;
     }
 
     /**
@@ -616,7 +768,7 @@ public class LDAPAttribute implements java.lang.Cloneable,
             // Duplicate attribute values not allowed
             for( int i = 0; i < this.values.length; i++ ) {
                 if( equals( bytes, (byte[])this.values[i] ) ) {
-                    return; // Duplicate
+                    return; // Duplicate, don't add
                 }
             }
             Object[] tmp = new Object[ this.values.length + 1 ];
@@ -627,7 +779,7 @@ public class LDAPAttribute implements java.lang.Cloneable,
         }
         return;
     }
-
+    
     /**
      * Replaces all values with the specified value. This protected method is
      * used by sub-classes of LDAPSchemaElement because the value cannot be set
@@ -675,12 +827,12 @@ public class LDAPAttribute implements java.lang.Cloneable,
 
         return true;
     }
-    
+
     /**
      * Returns a string representation of this LDAPAttribute
      *
      * @return a string representation of this LDAPAttribute
-     */ 
+     */
     public String toString()
     {
         StringBuffer result = new StringBuffer("LDAPAttribute: ");
@@ -709,11 +861,39 @@ public class LDAPAttribute implements java.lang.Cloneable,
                     result.append(sval);
                 }
                 result.append("'");
-            }    
+            }
             result.append("}");
         } catch( Exception e) {
             throw new RuntimeException(e.toString());
         }
         return result.toString();
+    }
+
+    private class URLAttribute
+    {
+        private URL url;
+        private FileReader reader;
+
+        private URLAttribute( URL url, FileReader reader)
+        {
+            this.url = url;
+            this.reader = reader;
+            return;
+        }
+
+        private URL getURL()
+        {
+            return url;
+        }
+        private FileReader getReader()
+        {
+            return reader;
+        }
+
+        private void setReader(FileReader reader)
+        {
+            this.reader = reader;
+            return;
+        }
     }
 }
