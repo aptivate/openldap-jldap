@@ -136,6 +136,24 @@ public class RfcLDAPMessage extends ASN1Sequence
     }
 
     /**
+    * Create an RfcLDAPMessage using the specified LDAP Response when the return
+	* type is a ASN1SequenceOf .
+    * @param op an object of type ASN1SequenceOf.
+    */
+	public RfcLDAPMessage(ASN1SequenceOf op)
+	{
+			super(2);
+
+		this.op = op;
+		
+
+		add(new RfcMessageID()); // MessageID has static counter
+		add(op);
+		
+		return;
+	}
+
+    /**
      * Create an RfcLDAPMessage response from input parameters.
       */
     public RfcLDAPMessage(ASN1Sequence op, RfcControls controls)
@@ -199,6 +217,9 @@ public class RfcLDAPMessage extends ASN1Sequence
                 break;
             case LDAPMessage.EXTENDED_RESPONSE:
                 set(1, new RfcExtendedResponse(dec, bais, content.length));
+                break;
+            case LDAPMessage.INTERMEDIATE_RESPONSE:
+                set(1, new RfcIntermediateResponse(dec, bais, content.length));
                 break;
             case LDAPMessage.MODIFY_RESPONSE:
                 set(1, new RfcModifyResponse(dec, bais, content.length));

@@ -52,6 +52,16 @@ public class RfcSearchResultEntry extends ASN1Sequence {
 //      set(1, new PartitalAttributeList());
         return;
     }
+    /** Creates an RfcSearchResultEntry from individual ASN encoded objects.
+     * @param ObjectName The LDAPDN for the search result.
+     * @param attributes The various attributes for the specified attribute.
+     */
+    public RfcSearchResultEntry(ASN1OctetString ObjectName,ASN1Sequence attributes)
+    {
+    	super(2);
+    	add(ObjectName);
+    	add(attributes);
+    }
 
     //*************************************************************************
     // Accessors

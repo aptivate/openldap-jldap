@@ -1110,7 +1110,7 @@ public class RfcFilter extends ASN1Choice
 /**
   * This inner class will tokenize the components of an RFC 2254 search filter.
   */
-class FilterTokenizer
+class FilterTokenizer implements java.io.Serializable
 {
 
     //*************************************************************************
@@ -1368,6 +1368,30 @@ class FilterTokenizer
                                     LDAPException.FILTER_ERROR);
         }
         return filter.charAt(offset);
+    }
+
+    /**
+    *  Writes the object state to a stream in standard Default Binary format
+    *  This function wraps ObjectOutputStream' s defaultWriteObject() to write
+    *  the non-static and non-transient fields of the current class to the stream
+    *   
+    *  @param objectOStrm  The OutputSteam where the Object need to be written
+    */
+    private void writeObject(java.io.ObjectOutputStream objectOStrm)
+	    throws java.io.IOException {
+		objectOStrm.defaultWriteObject();
+    }
+    
+    /**
+    *  Reads the serialized object from the underlying input stream.
+    *  This function wraps ObjectInputStream's  defaultReadObject() function
+    *
+    *  @param objectIStrm  InputStream used to recover those objects previously serialized. 
+    */
+    private void readObject(java.io.ObjectInputStream objectIStrm)
+         throws java.io.IOException, ClassNotFoundException
+    {
+	  objectIStrm.defaultReadObject();
     }
 
     }

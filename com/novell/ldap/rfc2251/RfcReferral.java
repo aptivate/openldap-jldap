@@ -16,6 +16,9 @@ package com.novell.ldap.rfc2251;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+
+import com.novell.ldap.LDAPUrl;
 import com.novell.ldap.asn1.*;
 
 /**
@@ -44,6 +47,23 @@ public class RfcReferral extends ASN1SequenceOf {
         // LDAPResponse.getReferrals())
     }
 
+	/**
+	 * This construtor is used when creating LDAPResponse directly and not from
+	 *  the stream.
+	 * @param value This array of Referrals [LDAPURL]
+	 * @throws MalformedURLException
+	 * <b>Note:Limitation</b> The ldapurl specified to this constructor should 
+	 * have a dn part to it i.e ldap://www.nldap.com/cn=admin,o=acme  is 
+	 * allowed but ldap://www.nldap.com is not allowed.
+	 */
+	public RfcReferral(String value[]) throws MalformedURLException {
+		super(value.length + 1);
+		for (int i = 0; i < value.length; i++) {
+			LDAPUrl url = new LDAPUrl(value[i]);
+			add(new ASN1OctetString(url.toString()));
+		}
+
+	}
     //*************************************************************************
     // Accessors
     //*************************************************************************

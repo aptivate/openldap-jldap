@@ -16,6 +16,8 @@ package com.novell.ldap.rfc2251;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+
 import com.novell.ldap.*;
 import com.novell.ldap.asn1.*;
 
@@ -43,6 +45,21 @@ public class RfcSearchResultReference extends ASN1SequenceOf
         super(dec, in, len);
         return;
     }
+	/** Creates the Object from a array of ldap urls passed as string.
+   * @param value array of urls with string Datatype.
+   * @throws MalformedURLException This exception is thrown if any of the 
+   * LDAPURL is not formed 
+   */
+  public RfcSearchResultReference(String value[])
+		throws MalformedURLException {
+		super();
+		if (value == null) 
+			throw new MalformedURLException("Malformed URL, null String are invalid URL");
+		for (int i = 0; i < value.length; i++) {
+			LDAPUrl url = new LDAPUrl(value[i]);
+			add(new ASN1OctetString(url.toString()));
+		}
+	}
 
     //*************************************************************************
     // Accessors

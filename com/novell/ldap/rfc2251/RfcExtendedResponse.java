@@ -45,10 +45,45 @@ public class RfcExtendedResponse extends ASN1Sequence implements RfcResponse {
     private int responseNameIndex;
     private int responseIndex;
 
+   
     //*************************************************************************
     // Constructors for ExtendedResponse
     //*************************************************************************
 
+	/**
+   * Creates the RFC Extended Response Object passing the individual parameters.
+   *  
+   * @param resultCode  The result code as defined in LDAPException.
+   *
+   * @param matchedDN   The name of the lowest entry that was matched
+   *                    for some error result codes, an empty string
+   *                    or <code>null</code> if none.
+   *
+   * @param errorMessage  A diagnostic message returned by the server,
+   *                       an empty string or <code>null</code> if none.
+   *
+   * @param referral   The referral URLs returned for a REFERRAL result
+   *                    code or <code>null</code> if none.
+   *
+   * @param responseName   The LDAPOID for this extended operation
+   *
+   * @param response  Any Response returned by the server 
+   */
+	public RfcExtendedResponse(ASN1Enumerated resultCode, RfcLDAPDN matchedDN,
+	RfcLDAPString errorMessage, RfcReferral referral,RfcLDAPOID responseName ,ASN1OctetString response)
+	{
+		super(6);
+	   add(resultCode);
+	   add(matchedDN);
+	   add(errorMessage);
+	   if(referral != null)
+		   add(referral);
+		if (responseName != null)
+			add(responseName);
+		if (response != null)
+			add(response);
+	   return;
+	}
     /**
      * The only time a client will create a ExtendedResponse is when it is
      * decoding it from an InputStream
