@@ -5,7 +5,7 @@ package com.novell.ldap;
  */
 
 /**
- * Represents the definition of a syntax. 
+ * Represents a specific syntax definition in the directory schema.
  *
  * <p>The LDAPSyntaxSchema class is used to discover the known set of syntaxes 
  * in effect for the subschema. </p>

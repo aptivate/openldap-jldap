@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSchemaElement.java,v 1.9 2000/10/09 19:11:25 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSchemaElement.java,v 1.10 2000/10/23 18:49:06 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -20,12 +20,8 @@ import java.util.Hashtable;
 import java.util.Vector;
 import com.novell.ldap.client.AttributeQualifier;
 
-/*
- * 4.30 public abstract class LDAPSchemaElement
- */
- 
 /**
- *  Represents schema elements.
+ *  The base class for representing LDAP schema elements.
  *  
  */
 public abstract class LDAPSchemaElement {
@@ -76,10 +72,6 @@ public abstract class LDAPSchemaElement {
    */
     protected Hashtable hashQualifier = new Hashtable();
 
-   /*
-    * 4.22.1 getAliases
-    */
-
    /**
     * Returns an array of alternative names for the element, or null if
     * none is found. 
@@ -101,10 +93,6 @@ public abstract class LDAPSchemaElement {
     return null;
    }
 
-   /*
-    * 4.22.2 getDescription
-    */
-
    /**
     * Returns the description of the element. 
     *
@@ -117,10 +105,6 @@ public abstract class LDAPSchemaElement {
    public String getDescription() {
       return description;
    }
-
-   /*
-    * 4.22.3 getName
-    */
 
    /**
     * Returns the name of the element. 
@@ -135,10 +119,6 @@ public abstract class LDAPSchemaElement {
       return name;
    }
 
-   /*
-    * 4.22.4 getID
-    */
-
    /**
     * Returns the unique object identifier (OID) of the element.
     *
@@ -147,10 +127,6 @@ public abstract class LDAPSchemaElement {
    public String getID() {
       return oid;
    }
-
-   /*
-    * 4.22.5 getQualifier
-    */
 
    /**
     * Returns an array of all values of a specified optional or non-
@@ -171,10 +147,6 @@ public abstract class LDAPSchemaElement {
       return null;
    }
 
-   /*
-    * 4.22.6 getQualifierNames
-    */
-
    /**
     * Returns an enumeration of all qualifiers of the element which are 
     * vendor specific (begin with "X-").
@@ -193,10 +165,6 @@ public abstract class LDAPSchemaElement {
       return qualNames.elements();
    }
 
-   /*
-    * 4.22.7 isObsolete
-    */
-
    /**
     * Returns whether the element has the OBSOLETE qualifier
     * in its LDAP definition.
@@ -208,10 +176,6 @@ public abstract class LDAPSchemaElement {
       return obsolete;
    }
 
-   /*
-    * 4.22.8 getValue
-    */
-
    /**
     * Returns a string in a format suitable for directly adding to a
     * directory, as a value of the particular schema element.
@@ -221,10 +185,6 @@ public abstract class LDAPSchemaElement {
    public String getValue() {
       return value;
    }
-
-   /*
-    * 4.22.9 setQualifier
-    */
 
    /**
     * Sets the values of a specified optional or non-standard qualifier of
@@ -246,10 +206,6 @@ public abstract class LDAPSchemaElement {
     }
     hashQualifier.put(name, attrQualifier);
    }
-
-   /*
-    * 4.22.10 add
-    */
 
    /**
     * Adds the definition to a directory. An exception is thrown if the
@@ -284,10 +240,6 @@ public abstract class LDAPSchemaElement {
        throw new RuntimeException("Method LDAPSchemaElement.add not implemented");
    }
 
-   /*
-    * 4.22.11 remove
-    */
-
    /**
     * Removes the definition from a directory. An exception is thrown if
     * the definition cannot be removed.
@@ -320,10 +272,6 @@ public abstract class LDAPSchemaElement {
    public void remove(LDAPConnection ld, String dn) throws LDAPException {
        throw new RuntimeException("Method LDAPSchemaElement.remove not implemented");
    }
-
-   /*
-    * 4.22.12 modify
-    */
 
    /**
     * Replaces a single value of the schema element definition in the

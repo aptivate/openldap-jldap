@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPResponse.java,v 1.15 2000/10/02 16:24:06 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPResponse.java,v 1.16 2000/10/02 17:19:49 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -23,7 +23,8 @@ import com.novell.ldap.protocol.*;
 import com.novell.ldap.client.Debug;
 
 /**
- *  Represents the response to a particular asynchronous LDAP operation.
+ *  Represents the a message received from an LDAPServer
+ *  in response to an asynchronous request.
  */
 public class LDAPResponse extends LDAPMessage
 {

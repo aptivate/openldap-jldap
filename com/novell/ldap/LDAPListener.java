@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/Attic/LDAPListener.java,v 1.11 2000/09/29 15:17:14 judy Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPListener.java,v 1.13 2000/10/31 00:45:06 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -19,8 +19,8 @@ import com.novell.ldap.client.*;
 
 /**
  *
- * Represents the message queue associated with a particular LDAP
- * operation or operations.
+ *  The common interface for LDAPResponseListener and LDAPSearchListener.
+ *  It represents a queue of incoming asynchronous messages from the server.
  */
 public interface LDAPListener
 {

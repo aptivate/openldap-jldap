@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttribute.java,v 1.12 2000/10/21 19:19:42 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttribute.java,v 1.13 2000/10/26 18:02:35 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -16,10 +16,6 @@
 package com.novell.ldap;
 
 import java.util.*;
-/*
- * 4.1 public class LDAPAttribute
- */
-
 /** 
  * Represents the name and values of one attribute of a directory entry.
  *
@@ -43,10 +39,6 @@ public class LDAPAttribute {
     private static String baseName = null;   // cn of cn;lang-ja;phonetic
     private static String[] subTypes = null; // lang-ja of cn;lang-ja
     private Vector values = new Vector(5);
-
-    /*
-     * 4.1.1 Constructors
-     */
 
     /**
      * Constructs an attribute with copies of all values of the input
@@ -105,10 +97,6 @@ public class LDAPAttribute {
         }
     }
 
-    /*
-     * 4.1.2 addValue
-     */
-
     /**
      * Adds a string value to the attribute.
      *
@@ -126,10 +114,6 @@ public class LDAPAttribute {
     public void addValue(byte attrBytes[]) {
         values.addElement(attrBytes);
     }
-
-    /*
-     * 4.1.3 getByteValues
-     */
 
     /**
      * Returns an enumerator for the values of the attribute in byte
@@ -152,10 +136,6 @@ public class LDAPAttribute {
         return bv.elements();
     }
 
-    /*
-     * 4.1.4 getStringValues
-     */
-
     /**
      * Returns an enumerator for the string values of an attribute.
      *
@@ -176,10 +156,6 @@ public class LDAPAttribute {
         return sv.elements();
     }
 
-    /*
-     * 4.1.5 getByteValueArray
-     */
-
     /**
      * Returns the values of the attribute as an array of bytes.
      *
@@ -196,10 +172,6 @@ public class LDAPAttribute {
         return bva;
     }
 
-    /*
-     * 4.1.6 getStringValueArray
-     */
-
     /**
      * Returns the values of the attribute as an array of strings.
      *
@@ -215,10 +187,6 @@ public class LDAPAttribute {
         }
         return sva;
     }
-
-    /*
-     * 4.1.7 getLangSubtype
-     */
 
     /**
      * Returns the language subtype of the attribute, if any. 
@@ -237,10 +205,6 @@ public class LDAPAttribute {
         }
         return null;
     }
-
-    /*
-     * 4.1.8 getBaseName
-     */
 
     /**
      * Returns the base name of the attribute. 
@@ -272,10 +236,6 @@ public class LDAPAttribute {
         return attrName;
     }
 
-    /*
-     * 4.1.9 getName
-     */
-
     /**
      * Returns the name of the attribute.
      *
@@ -284,10 +244,6 @@ public class LDAPAttribute {
     public String getName() {
         return name;
     }
-
-    /*
-     * 4.1.10 getSubtypes
-     */
 
     /**
      * Extracts the subtypes from the attribute name. 
@@ -326,10 +282,6 @@ public class LDAPAttribute {
         return subTypes;
     }
 
-    /*
-     * 4.1.11 hasSubtype
-     */
-
     /**
      * Reports if the attribute name contains the specified subtype. 
      *
@@ -348,10 +300,6 @@ public class LDAPAttribute {
         }
         return false;
     }
-
-    /*
-     * 4.1.12 hasSubtypes
-     */
 
     /**
      * Reports if the attribute name contains all the specified subtypes. 
@@ -377,10 +325,6 @@ public class LDAPAttribute {
         return true;
     }
 
-    /*
-     * 4.1.13 removeValue
-     */
-
     /**
      * Removes a string value from the attribute.
      *
@@ -398,10 +342,6 @@ public class LDAPAttribute {
     public void removeValue(byte attrBytes[]) {
         values.removeElement(attrBytes);
     }
-
-    /*
-     * 4.1.14 size
-     */
 
     /**
      * Returns the number of values in the attribute.

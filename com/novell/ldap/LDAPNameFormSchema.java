@@ -1,12 +1,7 @@
 package com.novell.ldap;
 
-/*
- * 4.22 public class LDAPNameFormSchema
- *               extends LDAPSchemaElement
- */
-
 /**
- *  Represents the definition of a Name Form.
+ *  Represents a specific a name form in the directory schema.
  *
  *  <p>The LDAPNameFormSchema class is used to discover or modify the allowed 
  *  naming attributes for a particular object class.</p>

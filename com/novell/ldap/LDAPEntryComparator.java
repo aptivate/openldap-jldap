@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPEntryComparator.java,v 1.6 2000/10/02 19:46:52 judy Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPEntryComparator.java,v 1.7 2000/10/02 21:49:42 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -15,20 +15,15 @@
  
 package com.novell.ldap;
  
-/*
- * 4.12 public interface LDAPEntryComparator
- */
- 
 /**
+ *  An interface to support arbitrary sorting algorithms for entries returned
+ *  by a search operation.  The basic Java LDAP classes include one
+ *  imiplementaton: LDAPCompareAttrNames, to sort in ascending order based
+ *  on one or more attribute names.
  *
- *  Used to implement an arbitrary sorting algorithm
- *  for search results.
+ *  @see LDAPCompareAttrNames
  */
 public interface LDAPEntryComparator {
-
-   /*
-    * 4.12.1 isGreater
-    */
 
    /**
     * Returns true if entry1 is to be considered greater than or equal to

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPCompareAttrNames.java,v 1.10 2000/10/09 20:15:42 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPCompareAttrNames.java,v 1.11 2000/10/26 18:03:46 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -17,24 +17,17 @@ package com.novell.ldap;
 
 import java.util.Locale;
 
-/*
- * 4.5 public class LDAPCompareAttrNames
- *                implements LDAPEntryComparator
-*/
- 
 /**
  *
  *  Represents an object that supports sorting search results by one or more
  *  attributes, in ascending or descending order.
  *
- * <p>NDS supports only ascending sort order (A,B,C ...) and allows sorting only 
- * by one attribute. The NDS server must be configured to index this attribute.</p>
+ *  <p>NDS supports only ascending sort order (A,B,C ...) and allows sorting only 
+ *  by one attribute. The NDS server must be configured to index this attribute.</p>
+ *
+ *  @see LDAPEntryComparator
  */
 public class LDAPCompareAttrNames implements LDAPEntryComparator {
-
-   /*
-    * 4.5.1 Constructors
-    */
 
    /**
     * Constructs an object that sorts results by a single attribute, in
@@ -104,10 +97,6 @@ public class LDAPCompareAttrNames implements LDAPEntryComparator {
       throw new RuntimeException("Class LDAPAttrNames not implemented");
    }
 
-   /*
-    * 4.5.2 getLocale
-    */
-
    /**
     * Returns the locale to be used for sorting, if a locale has been
     * specified. 
@@ -121,10 +110,6 @@ public class LDAPCompareAttrNames implements LDAPEntryComparator {
       throw new RuntimeException("Method LDAPAttrNames.getLocale not implemented");
    }
 
-   /*
-    * 4.5.3 setLocale
-    */
-
    /**
     * Sets the locale to be used for sorting.
     *
@@ -133,10 +118,6 @@ public class LDAPCompareAttrNames implements LDAPEntryComparator {
    public void setLocale (Locale locale) {
       throw new RuntimeException("Method LDAPAttrNames.setLocale not implemented");
    }
-
-   /*
-    * 4.5.4 isGreater
-    */
 
    /**
     * Returns true if entry1 is to be considered greater than entry2, for

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResult.java,v 1.13 2000/09/28 21:29:30 smerrill Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResult.java,v 1.14 2000/10/02 19:46:53 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -21,7 +21,8 @@ import com.novell.ldap.asn1.*;
 import com.novell.ldap.protocol.*;
 
 /**
- *  Encapsulates a single search result.
+ *  Encapsulates a single search result that is in response to an asynchronous
+ *  search operation.
  */
 public class LDAPSearchResult extends LDAPMessage {
 

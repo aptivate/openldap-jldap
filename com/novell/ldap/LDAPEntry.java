@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPEntry.java,v 1.6 2000/09/29 15:17:14 judy Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPEntry.java,v 1.7 2000/10/09 19:11:24 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -15,10 +15,6 @@
  
 package com.novell.ldap;
  
-/*
- * 4.12 public class LDAPEntry
- */
- 
 /**
  *
  *  Represents a single entry in a directory, consisting of
@@ -31,10 +27,6 @@ public class LDAPEntry {
 
    private String dn;
    private LDAPAttributeSet attrs;
-
-   /*
-    * 4.12.1 Constructors
-    */
 
    /**
     * Constructs an empty entry.
@@ -82,10 +74,6 @@ public class LDAPEntry {
       throw new RuntimeException("Method LDAPEntry.getAttribute not implemented");
    }
 
-   /*
-    * 4.12.3 getAttributeSet
-    */
-
    /**
     * Returns the attribute set of the entry. 
     *
@@ -124,10 +112,6 @@ public class LDAPEntry {
    public LDAPAttributeSet getAttributeSet(String subtype) {
       throw new RuntimeException("Method LDAPEntry.getAttributeSet not implemented");
    }
-
-   /*
-    * 4.12.4 getDN
-    */
 
    /**
     * Returns the distinguished name of the entry.

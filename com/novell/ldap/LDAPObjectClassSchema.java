@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPObjectClassSchema.java,v 1.15 2000/10/23 22:49:13 bgudmundson Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPObjectClassSchema.java,v 1.16 2000/10/26 00:17:10 bgudmundson Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -19,13 +19,10 @@ import com.novell.ldap.client.AttributeQualifier;
 import java.util.Enumeration;
 import java.io.IOException;
 
-/*
- * 4.23 public class LDAPObjectClassSchema
- */
-
 /**
  *
- *  Represents the definition of an object class.
+ *  Represents the schematic definition of a particular object class in
+ *  a particular directory server.
  *
  *  <p>The LDAPObjectClassSchema class is used to query for the definition of an
  *  object class, and to add or delete an object class definition from a
@@ -56,10 +53,6 @@ public class LDAPObjectClassSchema extends LDAPSchemaElement{
   * This class definition defines an auxiliary schema class.
   */
   public final static int AUXILIARY = 2;
-
-   /*
-    * 4.23.1 Constructors
-    */
 
    /**
     * Constructs an object class definition for adding to or deleting from
@@ -171,10 +164,6 @@ public class LDAPObjectClassSchema extends LDAPSchemaElement{
         }
    }
 
-   /*
-    * 4.23.2 getSuperiors
-    */
-
    /**
     * Returns the object classes from which this one derives.
     *
@@ -183,10 +172,6 @@ public class LDAPObjectClassSchema extends LDAPSchemaElement{
    public String[] getSuperiors() {
       return superiors;
    }
-
-   /*
-    * 4.23.3 getRequiredAttributes
-    */
 
    /**
     * Returns a list of attributes required for an entry with this object
@@ -198,10 +183,6 @@ public class LDAPObjectClassSchema extends LDAPSchemaElement{
       return required;
    }
 
-   /*
-    * 4.23.4 getOptionalAttributes
-    */
-
    /**
     * Returns a list of optional attributes but not required of an entry
     * with this object class.
@@ -211,10 +192,6 @@ public class LDAPObjectClassSchema extends LDAPSchemaElement{
    public String[] getOptionalAttributes() {
       return optional;
    }
-
-   /*
-    * 4.23.5 getType
-    */
 
    /**
     * Returns the type of object class.

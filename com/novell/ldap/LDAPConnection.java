@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.44 2000/10/23 18:49:04 judy Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.45 2000/10/31 00:45:05 vtag Exp $
 *
 * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
 * 
@@ -20,12 +20,6 @@ import java.util.*;
 import com.novell.ldap.client.*;
 import com.novell.ldap.asn1.*;
 import com.novell.ldap.protocol.*;
-
-/*
- * 4.6 public class LDAPConnection
- *                implements Cloneable
- */
- 
 
 /**
  *
@@ -1749,10 +1743,6 @@ public class LDAPConnection implements Cloneable
       return;
    }
    
-   /*
-    * 4.1.5 delete
-    */
-
    /**
     *
     * Asynchronously deletes the entry with the specified distinguished name

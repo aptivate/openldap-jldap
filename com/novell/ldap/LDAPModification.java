@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPModification.java,v 1.6 2000/09/28 21:15:06 smerrill Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPModification.java,v 1.7 2000/09/29 15:17:14 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -15,13 +15,9 @@
  
 package com.novell.ldap;
  
-/*
- * 4.20 public class LDAPModification
- */
- 
 /**
  *
- *  Represents a change specification for a single attribute.
+ *  Represents a single add, delete, or replace operation to an LDAPAttribute.
  * 
  */
 public class LDAPModification {
@@ -54,10 +50,6 @@ public class LDAPModification {
     */
    public static final int REPLACE = 2;
 
-   /*
-    * 4.15.1 Constructors
-    */
-
    /**
     * Specifies a modification to be made to an attribute.
     *
@@ -83,10 +75,6 @@ public class LDAPModification {
       this.attr = attr;
    }
 
-   /*
-    * 4.15.2 getAttribute
-    */
-
    /**
     * Returns the attribute to modify, with any existing values.
     *
@@ -96,10 +84,6 @@ public class LDAPModification {
    {
       return attr;
    }
-
-   /*
-    * 4.15.3 getOp
-    */
 
    /**
     * Returns the type of modification specified by this object.

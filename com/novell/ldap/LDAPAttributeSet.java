@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttributeSet.java,v 1.13 2000/10/24 20:38:22 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttributeSet.java,v 1.14 2000/10/30 23:58:02 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -17,11 +17,6 @@ package com.novell.ldap;
 
 import java.util.*;
 
-/*
- * 4.3 public class LDAPAttributeSet
- *                implements Cloneable
- */
-
 /**
  *  Represents a collection of LDAPAttributes, either used to construct an entry 
  *  to be added to a directory or returned in an entry on a search or read 
@@ -30,20 +25,12 @@ import java.util.*;
 public class LDAPAttributeSet implements Cloneable {
    private Vector attrs;
 
-   /*
-    * 4.3.1 Constructors
-    */
-
    /**
     * Constructs a new set of attributes. This set is initially empty.
     */
    public LDAPAttributeSet() {
       attrs = new Vector();
    }
-
-   /*
-    * 4.3.2 add
-    */
 
    /**
     * Adds the specified attribute to this attribute set.
@@ -54,10 +41,6 @@ public class LDAPAttributeSet implements Cloneable {
       attrs.addElement(attr);
    }
 
-   /*
-    * 4.3.3 clone
-    */
-
    /**
     * Returns a deep copy of this attribute set.
     *
@@ -66,10 +49,6 @@ public class LDAPAttributeSet implements Cloneable {
    public Object clone() {
       throw new RuntimeException("Method LDAPAttributeSet.clone not implemented");
    }
-
-   /*
-    * 4.3.4 elementAt
-    */
 
    /**
     * Returns the attribute at the position specified by the index. The
@@ -87,10 +66,6 @@ public class LDAPAttributeSet implements Cloneable {
     throws ArrayIndexOutOfBoundsException {
       return (LDAPAttribute)attrs.elementAt(index);
    }
-
-   /*
-    * 4.3.5 getAttribute
-    */
 
    /**
     * Returns the attribute matching the specified attrName. 
@@ -187,10 +162,6 @@ public class LDAPAttributeSet implements Cloneable {
       throw new RuntimeException("Method LDAPAttributeSet.getAttribute not implemented");
    }
 
-   /*
-    * 4.3.6 getAttributes
-    */
-
    /**
     * Returns an enumeration of the attributes in this attribute set.
     *
@@ -199,10 +170,6 @@ public class LDAPAttributeSet implements Cloneable {
    public Enumeration getAttributes() {
       return attrs.elements();
    }
-
-   /*
-    * 4.3.7 getSubset
-    */
 
    /**
     * Creates a new attribute set containing only the attributes that have
@@ -245,10 +212,6 @@ public class LDAPAttributeSet implements Cloneable {
       throw new RuntimeException("Method LDAPAttributeSet.getSubset not implemented");
    }
 
-   /*
-    * 4.3.8 remove
-    */
-
    /**
     * Removes the specified attribute from the set. If the attribute is not
     * a member of the set, nothing happens.
@@ -269,10 +232,6 @@ public class LDAPAttributeSet implements Cloneable {
        }
    }
 
-   /*
-    * 4.3.9 removeElementAt
-    */
-
    /**
     * Removes the attribute at the position specified by the index.  The
     * index is 0-based.
@@ -287,10 +246,6 @@ public class LDAPAttributeSet implements Cloneable {
    throws ArrayIndexOutOfBoundsException {
       attrs.removeElementAt(index);
    }
-
-   /*
-    * 4.3.10 size
-    */
 
    /**
     * Returns the number of attributes in this set.

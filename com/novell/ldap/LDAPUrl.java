@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPUrl.java,v 1.14 2000/10/02 21:49:43 judy Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPUrl.java,v 1.15 2000/10/31 00:45:08 vtag Exp $
 *
 * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
 * 
@@ -19,13 +19,9 @@ import java.util.*;
 import java.net.*;
 import com.novell.ldap.client.Debug;
 
-/*
-* 4.38 public class LDAPUrl
-*/
-
 /**
 *
-*  Encapsulates parameters of an LDAP URL query.  
+*  Encapsulates parameters of an LDAP URL query as defined in RFC2255.
 *
 *  An LDAPUrl object can be passed to LDAPConnection.search to retrieve
 *  search results.
@@ -44,10 +40,6 @@ public class LDAPUrl {
     private String     filter = null;                // Filter
     private int        scope  = DEFAULT_SCOPE;       // Scope
     private String[]   extensions = null;            // Extensions
-
-    /*
-    * 4.38.1 Constructors
-    */
 
     /**
     * Constructs a URL object with the specified string as the URL.
@@ -123,10 +115,6 @@ public class LDAPUrl {
 		return;
     }
 
-    /*
-    * 4.38.2 decode
-    */
-
     /**
     * Decodes a URL-encoded string. 
     *
@@ -194,10 +182,6 @@ public class LDAPUrl {
 		return( decoded.toString() );
     }
 
-    /*
-    * 4.38.3 encode
-    */
-
     /**
     * Encodes an arbitrary string using the URL encoding rules. 
     *
@@ -213,10 +197,6 @@ public class LDAPUrl {
         throw new RuntimeException("LDAPUrl: encode() not implemented");
     }
 
-    /*
-    * 4.38.4 getAttributeArray
-    */
-
     /**
     * Returns an array of attribute names specified in the URL.
     *
@@ -225,10 +205,6 @@ public class LDAPUrl {
     public String[] getAttributeArray() {
 		return attrs;
     }
-
-    /*
-    * 4.38.5 getAttributes
-    */
 
     /**
     * Returns an enumerator for the attribute names specified in the URL.
@@ -239,10 +215,6 @@ public class LDAPUrl {
         return new AttributeEnumeration( attrs );
     }
 
-    /*
-    * 4.38.6 getDN
-    */
-
     /**
     * Returns the distinguished name encapsulated in the URL.
     *
@@ -251,10 +223,6 @@ public class LDAPUrl {
     public String getDN() {
 		return dn;
     }
-
-    /*
-    * 4.38.8 getFilter
-    */
 
     /**
     * Returns the search filter or the default filter 
@@ -268,10 +236,6 @@ public class LDAPUrl {
 		return filter;
     }
 
-    /*
-    * 4.38.9 getHost
-    */
-
     /**
     * Returns the name of the LDAP server in the URL.
     *
@@ -280,10 +244,6 @@ public class LDAPUrl {
     public String getHost() {
 		return host;
     }
-
-    /*
-    * 4.38.10 getPort
-    */
 
     /**
     * Returns the port number of the LDAP server in the URL.
@@ -295,10 +255,6 @@ public class LDAPUrl {
 		return port;
     }
 
-    /*
-    * 4.38.11 getScope
-    */
-
     /**
     * Returns the depth of search. It returns one of the following from
 	* LDAPConnection: SCOPE_BASE, SCOPE_ONE, or SCOPE_SUB.
@@ -309,10 +265,6 @@ public class LDAPUrl {
     {
 		return scope;
     }
-
-    /*
-    * 4.38.12 getUrl
-    */
 
     /**
     * Returns a valid string representation of this LDAP URL.

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPRebindAuth.java,v 1.5 2000/09/11 22:47:49 judy Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPRebindAuth.java,v 1.6 2000/09/29 15:55:27 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -15,22 +15,19 @@
  
 package com.novell.ldap;
 
-/*
- *4.24 public class LDAPRebindAuth
- */
- 
 /**
- *  Represents information used to authenticate the client in cases where
- *  the client follows referrals automatically.
+ *  An implementation of LDAPRebind must be able to provide an LDAPRebindAuth
+ *  object at the time of a referral.  The class encapsulates reauthentiation
+ *  credentials for the specified host and port.
+ *
+ *  @see LDAPRebind
+ *  @see LDAPBind
+ *  @see LDAPConstraints#setReferrals(boolean)
  */
 public class LDAPRebindAuth {
 
    private String _dn;
    private String _password;
-
-   /*
-    * 4.24.1 Constructors
-    */
 
    /**
     * Constructs information that is used by the client for authentication
@@ -46,10 +43,6 @@ public class LDAPRebindAuth {
       _password = password;
    }
 
-   /*
-    * 4.24.2 getDN
-    */
-
    /**
     * Returns the distinguished name to be used for reauthentication on
     * automatic referral following.
@@ -59,10 +52,6 @@ public class LDAPRebindAuth {
    public String getDN() {
       return _dn;
    }
-
-   /*
-    * 4.24.3 getPassword
-    */
 
    /**
     * Returns the password to be used for reauthentication on automatic

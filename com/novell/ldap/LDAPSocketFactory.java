@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSocketFactory.java,v 1.5 2000/09/12 22:50:14 judy Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSocketFactory.java,v 1.6 2000/10/02 21:49:43 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -18,21 +18,17 @@ package com.novell.ldap;
 import java.net.*;
 import java.io.IOException;
 
-/*
- * 4.36 public interface LDAPSocketFactory
- */
- 
 /**
  *
  *  Used to construct a socket connection for use in an LDAPConnection.
+ * 
+ *  <p>Proagrammers needing to provide or use specialized socket connections,
+ *  including Transport Layer Security (TLS) based ones, can provide an
+ *  object constructor to implement them using this interface.
  *  An implementation of this interface may, for example, provide a
- *  TLSSocket connected to a secure server.
+ *  TLSSocket connected to a secure server.</p>
  */
 public interface LDAPSocketFactory {
-
-   /*
-    * 4.36.1 makeSocket
-    */
 
    /**
     * Returns a socket connected using the provided host name and port

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConstraints.java,v 1.10 2000/09/27 22:04:58 judy Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConstraints.java,v 1.11 2000/10/31 00:45:06 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -15,10 +15,6 @@
 
 package com.novell.ldap;
 
-/*
- * 4.7 public class LDAPConstraints
- */
- 
 /**
  *
  *  Represents a set of options to control an LDAP operation. 
@@ -36,12 +32,6 @@ public class LDAPConstraints implements Cloneable {
     private LDAPRebind reauth = null;
     private LDAPControl[] clientCtls = null;
     private LDAPControl[] serverCtls = null;
-
-
-
-    /*
-     * 4.7.1 Constructors
-     */
 
     /**
      * Constructs an LDAPConstraints object, using the default
@@ -138,10 +128,6 @@ public class LDAPConstraints implements Cloneable {
         return;
     }
 
-    /*
-     * 4.7.2 getHopLimit
-     */
-
     /**
      * Returns the maximum number of hops to follow during automatic
      * referral following.
@@ -153,10 +139,6 @@ public class LDAPConstraints implements Cloneable {
         return hopLimit;
     }
 
-    /*
-     * 4.7.3 getBindProc
-     */
-
     /**
      * Returns an object that can process authentication. 
      *
@@ -167,10 +149,6 @@ public class LDAPConstraints implements Cloneable {
     public LDAPBind getBindProc() {
         return binder;
     }
-
-    /*
-     * 4.7.4 getRebindProc
-     */
 
     /**
      * Returns the object that provides the method for getting
@@ -185,10 +163,6 @@ public class LDAPConstraints implements Cloneable {
         return reauth;
     }
 
-    /*
-     * 4.7.5 getReferrals
-     */
-
     /**
      * Returns whether referrals are followed automatically.
      *
@@ -198,10 +172,6 @@ public class LDAPConstraints implements Cloneable {
     public boolean getReferrals() {
         return doReferrals;
     }
-
-    /*
-     * 4.7.6 getTimeLimit
-     */
 
     /**
      * Returns the maximum number of milliseconds to wait for any operation
@@ -217,10 +187,6 @@ public class LDAPConstraints implements Cloneable {
         return msLimit;
     }
 
-    /*
-    * 4.7.7 setHopLimit
-    */
-
     /**
      * Sets the maximum number of hops to follow in sequence during
      * automatic referral following. 
@@ -235,10 +201,6 @@ public class LDAPConstraints implements Cloneable {
         return;
     }
 
-    /*
-     * 4.7.8 setBindProc
-     */
-
     /**
      * Specifies the object that will process authentication requests. 
      *
@@ -250,10 +212,6 @@ public class LDAPConstraints implements Cloneable {
         this.binder = binder;
         return;
     }
-
-    /*
-     * 4.7.9 setRebindProc
-     */
 
     /**
      * Specifies the object that provides the method for getting
@@ -270,10 +228,6 @@ public class LDAPConstraints implements Cloneable {
         this.reauth = reauth;
         return;
     }
-
-    /*
-     * 4.7.10 setReferrals
-     */
 
     /**
      * Specifies whether referrals are followed automatically or whether
@@ -294,10 +248,6 @@ public class LDAPConstraints implements Cloneable {
         return;
     }
 
-    /*
-     * 4.7.11 setTimeLimit
-     */
- 
     /**
      * Sets the maximum number of milliseconds the client waits for
      * any operation under these search constraints to complete. 
@@ -313,10 +263,6 @@ public class LDAPConstraints implements Cloneable {
         return;
     }
 
-    /*
-     * 4.7.12 getClientControls
-     */
-
     /**
      * Returns the client controls to be used by the interface.
      *
@@ -326,10 +272,6 @@ public class LDAPConstraints implements Cloneable {
         return clientCtls;
     }
 
-    /*
-     * 4.7.13 getServerControls
-     */
-
     /**
      * Returns the server controls to be sent to the server.
      *
@@ -338,10 +280,6 @@ public class LDAPConstraints implements Cloneable {
     public LDAPControl[] getServerControls() {
         return serverCtls;
     }
-
-    /*
-     * 4.7.14 setClientControls
-     */
 
     /**
      * Sets a client control for use by the interface.
@@ -363,10 +301,6 @@ public class LDAPConstraints implements Cloneable {
         clientCtls = controls;
         return;
     }
-
-    /*
-     * 4.7.15 setServerControls
-     */
 
     /**
      * Sets a server control to be sent to the server.

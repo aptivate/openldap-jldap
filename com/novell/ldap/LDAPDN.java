@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPDN.java,v 1.7 2000/10/09 19:11:24 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPDN.java,v 1.8 2000/10/18 17:24:09 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -15,21 +15,14 @@
  
 package com.novell.ldap;
  
-/*
- * 4.11 public class LDAPDN
- */
- 
 /**
- *  A utility class representing a distinguished name (DN).
+ *  A utility class to facilitate composition and deomposition
+ *  of distinguished names (DNs).
  *
  *  Specifies methods for manipulating a distinguished name (DN)
  *  and a relative distinguished name (RDN).
  */
 public class LDAPDN {
-
-   /*
-    * 4.11.1 equals
-    */
 
    /**
     * Normalizes the names (if appropriate) and then determines whether the 
@@ -46,10 +39,6 @@ public class LDAPDN {
       throw new RuntimeException("Method LDAPDN.equals not implemented");
    }
 
-   /*
-    * 4.11.2 escapeRDN
-    */
-
    /**
     * Returns the RDN after escaping the characters requiring escaping.
     *
@@ -64,10 +53,6 @@ public class LDAPDN {
       throw new RuntimeException("Method LDAPDN.escapeRDN not implemented");
    }
 
-   /*
-    * 4.11.3 unescapeRDN
-    */
-
    /**
     * Returns the RDN after unescaping the characters requiring escaping.
     *
@@ -81,10 +66,6 @@ public class LDAPDN {
    public static String unescapeRDN (String rdn) {
       throw new RuntimeException("Method LDAPDN.unescapeRDN not implemented");
    }
-
-   /*
-    * 4.11.4 explodeDN
-    */
 
    /**
     * Returns the individual components of a distinguished name (DN).
@@ -104,10 +85,6 @@ public class LDAPDN {
    public static String[] explodeDN(String dn, boolean noTypes) {
       throw new RuntimeException("Method LDAPDN.explodeDN not implemented");
    }
-
-   /*
-    * 4.11.5 explodeRDN
-    */
 
    /**
     * Returns the individual components of a relative distinguished name

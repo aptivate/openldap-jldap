@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchConstraints.java,v 1.9 2000/10/02 19:46:52 judy Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchConstraints.java,v 1.10 2000/10/31 00:45:08 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -15,19 +15,17 @@
 
 package com.novell.ldap;
 
-/*
- * 4.31 public class LDAPSearchConstraints
- *                extends LDAPConstraints
- */
-
 /** 
  *
- *  A set of options to control a search operation. 
+ *  Defines the options controlling search operations. 
  *
  *  <p>An LDAPSearchConstraints object is always associated with an LDAPConnection
  *  object; its values can be changed with the LDAPConnection.setOption method,
  *  or overridden by passing an LDAPConstraints object to the search operation. </p>
  *  
+ *  @see LDAPConnection#setSearchConstraints(LDAPSearchConstraints)
+ *  @see LDAPConstraints
+ *  @see LDAPConnection#setConstraints(LDAPConstraints)
  */
 public class LDAPSearchConstraints extends LDAPConstraints {
 
@@ -81,10 +79,6 @@ public class LDAPSearchConstraints extends LDAPConstraints {
      * @see #setDereference(int)
      */
     public static final int DEREF_ALWAYS = 3;
-
-    /*
-     * 4.31.1 Constructors
-     */
 
     /**
      * Constructs an LDAPSearchConstraints object using the default values for
@@ -224,10 +218,6 @@ public class LDAPSearchConstraints extends LDAPConstraints {
         this.batchSize = batchSize;
     }
 
-    /*
-     * 4.31.2 getBatchSize
-     */
-
     /**
      * Returns how results are returned during a search.
      *
@@ -240,10 +230,6 @@ public class LDAPSearchConstraints extends LDAPConstraints {
     {
         return batchSize;
     }
-
-    /*
-     * 4.31.3 getDereference
-     */
 
     /**
      * Specifies when aliases should be dereferenced. 
@@ -263,10 +249,6 @@ public class LDAPSearchConstraints extends LDAPConstraints {
         return dereference;
     }
 
-    /*
-     * 4.31.4 getMaxResults
-     */
-
     /**
      * Returns the maximum number of search results to be returned; 0 means
      * no limit.
@@ -278,10 +260,6 @@ public class LDAPSearchConstraints extends LDAPConstraints {
         return maxResults;
     }
 
-    /*
-     * 4.31.5 getServerTimeLimit
-     */
-
     /**
      * Reports the maximum number of seconds that the server is to wait when
      * returning search results while using this constraint object.
@@ -292,10 +270,6 @@ public class LDAPSearchConstraints extends LDAPConstraints {
     {
         return serverTimeLimit;
     }
-
-    /*
-     * 4.31.6 setBatchSize
-     */
 
     /**
      *  Specifies how results are returned during a search operation.
@@ -311,10 +285,6 @@ public class LDAPSearchConstraints extends LDAPConstraints {
     {
         this.batchSize = batchSize;
     }
-
-    /*
-     * 4.31.7 setDereference
-     */
 
     /**
      * Sets a preference indicating whether or not aliases should be
@@ -339,10 +309,6 @@ public class LDAPSearchConstraints extends LDAPConstraints {
         this.dereference = dereference;
     }
 
-    /*
-     * 4.31.8 setMaxResults
-     */
-
     /**
      * Sets the maximum number of search results to be returned; 0 means no
      * limit.  The default is 1000.
@@ -353,10 +319,6 @@ public class LDAPSearchConstraints extends LDAPConstraints {
     {
         this.maxResults = maxResults;
     }
-
-    /*
-     * 4.31.9 setServerTimeLimit
-     */
 
     /**
      * Sets the maximum number of seconds that the server is to wait when

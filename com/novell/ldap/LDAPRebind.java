@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPRebind.java,v 1.6 2000/09/29 15:55:27 judy Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPRebind.java,v 1.7 2000/10/31 00:45:07 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -15,10 +15,6 @@
  
 package com.novell.ldap;
  
-/*
- * 4.19 public interface LDAPRebind
- */
- 
 /**
  *
  *  Used to provide credentials for reauthentication when processing a
@@ -32,13 +28,11 @@ package com.novell.ldap;
  *  referral URL other than ldap://something) are ignored on automatic referral
  *  following.</p>
  *
+ *  @see LDAPBind
+ *  @see LDAPConstraints#setReferrals(boolean)
  */
 public interface LDAPRebind extends LDAPReferralHandler
 {
-
-   /*
-    * 4.19.1 getRebindAuthentication
-    */
 
    /**
     * Returns an object which can provide credentials for authenticating to

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttributeSchema.java,v 1.14 2000/10/26 00:12:28 bgudmundson Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttributeSchema.java,v 1.15 2000/10/26 18:01:33 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -19,11 +19,6 @@ import com.novell.ldap.client.SchemaParser;
 import com.novell.ldap.client.AttributeQualifier;
 import java.util.Enumeration;
 import java.io.IOException;
-
-/*
- * 4.2 public class LDAPAttributeSchema
- *                extends LDAPSchemaElement
- */
 
 /**
  * Represents the schematic definition of a
@@ -64,10 +59,6 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
   * This class definition defines the attribute usage is local dsa.
   */
     public final static int DSA_OPERATION = 3;
-
-   /*
-    * 4.2.1 Constructors
-    */
 
    /**
     * Constructs an attribute definition for adding to or deleting from a
@@ -176,10 +167,6 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
               }
    }
 
-   /*
-    * 4.2.2 getSyntaxString
-    */
-
    /**
     * Returns the object identifer of the syntax of the attribute, in
     * dotted numerical format.
@@ -189,10 +176,6 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
    public String getSyntaxString() {
 		return syntaxString;
    }
-
-   /*
-    * 4.2.4 getSuperior
-    */
 
    /**
     * Returns the name of the attribute type which this attribute derives
@@ -204,10 +187,6 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
       return superior;
    }
 
-   /*
-    * 4.2.3 isSingleValued
-    */
-
    /**
     * Returns true if the attribute is single-valued.
     *
@@ -218,10 +197,6 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
       return single;
    }
 
-   /*
-    * 4.2.5 getEqualityMatchingRule
-    */
-
    /**
     * Returns the matching rule for this attribute.
     *
@@ -231,10 +206,6 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
    public String getEqualityMatchingRule() {
       return equality;
    }
-
-   /*
-    * 4.2.6 getOrderingMatchingRule
-    */
 
    /**
     * Returns the ordering matching rule for this attribute.
@@ -247,10 +218,6 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
       return ordering;
    }
 
-   /*
-    * 4.2.7 getSubstringMatchingRule
-    */
-
   /**
     * Returns the substring matching rule for this attribute.
     *
@@ -262,10 +229,6 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
       return substring;
    }
 
-   /*
-    * 4.2.8 isCollective
-    */
-
    /**
     * Returns true if the attribute is a collective attribute.
     *
@@ -276,10 +239,7 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
    public boolean isCollective() {
       return collective;
    }
-
-   /*
-    * 4.2.9 isModifiable
-    */
+   
    /**
     * Returns false if the attribute is read-only.
     *
@@ -290,10 +250,7 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
    public boolean isModifiable() {
       return userMod;
    }
-
-   /*
-    * 4.2.10 getUsage
-    */
+   
    /**
     * Returns the usage of the attribute.
     *

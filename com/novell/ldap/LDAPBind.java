@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPBind.java,v 1.5 2000/08/28 22:18:54 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPBind.java,v 1.6 2000/10/31 00:45:05 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -15,10 +15,6 @@
  
 package com.novell.ldap;
 
-/*
-* 4.4 public interface LDAPBind
-*/
- 
 /**
  *
  *  Used to do explicit bind processing on a referral. 
@@ -33,13 +29,11 @@ package com.novell.ldap;
  *  or for all operations (through the LDAPContraints object
  *  associated with the connection).
  *  
+ *  @see LDAPRebind
+ *  @see LDAPConstraints#setReferrals(boolean)
  */
 public interface LDAPBind extends LDAPReferralHandler
 {
-
-   /*
-    * 4.4.1 bind
-    */
 
    /**
     * Called by LDAPConnection when a referral is received.

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPControl.java,v 1.11 2000/10/09 19:11:24 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPControl.java,v 1.12 2000/10/18 15:56:32 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -19,8 +19,8 @@ import com.novell.ldap.asn1.*;
 import com.novell.ldap.protocol.*;
 
 /**
- *  Encapsulates optional additional parameters or constraints to be 
- *  applied to LDAP operations. 
+ *  Encapsulates additional optional parameters for an 
+ *  LDAP operation, either on the server or on the client.
  *
  * <p>If set as a server control, it is sent to the server along with the operation
  * request. If set as a client control, it is not sent to the server, but 

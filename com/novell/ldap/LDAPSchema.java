@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSchema.java,v 1.13 2000/10/10 23:50:32 bgudmundson Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSchema.java,v 1.14 2000/10/31 00:45:07 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -18,12 +18,10 @@ package com.novell.ldap;
 import java.util.Enumeration;
 import java.util.*;
 
-/*
- * 4.29 public class LDAPSchema
- */
-
 /**
- *  Supports querying a directory server for its schema
+ *  Represents the schema of a particular directory server.
+ *
+ *  It supports querying a directory server for its schema
  *  and for definitions of individual schema elements.
  *
  * <p>The fetchSchema methods are the only methods that interact with a
@@ -39,10 +37,6 @@ public class LDAPSchema {
     //private static final int attribute = 1;
 	//private static final int superior = 2;
 
-   /*
-    * 4.29.1 Constructors
-    */
-
    /**
     * Constructs an empty LDAPSchema object.
     */
@@ -50,10 +44,6 @@ public class LDAPSchema {
 		objectClassHashtable = new Hashtable();
 		attributeHashtable = new Hashtable();
    }
-
-   /*
-    * 4.29.2 fetchSchema
-    */
 
    /**
     * Retrieves the entire schema from a directory server.
@@ -199,10 +189,6 @@ public class LDAPSchema {
 
    }
 
-   /*
-    * 4.29.3 getAttribute
-    */
-
    /**
     * Returns a particular attribute definition, or null if not found.
     *
@@ -216,10 +202,6 @@ public class LDAPSchema {
       	return null;
       return (LDAPAttributeSchema) attributeHashtable.get(name);
    }
-
-   /*
-    * 4.29.4 getObjectClass
-    */
 
    /**
     * Returns a particular object class definition, or null if not found.
@@ -235,10 +217,6 @@ public class LDAPSchema {
       return (LDAPObjectClassSchema) objectClassHashtable.get(name);
    }
 
-   /*
-    * 4.29.5 getMatchingRule
-    */
-
    /**
     * Returns a particular matching rule definition, or null if not found.
     *
@@ -251,10 +229,6 @@ public class LDAPSchema {
       throw new RuntimeException("Method LDAPSchema.getMatchingRule not implemented");
    }
 
-   /*
-    * 4.29.11 getAttributes
-    */
-
    /**
     * Returns an enumeration of attribute definitions.
     *
@@ -263,10 +237,6 @@ public class LDAPSchema {
    public Enumeration getAttributes() {
       return attributeHashtable.elements();
    }
-
-   /*
-    * 4.29.12 getObjectClasses
-    */
 
    /**
     * Returns an enumeration of object class definitions.
@@ -277,10 +247,6 @@ public class LDAPSchema {
       return objectClassHashtable.elements();
    }
 
-   /*
-    * 4.29.13 getMatchingRules
-    */
-
    /**
     * Returns an enumeration of matching rule definitions.
     *
@@ -289,10 +255,6 @@ public class LDAPSchema {
    public Enumeration getMatchingRules() {
       throw new RuntimeException("Method LDAPSchema.getMatchingRules not implemented");
    }
-
-   /*
-    * 4.29.19 getAttributeNames
-    */
 
    /**
     * Returns an enumeration of attribute names.
@@ -303,10 +265,6 @@ public class LDAPSchema {
       return attributeHashtable.keys();
    }
 
-   /*
-    * 4.29.20 getObjectClassNames
-    */
-
    /**
     * Returns an enumeration of object class names.
     *
@@ -315,10 +273,6 @@ public class LDAPSchema {
    public Enumeration getObjectClassNames() {
       return objectClassHashtable.keys();
    }
-
-   /*
-    * 4.29.21 getMatchingRuleNames
-    */
 
    /**
     * Returns an enumeration of matching rule names.

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPReferralException.java,v 1.6 2000/09/21 23:27:35 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPReferralException.java,v 1.7 2000/10/02 21:49:43 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -15,23 +15,16 @@
  
 package com.novell.ldap;
  
-/*
- * 4.26 public class LDAPReferralException
- *                 extends LDAPException
- */
- 
 /**
- *  Thrown when a server returns a referral and when automatic referral following
- *  has not been enabled.
+ *  Thrown when a server returns a referral and when a referral has not
+ *  been followed.  It contains a list of URL strings corresponding
+ *  to the referrals or search continuation references received on an LDAP
+ *  operation.
  */
 public class LDAPReferralException extends LDAPException {
 
 	private String serverMessage = null;
 	private String[] referrals = null;
-   /*
-    * 4.26.1 Constructors
-    */
-
    /**
     * Constructs a default exception with no specific error information.
     */
@@ -88,10 +81,6 @@ public class LDAPReferralException extends LDAPException {
 	  this.referrals = referrals;
 	  return;
    }
-
-   /*
-    * 4.26.2 getURLs
-    */
 
    /**
     * Gets the list of referrals (LDAP URLs to other servers) returned by

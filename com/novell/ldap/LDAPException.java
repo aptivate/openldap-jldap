@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPException.java,v 1.11 2000/10/02 22:47:50 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPException.java,v 1.12 2000/10/23 18:49:05 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -17,14 +17,10 @@ package com.novell.ldap;
 
 import java.util.Locale;
  
-/*
- * 4.13 public class LDAPException
- *                 extends Exception
- */
- 
 /**
  *
- *  Thrown to indicate that an error has occurred. 
+ *  Thrown to indicate that an LDAP error has occurred. This is a general
+ *  exception which includes an error message and an LDAP error code.
  *
  *  <p>An LDAPException can result from physical problems (such as
  *  network errors) as well as problems with LDAP operations (for 
@@ -33,16 +29,87 @@ import java.util.Locale;
  *
  *  <p>The getLDAPResultCode method returns the specific result code, 
  *  which can be compared against standard LDAP result codes. </p>
+ *
+ *  See RFC2251 for a discussion of the meanings of the result codes.
+ *  The corresponding ASN.1 definition from RFC2251 is provided in parentheses.
+ *
+ *   <li> ADMIN_LIMIT_EXCEEDED (adminLimitExceeded)</li>
+ *   <li> AFFECTS_MULTIPLE_DSAS (affectsMultipleDSAs</li>
+ *   <li> ALIAS_DEREFERENCING_PROBLEM (aliasDereferencingProblem)</li>
+ *   <li> ALIAS_PROBLEM (aliasProblem)</li>
+ *   <li> ATTRIBUTE_OR_VALUE_EXISTS (AttributeOrValueExists)</li>
+ *   <li> AUTH_METHOD_NOT_SUPPORTED (authMethodNotSupported)</li>
+ *   <li> BUSY (busy)</li>
+ *   <li> COMPARE_FALSE (compareFalse)</li>
+ *   <li> COMPARE_TRUE (compareTrue)</li>
+ *   <li> CONFIDENTIALITY_REQUIRED (confidentialityRequired)</li>
+ *   <li> CONSTRAINT_VIOLATION (constraintViolation)</li>
+ *   <li> ENTRY_ALREADY_EXISTS (entryAlreadyExists)</li>
+ *   <li> INAPPROPRIATE_AUTHENTICATION (inappropriateAuthentication)</li>
+ *   <li> INAPPROPRIATE_MATCHING (inappropriateMatching)</li>
+ *   <li> INSUFFICIENT_ACCESS_RIGHTS (insufficientAccessRights)</li>
+ *   <li> INVALID_ATTRIBUTE_SYNTAX (invalidAttributeSyntax)</li>
+ *   <li> INVALID_CREDENTIALS (invalidCredentials)</li>
+ *   <li> INVALID_DN_SYNTAX (invalidDNSyntax)</li>
+ *   <li> IS_LEAF (isLeaf)</li>
+ *   <li> LDAP_PARTIAL_RESULTS</li>
+ *   <li> LOOP_DETECT (loopDetect)</li>
+ *   <li> NAMING_VIOLATION (namingViolation)</li>
+ *   <li> NO_SUCH_ATTRIBUTE (noSuchAttribute)</li>
+ *   <li> NO_SUCH_OBJECT (noSuchObject)</li>
+ *   <li> NOT_ALLOWED_ON_NONLEAF (notAllowedOnNonLeaf)</li>
+ *   <li> NOT_ALLOWED_ON_RDN (notAllowedOnRDN)</li>
+ *   <li> OBJECT_CLASS_MODS_PROHIBITED (objectClassModsProhibited)</li>
+ *   <li> OBJECT_CLASS_VIOLATION (objectClassViolation)</li>
+ *   <li> OPERATIONS_ERROR (operationsError)</li>
+ *   <li> OTHER (other)</li>
+ *   <li> PROTOCOL_ERROR (protocolError)</li>
+ *   <li> REFERRAL (referral)</li>
+ *   <li> SASL_BIND_IN_PROGRESS (saslBindInProgress)</li>
+ *   <li> SIZE_LIMIT_EXCEEDED (sizeLimitExceeded)</li>
+ *   <li> STRONG_AUTH_REQUIRED (strongAuthRequired)</li>
+ *   <li> SUCCESS (success)</li>
+ *   <li> TIME_LIMIT_EXCEEDED (timeLimitExceeded)</li>
+ *   <li> UNAVAILABLE (unavailable)</li>
+ *   <li> UNAVAILABLE_CRITICAL_EXTENSION (unavailableCriticalExtension)</li>
+ *   <li> UNDEFINED_ATTRIBUTE_TYPE (undefinedAttributeType)</li>
+ *   <li> UNWILLING_TO_PERFORM (unwillingToPerform)</li>
+ *
+ *  <p>Note: LDAP_PARTIAL_RESULTS is not defined in RFC2251, but is returned
+ *  by a number of LDAP servers to LDAPv2 clients as an indication of a
+ *  referral (subordinate reference).</p>
+ *
+ *  <p>Local errors, resulting from actions other than an operation on a
+ *  server, are among the following, listed in draft for the ldap-c-api:</p>
+ *
+ *   <li> AUTH_UNKNOWN</li>
+ *   <li> CLIENT_LOOP</li>
+ *   <li> CONNECT_ERROR</li>
+ *   <li> CONTROL_NOT_FOUND</li>
+ *   <li> DECODING_ERROR</li>
+ *   <li> ENCODING_ERROR</li>
+ *   <li> FILTER_ERROR</li>
+ *   <li> LOCAL_ERROR</li>
+ *   <li> LDAP_NOT_SUPPORTED</li>
+ *   <li> LDAP_TIMEOUT</li>
+ *   <li> MORE_RESULTS_TO_RETURN</li>
+ *   <li> NO_MEMORY</li>
+ *   <li> NO_RESULTS_RETURNED</li>
+ *   <li> PARAM_ERROR</li>
+ *   <li> REFERRAL_LIMIT_EXCEEDED</li>
+ *   <li> SERVER_DOWN</li>
+ *   <li> USER_CANCELLED</li>
+ *
+ *  <p>The following additional local error is defined:</p>
+ *
+ *   <li> TLS_NOT_SUPPORTED</li>
  */
+ 
 public class LDAPException extends Exception {
 
    private int resultCode;
    private String errorMessage = null;
    private String matchedDN = null;
-
-   /*
-    * 4.13.1 Constructors
-    */
 
    /**
     * Constructs a default exception with no specific error information.
@@ -90,10 +157,6 @@ public class LDAPException extends Exception {
       this.resultCode = resultCode;
    }
 
-
-   /*
-    * 4.13.2 errorCodeToString
-    */
 
    /**
     * Returns a string representing the internal error code, in the default
@@ -152,10 +215,6 @@ public class LDAPException extends Exception {
       throw new RuntimeException("errorCodeToString( code, Locale ) not implemented");
    }
 
-   /*
-    * 4.13.3 getLDAPErrorMessage
-    */
-
    /**
     * Returns the error message, if this message is available (that is, if
     * this message was set). 
@@ -169,10 +228,6 @@ public class LDAPException extends Exception {
       return errorMessage;
    }
 
-   /*
-    * 4.13.4 getLDAPResultCode
-    */
-
    /**
     * Returns the result code from the exception. 
     *
@@ -185,10 +240,6 @@ public class LDAPException extends Exception {
    public int getLDAPResultCode() {
       return resultCode;
    }
-
-   /*
-    * 4.13.5 getMatchedDN
-    */
 
    /**
     * Returns the part of a submitted distinguished name which could be
@@ -212,76 +263,6 @@ public class LDAPException extends Exception {
       return matchedDN;
    }
 
-   /*
-    * 4.13.6 Error codes
-    */
-
-   /*
-    * See RFC 2251 for a discussion of the meanings of the codes.
-    *
-    *    ADMIN_LIMIT_EXCEEDED
-    *    AFFECTS_MULTIPLE_DSAS
-    *    ALIAS_DEREFERENCING_PROBLEM
-    *    ALIAS_PROBLEM
-    *    ATTRIBUTE_OR_VALUE_EXISTS
-    *    AUTH_METHOD_NOT_SUPPORTED
-    *    BUSY
-    *    COMPARE_FALSE
-    *    COMPARE_TRUE
-    *    CONFIDENTIALITY_REQUIRED
-    *    CONSTRAINT_VIOLATION
-    *    ENTRY_ALREADY_EXISTS
-    *    INAPPROPRIATE_AUTHENTICATION
-    *    INAPPROPRIATE_MATCHING
-    *    INSUFFICIENT_ACCESS_RIGHTS
-    *    INVALID_ATTRIBUTE_SYNTAX
-    *    INVALID_CREDENTIALS
-    *    INVALID_DN_SYNTAX
-    *    IS_LEAF
-    *    LDAP_PARTIAL_RESULTS
-    *    LOOP_DETECT
-    *    NAMING_VIOLATION
-    *    NO_SUCH_ATTRIBUTE
-    *    NO_SUCH_OBJECT
-    *    NOT_ALLOWED_ON_NONLEAF
-    *    NOT_ALLOWED_ON_RDN
-    *    OBJECT_CLASS_MODS_PROHIBITED
-    *    OBJECT_CLASS_VIOLATION
-    *    OPERATIONS_ERROR
-    *    OTHER
-    *    PROTOCOL_ERROR
-    *    REFERRAL
-    *    SASL_BIND_IN_PROGRESS
-    *    SIZE_LIMIT_EXCEEDED
-    *    STRONG_AUTH_REQUIRED
-    *    SUCCESS
-    *    TIME_LIMIT_EXCEEDED
-    *    UNAVAILABLE
-    *    UNAVAILABLE_CRITICAL_EXTENSION
-    *    UNDEFINED_ATTRIBUTE_TYPE
-    *    UNWILLING_TO_PERFORM
-    *
-    * Local errors, resulting from actions other than an operation on a
-    * server, are among the following, listed in [ldap-c-api]:
-    *
-    *    AUTH_UNKNOWN
-    *    CLIENT_LOOP
-    *    CONNECT_ERROR
-    *    CONTROL_NOT_FOUND
-    *    DECODING_ERROR
-    *    ENCODING_ERROR
-    *    FILTER_ERROR
-    *    LOCAL_ERROR
-    *    LDAP_NOT_SUPPORTED
-    *    LDAP_TIMEOUT
-    *    MORE_RESULTS_TO_RETURN
-    *    NO_MEMORY
-    *    NO_RESULTS_RETURNED
-    *    PARAM_ERROR
-    *    REFERRAL_LIMIT_EXCEEDED
-    *    SERVER_DOWN
-    *    USER_CANCELLED
-    */
     
   /**
    *Indicates the requested client operation completed successfully.

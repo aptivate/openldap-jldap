@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchListener.java,v 1.15 2000/10/03 21:44:00 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchListener.java,v 1.16 2000/10/31 00:45:08 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -20,14 +20,9 @@ import java.util.Vector;
 
 import com.novell.ldap.protocol.*;
 
-/*
- * 4.32 public class LDAPSearchListener
- */
- 
 /**
- *
- *  Manages search results and references returned
- *  from one or more search requests.
+ *  A low-level mechanism for queuing asynchronous search results
+ *  and references received from a server.
  */
 public class LDAPSearchListener implements LDAPListener
 {
@@ -95,10 +90,7 @@ public class LDAPSearchListener implements LDAPListener
         listen.merge( listener2);
         return;
     }
-   /*
-    * 4.32.2 getResponse
-    */
-
+    
    /**
     * Blocks until a response is available, or until all operations
     * associated with the object have completed or been canceled, and

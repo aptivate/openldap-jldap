@@ -1,12 +1,8 @@
 package com.novell.ldap;
 
-/* 
- * 4.10 public class LDAPDITStructureRuleSchema
- * extends LDAPSchemaElement
- */
-
 /**
- * Represents the definition of a DIT Structure Rule.
+ * Represents the definition of a specific DIT (Directory Information Tree)
+ * structure rule in the directory schema.
  *  
  * <p>The LDAPDITStructureRuleSchema class is used to discover or modify which 
  * object classes a particular object class may be subordinate to in the DIT.</p>

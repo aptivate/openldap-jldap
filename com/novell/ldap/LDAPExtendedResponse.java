@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPExtendedResponse.java,v 1.15 2000/09/28 20:25:34 smerrill Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPExtendedResponse.java,v 1.16 2000/09/29 15:17:14 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -19,13 +19,10 @@ import java.io.IOException;
 import com.novell.ldap.LDAPResponse;
 import com.novell.ldap.protocol.*;
 
-/*
- * 4.2 public class LDAPExtendedResponse extends LDAPResponse
- */
-
 /**
  *
- *  Encapsulates a server response to an extended operation request.
+ *  Encapsulates the response returned by an LDAP server on an
+ *  asynchronous extended operation request.  It extends LDAPResponse.
  *  
  *  The response can contain the OID of the extension, an octet string
  *  with the operation's data, both, or neither.
@@ -45,10 +42,6 @@ public class LDAPExtendedResponse extends LDAPResponse {
         super(message);
     }
 
-    /*
-     * 4.2.1 getID
-     */
-
     /**
      * Returns the message identifier of the response.
      *
@@ -58,10 +51,6 @@ public class LDAPExtendedResponse extends LDAPResponse {
     {
         return((ExtendedResponse)message.getProtocolOp()).getResponseName().getString();
     }
-
-    /*
-     * 4.2.2 getValue
-     */
 
     /**
      * Returns the value part of the response in raw bytes.

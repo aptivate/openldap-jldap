@@ -1,12 +1,8 @@
 package com.novell.ldap;
 
-/*
- * 4.9 public class LDAPDITContentRuleSchema
- *              extends LDAPSchemaElement
- */
-
 /**
- *  Represents the definition of a DIT Content Rule.
+ *  Represents ia specific DIT (Directory Information Tree) content rule
+ *  in the directory schema.
  *
  *  <p>The LDAPDITContentRuleSchema class is used to discover or modify additional 
  *  auxiliary classes, mandatory and optional attributes, and restricted attributes

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPModificationSet.java,v 1.8 2000/09/29 15:17:14 judy Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPModificationSet.java,v 1.9 2000/10/24 20:38:22 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -17,22 +17,14 @@ package com.novell.ldap;
 
 import java.util.Vector;
 
-/*
- * 4.21 public class LDAPModificationSet
- */
-
 /**
  *
- *  Represents a collection of modifications to be made to the attributes 
- *  of a single entry.
+ *  Holds a collection of LDAPModification objects, representing
+ *  changes to be made to attributes of a single entry.
  */
 public class LDAPModificationSet {
 
     private Vector modSet;
-
-    /*
-     * 4.21.1 Constructors
-     */
 
     /**
      * Constructs a new, empty set of modifications.
@@ -41,10 +33,6 @@ public class LDAPModificationSet {
     {
         modSet = new Vector();
     }
-
-    /*
-     * 4.21.2 add
-     */
 
     /**
      * Specifies a modification to be added to the set of
@@ -84,10 +72,6 @@ public class LDAPModificationSet {
         modSet.addElement(mod);
     }
 
-    /*
-     * 4.21.3 elementAt
-     */
-
     /**
      * Retrieves a particular LDAPModification object at the position
      * specified by the index.
@@ -102,10 +86,6 @@ public class LDAPModificationSet {
     {
         return(LDAPModification)modSet.elementAt(index);
     }
-
-    /*
-     * 4.21.4 remove
-     */
 
     /**
      * Removes the first attribute with the specified name in the set of
@@ -124,10 +104,6 @@ public class LDAPModificationSet {
         }
     }
 
-    /*
-     * 4.21.5 removeElementAt
-     */
-
     /**
      * Removes a particular LDAPModification object at the position
      * specified by the index.
@@ -142,10 +118,6 @@ public class LDAPModificationSet {
     {
         modSet.removeElementAt(index);
     }
-
-    /*
-     * 4.21.6 size
-     */
 
     /**
      * Retrieves the number of LDAPModification objects in this set.

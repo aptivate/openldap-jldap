@@ -1,11 +1,7 @@
 package com.novell.ldap;
 
-/*
- * 4.18 public class LDAPMatchingRuleUseSchema
- *               extends LDAPSchemaElement
- */
-
-/*  Represents the definition of a matching rule use.
+/*  Represents the definition of a specific matching rule use in the
+ *  directory schema.
  *  
  * <p>The LDAPMatchingRuleUseSchema class is used to discover or modify which
  * attributes are suitable for use with an extensible matching rule. It contains 

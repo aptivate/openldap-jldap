@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResults.java,v 1.22 2000/10/03 21:44:00 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResults.java,v 1.23 2000/10/04 21:54:18 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -19,14 +19,9 @@ import com.novell.ldap.client.*;
 import java.util.*;
 import java.io.*;
 
-/*
- * 4.35 public class LDAPSearchResults
- */
-
 /**
  *
- *  Implements an enumeration, thereby providing access to all entries
- *  retrieved during the synchronous search operation.
+ *  The enumerable results of a synchronous search operation.
  */
 public class LDAPSearchResults implements Enumeration
 {
@@ -77,10 +72,6 @@ public class LDAPSearchResults implements Enumeration
         return;    
     }
 
-    /*
-     * 4.35.1 getCount
-     */
-
     /**
      * Returns a count of the entries in the search result. 
      *
@@ -94,10 +85,6 @@ public class LDAPSearchResults implements Enumeration
         return count;
     }
 
-    /*
-     * 4.35.2 getResponseControls
-     */
-
     /**
      * Returns the latest server controls returned by the server
      * in the context of this search request, or null
@@ -110,10 +97,6 @@ public class LDAPSearchResults implements Enumeration
     {
         return controls;
     }
-
-    /*
-     * 4.35.3 hasMoreElements
-     */
 
     /**
      * Specifies whether or not there are more search results in the
@@ -152,10 +135,6 @@ public class LDAPSearchResults implements Enumeration
        completed = getBatchOfResults();
        return;
     }
-    /*
-     * 4.35.4 next
-     */
-
     /**
      * Returns the next result in the enumeration as an LDAPEntry. 
      *
@@ -222,10 +201,6 @@ public class LDAPSearchResults implements Enumeration
         }
         return (LDAPEntry)element;
     }
-
-    /*
-     * 4.35.5 nextElement
-     */
 
     /**
      * Returns the next result in the enumeration as an Object. 
@@ -296,10 +271,6 @@ public class LDAPSearchResults implements Enumeration
         }
         return element;
     }
-
-    /*
-     * 4.35.6 sort
-     */
 
     /**
      * Sorts all entries in the results using the provided comparison
