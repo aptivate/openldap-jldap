@@ -6,7 +6,8 @@ import com.novell.ldap.asn1.*;
 /**
  *
  */
-public class RfcLDAPOID extends ASN1OctetString {
+public class RfcLDAPOID extends ASN1OctetString
+{
 
    /**
     *
@@ -24,13 +25,14 @@ public class RfcLDAPOID extends ASN1OctetString {
       super(s);
    }
 
-   /**
+   /* 
     * Convert octet string to String.
     */
-//   public String getString()
-//   {
-//      return new String(getContent()); // UTF8 ???
-//   }
+/*
+ * public String getString()
+ * {
+ *    return new String(getContent()); // UTF8 ???
+ * }
+ */
 
 }
-

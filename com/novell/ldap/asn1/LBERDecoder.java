@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/src/com/novell/ldap/asn1/LBERDecoder.java,v 1.5 2000/09/08 18:04:48 smerrill Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/LBERDecoder.java,v 1.6 2000/09/11 21:05:54 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  ***************************************************************************/
@@ -42,7 +42,8 @@ import java.io.*;
  *      Canonical, and Distinguished Encoding Rules", 1994.
  *
  */
-public class LBERDecoder implements ASN1Decoder {
+public class LBERDecoder implements ASN1Decoder
+{
 
    //*************************************************************************
    // Generic decode routines
@@ -295,7 +296,7 @@ public class LBERDecoder implements ASN1Decoder {
    // Helper methods for the BERDecoder class
    //*************************************************************************
 
-   /**
+   /* 
     * Decodes an ASN1Identifier.
     *
     * @param len An int array in which the length of this Identifier is
@@ -317,7 +318,7 @@ public class LBERDecoder implements ASN1Decoder {
    }
 */ 
 
-   /**
+   /* 
     * In the case that we have a tag number that is greater than 30, we need
     * to decode a multiple octet tag number.
     */
@@ -339,7 +340,7 @@ public class LBERDecoder implements ASN1Decoder {
    }
 */ 
 
-   /**
+   /* 
     *
     */
 /*

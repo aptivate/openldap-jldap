@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPDN.java,v 1.10 2000/11/02 20:23:48 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPDN.java,v 1.12 2000/11/09 22:50:31 cmorris Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -223,40 +223,43 @@ public class LDAPDN {
       while(tok.hasMoreTokens()){
          curToken = tok.nextToken();
 
-         if (curToken.equals(" ") ){
+         if (curToken.equals(" ") ) {
             temp = "";
-            while(tok.hasMoreTokens() && curToken.equals(" ")){
+            while(tok.hasMoreTokens() && curToken.equals(" ")) {
                temp += curToken;    //pass up white_space
                curToken = tok.nextToken();
             }
-            if (!tok.hasMoreTokens() && curToken.equals(" ")){
+            if (!tok.hasMoreTokens() && curToken.equals(" ")) {
                curToken = ""; //if this is the last element we don't want the space tacked on.
-            }
-            else if (!curToken.equals(delimiter) && !curToken.equals("+")
-                  && !curToken.equals("=") && !trimWhiteSpace){
-               // Don't trim white space for the following:
-               // 1)!End of line, 2)!End of component 3)!Beginning of component
+            } else
+            if (!curToken.equals(delimiter) && !curToken.equals("+")
+                  && !curToken.equals("=") && !trimWhiteSpace) {
+               /* Don't trim white space for the following:
+                * 1)!End of line, 2)!End of component 3)!Beginning of component
+                */
                str = str + temp;
             }
          }
-         if (noTypes && curToken.equals("=")){ //throw away current string
+         if (noTypes && curToken.equals("=")) {
+            //throw away current string
             str = "";
             curToken = "";
             trimWhiteSpace = true;
-         }
-         else if (curToken.equals("\\") && tok.hasMoreTokens()){//escaped character, skip it.
+         } else
+         if ( curToken.equals( "\\" ) && tok.hasMoreTokens() ) {
+            //escaped character, skip it.
             str = str + curToken + tok.nextToken();
             trimWhiteSpace = false;
-         }
-         else if (curToken.equals(delimiter)){ //end of component, save it
+         } else
+         if (curToken.equals(delimiter)) {
+            //end of component, save it
             list[strCounter++] = str;
             str = "";
             trimWhiteSpace = true;
-         }
-         else{
+         } else {
             str = str + curToken;
             //normalization flag for whitespace
-            if (curToken.equals("+") || curToken.equals("=")){
+            if (curToken.equals("+") || curToken.equals("=")) {
                trimWhiteSpace = true;
             }else{
                trimWhiteSpace = false;

@@ -47,11 +47,10 @@ public class RfcAttributeDescriptionList extends ASN1SequenceOf {
 		}
    }
 
-   /**
+   /* 
     * Override add() to only accept types of AttributeDescription
     *
     * @exception ASN1InvalidTypeException
     */
 
 }
-

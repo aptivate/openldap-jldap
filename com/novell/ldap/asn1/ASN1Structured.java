@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/src/com/novell/ldap/asn1/ASN1Structured.java,v 1.4 2000/09/03 19:55:55 smerrill Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Structured.java,v 1.5 2000/09/11 21:05:54 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  ***************************************************************************/
@@ -12,7 +12,8 @@ import java.util.*;
 /**
  * Base type for all ASN.1 structured types.
  */
-public abstract class ASN1Structured extends ASN1Object {
+public abstract class ASN1Structured extends ASN1Object
+{
 
    protected Vector content;
 
@@ -113,10 +114,9 @@ public abstract class ASN1Structured extends ASN1Object {
          if(i != len-1)
             sb.append(", ");
       }
-      sb.append(" }");
+      sb.append(/*{*/ " }");
 
       return super.toString() + sb.toString();
    }
 
 }
-
