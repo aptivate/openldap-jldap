@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttributeSet.java,v 1.24 2001/04/23 21:09:28 cmorris Exp $
+ * $Novell: /ldap/src/jldap/org/ietf/ldap/LDAPAttributeSet.java,v 1.1 2001/06/26 15:48:41 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -15,7 +15,9 @@
 
 package org.ietf.ldap;
 
+import com.novell.ldap.client.ArrayEnumeration;
 import java.util.Enumeration;
+import java.util.NoSuchElementException;
 
 /**
  *  Represents a collection of LDAPAttributes, either used to construct an entry
@@ -124,7 +126,25 @@ public class LDAPAttributeSet implements Cloneable
      */
     public Enumeration getAttributes()
     {
-        return set.getAttributes();
+        class ASetEnumWrapper implements Enumeration
+        {
+            private Enumeration enum;
+            ASetEnumWrapper( Enumeration enum)
+            {
+                this.enum = enum;
+                return;
+            }
+            public boolean hasMoreElements()
+            {
+                return enum.hasMoreElements();
+            }
+            public Object nextElement() throws NoSuchElementException
+            {
+                return new LDAPAttribute(
+                            (com.novell.ldap.LDAPAttribute)enum.nextElement());
+            }
+        }
+        return new ASetEnumWrapper( set.getAttributes());
     }
 
     /**

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/org.ietf.ldap/LDAPAttribute.java,v 1.21 2001/04/23 21:09:28 cmorris Exp $
+ * $Novell: /ldap/src/jldap/org/ietf/ldap/LDAPAttribute.java,v 1.1 2001/06/26 15:48:39 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -15,7 +15,7 @@
 
 package org.ietf.ldap;
 
-import java.util.*;
+import java.util.Enumeration;
 import java.io.UnsupportedEncodingException;
 /**
  * Represents the name and values of one attribute of a directory entry.
