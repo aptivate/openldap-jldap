@@ -51,21 +51,28 @@ public class NamingContextEntryCountResponse extends LDAPExtendedResponse {
 
         super(rfcMessage);
 
-        // parse the contents of the reply
-        byte [] returnedValue = this.getValue();
-        if (returnedValue == null)
-            throw new IOException("No returned value");
+        if (getResultCode() == LDAPException.SUCCESS)
+        {
+           // parse the contents of the reply
+           byte [] returnedValue = this.getValue();
+           if (returnedValue == null)
+               throw new IOException("No returned value");
 
-        // Create a decoder object
-        LBERDecoder decoder = new LBERDecoder();
-        if (decoder == null)
-            throw new IOException("Decoding error");
+           // Create a decoder object
+           LBERDecoder decoder = new LBERDecoder();
+           if (decoder == null)
+               throw new IOException("Decoding error");
 
-        ASN1Integer asn1_count = (ASN1Integer)decoder.decode(returnedValue);
-        if (asn1_count == null)
-            throw new IOException("Decoding error");
+           ASN1Integer asn1_count = (ASN1Integer)decoder.decode(returnedValue);
+           if (asn1_count == null)
+               throw new IOException("Decoding error");
 
-        count = asn1_count.getInt();
+           count = asn1_count.getInt();
+        }
+        else
+        {
+           count = -1;
+        }
    }
 
    /**

@@ -51,38 +51,44 @@ public class ListReplicasResponse extends LDAPExtendedResponse {
 
         super((RfcLDAPMessage)rfcMessage);
 
-        // parse the contents of the reply
-        byte [] returnedValue = this.getValue();
-        if (returnedValue == null)
-            throw new IOException("No returned value");
+        if (getResultCode() != LDAPException.SUCCESS)
+        {
+            replicaList = new String[0];
+        }
+        else
+        {
+            // parse the contents of the reply
+            byte [] returnedValue = this.getValue();
+            if (returnedValue == null)
+                throw new IOException("No returned value");
 
-        // Create a decoder object
-        LBERDecoder decoder = new LBERDecoder();
-        if (decoder == null)
-            throw new IOException("Decoding error");
-
-        // We should get back a sequence
-        ASN1Sequence returnedSequence = (ASN1Sequence)decoder.decode(returnedValue);
-        if (returnedSequence == null)
-            throw new IOException("Decoding error");
-
-        // How many replicas were returned
-        int len = returnedSequence.size();
-        replicaList = new String[len];
-
-        // Copy each one into our String array
-      for(int i=0; i < len; i++) {
-          // Get the next ASN1Octet String in the sequence
-          ASN1OctetString asn1_nextReplica = (ASN1OctetString)returnedSequence.get(i);
-          if (asn1_nextReplica == null)
+            // Create a decoder object
+            LBERDecoder decoder = new LBERDecoder();
+            if (decoder == null)
                 throw new IOException("Decoding error");
 
-            // Convert to a string
-         replicaList[i] = new String(asn1_nextReplica.getContent());
-         if (replicaList[i] == null)
+            // We should get back a sequence
+            ASN1Sequence returnedSequence = (ASN1Sequence)decoder.decode(returnedValue);
+            if (returnedSequence == null)
                 throw new IOException("Decoding error");
+
+            // How many replicas were returned
+            int len = returnedSequence.size();
+            replicaList = new String[len];
+
+            // Copy each one into our String array
+          for(int i=0; i < len; i++) {
+              // Get the next ASN1Octet String in the sequence
+              ASN1OctetString asn1_nextReplica = (ASN1OctetString)returnedSequence.get(i);
+              if (asn1_nextReplica == null)
+                    throw new IOException("Decoding error");
+
+                // Convert to a string
+             replicaList[i] = new String(asn1_nextReplica.getContent());
+             if (replicaList[i] == null)
+                    throw new IOException("Decoding error");
+          }
       }
-
    }
 
    /**

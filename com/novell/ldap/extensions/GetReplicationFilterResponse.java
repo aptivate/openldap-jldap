@@ -57,68 +57,74 @@ public class GetReplicationFilterResponse extends LDAPExtendedResponse {
 
         super(rfcMessage);
 
-        // parse the contents of the reply
-        byte [] returnedValue = this.getValue();
-        if (returnedValue == null)
-            throw new IOException("No returned value");
+        if (getResultCode() != LDAPException.SUCCESS)
+        {
+            returnedFilter = new String[0][0];
+        }
+        else
+        {
+            // parse the contents of the reply
+            byte [] returnedValue = this.getValue();
+            if (returnedValue == null)
+                throw new IOException("No returned value");
 
-        // Create a decoder object
-        LBERDecoder decoder = new LBERDecoder();
-        if (decoder == null)
-            throw new IOException("Decoding error");
-
-		// We should get back a sequence
-        ASN1Sequence returnedSequence = (ASN1Sequence)decoder.decode(returnedValue);
-
-        if (returnedSequence == null)
-            throw new IOException("Decoding error");
-
-        // How many sequences in this list
-        int numberOfSequences = returnedSequence.size();
-		returnedFilter = new String[numberOfSequences][];
-
-        // Parse each returned sequence object
-		for(int classNumber = 0; classNumber < numberOfSequences; classNumber++) {
-
-		  // Get the next ASN1Sequence
-          ASN1Sequence asn1_innerSequence = (ASN1Sequence)returnedSequence.get(classNumber);
-		  if (asn1_innerSequence == null)
-            throw new IOException("Decoding error");
-
-		  // Get the asn1 encoded classname
-          ASN1OctetString asn1_className = (ASN1OctetString)asn1_innerSequence.get(0);
-          if (asn1_className == null)
-                return;
-
-		 // Get the attribute List
-		 ASN1Sequence asn1_attributeList = (ASN1Sequence)asn1_innerSequence.get(1);
-		 if (asn1_attributeList == null)
-			 throw new IOException("Decoding error");
-
-		 int numberOfAttributes = asn1_attributeList.size();
-		 returnedFilter[classNumber] = new String[numberOfAttributes+1];
-
-         // Get the classname
-         returnedFilter[classNumber][0] = new String(asn1_className.getContent());
-         if (returnedFilter[classNumber][0] == null)
+            // Create a decoder object
+            LBERDecoder decoder = new LBERDecoder();
+            if (decoder == null)
                 throw new IOException("Decoding error");
 
-		 for (int attributeNumber = 0; attributeNumber < numberOfAttributes; attributeNumber++) {
+		    // We should get back a sequence
+            ASN1Sequence returnedSequence = (ASN1Sequence)decoder.decode(returnedValue);
 
-			// Get the asn1 encoded attribute name
-			ASN1OctetString asn1_attributeName = (ASN1OctetString)asn1_attributeList.get(attributeNumber);
-			if (asn1_attributeName == null)
+            if (returnedSequence == null)
                 throw new IOException("Decoding error");
 
-			// Get attributename string
-			returnedFilter[classNumber][attributeNumber+1] = new String(asn1_attributeName.getContent());
-			if (returnedFilter[classNumber][attributeNumber+1] == null)
+            // How many sequences in this list
+            int numberOfSequences = returnedSequence.size();
+		    returnedFilter = new String[numberOfSequences][];
+
+            // Parse each returned sequence object
+		    for(int classNumber = 0; classNumber < numberOfSequences; classNumber++) {
+
+		      // Get the next ASN1Sequence
+              ASN1Sequence asn1_innerSequence = (ASN1Sequence)returnedSequence.get(classNumber);
+		      if (asn1_innerSequence == null)
                 throw new IOException("Decoding error");
 
-			}
+		      // Get the asn1 encoded classname
+              ASN1OctetString asn1_className = (ASN1OctetString)asn1_innerSequence.get(0);
+              if (asn1_className == null)
+                    return;
 
-		}
+		     // Get the attribute List
+		     ASN1Sequence asn1_attributeList = (ASN1Sequence)asn1_innerSequence.get(1);
+		     if (asn1_attributeList == null)
+			     throw new IOException("Decoding error");
 
+		     int numberOfAttributes = asn1_attributeList.size();
+		     returnedFilter[classNumber] = new String[numberOfAttributes+1];
+
+             // Get the classname
+             returnedFilter[classNumber][0] = new String(asn1_className.getContent());
+             if (returnedFilter[classNumber][0] == null)
+                    throw new IOException("Decoding error");
+
+		     for (int attributeNumber = 0; attributeNumber < numberOfAttributes; attributeNumber++) {
+
+			    // Get the asn1 encoded attribute name
+			    ASN1OctetString asn1_attributeName = (ASN1OctetString)asn1_attributeList.get(attributeNumber);
+			    if (asn1_attributeName == null)
+                    throw new IOException("Decoding error");
+
+			    // Get attributename string
+			    returnedFilter[classNumber][attributeNumber+1] = new String(asn1_attributeName.getContent());
+			    if (returnedFilter[classNumber][attributeNumber+1] == null)
+                    throw new IOException("Decoding error");
+
+			    }
+
+		    }
+        }
 
    }
 
