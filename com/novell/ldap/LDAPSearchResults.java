@@ -1,17 +1,17 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResults.java,v 1.11 2000/09/27 22:44:52 vtag Exp $
-*
-* Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
-* 
-* THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
-* TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
-* TO VERSION 2.0.1 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
-* AVAILABLE AT HTTP://WWW.OPENLDAP.ORG/LICENSE.HTML OR IN THE FILE "LICENSE"
-* IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
-* OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.1 OF THE OPENLDAP
-* PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
-* THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY. 
-***************************************************************************/
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResults.java,v 1.12 2000/09/28 15:17:41 vtag Exp $
+ *
+ * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
+ * 
+ * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
+ * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
+ * TO VERSION 2.0.1 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
+ * AVAILABLE AT HTTP://WWW.OPENLDAP.ORG/LICENSE.HTML OR IN THE FILE "LICENSE"
+ * IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
+ * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.1 OF THE OPENLDAP
+ * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
+ * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY. 
+ ***************************************************************************/
 
 package com.novell.ldap;
 
@@ -20,14 +20,14 @@ import java.util.*;
 import java.io.*;
 
 /*
-* 4.35 public class LDAPSearchResults
-*/
+ * 4.35 public class LDAPSearchResults
+ */
 
 /**
-*
-*  Implements an enumeration, thereby providing access to all entries
-*  retrieved during the synchronous search operation.
-*/
+ *
+ *  Implements an enumeration, thereby providing access to all entries
+ *  retrieved during the synchronous search operation.
+ */
 public class LDAPSearchResults implements Enumeration
 {
 
@@ -40,12 +40,12 @@ public class LDAPSearchResults implements Enumeration
     private LDAPSearchListener listener;
 
     /**
-    * Constructs a listener object for search results.
-    *
-    * @param batchSize The maximum number of messages for the listener's queue.
-    *<br><br>
-    * @param listener The listener for the search results.
-    */
+     * Constructs a listener object for search results.
+     *
+     * @param batchSize The maximum number of messages for the listener's queue.
+     *<br><br>
+     * @param listener The listener for the search results.
+     */
     public LDAPSearchResults(int batchSize, LDAPSearchListener listener)
     {
         this.listener = listener;
@@ -56,17 +56,17 @@ public class LDAPSearchResults implements Enumeration
     }
 
     /*
-    * 4.35.1 getCount
-    */
+     * 4.35.1 getCount
+     */
 
     /**
-    * Returns a count of the entries in the search result. 
-    *
-    * <p>If the search is asynchronous (batch size not 0),
-    *  this reports the number of results received so far. </p>
-    *
-    * @return The number of search results received so far.  
-    */
+     * Returns a count of the entries in the search result. 
+     *
+     * <p>If the search is asynchronous (batch size not 0),
+     *  this reports the number of results received so far. </p>
+     *
+     * @return The number of search results received so far.  
+     */
     public int getCount()
     {
         // when referrals are chased, they need to be added here!!!
@@ -74,32 +74,32 @@ public class LDAPSearchResults implements Enumeration
     }
 
     /*
-    * 4.35.2 getResponseControls
-    */
+     * 4.35.2 getResponseControls
+     */
 
     /**
-    * Returns the latest server controls returned by a directory server
-    * in the context of this search request, or null
-    * if no server controls were returned.
-    *
-    * @return The server controls returned with the search request, or null
-    *         if none were returned.
-    */
+     * Returns the latest server controls returned by a directory server
+     * in the context of this search request, or null
+     * if no server controls were returned.
+     *
+     * @return The server controls returned with the search request, or null
+     *         if none were returned.
+     */
     public LDAPControl[] getResponseControls()
     {
         return controls;
     }
 
     /*
-    * 4.35.3 hasMoreElements
-    */
+     * 4.35.3 hasMoreElements
+     */
 
     /**
-    * Specifies whether or not there are more search results in the
-    * enumeration. 
-    *
-    * @return True, if there are more search results; false, if there are none.
-    */
+     * Specifies whether or not there are more search results in the
+     * enumeration. 
+     *
+     * @return True, if there are more search results; false, if there are none.
+     */
     public boolean hasMoreElements()
     {
         if(elements.hasMoreElements() == true)
@@ -114,22 +114,22 @@ public class LDAPSearchResults implements Enumeration
     }
 
     /*
-    * 4.35.4 next
-    */
+     * 4.35.4 next
+     */
 
     /**
-    * Returns the next result in the enumeration as an LDAPEntry. 
-    *
-    * <p>If automatic referral following is disabled and one or more 
-    * referrals are among the search results, the next method will throw 
-    * an LDAPReferralException the last time it is called, after all other
-    * results have been returned.</p>
-    *
-    * @return The next search result as an LDAPEntry.
-    *
-    * @exception LDAPException A general exception which includes an error
-    *                          message and an LDAP error code.
-    */
+     * Returns the next result in the enumeration as an LDAPEntry. 
+     *
+     * <p>If automatic referral following is disabled and one or more 
+     * referrals are among the search results, the next method will throw 
+     * an LDAPReferralException the last time it is called, after all other
+     * results have been returned.</p>
+     *
+     * @return The next search result as an LDAPEntry.
+     *
+     * @exception LDAPException A general exception which includes an error
+     *                          message and an LDAP error code.
+     */
     public LDAPEntry next() throws LDAPException
     {
         Object element = elements.nextElement();
@@ -145,18 +145,18 @@ public class LDAPSearchResults implements Enumeration
     }
 
     /*
-    * 4.35.5 nextElement
-    */
+     * 4.35.5 nextElement
+     */
 
     /**
-    * Returns the next result in the enumeration as an Object. 
-    *
-    * <p>The nextElement method is the default implementation of the
-    * Enumeration.nextElement method. The returned value may be an LDAPEntry
-    * or an LDAPReferralException. </p>
-    *
-    * @return The next element in the enumeration.
-    */
+     * Returns the next result in the enumeration as an Object. 
+     *
+     * <p>The nextElement method is the default implementation of the
+     * Enumeration.nextElement method. The returned value may be an LDAPEntry
+     * or an LDAPReferralException. </p>
+     *
+     * @return The next element in the enumeration.
+     */
     public Object nextElement()
     {
         Object element = elements.nextElement();
@@ -169,50 +169,50 @@ public class LDAPSearchResults implements Enumeration
     }
 
     /*
-    * 4.35.6 sort
-    */
+     * 4.35.6 sort
+     */
 
     /**
-    * Sorts all entries in the results using the provided comparison
-    * object. 
-    *
-    * <p>If the object has been partially or completely enumerated,
-    * only the remaining elements are sorted. Sorting the results requires that
-    * they all be present. This implies that LDAPSearchResults.nextElement
-    * method will always block until all results have been retrieved, 
-    * after a sort operation.</p>
-    *
-    * <p>The LDAPCompareAttrNames class is provided to support the common need
-    * to collate by a single or multiple attribute values, in ascending or
-    * descending order.  Examples: </p>
-    *<ul>
-    *   <li>res.sort(new LDAPCompareAttrNames("cn"));</li>
-    *
-    *   <li>res.sort(new LDAPCompareAttrNames("cn", false));</li>
-    *
-    *   <li>String[] attrNames = { "sn", "givenname" };
-    *   res.sort(new LDAPCompareAttrNames(attrNames));</li>
-    *</ul>
-    *
-    *  @param comp     An object that implements the LDAPEntryComparator
-    *                  interface to compare two objects of type
-    *                  LDAPEntry.
-    */
+     * Sorts all entries in the results using the provided comparison
+     * object. 
+     *
+     * <p>If the object has been partially or completely enumerated,
+     * only the remaining elements are sorted. Sorting the results requires that
+     * they all be present. This implies that LDAPSearchResults.nextElement
+     * method will always block until all results have been retrieved, 
+     * after a sort operation.</p>
+     *
+     * <p>The LDAPCompareAttrNames class is provided to support the common need
+     * to collate by a single or multiple attribute values, in ascending or
+     * descending order.  Examples: </p>
+     *<ul>
+     *   <li>res.sort(new LDAPCompareAttrNames("cn"));</li>
+     *
+     *   <li>res.sort(new LDAPCompareAttrNames("cn", false));</li>
+     *
+     *   <li>String[] attrNames = { "sn", "givenname" };
+     *   res.sort(new LDAPCompareAttrNames(attrNames));</li>
+     *</ul>
+     *
+     *  @param comp     An object that implements the LDAPEntryComparator
+     *                  interface to compare two objects of type
+     *                  LDAPEntry.
+     */
     public void sort(LDAPEntryComparator comp) {
         throw new RuntimeException("LDAPSearchResults: sort not implemented");
     }
 
     /**
-    * @internal
-    *
-    * Will collect batchSize elements from an LDAPSearchListener message
-    * queue and place them in a Vector. If the last message from the server,
-    * the result message, contains an error, it will be stored in the Vector
-    * for nextElement to process. (although it does not increment the search
-    * result count) All search result entries will be placed in the Vector.
-    * If a null is returned from getResponse(), it is likely that the search
-    * was abandoned.
-    */
+     * @internal
+     *
+     * Will collect batchSize elements from an LDAPSearchListener message
+     * queue and place them in a Vector. If the last message from the server,
+     * the result message, contains an error, it will be stored in the Vector
+     * for nextElement to process. (although it does not increment the search
+     * result count) All search result entries will be placed in the Vector.
+     * If a null is returned from getResponse(), it is likely that the search
+     * was abandoned.
+     */
     private boolean getBatchOfResults()
     {
         LDAPMessage msg;
@@ -261,8 +261,8 @@ public class LDAPSearchResults implements Enumeration
     }
 
     /**
-    * Cancels the search request and clears the message and enumeration.
-    */
+     * Cancels the search request and clears the message and enumeration.
+     */
     public void abandon() {
         // first, remove message ID and timer and any responses in the queue
         listener.abandonAll();
