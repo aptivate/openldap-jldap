@@ -1255,13 +1255,15 @@ public class LDAPConnection implements Cloneable
         throws LDAPException
     {
         byte[] pw = null;
-        try {
-            pw = passwd.getBytes("UTF8");
-            passwd = null;  // Keep no reference to String object
-        } catch( UnsupportedEncodingException ex) {
-            passwd = null;  // Keep no reference to String object
-            throw new RuntimeException( ex.toString());
-        }
+        if( passwd != null) {
+            try {
+                pw = passwd.getBytes("UTF8");
+                passwd = null;  // Keep no reference to String object
+            } catch( UnsupportedEncodingException ex) {
+                passwd = null;  // Keep no reference to String object
+                throw new RuntimeException( ex.toString());
+            }
+        }    
         bind(version, dn, pw, cons);
         return;
     }
