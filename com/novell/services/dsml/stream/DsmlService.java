@@ -203,6 +203,17 @@ public class DsmlService extends HttpServlet
             
             respDsmlWtr.writeError(e);
             
+			respDsmlWtr.finish();
+            
+			// Write end soap body.
+			respPrtWtr.println("</soap-env:Body>");
+			// Write end soap envelope
+			respPrtWtr.println("</soap-env:Envelope>");
+			// Set HttpServletResponse status to OK
+			rsp.setStatus(rsp.SC_BAD_REQUEST);
+			// Flush response to the client.
+			respPrtWtr.flush();
+            
         }catch(Exception e)
         {
             rsp.setStatus(rsp.SC_INTERNAL_SERVER_ERROR);
