@@ -42,6 +42,7 @@ public class DOMReader implements LDAPReader{
     private int messageIndex=0;
 
     /**
+     * @deprecated use #DOMReader(Element)
      * Creates a reader that reads a DOM document and translates it into
      * LDAPMessages.
      * <p>The first batchRequest or batchResponse is located and all nodes
@@ -56,7 +57,7 @@ public class DOMReader implements LDAPReader{
                 dsmlDoc.getElementsByTagName("batchRequest").item(0);
         if (this.root == null){
             this.root = (Element)
-                    dsmlDoc.getElementsByTagName("batchResponse").item(0);
+                    dsmlDoc.getElementsByTagNameNS("*", "batchResponse").item(0);
         }
         if (this.root == null){
             throw new IllegalArgumentException(
@@ -79,6 +80,9 @@ public class DOMReader implements LDAPReader{
     public DOMReader(Element root) throws LDAPLocalException {
         this.root = root;
         String name = root.getLocalName();
+        if (name == null){
+            name = root.getNodeName();
+        }
         if (!name.equals("batchRequest") &&
             !name.equals("batchResponse") )
         {
@@ -87,6 +91,7 @@ public class DOMReader implements LDAPReader{
                     "must be a batchRequest or a batchResponse");
         }
         handler = new DSMLHandler();
+
         processNodes(root.getParentNode());
         return;
     }
@@ -104,6 +109,9 @@ public class DOMReader implements LDAPReader{
         try {
             while(curChild!=null){
                 String simpleName = curChild.getLocalName();
+                if (simpleName == null){
+                    simpleName = curChild.getNodeName();
+                }
                 if (curChild instanceof Element){
                     wrapper.setAttrs(curChild.getAttributes());
                     handler.startElement(
