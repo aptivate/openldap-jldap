@@ -1,4 +1,4 @@
-// $Novell: /ldap/src/jldap/com/novell/ldap/LDAPExceptionMessageResource.java,v 1.5 2001/02/26 19:58:24 vtag Exp $
+// $Novell: /ldap/src/jldap/com/novell/ldap/LDAPExceptionMessageResource.java,v 1.6 2001/02/27 22:53:14 vtag Exp $
 package com.novell.ldap;
 
 public class LDAPExceptionMessageResource extends java.util.ListResourceBundle {
@@ -20,7 +20,8 @@ public class LDAPExceptionMessageResource extends java.util.ListResourceBundle {
   public final static String REFERRAL_SEND        = "REFERRAL_SEND";
   public final static String REFERRAL_NOFOLLOW    = "REFERRAL_NOFOLLOW";
   public final static String REFERENCE_NOFOLLOW   = "REFERENCE_NOFOLLOW";
-  public final static String REFERRAL_INTERNAL    = "REFERRAL_INTERNAL ";
+  public final static String REFERRAL_INTERNAL    = "REFERRAL_INTERNAL";
+  public final static String NO_DUP_REQUEST       = "NO_DUP_REQUEST";
   public final static String SERVER_CONNECT_ERROR = "SERVER_CONNECT_ERROR";
   public final static String NO_PROPERTY          = "NO_PROPERTY";
   public final static String NO_SUP_PROPERTY      = "NO_SUP_PROPERTY";
@@ -52,7 +53,7 @@ public class LDAPExceptionMessageResource extends java.util.ListResourceBundle {
       {"CONNECTION_WAIT", "Connection lost waiting for results from {0}:{1}"},
       {"CONNECTION_FINALIZED", "Connection closed by the application finalizing the object"},
       {"CONNECTION_CLOSED", "Connection closed by the application disconnecting"},
-      {"DUP_ERROR", "Cannot duplicate message built from the input stream"},
+      {"DUP_ERROR", "RfcLDAPMessage: Cannot duplicate message built from the input stream"},
       {"REFERENCE_ERROR","Error attempting to follow a search continuation reference"},
       {"REFERRAL_ERROR","Error attempting to follow a referral"},
       {"REFERRAL_LOCAL", "LDAPSearchResults.{0}(): No entry found & request is not complete"},
@@ -61,6 +62,7 @@ public class LDAPExceptionMessageResource extends java.util.ListResourceBundle {
       {"REFERRAL_NOFOLLOW", "Referral received, and referral following is off"},
       {"REFERENCE_NOFOLLOW", "Search result reference received, and referral following is off"},
       {"REFERRAL_INTERNAL", "LDAPCOnnection: checkForReferral: internal error"},
+      {"NO_DUP_REQUEST", "Cannot duplicate message to follow referral for {0} request, not allowed"},
       {"SERVER_CONNECT_ERROR","Error connecting to server {0} while attempting to follow a referral"},
       {"NO_PROPERTY","Requested property is not available."},
       {"NO_SUP_PROPERTY","Requested property is not supported."},
