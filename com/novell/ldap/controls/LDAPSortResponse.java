@@ -30,6 +30,7 @@ public class LDAPSortResponse extends LDAPControl {
     
     private String failedAttribute;
     private int resultCode;
+    public static final String OID = "1.2.840.113556.1.4.474";
     
     public LDAPSortResponse(String id, boolean critical, byte[] vals)
     {

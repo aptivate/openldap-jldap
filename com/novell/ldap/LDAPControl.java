@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPControl.java,v 1.20 2001/01/24 22:13:29 javed Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPControl.java,v 1.21 2001/01/25 20:29:58 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -16,7 +16,9 @@
 package com.novell.ldap;
 
 import java.io.*;
+import java.lang.*;
 import java.lang.reflect.*;
+import com.novell.ldap.controls.*;
 import com.novell.ldap.client.*;
 import com.novell.ldap.asn1.*;
 import com.novell.ldap.rfc2251.*;
@@ -33,6 +35,23 @@ import com.novell.ldap.rfc2251.*;
 public class LDAPControl implements Cloneable {
 
     private static RespControlVector registeredControls = new RespControlVector(5, 5);
+    
+    /* This is where we register the control responses that this version
+     * of the SDK implements */
+    static {
+        
+        // Register LDAPSortControl
+        try {
+            
+            Class sortControlName = Class.forName("LDAPSortResponse"); 
+            LDAPControl.register(LDAPSortResponse.OID, sortControlName);
+        
+        } catch (ClassNotFoundException e) {
+            ; // Need to issue some kind of warning
+        }
+        
+    }
+    
     private RfcControl control; // An RFC 2251 Control
 
     /**
