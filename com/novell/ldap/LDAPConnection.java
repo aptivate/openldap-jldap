@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPConnection.java,v 1.26 2000/08/30 22:40:41 judy Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPConnection.java,v 1.27 2000/08/31 19:48:39 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -253,6 +253,7 @@ public class LDAPConnection implements
     */
    public LDAPConnection()
    {
+      return;
    }
 
    /**
@@ -265,6 +266,7 @@ public class LDAPConnection implements
    public LDAPConnection(LDAPSocketFactory factory)
    {
       socketFactory = factory;
+      return;
    }
 
    /**
@@ -306,6 +308,7 @@ public class LDAPConnection implements
       throws LDAPException
    {
       disconnect();
+      return;
    }
 
    /*
@@ -534,6 +537,7 @@ public class LDAPConnection implements
    public void setConstraints(LDAPConstraints cons)
    {
       defSearchCons = (LDAPSearchConstraints)cons.clone();
+      return;
    }
 
    /**
@@ -547,6 +551,7 @@ public class LDAPConnection implements
       if(isConnected()) {
          conn.setInputStream(stream);
       }
+      return;
    }
 
    /**
@@ -561,6 +566,7 @@ public class LDAPConnection implements
       if(isConnected()) {
          conn.setOutputStream(stream);
       }
+      return;
    }
 
    /**
@@ -581,6 +587,7 @@ public class LDAPConnection implements
    public void setProperty(String name, Object value)
       throws LDAPException
    {
+      return;
    }
 
    /**
@@ -597,6 +604,7 @@ public class LDAPConnection implements
    public void setSearchConstraints(LDAPSearchConstraints cons)
    {
       this.defSearchCons = cons;
+      return;
    }
 
    /**
@@ -630,15 +638,16 @@ public class LDAPConnection implements
    public void setSocketFactory(LDAPSocketFactory factory)
    {
       socketFactory = factory;
+      return;
    }
 
-	//*************************************************************************
-	// Below follows all of the LDAP protocol operation methods
-	//*************************************************************************
+    //*************************************************************************
+    // Below follows all of the LDAP protocol operation methods
+    //*************************************************************************
 
-	//*************************************************************************
-	// abandon methods
-	//*************************************************************************
+    //*************************************************************************
+    // abandon methods
+    //*************************************************************************
 
    /**
     * 
@@ -656,6 +665,7 @@ public class LDAPConnection implements
       throws LDAPException
    {
       results.abandon();
+      return;
    }
    
    /*
@@ -677,6 +687,7 @@ public class LDAPConnection implements
       throws LDAPException
    {
       abandon(id, defSearchCons);
+      return;
    }
    
    /*
@@ -714,6 +725,7 @@ public class LDAPConnection implements
       // We need to inform the LDAPListener which owns this messageID to
       // remove it from the queue.
       conn.abandon(id);
+      return;
    }
 
    /**
@@ -732,6 +744,7 @@ public class LDAPConnection implements
       throws LDAPException
    {
       abandon(listener, defSearchCons);
+      return;
    }
 
    /*
@@ -759,11 +772,12 @@ public class LDAPConnection implements
             abandon(msgIds[i], cons);
          }
       }
+      return;
    }
 
-	//*************************************************************************
-	// add methods
-	//*************************************************************************
+    //*************************************************************************
+    // add methods
+    //*************************************************************************
 
    /*
    * add (LDAPv2)
@@ -782,6 +796,7 @@ public class LDAPConnection implements
       throws LDAPException
    {
       add(entry, defSearchCons);
+      return;
    }
 
    /*
@@ -808,6 +823,7 @@ public class LDAPConnection implements
       LDAPResponseListener listener =
          add(entry, (LDAPResponseListener)null, cons);
       listener.getResponse().chkResultCode();
+      return;
    }
    
    /*
@@ -892,11 +908,11 @@ public class LDAPConnection implements
       }
 
       LDAPMessage msg =
-			new LDAPMessage(
-				new AddRequest(
-					new com.novell.asn1.ldap.LDAPDN(entry.getDN()),
-					attrList),
-				cons.getServerControls());
+            new LDAPMessage(
+                new AddRequest(
+                    new com.novell.asn1.ldap.LDAPDN(entry.getDN()),
+                    attrList),
+                cons.getServerControls());
 
       if(listener == null)
          listener = new LDAPResponseListener(conn);
@@ -914,9 +930,9 @@ public class LDAPConnection implements
       return listener;
    }
 
-	//*************************************************************************
-	// bind methods
-	//*************************************************************************
+    //*************************************************************************
+    // bind methods
+    //*************************************************************************
 
     /*
     * 4.39.3 bind, LDAPv2, synchronous
@@ -951,6 +967,7 @@ public class LDAPConnection implements
       throws LDAPException
    {
       bind(LDAP_V2, dn, passwd); // call LDAPv3 bind()
+      return;
    }
 
    /*
@@ -958,7 +975,7 @@ public class LDAPConnection implements
     */
     
    /**
-	*
+    *
     * Authenticates to the LDAP server (that the object is currently
     * connected to) using the specified name, password, and LDAP version.  
     *
@@ -989,6 +1006,7 @@ public class LDAPConnection implements
       throws LDAPException
    {
       bind(version, dn, passwd, defSearchCons);
+      return;
    }
 
    /**
@@ -1033,6 +1051,7 @@ public class LDAPConnection implements
       }
 
       res.chkResultCode();
+      return;
    }
 
    /**
@@ -1116,11 +1135,11 @@ public class LDAPConnection implements
       if(cons == null)
          cons = defSearchCons;
 
-		if(dn == null)
-			dn = "";
+        if(dn == null)
+            dn = "";
 
-		if(passwd == null)
-			passwd = "";
+        if(passwd == null)
+            passwd = "";
 
       switch(version) {
          case LDAP_V3:
@@ -1136,16 +1155,16 @@ public class LDAPConnection implements
       }
 
       LDAPMessage msg =
-			new LDAPMessage(
-				new BindRequest(
-					new ASN1Integer(version),
-					new com.novell.asn1.ldap.LDAPDN(dn),
-					new AuthenticationChoice(
-						new ASN1Tagged(
-							new ASN1Identifier(ASN1Identifier.CONTEXT, false, 0),
-							new ASN1OctetString(passwd),
-							false))), // implicit tagging
-				cons.getServerControls());
+            new LDAPMessage(
+                new BindRequest(
+                    new ASN1Integer(version),
+                    new com.novell.asn1.ldap.LDAPDN(dn),
+                    new AuthenticationChoice(
+                        new ASN1Tagged(
+                            new ASN1Identifier(ASN1Identifier.CONTEXT, false, 0),
+                            new ASN1OctetString(passwd),
+                            false))), // implicit tagging
+                cons.getServerControls());
 
       if(listener == null)
          listener = new LDAPResponseListener(conn);
@@ -1190,9 +1209,9 @@ public class LDAPConnection implements
    }
 */
 
-	//*************************************************************************
-	// compare methods
-	//*************************************************************************
+    //*************************************************************************
+    // compare methods
+    //*************************************************************************
 
    /*
     * 4.39.4 compare, LDAPv2, synchronous
@@ -1338,33 +1357,33 @@ public class LDAPConnection implements
                                  LDAPException.PARAM_ERROR);
 
       LDAPMessage msg =
-			new LDAPMessage(
-				new CompareRequest(
-					new com.novell.asn1.ldap.LDAPDN(dn),
-					new AttributeValueAssertion(
-						new AttributeDescription(type),
-						new AssertionValue(value))),
-				cons.getServerControls());
+            new LDAPMessage(
+                new CompareRequest(
+                    new com.novell.asn1.ldap.LDAPDN(dn),
+                    new AttributeValueAssertion(
+                        new AttributeDescription(type),
+                        new AssertionValue(value))),
+                cons.getServerControls());
 
       if(listener == null)
          listener = new LDAPResponseListener(conn);
 
-		try {
-			listener.writeMessage(msg, cons.getTimeLimit());
-		}
-		catch(IOException ioe) {
-			  // do we need to remove message id here?
+        try {
+            listener.writeMessage(msg, cons.getTimeLimit());
+        }
+        catch(IOException ioe) {
+              // do we need to remove message id here?
 
-			throw new LDAPException("Communication error.",
-											LDAPException.OTHER);
-		}
+            throw new LDAPException("Communication error.",
+                                            LDAPException.OTHER);
+        }
 
       return listener;
    }
 
-	//*************************************************************************
-	// connect methods
-	//*************************************************************************
+    //*************************************************************************
+    // connect methods
+    //*************************************************************************
 
    /*
     * LDAPv2
@@ -1401,6 +1420,7 @@ public class LDAPConnection implements
       throws LDAPException
    {
       connect(host, port, null, null);
+      return;
    }
 
    /*
@@ -1449,6 +1469,7 @@ public class LDAPConnection implements
    {
       // call LDAPv3 method
       connect(LDAP_V2, host, port, dn, passwd);
+      return;
    }
 
    /*
@@ -1509,11 +1530,12 @@ public class LDAPConnection implements
       conn = new Connection(host, port, socketFactory);
 
       bind(version, dn, passwd);
+      return;
    }
 
-	//*************************************************************************
-	// delete methods
-	//*************************************************************************
+    //*************************************************************************
+    // delete methods
+    //*************************************************************************
 
    /*
     * 4.28.6 delete
@@ -1535,6 +1557,7 @@ public class LDAPConnection implements
       throws LDAPException
    {
       delete(dn, defSearchCons);
+      return;
    }
    
    /*
@@ -1559,6 +1582,7 @@ public class LDAPConnection implements
       LDAPResponseListener listener =
          delete(dn, (LDAPResponseListener)null, cons);
       listener.getResponse().chkResultCode();
+      return;
    }
    
    /*
@@ -1618,9 +1642,9 @@ public class LDAPConnection implements
          cons = defSearchCons;
 
       LDAPMessage msg =
-			new LDAPMessage(
-				new DelRequest(dn),
-				cons.getServerControls());
+            new LDAPMessage(
+                new DelRequest(dn),
+                cons.getServerControls());
 
       if(listener == null)
          listener = new LDAPResponseListener(conn);
@@ -1638,9 +1662,9 @@ public class LDAPConnection implements
       return listener;
    }
 
-	//*************************************************************************
-	// disconnect method
-	//*************************************************************************
+    //*************************************************************************
+    // disconnect method
+    //*************************************************************************
    /*
     * 4.39.7 disconnect, LDAPv2, synchronous
     */
@@ -1654,8 +1678,8 @@ public class LDAPConnection implements
     *
     * The disconnect method abandons any outstanding requests, issues an 
     * unbind request to the server, and then close the socket.
-	*
-	* @exception LDAPException A general exception which includes an error 
+    *
+    * @exception LDAPException A general exception which includes an error 
     *  message and an LDAP error code.
     *
     */
@@ -1670,11 +1694,12 @@ public class LDAPConnection implements
          throw new LDAPException("Not connected.",
                                  LDAPException.CONNECT_ERROR);
       }
+      return;
    }
 
-	//*************************************************************************
-	// extendedOperation methods
-	//*************************************************************************
+    //*************************************************************************
+    // extendedOperation methods
+    //*************************************************************************
 
    /*
     * 4.40.3 extendedOperation, LDAPv3, synchronous LDAP extended request 
@@ -1764,8 +1789,8 @@ public class LDAPConnection implements
 
    public LDAPResponseListener extendedOperation(LDAPExtendedOperation op,
                                     LDAPResponseListener listener)
-		throws LDAPException
-	{
+        throws LDAPException
+    {
 
       return extendedOperation(op, listener, defSearchCons);
    }
@@ -1799,8 +1824,8 @@ public class LDAPConnection implements
    public LDAPResponseListener extendedOperation(LDAPExtendedOperation op,
                                        LDAPResponseListener listener,
                                                   LDAPSearchConstraints cons)
-		throws LDAPException
-	{
+        throws LDAPException
+    {
 
       // Validate our connection structure
       validateConn();
@@ -1841,9 +1866,9 @@ public class LDAPConnection implements
       return listener;
    }
 
-	//*************************************************************************
-	// getOption method
-	//*************************************************************************
+    //*************************************************************************
+    // getOption method
+    //*************************************************************************
 
    /*
     *4.28.8 getOption
@@ -1855,7 +1880,7 @@ public class LDAPConnection implements
     *
     *  @param option   The option whose value is to be returned (the See Also
     *                  section contains the possible options).
-	*
+    *
     * @return The value of the specified option.
     *
     * @exception LDAPException A general exception which includes an error 
@@ -1871,7 +1896,7 @@ public class LDAPConnection implements
     * @see #BIND
     * @see #REFERRALS_HOP_LIMIT
     * @see #BATCHSIZE
-	*
+    *
     */
    public Object getOption(int option)
    throws LDAPException {
@@ -1900,9 +1925,9 @@ public class LDAPConnection implements
       }
    }
 
-	//*************************************************************************
-	// getResponseControls method
-	//*************************************************************************
+    //*************************************************************************
+    // getResponseControls method
+    //*************************************************************************
 
    /*
     * 4.40.4 getResponseControls, LDAPv3, synchronous
@@ -1918,15 +1943,15 @@ public class LDAPConnection implements
     *  response contains no server controls.
     */
    public LDAPControl[] getResponseControls()
-	{
+    {
       LDAPControl[] controls = null;
 
       return controls;
    }
 
-	//*************************************************************************
-	// modify methods
-	//*************************************************************************
+    //*************************************************************************
+    // modify methods
+    //*************************************************************************
 
    /*
     * 4.39.9 modify, LDAPv2, synchronous
@@ -1953,6 +1978,7 @@ public class LDAPConnection implements
       throws LDAPException
    {
       modify(dn, mod, defSearchCons);
+      return;
    }
 
    /**
@@ -1983,6 +2009,7 @@ public class LDAPConnection implements
       LDAPModificationSet mods = new LDAPModificationSet();
       mods.add(mod);
       modify(dn, mods, cons);
+      return;
    }
 
    /**
@@ -2004,6 +2031,7 @@ public class LDAPConnection implements
       throws LDAPException
    {
       modify(dn, mods, defSearchCons);
+      return;
    }
 
    /**
@@ -2030,6 +2058,7 @@ public class LDAPConnection implements
       LDAPResponseListener listener =
          modify(dn, mods, (LDAPResponseListener)null, cons);
       listener.getResponse().chkResultCode();
+      return;
    }
 
    /**
@@ -2157,55 +2186,55 @@ public class LDAPConnection implements
       if(cons == null)
          cons = defSearchCons;
 
-		// Convert Java-API LDAPModificationSet to RFC2251 SEQUENCE OF SEQUENCE
-		ASN1SequenceOf rfcMods = new ASN1SequenceOf();
-		for(int i=0; i<mods.size(); i++) {
-			LDAPModification mod = mods.elementAt(i);
-			LDAPAttribute attr = mod.getAttribute();
+        // Convert Java-API LDAPModificationSet to RFC2251 SEQUENCE OF SEQUENCE
+        ASN1SequenceOf rfcMods = new ASN1SequenceOf();
+        for(int i=0; i<mods.size(); i++) {
+            LDAPModification mod = mods.elementAt(i);
+            LDAPAttribute attr = mod.getAttribute();
 
-			// place modification attribute values in ASN1SetOf
-			ASN1SetOf vals = new ASN1SetOf();
-			Enumeration attrEnum = attr.getByteValues();
-			while(attrEnum.hasMoreElements()) {
-				vals.add(new AttributeValue((byte[])attrEnum.nextElement()));
-			}
+            // place modification attribute values in ASN1SetOf
+            ASN1SetOf vals = new ASN1SetOf();
+            Enumeration attrEnum = attr.getByteValues();
+            while(attrEnum.hasMoreElements()) {
+                vals.add(new AttributeValue((byte[])attrEnum.nextElement()));
+            }
 
-			// create SEQUENCE containing mod operation and attr type and vals
-			ASN1Sequence rfcMod = new ASN1Sequence();
-			rfcMod.add(new ASN1Enumerated(mod.getOp()));
-			rfcMod.add(new AttributeTypeAndValues(
-				new AttributeDescription(attr.getName()), vals));
+            // create SEQUENCE containing mod operation and attr type and vals
+            ASN1Sequence rfcMod = new ASN1Sequence();
+            rfcMod.add(new ASN1Enumerated(mod.getOp()));
+            rfcMod.add(new AttributeTypeAndValues(
+                new AttributeDescription(attr.getName()), vals));
 
-			// place SEQUENCE into SEQUENCE OF
-			rfcMods.add(rfcMod);
-		}
+            // place SEQUENCE into SEQUENCE OF
+            rfcMods.add(rfcMod);
+        }
 
       LDAPMessage msg =
-			new LDAPMessage(
-				new ModifyRequest(
-					new com.novell.asn1.ldap.LDAPDN(dn),
-					rfcMods),
-				cons.getServerControls());
+            new LDAPMessage(
+                new ModifyRequest(
+                    new com.novell.asn1.ldap.LDAPDN(dn),
+                    rfcMods),
+                cons.getServerControls());
 
       if(listener == null)
          listener = new LDAPResponseListener(conn);
 
-		try {
-			listener.writeMessage(msg, cons.getTimeLimit());
-		}
-		catch(IOException ioe) {
-			  // do we need to remove message id here?
+        try {
+            listener.writeMessage(msg, cons.getTimeLimit());
+        }
+        catch(IOException ioe) {
+              // do we need to remove message id here?
 
-			throw new LDAPException("Communication error.",
-											LDAPException.OTHER);
-		}
+            throw new LDAPException("Communication error.",
+                                            LDAPException.OTHER);
+        }
 
       return listener;
    }
 
-	//*************************************************************************
-	// read methods
-	//*************************************************************************
+    //*************************************************************************
+    // read methods
+    //*************************************************************************
 
    /*
     * read (LDAPv2)
@@ -2298,11 +2327,11 @@ public class LDAPConnection implements
                          LDAPSearchConstraints cons)
       throws LDAPException
    {
-		LDAPSearchResults sr = search(dn, LDAPv2.SCOPE_BASE,
-											"objectclass=*",
-											attrs, false, cons);
+        LDAPSearchResults sr = search(dn, LDAPv2.SCOPE_BASE,
+                                            "objectclass=*",
+                                            attrs, false, cons);
 
-		return (sr.hasMoreElements()) ? sr.next() : null;
+        return (sr.hasMoreElements()) ? sr.next() : null;
    }
 
    /**
@@ -2362,9 +2391,9 @@ public class LDAPConnection implements
       return null;
    }
 
-	//*************************************************************************
-	// rename methods
-	//*************************************************************************
+    //*************************************************************************
+    // rename methods
+    //*************************************************************************
 
    /*
     * 4.39.11 rename, LDAPv2, synchronous
@@ -2391,6 +2420,7 @@ public class LDAPConnection implements
       throws LDAPException
    {
       rename(dn, newRdn, deleteOldRdn, defSearchCons);
+      return;
    }
 
    /**
@@ -2419,6 +2449,7 @@ public class LDAPConnection implements
    {
       // null for newParentdn means that this is originating as an LDAPv2 call
       rename(dn, newRdn, null, deleteOldRdn, cons);
+      return;
    }
 
    /**
@@ -2446,6 +2477,7 @@ public class LDAPConnection implements
       throws LDAPException
    {
       rename(dn, newRdn, newParentdn, deleteOldRdn, defSearchCons);
+      return;
    }
 
    /*
@@ -2485,6 +2517,7 @@ public class LDAPConnection implements
          rename(dn, newRdn, newParentdn, deleteOldRdn,
                (LDAPResponseListener)null, cons);
       listener.getResponse().chkResultCode();
+      return;
    }
 
    /*
@@ -2639,34 +2672,34 @@ public class LDAPConnection implements
          cons = defSearchCons;
 
       LDAPMessage msg =
-			new LDAPMessage(
-				new ModifyDNRequest(
-					new com.novell.asn1.ldap.LDAPDN(dn),
-					new RelativeLDAPDN(newRdn),
-					new ASN1Boolean(deleteOldRdn),
-					(newParentdn != null) ?
-						new com.novell.asn1.ldap.LDAPDN(newParentdn) : null),
-				cons.getServerControls());
+            new LDAPMessage(
+                new ModifyDNRequest(
+                    new com.novell.asn1.ldap.LDAPDN(dn),
+                    new RelativeLDAPDN(newRdn),
+                    new ASN1Boolean(deleteOldRdn),
+                    (newParentdn != null) ?
+                        new com.novell.asn1.ldap.LDAPDN(newParentdn) : null),
+                cons.getServerControls());
 
       if(listener == null)
          listener = new LDAPResponseListener(conn);
 
-		try {
-			listener.writeMessage(msg, cons.getTimeLimit());
-		}
-		catch(IOException ioe) {
-			  // do we need to remove message id here?
+        try {
+            listener.writeMessage(msg, cons.getTimeLimit());
+        }
+        catch(IOException ioe) {
+              // do we need to remove message id here?
 
-			throw new LDAPException("Communication error.",
-											LDAPException.OTHER);
-		}
+            throw new LDAPException("Communication error.",
+                                            LDAPException.OTHER);
+        }
 
       return listener;
    }
 
-	//*************************************************************************
-	// search methods
-	//*************************************************************************
+    //*************************************************************************
+    // search methods
+    //*************************************************************************
 
    /*
     * 4.39.12 search
@@ -2933,9 +2966,9 @@ public class LDAPConnection implements
       return null;
    }
 
-	//*************************************************************************
-	// setOption methods
-	//*************************************************************************
+    //*************************************************************************
+    // setOption methods
+    //*************************************************************************
 
    /*
     * 4.28.13 setOption
@@ -3028,22 +3061,23 @@ public class LDAPConnection implements
             throw new LDAPException("Invalid option ",
                                     LDAPException.PARAM_ERROR);
       }
+      return;
    }
 
-	//*************************************************************************
-	// helper methods
-	//*************************************************************************
+    //*************************************************************************
+    // helper methods
+    //*************************************************************************
 
-	/**
-	 *
-	 */
+    /**
+     *
+     */
    private void validateConn()
       throws LDAPException
    {
       if(conn == null) {
          new LDAPException("Not connected", LDAPException.CONNECT_ERROR);
       }
+      return;
    }
 
 }
-
