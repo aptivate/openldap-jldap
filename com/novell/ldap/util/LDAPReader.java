@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell$
+ * $Novell: LDAPReader.java,v 1.3 2002/10/28 23:16:10 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -19,8 +19,8 @@ import com.novell.ldap.LDAPException;
 import com.novell.ldap.LDAPMessage;
 
 /**
- * Describes the interfaces used by applications to write
- * LDAP messages to an output stream.
+ * Describes the interfaces used by applications to read
+ * LDAP messages from an input stream.
  *
  * @see LDAPWriter
  */
