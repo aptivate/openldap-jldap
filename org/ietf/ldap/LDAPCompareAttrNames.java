@@ -21,7 +21,8 @@ import java.util.Locale;
  *  An object of this class supports sorting search results by attribute
  *  name, in ascending or descending order.
  *
- *  @see com.novell.ldap.LDAPCompareAttrNames
+ * @see <a href="../../../../doc/com/novell/ldap/LDAPCompareAttrNames.html">
+            com.novell.ldap.CompareAttrNames</a>
  */
 public class LDAPCompareAttrNames implements LDAPEntryComparator
 {
@@ -41,7 +42,9 @@ public class LDAPCompareAttrNames implements LDAPEntryComparator
      * Constructs an object that sorts results by a single attribute, in
      * ascending order.
      *
-     *  @see com.novell.ldap.LDAPCompareAttrNames#LDAPCompareAttrNames(String)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPCompareAttrNames.html
+            #LDAPCompareAttrNames(java.lang.String)">
+            com.novell.ldap.LDAPCompareAttrNames.LDAPCompareAttrNames(String)</a>
      */
     public LDAPCompareAttrNames(String attrName)
     {
@@ -53,13 +56,15 @@ public class LDAPCompareAttrNames implements LDAPEntryComparator
      * Constructs an object that sorts results by a single attribute, in
      * either ascending or descending order.
      *
-     *  @see com.novell.ldap.LDAPCompareAttrNames#LDAPCompareAttrNames(String,
-            boolean)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPCompareAttrNames.html
+            #LDAPCompareAttrNames(java.lang.String, boolean)">
+            com.novell.ldap.LDAPCompareAttrNames.LDAPCompareAttrNames(String,
+            boolean)</a>
      */
     public LDAPCompareAttrNames(String attrName, boolean ascendingFlag)
     {
         comp = new com.novell.ldap.LDAPCompareAttrNames(
-        attrName, ascendingFlag);
+                                                    attrName, ascendingFlag);
         return;
     }
 
@@ -68,7 +73,9 @@ public class LDAPCompareAttrNames implements LDAPEntryComparator
      * Constructs an object that sorts by one or more attributes, in the
      * order provided, in ascending order.
      *
-     *  @see com.novell.ldap.LDAPCompareAttrNames#LDAPCompareAttrNames(String[])
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPCompareAttrNames.html
+            #LDAPCompareAttrNames(java.lang.String[])">
+            com.novell.ldap.LDAPCompareAttrNames.LDAPCompareAttrNames(String[])</a>
      */
     public LDAPCompareAttrNames(String[] attrNames)
     {
@@ -81,8 +88,10 @@ public class LDAPCompareAttrNames implements LDAPEntryComparator
      * order provided, in either ascending or descending order for each
      * attribute.
      *
-     *  @see com.novell.ldap.LDAPCompareAttrNames#LDAPCompareAttrNames(
-    String[], boolean[])
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPCompareAttrNames.html
+            #LDAPCompareAttrNames(java.lang.String[], boolean[])">
+            com.novell.ldap.LDAPCompareAttrNames.LDAPCompareAttrNames(String[],
+            boolean[])</a>
      */
     public LDAPCompareAttrNames(String[] attrNames, boolean[] ascendingFlags)
                             throws LDAPException
@@ -100,7 +109,9 @@ public class LDAPCompareAttrNames implements LDAPEntryComparator
      * Returns the locale to be used for sorting, if a locale has been
      * specified.
      *
-     *  @see com.novell.ldap.LDAPCompareAttrNames#getLocale()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPCompareAttrNames.html
+            #getLocale()">
+            com.novell.ldap.LDAPCompareAttrNames.getLocale()</a>
      */
     public Locale getLocale ()
     {
@@ -110,7 +121,9 @@ public class LDAPCompareAttrNames implements LDAPEntryComparator
     /**
      * Sets the locale to be used for sorting.
      *
-     *  @see com.novell.ldap.LDAPCompareAttrNames#getLocale()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPCompareAttrNames.html
+            #setLocale(java.util.Locale)">
+            com.novell.ldap.LDAPCompareAttrNames.setLocale(Locale)</a>
      */
     public void setLocale (Locale locale)
     {
@@ -123,7 +136,9 @@ public class LDAPCompareAttrNames implements LDAPEntryComparator
      * the purpose of sorting, based on the attribute name or names provided
      * isGreater returns true.
      *
-     *  @see com.novell.ldap.LDAPCompareAttrNames#isGreater(LDAPEntry,LDAPEntry)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPCompareAttrNames.html
+            #isGreater(com.novell.ldap.LDAPEntry, com.novell.ldap.LDAPEntry)">
+            com.novell.ldap.LDAPCompareAttrNames.isGreater(LDAPEntry, Entry)</a>
      */
     public boolean isGreater (LDAPEntry entry1, LDAPEntry entry2)
     {
