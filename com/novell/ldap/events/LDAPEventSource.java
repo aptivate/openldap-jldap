@@ -144,7 +144,7 @@ public abstract class LDAPEventSource {
     }
 
     /**
-     * This method creates the instance of EventsGenerator Thread. which
+     * This method creates the instance of EventsGenerator Thread, which
      * transforms the ldapresponse received into events.
      *
      * @param queue LDAPMessageQueue for checking the events.

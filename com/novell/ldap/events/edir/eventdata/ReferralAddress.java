@@ -31,8 +31,10 @@ import com.novell.ldap.asn1.ASN1Sequence;
  * </p>
  * 
  * <p>
- * <b>Note:</b>Please refer the JLDAP SDK Documentation for details of all
- * the properties. {@link http://developer.novell.com/ndk/jldap.htm }.
+ * <b>Note: </b>Please refer the JLDAP SDK Documentation at 
+ * <a href="http://developer.novell.com/ndk/jldap.htm" target="_blank">
+ * http://developer.novell.com/ndk/jldap.htm</a> for details of all
+ * the properties. 
  * </p>
  */
 public class ReferralAddress {
