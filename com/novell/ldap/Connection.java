@@ -124,7 +124,7 @@ final class Connection
     // these to be local variables that can be modified using
     // the setProperty method.
     /* package */
-    static String sdk = new String("2.0");
+    static String sdk = new String("3.0");
     /* package */
     static Integer protocol = new Integer(3);
     /* package */
