@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.86 2001/03/05 21:55:22 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.87 2001/03/08 20:59:37 javed Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -1296,12 +1296,12 @@ public class LDAPConnection implements Cloneable
         }
         LDAPResponse res = (LDAPResponse)listener.getResponse();
         if( res != null) {
-            
+
             // Set local copy of responseControls synchronously if there were any
 		    synchronized (responseCtlSemaphore) {
 			    responseCtls = res.getControls();
 		    }
-    		
+
             res.chkResultCode();
         }
         return;
@@ -1801,7 +1801,18 @@ public class LDAPConnection implements Cloneable
             Debug.trace( Debug.apiRequests, name +
             "connect(" + host + ", " + port + ")");
         }
-        conn = conn.destroyClone( true, host, port);
+
+        // Step through the space-delimited list
+        StringTokenizer hostList = new StringTokenizer(host," ");
+        while (hostList.hasMoreTokens()) {
+            try{
+                conn = conn.destroyClone( true, hostList.nextToken(), port);
+                break;
+            }catch (LDAPException LE){
+                if (!hostList.hasMoreTokens())
+                    throw LE;
+            }
+        }
         return;
     }
 
@@ -3580,7 +3591,7 @@ public class LDAPConnection implements Cloneable
                 if( ex instanceof LDAPReferralException) {
                     throw (LDAPReferralException)ex;
                 } else {
-                    
+
                     // Connecting to referred server
                     LDAPReferralException rex = new LDAPReferralException(
                         LDAPExceptionMessageResource.REFERRAL_ERROR, ex);

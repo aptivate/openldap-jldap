@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.42 2001/03/08 20:59:39 javed Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.43 2001/03/09 17:54:44 javed Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -318,6 +318,7 @@ public final class Connection implements Runnable
             }
         } catch(IOException ioe) {
             // Unable to connect to server host:port
+            freeBindSemaphore(semId);
             throw new LDAPException(
               LDAPExceptionMessageResource.CONNECTION_ERROR,
               new Object[] { host, new Integer(port) },
@@ -501,7 +502,7 @@ public final class Connection implements Runnable
     {
         int id = msg.getMessageID();
         OutputStream myOut = out;
-        
+
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.messages, name + "Writing Message(" + id + ")");
         }
@@ -838,7 +839,7 @@ public final class Connection implements Runnable
 						// Notify any listeners that might have been registered
 						notifyAllUnsolicitedListeners(msg);
 
-						// Was this a server shutdown unsolicited notification.  IF so 
+						// Was this a server shutdown unsolicited notification.  IF so
 						// we quit. Actually calling the return will first transfer
 						// control to the finally clause which will do the necessary
 						// clean up.  Note this check could get expensive once junta
@@ -874,7 +875,7 @@ public final class Connection implements Runnable
                     host + ":" + port + ", shutdown=" + shutdown +
                     "\n\t" + ioe.toString());
             }
-			
+
 			if( ! shutdown) {
                 // Connection lost waiting for results from host:port
                 notify = new LocalException(
@@ -995,7 +996,7 @@ public final class Connection implements Runnable
 		LDAPMessage extendedLDAPMessage = new LDAPExtendedResponse(message);
 		String notificationOID = ((LDAPExtendedResponse)extendedLDAPMessage).getID();
 		if (notificationOID.equals(LDAPConnection.SERVER_SHUTDOWN_OID)) {
-			
+
 			if( Debug.LDAP_DEBUG ) {
 				Debug.trace( Debug.messages, name + "Received server shutdown notification!");
 			}
