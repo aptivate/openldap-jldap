@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: ReceiveAllUpdatesRequest.java,v 1.6 2000/08/21 18:35:47 vtag Exp $
+ * $Id: ReceiveAllUpdatesRequest.java,v 1.7 2000/08/28 22:19:20 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -55,14 +55,14 @@ public class ReceiveAllUpdatesRequest extends LDAPExtendedOperation {
             
             if ( (partitionRoot == null) || (toServerDN == null) || (fromServerDN == null) )
                 throw new LDAPException("Invalid parameter",
-				                        LDAPException.PARAM_ERROR);	                        
+                                    LDAPException.PARAM_ERROR);                           
             
             ByteArrayOutputStream encodedData = new ByteArrayOutputStream();
-			BEREncoder encoder  = new BEREncoder();
+         LBEREncoder encoder  = new LBEREncoder();
                                                     
-		    ASN1OctetString asn1_partitionRoot = new ASN1OctetString(partitionRoot);
-		    ASN1OctetString asn1_toServerDN = new ASN1OctetString(toServerDN);
-		    ASN1OctetString asn1_fromServerDN = new ASN1OctetString(fromServerDN);
+          ASN1OctetString asn1_partitionRoot = new ASN1OctetString(partitionRoot);
+          ASN1OctetString asn1_toServerDN = new ASN1OctetString(toServerDN);
+          ASN1OctetString asn1_fromServerDN = new ASN1OctetString(fromServerDN);
             
             asn1_partitionRoot.encode(encoder, encodedData);
             asn1_toServerDN.encode(encoder, encodedData);
@@ -71,10 +71,10 @@ public class ReceiveAllUpdatesRequest extends LDAPExtendedOperation {
             setValue(encodedData.toByteArray());
             
         }
-		catch(IOException ioe) {
-			throw new LDAPException("Encoding Error",
-				                     LDAPException.ENCODING_ERROR);
-		}
+      catch(IOException ioe) {
+         throw new LDAPException("Encoding Error",
+                                 LDAPException.ENCODING_ERROR);
+      }
    }
 
 }

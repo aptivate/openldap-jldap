@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: GetEffectivePrivilegesResponse.java,v 1.5 2000/08/21 18:35:46 vtag Exp $
+ * $Id: GetEffectivePrivilegesResponse.java,v 1.6 2000/08/28 22:19:19 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -36,7 +36,7 @@ public class GetEffectivePrivilegesResponse implements ParsedExtendedResponse {
     *   &nbsp;&nbsp;&nbsp;&nbsp;    privileges     INTEGER
     */   
    public GetEffectivePrivilegesResponse (LDAPExtendedResponse r) 
-        	throws IOException {
+         throws IOException {
         
         // parse the contents of the reply
         byte [] returnedValue = r.getValue();
@@ -44,7 +44,7 @@ public class GetEffectivePrivilegesResponse implements ParsedExtendedResponse {
             throw new IOException("No returned value");
         
         // Create a decoder object
-        BERDecoder decoder = new BERDecoder();
+        LBERDecoder decoder = new LBERDecoder();
         if (decoder == null)
             throw new IOException("Decoding error");
 

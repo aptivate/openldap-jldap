@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: ListReplicasResponse.java,v 1.2 2000/08/21 18:35:46 vtag Exp $
+ * $Id: ListReplicasResponse.java,v 1.3 2000/08/28 22:19:19 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -37,7 +37,7 @@ public class ListReplicasResponse implements ParsedExtendedResponse {
     *
     */   
    public ListReplicasResponse (LDAPExtendedResponse r) 
-        	throws IOException {
+         throws IOException {
         
         // parse the contents of the reply
         byte [] returnedValue = r.getValue();
@@ -45,7 +45,7 @@ public class ListReplicasResponse implements ParsedExtendedResponse {
             throw new IOException("No returned value");
         
         // Create a decoder object
-        BERDecoder decoder = new BERDecoder();
+        LBERDecoder decoder = new LBERDecoder();
         if (decoder == null)
             throw new IOException("Decoding error");
            
@@ -59,17 +59,17 @@ public class ListReplicasResponse implements ParsedExtendedResponse {
         replicaList = new String[len];
         
         // Copy each one into our String array
-		for(int i=0; i < len; i++) {
-		    // Get the next ASN1Octet String in the sequence
-		    ASN1OctetString asn1_nextReplica = (ASN1OctetString)returnedSequence.get(i);
-		    if (asn1_nextReplica == null)
+      for(int i=0; i < len; i++) {
+          // Get the next ASN1Octet String in the sequence
+          ASN1OctetString asn1_nextReplica = (ASN1OctetString)returnedSequence.get(i);
+          if (asn1_nextReplica == null)
                 throw new IOException("Decoding error");
             
             // Convert to a string
-			replicaList[i] = new String(asn1_nextReplica.getContent());
-			if (replicaList[i] == null)
+         replicaList[i] = new String(asn1_nextReplica.getContent());
+         if (replicaList[i] == null)
                 throw new IOException("Decoding error");
-		}
+      }
 
    }
    

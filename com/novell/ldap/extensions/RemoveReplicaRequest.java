@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: RemoveReplicaRequest.java,v 1.6 2000/08/21 18:35:48 vtag Exp $
+ * $Id: RemoveReplicaRequest.java,v 1.7 2000/08/28 22:19:21 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -59,14 +59,14 @@ public class RemoveReplicaRequest extends LDAPExtendedOperation {
             
             if ( (dn == null) || (serverDN == null) )
                 throw new LDAPException("Invalid parameter",
-				                        LDAPException.PARAM_ERROR);
-			
-		    ByteArrayOutputStream encodedData = new ByteArrayOutputStream();
-			BEREncoder encoder  = new BEREncoder();
+                                    LDAPException.PARAM_ERROR);
+         
+          ByteArrayOutputStream encodedData = new ByteArrayOutputStream();
+         LBEREncoder encoder  = new LBEREncoder();
                                      
-		    ASN1Integer asn1_flags = new ASN1Integer(flags);
-		    ASN1OctetString asn1_serverDN = new ASN1OctetString(serverDN);
-		    ASN1OctetString asn1_dn = new ASN1OctetString(dn);
+          ASN1Integer asn1_flags = new ASN1Integer(flags);
+          ASN1OctetString asn1_serverDN = new ASN1OctetString(serverDN);
+          ASN1OctetString asn1_dn = new ASN1OctetString(dn);
 
             asn1_flags.encode(encoder, encodedData);
             asn1_serverDN.encode(encoder, encodedData);
@@ -75,10 +75,10 @@ public class RemoveReplicaRequest extends LDAPExtendedOperation {
             setValue(encodedData.toByteArray());
             
         }
-		catch(IOException ioe) {
-			throw new LDAPException("Encoding Error",
-				                     LDAPException.ENCODING_ERROR);
-		}
+      catch(IOException ioe) {
+         throw new LDAPException("Encoding Error",
+                                 LDAPException.ENCODING_ERROR);
+      }
    }
 
 }

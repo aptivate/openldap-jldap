@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: SendAllUpdatesRequest.java,v 1.6 2000/08/21 18:35:48 vtag Exp $
+ * $Id: SendAllUpdatesRequest.java,v 1.7 2000/08/28 22:19:21 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -53,12 +53,12 @@ public class SendAllUpdatesRequest extends LDAPExtendedOperation {
             
             if ( (partitionRoot == null) || (origServerDN == null) )
                 throw new LDAPException("Invalid parameter",
-				                        LDAPException.PARAM_ERROR);
-			ByteArrayOutputStream encodedData = new ByteArrayOutputStream();
-			BEREncoder encoder  = new BEREncoder();
+                                    LDAPException.PARAM_ERROR);
+         ByteArrayOutputStream encodedData = new ByteArrayOutputStream();
+         LBEREncoder encoder  = new LBEREncoder();
                                                     
-		    ASN1OctetString asn1_partitionRoot = new ASN1OctetString(partitionRoot);
-		    ASN1OctetString asn1_origServerDN = new ASN1OctetString(origServerDN);
+          ASN1OctetString asn1_partitionRoot = new ASN1OctetString(partitionRoot);
+          ASN1OctetString asn1_origServerDN = new ASN1OctetString(origServerDN);
 
             asn1_partitionRoot.encode(encoder, encodedData);
             asn1_origServerDN.encode(encoder, encodedData);
@@ -66,10 +66,10 @@ public class SendAllUpdatesRequest extends LDAPExtendedOperation {
             setValue(encodedData.toByteArray());
 
         }
-		catch(IOException ioe) {
-			throw new LDAPException("Encoding Error",
-				                     LDAPException.ENCODING_ERROR);
-		}
+      catch(IOException ioe) {
+         throw new LDAPException("Encoding Error",
+                                 LDAPException.ENCODING_ERROR);
+      }
    }
 
 }

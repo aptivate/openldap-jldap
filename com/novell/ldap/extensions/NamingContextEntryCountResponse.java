@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: NamingContextEntryCountResponse.java,v 1.6 2000/08/21 18:35:47 vtag Exp $
+ * $Id: NamingContextEntryCountResponse.java,v 1.7 2000/08/28 22:19:20 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -38,7 +38,7 @@ public class NamingContextEntryCountResponse implements ParsedExtendedResponse {
     *
     */   
    public NamingContextEntryCountResponse (LDAPExtendedResponse r) 
-        	throws IOException {
+         throws IOException {
         
         // parse the contents of the reply
         byte [] returnedValue = r.getValue();
@@ -46,7 +46,7 @@ public class NamingContextEntryCountResponse implements ParsedExtendedResponse {
             throw new IOException("No returned value");
         
         // Create a decoder object
-        BERDecoder decoder = new BERDecoder();
+        LBERDecoder decoder = new LBERDecoder();
         if (decoder == null)
             throw new IOException("Decoding error");
             

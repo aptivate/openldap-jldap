@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: SchemaSyncRequest.java,v 1.6 2000/08/21 18:35:48 vtag Exp $
+ * $Id: SchemaSyncRequest.java,v 1.7 2000/08/28 22:19:21 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -51,13 +51,13 @@ public class SchemaSyncRequest extends LDAPExtendedOperation {
             
             if (serverName == null)
                 throw new LDAPException("Invalid parameter",
-				                        LDAPException.PARAM_ERROR);
-			
-		    ByteArrayOutputStream encodedData = new ByteArrayOutputStream();
-			BEREncoder encoder  = new BEREncoder();
+                                    LDAPException.PARAM_ERROR);
+         
+          ByteArrayOutputStream encodedData = new ByteArrayOutputStream();
+         LBEREncoder encoder  = new LBEREncoder();
                                                     
-		    ASN1OctetString asn1_serverName = new ASN1OctetString(serverName);
-		    ASN1Integer asn1_delay = new ASN1Integer(delay);
+          ASN1OctetString asn1_serverName = new ASN1OctetString(serverName);
+          ASN1Integer asn1_delay = new ASN1Integer(delay);
 
             asn1_serverName.encode(encoder, encodedData);
             asn1_delay.encode(encoder, encodedData);
@@ -65,10 +65,10 @@ public class SchemaSyncRequest extends LDAPExtendedOperation {
             setValue(encodedData.toByteArray());
             
         }
-		catch(IOException ioe) {
-			throw new LDAPException("Encoding Error",
-				                     LDAPException.ENCODING_ERROR);
-		}
+      catch(IOException ioe) {
+         throw new LDAPException("Encoding Error",
+                                 LDAPException.ENCODING_ERROR);
+      }
    }
 
 }

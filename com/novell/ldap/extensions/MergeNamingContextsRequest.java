@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: MergeNamingContextsRequest.java,v 1.8 2000/08/21 18:35:46 vtag Exp $
+ * $Id: MergeNamingContextsRequest.java,v 1.9 2000/08/28 22:19:19 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -59,13 +59,13 @@ public class MergeNamingContextsRequest extends LDAPExtendedOperation {
             
             if (dn == null)
                 throw new LDAPException("Invalid parameter",
-				                        LDAPException.PARAM_ERROR);
+                                    LDAPException.PARAM_ERROR);
             
             ByteArrayOutputStream encodedData = new ByteArrayOutputStream();
-			BEREncoder encoder  = new BEREncoder();
+         LBEREncoder encoder  = new LBEREncoder();
                                      
-		    ASN1Integer asn1_flags = new ASN1Integer(flags);
-		    ASN1OctetString asn1_dn = new ASN1OctetString(dn);
+          ASN1Integer asn1_flags = new ASN1Integer(flags);
+          ASN1OctetString asn1_dn = new ASN1OctetString(dn);
 
             asn1_flags.encode(encoder, encodedData);
             asn1_dn.encode(encoder, encodedData);
@@ -73,10 +73,10 @@ public class MergeNamingContextsRequest extends LDAPExtendedOperation {
             setValue(encodedData.toByteArray());
             
         }
-		catch(IOException ioe) {
-			throw new LDAPException("Encoding Error",
-				                     LDAPException.ENCODING_ERROR);
-		}
+      catch(IOException ioe) {
+         throw new LDAPException("Encoding Error",
+                                 LDAPException.ENCODING_ERROR);
+      }
    }
 
 }

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: NamingContextEntryCountRequest.java,v 1.6 2000/08/21 18:35:47 vtag Exp $
+ * $Id: NamingContextEntryCountRequest.java,v 1.7 2000/08/28 22:19:20 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -57,21 +57,21 @@ import java.io.*;
             
             if ( (dn == null) )
                 throw new LDAPException("Invalid parameter",
-				                        LDAPException.PARAM_ERROR);
-				                        
+                                    LDAPException.PARAM_ERROR);
+                                    
             ByteArrayOutputStream encodedData = new ByteArrayOutputStream();
-			BEREncoder encoder  = new BEREncoder();
+         LBEREncoder encoder  = new LBEREncoder();
 
-		    ASN1OctetString asn1_dn = new ASN1OctetString(dn);
+          ASN1OctetString asn1_dn = new ASN1OctetString(dn);
 
             asn1_dn.encode(encoder, encodedData);
             
             setValue(encodedData.toByteArray());
             
         }
-		catch(IOException ioe) {
-			throw new LDAPException("Encoding Error",
-				                     LDAPException.ENCODING_ERROR);
-		}
+      catch(IOException ioe) {
+         throw new LDAPException("Encoding Error",
+                                 LDAPException.ENCODING_ERROR);
+      }
      }
 }

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: NamingContextSyncRequest.java,v 1.6 2000/08/21 18:35:47 vtag Exp $
+ * $Id: NamingContextSyncRequest.java,v 1.7 2000/08/28 22:19:20 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -56,14 +56,14 @@ public class NamingContextSyncRequest extends LDAPExtendedOperation {
             
             if ( (serverName == null) || (partitionRoot == null) )
                 throw new LDAPException("Invalid parameter",
-				                        LDAPException.PARAM_ERROR);
-			
-			ByteArrayOutputStream encodedData = new ByteArrayOutputStream();
-			BEREncoder encoder  = new BEREncoder();
+                                    LDAPException.PARAM_ERROR);
+         
+         ByteArrayOutputStream encodedData = new ByteArrayOutputStream();
+         LBEREncoder encoder  = new LBEREncoder();
                                                     
-		    ASN1OctetString asn1_serverName = new ASN1OctetString(serverName);
-		    ASN1OctetString asn1_partitionRoot = new ASN1OctetString(partitionRoot);
-		    ASN1Integer asn1_delay = new ASN1Integer(delay);
+          ASN1OctetString asn1_serverName = new ASN1OctetString(serverName);
+          ASN1OctetString asn1_partitionRoot = new ASN1OctetString(partitionRoot);
+          ASN1Integer asn1_delay = new ASN1Integer(delay);
             
             asn1_serverName.encode(encoder, encodedData);
             asn1_partitionRoot.encode(encoder, encodedData);
@@ -72,10 +72,10 @@ public class NamingContextSyncRequest extends LDAPExtendedOperation {
             setValue(encodedData.toByteArray());
              
         }
-		catch(IOException ioe) {
-			throw new LDAPException("Encoding Error",
-				                     LDAPException.ENCODING_ERROR);
-		}
+      catch(IOException ioe) {
+         throw new LDAPException("Encoding Error",
+                                 LDAPException.ENCODING_ERROR);
+      }
    }
 
 }

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: ListReplicasRequest.java,v 1.2 2000/08/21 18:35:46 vtag Exp $
+ * $Id: ListReplicasRequest.java,v 1.3 2000/08/28 22:19:19 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -51,22 +51,22 @@ public class ListReplicasRequest extends LDAPExtendedOperation {
             
             if (serverName == null)
                 throw new LDAPException("Invalid parameter",
-				                        LDAPException.PARAM_ERROR);
-			
-			ByteArrayOutputStream encodedData = new ByteArrayOutputStream();
-			BEREncoder encoder  = new BEREncoder();
+                                    LDAPException.PARAM_ERROR);
+         
+         ByteArrayOutputStream encodedData = new ByteArrayOutputStream();
+         LBEREncoder encoder  = new LBEREncoder();
                                                  
-		    ASN1OctetString asn1_serverName = new ASN1OctetString(serverName);
+          ASN1OctetString asn1_serverName = new ASN1OctetString(serverName);
             
             asn1_serverName.encode(encoder, encodedData);
             
             setValue(encodedData.toByteArray());
             
         }
-		catch(IOException ioe) {
-			throw new LDAPException("Encoding Error",
-				                     LDAPException.ENCODING_ERROR);
-		}
+      catch(IOException ioe) {
+         throw new LDAPException("Encoding Error",
+                                 LDAPException.ENCODING_ERROR);
+      }
    }
 
 }

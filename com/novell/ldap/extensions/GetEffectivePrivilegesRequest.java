@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: GetEffectivePrivilegesRequest.java,v 1.5 2000/08/21 18:35:46 vtag Exp $
+ * $Id: GetEffectivePrivilegesRequest.java,v 1.6 2000/08/28 22:19:19 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -61,26 +61,26 @@ import java.io.*;
             
             if ( (dn == null) )
                 throw new LDAPException("Invalid parameter",
-				                        LDAPException.PARAM_ERROR);
-			
-			ByteArrayOutputStream encodedData = new ByteArrayOutputStream();
-			BEREncoder encoder  = new BEREncoder();
+                                    LDAPException.PARAM_ERROR);
+         
+         ByteArrayOutputStream encodedData = new ByteArrayOutputStream();
+         LBEREncoder encoder  = new LBEREncoder();
                                
-		    ASN1OctetString asn1_dn = new ASN1OctetString(dn);
-		    ASN1OctetString asn1_trusteeDN = new ASN1OctetString(trusteeDN);
-		    ASN1OctetString asn1_attrName = new ASN1OctetString(attrName);
+          ASN1OctetString asn1_dn = new ASN1OctetString(dn);
+          ASN1OctetString asn1_trusteeDN = new ASN1OctetString(trusteeDN);
+          ASN1OctetString asn1_attrName = new ASN1OctetString(attrName);
             
             asn1_dn.encode(encoder, encodedData);
             asn1_trusteeDN.encode(encoder, encodedData);
             asn1_attrName.encode(encoder, encodedData);
             
             setValue(encodedData.toByteArray());
-            	    
+                   
         }
-		catch(IOException ioe) {
-			throw new LDAPException("Encoding Error",
-				                     LDAPException.ENCODING_ERROR);
-		}
+      catch(IOException ioe) {
+         throw new LDAPException("Encoding Error",
+                                 LDAPException.ENCODING_ERROR);
+      }
         
      }
 }

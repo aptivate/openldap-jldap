@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: RemoveOrphanNamingContextRequest.java,v 1.6 2000/08/21 18:35:47 vtag Exp $
+ * $Id: RemoveOrphanNamingContextRequest.java,v 1.7 2000/08/28 22:19:20 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -53,13 +53,13 @@ public class RemoveOrphanNamingContextRequest extends LDAPExtendedOperation {
             
             if ( (serverDN == null) || (contextName == null) )
                 throw new LDAPException("Invalid parameter",
-				                        LDAPException.PARAM_ERROR);
+                                    LDAPException.PARAM_ERROR);
             
             ByteArrayOutputStream encodedData = new ByteArrayOutputStream();
-			BEREncoder encoder  = new BEREncoder();
+         LBEREncoder encoder  = new LBEREncoder();
                                
-		    ASN1OctetString asn1_serverDN = new ASN1OctetString(serverDN);
-		    ASN1OctetString asn1_contextName = new ASN1OctetString(contextName);
+          ASN1OctetString asn1_serverDN = new ASN1OctetString(serverDN);
+          ASN1OctetString asn1_contextName = new ASN1OctetString(contextName);
             
             asn1_serverDN.encode(encoder, encodedData);
             asn1_contextName.encode(encoder, encodedData);
@@ -67,10 +67,10 @@ public class RemoveOrphanNamingContextRequest extends LDAPExtendedOperation {
             setValue(encodedData.toByteArray());
             
         }
-		catch(IOException ioe) {
-			throw new LDAPException("Encoding Error",
-				                     LDAPException.ENCODING_ERROR);
-		}
+      catch(IOException ioe) {
+         throw new LDAPException("Encoding Error",
+                                 LDAPException.ENCODING_ERROR);
+      }
    }
 
 }
