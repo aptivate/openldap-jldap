@@ -28,7 +28,7 @@ import java.util.NoSuchElementException;
  * operation. It provides access to all results received during the
  * operation (entries and exceptions).</p>
  *
- *  <p>Sample Code: <a href="http://developer.novell.com/ndk/doc/samplecode/jldap_sample/asynchronous/Searchas.java.html">Searchas.java</p>
+ *  <p>Sample Code: <a href="http://developer.novell.com/ndk/doc/samplecode/jldap_sample/jldap_sample/Search.java.html">Search.java</p>
  *
  * @see LDAPConnection#search
  */
