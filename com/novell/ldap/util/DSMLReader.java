@@ -117,9 +117,15 @@ public class DSMLReader implements LDAPReader {
     public DSMLReader (String dsmlFile)
                 throws LDAPLocalException, java.io.FileNotFoundException
     {
-        this( new java.io.BufferedInputStream( new java.io.FileInputStream(dsmlFile)) );
+        this( new java.io.FileReader(dsmlFile) );
     }
+
     public DSMLReader (java.io.InputStream inputStream) throws LDAPLocalException {
+        this( new java.io.InputStreamReader(inputStream));
+    }
+
+
+    public DSMLReader (java.io.Reader reader) throws LDAPLocalException {
         // Create an XML Parser
 
         try {
@@ -134,24 +140,28 @@ public class DSMLReader implements LDAPReader {
             parser.setContentHandler(handler);
             // parse the document
 
-            InputSource is = new InputSource(inputStream);
+            InputSource is = new InputSource(reader);
             parser.parse(is);
         } catch (FactoryConfigurationError e) {
             throw new LDAPLocalException(
                     "The SAX parser factory is configured incorrectly:" + e,
-                    LDAPException.LOCAL_ERROR);
+                    LDAPException.LOCAL_ERROR,
+                    e);
         } catch (ParserConfigurationException e) {
             throw new LDAPLocalException(
                     "The SAX parser is configured incorrectly:" + e,
-                    LDAPException.LOCAL_ERROR);
+                    LDAPException.LOCAL_ERROR,
+                    e);
         } catch (SAXException e) {
             throw new LDAPLocalException(
                     "The following error occured while parsing DSML: " + e,
-                    LDAPException.LOCAL_ERROR);
+                    LDAPException.DECODING_ERROR,
+                    e);
         } catch (IOException e) {
             throw new LDAPLocalException(
                     "The following error occured while reading DSML: " + e,
-                    LDAPException.LOCAL_ERROR);
+                    LDAPException.LOCAL_ERROR,
+                    e);
         }
     }
 

@@ -10,7 +10,7 @@ import java.util.Iterator;
 public class DSMLWriter implements LDAPWriter {
 
     public final static LDAPRequest currentChange = null;
-    private OutputStreamWriter out = null;
+    private Writer out = null;
     private int state = NEW_BATCH;
     private static final int NEW_BATCH = 0;
     private static final int REQUEST_BATCH = 1;
@@ -33,8 +33,36 @@ public class DSMLWriter implements LDAPWriter {
         out = new OutputStreamWriter(stream);
     }
 
-    public void writeOperation(PrintStream ps) {
-        this.out = new OutputStreamWriter(ps);
+    public DSMLWriter(Writer writer){
+        out = writer;
+    }
+
+    public void writeError(LDAPException e) throws IOException, LDAPLocalException {
+        //check if we are in a response, if not set the state and write DSML tag
+        checkState(true);
+        newLine(1);
+        out.write("<errorResponse type=\"");
+        switch (e.getResultCode()){
+            case LDAPException.DECODING_ERROR:
+                out.write("malformedRequest\">");
+                break;
+            case LDAPException.LOCAL_ERROR:
+                out.write("gatewayInternalError\">");
+                break;
+            case LDAPException.INVALID_CREDENTIALS:
+                out.write("authenticationFailed\">");
+                break;
+            default:
+                out.write("other\">");
+        }
+        newLine(2);
+        out.write("<message>");
+        newLine(3);
+        out.write(e.toString());
+        newLine(2);
+        out.write("</message>");
+        newLine(1);
+        out.write("</errorResponse>");
     }
 
     public void finish() throws IOException {
@@ -49,8 +77,8 @@ public class DSMLWriter implements LDAPWriter {
         out.close();
     }
 
-    public void writeOperation(LDAPMessage messageToWrite) throws IOException,
-            LDAPLocalException {
+    public void writeOperation(LDAPMessage messageToWrite) throws IOException, LDAPLocalException
+    {
         //check state and write batch tags if neccessary
         if ((messageToWrite instanceof LDAPResponse) ||
             (messageToWrite instanceof LDAPSearchResult) ||

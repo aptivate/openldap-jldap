@@ -69,34 +69,32 @@ class DSMLHandler implements ContentHandler, ErrorHandler
 
     /** state contains the internal parsing state **/
     private int state = START;
-    private static java.util.HashMap requestTags = null;
+    private static final java.util.HashMap requestTags;
 
     static {  //Initialize requestTags
-        if (requestTags == null){
-            requestTags = new java.util.HashMap(23, 9999);
-            //High load factor means optimized for lookup time
-            requestTags.put("batchRequest", new Integer(BATCH_REQUEST));
-            requestTags.put("authRequest",  new Integer(AUTH_REQUEST));
-            requestTags.put("modifyRequest",new Integer(MODIFY_REQUEST));
-            requestTags.put("searchRequest",new Integer(SEARCH_REQUEST));
-            requestTags.put("addRequest",   new Integer(ADD_REQUEST));
-            requestTags.put("delRequest",new Integer(DELETE_REQUEST));
-            requestTags.put("modDNRequest",  new Integer(MODIFY_DN_REQUEST));
-            requestTags.put("compareRequest",   new Integer(COMPARE_REQUEST));
-            requestTags.put("extendedRequest",  new Integer(EXTENDED_REQUEST));
-            requestTags.put("batchResponse",new Integer(BATCH_RESPONSE));
-            requestTags.put("assertion",    new Integer(ASSERTION));
-            requestTags.put("value",        new Integer(VALUE));
-            requestTags.put("attributes",   new Integer(ATTRIBUTES));
-            requestTags.put("attribute",    new Integer(ATTRIBUTE));
-            requestTags.put("filter",       new Integer(FILTER));
-            requestTags.put("substrings",   new Integer(SUBSTRINGS));
-            requestTags.put("final",        new Integer(FINAL));
-            requestTags.put("attr",         new Integer(ADD_ATTRIBUTE));
-            requestTags.put("modification", new Integer(MODIFICATION));
-            requestTags.put("requestName",  new Integer(X_NAME));
-            requestTags.put("requestValue", new Integer(X_VALUE));
-        }
+        requestTags = new java.util.HashMap(23, 9999);
+        //High load factor means optimized for lookup time
+        requestTags.put("batchRequest", new Integer(BATCH_REQUEST));
+        requestTags.put("authRequest",  new Integer(AUTH_REQUEST));
+        requestTags.put("modifyRequest",new Integer(MODIFY_REQUEST));
+        requestTags.put("searchRequest",new Integer(SEARCH_REQUEST));
+        requestTags.put("addRequest",   new Integer(ADD_REQUEST));
+        requestTags.put("delRequest",new Integer(DELETE_REQUEST));
+        requestTags.put("modDNRequest",  new Integer(MODIFY_DN_REQUEST));
+        requestTags.put("compareRequest",   new Integer(COMPARE_REQUEST));
+        requestTags.put("extendedRequest",  new Integer(EXTENDED_REQUEST));
+        requestTags.put("batchResponse",new Integer(BATCH_RESPONSE));
+        requestTags.put("assertion",    new Integer(ASSERTION));
+        requestTags.put("value",        new Integer(VALUE));
+        requestTags.put("attributes",   new Integer(ATTRIBUTES));
+        requestTags.put("attribute",    new Integer(ATTRIBUTE));
+        requestTags.put("filter",       new Integer(FILTER));
+        requestTags.put("substrings",   new Integer(SUBSTRINGS));
+        requestTags.put("final",        new Integer(FINAL));
+        requestTags.put("attr",         new Integer(ADD_ATTRIBUTE));
+        requestTags.put("modification", new Integer(MODIFICATION));
+        requestTags.put("requestName",  new Integer(X_NAME));
+        requestTags.put("requestValue", new Integer(X_VALUE));
     }
 
     // SAX calls this method when it encounters an element
