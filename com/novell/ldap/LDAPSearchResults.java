@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResults.java,v 1.12 2000/09/28 15:17:41 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResults.java,v 1.13 2000/09/28 15:28:45 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -31,12 +31,16 @@ import java.io.*;
 public class LDAPSearchResults implements Enumeration
 {
 
-    private Vector entries;
-    private Enumeration elements;
-    private int batchSize;
-    private boolean completed = false;
-    private int count = 0;
-    private LDAPControl[] controls;
+    private Vector entries;             // Search entries
+    private Enumeration entryElements;  // Enumeration of entries
+    
+    private Vector searchRefs;          // Search Result References
+    private Enumeration refElements;    // Enumeration of References
+    
+    private int batchSize;              // Application specified batch size
+    private boolean completed = false;  // All entries received
+    private int count = 0;              // Number of entries read
+    private LDAPControl[] controls = null; // Last set of controls
     private LDAPSearchListener listener;
 
     /**
@@ -46,13 +50,16 @@ public class LDAPSearchResults implements Enumeration
      *<br><br>
      * @param listener The listener for the search results.
      */
-    public LDAPSearchResults(int batchSize, LDAPSearchListener listener)
+    /* package */
+    LDAPSearchResults(int batchSize, LDAPSearchListener listener)
     {
+        int vectorIncr = (batchSize == 0) ? 64 : 0;
         this.listener = listener;
-        entries = new Vector((batchSize == 0) ? 64 : batchSize);
+        entries = new Vector( (batchSize == 0) ? 64 : batchSize, vectorIncr );
+        entries = new Vector( (batchSize == 0) ? 64 : batchSize, vectorIncr );
         this.batchSize = (batchSize == 0) ? Integer.MAX_VALUE : batchSize;
         completed = getBatchOfResults(); // initialize the enumeration
-        elements = entries.elements();
+        entryElements = entries.elements();
     }
 
     /*
@@ -69,7 +76,6 @@ public class LDAPSearchResults implements Enumeration
      */
     public int getCount()
     {
-        // when referrals are chased, they need to be added here!!!
         return count;
     }
 
@@ -102,13 +108,13 @@ public class LDAPSearchResults implements Enumeration
      */
     public boolean hasMoreElements()
     {
-        if(elements.hasMoreElements() == true)
+        if(entryElements.hasMoreElements() == true)
             return true;
         if(completed == false) { // reload the enumeration
             entries.setSize(0);
             completed = getBatchOfResults();
-            elements = entries.elements();
-            return elements.hasMoreElements();
+            entryElements = entries.elements();
+            return entryElements.hasMoreElements();
         }
     return false;
     }
@@ -132,13 +138,19 @@ public class LDAPSearchResults implements Enumeration
      */
     public LDAPEntry next() throws LDAPException
     {
-        Object element = elements.nextElement();
+        // Check if need to reload the enumeration
+        if( ( completed == false) && (entryElements.hasMoreElements() == false) ) {
+            entries.setSize(0);
+            completed = getBatchOfResults();
+            entryElements = entries.elements();
+        }
+        Object element = entryElements.nextElement();
         if( Debug.LDAP_DEBUG ) {
             Debug.trace( Debug.messages,
                 "LDAPSearchResults: next: found object " +
                 element.getClass().getName());
         }
-        if(element instanceof LDAPResponse) {
+        if(element instanceof LDAPResponse) {         // Search done w/bad status
             ((LDAPResponse)element).chkResultCode(); // will throw an exception
         }
         return (LDAPEntry)element;
@@ -159,7 +171,13 @@ public class LDAPSearchResults implements Enumeration
      */
     public Object nextElement()
     {
-        Object element = elements.nextElement();
+        // Check if need to reload the enumeration
+        if( ( completed == false) && (entryElements.hasMoreElements() == false) ) {
+            entries.setSize(0);
+            completed = getBatchOfResults();
+            entryElements = entries.elements();
+        }
+        Object element = entryElements.nextElement();
         if( Debug.LDAP_DEBUG ) {
             Debug.trace( Debug.messages,
                 "LDAPSearchResults: nextElement: found object " +
@@ -219,8 +237,11 @@ public class LDAPSearchResults implements Enumeration
         for(int i=0; i<batchSize;) {
             try {
                 if((msg = listener.getResponse()) != null) {
-                    controls = msg.getControls();
-                    if(msg instanceof LDAPSearchResult) {
+                    // Only save controls if there are some
+                    LDAPControl[] ctls = msg.getControls();
+                    if( ctls != null )
+                        controls = ctls;
+                    if(msg instanceof LDAPSearchResult) { // Search Entry
                         entries.addElement(((LDAPSearchResult)msg).getEntry()); // can we optimize this?
                         if( Debug.LDAP_DEBUG )
                             Debug.trace( Debug.messages,
@@ -228,7 +249,7 @@ public class LDAPSearchResults implements Enumeration
                         count++;
                         i++;
                     } else 
-                    if(msg instanceof LDAPSearchResultReference) {
+                    if(msg instanceof LDAPSearchResultReference) { // Search Ref
                           if( Debug.LDAP_DEBUG )
                               Debug.trace( Debug.messages,
                                   "LDAPSearchResults: getBatchOfResults: got LDAPSearchResultReference");
@@ -248,9 +269,11 @@ public class LDAPSearchResults implements Enumeration
                     // how can we arrive here?
                     // we would have to have no responses, no message IDs and no
                     // exceptions
-                    return true;
+                    throw new RuntimeException(
+                        "LDAPSearchResults: getBatchOfResults: getResponse returned null");
                 }
             } catch(LDAPException e) { // network error
+                // ?? Shouldn't exception be returned to application????
                 // could be a client timeout result
                 //          LDAPResponse response = new LDAPResponse(e.getLDAPResultCode());
                 //          entries.addElement(response);
@@ -269,7 +292,7 @@ public class LDAPSearchResults implements Enumeration
 
         // next, clear out enumeration
         entries.setSize(0);
-        elements = entries.elements();
+        entryElements = entries.elements();
         completed = true;
     }
 }
