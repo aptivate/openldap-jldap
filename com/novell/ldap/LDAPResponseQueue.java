@@ -51,7 +51,20 @@ public class LDAPResponseQueue extends LDAPResponseListener
         return super.isResponseReceived( msgid);
     }
 
-    public void merge(LDAPListener queue2)
+   /**
+    * Merges two message queues.  It appends the current and
+    *                   future contents from another queue to this one.
+    *
+    *                  <p>After the operation, queue2.getMessageIDs()
+    *                  returns an empty array, and its outstanding responses
+    *                  have been removed and appended to this queue</p>.
+    *
+    * @param queue2    The queue that is merged from.  Following
+    *                  the merge, this queue object will no
+    *                  longer receive any data, and calls made
+    *                  to its methods will fail with a RuntimeException.
+    */
+    public void merge(LDAPMessageQueue queue2)
     {
         super.merge(queue2);
         return;

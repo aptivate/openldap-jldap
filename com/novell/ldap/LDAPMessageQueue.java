@@ -122,5 +122,5 @@ public interface LDAPMessageQueue extends LDAPListener
     *                  longer receive any data, and calls made
     *                  to its methods will fail with a RuntimeException.
     */
-   public void merge(LDAPListener queue2);
+   public void merge(LDAPMessageQueue queue2);
 }

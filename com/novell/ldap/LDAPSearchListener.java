@@ -101,6 +101,12 @@ public class LDAPSearchListener implements LDAPMessageQueue
 
     public void merge(LDAPListener queue2)
     {
+        merge( (LDAPMessageQueue)queue2);
+        return;    
+    }
+    
+    public void merge(LDAPMessageQueue queue2)
+    {
         if( queue2 instanceof LDAPResponseQueue) {
             LDAPResponseQueue q = (LDAPResponseQueue)queue2;
             if( Debug.LDAP_DEBUG) {
