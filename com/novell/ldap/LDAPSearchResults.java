@@ -108,7 +108,7 @@ public class LDAPSearchResults
      */
     public int getCount()
     {
-        return references.size() + entries.size();
+        return entryCount - entryIndex + referenceCount - referenceIndex;
     }
 
     /**
@@ -299,7 +299,7 @@ public class LDAPSearchResults
         LDAPMessage msg;
 
         // <=batchSize so that we can pick up the result-done message
-        for(int i=0; i<=batchSize; ) {
+        for(int i=0; i<batchSize; ) {
             try {
                 if((msg = queue.getResponse()) != null) {
                     // Only save controls if there are some
