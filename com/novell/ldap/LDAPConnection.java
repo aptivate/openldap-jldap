@@ -21,7 +21,7 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import com.novell.sasl.*;
+import javax.security.sasl.*;
 import javax.security.auth.callback.CallbackHandler;
 
 import com.novell.ldap.*;
