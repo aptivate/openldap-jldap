@@ -51,9 +51,8 @@ public class LDIFReader extends LDIF implements LDAPReader {
     private int                version;                   // LDIF file version
     private int                reqType;                   // int rep. of name
     private int                cNumber = 0;               // number of controls
-    private int                fNumber;                   // number of fields
+    private int                fNumber = 0;               // number of fields
     private byte[]             bytes= new byte[0];        // for any byte value
-    private boolean            hasControls = false;       // indicate req ctrls
     private String             entryDN;                   // entry dn
     private String[]           modInfo;                   // for moddn
     private StringBuffer       bLine = null;
@@ -339,8 +338,7 @@ public class LDIFReader extends LDIF implements LDAPReader {
                                 substring(0,7)).equalsIgnoreCase("control")){
                             // control field, need more triming
                             trimControlField();   // trim control field
-                            this.cNumber++;       // increase control number
-                            this.hasControls = true;
+                            this.cNumber++;       // increase control number;
                         }
                         this.rFields.add(this.bLine); // save previous line
                         // handle new line
@@ -438,7 +436,7 @@ public class LDIFReader extends LDIF implements LDAPReader {
                                     + "LDIFReader: unsupported LDAP Request");
             }
 
-            if ( this.hasControls ) { // a request with controls
+            if ( this.cNumber > 0 ) { // a request with controls
                 this.controls = new LDAPControl[this.cNumber];
 
                 // loop to parse control fields and build control objects
