@@ -1061,11 +1061,8 @@ public class LDAPException extends Exception
     */
     public String getLDAPErrorMessage()
     {
-        if( serverMessage != null) {
-            // Compensate for a bug that we must fix
-            if( serverMessage.length() == 0) {
-                return null;
-            }
+        if( (serverMessage != null) && ( serverMessage.length() == 0)) {
+            return null;
         }
         return serverMessage;
     }
@@ -1163,7 +1160,7 @@ public class LDAPException extends Exception
         }
 
         // Add server message
-        if( serverMessage != null) {
+        if( (serverMessage != null) && ( serverMessage.length() != 0)) {
             tmsg = ResourcesHandler.getMessage("SERVER_MSG",
                                                 new Object[]
                                                 { exception,
