@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: CPListOfSharedConns.java,v 1.1 2003/01/14 02:59:11 $
+ * $Novell: ListOfSharedConnections.java,v 1.1 2003/01/14 21:36:23 $
  *
  * Copyright (C) 2003 Novell, Inc. All Rights Reserved.
  *
@@ -22,7 +22,7 @@ import java.util.LinkedList;
  *
  * @see ConnectionPool
  */
-class CPListOfSharedConns extends LinkedList
+class ListOfSharedConnections extends LinkedList
 {
     public CPSharedConns getSharedConns(String DN, byte[] PW)
     {        
@@ -37,7 +37,7 @@ class CPListOfSharedConns extends LinkedList
         return null;
     }
         
-    public CPSharedConns getSharedConns(CPConn conn)
+    public CPSharedConns getSharedConns(Connection conn)
     {        
         for (int i = 0; i < super.size(); i++)
         {
@@ -49,12 +49,12 @@ class CPListOfSharedConns extends LinkedList
         return null;
     }
         
-    public CPConn getAvailableConnection(String DN, byte[] PW)
+    public Connection getAvailableConnection(String DN, byte[] PW)
     {
         for (int i = 0; i < super.size(); i++)
         {
             CPSharedConns sharedConns = (CPSharedConns)super.get(i);
-            CPConn conn = (CPConn)sharedConns.getAvailableConnection();
+            Connection conn = (Connection)sharedConns.getAvailableConnection();
             if(null != conn) return conn;
         }
         return null;

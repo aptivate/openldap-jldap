@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: ConnectionPool.java,v 1.8 2003/01/14 02:56:12 $
+ * $Novell: PoolManager.java,v 1.1 2003/01/14 21:36:23 $
  *
  * Copyright (C) 2002 - 2003 Novell, Inc. All Rights Reserved.
  *
@@ -26,15 +26,15 @@ import java.lang.IndexOutOfBoundsException;
  *
  * <p></p>
  */
-public class ConnectionPool 
+public class PoolManager 
 {
     private String host = "localhost";
     private int port = 389;
 
     /** Contains all of the sharedConns that are in use */
-    private CPListOfSharedConns inUseCPListOfSharedConns;
+    private ListOfSharedConnections inUseListOfSharedConnections;
     /** Contains all of the available sharedConns */
-    private CPListOfSharedConns availableCPListOfSharedConns;
+    private ListOfSharedConnections availableListOfSharedConnections;
     /** Set by finalize. This tells any waiting thread to shutdown.*/
     private boolean shuttingDown;
     
@@ -50,7 +50,7 @@ public class ConnectionPool
      * @param maxSharedConns - Max number of shared connections per DN
      * @param keystore - Used for keystore in LDAPConnection
      */
-    public ConnectionPool(String host,
+    public PoolManager(String host,
                           int port,
                           int maxConns,
                           int maxSharedConns,
@@ -74,25 +74,25 @@ public class ConnectionPool
             fac = new LDAPJSSESecureSocketFactory();
         }
 
-        inUseCPListOfSharedConns = new CPListOfSharedConns();
-        availableCPListOfSharedConns = new CPListOfSharedConns();
+        inUseListOfSharedConnections = new ListOfSharedConnections();
+        availableListOfSharedConnections = new ListOfSharedConnections();
         // Set up the max connections and max shared connections
         // ( original + clones) in availableConnection.
         for (int i = 0; i < maxConns; i++)
         {
             CPSharedConns sharedConns = new CPSharedConns(maxSharedConns);
             // Create connection. Initialy anonymous
-            CPConn conn = new CPConn(fac);
+            Connection conn = new Connection(fac);
             // At this point all of the connections anonymous
             conn.connect(host, port);
             sharedConns.add(conn);
             // Clone the connections to make all of the sharedConns.
             for (int j = 1; j < maxSharedConns; j++)
             {
-                CPConn cloneConn = (CPConn)conn.clone();
+                Connection cloneConn = (Connection)conn.clone();
                 sharedConns.add(cloneConn);
             }
-            availableCPListOfSharedConns.add(i, sharedConns);
+            availableListOfSharedConnections.add(i, sharedConns);
         }
         shuttingDown = false;
     }
@@ -109,15 +109,15 @@ public class ConnectionPool
             throws LDAPException, InterruptedException
     {
         
-        CPConn  conn        = null;
+        Connection  conn        = null;
         CPSharedConns sharedConns     = null;
         boolean           needToBind  = false;
 
-        synchronized (inUseCPListOfSharedConns)
+        synchronized (inUseListOfSharedConnections)
         {
             // See if there is a connection available in the in use list of
             // sharedConns, that are in use bound to DN,PW.
-            conn = inUseCPListOfSharedConns.getAvailableConnection(DN, PW);
+            conn = inUseListOfSharedConnections.getAvailableConnection(DN, PW);
             if(null != conn)
             {
                 // Set this connection inuse.
@@ -126,42 +126,42 @@ public class ConnectionPool
             }
         }
         
-        synchronized (availableCPListOfSharedConns)
+        synchronized (availableListOfSharedConnections)
         {
             // See if there are shared connections that are available
             // bound to DN,PW.
-            sharedConns = availableCPListOfSharedConns.getSharedConns(DN, PW);
+            sharedConns = availableListOfSharedConnections.getSharedConns(DN, PW);
             if(null == sharedConns) // No we need to rebind an available
             {
                 // If there are no available sharedConns wait for one.
-                if(0 == availableCPListOfSharedConns.size())
+                if(0 == availableListOfSharedConnections.size())
                 {
                     // Wait for available Instances
-                    availableCPListOfSharedConns.wait();
+                    availableListOfSharedConnections.wait();
                     // If we are shutting down return null
                     if(shuttingDown) return null;
                 }
                 // Get connection from first available sharedConns
-                sharedConns = (CPSharedConns)availableCPListOfSharedConns.get(0);
+                sharedConns = (CPSharedConns)availableListOfSharedConnections.get(0);
                 sharedConns.setDN(DN);
                 sharedConns.setPW(PW);
                 needToBind = true;
             }
             
             // Remove sharedConns from available.
-            availableCPListOfSharedConns.remove(sharedConns);
+            availableListOfSharedConnections.remove(sharedConns);
             // Get the first connection and mark it inuse
-            conn = (CPConn)sharedConns.get(0);
+            conn = (Connection)sharedConns.get(0);
             // Set this connection inuse.
             conn.setInUse();
         }
         // Do we need to rebind? Bind will do a connect if needed
         if(needToBind) conn.bind(LDAPConnection.LDAP_V3, DN, PW);
 
-        synchronized (inUseCPListOfSharedConns)
+        synchronized (inUseListOfSharedConnections)
         {
             // Move into inuse.
-            inUseCPListOfSharedConns.add(sharedConns);
+            inUseListOfSharedConnections.add(sharedConns);
         }
         return conn;
     }
@@ -175,28 +175,28 @@ public class ConnectionPool
     {
         CPSharedConns sharedConns = null;
         
-        synchronized(inUseCPListOfSharedConns)
+        synchronized(inUseListOfSharedConnections)
         {
             // Mark this connection available.        
-            ((CPConn)baseConn).clearInUse();
+            ((Connection)baseConn).clearInUse();
             
-            sharedConns = inUseCPListOfSharedConns.getSharedConns((CPConn)baseConn);
+            sharedConns = inUseListOfSharedConnections.getSharedConns((Connection)baseConn);
                 
             // If all connections in this instance are available move to
             // from in use to available.
             if(sharedConns.allConnectionsAvailable())
             {
-                inUseCPListOfSharedConns.remove(sharedConns);
+                inUseListOfSharedConnections.remove(sharedConns);
             }
         }
         
         if(null != sharedConns)
         {
-            synchronized(availableCPListOfSharedConns)
+            synchronized(availableListOfSharedConnections)
             {
-                availableCPListOfSharedConns.add(sharedConns);
+                availableListOfSharedConnections.add(sharedConns);
                 // Notify anyone that might be waiting on this connection.
-                availableCPListOfSharedConns.notify();
+                availableListOfSharedConnections.notify();
             }
         }
         return;
@@ -213,10 +213,10 @@ public class ConnectionPool
             throws Throwable
 
     {
-        synchronized (availableCPListOfSharedConns)
+        synchronized (availableListOfSharedConnections)
         {
             // Notify all waiting threads.
-            availableCPListOfSharedConns.notifyAll();
+            availableListOfSharedConnections.notifyAll();
         }
     }
 }

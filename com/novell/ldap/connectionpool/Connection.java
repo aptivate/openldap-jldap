@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: CPConn.java,v 1.1 2003/01/14 02:59:11 $
+ * $Novell: Connection.java,v 1.1 2003/01/14 21:36:22 $
  *
  * Copyright (C) 2003 Novell, Inc. All Rights Reserved.
  *
@@ -30,20 +30,20 @@ import com.novell.ldap.LDAPResponseQueue;
  * @see ConnectionPool
  */
 
-/*package*/ class CPConn extends LDAPConnection implements Cloneable
+/*package*/ class Connection extends LDAPConnection implements Cloneable
 {
     // inUse flag used by connection pool to mark which connections are
     // in use. 
     boolean inUse = false;
     
     /**
-     * CPConn
+     * Connection
      *
      * <p>Set up the socket factory.</p>
      * @param factory LDAPSocketFactory.
      * @see com.novell.ldap.LDAPSocketFactory               
      */
-    public CPConn(LDAPSocketFactory factory)
+    public Connection(LDAPSocketFactory factory)
     {
         super(factory);
     }
@@ -87,7 +87,7 @@ import com.novell.ldap.LDAPResponseQueue;
      * clone
      *
      * <p>Call the super clone so that this will clone properly</p>
-     * @return CPConn a clone of this object.
+     * @return Connection a clone of this object.
      */
     public Object clone()
     {

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: CPSharedConns.java,v 1.1 2003/01/14 02:59:12 $
+ * $Novell: SharedConnection.java,v 1.1 2003/01/14 21:36:24 $
  *
  * Copyright (C) 2003 Novell, Inc. All Rights Reserved.
  *
@@ -21,7 +21,7 @@ import java.util.Arrays;
  *
  * <p></p> 
  *
- * @see ConnectionPool
+ * @see PoolManager
  */
 class CPSharedConns extends ArrayList
 {
@@ -55,22 +55,22 @@ class CPSharedConns extends ArrayList
         this.DN = DN;
     }
     
-    public CPConn getAvailableConnection()
+    public Connection getAvailableConnection()
     {
         for (int i = 0; i < super.size(); i++)
         {
-            CPConn conn = (CPConn)super.get(i);
+            Connection conn = (Connection)super.get(i);
             if(!conn.inUse())
                 return conn;
         }
         return null;
     }
         
-    public boolean isConnInHere(CPConn thisConn)
+    public boolean isConnInHere(Connection thisConn)
     {
         for (int i = 0; i < super.size(); i++)
         {
-            CPConn conn = (CPConn)super.get(i);
+            Connection conn = (Connection)super.get(i);
             if(thisConn.equals(conn)) return true;
         }
         return false;
@@ -91,7 +91,7 @@ class CPSharedConns extends ArrayList
     {
         for (int j = 0; j < super.size(); j++)
         {
-            if(((CPConn)super.get(j)).inUse())
+            if(((Connection)super.get(j)).inUse())
             {
                 return false;
             }
