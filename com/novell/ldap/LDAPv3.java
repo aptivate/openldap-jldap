@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPv3.java,v 1.4 2000/08/03 22:06:19 smerrill Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPv3.java,v 1.5 2000/08/28 22:19:00 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -80,7 +80,7 @@ public interface LDAPv3 extends LDAPv2 {
     * object had already authenticated, the old authentication is
     * discarded. If mechanisms is null, or if the first version of the
     * method is called, the LDAP server will be interrogated for its
-    * supportedSaslMechanisms attribute of its root DSE. See [5] for a
+    * supportedSaslMechanisms attribute of its root DSE. See RFC 2251 for a
     * discussion of the SASL classes.
     *
     * Parameters are:
@@ -91,18 +91,16 @@ public interface LDAPv3 extends LDAPv2 {
     *                  name.
     *
     *  props          Optional qualifiers for the authentication
-    *                  session, as defined in [5].
+    *                  session, as defined in RFC 2251.
     *
     *  cbh            A class which may be called by the Mechanism
     *                  Driver to obtain additional information required,
     *                  such as additional credentials.
     */
-   /*
    public void bind(String dn,
                     Properties props,
-                    javax.security.auth.callback.CallbackHandler cbh)
+                    /*javax.security.auth.callback.CallbackHandler*/ Object cbh)
                     throws LDAPException;
-   */               
 
    /**
     * Authenticates to the LDAP server (that the object is currently
@@ -113,7 +111,7 @@ public interface LDAPv3 extends LDAPv2 {
     * object had already authenticated, the old authentication is
     * discarded. If mechanisms is null, or if the first version of the
     * method is called, the LDAP server will be interrogated for its
-    * supportedSaslMechanisms attribute of its root DSE. See [5] for a
+    * supportedSaslMechanisms attribute of its root DSE. See RFC 2251 for a
     * discussion of the SASL classes.
     *
     * Parameters are:
@@ -127,19 +125,17 @@ public interface LDAPv3 extends LDAPv2 {
     *                  the client is willing to use for authentication.
     *
     *  props          Optional qualifiers for the authentication
-    *                  session, as defined in [5].
+    *                  session, as defined in RFC 2251.
     *
     *  cbh            A class which may be called by the Mechanism
     *                  Driver to obtain additional information required,
     *                  such as additional credentials.
     */
-   /*
    public void bind(String dn,
                     String[] mechanisms,
                     Hashtable props,
-                    javax.security.auth.callback.CallbackHandler cbh)
+                    /*javax.security.auth.callback.CallbackHandler*/ Object cbh)
                     throws LDAPException;
-   */               
 
    /*
     * 4.29.2 connect

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.29 2000/09/11 21:05:48 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.30 2000/09/13 16:15:39 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -51,6 +51,8 @@ public class LDAPConnection implements
    private boolean ldapv3 = true;
    private String authenticationPassword = null;
    private String authenticationDN = null;
+   private String host = null;
+   private int port = 0;
 
    /**
    * An identifier that specifies that aliases are never dereferenced.
@@ -1298,8 +1300,7 @@ public class LDAPConnection implements
                                  LDAPException.OTHER);
       }
 
-      authenticationDN = dn;
-      authenticationPassword = passwd;
+      setAuthenticationInfo( dn, passwd);
 //    if(passwd != null) {
 //       req.getLber().reset(); // clear copy of passwd
 //    }
@@ -1333,16 +1334,14 @@ public class LDAPConnection implements
     *                  Driver to obtain additional information required,
     *                  such as additional credentials.
     */
-    /*
    public void bind(String dn,
                     Properties props,
-                    javax.security.auth.callback.CallbackHandler cbh)
+                    /*javax.security.auth.callback.CallbackHandler*/ Object cbh)
                     throws LDAPException
    {
          throw new LDAPException(    "Not Implemented.",
                                     LDAPException.LDAP_NOT_SUPPORTED);
    }
-   */
 
    /**
     * Authenticates to the LDAP server (that the object is currently
@@ -1373,17 +1372,33 @@ public class LDAPConnection implements
     *                  Driver to obtain additional information required,
     *                  such as additional credentials.
     */
-    /*
    public void bind(String dn,
                     String[] mechanisms,
                     Hashtable props,
-                    javax.security.auth.callback.CallbackHandler cbh)
+                    /*javax.security.auth.callback.CallbackHandler*/ Object cbh)
                     throws LDAPException
    {
-         throw new LDAPException(    "Not Implemented.",
+         int i;
+         boolean found = false;
+
+         for( i=0; i < mechanisms.length; i++) {
+            if( mechanisms[i].equalsIgnoreCase("simple")) {
+                found = true;
+                break;
+            }
+         }
+
+         if( found ) {
+            String password = null;
+            if( props != null) {
+                password = (String)props.get("password");
+            }
+            bind( LDAP_V3, dn, password, defCons);
+         } else {
+             throw new LDAPException(    "Mechanism Not Implemented.",
                                     LDAPException.LDAP_NOT_SUPPORTED);
+        }
    }
-   */
 
     //*************************************************************************
     // compare methods
@@ -1706,8 +1721,54 @@ public class LDAPConnection implements
       conn = new Connection(host, port, socketFactory);
 
       bind(version, dn, passwd);
+      this.setConnectionInfo( host, port);
+      this.setAuthenticationInfo( dn, passwd);
       return;
    }
+
+    /**
+    *
+    *  Sets the specified host, & port
+    *  in the object without connecting or authenticating.
+    *
+    *  @param host A host name or a dotted string representing the IP address
+    *              of a host running an LDAP server to connect to. It may also
+    *              contain a list of host names, space-delimited. Each host 
+    *              name can include a trailing colon and port number.<br><br>
+    *
+    *  @param port The TCP or UDP port number to connect to or contact. 
+    *              The default LDAP port is 389. The port parameter is 
+    *              ignored for any host hame which includes a colon and 
+    *              port number.<br><br>
+    */
+
+    /* Package */ void setConnectionInfo(    String host, int port)
+    {
+        this.host = host;
+        this.port = port;
+        return;
+    }
+    /**
+    *
+    *  Sets the specified dn, and password
+    *  in the object without connecting or authenticating.
+    *
+    *  @param dn   If non-null and non-empty, specifies that the 
+    *              connection and all operations through it should be 
+    *              authenticated with the DN as the distinguished name.<br><br>
+    *
+    *  @param passwd   If non-null and non-empty, specifies that the
+    *                  connection and all operations through it should 
+    *                  be authenticated with the dn as the distinguished 
+    *                  name and passwd as the password.
+    */
+
+    /* Package */ void setAuthenticationInfo( String dn, String passwd)
+    {
+        authenticationDN = dn;
+        authenticationPassword = passwd;
+        return;
+    }
 
     //*************************************************************************
     // delete methods
@@ -1865,8 +1926,8 @@ public class LDAPConnection implements
       if(conn != null) {
          conn.shutdown((LDAPControl[])null);
          conn = null;
-         authenticationPassword = null;
-         authenticationDN = null;
+         setConnectionInfo( null, 0);
+         setAuthenticationInfo( null, null);
       }
       else {
          throw new LDAPException("Not connected.",
