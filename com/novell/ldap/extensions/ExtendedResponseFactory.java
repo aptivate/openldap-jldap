@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: ExtendedResponseFactory.java,v 1.11 2000/10/03 22:12:37 judy Exp $
+ * $Id: ExtendedResponseFactory.java,v 1.12 2000/10/04 22:39:33 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -37,8 +37,9 @@ public class ExtendedResponseFactory {
      * @param inResponse   The LDAPExtendedReponse object as returned by the 
      *                     extendedOperation method in the LDAPConnection object.
      * <br><br>
-     * @return An object of baseclass ParsedExtendedReponse.  The actual child class
-     *         of this returnde object depends on the operation being performed.
+     * @return An object of base class ParsedExtendedReponse.  The actual child 
+     *         class of this returned object depends on the operation being 
+     *         performed.
      *  
      * @exception LDAPException A general exception which includes an error message 
      *                          and an LDAP error code.

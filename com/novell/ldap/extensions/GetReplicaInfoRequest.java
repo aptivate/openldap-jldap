@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: GetReplicaInfoRequest.java,v 1.6 2000/09/25 17:36:41 fzhao Exp $
+ * $Id: GetReplicaInfoRequest.java,v 1.7 2000/10/04 22:39:34 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -22,12 +22,15 @@ import java.io.*;
  *
  *  Reads information about a replica.
  *
+ * <p>The information available includes such items as  replicas state, last 
+ * modification time, and replica type. </p>
+ *
  *  <p>To read other information about a replica, you must 
  *  create an instance of this class and then call the 
  *  extendedOperation method with this object as the required 
- *  LDAPExtendedOperation parameter</p>
+ *  LDAPExtendedOperation parameter.</p>
  *
- *  <p>The GetReplicaInfoRequest operation uses the following OID:<br>
+ *  <p>The getReplicaInfoRequest extension uses the following OID:<br>
  *   &nbsp;&nbsp;&nbsp;2.16.840.1.113719.1.27.100.17</p>
  *
  *  <p>The requestValue has the following format:<br>

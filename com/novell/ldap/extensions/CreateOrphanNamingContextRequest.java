@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: CreateOrphanNamingContextRequest.java,v 1.11 2000/10/03 22:12:36 judy Exp $
+ * $Id: CreateOrphanNamingContextRequest.java,v 1.12 2000/10/04 22:39:33 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -20,13 +20,13 @@ import java.io.*;
  
 /**
  *
- * Creates a new naming orphan partition.
+ * Creates a new orphan naming context.
  *
- * <p>To create a new naming orphan parition, you must create an instance of 
+ * <p>To create a new orphan naming context, you must create an instance of 
  *  this class and then call the extendedOperation method with this object
  *  as the required LDAPExtendedOperation parameter.</p>
  *
- * <p>The new naming orphan parition request uses the following OID:<br>
+ * <p>The createOrphanNamingContextRequest extension uses the following OID:<br>
  *  &nbsp;&nbsp;&nbsp;2.16.840.1.113719.1.27.100.39</p>
  *
  *  <p>The requestValue has the following format:<br>
@@ -39,14 +39,14 @@ public class CreateOrphanNamingContextRequest extends LDAPExtendedOperation {
    
 /**
  *
- * Constructs an extended operation object for creating a naming orphan partition.
+ * Constructs an extended operation object for creating an orphan naming context.
  *
  * 
  * @param serverDN    The distinguished name of the server on which 
- *                    the new orphan parition will reside.
+ *                    the new orphan naming context will reside.
  *<br><br>
  * @param contextName The distinguished name of the 
- *                    new orphan partition.
+ *                    new orphan naming context.
  *
  * @exception LDAPException A general exception which includes an error message 
  *                          and an LDAP error code.

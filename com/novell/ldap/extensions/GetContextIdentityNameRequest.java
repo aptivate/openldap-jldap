@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: GetContextIdentityNameRequest.java,v 1.9 2000/10/04 17:00:48 judy Exp $
+ * $Id: GetContextIdentityNameRequest.java,v 1.10 2000/10/04 22:39:33 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -28,10 +28,11 @@ import java.io.*;
  *  object as the required LDAPExtendedOperation parameter.</p>
  *
  *  <p>The returned LDAPExtendedResponse object can then be converted to
- *  a GetContextIdentityNameResponse object. This object contains
- *  methods for retrieving the distinguished name.</p>
+ *  a GetContextIdentityNameResponse object with the ExtendedREsponseFactory 
+ *  class. This object contains  methods for retrieving the distinguished
+ *  name.</p>
  *
- *  <p>The GetContextIdentityNameRequest operation uses the following OID:<br>
+ *  <p>The getContextIdentityNameRequest extension uses the following OID:<br>
  *   &nbsp;&nbsp;&nbsp;2.16.840.1.113719.1.27.100.31</p>
  *
  *  <p>The request value has a value of null.</p>

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: AbortNamingContextOperationRequest.java,v 1.12 2000/10/03 22:12:36 judy Exp $
+ * $Id: AbortNamingContextOperationRequest.java,v 1.13 2000/10/04 22:39:32 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -24,7 +24,7 @@ import java.io.*;
  *  was requested on the specified naming context if the operation is
  *  still pending. 
  *  
- *  <p>The abort naming context operation uses the following OID:<br> 
+ *  <p>The abortNamingContextRequest extension uses the following OID:<br> 
  *  &nbsp;&nbsp;&nbsp;2.16.840.1.113719.1.27.100.29</p>
  *  
  *  <p>The requestValue has the following format:<br>

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: GetReplicaInfoResponse.java,v 1.6 2000/09/11 21:05:57 vtag Exp $
+ * $Id: GetReplicaInfoResponse.java,v 1.7 2000/10/04 22:39:34 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -19,12 +19,12 @@ import com.novell.ldap.asn1.*;
 import java.io.*;
  
 /**
- * Retrieves the replica information from an GetReplicaInfoResponse object.
+ * Retrieves the replica information from a GetReplicaInfoResponse object.
  *
  *  <p>An object in this class is generated from an ExtendedResponse using the
  *  ExtendedResponseFactory class.</p>
  *
- *  <p>The GetReplicaInfoResponse operation uses the following OID:<br> 
+ *  <p>The getReplicaInfoResponse extension uses the following OID:<br> 
  *  &nbsp;&nbsp;&nbsp;2.16.840.1.113719.1.27.100.18</p>
  *
  */
@@ -47,14 +47,14 @@ public class GetReplicaInfoResponse implements ParsedExtendedResponse {
     * <p>The constructor parses the responseValue which has the following 
     * format:<br>
     *  responseValue ::=<br>
-    *  &nbsp;&nbsp;&nbsp;&nbsp;     partitionID         INTEGER<br>
-    *  &nbsp;&nbsp;&nbsp;&nbsp;     replicaState        INTEGER<br>
-    *  &nbsp;&nbsp;&nbsp;&nbsp;     modificationTime    INTEGER<br>
-    *  &nbsp;&nbsp;&nbsp;&nbsp;     purgeTime           INTEGER<br>
-    *  &nbsp;&nbsp;&nbsp;&nbsp;     localPartitionID    INTEGER<br>
-    *  &nbsp;&nbsp;&nbsp;&nbsp;     partitionDN         OCTET STRING<br>
-    *  &nbsp;&nbsp;&nbsp;&nbsp;     replicaType         INTEGER<br>
-    *  &nbsp;&nbsp;&nbsp;&nbsp;     flags               INTEGER</p>
+    *  &nbsp;&nbsp;&nbsp;&nbsp; partitionID &nbsp;&nbsp;&nbsp;        INTEGER<br>
+    *  &nbsp;&nbsp;&nbsp;&nbsp; replicaState &nbsp;&nbsp;&nbsp;       INTEGER<br>
+    *  &nbsp;&nbsp;&nbsp;&nbsp; modificationTime &nbsp;&nbsp;&nbsp;   INTEGER<br>
+    *  &nbsp;&nbsp;&nbsp;&nbsp; purgeTime &nbsp;&nbsp;&nbsp;          INTEGER<br>
+    *  &nbsp;&nbsp;&nbsp;&nbsp; localPartitionID &nbsp;&nbsp;&nbsp;   INTEGER<br>
+    *  &nbsp;&nbsp;&nbsp;&nbsp; partitionDN &nbsp;&nbsp;&nbsp;      OCTET STRING<br>
+    *  &nbsp;&nbsp;&nbsp;&nbsp; replicaType  &nbsp;&nbsp;&nbsp;       INTEGER<br>
+    *  &nbsp;&nbsp;&nbsp;&nbsp; flags &nbsp;&nbsp;&nbsp;              INTEGER</p>
     *
     * @exception IOException The response value could not be decoded.
     */   
@@ -153,6 +153,18 @@ public class GetReplicaInfoResponse implements ParsedExtendedResponse {
     *
     * @return Integer value specifying the current state of the replica. See
     * NamingContextConstants class for possible values for this field. 
+    *
+    * @see NamingContextConstants#LDAP_RS_BEGIN_ADD
+    * @see NamingContextConstants#LDAP_RS_DEAD_REPLICA
+    * @see NamingContextConstants#LDAP_RS_DYING_REPLICA
+    * @see NamingContextConstants#LDAP_RS_JS_0
+    * @see NamingContextConstants#LDAP_RS_JS_1
+    * @see NamingContextConstants#LDAP_RS_JS_2
+    * @see NamingContextConstants#LDAP_RS_LOCKED
+    * @see NamingContextConstants#LDAP_RS_MASTER_DONE
+    * @see NamingContextConstants#LDAP_RS_MASTER_START
+    * @see NamingContextConstants#LDAP_RS_SS_0
+    * @see NamingContextConstants#LDAP_RS_TRANSITION_ON
     */
    public int getreplicaState() {
         return replicaState;
@@ -200,8 +212,17 @@ public class GetReplicaInfoResponse implements ParsedExtendedResponse {
    /** 
     *  Returns the replica type. 
     *
-    * @return Integer identifying the type of the replica. See
-    * NamingContextConstants class for possible values for this field.
+    * <p>See the NamingContextConstants class for possible values for 
+    * this field.</p>
+    *
+    * @return Integer identifying the type of the replica. 
+    *
+    * @see NamingContextConstants#LDAP_RT_MASTER
+    * @see NamingContextConstants#LDAP_RT_SECONDARY
+    * @see NamingContextConstants#LDAP_RT_READONLY
+    * @see NamingContextConstants#LDAP_RT_SUBREF
+    * @see NamingContextConstants#LDAP_RT_SPARSE_WRITE
+    * @see NamingContextConstants#LDAP_RT_SPARSE_READ
     */
    public int getreplicaType() {
         return replicaType;
@@ -210,8 +231,13 @@ public class GetReplicaInfoResponse implements ParsedExtendedResponse {
    /** 
     * Returns flags that specify whether the replica is busy or is a boundary. 
     *
-    * @return Integer value specifying the flags for the replica. See
-    * NamingContextConstants class for value and meanings of flags.
+    * <p>See the NamingContextConstants class for possible values for 
+    * this field.</p>
+    *
+    * @return Integer value specifying the flags for the replica. 
+    *
+    * @see NamingContextConstants#LDAP_DS_FLAG_BUSY
+    * @see NamingContextConstants#LDAP_DS_FLAG_BOUNDARY
     */
    public int getflags() {
         return flags;

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: GetEffectivePrivilegesResponse.java,v 1.9 2000/10/04 17:00:49 judy Exp $
+ * $Id: GetEffectivePrivilegesResponse.java,v 1.10 2000/10/04 22:39:33 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -24,7 +24,7 @@ import java.io.*;
  *  <p>An object in this class is generated from an ExtendedResponse object
  *  using the ExtendedResponseFactory class.</p>
  *
- *  <p>The GetEffectivePrivilegesResponse operation uses the following OID:<br> 
+ *  <p>The getEffectivePrivilegesResponse extension uses the following OID:<br> 
  *  &nbsp;&nbsp;&nbsp;2.16.840.1.113719.1.27.100.34</p>
  *
  */
@@ -67,9 +67,18 @@ public class GetEffectivePrivilegesResponse implements ParsedExtendedResponse {
    
    /** 
     * Returns the effective privileges.
+    *
+    * <p>See the NamingContextConstants class for the privilege flags.
     * 
     * @return A flag which is a combination of zero or more privilege flags as
     * returned by the server.
+    *
+    * @see NamingContextConstants#LDAP_DS_ATTR_COMPARE
+    * @see NamingContextConstants#LDAP_DS_ATTR_READ
+    * @see NamingContextConstants#LDAP_DS_ATTR_WRITE
+    * @see NamingContextConstants#LDAP_DS_ATTR_SELF
+    * @see NamingContextConstants#LDAP_DS_ATTR_SUPERVISOR
+    * @see NamingContextConstants#LDAP_DS_ATTR_INHERIT_CTL
     */
    public int getPrivileges() {
         return privileges;

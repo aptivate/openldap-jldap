@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: GetEffectivePrivilegesRequest.java,v 1.10 2000/10/04 17:00:48 judy Exp $
+ * $Id: GetEffectivePrivilegesRequest.java,v 1.11 2000/10/04 22:39:33 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -20,18 +20,18 @@ import java.io.*;
  
 /**
  *
- * Returns the effective rights of one object to a
- * specific attribute of another object.
- *
+ * Returns the effective rights of one object to an attribute of another object.
+ * 
  * <p>To use this class, you must instantiate an object of this class and then 
  * call the extendedOperation method with this object as the required
  * LDAPExtendedOperation parameter.</p>
  *
  * <p>The returned LDAPExtendedResponse object can then be converted to
- * a GetEffectivePrivilegesResponse object. The GetEffectivePrivilegesResponse class 
- * contains methods for retrieving the effective rights.</p>
+ * a GetEffectivePrivilegesResponse object with the ExtendedResponseFactory class. 
+ * The GetEffectivePrivilegesResponse class  contains methods for
+ * retrieving the effective rights.</p>
  *
- * <p>The GetEffectivePrivilegesRequest operation uses the following OID:<br>
+ * <p>The getEffectivePrivilegesRequest extension uses the following OID:<br>
  *  &nbsp;&nbsp;&nbsp;2.16.840.1.113719.1.27.100.33</p>
  *
  * <p>The requestValue has the following format:<br>

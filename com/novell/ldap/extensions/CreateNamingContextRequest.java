@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: CreateNamingContextRequest.java,v 1.15 2000/10/03 22:12:36 judy Exp $
+ * $Id: CreateNamingContextRequest.java,v 1.16 2000/10/04 22:39:33 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -26,7 +26,7 @@ import java.io.*;
  *  class and then call the extendedOperation method with this
  *  object as the required LDAPExtendedOperation parameter.</p>
  *
- *  <p>The create naming context request uses the following OID:<br>
+ *  <p>The createNamingContextRequest extension uses the following OID:<br>
  *  &nbsp;&nbsp;&nbsp;2.16.840.1.113719.1.27.100.3</p>
  *
  *  <p>The requestValue has the following format:<br>

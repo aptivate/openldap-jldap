@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: AddReplicaRequest.java,v 1.12 2000/10/03 22:12:36 judy Exp $
+ * $Id: AddReplicaRequest.java,v 1.13 2000/10/04 22:39:32 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -26,7 +26,7 @@ import java.io.*;
  *  this class and then call the extendedOperation method with this
  *  object as the required LDAPExtendedOperation parameter.</p>
  *
- *  <p>The add replica request operation uses the following OID:<br>
+ *  <p>The addReplicaRequest extension uses the following OID:<br>
  *  &nbsp;&nbsp;&nbsp;2.16.840.1.113719.1.27.100.7</p>
  *
  *  <p>The requestValue has the following format:<br>
@@ -49,7 +49,7 @@ public class AddReplicaRequest extends LDAPExtendedOperation {
  * @param serverDN The server on which the new replica will be added.<br><br>
  *      
  * @param replicaType The type of replica to add. The replica 
- * types are defined int the NamingContextConstants class<br><br>
+ * types are defined in the NamingContextConstants class.<br><br>
  *
  * @param flags Specifies whether all servers in the replica ring must be up  
  * before proceeding. When set to zero, the status of the servers is not 
@@ -58,6 +58,13 @@ public class AddReplicaRequest extends LDAPExtendedOperation {
  *
  * @exception LDAPException A general exception which includes an error message 
  *                          and an LDAP error code.
+ *
+ * @see NamingContextConstants#LDAP_RT_MASTER
+ * @see NamingContextConstants#LDAP_RT_SECONDARY
+ * @see NamingContextConstants#LDAP_RT_READONLY
+ * @see NamingContextConstants#LDAP_RT_SUBREF
+ * @see NamingContextConstants#LDAP_RT_SPARSE_WRITE
+ * @see NamingContextConstants#LDAP_RT_SPARSE_READ
  */   
  public AddReplicaRequest(String dn, String serverDN, int replicaType, int flags) 
                 throws LDAPException {

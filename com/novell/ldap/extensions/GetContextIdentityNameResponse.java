@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: GetContextIdentityNameResponse.java,v 1.10 2000/10/04 17:00:48 judy Exp $
+ * $Id: GetContextIdentityNameResponse.java,v 1.11 2000/10/04 22:39:33 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -21,10 +21,10 @@ import java.io.*;
 /**
  *  Retrieves the identity from an GetContextIdentityNameResponse object.
  *
- *  <p>An object in this class is generated from an ExtendedResponse object 
+ *  <p>An object in this class is generated from an LDAPExtendedResponse object 
  *  using the ExtendedResponseFactory class.</p>
  *
- * <p> GetContextIdentityNameResponse objects have the following OID:<br> 
+ * <p>The GetContextIdentityNameResponse extension uses the following OID:<br> 
  *  &nbsp;&nbsp;&nbsp;2.16.840.1.113719.1.27.100.32 </p>
  *
  */
@@ -70,7 +70,7 @@ public class GetContextIdentityNameResponse implements ParsedExtendedResponse {
    /**
     * Returns the identity of the object.
     * 
-    * @return String value specifying the identity returned by the server
+    * @return A string value specifying the identity returned by the server.
     */
    public String getIdentity() {
         return identity;
