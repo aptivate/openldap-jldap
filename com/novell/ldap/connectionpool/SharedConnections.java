@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: SharedConnection.java,v 1.3 2003/01/14 21:50:52 $
+ * $OpenLDAP$
  *
  * Copyright (C) 2003 Novell, Inc. All Rights Reserved.
  *
@@ -12,33 +12,30 @@
  * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
  * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
  ******************************************************************************/
-package connectionpool;
+package com.novell.ldap.connectionpool;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
- * SharedConnection
- *
- * <p></p> 
+ * A list of connections sharing one physical connection.
  *
  * @see PoolManager
  */
-class SharedConnection extends ArrayList
+/* package */
+class SharedConnections extends ArrayList
 {
     // Save password and DN
     byte[] PW = null;
     String DN = null;
     
     
-    public SharedConnection(int initialCapacity)
+    public SharedConnections(int initialCapacity)
     {
         super(initialCapacity);
     }
         
     /**
-     * setPW
-     *
-     * <p>Set the password</p>
+     * Set the password
      */
     public void setPW(byte[] PW)
     {
@@ -46,9 +43,7 @@ class SharedConnection extends ArrayList
     }
     
     /**
-     * setDN
-     *
-     * <p>Set the DN</p>
+     * Set the DN
      */
     public void setDN(String DN)
     {
@@ -77,9 +72,7 @@ class SharedConnection extends ArrayList
     }
     
     /**
-     * DNPWequals
-     *
-     * <p>Compare DN and PW with this DN PW</p>
+     * Compare DN and PW with this DN PW
      */
     public boolean DNPWequals(String DN, byte[] PW)
     {
@@ -122,9 +115,7 @@ class SharedConnection extends ArrayList
     }
     
     /**
-     * equals
-     *
-     * <p>Byte array compare. null == null</p>
+     * Byte array compare. null == null
      */
     private boolean equals(byte[] ba1, byte[] ba2)
     {        

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: Connection.java,v 1.2 2003/01/14 21:43:24 $
+ * $OpenLDAP$
  *
  * Copyright (C) 2003 Novell, Inc. All Rights Reserved.
  *
@@ -12,22 +12,15 @@
  * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
  * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
  ******************************************************************************/
-package connectionpool;
+package com.novell.ldap.connectionpool;
 import com.novell.ldap.LDAPConnection;
-import com.novell.ldap.LDAPException;
 import com.novell.ldap.LDAPSocketFactory;
-import com.novell.ldap.LDAPConstraints;
-import com.novell.ldap.LDAPResponseQueue;
 
 /**
- * CPConn
- *
- * <p> Extend LDAPConnection to save and retrieve the user password. The
- * password and DN are used by the ConnectionPool to keep track of who has
- * already connected. </p> 
+ * Extends LDAPConnection to add information needed by pool management.
  *
  * @see com.novell.ldap.LDAPConnection
- * @see ConnectionPool
+ * @see PoolManager
  */
 
 /*package*/ class Connection extends LDAPConnection implements Cloneable
@@ -49,9 +42,8 @@ import com.novell.ldap.LDAPResponseQueue;
     }
     
     /**
-     * inUse
+     * Returns true if in use false otherwise.
      *
-     * <p>Returns true if in use false otherwise</p>
      * @return inUse flag.
      */
     public boolean inUse()
@@ -60,9 +52,8 @@ import com.novell.ldap.LDAPResponseQueue;
     }
 
     /**
-     * setInUse
+     * Set inUse to true.
      *
-     * <p>Set inUse to true</p>
      * @return inUse flag.
      */
     public boolean setInUse()
@@ -72,9 +63,8 @@ import com.novell.ldap.LDAPResponseQueue;
     }
     
     /**
-     * clearInUse
+     * Clear inUse to true
      *
-     * <p>Clear inUse to true</p>
      * @return inUse flag.
      */
     public boolean clearInUse()
@@ -84,9 +74,8 @@ import com.novell.ldap.LDAPResponseQueue;
     }
     
     /**
-     * clone
+     * Call the super clone so that this will clone properly.
      *
-     * <p>Call the super clone so that this will clone properly</p>
      * @return Connection a clone of this object.
      */
     public Object clone()

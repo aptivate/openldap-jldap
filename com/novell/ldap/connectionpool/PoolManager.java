@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: PoolManager.java,v 1.6 2003/01/24 20:16:48 $
+ * $OpenLDAP$
  *
  * Copyright (C) 2002 - 2003 Novell, Inc. All Rights Reserved.
  *
@@ -12,24 +12,17 @@
  * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
  * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
  ******************************************************************************/
-package connectionpool;
+package com.novell.ldap.connectionpool;
 import com.novell.ldap.LDAPSocketFactory;
 import com.novell.ldap.LDAPConnection;
 import com.novell.ldap.LDAPException;
 import com.novell.ldap.LDAPJSSESecureSocketFactory;
-import java.security.Security;
-import java.lang.IndexOutOfBoundsException;
 
 /**
- * Connection Pool
- *
- * <p></p>
+ * Manages connections to an LDAP Server.
  */
 public class PoolManager
 {
-    private String host = "localhost";
-    private int port = 389;
-
     /** Contains all of the sharedConns that are in use */
     private ListOfSharedConnections inUseListOfSharedConnections;
     /** Contains all of the available sharedConns */
@@ -57,8 +50,6 @@ public class PoolManager
         throws LDAPException
     {
         LDAPSocketFactory fac = null;
-        this.host = host;
-        this.port = port;
 
         // Use the keystore file if it is there.
         if(null != keyStore)
@@ -79,7 +70,7 @@ public class PoolManager
         // ( original + clones) in availableConnection.
         for (int i = 0; i < maxConns; i++)
         {
-            SharedConnection sharedConns = new SharedConnection(maxSharedConns);
+            SharedConnections sharedConns = new SharedConnections(maxSharedConns);
             // Create connection. Initialy anonymous
             Connection conn = new Connection(fac);
             // At this point all of the connections anonymous
@@ -109,7 +100,7 @@ public class PoolManager
     {
 
         Connection  conn        = null;
-        SharedConnection sharedConns     = null;
+        SharedConnections sharedConns     = null;
         boolean           needToBind  = false;
 
         synchronized (inUseListOfSharedConnections)
@@ -141,7 +132,7 @@ public class PoolManager
                     if(shuttingDown) return null;
                 }
                 // Get connection from first available sharedConns
-                sharedConns = (SharedConnection)availableListOfSharedConnections.get(0);
+                sharedConns = (SharedConnections)availableListOfSharedConnections.get(0);
                 sharedConns.setDN(DN);
                 sharedConns.setPW(PW);
                 needToBind = true;
@@ -172,7 +163,7 @@ public class PoolManager
      */
     public void makeConnectionAvailable(LDAPConnection baseConn)
     {
-        SharedConnection sharedConns = null;
+        SharedConnections sharedConns = null;
 
         synchronized(inUseListOfSharedConnections)
         {

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: ListOfSharedConnections.java,v 1.4 2003/01/23 00:47:54 $
+ * $OpenLDAP$
  *
  * Copyright (C) 2003 Novell, Inc. All Rights Reserved.
  *
@@ -12,7 +12,7 @@
  * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
  * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
  ******************************************************************************/
-package connectionpool;
+package com.novell.ldap.connectionpool;
 import java.util.LinkedList;
 
 /**
@@ -20,48 +20,48 @@ import java.util.LinkedList;
  *
  * <p>This is a helper class to manage SharedConnection. A SharedConnection
  * is an ArrayList of connections (original and clones) bound to the same
- * DN and password.</p>  
+ * DN and password.</p>
  *
- * @see SharedConnection.
+ * @see SharedConnections
  */
 class ListOfSharedConnections extends LinkedList
 {
-    
+
     /**
      * getSharedConns
      *
      * <p>Find a SharedConnection that has the proper DN/PW</p>
      */
-    public SharedConnection getSharedConns(String DN, byte[] PW)
-    {        
+    public SharedConnections getSharedConns(String DN, byte[] PW)
+    {
         for (int i = 0; i < super.size(); i++)
         {
-            SharedConnection sharedConns = (SharedConnection)super.get(i);
-    
+            SharedConnections sharedConns = (SharedConnections)super.get(i);
+
             if(sharedConns.DNPWequals(DN,PW))
                 return sharedConns;
         }
-    
+
         return null;
     }
-        
+
     /**
      * getSharedConns
      *
      * <p>Find a SharedConnection that a connection in it.</p>
      */
-    public SharedConnection getSharedConns(Connection conn)
-    {        
+    public SharedConnections getSharedConns(Connection conn)
+    {
         for (int i = 0; i < super.size(); i++)
         {
-            SharedConnection sharedConns = (SharedConnection)super.get(i);
+            SharedConnections sharedConns = (SharedConnections)super.get(i);
             if(sharedConns.isConnInHere(conn))
                 return sharedConns;
         }
-    
+
         return null;
     }
-        
+
     /**
      * getAvailableConnection
      *
@@ -72,10 +72,10 @@ class ListOfSharedConnections extends LinkedList
     {
         for (int i = 0; i < super.size(); i++)
         {
-            SharedConnection sharedConns = (SharedConnection)super.get(i);
+            SharedConnections sharedConns = (SharedConnections)super.get(i);
             if(sharedConns.DNPWequals(DN,PW))
             {
-                Connection conn = (Connection)sharedConns.getAvailableConnection();
+                Connection conn = sharedConns.getAvailableConnection();
                 if(null != conn) return conn;
             }
         }
