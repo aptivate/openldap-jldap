@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: NamingContextConstants.java,v 1.17 2000/10/05 17:51:42 judy Exp $
+ * $Id: NamingContextConstants.java,v 1.18 2000/10/10 19:17:30 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -445,6 +445,11 @@ public class NamingContextConstants {
      * for example, merging a tree or moving a subtree.
      */
     public static final int LDAP_DS_FLAG_BUSY       = 0x0001;
+    
+    /**
+     * Indicates that this naming context is on the DNS federation boundary. 
+     * This flag is only set on DNS trees.
+     */
     public static final int LDAP_DS_FLAG_BOUNDARY   = 0x0002;
 
     

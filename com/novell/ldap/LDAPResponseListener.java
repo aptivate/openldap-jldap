@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPResponseListener.java,v 1.12 2000/10/02 19:46:52 judy Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPResponseListener.java,v 1.13 2000/10/03 21:44:00 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -86,8 +86,8 @@ public class LDAPResponseListener
     * Merges two response listeners by moving the contents from another
     * listener to this one.
     *
-    * @param listener2 The listener that receives the contents from the
-    *                  other listener.
+    * @param listener2 The listener that is merged into this listener.
+    *
     */
     public void merge(LDAPResponseListener listener2)
     {

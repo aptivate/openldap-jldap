@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPMessage.java,v 1.10 2000/09/11 21:05:50 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPMessage.java,v 1.11 2000/09/29 15:17:14 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -170,10 +170,9 @@ public class LDAPMessage {
 	}
 
 	/**
-	 * Creates an LDAPMessage when receiving an RFC 2251 LDAPMessage from a
-	 * server.
+	 * Creates an LDAPMessage when the libraries receive a response from a command.
      *
-     * @param message An RFC 2251 LDAPMessage
+     * @param message A response message.
 	 */
 	public LDAPMessage(com.novell.ldap.protocol.LDAPMessage message)
 	{

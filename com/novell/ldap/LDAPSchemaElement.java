@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSchemaElement.java,v 1.8 2000/09/29 22:17:41 judy Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSchemaElement.java,v 1.9 2000/10/09 19:11:25 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -71,7 +71,8 @@ public abstract class LDAPSchemaElement {
 	protected String value;
     
    /**
-   * 
+   * A hash table that contains the vendor-specific qualifiers (for example, 
+   * the X-NDS flags).
    */
     protected Hashtable hashQualifier = new Hashtable();
 

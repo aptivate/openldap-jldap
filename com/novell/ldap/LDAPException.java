@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPException.java,v 1.10 2000/10/02 21:49:43 judy Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPException.java,v 1.11 2000/10/02 22:47:50 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -370,7 +370,8 @@ public class LDAPException extends Exception {
    public final static int STRONG_AUTH_REQUIRED = 8;
    
    /**
-   *
+   * Returned by some LDAP servers to LDAPv2 clients to indicate that a referral
+   * has been returned in the error string.
    *
    * <p>LDAP_PARTIAL_RESULTS = 9</p>
    */

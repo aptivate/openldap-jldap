@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.42 2000/10/04 17:15:51 smerrill Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.43 2000/10/09 19:11:23 vtag Exp $
 *
 * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
 * 
@@ -2522,8 +2522,7 @@ public class LDAPConnection implements
     *   <li>LDAPv2.SCOPE_SUB - searches the base DN and all entries
     *                          within its subtree
     *</ul><br><br>
-    *  @param filter         Search filter specifying the search criteria, as
-    *                        defined in RFC 1960.
+    *  @param filter         Search filter specifying the search criteria.
     *<br><br>
     *  @param attrs          Names of attributes to retrieve.
     *<br><br>
