@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPException.java,v 1.19 2001/01/25 22:03:03 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPException.java,v 1.19 2001/02/12 17:29:42 cmorris Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -15,8 +15,8 @@
 
 package com.novell.ldap;
 
-import java.util.Locale;
-import java.util.ResourceBundle;
+import java.util.*;
+import java.text.MessageFormat;
 import com.novell.ldap.client.Debug;
 
 /**
@@ -111,6 +111,8 @@ public class LDAPException extends Exception
 {
 
    private int resultCode;
+   private String messageKey;
+   private Object[] parameters = null;
    private String matchedDN = null;
    private static final ResourceBundle defaultErrorCodes =
       ResourceBundle.getBundle("com.novell.ldap.LDAPExceptionErrorCodeResource",
@@ -130,44 +132,164 @@ public class LDAPException extends Exception
    }
 
    /**
-    * Constructs an exception with an error code and a specified string as
-    * additional information.
+    * Constructs an exception with a result code and a specified string as an
+    * index to additional information (from LDAPExceptionMessageResource).  If
+    * the messageKey does not exist in the Resource then messageKey is used as
+    * the message itself.  This will call the parent constructor and set the
+    * message using the default locale.
     *
-    *
-    *  @param message        The additional error information.
+    *  @param messageKey    Key to addition error information - a key into
+    *                       LDAPExceptionMessageResource, or the information
+    *                       itself if the key doesn't exist.
     *<br><br>
-    *  @param resultCode     The result code returned.
+    *  @param resultCode    index into general LDAP errors
+    *                       (LDAPExceptionErrorCodeResource)
     */
-   public LDAPException(String message, int resultCode)
+   public LDAPException(String messageKey, int resultCode)
    {
-      super(message);
+      super(getMessage(messageKey));
+      this.messageKey = messageKey;
       this.resultCode = resultCode;
       if( Debug.LDAP_DEBUG) {
         Debug.trace( Debug.messages, "LDAPException created with msg \"" +
-            message + "\" and code " + resultCode);
+            messageKey + "\" and code " + resultCode);
       }
    }
 
    /**
-    * Constructs an exception with an error code, a specified string,
-    * and the matched part of the distinguished name of the entry from the
-    * operation.
+    * Constructs an exception with a result code and a specified string as an
+    * index to additional information (from LDAPExceptionMessageResource).  If
+    * the messageKey does not exist in the Resource then messageKey is used as
+    * the message itself.  This will call the parent constructor and set the
+    * message using the default locale.  The parameters are saved to be
+    * inserted into the
+	message later. (See Example in section 6.1) This should call the parent
+	constructor and set the message as the using the default locale.
     *
-    *  @param message        The additional error information.
+    *  @param messageKey    Key to addition error information, a key into
+    *                       LDAPExceptionMessageResource, or the information
+    *                       itself if the key doesn't exist.
     *<br><br>
-    *  @param resultCode     The result code returned.
+    *  @param parameters    The parameters to be inserted into the message string.
+    *<br><br>
+    *  @param resultCode    The result code returned.
+    */
+   public LDAPException(String messageKey,
+                        Object[] parameters,
+                        int resultCode)
+   {
+      super(getMessage(messageKey, parameters));
+      this.messageKey = messageKey;
+      this.parameters = parameters;
+      this.resultCode = resultCode;
+      if( Debug.LDAP_DEBUG) {
+        Debug.trace( Debug.messages, "LDAPException created with msg \"" +
+            messageKey + "\" and code " + resultCode);
+      }
+   }
+
+
+   /**
+    * Constructs an exception with a result code and a specified string as an
+    * index to additional information (from LDAPExceptionMessageResource) and
+    * includes the matching DN of the Entry from the operation.  If the
+    * messageKey does not exist in the Resource then messageKey is used as
+    * the message itself.  This should call the parent constructor and set the
+    * message as the using the default locale.
+    *
+    *  @param messageKey    Key to addition error information - a key into
+    *                       LDAPExceptionMessageResource, or the information
+    *                       itself if the key doesn't exist.
+    *<br><br>
+    *  @param resultCode    index into general LDAP errors
+    *                       (LDAPExceptionErrorCodeResource)
     *<br><br>
     *  @param matchedDN      The part of the distinguished name that
     *                        the server could match.
     */
-   public LDAPException(String message,
+   public LDAPException(String messageKey,
                         int resultCode,
                         String matchedDN)
    {
-      super(message);
+      super(getMessage(messageKey));
+      this.messageKey = messageKey;
       this.matchedDN = matchedDN;
       this.resultCode = resultCode;
    }
+
+   /**
+    * Constructs an exception with a result code and a specified string as an
+    * index to additional information (from LDAPExceptionMessageResource) and
+    * includes the matching DN of the Entry from the operation.  If the
+    * messageKey does not exist in the Resource then messageKey is used as
+    * the message itself.  This should call the parent constructor and set the
+    * message as the using the default locale.
+    *
+    *  @param messageKey    Key to addition error information - a key into
+    *                       LDAPExceptionMessageResource, or the information
+    *                       itself if the key doesn't exist.
+    *<br><br>
+    *  @param parameters    The parameters to be inserted into the message string.
+    *<br><br>
+    *  @param resultCode    index into general LDAP errors
+    *                       (LDAPExceptionErrorCodeResource)
+    *<br><br>
+    *  @param matchedDN      The part of the distinguished name that
+    *                        the server could match.
+    */
+   public LDAPException(String messageKey,
+                        Object[][] parameters,
+                        int resultCode,
+                        String matchedDN)
+   {
+      super(getMessage(messageKey, parameters));
+      this.messageKey = messageKey;
+      this.parameters = parameters;
+      this.matchedDN = matchedDN;
+      this.resultCode = resultCode;
+   }
+
+   /**
+    * Returns a string using the MessageKey as a key into
+    * LDAPExceptionMessageResource or, if the Key does not exist, returns the
+    * string messageKey.
+    *
+    * @param messageKey    Key string for the resource.
+    *
+    */
+    private static String getMessage(String messageKey){
+      try {
+        return defaultMessages.getString(messageKey);
+      }
+      catch (MissingResourceException mre){
+        return messageKey;
+      }
+    }
+
+   /**
+    * Returns a string using the MessageKey as a key into
+    * LDAPExceptionMessageResource or, if the Key does not exist, returns the
+    * string messageKey.  In addition it formats the parameters into the message
+    * according to MessageFormat.
+    *
+    * @param messageKey    Key string for the resource.
+    *<br><br>
+    * @param parameters
+    */
+    private static String getMessage(String messageKey, Object[] parameters){
+      String pattern;
+      try {
+        pattern = defaultMessages.getString(messageKey);
+      }
+      catch (MissingResourceException mre){
+        pattern = messageKey;
+      }
+      MessageFormat mf = new MessageFormat(pattern);
+      mf.setLocale(Locale.getDefault());
+      mf.applyPattern(pattern);     //this needs to be reset with the new local - i18n defect in java
+      return mf.format(parameters);
+    }
+
 
    /**
     * Returns a string representing the internal error code, in the default
@@ -209,7 +331,7 @@ public class LDAPException extends Exception
    public String errorCodeToString( Locale locale )
    {
       ResourceBundle res =
-       ResourceBundle.getBundle("com.novell.ldap.LDAPExceptionResource", locale);
+       ResourceBundle.getBundle("com.novell.ldap.LDAPExceptionErrorCodeResource", locale);
       return res.getString(Integer.toString(resultCode));
    }
 
@@ -230,7 +352,7 @@ public class LDAPException extends Exception
    public static String errorCodeToString( int code, Locale locale )
    {
       ResourceBundle res =
-       ResourceBundle.getBundle("com.novell.ldap.LDAPExceptionResource", locale);
+       ResourceBundle.getBundle("com.novell.ldap.LDAPExceptionErrorCodeResource", locale);
       return res.getString(Integer.toString(code));
    }
 
@@ -247,6 +369,50 @@ public class LDAPException extends Exception
    {
       return super.getMessage();
    }
+
+
+   /**
+    *    Returns the message stored in LDAPExceptionMessageResource + locale
+    *    using messageKey and parameters passed into the constructor.  If no
+    *    string exists in the resource then this returns the string stored in
+    *    message.
+    *
+    *    @param locale    The Locale that should be used to pull message strings
+    *            	  out of LDAPExceptionMessageResource
+    */
+    public String getLDAPErrorMessage(Locale locale){
+      String pattern;
+      ResourceBundle Messages =  ResourceBundle.getBundle(
+        "com.novell.ldap.LDAPExceptionMessageResource", locale);
+
+      try {
+        pattern = Messages.getString(messageKey);
+      }
+      catch (MissingResourceException mre){
+        pattern = messageKey;
+      }
+      if (parameters != null){
+        MessageFormat mf = new MessageFormat(pattern);
+        mf.setLocale(locale);
+        mf.applyPattern(pattern);     //this needs to be reset with the new local - i18n defect in java
+        pattern = mf.format(parameters);
+      }
+      return pattern;
+    }
+
+  /**
+   *    Returns the message stored in LDAPExceptionMessageResource + locale
+   *    using messageKey and parameters passed into the constructor.  If no
+   *    string exists in the resource then this returns the string stored in
+   *    message.  (Identical to getLDAPErrorMessage(Locale locale).)
+   *
+   *    @param locale    The Locale that should be used to pull message strings
+   *                     out of LDAPExceptionMessageResource.
+   */
+    public String getLocalizedMessage(Locale locale){
+      return getLDAPErrorMessage(locale);
+    }
+
 
    /**
     * Returns the result code from the exception.
@@ -829,7 +995,19 @@ public class LDAPException extends Exception
    * <p>REFERRAL_LIMIT_EXCEEDED = 97</p>
    */
    public final static int REFERRAL_LIMIT_EXCEEDED = 97;
-/* This have been pulled out into LDAPExceptionResource.properties
+	/**
+	 * When debugging an object class, converts the integer value
+         * to a string, in the default locale.
+	 */
+	public String toString()
+	{
+		return super.toString() + ": (" + resultCode + ") " +
+			    errorCodeToString();
+	}
+}
+
+
+/* This have been pulled out into LDAPExceptionErrorCodeResource.properties
    static final String[] errorStrings = {
       "Success",                                // 0
       "Operations Error",                       // 1
@@ -930,14 +1108,3 @@ public class LDAPException extends Exception
       "Client Loop",                            // 96
       "Referral Limit Exceeded"                 // 97
    };*/
-
-	/**
-	 * When debugging an object class, converts the integer value
-         * to a string, in the default locale.
-	 */
-	public String toString()
-	{
-		return super.toString() + ": (" + resultCode + ") " +
-			    errorCodeToString();
-	}
-}
