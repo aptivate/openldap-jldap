@@ -45,7 +45,7 @@ import com.novell.ldap.ldif_dsml.Base64Encoder;
  */
 
 
-public class LDIFWriter extends LDIF implements LDAPWriter, LDAPImport {
+public class LDIFWriter extends LDIF implements LDAPWriter {
 
     private int            recordType;                    // record type
     private String         dn;                            // record dn
@@ -266,12 +266,6 @@ public class LDIFWriter extends LDIF implements LDAPWriter, LDAPImport {
     public void writeContent(LDAPEntry entry, LDAPControl[] ctrls)
     throws IOException {
 
-        if( isRequest()) {
-            throw new RuntimeException(
-                 "com.novell.ldap.ldif_dsml.LDAIWriter: "
-                      + "Cannot write change to LDIF content file");
-        }
-
         // write the content line into LDIF file
         writeRecordLines(entry, ctrls);
         // write an empry line to separate records
@@ -381,43 +375,31 @@ public class LDIFWriter extends LDIF implements LDAPWriter, LDAPImport {
     public void writeRecordLines( LDAPEntry entry, LDAPControl[] ctrls )
     throws IOException, UnsupportedEncodingException {
 
-        int      i, len;
-        boolean  safeString;
-        String   attrName, temp, value;
-        LDAPAttribute attr;
-        LDAPAttributeSet attrSet;
-        Iterator allAttrs;
-        Enumeration allValues;
-
-        if ( isRequest() ) {
-            // add control lines
+        // write dn line(s)
+        writeDN(entry.getDN());
+        if (isRequest()) {
+            // add control line(s)
             if ( ctrls != null ) {
                 writeControls( ctrls );
             }
             // add change type line
             writeLine("changetype: add");
         }
-        else {
-            // get dn from the entry
-            writeDN(entry.getDN());
-        }
 
-        // save attribute fields
-        attrSet = entry.getAttributeSet();
-        allAttrs = attrSet.iterator();
+        // write attribute line(s)
+        LDAPAttributeSet attrSet = entry.getAttributeSet();
+        Iterator allAttrs = attrSet.iterator();
 
         while(allAttrs.hasNext()) {
-           attr = (LDAPAttribute)allAttrs.next();
-           attrName = attr.getName();
+            LDAPAttribute attr = (LDAPAttribute)allAttrs.next();
+            String attrName = attr.getName();
+            byte[][] values = attr.getByteValueArray();
 
-           allValues = attr.getStringValues();
-
-           if( allValues != null) {
-               while(allValues.hasMoreElements()) {
-                   value = (String) allValues.nextElement();
-                   writeLine(attrName + ": " + value);
+            if( values != null) {
+               for (int i=0; i<values.length; i++) {
+                   writeAttribute(attrName, values[i]);
                }
-           }
+            }
         }
     }
 
@@ -437,7 +419,6 @@ public class LDIFWriter extends LDIF implements LDAPWriter, LDAPImport {
      */
     public void writeRecordLines( String dn, LDAPModification[] mods )
     throws IOException, UnsupportedEncodingException {
-
         writeRecordLines( dn, mods, null );
     }
 
@@ -513,7 +494,6 @@ public class LDIFWriter extends LDIF implements LDAPWriter, LDAPImport {
      */
     public void writeRecordLines( String dn, String[] modInfo )
     throws IOException, UnsupportedEncodingException {
-
         writeRecordLines( dn, modInfo, null );
     }
 
@@ -586,13 +566,13 @@ public class LDIFWriter extends LDIF implements LDAPWriter, LDAPImport {
      */
     public void writeRecordLines( String dn, LDAPControl[] ctrls )
     throws IOException, UnsupportedEncodingException {
-
-        // save controls if there is any
+        // write dn line(s)
+        writeDN(dn);
+        // write control line(s)
         if ( ctrls != null ) {
             writeControls( ctrls );
         }
-
-        // save change type
+        // write change type
         writeLine("changetype: delete");
     }
 
@@ -600,17 +580,12 @@ public class LDIFWriter extends LDIF implements LDAPWriter, LDAPImport {
     public void writeDN(String dn)
     throws IOException, UnsupportedEncodingException {
 
-        Base64Encoder base64Encoder = new Base64Encoder();
-
-        if ( isSafe(dn) ) {
-            // safe
+        if ( isSafe(dn) ) { // safe
             writeLine("dn: " + dn);
         }
-        else {
-            // not safe
+        else { // not safe
             writeLine("dn:: " + base64Encoder.encoder(dn) + " ");
         }
-
     }
 
 
@@ -623,29 +598,21 @@ public class LDIFWriter extends LDIF implements LDAPWriter, LDAPImport {
     public void writeControls(LDAPControl[] ctrls)
     throws IOException, UnsupportedEncodingException {
 
-        boolean criticality;
-        byte[]  byteValue = null;
-        String  controlOID, controlValue;
-
         for ( int i = 0; i < ctrls.length; i++ ) {
+            // get control value
+            byte[] cVal = ctrls[i].getValue();
 
-            controlOID = ctrls[i].getID();
-            criticality = ctrls[i].isCritical();
-            byteValue = ctrls[i].getValue();
-
-            if ( (byteValue != null) && (byteValue.length > 0) ) {
-
+            if ( cVal != null && cVal.length > 0 ) {
                 // always encode control value(s) ?
-                byteValue = base64Encoder.encoder( byteValue );
-
-                controlValue = new String(byteValue, "UTF8");
-
-                // a trailing space is add to the end of base64 encoded value
-                writeLine( "control: " + controlOID + " " + criticality
-                              + ":: " + controlValue + " " );
+                cVal = base64Encoder.encoder(cVal);
+                String controlValue = new String(cVal);
+                // a trailing space is add to the end
+                writeLine( "control: " + ctrls[i].getID() + " "
+                       + ctrls[i].isCritical() + ":: " + controlValue + " " );
             }
             else {
-                writeLine("control: " + controlOID + " " + criticality);
+                writeLine("control: " + ctrls[i].getID() + " "
+                                                     + ctrls[i].isCritical());
             }
         }
     }
@@ -660,7 +627,7 @@ public class LDIFWriter extends LDIF implements LDAPWriter, LDAPImport {
     public void writeAttribute(String attrName, String attrVal)
     throws IOException, UnsupportedEncodingException {
 
-        if (attrVal != null) {
+        if (attrVal != null && attrVal.length() != 0) {
             if ( isSafe(attrVal) ) {
                 writeLine( attrName + ": " + attrVal );
             }
@@ -708,7 +675,7 @@ public class LDIFWriter extends LDIF implements LDAPWriter, LDAPImport {
     public boolean isSafe(String value) {
 
        if (value.length() > 0) {
-            if (value.length() > 1){
+            if (value != null && value.length() > 1){
                 // is there any NON-SAFE-INIT-CHAR
                 if (      (value.charAt(0) == 0x00)     // NUL
                        || (value.charAt(0) == 0x0A)     // linefeeder
@@ -753,7 +720,7 @@ public class LDIFWriter extends LDIF implements LDAPWriter, LDAPImport {
      */
     public boolean isSafe(byte[] bytes) {
 
-        if (bytes.length > 0) {
+        if (bytes != null && bytes.length > 0) {
             if (bytes.length > 1){
                 // is there any NON-SAFE-INIT-CHAR
                 if (      (bytes[0] == 0x00)     // NUL
@@ -801,7 +768,7 @@ public class LDIFWriter extends LDIF implements LDAPWriter, LDAPImport {
      */
     public boolean isPrintable( byte[] bytes ) {
 
-        if (bytes.length > 0) {
+        if (bytes != null && bytes.length > 0) {
             for (int i=0; i<bytes.length; i++) {
                 if ( (bytes[i]&0x00ff) < 0x20 || (bytes[i]&0x00ff) > 0x7e ) {
                     return false;
