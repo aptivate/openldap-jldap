@@ -574,6 +574,16 @@ public class LDAPConnection implements Cloneable
     }
 
     /**
+     * Checks whether the connection represented by this object is still
+     * alive or not.
+     *
+     * @return  True if connection is alive; false if the connection is closed.
+     */
+	public boolean isConnectionAlive()
+    {
+           return conn.isConnectionAlive();
+    }
+    /**
      * Indicatates if the connection is protected by TLS.
      *
      * @return If startTLS has completed this method returns true.
