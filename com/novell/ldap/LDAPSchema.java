@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSchema.java,v 1.8 2000/09/29 22:17:41 judy Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSchema.java,v 1.9 2000/10/02 19:57:23 bgudmundson Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -63,7 +63,7 @@ public class LDAPSchema {
     *
     *  @param ld       An open connection to a directory server.
     *
-    *  @exception LDAPException A general exception which includes an error 
+    *  @exception LDAPException A general exception which includes an error
     *                           message and an LDAP error code.
     */
    public void fetchSchema(LDAPConnection ld) throws LDAPException {
@@ -161,6 +161,7 @@ public class LDAPSchema {
 									{
 										value = (String) enumString.nextElement();
 										attrSchema = new LDAPAttributeSchema( value );
+          									attributeHashtable.put(attrSchema.getName(), attrSchema );
 									}
 								}
 								else{
@@ -253,7 +254,7 @@ public class LDAPSchema {
     * @return An enumeration of attribute definitions.
     */
    public Enumeration getAttributes() {
-      return null;
+      return attributeHashtable.elements();
    }
 
    /*
