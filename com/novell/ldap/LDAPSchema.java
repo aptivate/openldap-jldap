@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSchema.java,v 1.24 2001/07/17 17:45:25 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSchema.java,v 1.25 2001/07/20 19:49:40 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -28,7 +28,7 @@ import java.util.Hashtable;
  * directory server. The other methods access information acquired
  * through fetchSchema.</p>
  *
- * @see LDAPAttributeSchema 
+ * @see LDAPAttributeSchema
  */
 public class LDAPSchema {
 
@@ -170,7 +170,7 @@ public class LDAPSchema {
 									{
 										value = (String) enumString.nextElement();
           								classSchema = new LDAPObjectClassSchema( value );
-                   						objectClassHashtable.put(classSchema.getName(), classSchema);
+                   						objectClassHashtable.put(classSchema.getName().toUpperCase(), classSchema);
 									}
 								}
 								else if(attrName.equalsIgnoreCase("attributeTypes")){
@@ -181,7 +181,7 @@ public class LDAPSchema {
 									{
 										value = (String) enumString.nextElement();
 										attrSchema = new LDAPAttributeSchema( value );
-          								attributeHashtable.put(attrSchema.getName(), attrSchema );
+          								attributeHashtable.put(attrSchema.getName().toUpperCase(), attrSchema );
 									}
 								}
 								else if(attrName.equalsIgnoreCase("matchingRules")){
@@ -192,7 +192,7 @@ public class LDAPSchema {
 									{
 										value = (String) enumString.nextElement();
 										matchingRuleSchema = new LDAPMatchingRuleSchema( value, null );
-          								matchingRuleHashtable.put(matchingRuleSchema.getName(), matchingRuleSchema );
+          								matchingRuleHashtable.put(matchingRuleSchema.getName().toUpperCase(), matchingRuleSchema );
 									}
 								}
 								else if(attrName.equalsIgnoreCase("matchingRuleUse")){
@@ -203,7 +203,7 @@ public class LDAPSchema {
 									{
 										value = (String) enumString.nextElement();
 										matchingRuleUseSchema = new LDAPMatchingRuleUseSchema( value );
-          								matchingRuleUseHashtable.put(matchingRuleUseSchema.getName(), matchingRuleUseSchema );
+          								matchingRuleUseHashtable.put(matchingRuleUseSchema.getName().toUpperCase(), matchingRuleUseSchema );
 									}
 								}
 								else if(attrName.equalsIgnoreCase("ldapSyntaxes")){
@@ -225,7 +225,7 @@ public class LDAPSchema {
 									{
 										value = (String) enumString.nextElement();
 										dITContentRuleSchema = new LDAPDITContentRuleSchema( value );
-          								dITContentRuleHashtable.put(dITContentRuleSchema.getName(), dITContentRuleSchema );
+          								dITContentRuleHashtable.put(dITContentRuleSchema.getName().toUpperCase(), dITContentRuleSchema );
 									}
 								}
 								else if(attrName.equalsIgnoreCase("dITStructureRules")){
@@ -236,7 +236,7 @@ public class LDAPSchema {
 									{
 										value = (String) enumString.nextElement();
 										dITStructureRuleSchema = new LDAPDITStructureRuleSchema( value );
-          								dITStructureRuleHashtable.put(dITStructureRuleSchema.getName(), dITStructureRuleSchema );
+          								dITStructureRuleHashtable.put(dITStructureRuleSchema.getName().toUpperCase(), dITStructureRuleSchema );
 										dITStructureRuleIDHashtable.put(dITStructureRuleSchema.getID(), dITStructureRuleSchema );
 									}
 								}
@@ -292,9 +292,9 @@ public class LDAPSchema {
     *  @return The attribute definition, or null if not found.
     */
    public LDAPAttributeSchema getAttribute( String name ) {
-      if( attributeHashtable.isEmpty() == true || attributeHashtable.containsKey(name) == false)
+      if( attributeHashtable.isEmpty() == true || attributeHashtable.containsKey(name.toUpperCase()) == false)
       	return null;
-      return (LDAPAttributeSchema) attributeHashtable.get(name);
+      return (LDAPAttributeSchema) attributeHashtable.get(name.toUpperCase());
    }
 
    /**
@@ -306,9 +306,9 @@ public class LDAPSchema {
     * @return The object class definition, or null if not found.
     */
    public LDAPObjectClassSchema getObjectClass( String name ) {
-      if( objectClassHashtable.isEmpty() == true || objectClassHashtable.containsKey(name) == false)
+      if( objectClassHashtable.isEmpty() == true || objectClassHashtable.containsKey(name.toUpperCase()) == false)
       	return null;
-      return (LDAPObjectClassSchema) objectClassHashtable.get(name);
+      return (LDAPObjectClassSchema) objectClassHashtable.get(name.toUpperCase());
    }
 
    /**
@@ -320,9 +320,9 @@ public class LDAPSchema {
     *  @return The matching rule definition, or null if not found.
     */
    public LDAPMatchingRuleSchema getMatchingRule( String name ) {
-      if( matchingRuleHashtable.isEmpty() == true || matchingRuleHashtable.containsKey(name) == false)
+      if( matchingRuleHashtable.isEmpty() == true || matchingRuleHashtable.containsKey(name.toUpperCase()) == false)
       	return null;
-      return (LDAPMatchingRuleSchema) matchingRuleHashtable.get(name);
+      return (LDAPMatchingRuleSchema) matchingRuleHashtable.get(name.toUpperCase());
    }
 
    /**
@@ -334,9 +334,9 @@ public class LDAPSchema {
     *  @return The matching rule use definition, or null if not found.
     */
    public LDAPMatchingRuleUseSchema getMatchingRuleUse( String name ) {
-      if( matchingRuleUseHashtable.isEmpty() == true || matchingRuleUseHashtable.containsKey(name) == false)
+      if( matchingRuleUseHashtable.isEmpty() == true || matchingRuleUseHashtable.containsKey(name.toUpperCase()) == false)
       	return null;
-      return (LDAPMatchingRuleUseSchema) matchingRuleUseHashtable.get(name);
+      return (LDAPMatchingRuleUseSchema) matchingRuleUseHashtable.get(name.toUpperCase());
    }
 
 	/**
@@ -349,9 +349,9 @@ public class LDAPSchema {
     */
    public LDAPDITStructureRuleSchema getDITStructureRule( String name ) {
 
-      if( dITStructureRuleHashtable.isEmpty() == true || dITStructureRuleHashtable.containsKey(name) == false)
+      if( dITStructureRuleHashtable.isEmpty() == true || dITStructureRuleHashtable.containsKey(name.toUpperCase()) == false)
       	return null;
-      return (LDAPDITStructureRuleSchema) dITStructureRuleHashtable.get(name);
+      return (LDAPDITStructureRuleSchema) dITStructureRuleHashtable.get(name.toUpperCase());
 
    }
 
@@ -382,9 +382,9 @@ public class LDAPSchema {
     */
    public LDAPDITContentRuleSchema getDITContentRule( String name ) {
 
-      if( dITContentRuleHashtable.isEmpty() == true || dITContentRuleHashtable.containsKey(name) == false)
+      if( dITContentRuleHashtable.isEmpty() == true || dITContentRuleHashtable.containsKey(name.toUpperCase()) == false)
       	return null;
-      return (LDAPDITContentRuleSchema) dITContentRuleHashtable.get(name);
+      return (LDAPDITContentRuleSchema) dITContentRuleHashtable.get(name.toUpperCase());
 
    }
 
@@ -398,9 +398,9 @@ public class LDAPSchema {
     */
    public LDAPNameFormSchema getNameForm( String name ) {
 
-      if( nameFormHashtable.isEmpty() == true || nameFormHashtable.containsKey(name) == false)
+      if( nameFormHashtable.isEmpty() == true || nameFormHashtable.containsKey(name.toUpperCase()) == false)
       	return null;
-      return (LDAPNameFormSchema) nameFormHashtable.get(name);
+      return (LDAPNameFormSchema) nameFormHashtable.get(name.toUpperCase());
 
    }
 
