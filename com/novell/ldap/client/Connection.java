@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.32 2001/01/08 19:04:30 javed Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.33 2001/02/13 18:36:49 cmorris Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -73,6 +73,9 @@ public final class Connection implements Runnable
 
     // Place to save message information classes
     private MessageVector messages = new MessageVector(5,5);
+
+    // Place to save unsolicited message listeners
+    private Vector unsolicitedListeners = new Vector(3,3);
 
     // The LDAPSocketFactory to be used as the default to create new connections
     static private LDAPSocketFactory socketFactory = null;
@@ -762,11 +765,42 @@ public final class Connection implements Runnable
                         }
                     }
                 } catch ( NoSuchFieldException ex) {
-                    if( Debug.LDAP_DEBUG ) {
-                        Debug.trace( Debug.messages, name +
-                            "reader: message(" + msgId +
-                            ") not found, discarding reply");
-                    }
+
+					// We get the NoSuchFieldException when we could not find a matching
+					// message id.  First check to see if this is an unsolicited 
+					// notification (msgID == 0). If it is not we throw it away.  
+					// If it is we call any unsolicited
+					// listeners that might have been registered to listen for these 
+					// message.
+		
+		
+					// Note the location of this code.  We could have required that
+					// message ID 0 be just like other message ID's but since
+					// message ID has to be treated specially we have a seperate
+					// check for message ID 0.  Also note that this test is after the 
+					// regular message list has been checked for.  We could have always
+					// checked the list of messages after checking if this is an 
+					// unsolicited notification but that would have inefficient as
+					// message ID 0 is a rare event (as of this time). 			
+					if (msgId == 0) {
+						
+						if( Debug.LDAP_DEBUG ) {
+							Debug.trace( Debug.messages, name + "Received message id 0");
+						}
+
+						// Notify any listeners that might have been registered
+						notifyAllUnsolicitedListeners(msg);
+					
+					}
+					else {
+					
+						if( Debug.LDAP_DEBUG ) {
+							Debug.trace( Debug.messages, name +
+								"reader: message(" + msgId +
+								") not found, discarding reply");
+						}
+					
+					}
                 }
             }
         } catch( IOException ioe) {
@@ -788,4 +822,47 @@ public final class Connection implements Runnable
         }
         return;
     }
+
+
+	/** Add the specific object to the list of listeners that want to be notified when
+	 * an unsolicited notification is received.
+	 */
+	public void addUnsolicitedNotificationListener(LDAPUnsolicitedNotificationListener listener)
+	{
+		unsolicitedListeners.add(listener);
+	}
+
+	/** Remove the specific object from current list of listeners
+	*/
+	public void removeUnsolicitedNotificationListener(LDAPUnsolicitedNotificationListener listener)
+	{
+		unsolicitedListeners.remove(listener);
+	}
+
+	private void notifyAllUnsolicitedListeners(RfcLDAPMessage message)
+	{
+		if( Debug.LDAP_DEBUG ) {
+            Debug.trace( Debug.messages, name +
+            "Calling all Unsolicited Message Listeners");
+        }
+
+		int numOfListeners = unsolicitedListeners.size();
+
+		// Cycle through all the listeners
+		for(int i = 0; i < numOfListeners; i++ ) {
+
+			// Get next listener
+			LDAPUnsolicitedNotificationListener listener = (LDAPUnsolicitedNotificationListener) unsolicitedListeners.get(i);
+			
+
+			// Create a new ExtendedResponse each time as we do not want each listener
+			// to have its own copy of the message
+			LDAPMessage tempLDAPMessage = new LDAPExtendedResponse(message);
+			
+			// Spawn a new thread for each listener to go process the message
+			listener.messageReceived(tempLDAPMessage);
+
+		}
+
+	}
 }

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.75 2001/02/13 18:36:47 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.76 2001/02/15 16:56:44 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -696,9 +696,10 @@ public class LDAPConnection implements Cloneable
 	{
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.apiRequests, name +
-            "addUnsolicitedNOtificationListener()");
+			 "addUnsolicitedNOtificationListener()");
         }
-        throw new RuntimeException("Method LDAPConnection.addUnsolicitedNotificationListener not implemented");
+		if (listener != null)
+			conn.addUnsolicitedNotificationListener(listener);
     }
     
 
@@ -720,7 +721,9 @@ public class LDAPConnection implements Cloneable
             Debug.trace( Debug.apiRequests, name +
             "removeUnsolicitedNOtificationListener()");
         }
-        throw new RuntimeException("Method LDAPConnection.removeUnsolicitedNotificationListener not implemented");
+		
+		if (listener != null) 
+			conn.removeUnsolicitedNotificationListener(listener);
     }
 
     /**

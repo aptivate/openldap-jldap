@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPExtendedResponse.java,v 1.21 2000/11/10 16:50:02 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPExtendedResponse.java,v 1.22 2000/11/13 23:57:01 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -18,6 +18,7 @@ package com.novell.ldap;
 import java.io.IOException;
 import com.novell.ldap.LDAPResponse;
 import com.novell.ldap.rfc2251.*;
+import com.novell.ldap.asn1.*;
 
 /**
  *
@@ -59,6 +60,10 @@ public class LDAPExtendedResponse extends LDAPResponse {
      */
     public byte[] getValue()
     {
-        return((RfcExtendedResponse)message.getProtocolOp()).getResponse().getContent();
+		ASN1OctetString tempString = ((RfcExtendedResponse)message.getProtocolOp()).getResponse();
+		if (tempString == null)
+			return null;
+		else
+			return(tempString.getContent());
     }
 }
