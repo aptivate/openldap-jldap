@@ -137,7 +137,7 @@ public class LDAPResponseListener implements LDAPListener
    /**
     * Returns the response.
     *
-    * <p>The getResponse method locks until a response is available, or until all
+    * <p>The getResponse method blocks until a response is available, or until all
     * operations associated with the object have completed or been canceled, and
     * then returns the response. The client is responsible for processing
     * the responses returned from a listener.</p>
@@ -156,7 +156,7 @@ public class LDAPResponseListener implements LDAPListener
    /**
     * Returns the response for a particular message id.
     *
-    * <p>The getResponse method locks until a response is available, or until all
+    * <p>The getResponse method blocks until a response is available, or until all
     * operations associated with the object have completed or been canceled, and
     * then returns the response. The client is responsible for processing
     * the responses returned from a listener.</p>
