@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/protocol/Controls.java,v 1.4 2000/09/11 21:06:00 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/protocol/Controls.java,v 1.5 2000/10/18 15:53:47 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  ***************************************************************************/
@@ -41,9 +41,11 @@ public class Controls extends ASN1SequenceOf {
 	{
 		super(dec, in, len);
 
-//		// Convert each SEQUENCE element to a Control
-//		for(int i=0; i < size(); i++) {
-//		}
+		// Convert each SEQUENCE element to a Control
+		for(int i=0; i < size(); i++) {
+            Control tempControl = new Control((ASN1Sequence)get(i));
+            set (i, tempControl);
+		}
 	}
 
 	//*************************************************************************
@@ -64,7 +66,7 @@ public class Controls extends ASN1SequenceOf {
 	 */
 	public void set(int index, Control control)
 	{
-		set(index, control);
+		super.set(index, control);
 	}
 
 	//*************************************************************************
