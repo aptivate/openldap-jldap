@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: NamingContextConstants.java,v 1.18 2000/10/10 19:17:30 judy Exp $
+ * $Id: NamingContextConstants.java,v 1.19 2000/10/23 18:49:07 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -227,7 +227,67 @@ public class NamingContextConstants {
      * A constant for the removeOrphanNamingContextResponse OID.
      */
     public static final String REMOVE_ORPHAN_NAMING_CONTEXT_RES     = "2.16.840.1.113719.1.27.100.42";
-    
+
+    /**
+     * A constant for the triggerBackLinkerRequest OID.
+     */
+    public static final String TRIGGER_BKLINKER_REQ	    = "2.16.840.1.113719.1.27.100.43";
+
+    /**
+     * A constant for the triggerBackLinkerResponse OID.
+     */
+    public static final String TRIGGER_BKLINKER_RES     = "2.16.840.1.113719.1.27.100.44";
+
+    /**
+     * A constant for the triggerJanitorRequest OID.
+     */
+    public static final String TRIGGER_JANITOR_REQ	    = "2.16.840.1.113719.1.27.100.47";
+
+    /**
+     * A constant for the triggerJanitorResponse OID.
+     */
+    public static final String TRIGGER_JANITOR_RES     = "2.16.840.1.113719.1.27.100.48";
+
+    /**
+     * A constant for the triggerLimberRequest OID.
+     */
+    public static final String TRIGGER_LIMBER_REQ	    = "2.16.840.1.113719.1.27.100.49";
+
+    /**
+     * A constant for the triggerLimberResponse OID.
+     */
+    public static final String TRIGGER_LIMBER_RES     = "2.16.840.1.113719.1.27.100.50";
+		
+    /**
+     * A constant for the triggerSkulkerRequest OID.
+     */
+    public static final String TRIGGER_SKULKER_REQ	    = "2.16.840.1.113719.1.27.100.51";
+
+    /**
+     * A constant for the triggerSkulkerResponse OID.
+     */
+    public static final String TRIGGER_SKULKER_RES     = "2.16.840.1.113719.1.27.100.52";
+
+    /**
+     * A constant for the triggerSchemaSyncRequest OID.
+     */
+    public static final String TRIGGER_SCHEMA_SYNC_REQ	    = "2.16.840.1.113719.1.27.100.53";
+
+    /**
+     * A constant for the triggerSchemaSyncResponse OID.
+     */
+    public static final String TRIGGER_SCHEMA_SYNC_RES     = "2.16.840.1.113719.1.27.100.54";
+
+    /**
+     * A constant for the triggerPartitionPurgeRequest OID.
+     */
+    public static final String TRIGGER_PART_PURGE_REQ	    = "2.16.840.1.113719.1.27.100.55";
+
+    /**
+     * A constant for the triggerPartitionPurgeResponse OID.
+     */
+    public static final String TRIGGER_PART_PURGE_RES     = "2.16.840.1.113719.1.27.100.56";
+
 
     /**
      * A constant that specifies that all servers in a replica ring must be 
