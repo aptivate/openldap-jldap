@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/org/ietf/ldap/LDAPConnection.java,v 1.18 2000/08/18 00:43:41 smerrill Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/org/ietf/ldap/LDAPConnection.java,v 1.19 2000/08/21 18:35:41 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -774,6 +774,12 @@ public class LDAPConnection implements
 
       if(cons == null)
          cons = defSearchCons;
+
+		if(dn == null)
+			dn = "";
+
+		if(passwd == null)
+			passwd = "";
 
       switch(version) {
          case LDAP_V3:

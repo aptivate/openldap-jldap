@@ -1,3 +1,8 @@
+/* **************************************************************************
+ * $Novell$
+ *
+ * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
+ ***************************************************************************/
 
 package com.novell.asn1.ldap;
 
@@ -5,6 +10,7 @@ import java.util.*;
 import java.io.*;
 
 import com.novell.asn1.*;
+import org.ietf.ldap.LDAPException;
 
 /**
  *       Filter ::= CHOICE {
@@ -66,6 +72,19 @@ public class Filter extends ASN1Choice {
 	 */
 	public final static int EXTENSIBLE_MATCH = 9;
 
+	/**
+    * Context-specific TAG for INITIAL component.
+	 */
+	public final static int INITIAL = 0;
+	/**
+    * Context-specific TAG for ANY component.
+	 */
+	public final static int ANY = 1;
+	/**
+    * Context-specific TAG for FINAL component.
+	 */
+	public final static int FINAL = 2;
+
 	//*************************************************************************
 	// Private variables for Filter
 	//*************************************************************************
@@ -73,21 +92,14 @@ public class Filter extends ASN1Choice {
 	private StringTokenizer st;
 
 	//*************************************************************************
-	// Constructors for Filter
+	// Constructor for Filter
 	//*************************************************************************
-
-	/**
-	 *
-	 */
-	public Filter(ASN1Tagged choice)
-	{
-		super(choice);
-	}
 
 	/**
 	 * Constructs a Filter object by parsing an RFC 2254 Search Filter String.
 	 */
 	public Filter(String filter)
+		throws LDAPException
 	{
 		setContent(parse(filter));
 	}
@@ -97,19 +109,15 @@ public class Filter extends ASN1Choice {
 	//*************************************************************************
 
 	private ASN1Tagged parse(String filterExpr)
+		throws LDAPException
 	{
 		if(filterExpr == null || filterExpr.equals("")) {
-//			throw new LDAPException("Filter: invalid filter");
+         throw new LDAPException("Invalid filter",
+                                 LDAPException.FILTER_ERROR);
 		}
 
 		if(filterExpr.charAt(0) != '(')
 		  filterExpr = "(" + filterExpr + ")";
-
-		try {
-			filterExpr = new String(filterExpr.getBytes("UTF8"));
-		}
-		catch(UnsupportedEncodingException uee) {
-		}
 
 		st = new StringTokenizer(filterExpr, "()=", true);
 
@@ -120,16 +128,18 @@ public class Filter extends ASN1Choice {
 	 * 
 	 */
    private ASN1Tagged parseFilter()
+		throws LDAPException
    {
-
-	  if(!st.nextToken().equals("(")) {
-//		 throw new InvalidSearchFilterException (); // missing '('
-	  }
+	   if(!st.nextToken().equals("(")) {
+		   throw new LDAPException("Missing opening paren",
+			                        LDAPException.FILTER_ERROR);
+	   }
 
       ASN1Tagged filter = parseFilterComp();
 
 		if(!st.nextToken().equals(")")) {
-//		  throw new InvalidSearchFilterException (); // missing ')'
+			throw new LDAPException("Missing closing paren",
+											LDAPException.FILTER_ERROR);
 		}
 
 		return filter;
@@ -139,39 +149,36 @@ public class Filter extends ASN1Choice {
     * RFC 2254 filter helper method. Will Parse a filter component.
     */
    private ASN1Tagged parseFilterComp()
+		throws LDAPException
    {
 		String tok = st.nextToken().trim(); // get operator or attr name
 
-		if(tok.equals("&"))
-		{
+		if(tok.equals("&")) {
 			return new ASN1Tagged(
 				new ASN1Identifier(ASN1Identifier.CONTEXT, true, AND),
 				parseFilterList(),
 				false);
 		}
-		else if(tok.equals("|"))
-		{
+		else if(tok.equals("|")) {
 			return new ASN1Tagged(
 				new ASN1Identifier(ASN1Identifier.CONTEXT, true, OR),
 				parseFilterList(),
 				false);
 		}
-		else if(tok.equals("!"))
-		{
+		else if(tok.equals("!")) {
 			return new ASN1Tagged(
 				new ASN1Identifier(ASN1Identifier.CONTEXT, true, NOT),
 				parseFilter(),
-				false);
+				false); // maybe change this to true per RFC 2251 4.5.1
 		}
-		else
-		{
-			// get item
-			String filtertype = st.nextToken("><~=()").trim(); // get relational operator
+		else {
+			// get item (may be: simple / present / substring / extensible)
+			String filtertype = st.nextToken("><~=()").trim(); // get rel op
 
-			if(filtertype.equals(">"))
-			{
+			if(filtertype.equals(">")) {
 				if(!st.nextToken().equals("=")) {
-//					throw new InvalidSearchFilterException ();
+					throw new LDAPException("Invalid operator",
+													LDAPException.FILTER_ERROR);
 				}
 
 				String value = st.nextToken().trim();
@@ -179,16 +186,16 @@ public class Filter extends ASN1Choice {
 				return new ASN1Tagged(
 					new ASN1Identifier(ASN1Identifier.CONTEXT, true,
 											 GREATER_OR_EQUAL),
-					 new AttributeValueAssertion(
-						  new AttributeDescription(tok),
-						  new AssertionValue(unescapeFilterValue(value))),
+					new AttributeValueAssertion(
+						new AttributeDescription(tok),
+						new AssertionValue(escaped2unicode(value))),
 					false);
 			}
 
-			else if(filtertype.equals("<"))
-			{
+			else if(filtertype.equals("<")) {
 				if(!st.nextToken().equals("=")) {
-//					throw new InvalidSearchFilterException ();
+					throw new LDAPException("Invalid operator",
+													LDAPException.FILTER_ERROR);
 				}
 
 				String value = st.nextToken().trim();
@@ -196,16 +203,16 @@ public class Filter extends ASN1Choice {
 				return new ASN1Tagged(
 					new ASN1Identifier(ASN1Identifier.CONTEXT, true,
 											 LESS_OR_EQUAL),
-					 new AttributeValueAssertion(
-						  new AttributeDescription(tok),
-						  new AssertionValue(unescapeFilterValue(value))),
+					new AttributeValueAssertion(
+						new AttributeDescription(tok),
+						new AssertionValue(escaped2unicode(value))),
 					false);
 			}
 
-			else if(filtertype.equals("~"))
-			{
+			else if(filtertype.equals("~")) {
 				if(!st.nextToken().equals("=")) {
-//					throw new InvalidSearchFilterException ();
+					throw new LDAPException("Invalid operator",
+													LDAPException.FILTER_ERROR);
 				}
 
 				String value = st.nextToken().trim();
@@ -213,38 +220,79 @@ public class Filter extends ASN1Choice {
 				return new ASN1Tagged(
 					new ASN1Identifier(ASN1Identifier.CONTEXT, true,
 											 APPROX_MATCH),
-					 new AttributeValueAssertion(
-						  new AttributeDescription(tok),
-						  new AssertionValue(unescapeFilterValue(value))),
+					new AttributeValueAssertion(
+						new AttributeDescription(tok),
+						new AssertionValue(escaped2unicode(value))),
 					false);
 			}
 
-			else if(filtertype.equals("="))
-			{
+			else if(filtertype.equals("=")) {
+				// look for: simple / present / substring
 				String value = st.nextToken().trim();
 
-				if(value.equals("*"))
-				{
+				if(value.equals("*")) { // present
 					return new ASN1Tagged(
-						new ASN1Identifier(ASN1Identifier.CONTEXT, false,
-												 PRESENT),
-							  new AttributeDescription(tok), false);
+						new ASN1Identifier(ASN1Identifier.CONTEXT, false, PRESENT),
+						new AttributeDescription(tok),
+						false);
 				}
-				else
-				{
+				else if(value.indexOf('*') != -1) { // substring
+					// parse: [initial], any, [final] into an ASN1SequenceOf
+					int begin=0, end;
+					ASN1SequenceOf seq = new ASN1SequenceOf(3); // max 3 elements
+					if(value.charAt(0) != '*') { // initial
+						end = value.indexOf('*');
+						seq.add(
+							new ASN1Tagged(
+								new ASN1Identifier(ASN1Identifier.CONTEXT, false,
+									                INITIAL),
+								new LDAPString(
+									escaped2unicode(value.substring(begin, end))),
+								false));
+
+						begin = end;
+					}
+
+					end = value.lastIndexOf('*'); // any
+					seq.add(
+						new ASN1Tagged(
+							new ASN1Identifier(ASN1Identifier.CONTEXT, false, ANY),
+							new LDAPString(
+								escaped2unicode(value.substring(begin, end))),
+							false));
+
+					if((value.length() - end) > 0) { // final
+						seq.add(
+							new ASN1Tagged(
+								new ASN1Identifier(ASN1Identifier.CONTEXT, false,
+									                FINAL),
+								new LDAPString(
+									escaped2unicode(value.substring(end))),
+								false));
+					}
+
 					return new ASN1Tagged(
 						new ASN1Identifier(ASN1Identifier.CONTEXT, true,
-												 EQUALITY_MATCH),
-						 new AttributeValueAssertion(
-							  new AttributeDescription(tok),
-							  new AssertionValue(unescapeFilterValue(value))),
+							                SUBSTRINGS),
+						new SubstringFilter(
+							new AttributeDescription(tok),
+							seq),
+						false);
+				}
+				else { // simple
+					return new ASN1Tagged(
+						new ASN1Identifier(ASN1Identifier.CONTEXT, true,
+							                EQUALITY_MATCH),
+						new AttributeValueAssertion(
+						   new AttributeDescription(tok),
+							new AssertionValue(escaped2unicode(value))),
 						false);
 				}
 			}
 			else
 			{
-//				throw new InvalidSearchFilterException (); // invalid operator
-				return null;
+				throw new LDAPException("Invalid operator",
+												LDAPException.FILTER_ERROR);
 			}
 
 		}
@@ -256,6 +304,7 @@ public class Filter extends ASN1Choice {
     * components between each component as it is placed in the NetFilter.
     */
    private ASN1SetOf parseFilterList()
+		throws LDAPException
    {
 		ASN1SetOf set = new ASN1SetOf();
 
@@ -268,87 +317,69 @@ public class Filter extends ASN1Choice {
    }
 
    /**
-    * convert character 'c' that represents a hexadecimal digit to an integer.
-    * if 'c' is not a hexidecimal digit [0-9A-Fa-f], -1 is returned.
-    * otherwise the converted value is returned.
+    * Convert hex character to an integer. Return -1 if char is something
+	 * other than a hex char.
     */
-   private static int hexchar2int( char c )
+   private int hex2int(char c)
    {
-      if ( c >= '0' && c <= '9' )
-	  {
-         return( c - '0' );
-      }
-      if ( c >= 'A' && c <= 'F' )
-	  {
-         return( c - 'A' + 10 );
-      }
-      if ( c >= 'a' && c <= 'f' )
-	  {
-         return( c - 'a' + 10 );
-      }
-      return( -1 );
+		return
+			(c >= '0' && c <= '9') ? c - '0'      :
+			(c >= 'A' && c <= 'F') ? c - 'A' + 10 :
+			(c >= 'a' && c <= 'f') ? c - 'a' + 10 :
+				-1;
    }
 
    /**
-    * Replace escaped hex digits with the equivalent unicode representation.
-	* Assume either V2 or V3 escape mechanisms:
-	* V2: \*,  \(,  \),  \\.
-	* V3: \2A, \28, \29, \5C, \00.
-	*/
-   private String unescapeFilterValue(String value)
+	 * Replace escaped hex digits with the equivalent unicode representation.
+	 * Assume either V2 or V3 escape mechanisms:
+	 * V2: \*,  \(,  \),  \\.
+	 * V3: \2A, \28, \29, \5C, \00.
+	 */
+   private String escaped2unicode(String value)
+		throws LDAPException
    {
-	  StringBuffer sb = new StringBuffer();
+      StringBuffer sb = new StringBuffer();
       boolean escape = false, escStart = false;
       int ival;
       char ch, temp = 0;
 
-      for(int i = 0; i < value.length(); i++)
-	  {
+      for(int i = 0; i < value.length(); i++) {
          ch = value.charAt(i);
-         if(escape)
-		 {
+         if(escape) {
             // Try LDAP V3 escape (\\xx)
-            if((ival = hexchar2int(ch)) < 0)
-			{
-               if(escStart)
-			   {
+            if((ival = hex2int(ch)) < 0) {
+               if(escStart) {
                   // V2 escaped "*()" chars differently: \*, \(, \)
                   escape = false;
-				  sb.append(ch);
+                  sb.append(ch);
                }
-			   else
-			   {
-                  // escaping already started but we can't find 2nd hex
-//                  throw new InvalidSearchFilterException("invalid escape sequence: " + value);
+					else {
+						throw new LDAPException("Invalid escape value",
+														LDAPException.FILTER_ERROR);
                }
             }
-			else
-			{
-               if(escStart)
-			   {
-				  temp = (char)(ival<<4);
+				else {
+               if(escStart) {
+                  temp = (char)(ival<<4);
                   escStart = false;
                }
-			   else
-			   {
-				  temp |= (char)(ival);
-				  sb.append(temp);
+					else {
+                  temp |= (char)(ival);
+                  sb.append(temp);
                   escape = false;
                }
             }
          }
-		 else if(ch != '\\')
-		 {
-			sb.append(ch);
+         else if(ch != '\\') {
+            sb.append(ch);
             escape = false;
          }
-		 else
-		 {
+			else {
             escStart = escape = true;
          }
       }
 
-	  return sb.toString();
+      return sb.toString();
    }
 
 }

@@ -16,6 +16,8 @@ public class ASN1OctetString extends ASN1Simple {
 
    /**
     * Constructs an ASN1OctetString object using a byte array value.
+	 *
+	 * @param content Non-null byte array value.
     */
    public ASN1OctetString(byte[] content)
    {
@@ -26,6 +28,8 @@ public class ASN1OctetString extends ASN1Simple {
 
    /**
     * Constructs an ASN1OctetString object using a String value.
+	 *
+	 * @param content Non-null String value.
     */
    public ASN1OctetString(String content)
    {

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/org/ietf/ldap/LDAPResponse.java,v 1.5 2000/08/10 17:53:02 smerrill Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/org/ietf/ldap/LDAPResponse.java,v 1.6 2000/08/21 18:35:42 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -20,19 +20,11 @@ import java.util.Vector;
 
 import com.novell.asn1.*;
 import com.novell.asn1.ldap.*;
-//import com.novell.ldap.client.protocol.lber.*;
 
 /**
- *  Represents the response to a particular LDAP operation.
+ *  Represents the response to an LDAP protocol operation.
  */
 public class LDAPResponse extends LDAPMessage {
-
-//	private String errorMessage;     // RFC 2251
-//	private String matchedDN;        // RFC 2251
-//	private Vector referrals = null; // RFC 2251
-//	private int resultCode;          // RFC 2251
-
-//	private LberDecoder lber;
 
 	/**
 	 * Creates an LDAPMessage when receiving an RFC 2251 LDAPMessage from a
@@ -42,105 +34,6 @@ public class LDAPResponse extends LDAPMessage {
 	{
 		super(message);
 	}
-
-	/**
-	 * Constructor called when an object with only a resultCode is needed.
-	 */
-/*
-	public LDAPResponse(int resultCode)
-	{
-		this.resultCode = resultCode;
-	}
-*/	
-
-	/**
-	 * Constructor called when parsing responses to messages as they are
-	 * retrieved from the socket.
-	 */
-/*
-	public LDAPResponse(int messageID, int type, LberDecoder lber,
-		                 boolean isLdapv3)
-		throws IOException
-	{
-		super(messageID, type);
-		this.lber = lber;
-
-		try {
-			// the following data items are defined in RFC2251 sec 4.1.10
-			resultCode = lber.parseEnumeration();
-			matchedDN = lber.parseString(isLdapv3);
-			errorMessage = lber.parseString(isLdapv3);
-
-			// parse any optional LDAPv3 referrals
-			if(isLdapv3 &&
-				(lber.bytesLeft() > 0) &&
-				(lber.peekByte() == LDAP_REP_REFERRAL)) {
-
-				Vector URLs = new Vector(5);
-				int[] seqlen = new int[1];
-
-				lber.parseSeq(seqlen);
-				int endseq = lber.getParsePosition() + seqlen[0];
-				while((lber.getParsePosition() < endseq) &&
-						(lber.bytesLeft() > 0)) {
-
-					URLs.addElement(lber.parseString(isLdapv3));
-				}
-
-				if(referrals == null) {
-					referrals = new Vector(5);
-				}
-				referrals.addElement(URLs);
-			}
-
-			// parse any optional LDAPv3 controls
-			if(isLdapv3) parseControls();
-
-		}
-		catch(IOException ioe) {
-		}
-
-	}
-*/	
-
-/*
-   private void parseControls()
-		throws IOException
-	{
-      // handle LDAPv3 controls (if present)
-      if((lber.bytesLeft() > 0) &&
-			(lber.peekByte() == LDAP_CONTROLS)) {
-         controls = new Vector(4);
-         String controlOID;
-         boolean criticality = false; // default
-         byte[] controlValue = null;  // optional
-         int[] seqlen = new int[1];
-
-         lber.parseSeq(seqlen);
-         int endseq = lber.getParsePosition() + seqlen[0];
-         while((lber.getParsePosition() < endseq) &&
-               (lber.bytesLeft() > 0)) {
-
-            lber.parseSeq(null);
-            controlOID = lber.parseString(true);
-
-            if((lber.bytesLeft() > 0) &&
-               (lber.peekByte() == Lber.ASN_BOOLEAN)) {
-               criticality = lber.parseBoolean();
-            }
-            if((lber.bytesLeft() > 0) &&
-               (lber.peekByte() == Lber.ASN_OCTET_STR)) {
-               controlValue =
-               lber.parseOctetString(Lber.ASN_OCTET_STR, null);
-            }
-            if(controlOID != null) {
-               controls.addElement(
-						new LDAPControl(controlOID, criticality, controlValue));
-            }
-         }
-      }
-   }
-*/	
 
    /**
     * Returns any error message in the response.
@@ -258,31 +151,6 @@ public class LDAPResponse extends LDAPMessage {
             throw new LDAPException(getErrorMessage(), getMatchedDN(), -1);
       }
    }
-
-/*
-   public static final int LBER_BOOLEAN = 0x01;
-   public static final int LBER_INTEGER = 0x02;
-   public static final int LBER_BITSTRING = 0x03;
-   public static final int LBER_OCTETSTRING = 0x04;
-   public static final int LBER_NULL = 0x05;
-   public static final int LBER_SEQUENCE = 0x30;
-   public static final int LBER_SET = 0x31;
-
-   public static final int LDAP_REP_BIND = 0x61;   // app + constructed | 1
-   public static final int LDAP_REP_SEARCH = 0x64; // app + constructed | 4
-   public static final int LDAP_REP_SEARCH_REF = 0x73;// app + constructed    (LDAPv3)
-   public static final int LDAP_REP_RESULT = 0x65; // app + constructed | 5
-   public static final int LDAP_REP_MODIFY = 0x67; // app + constructed | 7
-   public static final int LDAP_REP_ADD = 0x69; // app + constructed | 9
-   public static final int LDAP_REP_DELETE = 0x6b; // app + primitive | b
-   public static final int LDAP_REP_MODRDN = 0x6d; // app + primitive | d
-   public static final int LDAP_REP_COMPARE = 0x6f;   // app + primitive | f
-   public static final int LDAP_REP_EXTENSION = 0x78; // app + constructed    (LDAPv3)
-
-   public static final int LDAP_REP_REFERRAL = 0xa3;  // ctx + constructed    (LDAPv3)
-   public static final int LDAP_REP_EXT_OID = 0x8a;   // ctx + primitive      (LDAPv3)
-   public static final int LDAP_REP_EXT_VAL = 0x8b;   // ctx + primitive      (LDAPv3)
-*/	
 
 }
 
