@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPException.java,v 1.28 2001/06/08 20:41:19 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPException.java,v 1.29 2001/06/22 16:00:33 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -607,6 +607,8 @@ public class LDAPException extends Exception
    * parameter value.
    *
    * <p>PARAM_ERROR = 89</p>
+   *
+   * @deprecated No longer used - invalid parameters generate a RuntimeException
    */
    public final static int PARAM_ERROR = 89;
 
@@ -699,115 +701,17 @@ public class LDAPException extends Exception
     */
    public final static int AMBIGUOUS_RESPONSE = 101;
 
-
    /**
     * Indicates that TLS is not supported on the server.
+    *
+    * <p>TLS_NOT_SUPPORTED = 112</p>
     */
    public final static int TLS_NOT_SUPPORTED = 112;
 
-/* These have been pulled out into LDAPExceptionErrorCodeResource.properties
-   static final String[] errorStrings = {
-      "Success",                                // 0
-      "Operations Error",                       // 1
-      "Protocol Error",                         // 2
-      "Timelimit Exceeded",                     // 3
-      "Sizelimit Exceeded",                     // 4
-      "Compare False",                          // 5
-      "Compare True",                           // 6
-      "Authentication Method Not Supported",    // 7
-      "Strong Authentication Required",         // 8
-      "Partial Results",                        // 9
-      "Referral",                               // 10
-      "Administrative Limit Exceeded",          // 11
-      "Unavailable Critical Extension",         // 12
-      "Confidentiality Required",               // 13
-      "SASL Bind In Progress",                  // 14
-      null,
-      "No Such Attribute",                      // 16
-      "Undefined Attribute Type",               // 17
-      "Inappropriate Matching",                 // 18
-      "Constraint Violation",                   // 19
-      "Attribute Or Value Exists",              // 20
-      "Invalid Attribute Syntax",               // 21
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      "No Such Object",                         // 32
-      "Alias Problem",                          // 33
-      "Invalid DN Syntax",                      // 34
-      "Is Leaf",                                // 35
-      "Alias Dereferencing Problem",            // 36
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      "Inappropriate Authentication",           // 48
-      "Invalid Credentials",                    // 49
-      "Insufficient Access Rights",             // 50
-      "Busy",                                   // 51
-      "Unavailable",                            // 52
-      "Unwilling To Perform",                   // 53
-      "Loop Detect",                            // 54
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      "Naming Violation",                       // 64
-      "Object Class Violation",                 // 65
-      "Not Allowed On Non-leaf",                // 66
-      "Not Allowed On RDN",                     // 67
-      "Entry Already Exists",                   // 68
-      "Object Class Modifications Prohibited",  // 69
-      null,
-      "Affects Multiple DSAs",                  // 71
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      "Other",                                  // 80
-      "Server Down",                            // 81
-      "Local Error",                            // 82
-      "Encoding Error",                         // 83
-      "Decoding Error",                         // 84
-      "LDAP Timeout",                           // 85
-      "Authentication Unknown",                 // 86
-      "Filter Error",                           // 87
-      "User Cancelled",                         // 88
-      "Parameter Error",                        // 89
-      "No Memory",                              // 90
-      "Connect Error",                          // 91
-      "LDAP Not Supported",                     // 92
-      "Control Not Found",                      // 93
-      "No Results Returned",                    // 94
-      "More Results To Return",                 // 95
-      "Client Loop",                            // 96
-      "Referral Limit Exceeded",                // 97
-      "TLS not supported"                       // 112
-   };
-   */
+   /*
+    * Note: Error strings have been pulled out into
+    * LDAPExceptionErrorCodeResource.properties
+    */
 
    /*
     * Constructs a default exception with no specific error information.
@@ -883,7 +787,7 @@ public class LDAPException extends Exception
     *<br><br>
     *  @param resultCode    The result code returned.
     *<br><br>
-    *  @param rootException  An throwable which is the underlying cause
+    *  @param rootException  A throwable which is the underlying cause
     *                        of the LDAPException.
     */
    public LDAPException( String messageOrKey,
@@ -897,7 +801,7 @@ public class LDAPException extends Exception
    /**
     * Constructs an exception with with a detail message obtained from the
     * specified <code>MessageOrKey</code> String and modifying arguments.
-    * Additional parameters specify the result code,
+    * Additional parameters specify the result code
     * and a rootException which is the underlying cause of an error
     * on the client.
     * <br>
@@ -917,7 +821,7 @@ public class LDAPException extends Exception
     *<br><br>
     *  @param resultCode    The result code returned.
     *<br><br>
-    *  @param rootException  An throwable which is the underlying cause
+    *  @param rootException  A throwable which is the underlying cause
     *                        of the LDAPException.
     */
    public LDAPException( String messageOrKey,
@@ -1013,7 +917,7 @@ public class LDAPException extends Exception
     *<br><br>
     *  @param resultCode    The result code returned.
     *<br><br>
-    *  @param rootException  An throwable which is the underlying cause
+    *  @param rootException  A throwable which is the underlying cause
     *                        of the LDAPException.
     *<br><br>
     *  @param matchedDN      The maximal subset of a specified DN which could
