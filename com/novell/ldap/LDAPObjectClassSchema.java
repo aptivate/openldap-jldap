@@ -22,7 +22,7 @@ import java.io.IOException;
 /**
  *  The schema definition of an object class in a directory server.
  *
- *  <p>The LDAPObjectClassSchema class represents the dfinition of an object
+ *  <p>The LDAPObjectClassSchema class represents the definition of an object
  *  class.  It is used to query the syntax of an object class.
  *
  * @see LDAPSchemaElement
