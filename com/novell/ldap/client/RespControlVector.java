@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/client/RespControlVector.java,v 1.1 2001/01/24 21:01:59 javed Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/client/RespControlVector.java,v 1.2 2001/01/26 18:56:52 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -16,6 +16,7 @@
 package com.novell.ldap.client;
 
 import java.util.*;
+import com.novell.ldap.client.Debug;
 
 /**
  * The <code>MessageVector</code> class implements extends the
@@ -52,7 +53,7 @@ public class RespControlVector extends java.util.Vector
     public synchronized void registerResponseControl(String oid, Class controlClass)
     {
         if( Debug.LDAP_DEBUG) {
-            Debug.trace( Debug.Controls, "Registered Control with following OID" + oid);
+            Debug.trace( Debug.controls, "Registered Control with following OID" + oid);
         }
         
         addElement(new RegisteredControl(oid, controlClass));
@@ -79,7 +80,7 @@ public class RespControlVector extends java.util.Vector
             if(ctl.myOID.compareTo(searchOID) == 0) {
                 
                 if( Debug.LDAP_DEBUG) {
-                    Debug.trace( Debug.Controls, "Returned control matched a registered control");
+                    Debug.trace( Debug.controls, "Returned control matched a registered control");
                 }
                 
                 /* Return the class name if we have match */
