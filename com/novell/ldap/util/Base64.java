@@ -99,7 +99,7 @@ public class Base64
     public static final String encode(String inputString)
     {
         try {
-            return new String(encode(inputString.getBytes("UTF-8")),"US-ASCII");
+            return encode(inputString.getBytes("UTF-8"));
         } catch( UnsupportedEncodingException ue) {
             throw new RuntimeException(
                     "US-ASCII String encoding not supported by JVM");
@@ -208,7 +208,7 @@ public class Base64
     /**
      * Decodes the input base64 encoded String.
      * The resulting binary data is returned as an array of bytes.
-     * 
+     *
      * @param encodedString The base64 encoded String object.
      *
      * @return The decoded byte array.
