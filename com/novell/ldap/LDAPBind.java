@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPBind.java,v 1.4 2000/08/25 17:38:45 judy Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPBind.java,v 1.5 2000/08/28 22:18:54 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -23,31 +23,51 @@ package com.novell.ldap;
  *
  *  Used to do explicit bind processing on a referral. 
  *
+ *  <p>This interface allows a programmer to override the default
+ *  authentication and reauthentication behavior when automatically
+ *  following referrals. It is typically used to control the
+ *  authentication mechanism used on automatic referral following.</p>
+ *
  *  <p>A client can specify an instance of this class to be used
  *  on a single operation (through the LDAPConstraints object) 
- *  or for all operations (through LDAPConnection.setOption method).</p>
+ *  or for all operations (through the LDAPContraints object
+ *  associated with the connection).
  *  
  */
-public interface LDAPBind {
+public interface LDAPBind extends LDAPReferralHandler
+{
 
    /*
     * 4.4.1 bind
     */
 
    /**
-    * Called by LDAPConnection when authenticating.
+    * Called by LDAPConnection when a referral is received.
     *
-    * <p> An implementation can access the host, port, credentials, and other
-    * information in the LDAPConnection to decide on an appropriate
-    * authentication mechanism, and/or interact with a user or external
-    * module. An LDAPException is thrown on failure, as in
+    * <p>This method has the responsibility to bind to one of the
+    * hosts in the list specified by the ldaprul parameter which corresponds
+    * exactly to the list of hosts returned in a single referral response.
+    * An implementation may access the host, port, credentials, and other
+    * information in the original LDAPConnection object to decide on an
+    * appropriate authentication mechanism, and/or interact with a user or
+    * external module. The object implementing LDAPBind creates a new
+    * LDAPConnection object to perform its connect and bind calls.  It
+    * returns the new connection when both the connect and bind operations
+    * succeed on one host from the list.  The LDAPConnection object referral
+    * following code uses the new LDAPConnection object when it resends the
+    * search request, updated with the new search base and possible search
+    * filter. An LDAPException is thrown on failure, as in the
     * LDAPConnection.bind method. </p>
     *
+    * @param ldapurl The list of servers contained in a referral response.
     * @param conn    An established connection to an LDAP server.
+    *
+    * @return       An established connection to one of the ldap servers
+    *               in the referral list.
     *
     * @exception  LDAPException A general exception which includes an error
     * message and an LDAP error code.
     */
-   public void bind (LDAPConnection conn) throws LDAPException;
-
+   public LDAPConnection bind (String[] ldapurl, LDAPConnection conn)
+            throws LDAPException;
 }

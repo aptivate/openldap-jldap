@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPResponseListener.java,v 1.13 2000/10/03 21:44:00 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPResponseListener.java,v 1.14 2000/10/23 18:49:06 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -20,21 +20,17 @@ import java.util.Vector;
 import com.novell.ldap.client.*;
 import com.novell.ldap.protocol.*;
 
-/*
- * 4.28 public class LDAPResponseListener
- */
- 
 /**
  *  Represents the message queue associated with a particular asynchronous LDAP
  *  operation or operations.
  */
-public class LDAPResponseListener
+public class LDAPResponseListener implements LDAPListener
 {
 
    /**
     * The client listener object
     */
-    private LDAPListener listen;
+    private ClientListener listen;
     
     /**
      * Constructs a response listener on the specific connection.
@@ -42,7 +38,7 @@ public class LDAPResponseListener
      *  @param conn The connection for the listener.
      */
     /* package */
-    LDAPResponseListener(LDAPListener listen)
+    LDAPResponseListener(ClientListener listen)
     {
         this.listen = listen;
         return;    
@@ -54,7 +50,7 @@ public class LDAPResponseListener
     * @return The internal client listener object
     */
     /* package */
-    LDAPListener getClientListener()
+    ClientListener getClientListener()
     {
         return listen;
     }
@@ -94,9 +90,6 @@ public class LDAPResponseListener
         listen.merge( listener2 );
         return;
     }
-   /*
-    * 4.28.2 getResponse
-    */
 
    /**
     * Returns the response.
@@ -111,7 +104,7 @@ public class LDAPResponseListener
     * @exception LDAPException A general exception which includes an error
     *  message and an LDAP error code.
     */
-   public LDAPResponse getResponse()
+   public LDAPMessage getResponse()
         throws LDAPException
     {
         LDAPResponse response;
@@ -121,7 +114,7 @@ public class LDAPResponseListener
         else
             response = new LDAPResponse(message);
         listen.removeMessageID(response.getMessageID());
-        return response;
+        return (LDAPMessage)response;
    }
 
 }

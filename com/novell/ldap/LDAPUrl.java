@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPUrl.java,v 1.13 2000/09/27 16:26:39 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPUrl.java,v 1.14 2000/10/02 21:49:43 judy Exp $
 *
 * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
 * 
@@ -33,7 +33,7 @@ import com.novell.ldap.client.Debug;
 public class LDAPUrl {
 
 	static private final String DEFAULT_FILTER = "(objectClass=*)";
-	static private final int    DEFAULT_SCOPE  = LDAPv2.SCOPE_BASE;
+	static private final int    DEFAULT_SCOPE  = LDAPConnection.SCOPE_BASE;
     // Broken out parts of the URL
     private boolean    secure = false;               // URL scheme ldap/ldaps
     private boolean    ipV6 = false;                 // TCP/IP V6
@@ -104,7 +104,7 @@ public class LDAPUrl {
     *                  attributes).
     *<br><br>
     *  @param scope    The depth of search. Use one of the following 
-    *                  from LDAPv2: SCOPE_BASE, SCOPE_ONE, SCOPE_SUB.
+    *                  from LDAPConnection: SCOPE_BASE, SCOPE_ONE, SCOPE_SUB.
     *<br><br>
     *  @param filter   The search filter specifying the search criteria.
     */
@@ -300,8 +300,8 @@ public class LDAPUrl {
     */
 
     /**
-    * Returns the depth of search. It returns one of the following from LDAPv2:
-	* SCOPE_BASE, SCOPE_ONE, or SCOPE_SUB.
+    * Returns the depth of search. It returns one of the following from
+	* LDAPConnection: SCOPE_BASE, SCOPE_ONE, or SCOPE_SUB.
     *
     * @return The search scope.
     */
@@ -358,7 +358,7 @@ public class LDAPUrl {
 		// scope
 		url.append( "?" );
 		if( scope != DEFAULT_SCOPE ) {
-			if( scope == LDAPv2.SCOPE_ONE) {
+			if( scope == LDAPConnection.SCOPE_ONE) {
 				url.append( "one" );
 			} else {
 				url.append( "sub" );
@@ -594,18 +594,18 @@ public class LDAPUrl {
              scopeStr = url.substring( scanStart, filterStart);
         }
         if( scopeStr.equalsIgnoreCase("")) {
-            scope = LDAPv2.SCOPE_BASE;
+            scope = LDAPConnection.SCOPE_BASE;
             if( Debug.LDAP_DEBUG)
                 scopeStr = "sub";
         } else
         if( scopeStr.equalsIgnoreCase("base")) {
-            scope = LDAPv2.SCOPE_BASE;
+            scope = LDAPConnection.SCOPE_BASE;
         } else
         if( scopeStr.equalsIgnoreCase("one")) {
-            scope = LDAPv2.SCOPE_ONE;
+            scope = LDAPConnection.SCOPE_ONE;
         } else
         if( scopeStr.equalsIgnoreCase("sub")) {
-            scope = LDAPv2.SCOPE_SUB;
+            scope = LDAPConnection.SCOPE_SUB;
         } else {
             throw new MalformedURLException("LDAPUrl: URL invalid scope");
         }

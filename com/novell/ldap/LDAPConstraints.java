@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConstraints.java,v 1.9 2000/09/08 23:28:09 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConstraints.java,v 1.10 2000/09/27 22:04:58 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -36,6 +36,8 @@ public class LDAPConstraints implements Cloneable {
     private LDAPRebind reauth = null;
     private LDAPControl[] clientCtls = null;
     private LDAPControl[] serverCtls = null;
+
+
 
     /*
      * 4.7.1 Constructors

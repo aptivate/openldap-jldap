@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPListener.java,v 1.11 2000/09/29 15:17:14 judy Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/client/ClientListener.java,v 1.1 2000/10/03 21:44:01 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -31,7 +31,7 @@ import com.novell.ldap.*;
  * Represents the message queue associated with a particular LDAP
  * operation or operations.
  */
-public class LDAPListener implements TimerListener {
+public class ClientListener implements TimerListener {
     
    /**
     * Manages the listener's connection to the server.
@@ -41,7 +41,7 @@ public class LDAPListener implements TimerListener {
    /**
     * Specifies the associated message queue for the listener.
     */
-    private LDAPMessageQueue queue;
+    private MessageQueue queue;
 
    /**
     * Specifies the associated vector for the listener's exceptions.
@@ -53,12 +53,12 @@ public class LDAPListener implements TimerListener {
      *
      *  @param conn The connection for the listener.
      */
-    public LDAPListener(Connection conn)
+    public ClientListener(Connection conn)
     {
         this.conn = conn;
-        this.queue = new LDAPMessageQueue();
+        this.queue = new MessageQueue();
         this.exceptions = new Vector(5);
-        conn.addLDAPListener(this);
+        conn.addClientListener(this);
     }
     
     /**
@@ -183,7 +183,7 @@ public class LDAPListener implements TimerListener {
 
     /**
      * Called by LDAPSearchResults
-     * This abandon method abandons all message IDs for this LDAPListener.
+     * This abandon method abandons all message IDs for this ClientListener.
      */
     public void abandonAll()
     {
@@ -245,8 +245,6 @@ public class LDAPListener implements TimerListener {
     */
     public void finalize()
     {
-        conn.removeLDAPListener(this);
+        conn.removeClientListener(this);
     }
-
 }
-

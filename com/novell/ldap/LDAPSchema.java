@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSchema.java,v 1.12 2000/10/10 22:26:23 bgudmundson Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSchema.java,v 1.13 2000/10/10 23:50:32 bgudmundson Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -100,7 +100,7 @@ public class LDAPSchema {
 			String attrSubSchema[] = { "subschemaSubentry" };
 
 			LDAPSearchResults sr = ld.search( dn,
-									LDAPv2.SCOPE_BASE,
+									LDAPConnection.SCOPE_BASE,
 									"objectclass=*",
 									attrSubSchema,
 									false);
@@ -121,7 +121,7 @@ public class LDAPSchema {
 					{
 						schemaDN = (String) enumString.nextElement();
 						sr = ld.search( schemaDN,
-									LDAPv2.SCOPE_BASE,
+									LDAPConnection.SCOPE_BASE,
 									"objectclass=*",
 									null,
 									false);

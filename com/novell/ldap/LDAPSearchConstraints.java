@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchConstraints.java,v 1.8 2000/09/28 21:29:29 smerrill Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchConstraints.java,v 1.9 2000/10/02 19:46:52 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -31,10 +31,56 @@ package com.novell.ldap;
  */
 public class LDAPSearchConstraints extends LDAPConstraints {
 
-    private int dereference = LDAPConnection.DEREF_NEVER;
+    private int dereference = DEREF_NEVER;
     private int serverTimeLimit = 0;
     private int maxResults = 1000;
     private int batchSize = 1;
+
+    /**
+     * Used to indicate that aliases are are never derefrenced.
+     *
+     * <p> DEREF_NEVER = 0 </p>
+     *
+     * @see #getDereference()
+     * @see #setDereference(int)
+     */
+    public static final int DEREF_NEVER  = 0;
+   
+    /**
+     * Used to indicate that aliases are are derefrenced when
+     * searching the entries beneath the starting point but not when 
+     * searching for the starting entry.
+     *
+     * <p> DEREF_SEARCHING = 1 </p>
+     *
+     * @see #getDereference()
+     * @see #setDereference(int)
+     */
+    public static final int DEREF_SEARCHING = 1;
+   
+    /**
+     * Used to indicate that aliases are dereferenced when
+     * searching for the starting entry but are not dereferenced when
+     * searching the entries beneath the starting point.
+     *
+     * <p> DEREF_FINDING = 2 </p>
+     *
+     * @see #getDereference()
+     * @see #setDereference(int)
+     */
+    public static final int DEREF_FINDING = 2;
+   
+    /**
+     * Used to indicate that aliases are dereferenced when
+     * searching for the starting entry and when
+     * searching the entries beneath the starting point.
+     *
+     * <p> DEREF_ALWAYS = 3 </p>
+     *
+     * @see #getDereference()
+     * @see #setDereference(int)
+     */
+    public static final int DEREF_ALWAYS = 3;
 
     /*
      * 4.31.1 Constructors
@@ -66,7 +112,7 @@ public class LDAPSearchConstraints extends LDAPConstraints {
      *  @param dereference     Specifies when aliases should be dereferenced.
      *                         Must be either DEREF_NEVER,
      *                         DEREF_FINDING, DEREF_SEARCHING, or
-     *                         DEREF_ALWAYS from the LDAPv2 class.
+     *                         DEREF_ALWAYS from this class.
      *                         Default: LDAPConnection.DEREF_NEVER
      *<br><br> 
      *  @param maxResults      The maximum number of search results to return.
@@ -127,7 +173,7 @@ public class LDAPSearchConstraints extends LDAPConstraints {
      *  @param dereference     Specifies when aliases should be dereferenced.
      *                         Must be either DEREF_NEVER,
      *                         DEREF_FINDING, DEREF_SEARCHING, or
-     *                         DEREF_ALWAYS from the LDAPv2 class.
+     *                         DEREF_ALWAYS from this class.
      *                         Default: LDAPConnection.DEREF_NEVER
      *<br><br>
      *  @param maxResults      The maximum number of search results to return.

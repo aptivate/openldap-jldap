@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.16 2000/09/13 22:33:55 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.17 2000/09/14 20:32:30 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -31,14 +31,14 @@ import com.novell.ldap.protocol.UnbindRequest;
 public final class Connection implements Runnable {
 
    // The listener thread will multiplex response messages received from the
-   // server to one of many queues. Each LDAPListener which registers with
+   // server to one of many queues. Each ClientListener which registers with
    // this class will have its own message queue. That message queue may be
    // dedicated to a single LDAP operation, or may be shared among many LDAP
    // operations.
    //
-   // The applications thread, using an LDAPListener, writes data directly
+   // The applications thread, using an ClientListener, writes data directly
    // to the server using this class. The application thread will then query
-   // the LDAPListener for a response.
+   // the ClientListener for a response.
    //
    // The listener thread reads data directly from the server as it decodes
    // an LDAPMessage and writes it to a message queue associated with either
@@ -141,20 +141,20 @@ public final class Connection implements Runnable {
    }
 
    //------------------------------------------------------------------------
-   // Methods to manage the LDAP Listeners
+   // Methods to manage the Client Listeners
    //------------------------------------------------------------------------
 
    /**
     *
     */
-   public void addLDAPListener(LDAPListener listener) {
+   public void addClientListener(ClientListener listener) {
       ldapListeners.addElement(listener);
    }
 
    /**
     *
     */
-   public void removeLDAPListener(LDAPListener listener) {
+   public void removeClientListener(ClientListener listener) {
       ldapListeners.removeElement(listener);
    }
 
@@ -166,8 +166,8 @@ public final class Connection implements Runnable {
       int cnt = ldapListeners.size();
       findMsgId:
          for(int i=0; i<cnt; i++) {
-            LDAPListener ldapListener =
-                (LDAPListener)ldapListeners.elementAt(i);
+            ClientListener ldapListener =
+                (ClientListener)ldapListeners.elementAt(i);
             int[] msgIDs = ldapListener.getMessageIDs();
             for(int j=0; j<msgIDs.length; j++)
                if(msgIDs[j] == msgId) {
@@ -255,8 +255,8 @@ public final class Connection implements Runnable {
                int cnt = ldapListeners.size();
                findMsgId:
                   for(int i=0; i<cnt; i++) {
-                     LDAPListener ldapListener =
-                         (LDAPListener)ldapListeners.elementAt(i);
+                     ClientListener ldapListener =
+                         (ClientListener)ldapListeners.elementAt(i);
                      int[] msgIDs = ldapListener.getMessageIDs();
                      for(int j=0; j<msgIDs.length; j++)
                         if(msgIDs[j] == msgId) {

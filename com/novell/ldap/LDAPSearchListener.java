@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchListener.java,v 1.14 2000/10/02 19:46:53 judy Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchListener.java,v 1.15 2000/10/03 21:44:00 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -29,13 +29,13 @@ import com.novell.ldap.protocol.*;
  *  Manages search results and references returned
  *  from one or more search requests.
  */
-public class LDAPSearchListener
+public class LDAPSearchListener implements LDAPListener
 {
  
    /**
     * The client listener object
     */
-    private LDAPListener listen;
+    private ClientListener listen;
     
     /**
      * Constructs a response listener on the specific connection.
@@ -43,7 +43,7 @@ public class LDAPSearchListener
      *  @param conn The connection for the listener.
      */
     /* package */
-    LDAPSearchListener(LDAPListener listen)
+    LDAPSearchListener(ClientListener listen)
     {
         this.listen = listen;
         return;    
@@ -55,7 +55,7 @@ public class LDAPSearchListener
     * @return The internal client listener object
     */
     /* package */
-    LDAPListener getClientListener()
+    ClientListener getClientListener()
     {
         return listen;
     }

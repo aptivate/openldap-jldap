@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: LDAPMessageQueue.java,v 1.5 2000/08/22 01:47:26 smerrill Exp $
+ * $Id: MessageQueue.java,v 1.6 2000/09/11 21:05:55 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -18,7 +18,7 @@ package com.novell.ldap.client;
 import java.util.Vector;
 import com.novell.ldap.protocol.*;
 
-public class LDAPMessageQueue {
+public class MessageQueue {
 
 	private Vector responses  = new Vector(20); // vector of LDAPMessages
 	private Vector messageIDs = new Vector(1);  // preserve fifo order
