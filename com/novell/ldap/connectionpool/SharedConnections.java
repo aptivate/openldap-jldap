@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: SharedConnection.java,v 1.2 2003/01/14 21:43:25 $
+ * $Novell: SharedConnection.java,v 1.3 2003/01/14 21:50:52 $
  *
  * Copyright (C) 2003 Novell, Inc. All Rights Reserved.
  *
@@ -23,14 +23,14 @@ import java.util.Arrays;
  *
  * @see PoolManager
  */
-class CPSharedConns extends ArrayList
+class SharedConnection extends ArrayList
 {
     // Save password and DN
     byte[] PW = null;
     String DN = null;
     
     
-    public CPSharedConns(int initialCapacity)
+    public SharedConnection(int initialCapacity)
     {
         super(initialCapacity);
     }

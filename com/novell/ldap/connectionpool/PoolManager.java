@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: PoolManager.java,v 1.3 2003/01/14 21:50:52 $
+ * $Novell: PoolManager.java,v 1.4 2003/01/14 22:38:22 $
  *
  * Copyright (C) 2002 - 2003 Novell, Inc. All Rights Reserved.
  *
@@ -79,7 +79,7 @@ public class PoolManager
         // ( original + clones) in availableConnection.
         for (int i = 0; i < maxConns; i++)
         {
-            CPSharedConns sharedConns = new CPSharedConns(maxSharedConns);
+            SharedConnection sharedConns = new SharedConnection(maxSharedConns);
             // Create connection. Initialy anonymous
             Connection conn = new Connection(fac);
             // At this point all of the connections anonymous
@@ -109,7 +109,7 @@ public class PoolManager
     {
         
         Connection  conn        = null;
-        CPSharedConns sharedConns     = null;
+        SharedConnection sharedConns     = null;
         boolean           needToBind  = false;
 
         synchronized (inUseListOfSharedConnections)
@@ -141,7 +141,7 @@ public class PoolManager
                     if(shuttingDown) return null;
                 }
                 // Get connection from first available sharedConns
-                sharedConns = (CPSharedConns)availableListOfSharedConnections.get(0);
+                sharedConns = (SharedConnection)availableListOfSharedConnections.get(0);
                 sharedConns.setDN(DN);
                 sharedConns.setPW(PW);
                 needToBind = true;
@@ -172,7 +172,7 @@ public class PoolManager
      */
     public void makeConnectionAvailable(LDAPConnection baseConn)
     {
-        CPSharedConns sharedConns = null;
+        SharedConnection sharedConns = null;
         
         synchronized(inUseListOfSharedConnections)
         {
@@ -215,6 +215,7 @@ public class PoolManager
         synchronized (availableListOfSharedConnections)
         {
             // Notify all waiting threads.
+            shuttingDown = true;
             availableListOfSharedConnections.notifyAll();
         }
     }

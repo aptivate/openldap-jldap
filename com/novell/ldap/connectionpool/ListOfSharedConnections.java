@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: ListOfSharedConnections.java,v 1.2 2003/01/14 21:43:24 $
+ * $Novell: ListOfSharedConnections.java,v 1.3 2003/01/14 21:50:51 $
  *
  * Copyright (C) 2003 Novell, Inc. All Rights Reserved.
  *
@@ -24,11 +24,11 @@ import java.util.LinkedList;
  */
 class ListOfSharedConnections extends LinkedList
 {
-    public CPSharedConns getSharedConns(String DN, byte[] PW)
+    public SharedConnection getSharedConns(String DN, byte[] PW)
     {        
         for (int i = 0; i < super.size(); i++)
         {
-            CPSharedConns sharedConns = (CPSharedConns)super.get(i);
+            SharedConnection sharedConns = (SharedConnection)super.get(i);
     
             if(sharedConns.DNPWequals(DN,PW))
                 return sharedConns;
@@ -37,11 +37,11 @@ class ListOfSharedConnections extends LinkedList
         return null;
     }
         
-    public CPSharedConns getSharedConns(Connection conn)
+    public SharedConnection getSharedConns(Connection conn)
     {        
         for (int i = 0; i < super.size(); i++)
         {
-            CPSharedConns sharedConns = (CPSharedConns)super.get(i);
+            SharedConnection sharedConns = (SharedConnection)super.get(i);
             if(sharedConns.isConnInHere(conn))
                 return sharedConns;
         }
@@ -53,7 +53,7 @@ class ListOfSharedConnections extends LinkedList
     {
         for (int i = 0; i < super.size(); i++)
         {
-            CPSharedConns sharedConns = (CPSharedConns)super.get(i);
+            SharedConnection sharedConns = (SharedConnection)super.get(i);
             Connection conn = (Connection)sharedConns.getAvailableConnection();
             if(null != conn) return conn;
         }
