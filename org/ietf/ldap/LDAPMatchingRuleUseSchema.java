@@ -19,7 +19,8 @@ package org.ietf.ldap;
  * Represents the definition of a specific matching rule use in the
  * directory schema.
  *
- * @see com.novell.ldap.LDAPMatchingRuleUseSchema
+ * @see <a href="../../../../doc/com/novell/ldap/LDAPMatchingRuleUseSchema.html">
+            com.novell.ldap.LDAPMatchingRuleUseSchema</a>
  */
 
 public class LDAPMatchingRuleUseSchema
@@ -42,8 +43,11 @@ public class LDAPMatchingRuleUseSchema
      * Constructs a matching rule use definition for adding to or deleting
      * from the schema.
      *
-     * @see com.novell.ldap.LDAPMatchingRuleUseSchema#LDAPMatchingRuleUseSchema(
-     *      String,String,String,boolean,String[],String[])
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPMatchingRuleUseSchema.html
+            #LDAPMatchingRuleUseSchema(java.lang.String, java.lang.String, 
+            java.lang.String, boolean, java.lang.String[], java.lang.String[])">
+            com.novell.ldap.LDAPMatchingRuleUseSchema.LDAPMatchingRuleUseSchema(
+            String, String, String, boolean, String[], String[])</a>
      */
     public LDAPMatchingRuleUseSchema(String name,
                                      String oid,
@@ -68,8 +72,10 @@ public class LDAPMatchingRuleUseSchema
      * Constructs a matching rule use definition from the raw string value
      * returned on a schema query for matchingRuleUse.
      *
-     * @see com.novell.ldap.LDAPMatchingRuleUseSchema#LDAPMatchingRuleUseSchema(
-            String)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPMatchingRuleUseSchema.html
+            #LDAPMatchingRuleUseSchema(java.lang.String)">
+            com.novell.ldap.LDAPMatchingRuleUseSchema.LDAPMatchingRuleUseSchema(
+            String)</a>
      */
     public LDAPMatchingRuleUseSchema(String raw)
     {
@@ -82,7 +88,9 @@ public class LDAPMatchingRuleUseSchema
      * Returns an array of all the attributes which this matching rule
      * applies to.
      *
-     * @see com.novell.ldap.LDAPMatchingRuleUseSchema#getAttributes()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPMatchingRuleUseSchema.html
+            #getAttributes()">
+            com.novell.ldap.LDAPMatchingRuleUseSchema.getAttributes()</a>
      */
     public String[] getAttributes()
     {
