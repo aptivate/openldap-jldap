@@ -246,8 +246,7 @@ public class LDAPResponse extends LDAPMessage
         case LDAPException.REFERRAL_LIMIT_EXCEEDED:
             ex = new LDAPException(
                 LDAPException.errorCodeToString( getResultCode()),
-                getResultCode(), getMatchedDN());
-            ex.setLDAPErrorMessage(getErrorMessage());
+                getResultCode(), getErrorMessage(), getMatchedDN());
             break;
         case LDAPException.REFERRAL:
             // only get here if automatic referral handling is not enabled.
@@ -259,8 +258,8 @@ public class LDAPResponse extends LDAPMessage
                 }
             }
             ex = new LDAPReferralException(
-                    "Automatic referral following not enabled");
-            ex.setLDAPErrorMessage(getErrorMessage());
+                    "Automatic referral following not enabled",
+                    LDAPException.REFERRAL, getErrorMessage());
             ((LDAPReferralException)ex).setReferrals( refs);
             break;
         default: // unknown

@@ -14,7 +14,7 @@ X - (capitol X) - complete
 Package
 com org
 [ ] [ ] 15: LDAPAttribute
-[ ] [ ]      15: Implements Cloneable.
+[X] [X]      15: Implements Cloneable.
 [ ] [ ]      15: Implements Serializable
 
 [X] [X] 14: LDAPAttributeSchema
@@ -35,9 +35,9 @@ com org
 [ ]          17: Remove internal usage of LDAPModificationSet
 
 [ ] [ ] 15: LDAPAttributeSet
-[ ] [ ]      15: Implements Cloneable.
+[X] [X]      15: Implements Cloneable.
 [ ] [ ]      15: Implements Serializable
-[ ] [ ]      15: Implements java.util.Set.
+[X] [X]      15: Implements java.util.Set.
                  Remove methods made redundant by implementing Set
                  * add(LDAPAttribute attr): Remove Method
                  * elementAt(): Remove Method
@@ -136,18 +136,18 @@ com org
 [X] [X]      15: Remove class: LDAPCompareAttrNames implements
                  java.util.Comparator instead.
 
-[ ] [ ] 13: LDAPException
-[ ] [ ] 14: LDAPException
-[ ] [ ] 15: LDAPException
-[ ] [ ] 16: LDAPException
-[ ] [ ]      16: constructors: Add serverMessage as parameter
-[ ] [ ]      14: toString(): Method overrides the default toString behavior
-[ ] [ ]      15: errorCodeToString(): Rename to resultCodeToString().
-[ ]          15: errorCodeToString(): Deprecate
-    [ ]      15: errorCodeToString(): Delete
-[ ] [ ]      15: getLDAPResultCode(): Rename to getResultCode ().
-[ ]          15: getLDAPResultCode(): Deprecate
-    [ ]      15: getLDAPResultCode(): Delete
+[X] [X] 13: LDAPException
+[X] [X] 14: LDAPException
+[X] [X] 15: LDAPException
+[X] [X] 16: LDAPException
+[X] [X]      16: constructors: Add serverMessage as parameter
+[X] [X]      14: toString(): Method overrides the default toString behavior
+[X] [X]      15: errorCodeToString(): Rename to resultCodeToString().
+[X]          15: errorCodeToString(): Deprecate
+    [X]      15: errorCodeToString(): Delete
+[X] [X]      15: getLDAPResultCode(): Rename to getResultCode ().
+[X]          15: getLDAPResultCode(): Deprecate
+    [X]      15: getLDAPResultCode(): Delete
 [X] [X]      13: Result codes: Add INVALID_RESPONSE
 [X] [X]      13: Result codes: Add AMBIGUOUS_RESPONSE
 [X]          13: Result codes: Deprecate PARAM_ERROR
@@ -220,7 +220,6 @@ com org
     [X]      14: delete modify()
 [X]          14: deprecate remove()
     [X]      14: delete remove()
-[ ]          17: Remove internal usage of LDAPModificationSet
 
 [X] [X] 15: LDAPRebind
 [X] [X]      15: Rename class to LDAPAuthHandler.
@@ -353,7 +352,7 @@ com org
 [ ] [ ]      15: Implements Serializable
 [ ] [ ]      14: constructor: Remove signature which takes "secure" as a
                  parameter Remove isSecure()
-[ ] [ ]      15: constructor: Adde extensions parameter that take explicitly.
+[ ] [ ]      15: constructor: Add extensions parameter that take explicitly.
 [ ] [ ]      14: getFilter(): returns null instead of "(objectclass=*)"
                  if no filter specified
 [ ] [ ]      15: getUrl(): Rename to toString().
@@ -404,7 +403,7 @@ com org   Class                  Description
 
 [X] [X]   LDAPConnection         Remove stream methods
 
-[ ] [ ]   LDAPLocalException     New class for local exceptions
+[X] [X]   LDAPLocalException     New class for local exceptions
 
 [ ] [ ]   LDAPExtendedResponse   register()
 

@@ -60,6 +60,9 @@ public class LDAPSchema extends LDAPEntry
     public LDAPAttributeSchema getAttributeSchema( String name )
     {
         com.novell.ldap.LDAPAttributeSchema attr = schema.getAttributeSchema( name);
+        if( attr == null) {
+            return null;
+        }
         return new LDAPAttributeSchema( attr );
     }
 
@@ -73,6 +76,9 @@ public class LDAPSchema extends LDAPEntry
     public LDAPObjectClassSchema getObjectClassSchema( String name )
     {
         com.novell.ldap.LDAPObjectClassSchema obj = schema.getObjectClassSchema(name);
+        if( obj == null) {
+            return null;
+        }
         return new LDAPObjectClassSchema( obj);
     }
 
@@ -85,7 +91,12 @@ public class LDAPSchema extends LDAPEntry
      */
     public LDAPMatchingRuleSchema getMatchingRuleSchema( String name )
     {
-        return new LDAPMatchingRuleSchema( schema.getMatchingRuleSchema(name));
+        com.novell.ldap.LDAPMatchingRuleSchema match = 
+                                    schema.getMatchingRuleSchema(name);
+        if( match == null) {
+            return null;
+        }
+        return new LDAPMatchingRuleSchema( match);
     }
 
     /**
@@ -97,7 +108,12 @@ public class LDAPSchema extends LDAPEntry
      */
     public LDAPMatchingRuleUseSchema getMatchingRuleUseSchema( String name )
     {
-        return new LDAPMatchingRuleUseSchema( schema.getMatchingRuleUseSchema(name));
+        com.novell.ldap.LDAPMatchingRuleUseSchema match = 
+                                    schema.getMatchingRuleUseSchema(name);
+        if( match == null) {
+            return null;
+        }
+        return new LDAPMatchingRuleUseSchema( match);
     }
 
 	/**
@@ -109,7 +125,12 @@ public class LDAPSchema extends LDAPEntry
      */
     public LDAPDITStructureRuleSchema getDITStructureRuleSchema( String name )
     {
-        return new LDAPDITStructureRuleSchema(schema.getDITStructureRuleSchema(name));
+        com.novell.ldap.LDAPDITStructureRuleSchema rule = 
+                                    schema.getDITStructureRuleSchema(name);
+        if( rule == null) {
+            return null;
+        }
+        return new LDAPDITStructureRuleSchema( rule);
     }
 
     /**
@@ -121,7 +142,12 @@ public class LDAPSchema extends LDAPEntry
      */
     public LDAPDITStructureRuleSchema getDITStructureRuleSchema( int id )
     {
-        return new LDAPDITStructureRuleSchema( schema.getDITStructureRuleSchema(id));
+        com.novell.ldap.LDAPDITStructureRuleSchema rule = 
+                                    schema.getDITStructureRuleSchema(id);
+        if( rule == null) {
+            return null;
+        }
+        return new LDAPDITStructureRuleSchema( rule);
     }
 
     /**
@@ -133,7 +159,12 @@ public class LDAPSchema extends LDAPEntry
      */
     public LDAPDITContentRuleSchema getDITContentRuleSchema( String name )
     {
-        return new LDAPDITContentRuleSchema( schema.getDITContentRuleSchema(name));
+        com.novell.ldap.LDAPDITContentRuleSchema rule = 
+                                    schema.getDITContentRuleSchema(name);
+        if( rule == null) {
+            return null;
+        }
+        return new LDAPDITContentRuleSchema( rule);
     }
 
     /**
@@ -145,7 +176,12 @@ public class LDAPSchema extends LDAPEntry
      */
     public LDAPNameFormSchema getNameFormSchema( String name )
     {
-        return new LDAPNameFormSchema( schema.getNameFormSchema(name));
+        com.novell.ldap.LDAPNameFormSchema form = 
+                                    schema.getNameFormSchema(name);
+        if( form == null) {
+            return null;
+        }
+        return new LDAPNameFormSchema( form);
     }
 
     /**
@@ -157,7 +193,12 @@ public class LDAPSchema extends LDAPEntry
      */
     public LDAPSyntaxSchema getSyntaxSchema( String oid )
     {
-        return new LDAPSyntaxSchema( schema.getSyntaxSchema(oid));
+        com.novell.ldap.LDAPSyntaxSchema syntax = 
+                                    schema.getSyntaxSchema(oid);
+        if( syntax == null) {
+            return null;
+        }
+        return new LDAPSyntaxSchema( syntax);
     }
 
     /**

@@ -15,22 +15,23 @@
 
 package org.ietf.ldap;
 
-import com.novell.ldap.client.ArrayEnumeration;
-import java.util.Enumeration;
-import java.util.NoSuchElementException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 
 /**
- *  Represents a collection of LDAPAttributes, either used to construct an entry
- *  to be added to a directory or returned in an entry on a search or read
- *  operation.
+ * <p>An <tt>LDAPAttributeSet</tt> is a collection of <tt>LDAPAttribute</tt>
+ * classes as returned from an <tt>LDAPEntry</tt> on a search or read
+ * operation. <tt>LDAPAttributeSet</tt> may be also used to contruct an entry
+ * to be added to a directory.
  *
- * @see com.novell.ldap.LDAPAttributeSet
  * @see <a href="../../../../doc/com/novell/ldap/LDAPAttributeSet.html">
             com.novell.ldap.LDAPAttributeSet</a>
  */
-public class LDAPAttributeSet implements Cloneable
+public class LDAPAttributeSet implements java.lang.Cloneable,
+                                         java.util.Set
 {
-    private com.novell.ldap.LDAPAttributeSet set;
+    private com.novell.ldap.LDAPAttributeSet attrSet;
 
     /**
      * Constructs a new set of attributes. using an existing attribute set
@@ -38,12 +39,12 @@ public class LDAPAttributeSet implements Cloneable
     /* package */
     LDAPAttributeSet( com.novell.ldap.LDAPAttributeSet attrSet)
     {
-        set = attrSet;
+        this.attrSet = attrSet;
         return;
     }
 
     /**
-     * Constructs a new set of attributes. This set is initially empty.
+     * Constructs an empty set of attributes.
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPAttributeSet.html
             #LDAPAttributeSet()">
@@ -51,7 +52,7 @@ public class LDAPAttributeSet implements Cloneable
      */
     public LDAPAttributeSet()
     {
-        set = new com.novell.ldap.LDAPAttributeSet();
+        attrSet = new com.novell.ldap.LDAPAttributeSet();
         return;
     }
 
@@ -61,24 +62,7 @@ public class LDAPAttributeSet implements Cloneable
     /* package */
     com.novell.ldap.LDAPAttributeSet getWrappedObject()
     {
-        return set;
-    }
-
-    /**
-     * Adds the specified attribute to this attribute set.
-     *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttributeSet.html
-            #add(com.novell.ldap.LDAPAttribute)">
-            com.novell.ldap.LDAPAttributeSet.add(LDAPAttribute)</a>
-     */
-    public void add(LDAPAttribute attr)
-    {
-        com.novell.ldap.LDAPAttribute a = null;
-        if( attr != null) {
-            a = attr.getWrappedObject();
-        }
-        set.add( a);
-        return;
+        return attrSet;
     }
 
     /**
@@ -91,21 +75,7 @@ public class LDAPAttributeSet implements Cloneable
     public Object clone()
     {
         return new LDAPAttributeSet(
-                (com.novell.ldap.LDAPAttributeSet)set.clone());
-    }
-
-    /**
-     * Returns the attribute at the position specified by the index. The
-     * index is 0-based.
-     *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttributeSet.html
-            #elementAt(int)">
-            com.novell.ldap.LDAPAttributeSet.elementAt(int)</a>
-     */
-    public LDAPAttribute elementAt(int index)
-            throws ArrayIndexOutOfBoundsException
-    {
-        return new LDAPAttribute( set.elementAt( index));
+                (com.novell.ldap.LDAPAttributeSet)attrSet.clone());
     }
 
     /**
@@ -117,7 +87,11 @@ public class LDAPAttributeSet implements Cloneable
      */
     public LDAPAttribute getAttribute(String attrName)
     {
-        return new LDAPAttribute( set.getAttribute(attrName));
+        com.novell.ldap.LDAPAttribute attr;
+        if( (attr = attrSet.getAttribute(attrName)) == null) {
+            return null;
+        }
+        return new LDAPAttribute( attr);
     }
 
     /**
@@ -130,37 +104,11 @@ public class LDAPAttributeSet implements Cloneable
      */
     public LDAPAttribute getAttribute(String attrName, String lang)
     {
-        return new LDAPAttribute( set.getAttribute(attrName, lang));
-    }
-
-    /**
-     * Returns an enumeration of the attributes in this attribute set.
-     *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttributeSet.html
-            #getAttributes()">
-            com.novell.ldap.LDAPAttributeSet.getAttributes()</a>
-     */
-    public Enumeration getAttributes()
-    {
-        class ASetEnumWrapper implements Enumeration
-        {
-            private Enumeration enum;
-            ASetEnumWrapper( Enumeration enum)
-            {
-                this.enum = enum;
-                return;
-            }
-            public boolean hasMoreElements()
-            {
-                return enum.hasMoreElements();
-            }
-            public Object nextElement() throws NoSuchElementException
-            {
-                return new LDAPAttribute(
-                            (com.novell.ldap.LDAPAttribute)enum.nextElement());
-            }
+        com.novell.ldap.LDAPAttribute attr;
+        if( (attr = attrSet.getAttribute(attrName, lang)) == null) {
+            return null;
         }
-        return new ASetEnumWrapper( set.getAttributes());
+        return new LDAPAttribute( attr + ";" + lang);
     }
 
     /**
@@ -173,35 +121,173 @@ public class LDAPAttributeSet implements Cloneable
      */
     public LDAPAttributeSet getSubset(String subtype)
     {
-        return new LDAPAttributeSet( set.getSubset( subtype));
+        return new LDAPAttributeSet( attrSet.getSubset( subtype));
+    }
+
+// ################### Methods to implement Set ##########################
+
+    /**
+     * Adds the specified attribute to this attribute set.
+     *
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttributeSet.html
+            #add(java.lang.Object)">
+            com.novell.ldap.LDAPAttributeSet.add(Object)</a>
+     */
+    public boolean add(Object attr)
+    {
+        com.novell.ldap.LDAPAttribute a;
+        a = ((org.ietf.ldap.LDAPAttribute)attr).getWrappedObject();
+        return attrSet.add( a);
     }
 
     /**
-     * Removes the specified attribute from the set. If the attribute is not
-     * a member of the set, nothing happens.
+     * Unwraps the specified collection, returning a collection
+     * containing com.novell.ldap.LDAPAttribute classes
+     */
+    private Collection unwrapCollection( java.util.Collection attrs)
+    {
+        ArrayList c = new ArrayList( attrs.size());
+        Iterator i = attrs.iterator();
+        while( i.hasNext()) {
+            LDAPAttribute a = (LDAPAttribute)i.next();
+            c.add( a.getWrappedObject());
+        }
+        return c;
+    }
+    
+    /**
+     * Adds all the specified attributes to this attribute set.
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPAttributeSet.html
-            #remove(java.lang.String)">
-            com.novell.ldap.LDAPAttributeSet.remove(String)</a>
+            #addAll(java.util.Collection)">
+            com.novell.ldap.LDAPAttributeSet.addAll(Collection)</a>
      */
-    public void remove(String name)
+    public boolean addAll(java.util.Collection attrs)
     {
-        set.remove( name);
-        return;
+        return attrSet.addAll(unwrapCollection(attrs));
     }
 
     /**
-     * Removes the attribute at the position specified by the index.  The
-     * index is 0-based.
+     * Removes all the attributes from this attribute set.
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPAttributeSet.html
-            #remove(int)">
-            com.novell.ldap.LDAPAttributeSet.remove(int)</a>
+            #clear()">
+            com.novell.ldap.LDAPAttributeSet.clear()</a>
      */
-    public void removeElementAt(int index)
+    public void clear()
     {
-        set.removeElementAt( index);
+        attrSet.clear();
         return;
+    }
+    
+    /**
+     * Returns true if this AttributeSet contains the specified Attribute
+     *
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttributeSet.html
+            #contains(java.lang.Object)">
+            com.novell.ldap.LDAPAttributeSet.contains(Object)</a>
+     */
+    public boolean contains(Object attr)
+    {
+        com.novell.ldap.LDAPAttribute a;
+        a = ((org.ietf.ldap.LDAPAttribute)attr).getWrappedObject();
+        return attrSet.contains( a);
+    }
+    
+    /**
+     * Returns true if this Attribute set contains all the attributes
+     * in the specified collection.
+     *
+     * <!--@see <a href="../../../../doc/com/novell/ldap/LDAPAttributeSet.html
+            #containsAll(java.util.Collection)">
+            com.novell.ldap.LDAPAttributeSet.containsAll(Collection)</a>-->
+     */
+    public boolean containsAll(java.util.Collection attrs)
+    {
+        return attrSet.containsAll(unwrapCollection(attrs));
+    }
+
+    /**
+     * Compares the specified object with this set for equality
+     *
+     * <!--@see <a href="../../../../doc/com/novell/ldap/LDAPAttributeSet.html
+            #equals(java.lang.Object)">
+            com.novell.ldap.LDAPAttributeSet.equals(Object)</a>-->
+     */
+    public boolean equals(Object set)
+    {
+        com.novell.ldap.LDAPAttributeSet aset =
+                    ((LDAPAttributeSet)set).getWrappedObject();
+        return attrSet.equals( aset);
+    }
+    
+    /**
+     * Returns the hash code value for this set
+     *
+     * <!--@see <a href="../../../../doc/com/novell/ldap/LDAPAttributeSet.html
+            #hashCode()">
+            com.novell.ldap.LDAPAttributeSet.hashCode()</a>-->
+     */
+    public int hashCode()
+    {
+        return attrSet.hashCode( );
+    }
+    
+    /**
+     * Returns true if there are no elements in this set
+     *
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttributeSet.html
+            #isEmpty()">
+            com.novell.ldap.LDAPAttributeSet.isEmpty()</a>
+     */
+    public boolean isEmpty()
+    {
+        return attrSet.isEmpty( );
+    }
+    
+    /**
+     * Returns an iterator over the elements of this set
+     *
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttributeSet.html
+            #iterator()">
+            com.novell.ldap.LDAPAttributeSet.iterator()</a>
+     */
+    public Iterator iterator()
+    {
+        return attrSet.iterator( );
+    }
+    
+    /**
+     * Removes the specified LDAPAttribute object from the set.
+     *
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttributeSet.html
+            #remove(java.lang.Object)">
+            com.novell.ldap.LDAPAttributeSet.remove(Object)</a>
+     */
+    public boolean remove(Object obj)
+    {
+        com.novell.ldap.LDAPAttribute a;
+        a = ((org.ietf.ldap.LDAPAttribute)obj).getWrappedObject();
+        return attrSet.remove( a);
+    }
+
+    /**
+     * Returns from this set all the elements that are contained
+     * in the specified collection.
+     */
+    public boolean removeAll(java.util.Collection attrs)
+    {
+        return attrSet.removeAll(unwrapCollection(attrs));
+    }
+
+
+    /**
+     * Retains only the elements that are contained
+     * in the specified collection.
+     */
+    public boolean retainAll(java.util.Collection attrs)
+    {
+        return attrSet.retainAll(unwrapCollection(attrs));
     }
 
     /**
@@ -213,6 +299,46 @@ public class LDAPAttributeSet implements Cloneable
      */
     public int size()
     {
-        return set.size();
+        return attrSet.size();
+    }
+
+    /**
+     * Returns an array containing all the elements in this set
+     */
+    public Object[] toArray()
+    {
+        LDAPAttribute[] attrs = new LDAPAttribute[attrSet.size()];
+        return toArray(attrs);
+    }
+    
+    /**
+     * Returns an array containing all the elements in this set.  The runtime
+     * type of the returned array is that of the specified array.
+     */
+    public Object[] toArray( Object[] a)
+    {
+        // Throw ClassCastException if wrong type
+        LDAPAttribute[] newAttrs = (LDAPAttribute[])a;
+        
+        com.novell.ldap.LDAPAttribute[] oldAttrs;
+        oldAttrs = (com.novell.ldap.LDAPAttribute[])attrSet.toArray(
+                new com.novell.ldap.LDAPAttribute[attrSet.size()]);
+                    
+        int length = oldAttrs.length;
+        
+        if( newAttrs.length < length) {
+            newAttrs = (LDAPAttribute[])java.lang.reflect.Array.newInstance(
+                                a.getClass().getComponentType(), length);
+        }
+
+        int i = 0;
+        for( i = 0; i < length; i++) {
+            newAttrs[i] = new LDAPAttribute(oldAttrs[i]);
+        } 
+        
+        if( newAttrs.length > length) {
+            newAttrs[i] = null;
+        }
+        return newAttrs;
     }
 }

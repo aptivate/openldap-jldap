@@ -23,14 +23,17 @@ import java.io.UnsupportedEncodingException;
  * @see <a href="../../../../doc/com/novell/ldap/LDAPAttribute.html">
             com.novell.ldap.LDAPAttribute</a>
  */
-public class LDAPAttribute implements Comparable {
+public class LDAPAttribute implements java.lang.Cloneable,
+                                      java.lang.Comparable
+{
     private com.novell.ldap.LDAPAttribute attr;
 
     /**
      * Constructs an attribute from a com.novell.ldap.LDAPAttribute
      */
     /* package */
-    LDAPAttribute(com.novell.ldap.LDAPAttribute attr) {
+    LDAPAttribute(com.novell.ldap.LDAPAttribute attr)
+    {
         this.attr = attr;
         return;
     }
@@ -43,7 +46,8 @@ public class LDAPAttribute implements Comparable {
             #LDAPAttribute(com.novell.ldap.LDAPAttribute)">
             com.novell.ldap.LDAPAttribute.LDAPAttribute(LDAPAttribute)</a>
      */
-    public LDAPAttribute(LDAPAttribute attr) {
+    public LDAPAttribute(LDAPAttribute attr)
+    {
         com.novell.ldap.LDAPAttribute at = null;
         if( attr != null) {
             at = attr.getWrappedObject();
@@ -59,7 +63,8 @@ public class LDAPAttribute implements Comparable {
             #LDAPAttribute(java.lang.String)">
             com.novell.ldap.LDAPAttribute.LDAPAttribute(String)</a>
      */
-    public LDAPAttribute(String attrName) {
+    public LDAPAttribute(String attrName)
+    {
         this.attr = new com.novell.ldap.LDAPAttribute(attrName);
         return;
     }
@@ -71,7 +76,8 @@ public class LDAPAttribute implements Comparable {
             #LDAPAttribute(java.lang.String, byte[])">
             com.novell.ldap.LDAPAttribute.LDAPAttribute(String, byte[])</a>
      */
-    public LDAPAttribute(String attrName, byte[] attrBytes) {
+    public LDAPAttribute(String attrName, byte[] attrBytes)
+    {
         this.attr = new com.novell.ldap.LDAPAttribute(attrName, attrBytes);
         return;
     }
@@ -83,7 +89,8 @@ public class LDAPAttribute implements Comparable {
             #LDAPAttribute(java.lang.String, java.lang.String)">
             com.novell.ldap.LDAPAttribute.LDAPAttribute(String, String)</a>
      */
-    public LDAPAttribute(String attrName, String attrString) {
+    public LDAPAttribute(String attrName, String attrString)
+    {
         this.attr = new com.novell.ldap.LDAPAttribute(attrName, attrString);
         return;
     }
@@ -95,7 +102,8 @@ public class LDAPAttribute implements Comparable {
             #LDAPAttribute(java.lang.String, java.lang.String[])">
             com.novell.ldap.LDAPAttribute.LDAPAttribute(String, String[])</a>
      */
-    public LDAPAttribute(String attrName, String[] attrStrings) {
+    public LDAPAttribute(String attrName, String[] attrStrings)
+    {
         this.attr = new com.novell.ldap.LDAPAttribute(attrName, attrStrings);
         return;
     }
@@ -118,7 +126,8 @@ public class LDAPAttribute implements Comparable {
             #addValue(java.lang.String)">
             com.novell.ldap.LDAPAttribute.addValue(String)</a>
      */
-    public void addValue(String attrString) {
+    public void addValue(String attrString)
+    {
         attr.addValue( attrString);
         return;
     }
@@ -130,7 +139,8 @@ public class LDAPAttribute implements Comparable {
             #addValue(byte[])">
             com.novell.ldap.LDAPAttribute.addValue(byte[])</a>
      */
-    public void addValue(byte[] attrBytes) {
+    public void addValue(byte[] attrBytes)
+    {
         attr.addValue( attrBytes);
         return;
     }
@@ -143,7 +153,8 @@ public class LDAPAttribute implements Comparable {
             #getByteValues()">
             com.novell.ldap.LDAPAttribute.getByteValues()</a>
      */
-    public Enumeration getByteValues() {
+    public Enumeration getByteValues()
+    {
         return attr.getByteValues();
     }
 
@@ -154,7 +165,8 @@ public class LDAPAttribute implements Comparable {
             #getStringValues()">
             com.novell.ldap.LDAPAttribute.getStringValues()</a>
      */
-    public Enumeration getStringValues() {
+    public Enumeration getStringValues()
+    {
         return attr.getStringValues();
     }
 
@@ -165,7 +177,8 @@ public class LDAPAttribute implements Comparable {
             #getByteValueArray()">
             com.novell.ldap.LDAPAttribute.getByteValueArray()</a>
      */
-    public byte[][] getByteValueArray() {
+    public byte[][] getByteValueArray()
+    {
         return attr.getByteValueArray();
     }
 
@@ -176,7 +189,8 @@ public class LDAPAttribute implements Comparable {
             #getStringValueArray()">
             com.novell.ldap.LDAPAttribute.getStringValueArray()</a>
      */
-    public String[] getStringValueArray() {
+    public String[] getStringValueArray()
+    {
         return attr.getStringValueArray();
     }
 
@@ -187,7 +201,8 @@ public class LDAPAttribute implements Comparable {
             #getLangSubtype()">
             com.novell.ldap.LDAPAttribute.getLangSubtype()</a>
      */
-    public String getLangSubtype() {
+    public String getLangSubtype()
+    {
         return attr.getLangSubtype();
     }
 
@@ -198,7 +213,8 @@ public class LDAPAttribute implements Comparable {
             #getBaseName()">
             com.novell.ldap.LDAPAttribute.getBaseName()</a>
      */
-    public String getBaseName() {
+    public String getBaseName()
+    {
         return attr.getBaseName();
     }
 
@@ -209,7 +225,8 @@ public class LDAPAttribute implements Comparable {
             #getBaseName(java.lang.String)">
             com.novell.ldap.LDAPAttribute.getBaseName(String)</a>
      */
-    public static String getBaseName(String attrName) {
+    public static String getBaseName(String attrName)
+    {
         return com.novell.ldap.LDAPAttribute.getBaseName(attrName);
     }
 
@@ -220,7 +237,8 @@ public class LDAPAttribute implements Comparable {
             #getName()">
             com.novell.ldap.LDAPAttribute.getName()</a>
      */
-    public String getName() {
+    public String getName()
+    {
         return attr.getName();
     }
 
@@ -231,7 +249,8 @@ public class LDAPAttribute implements Comparable {
             #getSubtypes()">
             com.novell.ldap.LDAPAttribute.getSubtypes()</a>
      */
-    public String[] getSubtypes() {
+    public String[] getSubtypes()
+    {
         return attr.getSubtypes();
     }
 
@@ -242,7 +261,8 @@ public class LDAPAttribute implements Comparable {
             #getSubtypes(java.lang.String)">
             com.novell.ldap.LDAPAttribute.getSubtypes(String)</a>
      */
-    public static String[] getSubtypes(String attrName) {
+    public static String[] getSubtypes(String attrName)
+    {
         return com.novell.ldap.LDAPAttribute.getSubtypes(attrName);
     }
 
@@ -253,7 +273,8 @@ public class LDAPAttribute implements Comparable {
             #hasSubtype(java.lang.String)">
             com.novell.ldap.LDAPAttribute.hasSubtype(String)</a>
      */
-    public boolean hasSubtype(String subtype) {
+    public boolean hasSubtype(String subtype)
+    {
         return attr.hasSubtype(subtype);
     }
 
@@ -264,7 +285,8 @@ public class LDAPAttribute implements Comparable {
             #hasSubtypes(java.lang.String[])">
             com.novell.ldap.LDAPAttribute.hasSubtypes(String[])</a>
      */
-    public boolean hasSubtypes(String[] subtypes) {
+    public boolean hasSubtypes(String[] subtypes)
+    {
         return attr.hasSubtypes(subtypes);
     }
 
@@ -275,7 +297,8 @@ public class LDAPAttribute implements Comparable {
             #removeValue(java.lang.String)">
             com.novell.ldap.LDAPAttribute.removeValue(String)</a>
      */
-    public void removeValue(String attrString) {
+    public void removeValue(String attrString)
+    {
         attr.removeValue(attrString);
         return;
     }
@@ -287,7 +310,8 @@ public class LDAPAttribute implements Comparable {
             #removeValue(byte[])">
             com.novell.ldap.LDAPAttribute.removeValue(byte[])</a>
      */
-    public void removeValue(byte[] attrBytes) {
+    public void removeValue(byte[] attrBytes)
+    {
         attr.removeValue(attrBytes);
         return;
     }
@@ -299,7 +323,8 @@ public class LDAPAttribute implements Comparable {
             #size()">
             com.novell.ldap.LDAPAttribute.size()</a>
      */
-    public int size() {
+    public int size()
+    {
         return attr.size();
     }
 
@@ -310,8 +335,21 @@ public class LDAPAttribute implements Comparable {
             #compareTo(java.lang.Object)">
             com.novell.ldap.LDAPAttribute.compareTo(Object)</a>
      */
-    public int compareTo(Object attribute){
+    public int compareTo(Object attribute)
+    {
         return this.attr.compareTo(
                 ((LDAPAttribute)attribute).getWrappedObject() );
+    }
+
+    /**
+     * Returns a clone of this object
+     *
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPAttribute.html
+            #clone()">
+            com.novell.ldap.LDAPAttribute.clone()</a>
+     */
+    public Object clone()
+    {
+        return new LDAPAttribute(this);
     }
 }

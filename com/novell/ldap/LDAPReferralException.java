@@ -15,6 +15,8 @@
 
 package com.novell.ldap;
 
+import com.novell.ldap.resources.*;
+
 /**
  *  Thrown when a server returns a referral and when a referral has not
  *  been followed.  It contains a list of URL strings corresponding
@@ -25,7 +27,6 @@ public class LDAPReferralException extends LDAPException
 {
 
     private String failedReferral = null;
-	private String serverMessage = null;
 	private String[] referrals = null;
 
    /**
@@ -45,7 +46,7 @@ public class LDAPReferralException extends LDAPException
     *@param message The additional error information.
     */
    public LDAPReferralException(String message) {
-      super( message, LDAPException.REFERRAL);
+      super( message, LDAPException.REFERRAL, (String)null);
       return;
    }
 
@@ -62,7 +63,7 @@ public class LDAPReferralException extends LDAPException
     *@param message The additional error information.
     */
    public LDAPReferralException(String message, Object[] arguments) {
-      super( message, arguments, LDAPException.REFERRAL);
+      super( message, arguments, LDAPException.REFERRAL, (String)null);
       return;
    }
    /**
@@ -79,7 +80,7 @@ public class LDAPReferralException extends LDAPException
     */
    public LDAPReferralException(String message,
                                 Throwable rootException) {
-      super( message, LDAPException.REFERRAL, rootException);
+      super( message, LDAPException.REFERRAL, (String)null, rootException);
       return;
    }
 
@@ -101,7 +102,7 @@ public class LDAPReferralException extends LDAPException
    public LDAPReferralException(String message,
                                 Object[] arguments,
                                 Throwable rootException) {
-      super( message, arguments, LDAPException.REFERRAL, rootException);
+      super( message, arguments, LDAPException.REFERRAL, (String)null, rootException);
       return;
    }
 
@@ -120,7 +121,7 @@ public class LDAPReferralException extends LDAPException
                                 int resultCode,
                                 String serverMessage)
    {
-      super( message + ": " + serverMessage, resultCode);
+      super( message, resultCode, serverMessage) ;
 	  return;
    }
 
@@ -143,7 +144,7 @@ public class LDAPReferralException extends LDAPException
                                 int resultCode,
                                 String serverMessage)
    {
-      super( message + ": " + serverMessage, arguments, resultCode);
+      super( message, arguments, resultCode, serverMessage);
 	  return;
    }
 
@@ -164,7 +165,7 @@ public class LDAPReferralException extends LDAPException
                                 String serverMessage,
                                 Throwable rootException)
     {
-      super( message + ": " + serverMessage, resultCode, rootException);
+      super( message, resultCode, serverMessage, rootException);
       return;
     }
    /**
@@ -188,7 +189,7 @@ public class LDAPReferralException extends LDAPException
                                 String serverMessage,
                                 Throwable rootException)
     {
-      super( message + ": " + serverMessage, arguments, resultCode, rootException);
+      super( message, arguments, resultCode, serverMessage, rootException);
       return;
     }
 
@@ -237,5 +238,50 @@ public class LDAPReferralException extends LDAPException
     {
         referrals = urls;
         return;
+    }
+    
+    /**
+     * returns a string of information about the exception and the
+     * the nested exceptions, if any.
+     */
+    public String toString()
+    {
+        String msg, tmsg;
+        
+        // Format the basic exception information
+        msg = getExceptionString("LDAPReferralException");
+        
+        // Add failed referral information
+        if( failedReferral != null) {
+            tmsg = ResourcesHandler.getMessage("FAILED_REFERRAL",
+                                                new Object[]
+                                                {
+                                                   "LDAPReferralException",
+                                                   failedReferral
+                                                });
+            // If found no string from resource file, use a default string
+            if( tmsg.equalsIgnoreCase( "SERVER_MSG")) {
+                tmsg = "LDAPReferralException: Failed Referral: " + failedReferral;
+            }
+            msg = msg + '\n' + tmsg;
+        }
+        
+        // Add referral information, display all the referrals in the list
+        if( referrals != null) {
+            for( int i = 0; i < referrals.length; i++) {
+                tmsg = ResourcesHandler.getMessage("REFERRAL_ITEM",
+                                                    new Object[]
+                                                    {
+                                                       "LDAPReferralException",
+                                                       referrals[i]
+                                                    });
+                // If found no string from resource file, use a default string
+                if( tmsg.equalsIgnoreCase( "SERVER_MSG")) {
+                    tmsg = "LDAPReferralException: Referral: " + referrals[i]; 
+                }
+                msg = msg + '\n' + tmsg;
+            }
+        }
+        return msg;
     }
 }

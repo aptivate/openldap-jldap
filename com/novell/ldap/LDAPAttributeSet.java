@@ -15,323 +15,373 @@
 
 package com.novell.ldap;
 
-import com.novell.ldap.client.ArrayList;
-import com.novell.ldap.client.ArrayEnumeration;
-import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.HashMap;
+import com.novell.ldap.client.EnumeratedIterator;
+
 
 /**
  *
  * A set of {@link LDAPAttribute} objects.
  *
- * <p>An LDAPAttributeSet can be used when constructing an object, by
- * adding multiple LDAPAttribute objects in the set and passing this set
- * when the object is created. LDAPAttributeSet objects can also be retrieved from
- * LDAPEntry objects when performing searches, allowing you to iterate
- * through all of an entry's attributes.
+ * <p>An <tt>LDAPAttributeSet</tt> is a collection of <tt>LDAPAttribute</tt>
+ * classes as returned from an <tt>LDAPEntry</tt> on a search or read
+ * operation. <tt>LDAPAttributeSet</tt> may be also used to contruct an entry
+ * to be added to a directory.  If the <tt>add()</tt> or <tt>addAll()</tt> 
+ * methods are called and one or more of the objects to be added is not
+ * an <tt>LDAPAttribute, ClassCastException</tt> is thrown (as discussed in the
+ * documentation for <tt>java.util.Collection</tt>).
  *
- *  <p>Sample Code: <a href="http://developer.novell.com/ndk/doc/samplecode/
+ * <p>Sample Code: <a href="http://developer.novell.com/ndk/doc/samplecode/
  *jldap_sample/jldap_sample/AddEntry.java.html">AddEntry.java</p>
  *
  * @see LDAPAttribute
  * @see LDAPEntry
  */
-public class LDAPAttributeSet implements Cloneable {
-   private ArrayList attrs;
+public class LDAPAttributeSet
+        extends java.util.AbstractSet
+        implements Cloneable, java.util.Set {
 
-   /**
-    * Constructs an empty set of attributes.
-    */
-   public LDAPAttributeSet() {
-      attrs = new ArrayList();
-   }
+    /**
+     * This is the underlying data structure for this set.
+     * <p>HashSet is similar to the functionality of this set.  The difference
+     * is we use the name of an attribute as keys in the Map and LDAPAttributes
+     * as the values.  We also do not declare the map as transient, making the
+     * map serializable.</p>
+     */
+    private HashMap map;
 
-   /**
-    * Adds the specified attribute to this attribute set.
-    *
-    * @param attr Attribute to add to this set.
-    */
-   public void add(LDAPAttribute attr) {
-      attrs.add(attr);
-   }
+    /**
+     * Constructs an empty set of attributes.
+     */
+    public LDAPAttributeSet() {
+        super();
+        map = new HashMap();
+    }
 
-   /**
-    * Returns a deep copy of this attribute set.
-    *
-    * @return A deep copy of this attribute set.
-    */
-   public Object clone() {
-      LDAPAttributeSet newAttrs = new LDAPAttributeSet();
-      for(int i = 0; i < attrs.size(); i++){
-         newAttrs.add( new LDAPAttribute( (LDAPAttribute)attrs.get(i)));
-      }
-      return (Object)newAttrs;
-   }
+// ---  methods not defined in Set ---
 
-   /**
-    * Returns the attribute at the position specified by the index. The
-    * index is 0-based.
-    *
-    * @param index    Index of the attribute to get.
-    *
-    * @return    The attribute at the position specified.
-    *
-    * @exception ArrayIndexOutOfBoundsException The value specified by the
-    * index is outside of the array.
-    *
-    */
-   public LDAPAttribute elementAt(int index)
-    throws ArrayIndexOutOfBoundsException {
-      return (LDAPAttribute)attrs.get(index);
-   }
+    /**
+     * Returns a deep copy of this attribute set.
+     *
+     * @return A deep copy of this attribute set.
+     */
+    public Object clone() {
+        LDAPAttributeSet newAttrs = new LDAPAttributeSet();
+        Iterator i = this.iterator();
+        while (i.hasNext()){
+            newAttrs.add( ((LDAPAttribute)i.next()).clone() );
+        }
+        return newAttrs;
+    }
 
-   /**
-    * Returns the attribute matching the specified attrName.
-    *
-    * <p>For example:</p>
-    * <ul>
-    * <li>getAttribute("cn")          returns only the "cn" attribute</li>
-    * <li>getAttribute("cn;lang-en")  returns only the "cn;lang-en"
-    *                                 attribute.</li>
-    * </ul>
-    * <p>In both cases, null is returned if there is no exact match to the
-    * specified attrName.</p>
-    *
-    * <p>Note: Novell eDirectory does not yet support language subtypes.
-    * It does support the "binary" subtype.</p>
-    *
-    * @param attrName   The name of an attribute to retrieve, with or without
-    * subtype specifications. For example, "cn", "cn;phonetic", and
-    * cn;binary" are valid attribute names.
-    *
-    * @return The attribute matching the specified attrName, or null if there
-    * is no exact match.
-    */
-   public LDAPAttribute getAttribute(String attrName) {
-      LDAPAttribute attrib;
-      Object[] arrayAttr = attrs.toArray();
-      for( int i=0; i < arrayAttr.length; i++) {
-          attrib = (LDAPAttribute)arrayAttr[i];
-          if(attrib.getName().equalsIgnoreCase(attrName)){
-            return attrib;
-          }
-      }
-      return null;
-   }
+    /**
+     * Returns the attribute matching the specified attrName.
+     *
+     * <p>For example:</p>
+     * <ul>
+     * <li><tt>getAttribute("cn")</tt>      returns only the "cn" attribute</li>
+     * <li><tt>getAttribute("cn;lang-en")</tt> returns only the "cn;lang-en"
+     *                                 attribute.</li>
+     * </ul>
+     * <p>In both cases, <tt>null</tt> is returned if there is no exact match to
+     * the specified attrName.</p>
+     *
+     * <p>Note: Novell eDirectory does not currently support language subtypes.
+     * It does support the "binary" subtype.</p>
+     *
+     * @param attrName   The name of an attribute to retrieve, with or without
+     * subtype specifications. For example, "cn", "cn;phonetic", and
+     * "cn;binary" are valid attribute names.
+     *
+     * @return The attribute matching the specified attrName, or <tt>null</tt>
+     * if there is no exact match.
+     */
+    public LDAPAttribute getAttribute(String attrName) {
+        return (LDAPAttribute)map.get(attrName.toUpperCase());
+    }
 
-   /**
-    * Returns a single best-match attribute, or null if no match is
-    * available in the entry.
-    *
-    * <p>LDAP version 3 allows adding a subtype specification to an attribute
-    * name. For example, "cn;lang-ja" indicates a Japanese language
-    * subtype of the "cn" attribute and "cn;lang-ja-JP-kanji" may be a subtype
-    * of "cn;lang-ja". This feature may be used to provide multiple
-    * localizations in the same directory. For attributes which do not vary
-    * among localizations, only the base attribute may be stored, whereas
-    * for others there may be varying degrees of specialization.</p>
-    *
-    * <p>For example, getAttribute(attrName,lang) returns the subtype that
-    * matches attrName and that best matches lang.</p>
-    *
-    * <p>If there are subtypes other than "lang" subtypes included
-    * in attrName, for example, "cn;binary", only attributes with all of
-    * those subtypes are returned. If lang is null or empty, the
-    * method behaves as getAttribute(attrName). If there are no matching
-    * attributes, null is returned. </p>
-    *
-    *
-    * <p>Assume the entry contains only the following attributes:</p>
-    *
-    *  <ul>
-    *  <li>cn;lang-en</li>
-    *  <li>cn;lang-ja-JP-kanji</li>
-    *  <li>sn</li>
-    *  </ul>
-    *
-    *  <p>Examples:</p>
-    *  <ul>
-    *  <li>getAttribute( "cn" )               returns null.</li>
-    *  <li>getAttribute( "sn" )               returns the "sn" attribute.</li>
-    *  <li>getAttribute( "cn", "lang-en-us" ) returns the "cn;lang-en"
-    *                                         attribute.</li>
-    *   <li>getAttribute( "cn", "lang-en" )   returns the "cn;lang-en"
-    *                                         attribute.</li>
-    *   <li>getAttribute( "cn", "lang-ja" )   returns null.</li>
-    *   <li>getAttribute( "sn", "lang-en" )   returns the "sn" attribute.</li>
-    *  </ul>
-    *
-    * <p>Note: Novell eDirectory does not yet support language subtypes.
-    * It does support the "binary" subtype.</p>
-    *
-    * @param attrName  The name of an attribute to retrieve, with or without
-    * subtype specifications. For example, "cn", "cn;phonetic", and
-    * cn;binary" are valid attribute names.
-    *<br><br>
-    * @param lang   A language specification with optional subtypes
-    * appended using "-" as separator. For example, "lang-en", "lang-en-us",
-    * "lang-ja", and "lang-ja-JP-kanji" are valid language specification.
-    *
-    * @return A single best-match attribute, or null if no match is
-    * found in the entry.
-    *
-    */
-   public LDAPAttribute getAttribute(String attrName, String lang) {
+    /**
+     * Returns a single best-match attribute, or <tt>null</tt> if no match is
+     * available in the entry.
+     *
+     * <p>LDAP version 3 allows adding a subtype specification to an attribute
+     * name. For example, "cn;lang-ja" indicates a Japanese language
+     * subtype of the "cn" attribute and "cn;lang-ja-JP-kanji" may be a subtype
+     * of "cn;lang-ja". This feature may be used to provide multiple
+     * localizations in the same directory. For attributes which do not vary
+     * among localizations, only the base attribute may be stored, whereas
+     * for others there may be varying degrees of specialization.</p>
+     *
+     * <p>For example, <tt>getAttribute(attrName,lang)</tt> returns the 
+     * <tt>LDAPAttribute</tt> that exactly matches attrName and that
+     * best matches lang.</p>
+     *
+     * <p>If there are subtypes other than "lang" subtypes included
+     * in attrName, for example, "cn;binary", only attributes with all of
+     * those subtypes are returned. If lang is <tt>null</tt> or empty, the
+     * method behaves as getAttribute(attrName). If there are no matching
+     * attributes, <tt>null</tt> is returned. </p>
+     *
+     *
+     * <p>Assume the entry contains only the following attributes:</p>
+     *
+     *  <ul>
+     *  <li>cn;lang-en</li>
+     *  <li>cn;lang-ja-JP-kanji</li>
+     *  <li>sn</li>
+     *  </ul>
+     *
+     *  <p>Examples:</p>
+     *  <ul>
+     *  <li><tt>getAttribute( "cn" )</tt>       returns <tt>null</tt>.</li>
+     *  <li><tt>getAttribute( "sn" )</tt>       returns the "sn" attribute.</li>
+     *  <li><tt>getAttribute( "cn", "lang-en-us" )</tt>
+     *                              returns the "cn;lang-en" attribute.</li>
+     *   <li><tt>getAttribute( "cn", "lang-en" )</tt>
+     *                              returns the "cn;lang-en" attribute.</li>
+     *   <li><tt>getAttribute( "cn", "lang-ja" )</tt>
+     *                              returns <tt>null</tt>.</li>
+     *   <li><tt>getAttribute( "sn", "lang-en" )</tt>
+     *                              returns the "sn" attribute.</li>
+     *  </ul>
+     *
+     * <p>Note: Novell eDirectory does not currently support language subtypes.
+     * It does support the "binary" subtype.</p>
+     *
+     * @param attrName  The name of an attribute to retrieve, with or without
+     * subtype specifications. For example, "cn", "cn;phonetic", and
+     * cn;binary" are valid attribute names.
+     *<br><br>
+     * @param lang   A language specification with optional subtypes
+     * appended using "-" as separator. For example, "lang-en", "lang-en-us",
+     * "lang-ja", and "lang-ja-JP-kanji" are valid language specification.
+     *
+     * @return A single best-match <tt>LDAPAttribute</tt>, or <tt>null</tt>
+     * if no match is found in the entry.
+     *
+     */
+    public LDAPAttribute getAttribute(String attrName, String lang) {
+        String key = attrName + ";" + lang;
+        return (LDAPAttribute)map.get(key.toUpperCase());
+    }
 
-	  LDAPAttribute attrib, partialMatch;
-	  int partialMatchLen;
+    /**
+     * Creates a new attribute set containing only the attributes that have
+     * the specified subtypes.
+     *
+     * <p>For example, suppose an attribute set contains the following
+     * attributes:</p>
+     *
+     * <ul>
+     * <li>    cn</li>
+     * <li>    cn;lang-ja</li>
+     * <li>    sn;phonetic;lang-ja</li>
+     * <li>    sn;lang-us</li>
+     * </ul>
+     *
+     * <p>Calling the <tt>getSubset</tt> method and passing lang-ja as the
+     * argument, the method returns an attribute set containing the following
+     * attributes:</p>
+     *
+     * <ul>
+     *     <li>cn;lang-ja</li>
+     *     <li>sn;phonetic;lang-ja</li>
+     * </ul>
+     *
+     *  @param subtype    Semi-colon delimited list of subtypes to include. For
+     *  example:
+     * <ul>
+     * <li> "lang-ja" specifies only Japanese language subtypes</li>
+     * <li> "binary" specifies only binary subtypes</li>
+     * <li> "binary;lang-ja" specifies only Japanese language subtypes
+     *       which also are binary</li>
+     * </ul>
+     *
+     * <p>Note: Novell eDirectory does not currently support language subtypes.
+     * It does support the "binary" subtype.</p>
+     *
+     * @return An attribute set containing the attributes that match the
+     *          specified subtype.
+     */
+    public LDAPAttributeSet getSubset(String subtype) {
 
-	  partialMatch = null;
-	  partialMatchLen = 0;
-      Object[] arrayAttr = attrs.toArray();
+        // Create a new tempAttributeSet
+        LDAPAttributeSet tempAttributeSet = new LDAPAttributeSet();
+        Iterator i = this.iterator();
 
-        for( int i = 0; i < arrayAttr.length; i++) {
+        // Cycle throught this.attributeSet
+        while (i.hasNext()){
+            LDAPAttribute attr = (LDAPAttribute)i.next();
 
-	      attrib = (LDAPAttribute) arrayAttr[i];
+            // Does this attribute have the subtype we are looking for. If
+            // yes then add it to our AttributeSet, else next attribute
+            if (attr.hasSubtype(subtype))
+                tempAttributeSet.add(attr.clone());
+        }
+        return tempAttributeSet;
+    }
 
-          // Find a matching attribute
-          if(attrib.getName().equalsIgnoreCase(attrName)){
+// --- methods defined in set ---
 
-			// Get the lang subtype for this attribute
-			String attribSubType = attrib.getLangSubtype();
+    /**
+     * Returns an iterator over the attributes in this set.  The attributes
+     * returned from this iterator are not in any particular order.
+     *
+     * @return iterator over the attributes in this set
+     */
+    public Iterator iterator(){
+        return this.map.values().iterator();
+    }
 
-			// Return this attribute if this is a full match.
-			if (attribSubType.equalsIgnoreCase(lang))
-				return attrib;
+    /**
+     * Returns the number of attributes in this set.
+     *
+     * @return number of attributes in this set.
+     */
+    public int size(){
+        return this.map.size();
+    }
 
-			// Save this attribute off if we have a partial match
-			if (lang.toLowerCase().startsWith(attribSubType.toLowerCase())) {
+    /**
+     * Returns <tt>true</tt> if this set contains no elements
+     *
+     * @return <tt>true</tt> if this set contains no elements
+     */
+    public boolean isEmpty() {
+        return this.map.isEmpty();
+    }
 
-				// Get the length of the partial string that matched the subtype
-				int matchedLen = attribSubType.length();
+    /**
+     * Returns <tt>true</tt> if this set contains an attribute of the same name
+     * as the specified attribute.
+     *
+     * @param attr   Object of type <tt>LDAPAttribute</tt>
+     *
+     * @return <tt>true</tt> if this set contains the specified attribute
+     *
+     * @throw <tt>ClassCastException</tt> occurs the specified Object
+     * is not of type <tt>LDAPAttribute</tt>.
+     */
+    public boolean contains(Object attr) {
+        LDAPAttribute attribute = (LDAPAttribute) attr;
+        return this.map.containsKey( attribute.getName().toUpperCase() );
+    }
 
-				// Was this a bettter (Longer) match, If yes the replace last matched
-				// attribute with this better match
-				if (matchedLen > partialMatchLen) {
-					partialMatch = attrib;
-					partialMatchLen = matchedLen;
-				}
-			}
+    /**
+     * Adds the specified attribute to this set if it is not already present.
+     * <p>If an attribute with the same name already exists in the set then the
+     * specified attribute will not be added.</p>
+     *
+     * @param attr   Object of type <tt>LDAPAttribute</tt>
+     *
+     * @return <tt>true</tt> if the attribute was added.
+     *
+     * @throw <tt>ClassCastException</tt> occurs the specified Object
+     * is not of type <tt>LDAPAttribute</tt>.
+     */
+    public boolean add(Object attr) {
+        //We must enforce that attr is an LDAPAttribute
+        LDAPAttribute attribute = (LDAPAttribute) attr;
+        return (this.map.put(attribute.getName().toUpperCase(),
+                             attribute) != null);
+    }
 
-			// else goto next attribute
+    /**
+     * Removes the specified object from this set if it is present.
+     *
+     * <p>If the specified object is of type <tt>LDAPAttribute</tt>, the
+     * specified attribute will be removed.  If the specified object is of type
+     * <tt>String</tt>, the attribute with a name that matches the string will
+     * be removed.</p>
+     *
+     * @param <tt>LDAPAttribute</tt> to be removed or <tt>String</tt> naming
+     * the attribute to be removed.
+     *
+     * @return <tt>true</tt> if the object was removed.
+     *
+     * @throw <tt>ClassCastException</tt> occurs the specified Object
+     * is not of type <tt>LDAPAttribute</tt> or of type <tt>String</tt>.
+     */
+    public boolean remove(Object object) {
+        String attributeName; //the name is the key to object in the HashMap
+        if (object instanceof String){
+            attributeName = (String)object;
+        }
+        else {
+            attributeName = ((LDAPAttribute) object).getName();
+        }
+        if (attributeName == null){
+            return false;
+        }
+        return (this.map.remove( attributeName.toUpperCase() ) != null );
+    }
 
-		  }
-      }
+    /**
+     * Removes all of the elements from this set.
+     */
+    public void clear(){
+        this.map.clear();
+    }
 
-	  // Return a partial match if there was one,
-	  //   else we will be returning a null pointer
-      return partialMatch;
+    /**
+     * Adds all <tt>LDAPAttribute</tt> objects in the specified collection to
+     * this collection.
+     *
+     * @param c  Collection of <tt>LDAPAttribute</tt> objects.
+     *
+     * @throw <tt>ClassCastException</tt> occurs when an element in the
+     * collection is not of type <tt>LDAPAttribute</tt>.
+     *
+     * @return <tt>true</tt> if this set changed as a result of the call.
+     */
+    public boolean addAll(java.util.Collection c){
+        boolean setChanged = false;
+        Iterator i = c.iterator();
 
-   }
+        while (i.hasNext()){
+            // we must enforce that everything in c is an LDAPAttribute
+            // add will return true if the attribute was added
+            if (this.add( (LDAPAttribute) i.next() )){
+                setChanged = true;
+            }
+        }
+        return setChanged;
+    }
 
-   /**
-    * Returns an enumeration of the attributes in this attribute set.
-    *
-    * @return  An enumeration of the attributes in this attribute set.
-    */
-   public Enumeration getAttributes() {
-      return new ArrayEnumeration(attrs.toArray());
-   }
+// --- deprecated methods ---
 
-   /**
-    * Creates a new attribute set containing only the attributes that have
-    * the specified subtypes.
-    *
-    * <p>For example, suppose an attribute set contains the following
-    * attributes:</p>
-    *
-    * <ul>
-    * <li>    cn</li>
-    * <li>    cn;lang-ja</li>
-    * <li>    sn;phonetic;lang-ja</li>
-    * <li>    sn;lang-us</li>
-    * </ul>
-    *
-    * <p>Calling the getSubset method and passing lang-ja as the argument, the
-    * method returns an attribute set containing the following attributes:</p>
-    *
-    * <ul>
-    *     <li>cn;lang-ja</li>
-    *     <li>sn;phonetic;lang-ja</li>
-    * </ul>
-    *
-    *  @param subtype - Semi-colon delimited list of subtypes to include. For
-    *  example:
-    * <ul>
-    * <li> "lang-ja" specifies only Japanese language subtypes</li>
-    * <li> "binary" specifies only binary subtypes</li>
-    * <li> "binary;lang-ja" specifies only Japanese language subtypes
-    *       which also are binary</li>
-    * </ul>
-    *
-    * <p>Note: Novell eDirectory does not yet support language subtypes.
-    * It does support the "binary" subtype.</p>
-    *
-    * @return An attribute set containing the attributes that match the specified
-    *         subtype.
-    */
-   public LDAPAttributeSet getSubset(String subtype) {
+    /**
+     *  @deprecated replaced by {@link #iterator}.  This method
+     *  has been removed in IETF draft 18 of the Java LDAP API
+     *  (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
+     *  from the API in the fall of 2003.
+     */
+    public java.util.Enumeration getAttributes() {
+        return new com.novell.ldap.client.EnumeratedIterator(
+                this.iterator());
+    }
 
-	  // Create a new tempAttributeSet
-      LDAPAttributeSet tempAttributeSet = new LDAPAttributeSet();
+    /**
+     *  @deprecated replaced by {@link #iterator}.  This method
+     *  has been removed in IETF draft 18 of the Java LDAP API
+     *  (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
+     *  from the API in the fall of 2003.
+     */
+    public LDAPAttribute elementAt(int index)
+            throws ArrayIndexOutOfBoundsException {
+        return (LDAPAttribute) this.toArray()[index];
+    }
 
-      // Cycle throught this.attributeSet
-	  for(int i = 0; i < attrs.size(); i++) {
-
-		 LDAPAttribute tempAttr = new LDAPAttribute( (LDAPAttribute)attrs.get(i));
-
-		 // Does this attribute have the subtype we are looking for. If
-		 // yes then add it to our AttributeSet, else next attribute
-		 if (tempAttr.hasSubtype(subtype))
-			tempAttributeSet.add(tempAttr);
-      }
-
-      return tempAttributeSet;
-
-   }
-
-   /**
-    * Removes the specified attribute from the set. If the attribute is not
-    * a member of the set, nothing happens.
-    *
-    * <p> To remove an LDAPAttribute by object, the LDAPAttribute.getName
-    * method can be used: LDAPAttributeSet.remove( attr.getName );</p>
-    *
-    * @param name  Name of the attribute to remove from this set.
-    *
-    */
-   public void remove(String name) {
-       for(int i=0; i<attrs.size(); i++) {
-           LDAPAttribute attr = (LDAPAttribute)attrs.get(i);
-           if(attr.getName().equalsIgnoreCase(name)) {
-               attrs.remove(i);
-               break;
-           }
-       }
-       return;
-   }
-
-   /**
-    * Removes the attribute at the position specified by the index.  The
-    * index is 0-based.
-    *
-    * @param index  Index of the attribute to remove.
-    *
-    * @exception ArrayIndexOutOfBoundsException The value specified by the
-    * index is outside of the array.
-    *
-    */
-   public void removeElementAt(int index)
-   throws ArrayIndexOutOfBoundsException {
-      attrs.remove(index);
-      return;
-   }
-
-   /**
-    * Returns the number of attributes in this set.
-    *
-    * @return The number of attributes in this set.
-    */
-   public int size() {
-      return attrs.size();
-   }
+    /**
+     *  @deprecated replaced by {@link #remove}.  This method
+     *  has been removed in IETF draft 18 of the Java LDAP API
+     *  (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
+     *  from the API in the fall of 2003.
+     */
+    public void removeElementAt(int index)
+            throws ArrayIndexOutOfBoundsException {
+        this.remove(this.elementAt(index));
+        return;
+    }
 }

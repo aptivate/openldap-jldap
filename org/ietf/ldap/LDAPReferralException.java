@@ -1,4 +1,4 @@
-/* **************************************************************************
+/**************************************************************************
  * $OpenLDAP$
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
@@ -47,7 +47,6 @@ public class LDAPReferralException extends LDAPException
     public LDAPReferralException()
     {
         super( new com.novell.ldap.LDAPReferralException());
-        exception = 
         exception = (com.novell.ldap.LDAPReferralException)
                                                        super.getWrappedObject();
         return;

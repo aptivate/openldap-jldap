@@ -690,52 +690,61 @@ public class LDAPException extends Exception
     }
 
     /**
-     * Constructs an exception with with a detail message 
+     * Constructs an exception with a detailed message 
      * String and the result code.
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
-            #LDAPException(java.lang.String, int)">
-            com.novell.ldap.LDAPException.LDAPException(String, int)</a>
+            #LDAPException(java.lang.String, int, java.lang.String)">
+            com.novell.ldap.LDAPException.LDAPException(String, int, String)</a>
      */
-    public LDAPException(String message, int resultCode)
+    public LDAPException( String message,
+                          int resultCode,
+                          String serverMessage)
     {
         super(message);
-        exception = new com.novell.ldap.LDAPException( message, resultCode);
+        exception = new com.novell.ldap.LDAPException( message,
+                                                       resultCode, 
+                                                       serverMessage);
         return;
     }
 
     /**
-     * Constructs an exception with with a detail message String, the
+     * Constructs an exception with a detailed message String, the
      * result code, and the root exception.
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
-            #LDAPException(java.lang.String, int, java.lang.Throwable)">
-            com.novell.ldap.LDAPException.LDAPException(String, int,
+            #LDAPException(java.lang.String, int, java.lang.String, java.lang.Throwable)">
+            com.novell.ldap.LDAPException.LDAPException(String, int, String,
             Throwable)</a>
      */
-    public LDAPException(
-                String message, int resultCode, Throwable rootException)
+    public LDAPException( String message,
+                          int resultCode,
+                          String serverMessage,
+                          Throwable rootException)
     {
         super(message);
         exception = new com.novell.ldap.LDAPException(
-                        message,resultCode,rootException);
+                        message,resultCode,serverMessage,rootException);
         return;
     }
 
     /**
-     * Constructs an exception with with a detail message String, result code,
+     * Constructs an exception with a detailed message String, result code,
      * and a matchedDN returned from the server.
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
-            #LDAPException(java.lang.String, int, java.lang.String)">
-            com.novell.ldap.LDAPException.LDAPException(String, int,
+            #LDAPException(java.lang.String, int, java.lang.String, java.lang.String)">
+            com.novell.ldap.LDAPException.LDAPException(String, int, String,
             String)</a>
      */
-    public LDAPException( String message, int resultCode, String matchedDN)
+    public LDAPException( String message,
+                          int resultCode,
+                          String serverMessage,
+                          String matchedDN)
     {
         super(message);
         exception = new com.novell.ldap.LDAPException(
-                message, resultCode, matchedDN);
+                message, resultCode, serverMessage, matchedDN);
         return;
     }
 
@@ -749,57 +758,15 @@ public class LDAPException extends Exception
     }
 
     /**
-     * Returns a string representing the internal error code, in the default
-     * locale.
+     * Returns the lower level Exception which caused the failure, if any.
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
-            #errorCodeToString()">
-            com.novell.ldap.LDAPException.errorCodeToString()</a>
+            #getCause()">
+            com.novell.ldap.LDAPException.getCause()</a>
      */
-    public String errorCodeToString()
+    public Throwable getCause()
     {
-        return exception.errorCodeToString();
-    }
-
-    /**
-     * Returns a string representing an arbitrary error code, in the default
-     * locale, or null if there is no such code.
-     *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
-            #errorCodeToString(int)">
-            com.novell.ldap.LDAPException.errorCodeToString(int)</a>
-     */
-    public static String errorCodeToString( int code )
-    {
-        return com.novell.ldap.LDAPException.errorCodeToString( code);
-    }
-
-    /**
-     * Returns a string representing the internal error code, in the
-     * specified locale, or null if a string representation is not available
-     * for the requested locale.
-     *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
-            #errorCodeToString(java.util.Locale)">
-            com.novell.ldap.LDAPException.errorCodeToString(Locale)</a>
-     */
-    public String errorCodeToString( Locale locale )
-    {
-        return exception.errorCodeToString( locale);
-    }
-
-    /**
-     * Returns a string representing an arbitrary error code, in the
-     * specified locale, or null if there is no such code or if a string
-     * representation is not available for the requested Locale.
-     *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
-            #errorCodeToString(int, java.util.Locale)">
-            com.novell.ldap.LDAPException.errorCodeToString(int, Locale)</a>
-     */
-    public static String errorCodeToString( int code, Locale locale )
-    {
-        return com.novell.ldap.LDAPException.errorCodeToString( code, locale);
+        return exception.getCause( );
     }
 
     /**
@@ -816,27 +783,15 @@ public class LDAPException extends Exception
     }
 
     /**
-     * Returns the lower level Exception which caused the failure, if any.
-     *
-     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
-            #getCause()">
-            com.novell.ldap.LDAPException.getCause()</a>
-     */
-    public Throwable getCause()
-    {
-        return exception.getCause( );
-    }
-
-    /**
      * Returns the result code from the exception.
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
-            #getLDAPResultCode()">
-            com.novell.ldap.LDAPException.getLDAPResultCode()</a>
+            #getResultCode()">
+            com.novell.ldap.LDAPException.getResultCode()</a>
      */
-    public int getLDAPResultCode()
+    public int getResultCode()
     {
-        return exception.getLDAPResultCode( );
+        return exception.getResultCode( );
     }
 
     /**
@@ -851,6 +806,58 @@ public class LDAPException extends Exception
     {
         return exception.getMatchedDN( );
     }
+    /**
+     * Returns a string representing the result code in the default
+     * locale.
+     *
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #resultCodeToString()">
+            com.novell.ldap.LDAPException.resultCodeToString()</a>
+     */
+    public String resultCodeToString()
+    {
+        return exception.resultCodeToString();
+    }
+
+    /**
+     * Returns a string representing the specified result code in the default
+     * locale.
+     *
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #resultCodeToString(int)">
+            com.novell.ldap.LDAPException.resultCodeToString(int)</a>
+     */
+    public static String resultCodeToString( int code )
+    {
+        return com.novell.ldap.LDAPException.resultCodeToString( code);
+    }
+
+    /**
+     * Returns a string representing the result code in the
+     * specified locale.
+     *
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #resultCodeToString(java.util.Locale)">
+            com.novell.ldap.LDAPException.resultCodeToString(Locale)</a>
+     */
+    public String resultCodeToString( Locale locale )
+    {
+        return exception.resultCodeToString( locale);
+    }
+
+    /**
+     * Returns a string representing the specified result code in the
+     * specified locale.
+     *
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPException.html
+            #resultCodeToString(int, java.util.Locale)">
+            com.novell.ldap.LDAPException.resultCodeToString(int, Locale)</a>
+     */
+    public static String resultCodeToString( int code, Locale locale )
+    {
+        return com.novell.ldap.LDAPException.resultCodeToString( code, locale);
+    }
+
 
     /**
      * Converts the integer error value to a string, in the default locale.

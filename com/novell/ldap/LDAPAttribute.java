@@ -37,7 +37,9 @@ import java.io.UnsupportedEncodingException;
  * @see LDAPAttributeSet
  * @see LDAPModification
  */
-public class LDAPAttribute implements java.lang.Comparable {
+
+public class LDAPAttribute implements java.lang.Cloneable,
+                                      java.lang.Comparable {
     private String name;              // full attribute name
     private String baseName;          // cn of cn;lang-ja;phonetic
     private String[] subTypes = null; // lang-ja of cn;lang-ja
@@ -162,6 +164,15 @@ public class LDAPAttribute implements java.lang.Comparable {
             }
         }
         return;
+    }
+
+    /**
+     * Returns a clone of this LDAPAttribute.
+     *
+     * @return clone of this LDAPAttribute.
+     */
+    public Object clone(){
+        return new LDAPAttribute(this);
     }
 
     /**
