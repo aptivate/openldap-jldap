@@ -1,6 +1,6 @@
 
 LDAP Classes for Java
-March 2003
+October 2003
 
 Table of Contents
      1.0  LDAP Classes for Java
@@ -45,7 +45,6 @@ Table of Contents
           The class LDAPExtendedResponse does not yet implement the register
           method.
           
-          The sasl bind methods are not yet implemented.
           
      -    An incompatibility with previous versions exists for applicatons
           using LDAPSchema.getAtribute() and LDAPSchemaElement.getName().
