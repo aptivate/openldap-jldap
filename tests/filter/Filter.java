@@ -98,6 +98,11 @@ public class Filter
                     errorResult = false;
                 }
 
+                // Special case for NULL Value
+                if( inFilter.equals("(attr=<NUL>)")) {
+                    // Unescaped NUL in value - insert a real null in value
+                    inFilter = new String("(attr=" + '\0' + ")");
+                }
                 // Encode the filter to ASN1
                 StringBuffer buf = new StringBuffer( inFilter.length() * 3);
                 try {
@@ -127,7 +132,8 @@ public class Filter
                                     inFilter + "\"");
                             System.out.println( "       Expected : " + inHex);
                             System.out.println( "       Generated: " +
-                                    buf.toString() + "\n");
+                                    buf.toString());
+                            System.out.println("       Encoding: " + o.toString() + "\n");            
                         } else {
                             noExceptionCount++;
                             System.out.println(
