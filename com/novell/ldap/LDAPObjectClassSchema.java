@@ -1,8 +1,8 @@
 /* **************************************************************************
- * $Id$
+ * $Id: LDAPObjectClassSchema.java,v 1.2 2000/03/14 18:17:28 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
- * 
+ *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
  * TO VERSION 2.0.1 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
@@ -10,11 +10,11 @@
  * IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
  * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.1 OF THE OPENLDAP
  * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
- * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY. 
+ * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
  ***************************************************************************/
- 
-package com.novell.ldap; 
- 
+
+package com.novell.ldap;
+
 /**
  * 4.17 public class LDAPObjectClassSchema
  *
@@ -23,7 +23,15 @@ package com.novell.ldap;
  *  to add or delete an object class definition in a Directory. See [2]
  *  for a description of object class representation in LDAP.
  */
-public class LDAPObjectClassSchema {
+public class LDAPObjectClassSchema extends LDAPSchemaElement{
+  String[] superiors;
+  String[] required;
+  String[] optional;
+  int type;
+
+  public final static int ABSTRACT = 0;
+  public final static int STRUCTURAL = 1;
+  public final static int AUXILIARY = 2;
 
    /*
     * 4.17.1 Constructors
@@ -66,8 +74,31 @@ public class LDAPObjectClassSchema {
                                 String[] optional,
                                 int type,
                                 String[] aliases) {
+      super.name = new String(name);
+      super.oid = new String(oid);
+      super.description = new String(description);
+      this.type = type;
+      if( superiors != null){
+        this.superiors = new String[superiors.length];
+	for( int i = 0; i < this.superiors.length; i++ ){
+	  this.superiors[i] = superiors[i];
+        }
+      }
+      if( optional != null){
+        this.optional = new String[optional.length];
+	for( int i = 0; i < this.optional.length; i++ ){
+	  this.optional[i] = optional[i];
+        }
+      }
+
+      if( aliases != null){
+        super.aliases = new String[aliases.length];
+	for( int i = 0; i < super.aliases.length; i++ ){
+	  super.aliases[i] = aliases[i];
+        }
+       }
    }
-                                                   
+
    /**
     * Constructs an object class definition from the raw String value
     * returned on a Directory query for "objectclasses".
@@ -124,7 +155,7 @@ public class LDAPObjectClassSchema {
     * constants defined in LDAPObjectClassSchema.
     */
    public int getType() {
-      return 0;
+      return type;
    }
 
 }

@@ -1,8 +1,8 @@
 /* **************************************************************************
- * $Id$
+ * $Id: LDAPSchemaElement.java,v 1.2 2000/03/14 18:17:29 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
- * 
+ *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
  * TO VERSION 2.0.1 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
@@ -10,12 +10,15 @@
  * IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
  * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.1 OF THE OPENLDAP
  * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
- * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY. 
+ * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
  ***************************************************************************/
- 
-package com.novell.ldap; 
- 
+
+package com.novell.ldap;
+
 import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Vector;
+import com.novell.ldap.client.AttributeQualifier;
 
 /**
  * 4.22 public abstract class LDAPSchemaElement
@@ -24,6 +27,15 @@ import java.util.Enumeration;
  *  elements in LDAP.
  */
 public abstract class LDAPSchemaElement {
+
+	protected String name;
+	protected String oid;
+	protected String description;
+	protected String[] aliases;
+        protected boolean obsolete;
+	protected String[] qualifier;
+	protected String value;
+        protected Hashtable hashQualifier = new Hashtable();
 
    /*
     * 4.22.1 getAliases
@@ -36,7 +48,13 @@ public abstract class LDAPSchemaElement {
     * first of the NAME qualifier.
     */
    public String[] getAliases() {
-      return null;
+    if( aliases != null){
+      String[] retVal = new String[aliases.length];
+      for( int i = 0; i < aliases.length; i++ )
+        retVal[i] = aliases[i];
+      return retVal;
+    }
+    return null;
    }
 
    /*
@@ -49,7 +67,7 @@ public abstract class LDAPSchemaElement {
     * the DESC qualifier.
     */
    public String getDescription() {
-      return null;
+      return description;
    }
 
    /*
@@ -62,7 +80,7 @@ public abstract class LDAPSchemaElement {
     * first NAME qualifier.
     */
    public String getName() {
-      return null;
+      return name;
    }
 
    /*
@@ -73,7 +91,7 @@ public abstract class LDAPSchemaElement {
     * Returns the Unique Object Identifier of the element.
     */
    public String getID() {
-      return null;
+      return oid;
    }
 
    /*
@@ -90,6 +108,10 @@ public abstract class LDAPSchemaElement {
     *  name           The name of the qualifier, case-sensitive.
     */
    public String[] getQualifier(String name) {
+      AttributeQualifier attr = (AttributeQualifier) hashQualifier.get(name);
+      if(attr != null){
+        return attr.getValues();
+      }
       return null;
    }
 
@@ -102,7 +124,15 @@ public abstract class LDAPSchemaElement {
     * defined in [2].
     */
    public Enumeration getQualifierNames() {
-      return null;
+      int size;
+      Vector qualNames = new Vector();
+      if((size = hashQualifier.size()) > 0){
+        Enumeration en = hashQualifier.elements();
+        for( int i = 0; en.hasMoreElements(); i++){
+          qualNames.addElement( ((AttributeQualifier)en.nextElement()).getName());
+        }
+      }
+      return qualNames.elements();
    }
 
    /*
@@ -114,7 +144,7 @@ public abstract class LDAPSchemaElement {
     * in its LDAP definition [2].
     */
    public boolean isObsolete() {
-      return false;
+      return obsolete;
    }
 
    /*
@@ -126,7 +156,7 @@ public abstract class LDAPSchemaElement {
     * Directory, as a value of the particular schema element attribute.
     */
    public String getValue() {
-      return null;
+      return value;
    }
 
    /*
@@ -145,6 +175,13 @@ public abstract class LDAPSchemaElement {
     *  values         The values to set for the qualifier.
     */
    public void setQualifier(String name, String[] values) {
+    AttributeQualifier attrQualifier = new AttributeQualifier( name );
+    if(values != null){
+    	for(int i = 0; i < values.length; i++){
+		attrQualifier.addValue(values[i]);
+    	}
+    }
+    hashQualifier.put(name, attrQualifier);
    }
 
    /*
