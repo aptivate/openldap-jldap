@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: AbortNamingContextOperationRequest.java,v 1.2 2000/08/01 01:03:31 javed Exp $
+ * $Id: AbortNamingContextOperationRequest.java,v 1.3 2000/08/04 15:32:29 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -16,7 +16,7 @@ package com.novell.ldap.ext;
 
 import org.ietf.ldap.*;
 import org.ietf.asn1.*;
-import java.io.IOException;
+import java.io.*;
  
 /**
  *
@@ -55,17 +55,22 @@ public class AbortNamingContextOperationRequest extends LDAPExtendedOperation {
         super(NamingContextConstants.ABORT_NAMING_CONTEXT_OP_REQ, null);
         
         try {
-            // ber encode the parameters and set the requestValue
-            LberEncoder requestlber = new LberEncoder();
             
             if (partitionDN == null)
                 throw new LDAPException("Invalid parameter",
 				                        LDAPException.PARAM_ERROR);
-				                        
-		    requestlber.encodeInt(flags);
-            requestlber.encodeString(partitionDN, true); 
+			
+			ByteArrayOutputStream encodedData = new ByteArrayOutputStream();
+			BEREncoder encoder  = new BEREncoder();
+                               
+                                   
+		    ASN1Integer asn1_flags = new ASN1Integer(flags);
+		    ASN1String asn1_partitionDN = new ASN1String(partitionDN);
             
-            setValue(requestlber.getTrimmedBuf());
+            asn1_flags.encode(encoder, encodedData);
+            asn1_partitionDN.encode(encoder, encodedData);
+            
+            setValue(encodedData.toByteArray());
             
         }
 		catch(IOException ioe) {
