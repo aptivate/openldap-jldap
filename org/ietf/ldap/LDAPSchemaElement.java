@@ -20,7 +20,8 @@ import java.util.Enumeration;
 /**
  *  The base class for representing LDAP schema elements.
  *
- * @see com.novell.ldap.LDAPSchemaElement
+ *  @see <a href="../../../../doc/com/novell/ldap/LDAPSchemaElement.html">
+            com.novell.ldap.LDAPSchemaElement</a>
  */
 public abstract class LDAPSchemaElement
 {
@@ -50,7 +51,9 @@ public abstract class LDAPSchemaElement
      * Returns an array of alternative names for the element, or null if
      * none is found.
      *
-     * @see com.novell.ldap.LDAPSchemaElement#getAliases()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPSchemaElement.html
+            #getAliases()">
+            com.novell.ldap.LDAPSchemaElement.getAliases()</a>
      */
     public String[] getAliases()
     {
@@ -60,7 +63,9 @@ public abstract class LDAPSchemaElement
     /**
      * Returns the description of the element.
      *
-     * @see com.novell.ldap.LDAPSchemaElement#getDescription()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPSchemaElement.html
+            #getDescription()">
+            com.novell.ldap.LDAPSchemaElement.getDescription()</a>
      */
     public String getDescription()
     {
@@ -70,7 +75,9 @@ public abstract class LDAPSchemaElement
     /**
      * Returns the name of the element.
      *
-     * @see com.novell.ldap.LDAPSchemaElement#getName()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPSchemaElement.html
+            #getName()">
+            com.novell.ldap.LDAPSchemaElement.getName()</a>
      */
     public String getName()
     {
@@ -80,7 +87,9 @@ public abstract class LDAPSchemaElement
     /**
      * Returns the unique object identifier (OID) of the element.
      *
-     * @see com.novell.ldap.LDAPSchemaElement#getID()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPSchemaElement.html
+            #getID()">
+            com.novell.ldap.LDAPSchemaElement.getID()</a>
      */
     public String getID()
     {
@@ -91,7 +100,9 @@ public abstract class LDAPSchemaElement
      * Returns an array of all values of a specified optional or non-
      * standard qualifier of the element.
      *
-     * @see com.novell.ldap.LDAPSchemaElement#getQualifier(String)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPSchemaElement.html
+            #getQualifier(java.lang.String)">
+            com.novell.ldap.LDAPSchemaElement.getID(String)</a>
      */
     public String[] getQualifier(String name)
     {
@@ -102,7 +113,9 @@ public abstract class LDAPSchemaElement
      * Returns an enumeration of all qualifiers of the element which are
      * vendor specific (begin with "X-").
      *
-     * @see com.novell.ldap.LDAPSchemaElement#getQualifierNames()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPSchemaElement.html
+            #getQualifierNames()">
+            com.novell.ldap.LDAPSchemaElement.getQualifierNames()</a>
      */
     public Enumeration getQualifierNames()
     {
@@ -113,7 +126,9 @@ public abstract class LDAPSchemaElement
      * Returns whether the element has the OBSOLETE qualifier
      * in its LDAP definition.
      *
-     * @see com.novell.ldap.LDAPSchemaElement#isObsolete()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPSchemaElement.html
+            #isObsolete()">
+            com.novell.ldap.LDAPSchemaElement.isObsolete()</a>
      */
     public boolean isObsolete()
     {
@@ -124,7 +139,9 @@ public abstract class LDAPSchemaElement
      * Returns a string in a format suitable for directly adding to a
      * directory, as a value of the particular schema element.
      *
-     * @see com.novell.ldap.LDAPSchemaElement#getValue()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPSchemaElement.html
+            #getValue()">
+            com.novell.ldap.LDAPSchemaElement.getValue()</a>
      */
     public String getValue()
     {
@@ -135,7 +152,9 @@ public abstract class LDAPSchemaElement
      * Sets the values of a specified optional or non-standard qualifier of
      * the element.
      *
-     * @see com.novell.ldap.LDAPSchemaElement#setQualifier(String, String[])
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPSchemaElement.html
+            #setQualifier(java.lang.String, java.lang.String[])">
+            com.novell.ldap.LDAPSchemaElement.setQualifier(String, String[])</a>
      */
     public void setQualifier(String name, String[] values)
     {
@@ -147,7 +166,9 @@ public abstract class LDAPSchemaElement
      * Adds the definition to a directory. An exception is thrown if the
      * definition cannot be added.
      *
-     * @see com.novell.ldap.LDAPSchemaElement#add(LDAPConnection)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPSchemaElement.html
+            #add(com.novell.ldap.LDAPConnection)">
+            com.novell.ldap.LDAPSchemaElement.add(LDAPConnection)</a>
      */
     public void add(LDAPConnection ld) throws LDAPException
     {
@@ -172,7 +193,9 @@ public abstract class LDAPSchemaElement
      * Adds the definition to a directory, at a specified location. An exception
      * is thrown if the definition cannot be added.
      *
-     * @see com.novell.ldap.LDAPSchemaElement#add(LDAPConnection, String)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPSchemaElement.html
+            #add(com.novell.ldap.LDAPConnection, java.lang.String)">
+            com.novell.ldap.LDAPSchemaElement.add(LDAPConnection, String)</a>
      */
     public void add(LDAPConnection ld, String dn) throws LDAPException
     {
@@ -197,7 +220,9 @@ public abstract class LDAPSchemaElement
      * Removes the definition from a directory. An exception is thrown if
      * the definition cannot be removed.
      *
-     * @see com.novell.ldap.LDAPSchemaElement#remove(LDAPConnection)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPSchemaElement.html
+            #remove(com.novell.ldap.LDAPConnection)">
+            com.novell.ldap.LDAPSchemaElement.remove(LDAPConnection)</a>
      */
     public void remove(LDAPConnection ld) throws LDAPException
     {
@@ -222,7 +247,9 @@ public abstract class LDAPSchemaElement
      * Removes the definition from a directory, at a specified location.
      * An exception is thrown if the definition cannot be removed.
      *
-     * @see com.novell.ldap.LDAPSchemaElement#remove(LDAPConnection, String)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPSchemaElement.html
+            #remove(com.novell.ldap.LDAPConnection, java.lang.String)">
+            com.novell.ldap.LDAPSchemaElement.remove(LDAPConnection, String)</a>
      */
     public void remove(LDAPConnection ld, String dn) throws LDAPException
     {
@@ -247,8 +274,11 @@ public abstract class LDAPSchemaElement
      * Replaces a single value of the schema element definition in the
      * schema. An exception is thrown if the definition cannot be modified.
      *
-     * @see com.novell.ldap.LDAPSchemaElement#modify(LDAPConnection, 
-            LDAPSchemaElement)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPSchemaElement.html
+            #modify(com.novell.ldap.LDAPConnection, 
+            com.novell.ldap.LDAPSchemaElement)">
+            com.novell.ldap.LDAPSchemaElement.modify(LDAPConnection,
+            LDAPSchemaElement)</a>
      */
     public void modify(LDAPConnection ld, LDAPSchemaElement newValue)
                     throws LDAPException
@@ -279,8 +309,11 @@ public abstract class LDAPSchemaElement
      * schema, at a specified location in the directory. An exception is thrown
      * if the definition cannot be modified.
      *
-     * @see com.novell.ldap.LDAPSchemaElement#modify(LDAPConnection, 
-            LDAPSchemaElement, String)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPSchemaElement.html
+            #modify(com.novell.ldap.LDAPConnection, 
+            com.novell.ldap.LDAPSchemaElement, java.lang.String)">
+            com.novell.ldap.LDAPSchemaElement.modify(LDAPConnection,
+            LDAPSchemaElement, String)</a>
      */
     public void modify(LDAPConnection ld, LDAPSchemaElement newValue, String dn)
                     throws LDAPException
