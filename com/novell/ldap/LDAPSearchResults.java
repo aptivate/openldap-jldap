@@ -108,7 +108,8 @@ public class LDAPSearchResults
      */
     public int getCount()
     {
-        return entryCount - entryIndex + referenceCount - referenceIndex;
+        int qCount = queue.getMessageAgent().getCount();
+        return entryCount - entryIndex + referenceCount - referenceIndex + qCount;
     }
 
     /**

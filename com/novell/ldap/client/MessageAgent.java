@@ -412,6 +412,20 @@ public class MessageAgent
     }
 
     /**
+     * Get a count of all messages queued
+     */
+    public int getCount()
+    {
+        int count = 0;
+        Object[] msgs = messages.toArray();
+        for(int i = 0; i < msgs.length; i++) {
+            Message m = (Message)msgs[i];
+            count += m.getCount();
+        }
+        return count;
+    }
+    
+    /**
      * Debug code to print messages in message vector
      */
     private void debugDisplayMessages()

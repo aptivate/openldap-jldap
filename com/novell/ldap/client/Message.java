@@ -133,6 +133,20 @@ public class Message
     }
 
     /**
+     * Get number of messages queued.
+     * Don't count the last message containing result code.
+     */
+    public int getCount()
+    {
+        int size = replies.size();
+        if( complete) {
+            return (size > 0 ? (size -1) : size);
+        } else {
+            return size;
+        }        
+    }
+
+    /**
      * Returns true if replies are accepted for this request.
      *
      * @return false if replies are no longer accepted for this request
