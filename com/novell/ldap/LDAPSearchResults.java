@@ -249,7 +249,7 @@ public class LDAPSearchResults
                             ExceptionMessages.REFERENCE_ERROR,
                             lr.getException());
                         rex.setReferrals(ri.getReferralList());
-                        rex.setFailedReferral( ri.getReferralUrl().getUrl());
+                        rex.setFailedReferral( ri.getReferralUrl().toString());
                         throw rex;
                     }
                 }

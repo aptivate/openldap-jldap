@@ -1,7 +1,7 @@
 /* **************************************************************************
 * $OpenLDAP$
 *
- * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
+ * Copyright (C) 1999 - 2002 Novell, Inc. All Rights Reserved.
  *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
@@ -33,7 +33,7 @@ import com.novell.ldap.client.ArrayEnumeration;
  *
  * @see LDAPConnection#search
  */
-public class LDAPUrl {
+public class LDAPUrl implements java.lang.Cloneable {
 
 	static private final String DEFAULT_FILTER = "(objectClass=*)";
 	static private final int    DEFAULT_SCOPE  = LDAPConnection.SCOPE_BASE;
@@ -91,69 +91,93 @@ public class LDAPUrl {
     * Constructs an LDAP URL with all fields explicitly assigned, to
     * specify an LDAP search operation.
     *
-    *
     *  @param host     Host identifier of LDAP server, or null for
     *                  "localhost".
     *<br><br>
     *  @param port     The port number for LDAP server (use
     *                  LDAPConnection.DEFAULT_PORT for default port).
     *<br><br>
-    *  @param dn       Distinguished name of the base object of the search.
+    * @param dn       Distinguished name of the base object of the search.
     *
-    * <br><br>
-    *  @param attrNames Names or OIDs of attributes to retrieve.  Passing a
+    *<br><br>
+    * @param attrNames Names or OIDs of attributes to retrieve.  Passing a
     *                   null array signifies that all user attributes are to be
     *                   retrieved. Passing a value of "*" allows you to specify
     *                   that all user attributes as well as any specified
     *                   operational attributes are to be retrieved.
-    *
     *<br><br>
+    *
     *  @param scope    Depth of search (in DN namespace). Use one of
     *                  SCOPE_BASE, SCOPE_ONE, SCOPE_SUB from LDAPConnection.
-    *
     *<br><br>
+    *
     *  @param filter   The search filter specifying the search criteria.
+    *<br><br>
+    *
+    *  @param extensions  Extensions provide a mechanism to extend the
+    *                     functionality of LDAP URLs. Currently no
+    *                     LDAP URL extensions are defined. Each extension
+    *                     specification is a type=value expression, and  may
+    *                     be <tt>null</tt> or empty.  The =value part may be
+    *                     omitted. The expression may be prefixed with '!' if it
+    *                     is mandatory for the evaluation of the URL.
     */
     public LDAPUrl(String host,
                    int port,
                    String dn,
                    String attrNames[],
                    int scope,
-                   String filter) {
+                   String filter,
+                   String extensions[]) {
 		this.host = host;
 		this.port = port;
 		this.dn = dn;
-		this.attrs = attrNames;
+		this.attrs = (String[])attrNames.clone();
 		this.scope = scope;
 		this.filter = filter;
+        this.extensions = (String[])extensions.clone();
 		return;
     }
 
     /**
-    * Constructs a full-blown LDAP URL to specify an LDAP search operation.
-    *
+    * Constructs an LDAP URL with all fields explicitly assigned, including
+    * isSecure, to specify an LDAP search operation.
     *
     *  @param host     Host identifier of LDAP server, or null for
     *                  "localhost".
     *<br><br>
+    *
     *  @param port     The port number for LDAP server (use
     *                  LDAPConnection.DEFAULT_PORT for default port).
     *<br><br>
+    *
     *  @param dn       Distinguished name of the base object of the search.
     *<br><br>
+    *
     *  @param attrNames Names or OIDs of attributes to retrieve.  Passing a
     *                   null array signifies that all user attributes are to be
     *                   retrieved. Passing a value of "*" allows you to specify
     *                   that all user attributes as well as any specified
     *                   operational attributes are to be retrieved.
-    *
     *<br><br>
+    *
     *  @param scope    Depth of search (in DN namespace). Use one of
     *                  SCOPE_BASE, SCOPE_ONE, SCOPE_SUB from LDAPConnection.
-    *  <br><br>
+    *<br><br>
+    *
     *  @param filter   The search filter specifying the search criteria.
     *                  from LDAPConnection: SCOPE_BASE, SCOPE_ONE, SCOPE_SUB.
     *<br><br>
+    *
+    *  @param extensions  Extensions provide a mechanism to extend the
+    *                     functionality of LDAP URLs. Currently no
+    *                     LDAP URL extensions are defined. Each extension
+    *                     specification is a type=value expression, and  may
+    *                     be <tt>null</tt> or empty.  The =value part may be
+    *                     omitted. The expression may be prefixed with '!' if it
+    *                     is mandatory for the evaluation of the URL.
+    *<br><br>
+    *
     *  @param secure   If true creates an LDAP URL of the ldaps type
     */
     public LDAPUrl(String host,
@@ -162,17 +186,31 @@ public class LDAPUrl {
                    String attrNames[],
                    int scope,
                    String filter,
+                   String extensions[],
                    boolean secure)
     {
         this.host = host;
 		this.port = port;
 		this.dn = dn;
-		this.attrs = attrNames;
+		this.attrs = (String[])attrNames;
 		this.scope = scope;
 		this.filter = filter;
+        this.extensions = (String[])extensions.clone();
 		this.secure = secure;
 		return;
     }
+
+    /**
+     * Returns a clone of this URL object.
+     *
+     * @return clone of this URL object.
+     */
+    public Object clone(){
+        return new LDAPUrl(this.host, this.port, this.dn, this.attrs,
+                           this.scope, this.filter, this.extensions,
+                           this.secure);
+    }
+
     /**
     * Decodes a URL-encoded string.
     *
@@ -322,14 +360,11 @@ public class LDAPUrl {
     }
 
     /**
-    * Returns the search filter or the default filter
-    * (objectclass=*) if none was specified.
+    * Returns the search filter or <TT>null</tt> if none was specified.
     *
     * @return The search filter.
     */
     public String getFilter() {
-		if( filter == null )
-			return DEFAULT_FILTER;
 		return filter;
     }
 
@@ -378,7 +413,7 @@ public class LDAPUrl {
     *
     * @return The string representation of the LDAP URL.
     */
-    public String getUrl()
+    public String toString()
     {
 		StringBuffer url = new StringBuffer( 256 );
 		// Scheme
@@ -450,18 +485,6 @@ public class LDAPUrl {
 			}
 		}
 		return url.toString();
-    }
-
-    /**
-     * Returns the URL in a displayable form
-     *
-     * @return the URL as a String
-     *
-     * @see #getUrl()
-     */
-    public String toString()
-    {
-        return "com.novell.ldap.LDAPUrl:" + getUrl();
     }
 
     private String[] parseList( String listStr,    // input String
@@ -727,5 +750,63 @@ public class LDAPUrl {
         }
 
         return;
+    }
+
+    /*****************Deprecated methods removed in draft 18************/
+    /**
+    *  @deprecated replaced by {@link #LDAPUrl(String, int, String, String[],
+    * int, String, String[] extensions)} This method has been
+    *  removed in IETF draft 18 of the Java LDAP API
+    *  (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
+    *  from the API in the fall of 2003.
+    */
+    public LDAPUrl(String host,
+                   int port,
+                   String dn,
+                   String attrNames[],
+                   int scope,
+                   String filter) {
+		this.host = host;
+		this.port = port;
+		this.dn = dn;
+		this.attrs = (String[])attrNames.clone();
+		this.scope = scope;
+		this.filter = filter;
+		return;
+    }
+
+    /**
+    *  @deprecated replaced by {@link #LDAPUrl(String, int, String, String[],
+    * int, String, String[] extensions, boolean isSecure)} This method has been
+    *  removed in IETF draft 18 of the Java LDAP API
+    *  (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
+    *  from the API in the fall of 2003.
+    */
+    public LDAPUrl(String host,
+                   int port,
+                   String dn,
+                   String attrNames[],
+                   int scope,
+                   String filter,
+                   boolean secure)
+    {
+        this.host = host;
+		this.port = port;
+		this.dn = dn;
+		this.attrs = (String[])attrNames.clone();
+		this.scope = scope;
+		this.filter = filter;
+		this.secure = secure;
+		return;
+    }
+
+    /**
+     *  @deprecated replaced by {@link #toString()} This method has been
+     *  removed in IETF draft 18 of the Java LDAP API
+     *  (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
+     *  from the API in the fall of 2003.
+     */
+    public String getUrl(){
+        return toString();
     }
 }
