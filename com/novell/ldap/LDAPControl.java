@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/src/com/novell/ldap/LDAPControl.java,v 1.7 2000/08/31 21:58:06 judy Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPControl.java,v 1.8 2000/09/11 21:05:49 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -22,8 +22,8 @@ import com.novell.ldap.protocol.*;
  *  Encapsulates optional additional parameters or constraints to be 
  *  applied to LDAP operations. 
  *
- * <p>If set as a server control, it is sent to the server along with operation
- * requests. If set as a client control, it is not sent to the server, but 
+ * <p>If set as a server control, it is sent to the server along with the operation
+ * request. If set as a client control, it is not sent to the server, but 
  * rather interpreted locally by the client. LDAPControl is an LDAPv3 extension,
  * and is not supported in an LDAPv2 environment.</p>
  */
@@ -86,7 +86,7 @@ public class LDAPControl implements Cloneable {
     * Returns whether the control is critical for the operation.
     *
     * @return Returns true if the control must be supported for an associated
-    * operation to be executed, and false is the control is not required for 
+    * operation to be executed, and false if the control is not required for 
     * the operation.
     */
    public boolean isCritical() {
@@ -119,6 +119,8 @@ public class LDAPControl implements Cloneable {
 
 	/**
 	 * Returns the object identifier of the control.
+     *
+     * @return The OID for the control.
 	 */
 	public Control getASN1Object()
 	{

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPv2.java,v 1.8 2000/09/14 20:06:15 judy Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPv2.java,v 1.9 2000/09/18 20:12:05 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -21,12 +21,12 @@ package com.novell.ldap;
  
 /**
  *
- *  As a mechanism to support planned and future LDAP protocol
- *  extensions, the functionality defined in the LDAPv2 interface
- *  corresponds to version 2 of the LDAP protocol. The LDAPConnection 
- *  class implements LDAPv2 and LDAPv3.  Applications can test 
- *  for support of these protocol levels in a given package with
- *  the instanceof operator.
+ *  Defines the functionality that corresponds to version 2 of the LDAP protocol.
+ *
+ *  <p>The LDAPConnection class implements both LDAPv2 and LDAPv3.
+ *  Applications can test for support of these protocol levels
+ *  in a given package with the instanceof operator.</p>
+ *  
  */
 public interface LDAPv2 {
 
@@ -76,7 +76,7 @@ public interface LDAPv2 {
 
    /**
     *
-    * Asynchronously adds an entry to the directory, using the specified
+    * Synchronously adds an entry to the directory, using the specified
     * constraints.
     *
     *  @param entry   LDAPEntry object specifying the distinguished
@@ -104,8 +104,8 @@ public interface LDAPv2 {
     *  @param dn      If non-null and non-empty, specifies that the
     *                 connection and all operations through it should
     *                 be authenticated with dn as the distinguished
-    *                 name.<br><br>
-    *
+    *                 name.
+    *<br><br>
     *  @param passwd  If non-null and non-empty, specifies that the
     *                 connection and all operations through it should
     *                 be authenticated with dn as the distinguished
@@ -132,13 +132,13 @@ public interface LDAPv2 {
     *  @param dn      If non-null and non-empty, specifies that the
     *                 connection and all operations through it should
     *                 be authenticated with dn as the distinguished
-    *                 name.<br><br>
-    *
+    *                 name.
+    *<br><br>
     *  @param passwd  If non-null and non-empty, specifies that the
     *                 connection and all operations through it should
     *                 be authenticated with dn as the distinguished
     *                 name and passwd as password.
-    *
+    *<br><br>
     * @param cons     Constraints specific to the operation.
     *
     *  @exception LDAPException A general exception which includes an error 
@@ -163,18 +163,17 @@ public interface LDAPv2 {
     *  @param dn      If non-null and non-empty, specifies that the
     *                 connection and all operations through it should
     *                 be authenticated with dn as the distinguished
-    *                 name.<br><br>
-    *
+    *                 name.
+    *<br><br>
     *  @param passwd  If non-null and non-empty, specifies that the
     *                 connection and all operations through it should
     *                 be authenticated with dn as the distinguished
     *                 name and passwd as password.
-    *
+    *<br><br>
     * @param listener Handler for messages returned from a server in
     *                 response to this request. If it is null, a
     *                 listener object is created internally. It is
-    *                 recommended that either the synchronous version
-    *                 of this method is used or that the client blocks
+    *                 recommended that the client blocks
     *                 until the listener returns a response.
     *
     *  @exception LDAPException A general exception which includes an error 
@@ -199,20 +198,19 @@ public interface LDAPv2 {
     *  @param dn      If non-null and non-empty, specifies that the
     *                 connection and all operations through it should
     *                 be authenticated with dn as the distinguished
-    *                 name.<br><br>
-    *
+    *                 name.
+    *<br><br>
     *  @param passwd  If non-null and non-empty, specifies that the
     *                 connection and all operations through it should
     *                 be authenticated with dn as the distinguished
     *                 name and passwd as password.
-    *
+    *<br><br>
     * @param listener Handler for messages returned from a server in
     *                 response to this request. If it is null, a
     *                 listener object is created internally. It is
-    *                 recommended that either the synchronous version
-    *                 of this method is used or that the client blocks
+    *                 recommended that the client blocks
     *                 until the listener returns a response.
-    *
+    *<br><br>
     * @param cons     Constraints specific to the operation.
     *
     *  @exception LDAPException A general exception which includes an error 
@@ -279,7 +277,7 @@ public interface LDAPv2 {
     *  Connects to the specified host and port as an LDAPv2 connection. 
     *
     *  <p>If this LDAPConnection object represents an open connection, the
-    *  connection is colosed first before the new connection is opened. 
+    *  connection is closed first before the new connection is opened. 
     *  At this point, there is no authentication, and any operations are
     *  conducted as an anonymous client.</p>
     *
@@ -287,7 +285,7 @@ public interface LDAPv2 {
     *  in turn until a connection can be established.</p>
     *
     *  @param host A host name or a dotted string representing the IP address
-    *              of a host running an LDAP server to connect to. It may also
+    *              of a host running an LDAP server. It may also
     *              contain a list of host names, space-delimited. Each host 
     *              name can include a trailing colon and port number.<br><br>
     *
@@ -306,11 +304,11 @@ public interface LDAPv2 {
 
   /**
     *
-    *  Connects to the specified host and port, using the specified name
-    *  and password, as an LDAPv2 connection. 
+    *  Connects to the specified host and port as an LDAPv2 connection, 
+    *  using the specified name and password. 
     *
     *  <p>If this LDAPConnection object represents an open connection, the
-    *  connection is colosed first before the new connection is opened. 
+    *  connection is closed first before the new connection is opened. 
     *  This is equivalent to connect (host, port) followed by bind (dn, 
     *  passwd).</p>
     *
@@ -318,7 +316,7 @@ public interface LDAPv2 {
     *  in turn until a connection can be established.</p>
     *
     *  @param host A host name or a dotted string representing the IP address
-    *              of a host running an LDAP server to connect to. It may also
+    *              of a host running an LDAP server. It may also
     *              contain a list of host names, space-delimited. Each host 
     *              name can include a trailing colon and port number.<br><br>
     *
@@ -333,7 +331,7 @@ public interface LDAPv2 {
     *
     *  @param passwd   If non-null and non-empty, specifies that the
     *                  connection and all operations through it should 
-    *                  be authenticated with the DN as the distinguished 
+    *                  be authenticated with the dn as the distinguished 
     *                  name and passwd as the password.
     *
     *  @exception LDAPException A general exception which includes an error 
@@ -378,11 +376,11 @@ public interface LDAPv2 {
     *
     * Synchronously disconnects from the LDAP server. 
     *
-    * <p>Before the object can perform LDAP operations again, it must </p>
-    * reconnect to the server by calling connect.
+    * <p>Before the object can perform LDAP operations again, it must 
+    * reconnect to the server by calling connect.</p>
     *
-    * The disconnect method abandons any outstanding requests, issues an 
-    * unbind request to the server, and then close the socket.
+    * <p>The disconnect method abandons any outstanding requests, issues an 
+    * unbind request to the server, and then closes the socket.</p>
     *
     * @exception LDAPException A general exception which includes an error 
     *  message and an LDAP error code.
@@ -394,7 +392,7 @@ public interface LDAPv2 {
     * 
     * Returns the value of the specified option for this object.
     *
-    * @param option   The option whose value is to be returned (the See Also
+    * @param option   The option whose value is to be returned (the "See Also"
     *                 section contains the possible options).
     *
     * @return The value of the specified option.
@@ -421,8 +419,8 @@ public interface LDAPv2 {
     * Synchronously makes a single change to an existing entry in the 
     * directory.
     *
-    * <p>For example, changes the value of an attribute, adds 
-    * a new attribute value, or removes an existing attribute value. </p>
+    * <p>For example, this modify method changes the value of an attribute,  
+    * adds a new attribute value, or removes an existing attribute value. </p>
     *
     * <p>The LDAPModification object specifies both the change to be made and
     * the LDAPAttribute value to be changed.</p>
@@ -443,8 +441,8 @@ public interface LDAPv2 {
     * Synchronously makes a single change to an existing entry in the  
     * directory, using the specified constraints.
     *
-    * <p>For example, changes the value of an attribute, adds a new 
-    * attribute value, or removes an existing attribute value.</p>
+    * <p>For example, this modify method changes the value of an attribute,   
+    * adds a new attribute value, or removes an existing attribute value.</p>
     *
     * <p>The LDAPModification object specifies both the change to be 
     * made and the LDAPAttribute value to be changed.</p>
@@ -468,8 +466,8 @@ public interface LDAPv2 {
     * Synchronously makes a set of changes to an existing entry in the 
     * directory.
     *
-    * <p>For example, changes attribute values, adds new attribute 
-    * values, or removes existing attribute values).</p>
+    * <p>For example, this modify method changes attribute values, adds  
+    * new attribute values, or removes existing attribute values.</p>
     * 
     *  @param dn     Distinguished name of the entry to modify.<br><br>
     *
@@ -486,8 +484,8 @@ public interface LDAPv2 {
     * Synchronously makes a set of changes to an existing entry in the 
     * directory, using the specified constraints.
     *
-    * <p>For example, changes attribute values, adds new attribute values, 
-    * or removes existing attribute values.</p>
+    * <p>For example, this modify method changes attribute values, adds new  
+    * attribute values, or removes existing attribute values.</p>
     * 
     *  @param dn      The distinguished name of the entry to modify.<br><br>
     *
@@ -647,12 +645,12 @@ public interface LDAPv2 {
 
    /**
     *
-    * Synchronously performs the search specified by the parameters, also
-    * allowing specification of constraints for the search (such as the 
+    * Synchronously performs the search specified by the parameters, 
+    * using the specified search constraints (such as the 
     * maximum number of entries to find or the maximum time to wait for 
     * search results).
     *
-    * <p>As part of the search constraints, the function allows specifying
+    * <p>As part of the search constraints, the method allows specifying
     * whether or not the results are to be delivered all at once or in
     * smaller batches. If specified that the results are to be delivered in
     * smaller batches, each iteration blocks only until the next batch of
@@ -709,7 +707,7 @@ public interface LDAPv2 {
     * LDAPConnection.search method.</p>
     *
     *
-    *  @param option         The name of the option to set (the See Also
+    *  @param option         The name of the option to set (the "See Also"
     *                        section lists their names).
     *<br><br>
     *  @param value          The value to assign to the option. The value must

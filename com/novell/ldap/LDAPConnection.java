@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.36 2000/09/22 17:24:24 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.37 2000/09/26 22:37:22 judy Exp $
 *
 * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
 * 
@@ -691,9 +691,7 @@ public class LDAPConnection implements
    /**
     * Sets a property of a connection object.
     *
-    * <p>No property names have been defined at this time, but the mechanism
-    * is in place in order to support revisional as well as dynamic
-    * extensions to operation modifiers.</p>
+    * <p>No property names which can be set have been defined at this time. </p>
     * 
     * 
     * @param name    Name of the property to set.<br><br>
@@ -784,9 +782,9 @@ public class LDAPConnection implements
 
    /**
     *
-    *  Abandons an asynchronous operation
+    *  Abandons an asynchronous operation.
     *
-    *  @param id      The ID of the asynchrous operation to abandon. The ID 
+    *  @param id      The ID of the asynchronous operation to abandon. The ID 
     *                 can be obtained from the response listener for the
     *                 operation.
     *
@@ -810,9 +808,9 @@ public class LDAPConnection implements
     *
     *  @param id The ID of the asynchronous operation to abandon. 
     *            The ID can be obtained from the search
-    *            listern for the operation.<br><br>
+    *            listener for the operation.<br><br>
     *
-    *  @param cons The contraints specific to the operation 
+    *  @param cons The contraints specific to the operation. 
     *
     *  @exception LDAPException A general exception which includes an error 
     *  message and an LDAP error code.
@@ -841,7 +839,7 @@ public class LDAPConnection implements
    /**
     * Abandons all search operations for a listener.
     *
-    * <p>All operations in progress which are managed by the listener 
+    * <p>All operations in progress, which are managed by the specified listener, 
     * are abandoned.</p>
     *
     *  @param listener  The handler returned for messages returned on a
@@ -863,7 +861,7 @@ public class LDAPConnection implements
     * <p>All operations in progress which are managed by the listener 
     * are abandoned.</p>
     *
-    *  @param listener  The handler returned for messages returned on a
+    *  @param listener  The handler returned for messages from a
     *                   search request. 
     *
     *  @exception LDAPException A general exception which includes an error 
@@ -884,7 +882,7 @@ public class LDAPConnection implements
     * Abandons all messages in progress for a listener, using the specified
     * constaints.
     *
-    *  @param listener  The handler returned for messages returned on a
+    *  @param listener  The handler returned for messages from a
     *                   search request.<br><br>
     *
     *  @param cons The contraints specific to the request.  
@@ -1108,18 +1106,18 @@ public class LDAPConnection implements
     * this method attempts to reconnect to the server. If the object
     * has already authenticated, the old authentication is discarded.</p>
     *
-    *  @param version  The LDAP protocol version, either 2 or 3.<br><br>
-    *
+    *  @param version  The LDAP protocol version, either LDAP_V2 or LDAP_V3.
+    *<br><br>
     *  @param dn       If non-null and non-empty, specifies that the
     *                  connection and all operations through it should
     *                  be authenticated with dn as the distinguished
-    *                  name.<br><br>
-    *
+    *                  name.
+    *<br><br>
     *  @param passwd  If non-null and non-empty, specifies that the
     *                 connection and all operations through it should
     *                 be authenticated with dn as the distinguished
-    *                 name and passwd as password.<br><br>
-    *
+    *                 name and passwd as password.
+    *<br><br>
     *  @param cons    The constraints specific to the operation.
     *
     *  @exception LDAPException A general exception which includes an error 
@@ -1154,18 +1152,18 @@ public class LDAPConnection implements
     * has already authenticated, the old authentication is discarded.</p>
     *
     *
-    *  @param version  The LDAP protocol version, either 2 or 3.<br><br> 
-    *                  
+    *  @param version  The LDAP protocol version, either LDAP_V2 or LDAP_V3.
+    * <br><br>                 
     *  @param dn      If non-null and non-empty, specifies that the
     *                 connection and all operations through it should
     *                 be authenticated with dn as the distinguished
-    *                 name.<br><br>
-    *
+    *                 name.
+    *<br><br>
     *  @param passwd  If non-null and non-empty, specifies that the
     *                 connection and all operations through it should
     *                 be authenticated with dn as the distinguished
-    *                 name and passwd as password.<br><br>
-    *
+    *                 name and passwd as password.
+    *<br><br>
     *  @param listener  Handler for messages returned from a server in
     *                   response to this request. If it is null, a
     *                   listener object is created internally.
@@ -1191,22 +1189,22 @@ public class LDAPConnection implements
     * this method attempts to reconnect to the server. If the object
     * had already authenticated, the old authentication is discarded.</p>
     *
-    *  @param version  The LDAP protocol version, either 2 or 3.<br><br>
-    * 
+    *  @param version  The LDAP protocol version, either LDAP_V2 or LDAP_V3.
+    * <br><br>
     *  @param dn      If non-null and non-empty, specifies that the
     *                 connection and all operations through it should
     *                 be authenticated with dn as the distinguished
-    *                 name.<br><br>
-    *
+    *                 name.
+    *<br><br>
     *  @param passwd  If non-null and non-empty, specifies that the
     *                 connection and all operations through it should
     *                 be authenticated with dn as the distinguished
-    *                 name and passwd as password.<br><br>
-    *
+    *                 name and passwd as password.
+    *<br><br>
     *  @param listener  Handler for messages returned from a server in
     *                   response to this request. If it is null, a
-    *                   listener object is created internally.<br><br>
-    *
+    *                   listener object is created internally.
+    *<br><br>
     *  @param cons      Constraints specific to the operation.
     *
     *  @exception LDAPException A general exception which includes an error 
@@ -1695,13 +1693,13 @@ public class LDAPConnection implements
     *
     * @param op  The object which contains (1) an identifier of an extended
     *            operation which should be recognized by the particular LDAP
-    *            server this client is connected to and (2)an operation-specific 
+    *            server this client is connected to and (2) an operation-specific 
     *            sequence of octet strings or BER-encoded values.<br><br> 
     *
     * @param cons The constraints specific to the operation.
     *
-    * @return An operation-specific object, containing an ID and an octet string
-    * or BER-encoded values.
+    * @return An operation-specific object, containing an ID and either an octet 
+    * string or BER-encoded values.
     *
     * @exception LDAPException A general exception which includes an error 
     *  message and an LDAP error code.
@@ -1729,15 +1727,15 @@ public class LDAPConnection implements
     *
     * @param op  The object which contains (1) an identifier of an extended
     *            operation which should be recognized by the particular LDAP 
-    *            server this client is connected to and (2)an operation-specific 
+    *            server this client is connected to and (2) an operation-specific 
     *            sequence of octet strings or BER-encoded values.<br><br>
     *
     * @param listener  The handler for messages returned from a server in
     *                  response to this request. If it is null, a listener
     *                  object is created internally.
     *
-    * @return An operation-specific object, containing an ID and an octet string
-    * or BER-encoded values.
+    * @return An operation-specific object, containing an ID and either an octet 
+    * string or BER-encoded values.
     *
     * @exception LDAPException A general exception which includes an error 
     *  message and an LDAP error code.
@@ -1761,7 +1759,7 @@ public class LDAPConnection implements
     *
     * @param op  The object which contains (1) an identifier of an extended
     *            operation which should be recognized by the particular LDAP 
-    *            server this client is connected to and (2)an operation-
+    *            server this client is connected to and (2) an operation-
     *         specific sequence of octet strings or BER-encoded values.<br><br> 
     *
     * @param listener  The handler for messages returned from a server in 
@@ -1770,8 +1768,8 @@ public class LDAPConnection implements
     *
     * @param cons      The constraints specific to this operation.
     *
-    * @return An operation-specific object, containing an ID and an octet string
-    * or BER-encoded values.
+    * @return An operation-specific object, containing an ID and either an octet 
+    * string or BER-encoded values.
     *
     * @exception LDAPException A general exception which includes an error 
     *  message and an LDAP error code.
@@ -1927,8 +1925,8 @@ public class LDAPConnection implements
     * Asynchronously makes a single change to an existing entry in the 
     * directory.
     *
-    * <p>For example, changes the value of an attribute, adds a new attribute
-    * value, or removes an existing attribute value.</p>
+    * <p>For example, this modify method can change the value of an attribute, 
+    * add a new attribute value, or remove an existing attribute value.</p>
     *
     * <p>The LDAPModification object specifies both the change to be made and
     * the LDAPAttribute value to be changed.</p>
@@ -1956,8 +1954,8 @@ public class LDAPConnection implements
     * Asynchronously makes a single change to an existing entry in the 
     * directory, using the specified constraints and listener.
     *
-    * <p>For example, changes the value of an attribute, adds a new 
-    * attribute value, or removes an existing attribute value.</p>
+    * <p>For example, this modify method can change the value of an attribute, 
+    * add a new attribute value, or remove an existing attribute value.</p>
     *
     * <p>The LDAPModification object specifies both the change to be made 
     * and the LDAPAttribute value to be changed.</p>
@@ -1990,8 +1988,8 @@ public class LDAPConnection implements
     * Asynchronously makes a set of changes to an existing entry in the
     * directory.
     *
-    * <p>For example, changes attribute values, adds new attribute values, 
-    * or removes existing attribute values.</p>
+    * <p>For example, this modify method can change attribute values, add new  
+    * attribute values, or remove existing attribute values.</p>
     *
     *  @param dn         The distinguished name of the entry to modify.<br><br>
     *
@@ -2016,8 +2014,8 @@ public class LDAPConnection implements
     * Asynchronously makes a set of changes to an existing entry in the
     * directory, using the specified constraints and listener.
     *
-    * <p>For example, changes attribute values, adds new attribute values, 
-    * or removes existing attribute values.</p>
+    * <p>For example, this modify method can change attribute values, add new  
+    * attribute values, or remove existing attribute values.</p>
     *
     *  @param dn         The distinguished name of the entry to modify.<br><br>
     *
@@ -2149,7 +2147,7 @@ public class LDAPConnection implements
     * finding the entry, the method closes the connection (in other words,
     * it disconnects from the LDAP server).</p>
     *
-    * <p>If the URL specifies a filter and scope, these are not used. Of the
+    * <p>If the URL specifies a filter and scope, they are not used. Of the
     * information specified in the URL, this method only uses the LDAP host
     * name and port number, the base distinguished name (DN), and the list
     * of attributes to return.</p>
@@ -2177,7 +2175,7 @@ public class LDAPConnection implements
     * finding the entry, the method closes the connection (in other words,
     * it disconnects from the LDAP server).</p>
     *
-    * <p>If the URL specifies a filter and scope, these are not used. Of the
+    * <p>If the URL specifies a filter and scope, they are not used. Of the
     * information specified in the URL, this method only uses the LDAP host
     * name and port number, the base distinguished name (DN), and the list
     * of attributes to return.</p>
@@ -2331,7 +2329,7 @@ public class LDAPConnection implements
     
    /**
     * 
-    * Asynchronously renames an existing entry in the directory, possibly,
+    * Asynchronously renames an existing entry in the directory, possibly 
     * repositioning the entry in the directory.
     *
     *  @param dn             The current distinguished name of the entry.
@@ -2619,9 +2617,9 @@ public class LDAPConnection implements
     */
     
     /**
-    * Synchronously perfoms the search specified by the LDAP URL. This method 
-    * also allows specifying constraints for the search (such as the maximum 
-    * number of entries to find or the maximum time to wait for search results).
+    * Synchronously perfoms the search specified by the LDAP URL, using 
+    * the specified search constraints (such as the maximum number of
+    * entries to find or the maximum time to wait for search results).
     *
     * <p>When this method is called, a new connection is created
     * automatically, using the host and port specified in the URL. After

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPConstraints.java,v 1.8 2000/08/31 21:58:05 judy Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConstraints.java,v 1.9 2000/09/08 23:28:09 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -21,7 +21,7 @@ package com.novell.ldap;
  
 /**
  *
- *  Represents a set of options to control any operation. 
+ *  Represents a set of options to control an LDAP operation. 
  *
  * <p>An LDAPConstraints object is always associated with an LDAPConnection 
  * object; its values can be changed with LDAPConnection.setOption, or

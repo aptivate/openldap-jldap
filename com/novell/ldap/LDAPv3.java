@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPv3.java,v 1.8 2000/09/14 22:43:26 judy Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPv3.java,v 1.9 2000/09/18 20:12:05 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -72,7 +72,7 @@ public interface LDAPv3 extends LDAPv2 {
     * has already authenticated, the old authentication is discarded.</p>
     *
     *  @param version  The version of the LDAP protocol to use 
-    *                  in the bind, either 2 or 3. 
+    *                  in the bind, either LDAP_V2 or LDAP_V3. 
     *<br><br>
     *  @param dn      If non-null and non-empty, specifies that the
     *                 connection and all operations through it should
@@ -101,7 +101,7 @@ public interface LDAPv3 extends LDAPv2 {
     * <p>If none of the requested SASL mechanisms is available, an
     * exception is thrown.  If the object has been disconnected from an
     * LDAP server, this method attempts to reconnect to the server. If the
-    * object had already authenticated, the old authentication is
+    * object has already authenticated, the old authentication is
     * discarded. If mechanisms is null, or if the first version of the
     * method is called, the LDAP server will be interrogated for its
     * supportedSaslMechanisms attribute of its root DSE. See RFC 2251 for a
@@ -133,7 +133,7 @@ public interface LDAPv3 extends LDAPv2 {
     * <p>If none of the requested SASL mechanisms is available, an
     * exception is thrown.  If the object has been disconnected from an
     * LDAP server, this method attempts to reconnect to the server. If the
-    * object had already authenticated, the old authentication is
+    * object has already authenticated, the old authentication is
     * discarded. If mechanisms is null, or if the first version of the
     * method is called, the LDAP server will be interrogated for its
     * supportedSaslMechanisms attribute of its root DSE. See RFC 2251 for a
@@ -170,7 +170,7 @@ public interface LDAPv3 extends LDAPv2 {
     *  password, and LDAP version. 
     *
     *  <p>If this LDAPConnection object represents an open connection, the
-    *  connection is colosed first before the new connection is opened. 
+    *  connection is closed first before the new connection is opened. 
     *  This is equivalent to connect (host, port) followed by bind (dn, 
     *  passwd).</p>
     *
@@ -180,10 +180,10 @@ public interface LDAPv3 extends LDAPv2 {
     *  <p>If the server does not support the requested protocol version, 
     *  an exception is thrown.</p> 
     *
-    *  @param version  The LDAP protocol version, either 2 or 3.<br><br>
-    *
+    *  @param version  The LDAP protocol version, either LDAP_V2 or LDAP_V3.
+    *<br><br>
     *  @param host A host name or a dotted string representing the IP address
-    *              of a host running an LDAP server to connect to. It may also
+    *              of a host running an LDAP server. It may also
     *              contain a list of host names, space-delimited. Each host 
     *              name can include a trailing colon and port number. Examples:
     *<ul>
@@ -200,7 +200,7 @@ public interface LDAPv3 extends LDAPv2 {
     *
     *  @param dn   If non-null and non-empty, specifies that the 
     *              connection and all operations through it should be 
-    *              authenticated with the DN as the distinguished name.<br><br>
+    *              authenticated with the dn as the distinguished name.<br><br>
     *
     *  @param passwd   If non-null and non-empty, specifies that the
     *                  connection and all operations through it should 
@@ -229,11 +229,11 @@ public interface LDAPv3 extends LDAPv2 {
     *
     * @param op  The object which contains (1) an identifier of an extended
     *            operation which should be recognized by the particular LDAP 
-    *            server this client is connected to and (2)an operation-specific
+    *            server this client is connected to and (2) an operation-specific
     *            sequence of octet strings or BER-encoded values. 
     *
-    * @return An operation-specific object, containing an ID and an octet string
-    * or BER-encoded values.
+    * @return An operation-specific object, containing an ID and either an octet 
+    * string or BER-encoded values.
     *
     * @exception LDAPException A general exception which includes an error 
     *  message and an LDAP error code.
@@ -288,7 +288,7 @@ public interface LDAPv3 extends LDAPv2 {
    /**
     *
     * Synchronously renames an existing entry in the directory, using the 
-    * specified constraints, and possibly repositioning the entry in the 
+    * specified constraints and possibly repositioning the entry in the 
     * directory tree.
     *
     *  @param dn             The current distinguished name of the entry.
