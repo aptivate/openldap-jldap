@@ -34,16 +34,35 @@ public class LDAPSortKey {
      *
      * @param keyDescription The single attribute to use for sorting. If the
      *                       name is preceded by a minus sign (-), the sorting
-     *                       is done in reverse order. The Novell LDAP server
-     *                       does not support reverse order sorting. Examples:
+     *                       is done in reverse (descending) order. 
+     *                       An OID for a matching rule may be appended
+     *                       following a ":".
+     *<br>
+     *                       Examples:
      *<ul>
-     *  <li> "cn" (sorts by the cn attribute)</li>
-     *  <li> "-cn" (sorts, in reverse order, by the cn attribute) </li>
+     *  <li> "cn" (sorts in ascending order by the cn attribute)</li>
+     *  <li> "-cn" (sorts in descending order by the cn attribute) </li>
+     *  <li> "cn:1.2.3.4.5" (sorts in ascending order by the cn attribute
+     *                        using the matching rule 1.2.3.4.5) </li>
      *</ul>
      */
     public LDAPSortKey(String keyDescription)
     {
-        this(keyDescription, false, null);
+        matchRule = null;
+        reverse = false;
+        String myKey = keyDescription;
+        if( myKey.charAt(0) == '-') {
+            myKey = myKey.substring(1);
+            this.reverse = true;
+        }
+        int pos = myKey.indexOf(":");
+        if( pos != -1) {
+            this.key = myKey.substring(0,pos);    
+            this.matchRule = myKey.substring(pos+1);
+        } else {
+            this.key = myKey;
+        }
+        return;
     }
 
     /**
@@ -53,12 +72,12 @@ public class LDAPSortKey {
      * @param key     The single attribute to use for sorting.
      *<br><br>
      * @param reverse If true, sorting is done in descending order. If false,
-     *                sorting is done in ascending order. The Novell LDAP server
-     *                does not support ascending order sorting.
+     *                sorting is done in ascending order.
      */
     public LDAPSortKey(String key, boolean reverse)
     {
         this(key, reverse, null);
+        return;
     }
 
     /**
@@ -68,8 +87,7 @@ public class LDAPSortKey {
      *  @param key     The attribute name (for example, "cn") to use for sorting.
      *<br><br>
      *  @param reverse   If true, sorting is done in descending order. If false,
-     *                sorting is done in ascending order. The Novell LDAP server
-     *                does not support ascending order sorting.
+     *                sorting is done in ascending order.
      *<br><br>
      *  @param matchRule   The object ID (OID) of a matching rule used for
      *                     collation. If the object will be used to request
@@ -82,6 +100,7 @@ public class LDAPSortKey {
         this.key = key;
         this.reverse = reverse;
         this.matchRule = matchRule;
+        return;
     }
 
     /**
@@ -115,6 +134,5 @@ public class LDAPSortKey {
     {
         return matchRule;
     }
-
 }
 

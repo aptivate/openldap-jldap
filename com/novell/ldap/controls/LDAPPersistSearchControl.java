@@ -125,24 +125,29 @@ public class LDAPPersistSearchControl extends LDAPControl
     }
 
     /**
-     *  Constructs an LDAPPersistSearchControl object according to the supplied
-     *  parameters. The resulting control is used to specify a persistent search.
+     *  <p>Constructs an LDAPPersistSearchControl object according to the
+     *  supplied parameters. The resulting control is used to specify a
+     *  persistent search.</p>
      *
      *  @param changeTypes  the change types to monitor. The bitwise OR of any
-     *      of the following values: LDAPPersistSearchControl.ADD
-     *                               LDAPPersistSearchControl.DELETE
-     *                               LDAPPersistSearchControl.MODIFY
-     *                               LDAPPersistSearchControl.MODDN
+     *      of the following values:
+     *<li>                           LDAPPersistSearchControl.ADD</li>
+     *<li>                           LDAPPersistSearchControl.DELETE</li>
+     *<li>                           LDAPPersistSearchControl.MODIFY</li>
+     *<li>                           LDAPPersistSearchControl.MODDN</li>
      *      To track all changes the value can be set to:
-     *                               LDAPPersistSearchControl.ANY
+     *<li>                           LDAPPersistSearchControl.ANY</li>
+     *<br>
      *  @param changesOnly  true if you do not want the server to return
      *      all existing entries in the directory that match the search
      *      criteria. (Use this if you just want the changed entries to be
      *      returned.)
+     *<br><br>
      *  @param returnControls  true if you want the server to return entry
      *      change controls with each entry in the search results. You need to
      *      return entry change controls to discover what type of change
      *      and other additional information about the change.
+     *<br><br>
      *  @param isCritical  true if this control is critical to the search
      *      operation. If true and the server does not support this control,
      *      the server will not perform the search at all.
