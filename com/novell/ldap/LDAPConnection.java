@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.68 2001/01/04 20:12:36 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.69 2001/01/08 19:04:29 javed Exp $
 *
 * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
 *
@@ -16,6 +16,7 @@ package com.novell.ldap;
 
 import java.io.*;
 import java.util.*;
+import java.net.MalformedURLException;
 
 import com.novell.ldap.*;
 import com.novell.ldap.client.*;
@@ -3078,5 +3079,96 @@ public class LDAPConnection implements Cloneable
                                      LDAPException.CONNECT_ERROR);
         }
         return listen;
+    }
+    
+    /**
+     * get an LDAPConnection object so that we can follow a referral.
+     * This function is never called if cons.getReferralFollowing() returns false.
+     *
+     * @param refs the array of referral strings
+     *<br><br>
+     * @param search true if a search operation
+     *
+     * @return the new LDAPConnection object
+     */
+    private LDAPConnection getReferralConnection(
+                                    String[] referrals,
+                                    boolean search) throws LDAPReferralException
+    {
+        LDAPConnection rconn = null;
+        Exception ex = null;
+        LDAPReferralHandler rh = defSearchCons.getReferralHandler();
+        Debug.trace( Debug.referrals, name + "getReferralConnection");
+        // Check if we use LDAPRebind to get authentication credentials
+        if( (rh == null) || (rh instanceof LDAPRebind)) {
+            for( int i = 0; i < referrals.length; i++) {
+                // dn, pw are null in the default case (anonymous bind)
+                String dn = null;
+                String pw = null;
+                try {
+                    Debug.trace( Debug.referrals,   name +
+                                                    "getReferralConnection: " + 
+                                                    "url=" + referrals[i]);
+                    rconn = new LDAPConnection( conn.getSocketFactory());
+                    rconn.setConstraints( defSearchCons);
+                    if( search) {
+                        rconn.setSearchConstraints( defSearchCons);
+                    }
+                    LDAPUrl url = new LDAPUrl(referrals[i]);
+                    rconn.connect(url.getHost(),url.getPort());
+                    if( rh != null) {
+                        // Get application supplied dn and pw
+                        LDAPRebindAuth ra = ((LDAPRebind)rh).getRebindAuthentication(
+                            url.getHost(),url.getPort());
+                        dn = ra.getDN();
+                        pw = ra.getPassword();
+                    }
+                    rconn.bind( dn, pw);
+                    ex = null;
+                    break;
+                } catch( Exception lex) {
+                    if( rconn != null) {
+                        try {
+                            rconn.disconnect();
+                            rconn = null;
+                            ex = lex;
+                        } catch( LDAPException e) {
+                            ; // ignore
+                        }
+                    }
+                }
+
+            }
+        }
+        // Check if application gets connection and does bind
+        if( rh instanceof LDAPBind) {
+            try {
+                Debug.trace( Debug.referrals,   name +
+                                                "getReferralConnection: " + 
+                                                "Call LDAPBind.bind()");
+                rconn = ((LDAPBind)rh).bind( referrals, this);
+            } catch( LDAPException lex) {
+                rconn = null;
+                ex = lex;
+            }
+        }
+        if( ex != null) {
+            LDAPException ldapex;
+            if( ex instanceof LDAPException) {
+                ldapex = (LDAPException)ex;
+            } else {
+                ldapex = new LDAPException( ex.toString(),
+                                            LDAPException.CONNECT_ERROR);
+            }
+            throw new LDAPReferralException( "Error connecting to server",
+                                             ldapex, referrals); 
+        }
+        if( rconn == null) {
+            throw new LDAPReferralException("No connection found", 
+                                            LDAPException.LOCAL_ERROR,
+                                            referrals);
+        }
+        // We now have an authenticated connection to be used to follow the referral.
+        return rconn; 
     }
 }

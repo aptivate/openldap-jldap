@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPReferralException.java,v 1.8 2000/10/31 23:52:23 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPReferralException.java,v 1.9 2000/11/03 23:06:15 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -113,9 +113,7 @@ public class LDAPReferralException extends LDAPException {
     *<br><br>
     *  @param resultCode     The result code returned.
     *<br><br>
-    *  @param serverMessage  Referral strings.
-    *<br><br>
-    *@param rootException An exception which caused referral following to fail.
+    *  @param referrals      Referral strings.
     */
    /*package*/ LDAPReferralException(String message,
                                 int resultCode,
@@ -123,6 +121,26 @@ public class LDAPReferralException extends LDAPException {
       super( message, resultCode);
 	  this.referrals = referrals;
 	  return;
+   }
+
+   /**
+    * Constructs a default exception with a specified string as additional
+    * information, and an exception that indicates a failure to follow a
+    * referral.  This exception applies only to synchronous operations
+    * and is thrown only on receipt of a referral when the referral was
+    * not followed.
+    *
+    *@param message         The additional error information.
+    *<br><br>
+    *@param rootException   An exception which caused referral following to fail.
+    *<br><br>
+    *@param referrals       Referral strings.
+    */
+   /*package*/ LDAPReferralException(String message,
+                                LDAPException rootException,
+                                String[] referrals) {
+      super( message, LDAPException.REFERRAL);
+      throw new RuntimeException("LDAPReferralException(msg, exception) not implemented");
    }
 
    /**
