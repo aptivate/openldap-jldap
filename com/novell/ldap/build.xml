@@ -13,7 +13,11 @@
  ******************************************************************************
 -->
 <!-- ======================================================================= -->
-<!-- COM.NOVELL.LDAP build file                                                -->
+<!-- COM.NOVELL.LDAP build file                                              -->
+<!--                              											 -->
+<!-- Note: This makefile works only if other packages are already built.     -->
+<!--       It only does a debug build of files in the com.novell.ldap package-->
+<!--       It is typically used when checking for compile errors or debugging-->
 <!-- ======================================================================= -->
 <project name="LDAP" default="compile" basedir=".">
 	<!-- Targets                                                             -->
@@ -22,11 +26,11 @@
 	<!--     all     - Synonym for compile                                   -->
 
 	<property name="top" value="../../.."/>
+	<property name="basedir" value="../../.."/>
     <property name="build" value="classes_debug"/>
     <property name="lib" value="lib_debug"/>
 	<property name="optimize" value="off"/>
 	<property name="debug" value="on"/>
-
 
     <!-- =================================================================== -->
     <!-- initialization                                                      -->
@@ -37,10 +41,12 @@
 
 
     <!-- =================================================================== -->
-    <!-- clean class files                                                  -->
+    <!-- clean class files                                                   -->
     <!-- =================================================================== -->
     <target name="clean" depends="init">
-		<delete dir="${top}/${build}/com/novell/ldap" includes="*.class"/>
+		<delete>
+			<fileset dir="${top}/${build}/com/novell/ldap" includes="*.class"/>
+		</delete>
 	</target>
 
     <!-- =================================================================== -->
@@ -48,16 +54,17 @@
     <!-- =================================================================== -->
     <target name="compile" depends="init">
 		<mkdir dir="${top}/${build}"/>
-        <javac srcdir="${top}"
-				includes="com/novell/ldap/*.java,com/novell/ldap/client/*.java"
-                destdir="${top}/${build}"
-                deprecation="off"
-                debug="${debug}"
-                optimize="${optimize}">
-				<classpath>
-					<pathelement location="${top}/${build}"/>
-					<pathelement location="${top}/../external/ssl/domestic/nssl1.1_dom.jar"/>
-				</classpath>
+        <javac
+    		srcdir="${top}"
+			includes="com/novell/ldap/*.java"
+            destdir="${top}/${build}"
+            deprecation="off"
+            debug="${debug}"
+            optimize="${optimize}">
+			<classpath>
+				<pathelement location="${top}/${build}"/>
+				<pathelement location="${top}/external/ssl/domestic/nssl1.1_dom.jar"/>
+			</classpath>
         </javac>
     </target>
 
