@@ -1,4 +1,4 @@
-    $Novell: /ldap/src/jldap/README,v 1.3 2000/08/18 15:37:03 vtag Exp $
+    $Novell: /ldap/src/jldap/README,v 1.4 2000/08/18 16:08:21 vtag Exp $
 
                               Building JLDAP
 
@@ -14,7 +14,10 @@ For Win32
 
         set JAVA_HOME=d:\jdk1.2.2
         set ANT_HOME=d:\jldap\ant
-        PATH %ANT_HOME%\bin;%PATH%
+        PATH %ANT_HOME%\bin;%JAVA_HOME%\bin;%PATH%
+
+    Note that your SYSTEM path variable (which gets prepended to the above path 
+    variable) should not already include the javac.exe compiler.
 
 For Linux / Unix
     If Linux running bourne shell, and this source directory is located
