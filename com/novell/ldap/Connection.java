@@ -103,7 +103,7 @@ public final class Connection implements Runnable
     // method in LDAPConnection.  Future releases might require
     // these to be local variables that can be modified using
     // the setProperty method.
-    public static Float sdk = new Float(1.5);
+    public static Float sdk = new Float(1.6);
     public static Float protocol = new Float(3.0);
     public static String security = "simple";
 
