@@ -88,6 +88,7 @@ public class ExceptionMessages extends java.util.ListResourceBundle {
   public final static String MULTIPLE_SCHEMA        = "MULTIPLE_SCHEMA";
   public final static String NO_SCHEMA              = "NO_SCHEMA";
   public final static String READ_MULTIPLE          = "READ_MULTIPLE";
+  public final static String CANNOT_BIND            = "CANNOT_BIND";
 
   //End constants
 
@@ -153,7 +154,8 @@ public class ExceptionMessages extends java.util.ListResourceBundle {
       {"STOPTLS_ERROR", "Error stopping TLS: Error getting input & output streams from the original socket"},
       {"MULTIPLE_SCHEMA", "Multiple schema found when reading the subschemaSubentry for {0}"}, //the 0th parameter is a String DN
       {"NO_SCHEMA", "No schema found when reading the subschemaSubentry for {0}"}, //the 0th parameter is a String DN
-      {"READ_MULTIPLE", "Read response is ambiguous, multiple entries returned"}
+      {"READ_MULTIPLE", "Read response is ambiguous, multiple entries returned"},
+      {"CANNOT_BIND", "Cannot bind. Use PoolManager.getBoundConnection()"}
   // END OF MATERIAL TO LOCALIZE
   };
 }//End ExceptionMessages

@@ -13,8 +13,17 @@
  * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
  ******************************************************************************/
 package com.novell.ldap.connectionpool;
+
+import java.util.Map;
+
 import com.novell.ldap.LDAPConnection;
+import com.novell.ldap.LDAPConstraints;
+import com.novell.ldap.LDAPResponseQueue;
 import com.novell.ldap.LDAPSocketFactory;
+import com.novell.ldap.LDAPException;
+import com.novell.ldap.LDAPLocalException;
+
+import com.novell.ldap.resources.ExceptionMessages;
 
 /**
  * Extends LDAPConnection to add information needed by pool management.
@@ -27,7 +36,11 @@ import com.novell.ldap.LDAPSocketFactory;
 {
     // inUse flag used by connection pool to mark which connections are
     // in use. 
-    boolean inUse = false;
+    private boolean inUse = false;
+
+    // This flag allows bind to be called from the package but not outside
+    // of the package.
+    private boolean allowPoolBind = false;
     
     /**
      * Connection
@@ -46,7 +59,7 @@ import com.novell.ldap.LDAPSocketFactory;
      *
      * @return inUse flag.
      */
-    public boolean inUse()
+    boolean inUse()
     {
         return inUse;
     }
@@ -56,7 +69,7 @@ import com.novell.ldap.LDAPSocketFactory;
      *
      * @return inUse flag.
      */
-    public boolean setInUse()
+    boolean setInUse()
     {
         inUse = true;
         return inUse;
@@ -67,7 +80,7 @@ import com.novell.ldap.LDAPSocketFactory;
      *
      * @return inUse flag.
      */
-    public boolean clearInUse()
+    boolean clearInUse()
     {
         inUse = false;
         return inUse;
@@ -81,6 +94,57 @@ import com.novell.ldap.LDAPSocketFactory;
     public Object clone()
     {
         return super.clone();
+    }
+
+    /**
+     * Allow PoolManager a way to do a bind.
+     */
+    void poolBind(int version,
+                     String dn,
+                     byte[] passwd)
+        throws LDAPException
+    {
+        try
+        {
+            allowPoolBind = true;
+            super.bind(version, dn, passwd);
+        }
+        catch (LDAPException e)
+        {
+            throw e;
+        }
+        finally
+        {    
+            allowPoolBind = false;
+        }
+    }
+    
+    //*************************************************************************
+    // Make all of the bind methods throw an LDAPLocalException to force
+    // users to use the PoolManager for binding. Do this by overwriting the
+    // mother of all binds.
+    //*************************************************************************
+    /**
+     * Overrides LDAPConnection.bind().  All users of the connection pools
+     * must pass bind credentials when the pool is established.
+     */
+    public LDAPResponseQueue bind(int version,
+                                  String dn,
+                                  byte[] passwd,
+                                  LDAPResponseQueue queue,
+                                  LDAPConstraints cons)
+        throws LDAPException
+    {
+        // If this was called from our poolBind allow the bind to happen.
+        if(allowPoolBind)
+        {
+            return super.bind(version, dn, passwd, queue, cons);
+        }
+        else
+        {
+            throw new LDAPLocalException(
+                ExceptionMessages.CANNOT_BIND,LDAPException.LOCAL_ERROR);
+        }
     }
 }
 

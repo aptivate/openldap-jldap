@@ -121,8 +121,8 @@ public class PoolManager
             throws LDAPException, InterruptedException
     {
 
-        Connection  conn        = null;
-        SharedConnections sharedConns     = null;
+        Connection        conn        = null;
+        SharedConnections sharedConns = null;
         boolean           needToBind  = false;
 
         synchronized (inUseListOfSharedConnections)
@@ -155,8 +155,6 @@ public class PoolManager
                 }
                 // Get connection from first available sharedConns
                 sharedConns = (SharedConnections)availableListOfSharedConnections.get(0);
-                sharedConns.setDN(DN);
-                sharedConns.setPW(PW);
                 needToBind = true;
             }
 
@@ -168,7 +166,28 @@ public class PoolManager
             conn.setInUse();
         }
         // Do we need to rebind? Bind will do a connect if needed
-        if(needToBind) conn.bind(LDAPConnection.LDAP_V3, DN, PW);
+        if(needToBind)
+        {
+            try
+            {
+                conn.poolBind(LDAPConnection.LDAP_V3, DN, PW);
+                sharedConns.setDN(DN);
+                sharedConns.setPW(PW);
+
+            }catch (LDAPException e)
+            {
+                // If we get and exception make the shared connection available
+                conn.clearInUse();
+                sharedConns.setDN(null);
+                sharedConns.setPW(null);
+                synchronized (availableListOfSharedConnections)
+                {
+                    availableListOfSharedConnections.add(sharedConns);
+                }
+                throw e;
+            }
+
+        }
 
         synchronized (inUseListOfSharedConnections)
         {
