@@ -57,6 +57,7 @@
 <property name="pkg.lib.debug" value="${pkg}/${lib}_debug"/>
 <property name="pkg.doc" value="${pkg}/${doc}"/>
 <property name="pkg.ietfdoc" value="${pkg}/${ietfdoc}"/>
+<property name="pkg.wars" value="${pkg}/wars"/>
 
     <!-- =================================================================== -->
     <!-- Initialization                                                      -->
@@ -73,7 +74,7 @@
     <!-- =================================================================== -->
     <!-- clean all files                                                     -->
     <!-- =================================================================== -->
-    <target name="clean" depends="init, cleancode, cleandoc">
+    <target name="clean" depends="init, cleancode, cleanwars, cleandoc">
             <echo message="Cleaning files"/>
     </target>
 
@@ -100,6 +101,13 @@
     </target>
 
     <!-- =================================================================== -->
+    <!-- clean the pkg/war directory                                         -->
+    <!-- =================================================================== -->
+    <target name="cleanpkgwars" depends="init">
+        <delete dir="${pkg.wars}"/>
+    </target>
+
+    <!-- =================================================================== -->
     <!-- clean the pkg directory                                             -->
     <!--       Note: The doc directory is left intact                        -->
     <!--             ant doc will rebuild it                                 -->
@@ -115,6 +123,56 @@
     <target name="reallyclean" depends="clean, cleanpkg">
         <delete dir="${pkg}"/>
     </target>
+
+    <!-- =================================================================== -->
+    <!-- clean war file                                                      -->
+    <!-- =================================================================== -->
+    <target name="cleanwars">
+        <ant
+            dir="com/novell/services/dsml"
+            antfile="build.xml"
+            target="clean">
+            <property name="top" location="."/>
+        </ant>
+    </target>
+
+    <!-- =================================================================== -->
+    <!-- build Servlets                                                       -->
+    <!-- =================================================================== -->
+    <target name="servlet_stream" depends="debug, release">
+        <ant dir="${basedir}/com/novell/services/dsml/stream" target="all">
+            <property name="top" location="."/>
+        </ant>
+    </target>
+    <target name="servlet_dom" depends="debug, release">
+        <ant dir="${basedir}/com/novell/services/dsml/dom" target="all">
+            <property name="top" location="."/>
+        </ant>
+    </target>
+
+    <!-- =================================================================== -->
+    <!-- build war files                                                     -->
+    <!-- =================================================================== -->
+    <target name="war_stream" depends="servlet_stream">
+        <ant
+            dir="com/novell/services/dsml/stream"
+            antfile="buildwar.xml"
+            target="all">
+            <property name="top" location="."/>
+        </ant>
+    </target>
+    <target name="war_dom" depends="servlet_dom">
+        <ant
+            dir="com/novell/services/dsml/dom"
+            antfile="buildwar.xml"
+            target="all">
+            <property name="top" location="."/>
+        </ant>
+    </target>
+    
+    <target name="wars" depends="war_stream, war_dom"/>
+    
+    <target name="clone_wars" depends="wars"/>
 
     <!-- =================================================================== -->
     <!-- build debug classes                                                 -->
@@ -206,7 +264,7 @@
         <javadoc
             sourcepath="${docsrc}"
             destdir="${pkg.doc}"
-            classpath="${lib.debug}/${ldap}.jar;external/ssl/domestic/nssl1.2_dom.jar;external/jsse/lib/jcert.jar;external/jsse/lib/jnet.jar;external/jsse/lib/jsse.jar"
+            classpath="${lib.debug}/${ldap}.jar;external/jsse/lib/jcert.jar;external/jsse/lib/jnet.jar;external/jsse/lib/jsse.jar;external/jaxp/jaxp.jar;external/jaxp/crimson.jar"
             packagenames="com.novell.ldap.extensions,com.novell.ldap.controls,com.novell.ldap.asn1,com.novell.ldap.util,com.novell.ldap"
             overview="overview.html"
             Windowtitle="LDAP Classes"
@@ -227,7 +285,7 @@
         <javadoc
             sourcepath="${docsrc}"
             destdir="${pkg.ietfdoc}"
-            classpath="${lib.debug}/${ldap}.jar;external/ssl/domestic/nssl1.2_dom.jar;external/jsse/lib/jcert.jar;external/jsse/lib/jnet.jar;external/jsse/lib/jsse.jar"
+            classpath="${lib.debug}/${ldap}.jar;external/jsse/lib/jcert.jar;external/jsse/lib/jnet.jar;external/jsse/lib/jsse.jar;external/jaxp/jaxp.jar;external/jaxp/crimson.jar"
             packagenames="org.ietf.ldap"
             overview="overview-ietf.html"
             Windowtitle="LDAP Classes"
@@ -248,7 +306,7 @@
         <filter token="COMPILE_DEBUG" value="true"/>
         <javadoc sourcepath="${docsrc}"
             destdir="${doc.developer}"
-            classpath="external/ssl/domestic/nssl1.2_dom.jar;external/jsse/lib/jcert.jar;external/jsse/lib/jnet.jar;external/jsse/lib/jsse.jar"
+            classpath="${lib.debug}/${ldap}.jar;external/jsse/lib/jcert.jar;external/jsse/lib/jnet.jar;external/jsse/lib/jsse.jar;external/jaxp/jaxp.jar;external/jaxp/crimson.jar"
             packagenames="org.ietf.ldap,com.novell.ldap.asn1,com.novell.ldap.client,com.novell.ldap.rfc2251,com.novell.ldap.resources,com.novell.ldap.extensions,com.novell.ldap.controls,com.novell.ldap.util,com.novell.ldap"
             Windowtitle="LDAP Classes"
             Splitindex="true"
