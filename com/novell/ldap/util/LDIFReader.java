@@ -36,7 +36,7 @@ import com.novell.ldap.ldif_dsml.LDAPModify;
 import com.novell.ldap.ldif_dsml.Base64Decoder;
 
 /**
- * The class that is used to process the inputStream object to read an LDIF file.
+ * The class to process the inputStream object to read an LDIF file.
  *
  * <p>This calss reads LDAP entries and LDAP operations form an LDIF file</p>
  *
@@ -57,20 +57,20 @@ public class LDIFReader extends LDIF implements LDAPImport {
     private String             deleteDN;                  // delete dn
     private String             changeField;               // record change field
     private String             changeOperation;           //
-    private String             line;
+    private String             line;                      // single line read
     private String[]           modInfo;
-    private StringBuffer       bLine = null;
+    private StringBuffer       bLine = null;              // buffer lines erad
     private byte[]             byteValue = new byte[0];   // for any bytes
     private boolean            hasControls = false;       //
     private boolean            isBase64Encoded;           //
     private boolean            criticality;               // control criticaliry
-    private ArrayList          rLines = new ArrayList();  // record lines/fields
+    private ArrayList          rFields = new ArrayList(); // record lines/fields
     private BufferedReader     bufReader;
-    private LDAPControl[]      controls = null;
+    private LDAPControl[]      controls = null;           // controls of the op
     private LDAPAttributeSet   attrSet = null;
     private LDAPEntry          currentEntry = null;
     private LDAPModification[] mods;
-    private LDAPOperation      currentChange = null;
+    private LDAPRequest        currentRequest = null;
     private Base64Decoder      base64Decoder = new Base64Decoder();
 
 
@@ -128,24 +128,25 @@ public class LDIFReader extends LDIF implements LDAPImport {
                (this.line.length() == 0 || this.line.startsWith("#")) ) {
         }
 
+        // already reaches the end of file
         if ( line == null ) {
              throw new RuntimeException(
                  "com.novell.ldap.ldif_dsml.LDIFReader: "
                        + "The file contains no LDIF info" ) ;
         }
 
-        // check the version line
+        // the first effective line(the version line). check the version line
         if (this.line.startsWith("version:")) {
             this.version = Integer.parseInt(
                 this.line.substring("version:".length()).trim() );
             if ( this.version != 1 ) {
                 throw new RuntimeException(
                    "com.novell.ldap.ldif_dsml.LDIFReader: "
-                     + "version: found '" + this.version + "', should be '1'" );
+                     + "version: found '" + this.version + "', should be '1'");
             }
         }
         else {
-            // first effective line is not version line
+            // first effective line is not a version line
             throw new RuntimeException(
                  "com.novell.ldap.ldif_dsml.LDIFReader: "
                        + "Version line must be the first meaningful line" );
@@ -168,7 +169,7 @@ public class LDIFReader extends LDIF implements LDAPImport {
 
         } while((this.line.length()== 0) || this.line.startsWith("#"));
 
-        // this is the first line of the dn field
+        // this is the first line of the dn field. it should starts with 'dn'
         if ( !this.line.startsWith("dn")) {
                 throw new RuntimeException(
                         "com.novell.ldap.ldif_dsml.LDIFReader: "
@@ -176,15 +177,15 @@ public class LDIFReader extends LDIF implements LDAPImport {
         }
 
         // ignore the rest lines of the dn field and read the
-        // line right after the dn field
+        // effective line right after the dn field
         while ( (this.line = bufReader.readLine()) != null ) {
 
             if (    !this.line.startsWith(" ")    // ! a part of dn field
                  && !this.line.startsWith("#") ){ // ! a comment line
 
-                 // it is still needed to check if this is an empty line
+                 // to the end of the first record
                  if ( this.line.length() == 0 ) {
-                    // an empty line, this record only has dn field
+                    // an empty line; this record only has dn field
                     throw new RuntimeException(
                         "com.novell.ldap.ldif_dsml.LDIFReader: "
                                  + "the record only has dn field");
@@ -196,6 +197,7 @@ public class LDIFReader extends LDIF implements LDAPImport {
             }
         }
 
+        // end of file ?
         if ( this.line == null) {
                 throw new RuntimeException(
                         "com.novell.ldap.ldif_dsml.LDIFReader: "
@@ -205,10 +207,10 @@ public class LDIFReader extends LDIF implements LDAPImport {
         // check and set the type of the current LDIF file
         if (   this.line.startsWith("changetype")
             || this.line.startsWith("control") ) {
-            setContent(false);
+            setRequest(true);
         }
         else {
-            setContent(true);
+            setRequest(false);
         }
 
         // go back to the beginning of the first record of the LDIF file so
@@ -225,24 +227,20 @@ public class LDIFReader extends LDIF implements LDAPImport {
     public LDAPEntry readContent()
     throws UnsupportedEncodingException, LDAPException, IOException {
 
-        if( ! isContent()) {
+        if( isRequest()) {
             throw new RuntimeException(
                 "com.novell.ldap.ldif_dsml.LDIFReader: "
                        + "Cannot read content from LDIF change file");
         }
 
-        // read record lines
-        this.rLines.clear();
-        readRecordLines();
+        // read record fields
+        this.rFields.clear();
+        readRecordFields();
 
         // end of file ?
-        if ( this.rLines == null ) {
+        if ( this.rFields == null ) {
             return null;
         }
-
-        // convert content record lines to the record fields
-        // and trim the extra spaces in record fields
-        toRecordFields();
 
         // set dn, controls, attributes and ...
         toRecordProperties();
@@ -256,49 +254,44 @@ public class LDIFReader extends LDIF implements LDAPImport {
      *
      * @see LDAPOperation
      */
-    public LDAPOperation readOperation()
+    public LDAPRequest readOperation()
     throws UnsupportedEncodingException, IOException {
 
-        if( isContent()) {
+        if( !isRequest()) {
             throw new RuntimeException(
                 "Cannot read changes from LDIF content file");
         }
 
-        // read record lines
-        this.rLines.clear();
-        readRecordLines();
+        // read record fields
+        this.rFields.clear();
+        readRecordFields();
 
-        if ( this.rLines == null ) {
+        if ( this.rFields == null ) {
             // end of file
             return null;
         }
 
-        // convert record lines to record fields
-        toRecordFields();
-
-        // set up dn, controls, attribute names and values
         toRecordProperties();
 
         switch( operationType ) {
             // construct a specific change record object and let the
             // super class object reference it
-            case LDAPOperation.LDAP_ADD :
-                toLDAPEntry();
+            case LDAPRequest.LDAP_ADD :
                 if (this.controls == null)
-                    this.currentChange = new LDAPAdd(currentEntry);
+                    this.currentRequest = new LDAPAdd(currentEntry);
                 else
-                    this.currentChange = new LDAPAdd(currentEntry, controls);
+                    this.currentRequest = new LDAPAdd(currentEntry, controls);
                 break;
 
-            case LDAPOperation.LDAP_DELETE :
+            case LDAPRequest.LDAP_DELETE :
                 if (this.controls == null)
-                    this.currentChange = new LDAPDelete(this.deleteDN);
+                    this.currentRequest = new LDAPDelete(this.deleteDN);
                 else
-                    this.currentChange =
+                    this.currentRequest =
                           new LDAPDelete(this.deleteDN, controls);
                 break;
 
-            case LDAPOperation.LDAP_MODDN :
+            case LDAPRequest.LDAP_MODDN :
                 //String[] modInfo = toModInfo();
                 boolean  delOldRdn;
 
@@ -312,13 +305,13 @@ public class LDIFReader extends LDIF implements LDAPImport {
                 String sup = modInfo[2];
                 if (this.controls == null) {
                     if( sup.length() == 0 ) {
-                        this.currentChange = new LDAPModDN(
+                        this.currentRequest = new LDAPModDN(
                                             this.entryDN,
                                             this.modInfo[0],
                                             delOldRdn);
                     }
                     else {
-                        this.currentChange = new LDAPModDN(
+                        this.currentRequest = new LDAPModDN(
                                             this.entryDN,
                                             this.modInfo[0],
                                             delOldRdn,
@@ -327,14 +320,14 @@ public class LDIFReader extends LDIF implements LDAPImport {
                 }
                 else {
                     if((sup.length())==0 ) {
-                        this.currentChange = new LDAPModDN(
+                        this.currentRequest = new LDAPModDN(
                                             this.entryDN,
                                             this.modInfo[0],
                                             delOldRdn,
                                             controls);
                     }
                     else {
-                        this.currentChange = new LDAPModDN(this.entryDN,
+                        this.currentRequest = new LDAPModDN(this.entryDN,
                                             this.modInfo[0],
                                             delOldRdn,
                                             modInfo[2],
@@ -344,15 +337,15 @@ public class LDIFReader extends LDIF implements LDAPImport {
                 }
                 break;
 
-            case LDAPOperation.LDAP_MODIFY :
+            case LDAPRequest.LDAP_MODIFY :
 
                 toLDAPModifications();
 
                 if (this.controls == null) {
-                    this.currentChange = new LDAPModify(this.entryDN, mods);
+                    this.currentRequest = new LDAPModify(this.entryDN, mods);
                 }
                 else {
-                    this.currentChange =
+                    this.currentRequest =
                           new LDAPModify(this.entryDN, mods, controls);
                 }
                 break;
@@ -363,18 +356,22 @@ public class LDIFReader extends LDIF implements LDAPImport {
                                   + "LDIFReader: Unknown change type");
                 }
 
-        return this.currentChange;
+        return this.currentRequest;
     }
 
 
     /**
-     * Reads all the lines in the current record into this.rLines
+     * Reads all lines in the current record, convert record lines to
+     * the record fields, and trim off extra spaces in record fields.
      *
      * @throws IOException.
      */
-    private void  readRecordLines() throws IOException {
+    private void  readRecordFields() throws IOException {
 
-        this.rLines.clear();
+        int i, j, index, len, fLen;
+
+        //len = this.rFields.size();
+        this.rFields.clear();
 
         // skip empty and comment lines and read the first dn
         // line of the record
@@ -382,7 +379,11 @@ public class LDIFReader extends LDIF implements LDAPImport {
                (this.line.length() == 0 || this.line.startsWith("#")) ) {
         }
 
-        if ( this.line != null ) {
+        if (this.line == null) {
+            // reaches the end of the LDIF file
+            this.rFields = null;
+        }
+        else {
 
             // check if the first dn line starts with 'dn:'
             if ( !this.line.startsWith("dn:") ) {
@@ -390,148 +391,106 @@ public class LDIFReader extends LDIF implements LDAPImport {
                                       "Any record should start with 'dn:'");
             }
 
-            // add the first line of dn field to this.rLines
+            // add the first line of dn field to this.rFields
             this.bLine = new StringBuffer();
             this.bLine.append(this.line);
-            this.rLines.add(this.bLine);
+            //this.rLines.add(this.pLine);
 
             // read the rest lines of the record except comment lines.
             // read stops at an empty line which is used to separate
             // the current record with the next one
             while ( ((this.line = bufReader.readLine()) != null)
-                    && (this.line.length() != 0)) {
+                    && ( this.line.length() != 0) ) {
+
+                // skip if it's a comment line
                 if ( !this.line.startsWith("#") ) {
 
-                     // add the rest lines to this.rLines
-                     this.bLine = new StringBuffer();
-                     if (this.line.startsWith("control:")) {
-                        this.hasControls = true;
-                        this.controlNumber++;
-                     }
-                     this.bLine.append(this.line);
-                     this.rLines.add(this.bLine);
+                    if ( !this.line.startsWith(" ") ) {
+                        // not a continuation line:
+                        //     1. save bLine
+                        //     2. create a cLine
+                        this.rFields.add(this.bLine);
+
+                        this.bLine = new StringBuffer();
+                        this.bLine.append(this.line);
+
+                         // get controlNumber
+                         if (this.line.startsWith("control:")) {
+                            this.hasControls = true;
+                            this.controlNumber++;
+                         }
+                    }
+                    else {
+                        // a continuation line:
+                        // trim off the leading ' ' and append it to bLine
+                        this.bLine.append(
+                                  this.line.substring(1, this.line.length()));
+                    }
                 }
             }
-        }
-        else {
-            // reaches the end of the LDIF file
-            this.rLines = null;
-        }
-    }
+            // save the last line
+            this.rFields.add(this.bLine);
 
-    /**
-     * Turn record lines into record fields.
-     * <p>Turn record lines into record fields by concatinate any
-     *    continuation line with the previous line and remove the
-     *    line in the ArrayList object.</p>
-     *
-     * <p>Also the extra leading spaces in record fields are
-     *    removed to make the fields ready to be parsed</p>
-     *
-     * <p>After this method call this.rLines holds the current
-     *    record fields</p>
-     */
-    private void toRecordFields() throws UnsupportedEncodingException {
+            len = this.rFields.size();
 
-        int i, j, index, len;
+            for ( i=0; i<len; i++ ) {
 
-        len = this.rLines.size();
-
-        // remove the leading space of any continuation line
-        // and concatinate it with the previous line
-        for ( i=1; i<len; i++ ) {
-            if ( ((StringBuffer)this.rLines.get(i)).charAt(0) == (int)' ' ) {
-                // found a concatination line, append it to the previous
-                // line and remove the leading space at the same time
-                ((StringBuffer)this.rLines.get(i)).delete(0, 1);
-                ((StringBuffer)this.rLines.get(i-1)).append(this.rLines.get(i));
-                this.rLines.remove(i);
-                len--;
-                i--;
-            }
-        }
-
-        // clean the leading spaces between ': and value', '::' and value,
-        // or ':<' and value; the spaces in controld fields need more treatment
-        for ( i=0; i<len; i++ ) {
-
-            // if the line starts with '-', nothing to do
-            if ( ((StringBuffer)this.rLines.get(i)).charAt(0) != (int)'-' ) {
-
-                for( j=0; j<((StringBuffer)this.rLines.get(i)).length(); j++) {
-                    if( (((StringBuffer)this.rLines.get(i)).charAt(j) ==
+                // clean the leading spaces between ':' and value, '::'
+                // and value, or ':<' and value.
+                //
+                // find the index for the first colon
+                for( j=0; j<((StringBuffer)this.rFields.get(i)).length(); j++) {
+                    if( (((StringBuffer)this.rFields.get(i)).charAt(j) ==
                                                                    (int)':')) {
                         break;
                     }
                 }
 
                 // j points to the first colon
-                if (((((StringBuffer)this.rLines.get(i)).charAt(j+1))==(int)':')
-                ||((((StringBuffer)this.rLines.get(i)).charAt(j+1))==(int)'<')){
-
-                    // remove any spaces between '::' and base64 encoded value
-                    // or spaces between ':<' and URL
-                    while( ((StringBuffer)this.rLines.get(i)).charAt(j+2)
+                if (((((StringBuffer)this.rFields.get(i)).
+                                                     charAt(j+1))==(int)':')
+                  ||((((StringBuffer)this.rFields.get(i)).
+                                                     charAt(j+1))==(int)'<')) {
+                    // an base64 encoded or URL value;
+                    // remove any spaces between '::' and base64
+                    // encoded value or spaces between ':<' and URL
+                    while( ((StringBuffer)this.rFields.get(i)).charAt(j+2)
                                                                 == (int)' ' ) {
-                        ((StringBuffer)this.rLines.get(i)).delete(j+2, j+3);
+                        ((StringBuffer)this.rFields.get(i)).delete(j+2, j+3);
+                    }
+
+                    // if there is a trailing ' ', remove it
+                    if ( ((StringBuffer)this.rFields.get(i)).charAt(
+                        ((StringBuffer)this.rFields.get(i)).length()-1)
+                                                                  ==(int)' ') {
+                        ((StringBuffer)this.rFields.get(i)).delete(
+                            ((StringBuffer)this.rFields.get(i)).length()-1,
+                            ((StringBuffer)this.rFields.get(i)).length() );
                     }
                 }
                 else {
+                    // mormal string value;
                     // remove any spaces between ':' and value
-                    while( ((StringBuffer)this.rLines.get(i)).charAt(j+1)
+                    while( ((StringBuffer)this.rFields.get(i)).charAt(j+1)
                                                                == (int)' ' ) {
-                        ((StringBuffer)this.rLines.get(i)).delete(j+1, j+2);
+                        ((StringBuffer)this.rFields.get(i)).delete(j+1, j+2);
                     }
                 }
+
+                // remove any trailing spaces
+                fLen = ((StringBuffer)this.rFields.get(i)).length();
+                while(((StringBuffer)this.rFields.get(i)).charAt(fLen-1)
+                                                                == (int)' ') {
+                    ((StringBuffer)this.rFields.get(i)).delete(fLen-1, fLen);
+                    fLen = ((StringBuffer)this.rFields.get(i)).length();
+                }
             }
+
+            // get the number of fields in the current record
+            this.fieldNumber = this.rFields.size();
         }
-
-        // clean the leading spaces between ': and value'
-        // or between '::' and value for controld fields
-        for ( i=1; i<this.controlNumber+1; i++ ) {
-
-            // j references the first colon in control field,
-            j = 8; // length of 'control:'
-
-            if (((StringBuffer)this.rLines.get(i)).charAt(j-1)!=(int)':') {
-                throw new RuntimeException(
-                        "com.novell.ldap.ldif_dsml.LDIFReader: "
-                                 + "malformated control field: " + i);
-            }
-
-            // any space between "control:'  and contro OID has been removed.
-            // now look for ':' or '::' before value.
-            for (; j<((StringBuffer)this.rLines.get(i)).length(); j++) {
-
-                if (((StringBuffer)this.rLines.get(i)).charAt(j)==(int)':') {
-                    break;
-                }
-            }
-
-            if ( j<((StringBuffer)this.rLines.get(i)).length()-2 ) {
-                if (((StringBuffer)this.rLines.get(i)).charAt(j+1)==(int)':') {
-
-                    // remove any spaces between ':' and base64 encoded value
-                    while(((StringBuffer)this.rLines.get(i)).charAt(j+2)
-                                                                  ==(int)' ') {
-                        ((StringBuffer)this.rLines.get(i)).delete(j+2, j+3);
-                    }
-                }
-                else {
-                    // remove any spaces between ':' and value
-                    while(((StringBuffer)this.rLines.get(i)).charAt(j+1)
-                                                                  ==(int)' ') {
-                        ((StringBuffer)this.rLines.get(i)).delete(j+1, j+2);
-                    }
-                }
-            }
-        }
-
-
-        // get the number of fields in the current record
-        this.fieldNumber = this.rLines.size();
-
     }
+
 
 
     /**
@@ -545,28 +504,24 @@ public class LDIFReader extends LDIF implements LDAPImport {
         String attrName, attrValue=null, controlOID;
         LDAPAttribute attr;
 
-        len = ((StringBuffer)this.rLines.get(0)).length();
+        len = ((StringBuffer)this.rFields.get(0)).length();
 
         // set entry DN
-        if ( (((StringBuffer)this.rLines.get(0)).charAt(3)) != (int)':') {
+        if ( (((StringBuffer)this.rFields.get(0)).charAt(3)) != (int)':') {
             // not a base64 encoded entry dn
-            this.entryDN = ((StringBuffer)this.rLines.get(0)).substring(
-                                 3,
-                                 len);
+            this.entryDN = ((StringBuffer)this.rFields.get(0)).substring( 3,
+                                 ((StringBuffer)this.rFields.get(0)).length());
         }
         else {
-            // a base64 encoded entry dn
-            if (((StringBuffer)this.rLines.get(0)).charAt(len-1) ==(int)' ') {
-                ((StringBuffer)this.rLines.get(0)).delete(len-1, len);
-            }
+            // a base64 encoded entry dn, tailing space was already removed
             this.byteValue = this.base64Decoder.decoder(
-                                 (StringBuffer)this.rLines.get(0),
+                                 (StringBuffer)this.rFields.get(0),
                                  4,
-                                 ((StringBuffer)this.rLines.get(0)).length());
+                                 ((StringBuffer)this.rFields.get(0)).length());
             this.entryDN = new String(this.byteValue, "UTF8");
         }
 
-        if ( isContent() ) {
+        if ( !isRequest() ) {
 
             toLDAPEntry();
 
@@ -575,6 +530,7 @@ public class LDIFReader extends LDIF implements LDAPImport {
             // a change record with controls
             if ( this.hasControls ) {
 
+                // initialize control array
                 this.controls = new LDAPControl[this.controlNumber];
 
                 // change record that has controls
@@ -582,32 +538,30 @@ public class LDIFReader extends LDIF implements LDAPImport {
 
                     // there is no leading space in front of contro OID
                     // the loop breaks if it sees a space or a colon
-                    for( j=8; // skip over 'control:'
-                         j<((StringBuffer)this.rLines.get(i)).length();
+                    for( j=8; // length of 'control:'
+                         j < ((StringBuffer)this.rFields.get(i)).length();
                          j++) {
-                        if ((((StringBuffer)this.rLines.get(i)).charAt(j)
-                                                                == (int)' ')) {
-                            break;
-                        }
-                        else if ((((StringBuffer)this.rLines.get(i)).charAt(j)
-                                                                == (int)':')) {
+                        if ((((StringBuffer)this.rFields.get(i)).charAt(j)
+                                                                == (int)' ')
+                        || (((StringBuffer)this.rFields.get(i)).charAt(j)
+                                                                == (int)':') ) {
                             break;
                         }
                     }
 
                     // j points to the end of control OID; get control OID
-                    controlOID = ((StringBuffer)this.rLines.get(i)).
+                    controlOID = ((StringBuffer)this.rFields.get(i)).
                                                                substring(8, j);
 
                     // skip any spaces or reach the end of the control field
                     while(
-                        (j<((StringBuffer)this.rLines.get(i)).length())
-                        &&(((StringBuffer)this.rLines.get(i)).charAt(j)
+                        (j<((StringBuffer)this.rFields.get(i)).length())
+                        &&(((StringBuffer)this.rFields.get(i)).charAt(j)
                                                                 == (int)' ')) {
                         j++;
                     }
 
-                    if ( j==((StringBuffer)this.rLines.get(i)).length()) {
+                    if ( j==((StringBuffer)this.rFields.get(i)).length()) {
                         // reach the end of control field, there is no
                         // criticality or value specified. construct a
                         // LDAPControl object with the OID, false, and empty
@@ -619,32 +573,39 @@ public class LDIFReader extends LDIF implements LDAPImport {
                                                               this.byteValue);
                     }
                     else {
-                        // at least either criticality or value specified,
+                        // at least criticality or value is specified,
                         // j points to the beginning of cirticality or
                         // value, or beginning of both of them
                         index = j;
 
-                        for ( ; j<((StringBuffer)this.rLines.get(i)).length();
+                        for ( ; j<((StringBuffer)this.rFields.get(i)).length();
                                                                         j++ ) {
-                            if ( ((StringBuffer)this.rLines.get(i)).charAt(j)
+                            if ( ((StringBuffer)this.rFields.get(i)).charAt(j)
                                                                 == (int)':' ) {
                                 break;
                             }
                         }
 
                         if ( index == j) {
-                            // only value is specified
-                            // use false as default ciriticality value
+                        // only value is specified
+                        // use false as default ciriticality
                             this.criticality = false;
                             // is the value base64 encoded
-                            if ( ((StringBuffer)this.rLines.get(i)).charAt(j+1)
+                            if ( ((StringBuffer)this.rFields.get(i)).charAt(j+1)
                                                                  == (int)':') {
-
+                                // base64 encoded value, j point to value
+                                j+=2;
+                                // remove any leading spaces in value
+                                while( ((StringBuffer)this.rFields.get(i)).
+                                                      charAt(j) == (int)' ' ) {
+                                     ((StringBuffer)this.rFields.get(i)).
+                                                             delete(j,j+1);
+                                }
                                 // get base64 encoded value
                                 this.byteValue = this.base64Decoder.decoder(
-                                   (StringBuffer)this.rLines.get(i),
-                                   j+2,
-                                   ((StringBuffer)this.rLines.get(i)).length());
+                                  (StringBuffer)this.rFields.get(i),
+                                  j,
+                                  ((StringBuffer)this.rFields.get(i)).length());
 
                                 this.controls[i-1] = new LDAPControl(
                                                             controlOID,
@@ -652,8 +613,16 @@ public class LDIFReader extends LDIF implements LDAPImport {
                                                             this.byteValue);
                             }
                             else {
-                                // get commom value
-                                this.byteValue = ((StringBuffer)this.rLines.
+                                // commom value
+                                j++;
+                                // remove any leading spaces in value
+                                while( ((StringBuffer)this.rFields.get(i)).
+                                                      charAt(j) == (int)' ' ) {
+                                     ((StringBuffer)this.rFields.
+                                                         get(i)).delete(j,j+1);
+                                }
+                                // get control value
+                                this.byteValue = ((StringBuffer)this.rFields.
                                              get(i)).substring(j+1).getBytes();
                                 this.controls[i-1] =
                                            new LDAPControl( controlOID,
@@ -662,15 +631,15 @@ public class LDIFReader extends LDIF implements LDAPImport {
                             }
                         }
                         else {
-                            // both criticality and value specified. now j
-                            // points to ':' before value, no trailing space
-                            // between criticality and ':'
-                            // get criticality
-                            if (((StringBuffer)this.rLines.get(i)).
+                        // both criticality and value specified. now j
+                        // points to ':' before value, no trailing space
+                        // between criticality and ':'
+                        // get criticality
+                            if (((StringBuffer)this.rFields.get(i)).
                                   substring(index,j).equalsIgnoreCase("true")){
                                 this.criticality = true;
                             }
-                            else if (((StringBuffer)this.rLines.get(i)).
+                            else if (((StringBuffer)this.rFields.get(i)).
                                 substring(index,j).equalsIgnoreCase("false")) {
                                 this.criticality = false;
                             }
@@ -682,15 +651,21 @@ public class LDIFReader extends LDIF implements LDAPImport {
 
                             // get value
                             // is the value base64 encoded
-                            if ( ((StringBuffer)this.rLines.get(i)).charAt(j+1)
+                            if ( ((StringBuffer)this.rFields.get(i)).charAt(j+1)
                                                                  == (int)':') {
-                                // base64 encoded value
+                                // base64 encoded value, j point to value
                                 j+=2;
-                                // no leading spaces, get the value
+                                // remove any leading spaces in value
+                                while( ((StringBuffer)this.rFields.get(i)).
+                                                      charAt(j) == (int)' ' ) {
+                                     ((StringBuffer)this.rFields.get(i)).
+                                                                delete(j,j+1);
+                                }
+                                // get the value
                                 this.byteValue = this.base64Decoder.decoder(
-                                  (StringBuffer)this.rLines.get(i),
+                                  (StringBuffer)this.rFields.get(i),
                                   j,
-                                  ((StringBuffer)this.rLines.get(i)).length());
+                                  ((StringBuffer)this.rFields.get(i)).length());
                                 this.controls[i-1] = new LDAPControl(
                                                                controlOID,
                                                                criticality,
@@ -700,8 +675,14 @@ public class LDIFReader extends LDIF implements LDAPImport {
                             else {
                                 // commom value
                                 j++;
-                                // no leading spaces, get the value
-                                this.byteValue= ((StringBuffer)this.rLines.
+                                // remove any leading spaces in value
+                                while( ((StringBuffer)this.rFields.get(i)).
+                                                      charAt(j) == (int)' ' ) {
+                                     ((StringBuffer)this.rFields.get(i)).
+                                                                delete(j,j+1);
+                                }
+                                // get the value
+                                this.byteValue= ((StringBuffer)this.rFields.
                                                get(i)).substring(j).getBytes();
                                 this.controls[i-1] = new LDAPControl(
                                                             controlOID,
@@ -718,16 +699,16 @@ public class LDIFReader extends LDIF implements LDAPImport {
 
             switch(this.operationType) {
 
-                case(LDAPOperation.LDAP_ADD):
+                case(LDAPRequest.LDAP_ADD):
                     toLDAPEntry();
                     break;
-                case(LDAPOperation.LDAP_DELETE):
+                case(LDAPRequest.LDAP_DELETE):
                     toDeleteDN();
                     break;
-                case(LDAPOperation.LDAP_MODDN):
+                case(LDAPRequest.LDAP_MODDN):
                     toModInfo();
                     break;
-                case(LDAPOperation.LDAP_MODIFY):
+                case(LDAPRequest.LDAP_MODIFY):
                     toLDAPModifications();
                     break;
                 default:
@@ -750,7 +731,7 @@ public class LDIFReader extends LDIF implements LDAPImport {
         index = 11; // length of 'changetype:'
 
         // controlNumber+1 points to changetype field
-        if(((StringBuffer)this.rLines.get(this.controlNumber+1))
+        if(((StringBuffer)this.rFields.get(this.controlNumber+1))
                                                  .charAt(index-1) != (int)':' ){
              throw new RuntimeException(
                  "com.novell.ldap.ldif_dsml.LDIFReader: "
@@ -758,24 +739,24 @@ public class LDIFReader extends LDIF implements LDAPImport {
                             + "field " + this.controlNumber+1);
         }
 
-        this.changeOperation = ((StringBuffer)this.rLines.
+        this.changeOperation = ((StringBuffer)this.rFields.
                                    get(this.controlNumber+1)).substring(index);
 
         // set operation type
         if ( this.changeOperation.equalsIgnoreCase("add") ) {
-            this.operationType = LDAPOperation.LDAP_ADD;
+            this.operationType = LDAPRequest.LDAP_ADD;
         }
         else if ( this.changeOperation.equalsIgnoreCase("delete") ) {
-            this.operationType = LDAPOperation.LDAP_DELETE;
+            this.operationType = LDAPRequest.LDAP_DELETE;
         }
         else if ( this.changeOperation.equalsIgnoreCase("modrdn") ) {
-            this.operationType = LDAPOperation.LDAP_MODDN;
+            this.operationType = LDAPRequest.LDAP_MODDN;
         }
         else if ( this.changeOperation.equalsIgnoreCase("moddn") ) {
-            this.operationType = LDAPOperation.LDAP_MODDN;
+            this.operationType = LDAPRequest.LDAP_MODDN;
         }
         else if ( this.changeOperation.equalsIgnoreCase("modify") ) {
-            this.operationType = LDAPOperation.LDAP_MODIFY;
+            this.operationType = LDAPRequest.LDAP_MODIFY;
         }
         else
             throw new RuntimeException(
@@ -799,7 +780,7 @@ public class LDIFReader extends LDIF implements LDAPImport {
         len = this.fieldNumber;
         this.attrSet = new LDAPAttributeSet();
 
-        if ( isContent() ) {
+        if ( !isRequest() ) {
             startIndex = 1;
         }
         else {
@@ -809,52 +790,54 @@ public class LDIFReader extends LDIF implements LDAPImport {
 
         for ( i=startIndex; i<len; i++) {
             // fined the index of ':' that saparate attr name and attr value
-            for( colon=0; colon<((StringBuffer)this.rLines.get(i)).length(); colon++) {
-                if((((StringBuffer)this.rLines.get(i)).charAt(colon) == (int)':')) {
+            for( colon=0;
+                 colon<((StringBuffer)this.rFields.get(i)).length();
+                 colon++) {
+
+                if((((StringBuffer)this.rFields.get(i)).charAt(colon)
+                                                                == (int)':')) {
                     // found index of ':', done
                     break;
                 }
             }
 
-            attrName = ((StringBuffer)this.rLines.get(i)).substring(0, colon);
+            attrName = ((StringBuffer)this.rFields.get(i)).substring(0, colon);
 
-            if (((((StringBuffer)this.rLines.get(i)).charAt(colon+1))!=(int)':')
-            &&((((StringBuffer)this.rLines.get(i)).charAt(colon+1))!=(int)'<')){
+            if (((((StringBuffer)this.rFields.get(i)).
+                                         charAt(colon+1)) != (int)':')
+              &&((((StringBuffer)this.rFields.get(i)).
+                                         charAt(colon+1))!=(int)'<')){
 
-                // common value
-                attrValue = ((StringBuffer)this.rLines.get(i)).substring(
+                // common attribute value
+                attrValue = ((StringBuffer)this.rFields.get(i)).substring(
                              colon+1,
-                             ((StringBuffer)this.rLines.get(i)).length());
+                             ((StringBuffer)this.rFields.get(i)).length());
             }
-            else if ( (((StringBuffer)this.rLines.get(i)).charAt(colon+1))
+            else if ( (((StringBuffer)this.rFields.get(i)).charAt(colon+1))
                                                                    ==(int)'<'){
                 // a file URL, we are not ready to handle this
-                attrValue = ((StringBuffer)this.rLines.get(i)).substring(
+                attrValue = ((StringBuffer)this.rFields.get(i)).substring(
                              colon+2,
-                             ((StringBuffer)this.rLines.get(i)).length());
+                             ((StringBuffer)this.rFields.get(i)).length());
             }
             else {
-                this.isBase64Encoded = true;
                 // a base64 encoded attribute value
-                if (((StringBuffer)this.rLines.get(i)).charAt(
-                  ((StringBuffer)this.rLines.get(i)).length()-1) ==(int)' ') {
-
-                    ((StringBuffer)this.rLines.get(i)).delete(
-                        ((StringBuffer)this.rLines.get(i)).length()-1,
-                            ((StringBuffer)this.rLines.get(i)).length());
-                }
-
+                this.isBase64Encoded = true;
+                // decode the value
                 this.byteValue = this.base64Decoder.decoder(
-                             (StringBuffer)this.rLines.get(i),
+                             (StringBuffer)this.rFields.get(i),
                              colon+2,
-                             ((StringBuffer)this.rLines.get(i)).length());
+                             ((StringBuffer)this.rFields.get(i)).length());
             }
 
+            // add the new atribute to the attribute set or add the
+            // value to an existing attribute itn the attribute set
             if ( this.attrSet.getAttribute(attrName) == null ) {
 
-                // this is a new attribute
+                // this is a new attribute, add it to attribute set
                 if ( this.isBase64Encoded ) {
-                    this.attrSet.add(new LDAPAttribute(attrName, this.byteValue));
+                    this.attrSet.add(new LDAPAttribute(attrName, 
+                                                             this.byteValue));
                     this.isBase64Encoded = false;
                 }
                 else {
@@ -863,7 +846,7 @@ public class LDIFReader extends LDIF implements LDAPImport {
             }
             else {
 
-                // this attribute is already added into the attribute set
+                // add the value to an existing attribute in the set
                 if ( this.isBase64Encoded ) {
                     this.attrSet.getAttribute(attrName).addValue(this.byteValue);
                     this.isBase64Encoded = false;
@@ -874,6 +857,7 @@ public class LDIFReader extends LDIF implements LDAPImport {
             }
         }
 
+        // construct the currentEntry
         this.currentEntry = new LDAPEntry(this.entryDN, this.attrSet);
     }
 
@@ -904,7 +888,7 @@ public class LDIFReader extends LDIF implements LDAPImport {
         fieldIndex = this.controlNumber + 2; // points to newrdn field
         index = 7;                           // length of "newrdn:"
 
-        if(((StringBuffer)this.rLines.get(fieldIndex))
+        if(((StringBuffer)this.rFields.get(fieldIndex))
                                                  .charAt(index-1) != (int)':' ){
              throw new RuntimeException(
                  "com.novell.ldap.ldif_dsml.LDIFReader: "
@@ -912,10 +896,10 @@ public class LDIFReader extends LDIF implements LDAPImport {
         }
 
         // get newrdn
-        if ( (((StringBuffer)this.rLines.get(fieldIndex)).charAt(index))
+        if ( (((StringBuffer)this.rFields.get(fieldIndex)).charAt(index))
                                                                  != (int)':') {
             // get newrdn
-            this.modInfo[0] = ((StringBuffer)this.rLines.get(fieldIndex))
+            this.modInfo[0] = ((StringBuffer)this.rFields.get(fieldIndex))
                                                              .substring(index);
         }
         else {
@@ -923,17 +907,17 @@ public class LDIFReader extends LDIF implements LDAPImport {
             index+= 2;
 
             // remove trailing space if there is any
-            len = ((StringBuffer)this.rLines.get(fieldIndex)).length();
-            if ( ((StringBuffer)this.rLines.get(fieldIndex)).charAt(len-1)
+            len = ((StringBuffer)this.rFields.get(fieldIndex)).length();
+            if ( ((StringBuffer)this.rFields.get(fieldIndex)).charAt(len-1)
                                                                  == (int)' ') {
-                ((StringBuffer)this.rLines.get(fieldIndex)).delete(len-1, len);
+                ((StringBuffer)this.rFields.get(fieldIndex)).delete(len-1, len);
             }
 
             // decode newrdn
             this.byteValue = this.base64Decoder.decoder(
-                         (StringBuffer)this.rLines.get(fieldIndex),
+                         (StringBuffer)this.rFields.get(fieldIndex),
                          index,
-                         ((StringBuffer)this.rLines.get(fieldIndex)).length());
+                         ((StringBuffer)this.rFields.get(fieldIndex)).length());
 
             this.modInfo[0] = new String(this.byteValue, "UTF8");
         }
@@ -941,14 +925,14 @@ public class LDIFReader extends LDIF implements LDAPImport {
         fieldIndex++;   // points to deleteOleRDN
         index = 13;      // points to '*' after "deleteoldrdn:"
 
-        if(((StringBuffer)this.rLines.get(fieldIndex))
+        if(((StringBuffer)this.rFields.get(fieldIndex))
                                                  .charAt(index-1) != (int)':' ){
              throw new RuntimeException(
                  "com.novell.ldap.ldif_dsml.LDIFReader: "
                      + "malformated deleteoldrdn field");
         }
 
-        if ( ((StringBuffer)this.rLines.get(fieldIndex)).charAt(index)
+        if ( ((StringBuffer)this.rFields.get(fieldIndex)).charAt(index)
                                                                 == (int)'1' ) {
             this.modInfo[1] = new String("1");
         }
@@ -957,39 +941,39 @@ public class LDIFReader extends LDIF implements LDAPImport {
         }
 
         fieldIndex++;   // points to deleteOleRDN
-        if (fieldIndex<=this.rLines.size()) {
+        if (fieldIndex<=this.rFields.size()) {
             // there is a new superior
             index = 12;   // length of "newsuperior:"
 
-            if(((StringBuffer)this.rLines.get(fieldIndex))
+            if(((StringBuffer)this.rFields.get(fieldIndex))
                                                  .charAt(index-1) != (int)':' ){
              throw new RuntimeException(
                  "com.novell.ldap.ldif_dsml.LDIFReader: "
                      + "malformated newsuperior field");
             }
 
-            if ( (((StringBuffer)this.rLines.get(fieldIndex)).charAt(index))
+            if ( (((StringBuffer)this.rFields.get(fieldIndex)).charAt(index))
                                                                  != (int)':') {
             // get newrsuperior
-            this.modInfo[2] = ((StringBuffer)this.rLines.get(fieldIndex))
+            this.modInfo[2] = ((StringBuffer)this.rFields.get(fieldIndex))
                                                              .substring(index);
             }
             else {
                 // base64 encoded value
                 index++;
                 // remove trailing space if there is any
-                len = ((StringBuffer)this.rLines.get(fieldIndex)).length();
-                if ( ((StringBuffer)this.rLines.get(fieldIndex)).
+                len = ((StringBuffer)this.rFields.get(fieldIndex)).length();
+                if ( ((StringBuffer)this.rFields.get(fieldIndex)).
                                                    charAt(len-1) == (int)' ') {
-                    ((StringBuffer)this.rLines.get(fieldIndex)).
+                    ((StringBuffer)this.rFields.get(fieldIndex)).
                                                             delete(len-1, len);
                 }
 
                 // decode newsuperior
                 this.byteValue = this.base64Decoder.decoder(
-                         (StringBuffer)this.rLines.get(fieldIndex),
+                         (StringBuffer)this.rFields.get(fieldIndex),
                          index,
-                         ((StringBuffer)this.rLines.get(fieldIndex)).length());
+                         ((StringBuffer)this.rFields.get(fieldIndex)).length());
 
                 this.modInfo[2] = new String(this.byteValue, "UTF8");;
             }
@@ -1019,7 +1003,7 @@ public class LDIFReader extends LDIF implements LDAPImport {
         // oprations. '-'s are used to separate the opetrations
         for (i=startIndex; i<this.fieldNumber; i++) {
             // get the number of LDAP modify operations
-            if ( ((StringBuffer)this.rLines.get(i)).charAt(0) == (int)'-' ) {
+            if ( ((StringBuffer)this.rFields.get(i)).charAt(0) == (int)'-' ) {
                 modNumber++;
             }
         }
@@ -1029,53 +1013,50 @@ public class LDIFReader extends LDIF implements LDAPImport {
 
             // find mod operation name and attr name.
             for ( index=0;
-                  index<((StringBuffer)this.rLines.get(i)).length();
+                  index<((StringBuffer)this.rFields.get(i)).length();
                   index++ ) {
-                if (((StringBuffer)this.rLines.get(i)).
+                if (((StringBuffer)this.rFields.get(i)).
                                                     charAt(index)==(int)':'){
                     break;
                 }
             }
 
             // index points to ':' between mod operation name and attr name
-            opName = ((StringBuffer)this.rLines.get(i)).substring(0, index);
+            opName = ((StringBuffer)this.rFields.get(i)).substring(0, index);
             // already removed leading space; no trailing space
-            attrName = ((StringBuffer)this.rLines.get(i)).substring(index+1);
+            attrName = ((StringBuffer)this.rFields.get(i)).substring(index+1);
 
             // build each LDAPModification object and add it ot modList
             j = 1;
-            if (((StringBuffer)this.rLines.get(i+1)).charAt(0) != (int)'-') {
+            if (((StringBuffer)this.rFields.get(i+1)).charAt(0) != (int)'-') {
                 // there is at least one attribute value specified
                 for ( ;
-                      ((StringBuffer)this.rLines.get(i+j)).charAt(0)!=(int)'-';
+                      ((StringBuffer)this.rFields.get(i+j)).charAt(0)!=(int)'-';
                       j++) {
 
                     // index is used to get attribute value
                     for ( index=0;
-                          index<((StringBuffer)this.rLines.get(i+j)).length();
+                          index<((StringBuffer)this.rFields.get(i+j)).length();
                           index++ ) {
-                        if (((StringBuffer)this.rLines.get(i+j)).charAt(index)
+                        if (((StringBuffer)this.rFields.get(i+j)).charAt(index)
                                                                  == (int)':') {
                             break;
                         }
                     }
 
                     attr = new LDAPAttribute( attrName,
-                         ((StringBuffer)this.rLines.get(i+j))
+                         ((StringBuffer)this.rFields.get(i+j))
                                                           .substring(index+1));
 
                     if ( opName.equalsIgnoreCase("add") ) {
-                        //modType = LDAPOperation.MODIFY_ADD;
                         modList.add( new LDAPModification(
                                                   LDAPModification.ADD, attr));
                     }
                     else if ( opName.equalsIgnoreCase("delete") ) {
-                        //modType = LDAPOperation.MODIFY_DELETE;
                         modList.add( new LDAPModification(
                                                LDAPModification.DELETE, attr));
                     }
-                    else if ( opName.equalsIgnoreCase("replace") ) {
-                        //modType = LDAPOperation.MODIFY_REPLACE;
+                    else if ( opName.equalsIgnoreCase("replace") ) {                       
                         modList.add( new LDAPModification(
                                               LDAPModification.REPLACE, attr));
                     }
@@ -1092,13 +1073,11 @@ public class LDIFReader extends LDIF implements LDAPImport {
                 // true for 'delete' and 'replace' modify operation
                 attr = new LDAPAttribute(attrName);
 
-                if ( opName.equalsIgnoreCase("delete") ) {
-                    //modType = LDAPOperation.MODIFY_DELETE;
+                if ( opName.equalsIgnoreCase("delete") ) {                    
                     modList.add( new LDAPModification(
                                                LDAPModification.DELETE, attr));
                 }
-                else if ( opName.equalsIgnoreCase("replace") ) {
-                    //modType = LDAPOperation.MODIFY_REPLACE;
+                else if ( opName.equalsIgnoreCase("replace") ) {                    
                     modList.add( new LDAPModification(
                                               LDAPModification.REPLACE, attr));
                 }
