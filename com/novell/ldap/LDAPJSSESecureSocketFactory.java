@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPJSSESecureSocketFactory.java,v 1.2 2001/05/02 20:36:34 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPJSSESecureSocketFactory.java,v 1.3 2001/06/13 17:51:06 jhammons Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -30,7 +30,7 @@ import com.sun.net.ssl.SSLContext;
  * @see LDAPConnection#setSocketFactory
  */
 public class LDAPJSSESecureSocketFactory implements LDAPSocketFactory {
-    private static SocketFactory factory;
+    private SocketFactory factory;
     /**
      * Constructs an LDAPSecureSocketFactory object.
      *
@@ -41,6 +41,8 @@ public class LDAPJSSESecureSocketFactory implements LDAPSocketFactory {
     }
 
     /*
+     * Needed for TLS, doesn't work yet.
+     *
      * Constructs a SecureSocketFactory using the SSLContext as specified.  Note
      * that ctx should be initialized by the method init before calling this
      * method.
@@ -83,6 +85,8 @@ public class LDAPJSSESecureSocketFactory implements LDAPSocketFactory {
     }
 
 /*
+    *  Useful for testing
+    *
     public void testInstallation(String inetaddress, int port) throws java.io.IOException {
         SSLSocket sslSocket = (SSLSocket)factory.createSocket(inetaddress, port);
         String [] cipherSuites = sslSocket.getEnabledCipherSuites();
