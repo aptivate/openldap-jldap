@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPUrl.java,v 1.11 2000/09/26 18:17:33 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPUrl.java,v 1.12 2000/09/26 22:28:22 vtag Exp $
 *
 * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
 * 
@@ -32,17 +32,18 @@ import com.novell.ldap.client.Debug;
 */
 public class LDAPUrl {
 
+	static private final String DEFAULT_FILTER = "(objectClass=*)";
+	static private final int    DEFAULT_SCOPE  = LDAPv2.SCOPE_BASE;
     // Broken out parts of the URL
-    static private boolean    enclosed = false;             // URL is enclosed by < & >
-    static private boolean    secure = false;               // URL scheme ldap/ldaps
-    static private boolean    ipV6 = false;                 // TCP/IP V6
-    static private String     host = null;                  // Host
-    static private int        port;                         // Port
-    static private String     dn = "";                      // Base DN
-    static private String[]   attrs = null;                 // Attributes
-    static private String     filter = "(objectClass=*)";   // Filter
-    static private int        scope  = LDAPv2.SCOPE_BASE;   // Scope
-    static private String[]   extensions = null;            // Extensions
+    private boolean    secure = false;               // URL scheme ldap/ldaps
+    private boolean    ipV6 = false;                 // TCP/IP V6
+    private String     host = null;                  // Host
+    private int        port;                         // Port
+    private String     dn = "";                      // Base DN
+    private String[]   attrs = null;                 // Attributes
+    private String     filter = null;                // Filter
+    private int        scope  = DEFAULT_SCOPE;       // Scope
+    private String[]   extensions = null;            // Extensions
 
     /*
     * 4.38.1 Constructors
@@ -262,6 +263,8 @@ public class LDAPUrl {
     * @return The search filter.
     */
     public String getFilter() {
+		if( filter == null )
+			return DEFAULT_FILTER;
 		return filter;
     }
 
@@ -293,6 +296,21 @@ public class LDAPUrl {
     }
 
     /*
+    * 4.38.11 getScope
+    */
+
+    /**
+    * Returns the depth of search (in the DN namespace) - one of
+	* SCOPE_BASE, SCOPE_ONE, SCOPE_SUB from LDAPv2.
+    *
+    * @return The search scope
+    */
+    public int getScope()
+    {
+		return scope;
+    }
+
+    /*
     * 4.38.12 getUrl
     */
 
@@ -304,20 +322,75 @@ public class LDAPUrl {
     public String getUrl()
     {
 		StringBuffer url = new StringBuffer( 256 );
-		if( enclosed ) {
-			url.append( "<" );
-		}
+		// Scheme
 		if( secure ) {
 			url.append( "ldaps://" );
 		} else {
 			url.append( "ldap://" );
 		}
+		// Host:port/dn
 		if( ipV6 ) {
 			url.append( "[" );
 		}
-		url.append( host + ":" + port + "/");
+		url.append( host + ":" + port + "/" + dn );
 
-        throw new RuntimeException("LDAPUrl: getUrl() not implemented");
+		if( (attrs == null) && (scope == DEFAULT_SCOPE) &&
+				(filter == null) && (extensions == null) ) {
+			return url.toString();
+		}
+
+		// attributes
+		url.append( "?" );
+		if( attrs != null) {
+			for( int i = 0; i < attrs.length; i++ ) {
+				url.append( attrs[i]);
+				if( i < (attrs.length - 1)) {
+					url.append( "," );
+				}
+			}
+		}
+
+		if( (scope == DEFAULT_SCOPE) && 
+				(filter == null) && (extensions == null) ) {
+			return url.toString();
+		}
+
+		// scope
+		url.append( "?" );
+		if( scope != DEFAULT_SCOPE ) {
+			if( scope == LDAPv2.SCOPE_ONE) {
+				url.append( "one" );
+			} else {
+				url.append( "sub" );
+			}
+		}
+		
+		if( (filter == null) && (extensions == null) ) {
+			return url.toString();
+		}
+
+		// filter
+		if( filter == null ) {
+			url.append( "?" );
+		} else {
+			url.append( "?" + getFilter() );
+		}
+
+		if( extensions == null) {
+			return url.toString();
+		}
+
+		// extensions
+		url.append( "?" );
+		if( extensions != null) {
+			for( int i = 0; i < extensions.length; i++ ) {
+				url.append( extensions[i]);
+				if( i < (extensions.length - 1) ) {
+					url.append( "," );
+				}
+			}
+		}
+		return url.toString();
     }
 
     private String[] parseList( String listStr,    // input String
@@ -382,7 +455,6 @@ public class LDAPUrl {
         if( url.charAt(scanStart) == '<') {
             if( url.charAt(scanEnd - 1) != '>')
                 throw new MalformedURLException("LDAPUrl: URL bad enclosure");
-            enclosed = true;
             scanStart += 1;
             scanEnd -= 1;
             if( Debug.LDAP_DEBUG)
@@ -560,7 +632,8 @@ public class LDAPUrl {
             filter = filterStr;    // Only modify if not the default filter
         }
         if( Debug.LDAP_DEBUG)
-            Debug.trace(  Debug.urlParse, "parseURL: filter " + filter);
+            Debug.trace(  Debug.urlParse, "parseURL: filter " + getFilter() );
+
 
         scanStart = extStart + 1;                    
         if( (scanStart >= scanEnd) || (extStart < 0) )
