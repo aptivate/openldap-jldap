@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Decoder.java,v 1.6 2001/03/15 19:18:29 javed Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Decoder.java,v 1.7 2001/04/06 17:00:19 javed Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -38,12 +38,16 @@ public interface ASN1Decoder extends Serializable {
 
    /**
     * Decode an encoded value into an ASN1Object from a byte array.
+    *
+    * @param value A byte array that points to the encoded ASN1 data
     */
    public ASN1Object decode(byte[] value);
 
    
    /**
     * Decode an encoded value into an ASN1Object from an InputStream.
+    *
+    * @param in An input stream containig the encoded ASN.1 data.
     */
    public ASN1Object decode(InputStream in)
       throws IOException;
@@ -56,6 +60,8 @@ public interface ASN1Decoder extends Serializable {
     * handy when decoding structured types. It allows you to accumulate 
     * the number of bytes decoded, so you know when the structured 
     * type has decoded all of its components.
+    *
+    * @param in An input stream containig the encoded ASN.1 data.
     */
    public ASN1Object decode(InputStream in, int[] length)
       throws IOException;
@@ -66,6 +72,10 @@ public interface ASN1Decoder extends Serializable {
    /**
     * Decode a BOOLEAN directly from a stream. Call this method when you
     * know that the next ASN.1 encoded element is a BOOLEAN
+    *
+    * @param in An input stream containig the encoded ASN.1 data.
+    *
+    * @param len Length in bytes
     */
    public Object decodeBoolean(InputStream in, int len)
       throws IOException;
@@ -75,6 +85,10 @@ public interface ASN1Decoder extends Serializable {
     * know that the next ASN.1 encoded element is a Numeric
     *
     * <p>Can be used to decodes INTEGER and ENUMERATED types.
+    *
+    * @param in An input stream containig the encoded ASN.1 data.
+    *
+    * @param len Length in bytes    
     */
    public Object decodeNumeric(InputStream in, int len)
       throws IOException;
@@ -97,6 +111,10 @@ public interface ASN1Decoder extends Serializable {
    /**
     * Decode an OCTET_STRING directly from a stream. Call this method when you
     * know that the next ASN.1 encoded element is a OCTET_STRING.
+    *
+    * @param in An input stream containig the encoded ASN.1 data.
+    *
+    * @param len Length in bytes    
     */
    public Object decodeOctetString(InputStream in, int len)
       throws IOException;
@@ -115,6 +133,10 @@ public interface ASN1Decoder extends Serializable {
     * Decode a CharacterString directly from a stream.
     *
     * Decodes any of the specialized character strings.
+    *
+    * @param in An input stream containig the encoded ASN.1 data.
+    *
+    * @param len Length in bytes    
     */
    public Object decodeCharacterString(InputStream in, int len)
       throws IOException;

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Encoder.java,v 1.7 2001/03/15 19:18:30 javed Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Encoder.java,v 1.8 2001/04/06 17:00:19 javed Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -39,7 +39,12 @@ public interface ASN1Encoder extends Serializable {
    /* Encoders for ASN.1 simple types */
 
    /**
-    * Encode an ASN1Boolean directly into the provided output stream.
+    * Encode an ASN1Boolean directly into the provided output stream.<br>
+    *
+    * @param b The ASN1Boolean object to encode<br>
+    *
+    * @param out The output stream onto which the ASN.1 object is 
+    * to be encoded<br>    
     */
    public void encode(ASN1Boolean b, OutputStream out)
       throws IOException;
@@ -50,7 +55,12 @@ public interface ASN1Encoder extends Serializable {
     * <p>Use a two's complement representation in the fewest number of octets
     * possible.
     *
-    * Will encode INTEGER and ENUMERATED values.
+    * Can be used to encode both INTEGER and ENUMERATED values.<br>
+    *
+    * @param n The ASN1Numeric object to encode<br>
+    *
+    * @param out The output stream onto which the ASN.1 object is 
+    * to be encoded<br>
     */
    public void encode(ASN1Numeric n, OutputStream out)
       throws IOException;
@@ -63,6 +73,11 @@ public interface ASN1Encoder extends Serializable {
     
    /**
     * Encode an ASN1Null directly to a stream.
+    *
+    * @param n The ASN1Null object to encode<br>
+    *
+    * @param out The output stream onto which the ASN.1 object is 
+    * to be encoded<br>    
     */
    public void encode(ASN1Null n, OutputStream out)
       throws IOException;
@@ -75,6 +90,11 @@ public interface ASN1Encoder extends Serializable {
 
    /**
     * Encode an ASN1OctetString directly to a stream.
+    *
+    * @param n The ASN1OctetString object to encode<br>
+    *
+    * @param out The output stream onto which the ASN.1 object is 
+    * to be encoded<br>     
     */
    public void encode(ASN1OctetString os, OutputStream out)
       throws IOException;
@@ -96,12 +116,22 @@ public interface ASN1Encoder extends Serializable {
 
    /**
     * Encode an ASN1Structured directly to a stream.
+    *
+    * @param n The ASN1Structured object to encode<br>
+    *
+    * @param out The output stream onto which the ASN.1 object is 
+    * to be encoded<br>  
     */
    public void encode(ASN1Structured c, OutputStream out)
       throws IOException;
 
    /**
     * Encode an ASN1Tagged directly to a stream.
+    *
+    * @param n The ASN1Tagged object to encode<br>
+    *
+    * @param out The output stream onto which the ASN.1 object is 
+    * to be encoded<br>      
     */
    public void encode(ASN1Tagged t, OutputStream out)
       throws IOException;
@@ -114,7 +144,12 @@ public interface ASN1Encoder extends Serializable {
 
    /**
     * Encode an ASN1Identifier directly to a stream.
-    */
+    *
+    * @param n The ASN1Identifier object to encode<br>
+    *
+    * @param out The output stream onto which the ASN.1 object is 
+    * to be encoded<br>      
+    */    
    public void encode(ASN1Identifier id, OutputStream out)
       throws IOException;
 }
