@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPException.java,v 1.16 2000/11/06 22:29:48 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/client/LocalException.java,v 1.1 2001/01/04 20:14:48 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -16,6 +16,7 @@
 package com.novell.ldap.client;
 
 import com.novell.ldap.*;
+import com.novell.ldap.client.Debug;
 
 public class LocalException extends LDAPException
 {
@@ -36,6 +37,10 @@ public class LocalException extends LDAPException
     {
         super( message, resultCode);
         this.request = request;            
+        if( Debug.LDAP_DEBUG) {
+            Debug.trace( Debug.messages, "LocalException created with msg \"" +
+                message + "\" and  code " + resultCode);
+        }
         return;
     }
     

@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/client/Message.java,v 1.8 2001/01/03 18:46:21 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/client/Message.java,v 1.9 2001/01/04 20:14:48 vtag Exp $
 *
 * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
 * 
@@ -468,7 +468,7 @@ public class Message extends Thread
             }
             // Note: Abandon clears the bind semaphore after failed bind.
             abandon( null, true);
-            putException( new LocalException("Client timed out operation",
+            putException( new LocalException("Client request timed out",
                 LDAPException.LDAP_TIMEOUT, this));
         } catch ( InterruptedException ie ) {
             if( Debug.LDAP_DEBUG) {

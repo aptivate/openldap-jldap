@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPException.java,v 1.16 2000/11/06 22:29:48 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPException.java,v 1.17 2001/01/04 20:24:25 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -16,6 +16,7 @@
 package com.novell.ldap;
 
 import java.util.Locale;
+import com.novell.ldap.client.Debug;
  
 /**
  *
@@ -109,7 +110,6 @@ public class LDAPException extends Exception
 {
 
    private int resultCode;
-   private String errorMessage = null;
    private String matchedDN = null;
 
    /**
@@ -133,6 +133,10 @@ public class LDAPException extends Exception
    {
       super(message);
       this.resultCode = resultCode;
+      if( Debug.LDAP_DEBUG) {
+        Debug.trace( Debug.messages, "LDAPException created with msg \"" +
+            message + "\" and code " + resultCode);
+      }
    }
 
    /**
@@ -147,12 +151,11 @@ public class LDAPException extends Exception
     *  @param matchedDN      The part of the distinguished name that 
     *                        the server could match.
     */
-   public LDAPException(String errorMessage,
+   public LDAPException(String message,
                         int resultCode,
                         String matchedDN)
    {
-      super(errorMessage);
-      this.errorMessage = errorMessage;
+      super(message);
       this.matchedDN = matchedDN;
       this.resultCode = resultCode;
    }
@@ -229,7 +232,7 @@ public class LDAPException extends Exception
     */
    public String getLDAPErrorMessage()
    {
-      return errorMessage;
+      return super.getMessage();
    }
 
    /**
