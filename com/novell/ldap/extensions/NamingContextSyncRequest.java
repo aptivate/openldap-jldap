@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: NamingContextSyncRequest.java,v 1.3 2000/08/04 15:32:31 javed Exp $
+ * $Id: NamingContextSyncRequest.java,v 1.4 2000/08/08 16:58:42 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -20,8 +20,7 @@ import java.io.*;
  
 /**
  *
- *      This class inherits from the LDAPExtendedOperation class
- *  and is used to synchronize all replicas in a partition ring<br><br>
+ *      This class is used to synchronize all replicas in a partition ring<br><br>
  *
  *  The OID used for this extended operation is:
  *      "2.16.840.1.113719.1.27.100.25"<br><br>
@@ -39,13 +38,13 @@ public class NamingContextSyncRequest extends LDAPExtendedOperation {
  *
  *      The constructor takes four parameters:<br><br>
  *
- *      String  serverName:     The server to sync from<br><br>
+ * @param serverName     The server to sync from<br><br>
  *
- *      String partitionRoot:   Specify the distinguished name of the replica
+ * @param partitionRoot   Specify the distinguished name of the replica
  *                              that will be synchronized<br><br>
  *
- *      int delay:              The time in seconds after which the synchronization 
- *                              should start.<br><br>
+ * @param delay              The time in seconds after which the synchronization 
+ *                              should start.
  *
  */   
  public NamingContextSyncRequest(String serverName, String partitionRoot, int delay) 

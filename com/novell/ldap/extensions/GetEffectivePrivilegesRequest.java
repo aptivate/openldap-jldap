@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: GetEffectivePrivilegesRequest.java,v 1.2 2000/08/04 15:32:30 javed Exp $
+ * $Id: GetEffectivePrivilegesRequest.java,v 1.3 2000/08/08 16:58:42 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -20,20 +20,16 @@ import java.io.*;
  
 /**
  *
- *      This class inherits from the LDAPExtendedOperation class
- *  and returns the distingusihed name of the object your are 
- *  logged in as.<br><br>
+ * This class is used to get the effective rights of one object on an
+ * specific attribute of another object<br><br>
  *
- *  This class is used to build the extended request for
- *  getting the effective rights of the specified entry
- *  on the attribute of another entry.  To use this class instantiate
- *  an object of this class and then call the extendedOperation method 
- *  with this object as the required LDAPExtendedOperation parameter.<br><br>
+ * To use this class instantiate an object of this class and then call the 
+ * extendedOperation method with this object as the required 
+ * LDAPExtendedOperation parameter.<br><br>
  *
- *  The returned LDAPExtendedResponse object can then be converted to
- *  a GetEffectivePrivilegesRequest object.  The 
- *  GetEffectivePrivilegesRequest object contains
- *  methods for retreiving the effective rights.<br><br>
+ * The returned LDAPExtendedResponse object can then be converted to
+ * a GetEffectivePrivilegesRequest object.  The GetEffectivePrivilegesRequest object contains
+ * methods for retreiving the effective rights.<br><br>
  *
  *  The OID used for this extended operation is:
  *      "2.16.840.1.113719.1.27.100.33"<br><br>
@@ -48,12 +44,11 @@ import java.io.*;
  public class GetEffectivePrivilegesRequest extends LDAPExtendedOperation {
  
     /**
-    *      The constructor takes four parameters:<br><br>
+    *      The constructor takes three parameters:<br><br>
     *
-    *   This API takes three parameters.  
-    * String dn: dn of the entry whose attribute follows
-    * String trusteeDN: dn of the entry whose trustee rights are being returned
-    * String attrName: LDAP attribute name.
+    * @param dn dn of the entry whose attribute follows
+    * @param trusteeDN dn of the entry whose trustee rights are being returned
+    * @param attrName LDAP attribute name.
     *
     */  
 

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: AddReplicaRequest.java,v 1.4 2000/08/04 15:32:29 javed Exp $
+ * $Id: AddReplicaRequest.java,v 1.5 2000/08/08 16:58:41 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -20,8 +20,7 @@ import java.io.*;
  
 /**
  *
- *      This class inherits from the LDAPExtendedOperation class
- *  and is used to add a replica to the specified directory server.
+ *      This class is used to add a replica to the specified directory server.
  *  To add a replica to a particular server create an instance of this 
  *  class and then call the extendedOperation method with this
  *  object as the required LDAPExtendedOperation parameter<br>
@@ -43,20 +42,15 @@ public class AddReplicaRequest extends LDAPExtendedOperation {
  *
  *      The constructor takes four parameters:<br><br>
  *
- *      String dn:          Specify the distinguished name of the replicas
- *                          partition root<br><br>
+ * @param dn Specify the distinguished name of the replicas partition root<br><br>
  *
- *      String serverDN:    Points to the server on which the replica
- *                          will be added<br><br>
+ * @param serverDN Points to the server on which the replica will be added<br><br>
  *      
- *      int replicaType:    The type of replica that needs to be added. The
- *                          replica types are defined int the 
- *                          NamingContextConstants class<br><br>
+ * @param replicaType The type of replica that needs to be added. The replica 
+ * types are defined int the NamingContextConstants class<br><br>
  *
- *      int flags:          Specifies if all servers in the replica ring 
- *                          must be up before proceeding.  Set to 
- *                          LDAP_ENSURE_SERVERS_UP field defined in the 
- *                          NamingContextConstants class.<br><br>
+ * @param flags Specifies if all servers in the replica ring must be up before proceeding.  Set to 
+ * LDAP_ENSURE_SERVERS_UP field defined in the NamingContextConstants class.<br><br>
  */   
  public AddReplicaRequest(String dn, String serverDN, int replicaType, int flags) 
                 throws LDAPException {

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: NamingContextEntryCountResponse.java,v 1.3 2000/08/04 15:32:31 javed Exp $
+ * $Id: NamingContextEntryCountResponse.java,v 1.4 2000/08/08 19:43:55 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -57,8 +57,9 @@ public class NamingContextEntryCountResponse implements ParsedExtendedResponse {
         count = asn1_count.getInt();
    }
    
-   /** Call this method to retreive the count of the objects
-    *  returned by the server
+   /** 
+    * 
+    * @return the count of the number of objects returned
     */
    public int getCount() {
         return count;

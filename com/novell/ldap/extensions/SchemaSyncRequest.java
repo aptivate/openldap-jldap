@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: SchemaSyncRequest.java,v 1.3 2000/08/04 15:32:31 javed Exp $
+ * $Id: SchemaSyncRequest.java,v 1.4 2000/08/08 16:58:43 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -20,11 +20,10 @@ import java.io.*;
  
 /**
  *
- *      This class inherits from the LDAPExtendedOperation class
- *  and is used to synchronize the schema.<br>
+ *      This class is used to synchronize the schema.<br><br>
  *
  *  The OID used for this extended operation is:
- *      "2.16.840.1.113719.1.27.100.27"<br>
+ *      "2.16.840.1.113719.1.27.100.27"<br><br>
  *
  *  The RequestValue has the folling ASN:<br><br>
  *
@@ -35,14 +34,12 @@ import java.io.*;
 public class SchemaSyncRequest extends LDAPExtendedOperation {
    
 /**
- *
  *      The constructor takes four parameters:<br><br>
  *
- *      String  serverName:     The server to sync from<br><br>
+ * @param serverName:     The server to sync from<br><br>
  *
- *
- *      int delay:              The time in seconds after which the synchronization 
- *                              should start.<br><br>
+ * @param delay:              The time in seconds after which the synchronization 
+ *                              should start.
  *
  */   
  public SchemaSyncRequest(String serverName, int delay) 

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: SendAllUpdatesRequest.java,v 1.3 2000/08/04 15:32:32 javed Exp $
+ * $Id: SendAllUpdatesRequest.java,v 1.4 2000/08/08 16:58:43 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -20,8 +20,7 @@ import java.io.*;
  
 /**
  *
- *      This class inherits from the LDAPExtendedOperation class
- *  and is used to schedule an updated request to be sent to all
+ *      This class is used to schedule an updated request to be sent to all
  *  directory servers in a partition ring.<br>
  *
  *  The OID used for this extended operation is:
@@ -39,10 +38,10 @@ public class SendAllUpdatesRequest extends LDAPExtendedOperation {
  *
  *      The constructor takes four parameters:<br><br>
  *
- *      String partitionRoot:   Specify the distinguished name of the replica
- *                              that will be updated<br><br>
+ * @param partitionRoot Specify the distinguished name of the replica
+ * that will be updated<br><br>
  *
- *      String origServerDN:      The server holding the replica to be updated
+ * @param origServerDN      The server holding the replica to be updated
  *
  */   
  public SendAllUpdatesRequest(String partitionRoot, String origServerDN) 

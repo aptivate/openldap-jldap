@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: RemoveOrphanNamingContextRequest.java,v 1.3 2000/08/04 15:32:31 javed Exp $
+ * $Id: RemoveOrphanNamingContextRequest.java,v 1.4 2000/08/08 16:58:42 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -19,14 +19,13 @@ import org.ietf.asn1.*;
 import java.io.*;
  
 /**
- *      This class inherits from the LDAPExtendedOperation class
- *  and is used to delete an orphan partition.
+ *      This class is used to delete an orphan partition.
  *  To delete an orphan partition create an instance of this 
  *  class and then call the extendedOperation method with this
  *  object as the required LDAPExtendedOperation parameter.<br><br>
  *
  *  The OID used for this extended operation is:
- *      "2.16.840.1.113719.1.27.100.41"<br>
+ *      "2.16.840.1.113719.1.27.100.41"<br><br>
  *
  *  The RequestValue has the folling ASN:<br><br>
  *
@@ -39,11 +38,11 @@ public class RemoveOrphanNamingContextRequest extends LDAPExtendedOperation {
 /**
  *      The constructor takes two parameters:<br><br>
  *
- *      String serverDN:    Specify the distinguished name of the 
- *                          server on which the orphan parition resides.<br><br>
+ * @param serverDN:    Specify the distinguished name of the 
+ * server on which the orphan parition resides.<br><br>
  *
- *      String contextName: Specifies the distinguished name of the 
- *                          orphan partition to delete.<br><br>
+ * @param contextName: Specifies the distinguished name of the 
+ * orphan partition to delete.<br><br>
  */   
  public RemoveOrphanNamingContextRequest(String serverDN, String contextName) 
                 throws LDAPException {

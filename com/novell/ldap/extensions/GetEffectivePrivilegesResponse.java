@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: GetEffectivePrivilegesResponse.java,v 1.2 2000/08/04 15:32:30 javed Exp $
+ * $Id: GetEffectivePrivilegesResponse.java,v 1.3 2000/08/08 19:43:55 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -56,7 +56,9 @@ public class GetEffectivePrivilegesResponse implements ParsedExtendedResponse {
         privileges = asn1_privileges.getInt();
    }
    
-   /** This method returns the privileges returned by the server
+   /** 
+    * @return A flag which is a combination of zero or more privilege flags as
+    * returned by the server
     */
    public int getPrivileges() {
         return privileges;

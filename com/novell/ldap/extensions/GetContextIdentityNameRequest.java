@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: GetContextIdentityNameRequest.java,v 1.2 2000/08/04 15:32:30 javed Exp $
+ * $Id: GetContextIdentityNameRequest.java,v 1.3 2000/08/08 16:58:42 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -20,8 +20,7 @@ import java.io.*;
  
 /**
  *
- *      This class inherits from the LDAPExtendedOperation class
- *  and returns the distingusihed name of the object your are 
+ *      This class returns the distingusihed name of the object your are 
  *  logged in as.<br><br>
  *
  *  To use this API create an instance of this 

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: CreateOrphanNamingContextRequest.java,v 1.3 2000/08/04 15:32:29 javed Exp $
+ * $Id: CreateOrphanNamingContextRequest.java,v 1.4 2000/08/08 16:58:41 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -20,13 +20,12 @@ import java.io.*;
  
 /**
  *
- *      This class inherits from the LDAPExtendedOperation class
- *  and is used to create an orphan partition.<br><br>
- *  To create a new naming orphan partition create an instance of this 
- *  class and then call the extendedOperation method with this
- *  object as the required LDAPExtendedOperation parameter.<br><br>
+ * This class is used to create a new naming orphan partition.<br><br>
  *
- *  The OID used for this extended operation is:
+ * To create an instance of this class and then call the extendedOperation method with this
+ * object as the required LDAPExtendedOperation parameter.<br><br>
+ *
+ * The OID used for this extended operation is:
  *      "2.16.840.1.113719.1.27.100.39"<br><br>
  *
  *  The RequestValue has the folling ASN:<br><br>
@@ -41,12 +40,12 @@ public class CreateOrphanNamingContextRequest extends LDAPExtendedOperation {
  *
  *      The constructor takes two parameters:<br><br>
  *
- *      String serverDN:    Specify the distinguished name of the 
- *                          server on which the new orphan parition
- *                          will reside.<br><br>
+ * 
+ * @param serverDN:    Specify the distinguished name of the 
+ * server on which the new orphan parition will reside.<br><br>
  *
- *      String contextName: Specifies the distinguished name of the 
- *                          new orphan partition.<br><br>
+ * @param contextName: Specifies the distinguished name of the 
+ * new orphan partition.<br><br>
  */   
  public CreateOrphanNamingContextRequest(String serverDN, String contextName) 
                 throws LDAPException {

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: ChangeReplicaTypeRequest.java,v 1.3 2000/08/04 15:32:29 javed Exp $
+ * $Id: ChangeReplicaTypeRequest.java,v 1.4 2000/08/08 16:58:41 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -20,11 +20,10 @@ import java.io.*;
  
 /**
  *
- *      This class inherits from the LDAPExtendedOperation class
- *  and is used to change the type of the replica that resides 
+ *      This class is used to change the type of the replica that resides 
  *  on the specified directory server.  Create an instance of this 
  *  class and then call the extendedOperation method with this
- *  object as the required LDAPExtendedOperation parameter.<br>
+ *  object as the required LDAPExtendedOperation parameter.<br><br>
  *
  *  The OID used for this extended operation is:
  *      "2.16.840.1.113719.1.27.100.15"<br>
@@ -43,19 +42,18 @@ public class ChangeReplicaTypeRequest extends LDAPExtendedOperation {
  *
  *      The constructor takes four parameters:<br><br>
  *
- *      String dn:          Specify the distinguished name of the replica's
- *                          partition root<br><br>
+ * @param dn:          Specify the distinguished name of the replica's
+ * partition root<br><br>
  *
- *      String serverDN:    Points to the server on which the
- *							interesting replica resides<br><br>
+ * @param serverDN:    Points to the server on which the
+ * interesting replica resides<br><br>
  *      
- *      int replicaType:    The new replica type. The replica types are defined 
- *							in the NamingContextConstants class<br><br>
+ * @param replicaType:    The new replica type. The replica types are defined 
+ * in the NamingContextConstants class<br><br>
  *
- *      int flags:          Specifies if all servers in the replica ring 
- *                          must be up before proceeding.  Set to 
- *                          LDAP_ENSURE_SERVERS_UP field defined in the 
- *                          NamingContextConstants class .<br><br>
+ * @param flags:          Specifies if all servers in the replica ring 
+ * must be up before proceeding.  Set to LDAP_ENSURE_SERVERS_UP field defined in the 
+ * NamingContextConstants class .<br><br>
  */   
  public ChangeReplicaTypeRequest(String dn, String serverDN, int replicaType, int flags) 
                 throws LDAPException {

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: MergeNamingContextsRequest.java,v 1.5 2000/08/04 15:32:30 javed Exp $
+ * $Id: MergeNamingContextsRequest.java,v 1.6 2000/08/08 16:58:42 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -20,8 +20,7 @@ import java.io.*;
  
 /**
  *
- *      This class inherits from the LDAPExtendedOperation class
- *  and is used to create a new naming context. (NDS partition).
+ *      This class is used to create a new naming context. (NDS partition).<br><br>
  *  To create a new naming context create an instance of this 
  *  class and then call the extendedOperation method with this
  *  object as the required LDAPExtendedOperation parameter<br><br>
@@ -43,10 +42,10 @@ public class MergeNamingContextsRequest extends LDAPExtendedOperation {
 /**
  *      The constructor takes two parameters:<br><br>
  *
- *      String dn:  Specify the distinguished name of the child naming
+ * @param dn  Specify the distinguished name of the child naming
  *                  contexts root - that is to be joined to its parent.<br><br>
  *
- *      int flags:  Specifies if all servers in the replica ring must be
+ * @param flags  Specifies if all servers in the replica ring must be
  *                  up before proceeding.  Set to LDAP_ENSURE_SERVERS_UP 
  *                  field defined in the NamingContextConstants class.<br><br>
  */

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: AbortNamingContextOperationRequest.java,v 1.4 2000/08/04 17:25:00 javed Exp $
+ * $Id: AbortNamingContextOperationRequest.java,v 1.5 2000/08/08 16:58:41 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -20,16 +20,15 @@ import java.io.*;
  
 /**
  *
- *      This class inherits from the LDAPExtendedOperation class
- *  and is used to abort the last naming context operation that 
+ *      This class is used to abort the last naming context operation that 
  *  was requested on the specified naming context (assuming it is
- *  still pending). <br>
+ *  still pending). <br><br>
  *  
  *  To add a replica to a particular server create an instance of this 
  *  class and then call the extendedOperation method with this
- *  object as the required LDAPExtendedOperation parameter.<br>
+ *  object as the required LDAPExtendedOperation parameter.<br><br>
  *  
- *  The OID used for this extended operation is: "2.16.840.1.113719.1.27.100.7"<br>
+ *  The OID used for this extended operation is: "2.16.840.1.113719.1.27.100.7"<br><br>
  *  
  *  The RequestValue has the folling ASN:<br><br>
  *  
@@ -42,10 +41,10 @@ public class AbortNamingContextOperationRequest extends LDAPExtendedOperation {
 /**
  * The constructor takes two parameters:<br><br>
  *
- * String partitionDN: Specify the distinguished name of the replicas 
- * partition root. <br><br>
+ * @param partitionDN Specify the distinguished name of the replicas 
+ * partition root.<br><br>
  *
- * int flags: Specifies if all servers in the replica ring must 
+ * @param flags Specifies if all servers in the replica ring must 
  * be up before proceeding.  Set to LDAP_ENSURE_SERVERS_UP field defined 
  * in the NamingContextConstants class.
  */   

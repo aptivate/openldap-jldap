@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: NamingContextConstants.java,v 1.11 2000/08/01 01:03:32 javed Exp $
+ * $Id: NamingContextConstants.java,v 1.12 2000/08/04 15:32:30 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -21,11 +21,13 @@ import java.io.IOException;
 /**
  * public class NamingContextConstants
  *
+ * This class contains a collection of constants used throughout the 
+ * Extension code.
  */
 public class NamingContextConstants {
    
     /**
-     * Extended Operation Request and Repsonse OIDs
+     * The following are list of constants identifying the LDAP Request and Repsonse OIDs
      *
      */
     public static final String CREATE_NAMING_CONTEXT_REQ    = "2.16.840.1.113719.1.27.100.3";
@@ -78,7 +80,7 @@ public class NamingContextConstants {
     
     
     /**
-     * Replica Type Constants
+     * Replica Type constants supported are listed below
      *
      */
     public static final int LDAP_RT_MASTER          = 0;
@@ -89,7 +91,7 @@ public class NamingContextConstants {
     public static final int LDAP_RT_SPARSE_READ     = 5; 
     
     /**
-     * Replica States
+     * Replica States supported are listed below
      */
      
     public static final int LDAP_RS_ON              = 0;
@@ -107,7 +109,7 @@ public class NamingContextConstants {
     public static final int LDAP_RS_JS_1            = 65;   // Replica joining 1
     public static final int LDAP_RS_JS_2            = 66;   // Replica joining 2
     
-    /** EFFECTIVE PRIVILIGES FLAGS
+    /** Priviliges are identified by a combination of the following flags
      *
      */
     public static final int LDAP_DS_ATTR_COMPARE    = 0x0001;
