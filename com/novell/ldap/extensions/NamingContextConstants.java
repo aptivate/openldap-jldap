@@ -91,12 +91,12 @@ public class NamingContextConstants {
     /**
      * A constant for the changeReplicaTypeRequest OID.
      */
-	public static final String CHANGE_REPLICA_TYPE_REQ		= "2.16.840.1.113719.1.27.100.15";
+    public static final String CHANGE_REPLICA_TYPE_REQ      = "2.16.840.1.113719.1.27.100.15";
 
 /**
      * A constant for the changeReplicaTypeResponse OID.
      */
-	public static final String CHANGE_REPLICA_TYPE_RES		= "2.16.840.1.113719.1.27.100.16";
+    public static final String CHANGE_REPLICA_TYPE_RES      = "2.16.840.1.113719.1.27.100.16";
 
     /**
      * A constant for the getReplicaInfoRequest OID.
@@ -111,52 +111,52 @@ public class NamingContextConstants {
     /**
      * A constant for the listReplicaRequest OID.
      */
-	public static final String LIST_REPLICAS_REQ            = "2.16.840.1.113719.1.27.100.19";
+    public static final String LIST_REPLICAS_REQ            = "2.16.840.1.113719.1.27.100.19";
 
     /**
      * A constant for the listReplicaResponse OID.
      */
-	public static final String LIST_REPLICAS_RES    		= "2.16.840.1.113719.1.27.100.20";
+    public static final String LIST_REPLICAS_RES            = "2.16.840.1.113719.1.27.100.20";
 
     /**
      * A constant for the receiveAllUpdatesRequest OID.
      */
-    public static final String RECEIVE_ALL_UPDATES_REQ		= "2.16.840.1.113719.1.27.100.21";
+    public static final String RECEIVE_ALL_UPDATES_REQ      = "2.16.840.1.113719.1.27.100.21";
 
     /**
      * A constant for the receiveAllUpdatesResponse OID.
      */
-	public static final String RECEIVE_ALL_UPDATES_RES		= "2.16.840.1.113719.1.27.100.22";
+    public static final String RECEIVE_ALL_UPDATES_RES      = "2.16.840.1.113719.1.27.100.22";
 
     /**
      * A constant for the sendAllUpdatesRequest OID.
      */
-    public static final String SEND_ALL_UPDATES_REQ		    = "2.16.840.1.113719.1.27.100.23";
+    public static final String SEND_ALL_UPDATES_REQ         = "2.16.840.1.113719.1.27.100.23";
 
     /**
      * A constant for the sendAllUpdatesResponse OID.
      */
-	public static final String SEND_ALL_UPDATES_RES		    = "2.16.840.1.113719.1.27.100.24";
+    public static final String SEND_ALL_UPDATES_RES         = "2.16.840.1.113719.1.27.100.24";
 
     /**
      * A constant for the requestNamingContextSyncRequest OID.
      */
-    public static final String NAMING_CONTEXT_SYNC_REQ	    = "2.16.840.1.113719.1.27.100.25";
+    public static final String NAMING_CONTEXT_SYNC_REQ      = "2.16.840.1.113719.1.27.100.25";
 
     /**
      * A constant for the requestNamingContextSyncResponse OID.
      */
-	public static final String NAMING_CONTEXT_SYNC_RES	    = "2.16.840.1.113719.1.27.100.26";
+    public static final String NAMING_CONTEXT_SYNC_RES      = "2.16.840.1.113719.1.27.100.26";
 
     /**
      * A constant for the requestSchemaSyncRequest OID.
      */
-	public static final String SCHEMA_SYNC_REQ		        = "2.16.840.1.113719.1.27.100.27";
+    public static final String SCHEMA_SYNC_REQ              = "2.16.840.1.113719.1.27.100.27";
 
     /**
      * A constant for the requestSchemaSyncResponse OID.
      */
-	public static final String SCHEMA_SYNC_RES	    	    = "2.16.840.1.113719.1.27.100.28";
+    public static final String SCHEMA_SYNC_RES              = "2.16.840.1.113719.1.27.100.28";
 
     /**
      * A constant for the abortNamingContextOperationRequest OID.
@@ -166,42 +166,42 @@ public class NamingContextConstants {
     /**
      * A constant for the abortNamingContextOperationResponse OID.
      */
-	public static final String ABORT_NAMING_CONTEXT_OP_RES	= "2.16.840.1.113719.1.27.100.30";
+    public static final String ABORT_NAMING_CONTEXT_OP_RES  = "2.16.840.1.113719.1.27.100.30";
 
     /**
      * A constant for the getContextIdentityNameRequest OID.
      */
-	public static final String GET_IDENTITY_NAME_REQ        = "2.16.840.1.113719.1.27.100.31";
+    public static final String GET_IDENTITY_NAME_REQ        = "2.16.840.1.113719.1.27.100.31";
 
     /**
      * A constant for the getContextIdentityNameResponse OID.
      */
-    public static final String GET_IDENTITY_NAME_RES		= "2.16.840.1.113719.1.27.100.32";
+    public static final String GET_IDENTITY_NAME_RES        = "2.16.840.1.113719.1.27.100.32";
 
     /**
      * A constant for the getEffectivePrivilegesRequest OID.
      */
-    public static final String GET_EFFECTIVE_PRIVILEGES_REQ	= "2.16.840.1.113719.1.27.100.33";
+    public static final String GET_EFFECTIVE_PRIVILEGES_REQ = "2.16.840.1.113719.1.27.100.33";
 
     /**
      * A constant for the getEffectivePrivilegesResponse OID.
      */
-    public static final String GET_EFFECTIVE_PRIVILEGES_RES	= "2.16.840.1.113719.1.27.100.34";
+    public static final String GET_EFFECTIVE_PRIVILEGES_RES = "2.16.840.1.113719.1.27.100.34";
 
     /**
      * A constant for the setReplicationFilterRequest OID.
      */
-	public static final String SET_REPLICATION_FILTER_REQ   = "2.16.840.1.113719.1.27.100.35";
+    public static final String SET_REPLICATION_FILTER_REQ   = "2.16.840.1.113719.1.27.100.35";
 
     /**
      * A constant for the setReplicationFilterResponse OID.
      */
-    public static final String SET_REPLICATION_FILTER_RES	= "2.16.840.1.113719.1.27.100.36";
+    public static final String SET_REPLICATION_FILTER_RES   = "2.16.840.1.113719.1.27.100.36";
 
     /**
      * A constant for the getReplicationFilterRequest OID.
      */
-    public static final String GET_REPLICATION_FILTER_REQ	= "2.16.840.1.113719.1.27.100.37";
+    public static final String GET_REPLICATION_FILTER_REQ   = "2.16.840.1.113719.1.27.100.37";
 
     /**
      * A constant for the getReplicationFilterResponse OID.
@@ -216,12 +216,12 @@ public class NamingContextConstants {
     /**
      * A constant for the createOrphanNamingContextResponse OID.
      */
-    public static final String CREATE_ORPHAN_NAMING_CONTEXT_RES	    = "2.16.840.1.113719.1.27.100.40";
+    public static final String CREATE_ORPHAN_NAMING_CONTEXT_RES     = "2.16.840.1.113719.1.27.100.40";
 
     /**
      * A constant for the removeOrphanNamingContextRequest OID.
      */
-    public static final String REMOVE_ORPHAN_NAMING_CONTEXT_REQ	    = "2.16.840.1.113719.1.27.100.41";
+    public static final String REMOVE_ORPHAN_NAMING_CONTEXT_REQ     = "2.16.840.1.113719.1.27.100.41";
 
     /**
      * A constant for the removeOrphanNamingContextResponse OID.
@@ -231,7 +231,7 @@ public class NamingContextConstants {
     /**
      * A constant for the triggerBackLinkerRequest OID.
      */
-    public static final String TRIGGER_BKLINKER_REQ	    = "2.16.840.1.113719.1.27.100.43";
+    public static final String TRIGGER_BKLINKER_REQ     = "2.16.840.1.113719.1.27.100.43";
 
     /**
      * A constant for the triggerBackLinkerResponse OID.
@@ -241,7 +241,7 @@ public class NamingContextConstants {
     /**
      * A constant for the triggerJanitorRequest OID.
      */
-    public static final String TRIGGER_JANITOR_REQ	    = "2.16.840.1.113719.1.27.100.47";
+    public static final String TRIGGER_JANITOR_REQ      = "2.16.840.1.113719.1.27.100.47";
 
     /**
      * A constant for the triggerJanitorResponse OID.
@@ -251,7 +251,7 @@ public class NamingContextConstants {
     /**
      * A constant for the triggerLimberRequest OID.
      */
-    public static final String TRIGGER_LIMBER_REQ	    = "2.16.840.1.113719.1.27.100.49";
+    public static final String TRIGGER_LIMBER_REQ       = "2.16.840.1.113719.1.27.100.49";
 
     /**
      * A constant for the triggerLimberResponse OID.
@@ -261,7 +261,7 @@ public class NamingContextConstants {
     /**
      * A constant for the triggerSkulkerRequest OID.
      */
-    public static final String TRIGGER_SKULKER_REQ	    = "2.16.840.1.113719.1.27.100.51";
+    public static final String TRIGGER_SKULKER_REQ      = "2.16.840.1.113719.1.27.100.51";
 
     /**
      * A constant for the triggerSkulkerResponse OID.
@@ -271,7 +271,7 @@ public class NamingContextConstants {
     /**
      * A constant for the triggerSchemaSyncRequest OID.
      */
-    public static final String TRIGGER_SCHEMA_SYNC_REQ	    = "2.16.840.1.113719.1.27.100.53";
+    public static final String TRIGGER_SCHEMA_SYNC_REQ      = "2.16.840.1.113719.1.27.100.53";
 
     /**
      * A constant for the triggerSchemaSyncResponse OID.
@@ -281,7 +281,7 @@ public class NamingContextConstants {
     /**
      * A constant for the triggerPartitionPurgeRequest OID.
      */
-    public static final String TRIGGER_PART_PURGE_REQ	    = "2.16.840.1.113719.1.27.100.55";
+    public static final String TRIGGER_PART_PURGE_REQ       = "2.16.840.1.113719.1.27.100.55";
 
     /**
      * A constant for the triggerPartitionPurgeResponse OID.
@@ -456,59 +456,7 @@ public class NamingContextConstants {
      * and that the rest of the work can be completed.</p>
      */
     public static final int LDAP_RS_JS_2            = 66;   // Replica joining 2
-
-    // Priviliges are identified by a combination of the following flags
-
-    /**
-     * Allows a trustee to compare a value with an attribute's value.
-     *
-     * <p>This allows the trustee to see if the attribute contains the value
-     * without having rights to see the value.</p>
-     */
-    public static final int LDAP_DS_ATTR_COMPARE    = 0x0001;
-
-    /**
-     * A privilege flag that indicates a trustee to read an attribute value.
-     * This right confers the Compare right.
-     */
-    public static final int LDAP_DS_ATTR_READ       = 0x0002;
-
-    /**
-     * A privilege flag that indicates a trustee can add, delete, or modify
-     * an attribute value.
-     */
-    public static final int LDAP_DS_ATTR_WRITE      = 0x0004;
-
-    /**
-     * A privilege flag that indicates a trustee can add or delete its name as
-     * an attribute value on those attributes that take object names
-     * as their values.
-     */
-    public static final int LDAP_DS_ATTR_SELF       = 0x0008;
-
-    /**
-     * A privilege flag that indicates a trustee has all rights to the
-     * object's attributes.
-     */
-    public static final int LDAP_DS_ATTR_SUPERVISOR = 0x0020;
-
-    /**
-     * A privilege flag that indicates a trustee inherits the rights granted
-     * in the ACL and can exercise these attribute rights on subordinate objects.
-     *
-     * For object rights or [All Attribute Rights], setting this bit to 1 
-     * allows inheritance of the rights granted in the ACL.  For a specific
-     * attribute, setting the bit to 0 allows inheritance.
-     */
-    public static final int LDAP_DS_ATTR_INHERIT_CTL= 0x0040;
-
-    /**
-     * This bit will be set if the trustee in the ACL is a dynamic group 
-     * and its dynamic members should be considered for ACL rights 
-     * calculation purposes. If this bit is reset, the trustee's static 
-     * members alone will be considered for rights calculation purposes.
-     */
-    public static final int LDAP_DS_DYNAMIC_ACL     = 0x40000000;
+ 
 
     // Values for flags used in the replica info class structure
 
