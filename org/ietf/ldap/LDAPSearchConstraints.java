@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchConstraints.java,v 1.16 2001/04/27 21:47:17 dsteck Exp $
+ * $Novell: /ldap/src/jldap/org/ietf/ldap/LDAPSearchConstraints.java,v 1.1 2001/06/26 15:48:51 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -84,7 +84,7 @@ public class LDAPSearchConstraints extends LDAPConstraints
      */
     public LDAPSearchConstraints()
     {
-        super( (LDAPSearchConstraints)null);
+        super( new com.novell.ldap.LDAPSearchConstraints());
         cons = (com.novell.ldap.LDAPSearchConstraints)super.getWrappedObject();
         return;
     }
