@@ -21,7 +21,8 @@ import java.util.NoSuchElementException;
 /**
  *  Represents the schema of a particular directory server.
  *
- * @see com.novell.ldap.LDAPSchema
+ *  @see <a href="../../../../doc/com/novell/ldap/LDAPSchema.html">
+            com.novell.ldap.LDAPSchema</a>
  */
 public class LDAPSchema
 {
@@ -31,7 +32,9 @@ public class LDAPSchema
     /**
      * Constructs an empty LDAPSchema object.
      *
-     * @see com.novell.ldap.LDAPSchema#LDAPSchema()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPSchema.html
+            #LDAPSchema()">
+            com.novell.ldap.LDAPSchema.LDAPSchema()</a>
      */
     public LDAPSchema()
     {
@@ -42,7 +45,9 @@ public class LDAPSchema
     /**
      * Retrieves the entire schema from a directory server.
      *
-     * @see com.novell.ldap.LDAPSchema#fetchSchema(LDAPConnection)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPSchema.html
+            #fetchSchema(com.novell.ldap.LDAPConnection)">
+            com.novell.ldap.LDAPSchema.fetchSchema(LDAPConnection)</a>
      */
     public void fetchSchema(LDAPConnection ld) throws LDAPException
     {
@@ -63,7 +68,9 @@ public class LDAPSchema
      * Retrieves the schema in effect at a particular entry in the directory
      * server.
      *
-     * @see com.novell.ldap.LDAPSchema#fetchSchema(LDAPConnection,String)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPSchema.html
+            #fetchSchema(com.novell.ldap.LDAPConnection, java.lang.String)">
+            com.novell.ldap.LDAPSchema.fetchSchema(LDAPConnection, String)</a>
      */
     public void fetchSchema(LDAPConnection ld,
                             String dn) throws LDAPException
@@ -83,7 +90,9 @@ public class LDAPSchema
     /**
      * Returns a particular attribute definition, or null if not found.
      *
-     * @see com.novell.ldap.LDAPSchema#getAttribute(String)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPSchema.html
+            #getAttribute(java.lang.String)">
+            com.novell.ldap.LDAPSchema.getAttribute(String)</a>
      */
     public LDAPAttributeSchema getAttribute( String name )
     {
@@ -94,7 +103,9 @@ public class LDAPSchema
     /**
      * Returns a particular object class definition, or null if not found.
      *
-     * @see com.novell.ldap.LDAPSchema#getObjectClass(String)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPSchema.html
+            #getObjectClass(java.lang.String)">
+            com.novell.ldap.LDAPSchema.getObjectClass(String)</a>
      */
     public LDAPObjectClassSchema getObjectClass( String name )
     {
@@ -105,7 +116,9 @@ public class LDAPSchema
     /**
      * Returns a particular matching rule definition, or null if not found.
      *
-     * @see com.novell.ldap.LDAPSchema#getMatchingRule(String)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPSchema.html
+            #getMatchingRule(java.lang.String)">
+            com.novell.ldap.LDAPSchema.getMatchingRule(String)</a>
      */
     public LDAPMatchingRuleSchema getMatchingRule( String name )
     {
@@ -115,7 +128,9 @@ public class LDAPSchema
     /**
      * Returns a particular matching rule use definition, or null if not found.
      *
-     * @see com.novell.ldap.LDAPSchema#getMatchingRuleUse(String)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPSchema.html
+            #getMatchingRuleUse(java.lang.String)">
+            com.novell.ldap.LDAPSchema.getMatchingRuleUse(String)</a>
      */
     public LDAPMatchingRuleUseSchema getMatchingRuleUse( String name )
     {
@@ -125,7 +140,9 @@ public class LDAPSchema
 	/**
      * Returns a particular DIT structure rule definition, or null if not found.
      *
-     * @see com.novell.ldap.LDAPSchema#getDITStructureRule(String)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPSchema.html
+            #getDITStructureRule(java.lang.String)">
+            com.novell.ldap.LDAPSchema.getDITStructureRule(String)</a>
      */
     public LDAPDITStructureRuleSchema getDITStructureRule( String name )
     {
@@ -135,7 +152,9 @@ public class LDAPSchema
     /**
      * Returns a particular DIT structure rule definition, or null if not found.
      *
-     * @see com.novell.ldap.LDAPSchema#getDITStructureRule(int)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPSchema.html
+            #getDITStructureRule(int)">
+            com.novell.ldap.LDAPSchema.getDITStructureRule(int)</a>
      */
     public LDAPDITStructureRuleSchema getDITStructureRule( int id )
     {
@@ -145,7 +164,9 @@ public class LDAPSchema
     /**
      * Returns a particular DIT content rule definition, or null if not found.
      *
-     * @see com.novell.ldap.LDAPSchema#getDITContentRule(String)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPSchema.html
+            #getDITContentRule(java.lang.String)">
+            com.novell.ldap.LDAPSchema.getDITContentRule(String)</a>
      */
     public LDAPDITContentRuleSchema getDITContentRule( String name )
     {
@@ -155,7 +176,9 @@ public class LDAPSchema
     /**
      * Returns a particular name form definition, or null if not found.
      *
-     * @see com.novell.ldap.LDAPSchema#getNameForm(String)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPSchema.html
+            #getNameForm(java.lang.String)">
+            com.novell.ldap.LDAPSchema.getNameForm(String)</a>
      */
     public LDAPNameFormSchema getNameForm( String name )
     {
@@ -165,7 +188,9 @@ public class LDAPSchema
     /**
      * Returns a particular syntax definition, or null if not found.
      *
-     * @see com.novell.ldap.LDAPSchema#getSyntax(String)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPSchema.html
+            #getSyntax(java.lang.String)">
+            com.novell.ldap.LDAPSchema.getSyntax(String)</a>
      */
     public LDAPSyntaxSchema getSyntax( String oid )
     {
@@ -175,7 +200,9 @@ public class LDAPSchema
     /**
      * Returns an enumeration of attribute definitions.
      *
-     * @see com.novell.ldap.LDAPSchema#getAttributes()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPSchema.html
+            #getAttributes()">
+            com.novell.ldap.LDAPSchema.getAttributers()</a>
      */
     public Enumeration getAttributes()
     {
@@ -203,7 +230,9 @@ public class LDAPSchema
     /**
      * Returns an enumeration of object class definitions.
      *
-     * @see com.novell.ldap.LDAPSchema#getObjectClasses()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPSchema.html
+            #getObjectClasses()">
+            com.novell.ldap.LDAPSchema.getObjectClasses()</a>
      */
     public Enumeration getObjectClasses()
     {
@@ -231,7 +260,9 @@ public class LDAPSchema
     /**
      * Returns an enumeration of matching rule definitions.
      *
-     * @see com.novell.ldap.LDAPSchema#getMatchingRules()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPSchema.html
+            #getMatchingRules()">
+            com.novell.ldap.LDAPSchema.getMatchingRules()</a>
      */
     public Enumeration getMatchingRules()
     {
@@ -259,7 +290,9 @@ public class LDAPSchema
     /**
      * Returns an enumeration of matching rule use definitions.
      *
-     * @see com.novell.ldap.LDAPSchema#getMatchingUseRules()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPSchema.html
+            #getMatchingUseRules()">
+            com.novell.ldap.LDAPSchema.getMatchingUseRules()</a>
      */
     public Enumeration getMatchingUseRules()
     {
@@ -287,7 +320,9 @@ public class LDAPSchema
     /**
      * Returns an enumeration of DIT structure rule definitions.
      *
-     * @see com.novell.ldap.LDAPSchema#getDITStructureRules()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPSchema.html
+            #getDITStructureRules()">
+            com.novell.ldap.LDAPSchema.getDITStructureRules()</a>
      */
     public Enumeration getDITStructureRules()
     {
@@ -315,7 +350,9 @@ public class LDAPSchema
     /**
      * Returns an enumeration of DIT content rule definitions.
      *
-     * @see com.novell.ldap.LDAPSchema#getDITContentRules()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPSchema.html
+            #getDITContentRules()">
+            com.novell.ldap.LDAPSchema.getDITContentRules()</a>
      */
     public Enumeration getDITContentRules()
     {
@@ -343,7 +380,9 @@ public class LDAPSchema
     /**
      * Returns an enumeration of name form definitions.
      *
-     * @see com.novell.ldap.LDAPSchema#getNameForms()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPSchema.html
+            #getNameForms()">
+            com.novell.ldap.LDAPSchema.getNameForms()</a>
      */
     public Enumeration getNameForms()
     {
@@ -371,7 +410,9 @@ public class LDAPSchema
     /**
      * Returns an enumeration of syntax definitions.
      *
-     * @see com.novell.ldap.LDAPSchema#getSyntaxes()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPSchema.html
+            #getSyntaxes()">
+            com.novell.ldap.LDAPSchema.getSyntaxes()</a>
      */
     public Enumeration getSyntaxes()
     {
@@ -399,7 +440,9 @@ public class LDAPSchema
     /**
      * Returns an enumeration of attribute names.
      *
-     * @see com.novell.ldap.LDAPSchema#getAttributeNames()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPSchema.html
+            #getAttributeNames()">
+            com.novell.ldap.LDAPSchema.getAttributeNames()</a>
      */
     public Enumeration getAttributeNames()
     {
@@ -409,7 +452,9 @@ public class LDAPSchema
     /**
      * Returns an enumeration of object class names.
      *
-     * @see com.novell.ldap.LDAPSchema#getObjectClassNames()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPSchema.html
+            #getObjectClassNames()">
+            com.novell.ldap.LDAPSchema.getObjectClassNames()</a>
      */
     public Enumeration getObjectClassNames()
     {
@@ -419,7 +464,9 @@ public class LDAPSchema
     /**
      * Returns an enumeration of matching rule names.
      *
-     * @see com.novell.ldap.LDAPSchema#getMatchingRuleNames()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPSchema.html
+            #getMatchingRuleNames()">
+            com.novell.ldap.LDAPSchema.getMatchingRuleNames()</a>
      */
     public Enumeration getMatchingRuleNames()
     {
@@ -429,7 +476,9 @@ public class LDAPSchema
     /**
    	 * Returns an enumeration of matching rule use names.
      *
-     * @see com.novell.ldap.LDAPSchema#getMatchingRuleUseNames()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPSchema.html
+            #getMatchingRuleUseNames()">
+            com.novell.ldap.LDAPSchema.getMatchingRuleUseNames()</a>
      */
     public Enumeration getMatchingRuleUseNames()
     {
@@ -439,7 +488,9 @@ public class LDAPSchema
     /**
    	 * Returns an enumeration of DIT structure rule names.
      *
-     * @see com.novell.ldap.LDAPSchema#getDITStructureRuleNames()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPSchema.html
+            #getDITStructureRuleNames()">
+            com.novell.ldap.LDAPSchema.getDITStructureRuleNames()</a>
      */
     public Enumeration getDITStructureRuleNames()
     {
@@ -449,7 +500,9 @@ public class LDAPSchema
    /**
    	 * Returns an enumeration of DIT content rule names.
      *
-     * @see com.novell.ldap.LDAPSchema#getDITContentRuleNames()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPSchema.html
+            #getDITContentRuleNames()">
+            com.novell.ldap.LDAPSchema.getDITContentRuleNames()</a>
      */
     public Enumeration getDITContentRuleNames()
     {
@@ -459,7 +512,9 @@ public class LDAPSchema
    /**
    	 * Returns an enumeration of name form names.
      *
-     * @see com.novell.ldap.LDAPSchema#getNameFormNames()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPSchema.html
+            #getNameFormNames()">
+            com.novell.ldap.LDAPSchema.getNameFormNames()</a>
      */
     public Enumeration getNameFormNames()
     {
