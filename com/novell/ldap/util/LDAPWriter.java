@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: LDAPWriter.java,v 1.4 2002/10/28 23:16:10 $
+ * $Novell: LDAPWriter.java,v 1.5 2003/01/22 19:32:49 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -19,7 +19,6 @@ import com.novell.ldap.LDAPControl;
 import com.novell.ldap.LDAPEntry;
 import com.novell.ldap.LDAPException;
 import com.novell.ldap.LDAPMessage;
-import com.novell.ldap.LDAPMessageQueue;
 
 /**
  * Describes the interfaces used by applications to write
@@ -84,12 +83,20 @@ public interface LDAPWriter
      *
      * @param comments The comments to write
      */
-     public void writeComments( String comments) 
+     public void writeComments( String comments)
             throws IOException;
+
+    /**
+     * Writes an Exception to the data stream.
+     *
+     * @param e  Exception to be written.
+     */
+    public void writeError(Exception e) throws IOException;
+
 
     /**
      * Writes any remaining data to the output stream.
      */
-     public void finish() 
+     public void finish()
             throws IOException;
 }

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: LDIFWriter.java,v 1.32 2002/12/19 16:46:24 $
+ * $Novell: LDIFWriter.java,v 1.33 2003/01/22 19:32:49 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -20,19 +20,7 @@ import java.io.OutputStreamWriter;
 import java.io.BufferedWriter;
 import java.util.Iterator;
 
-import com.novell.ldap.LDAPAttribute;
-import com.novell.ldap.LDAPAttributeSet;
-import com.novell.ldap.LDAPControl;
-import com.novell.ldap.LDAPEntry;
-import com.novell.ldap.LDAPException;
-import com.novell.ldap.LDAPMessage;
-import com.novell.ldap.LDAPMessageQueue;
-import com.novell.ldap.LDAPModification;
-import com.novell.ldap.LDAPSearchResult;
-import com.novell.ldap.LDAPAddRequest;
-import com.novell.ldap.LDAPDeleteRequest;
-import com.novell.ldap.LDAPModifyDNRequest;
-import com.novell.ldap.LDAPModifyRequest;
+import com.novell.ldap.*;
 import com.novell.ldap.util.Base64;
 
 /**
@@ -139,7 +127,7 @@ public class LDIFWriter implements LDAPWriter
      *
      * <p>You are not allowed to mix request data and content data</p>
      *
-     * @param request LDAPEntry object
+     * @param entry LDAPEntry object
      *
      * @throws IOException if an I/O error occurs.
      *
@@ -157,7 +145,7 @@ public class LDIFWriter implements LDAPWriter
      *
      * <p>You are not allowed to mix request data and content data</p>
      *
-     * @param request LDAPEntry object
+     * @param entry LDAPEntry object
      *
      * @param controls Controls that were returned with this entry
      *
@@ -172,7 +160,7 @@ public class LDIFWriter implements LDAPWriter
             writeAddRequest(entry, controls);
             return;
     }
-    
+
     /**
      * Write an LDAP record into LDIF file. A request or change operation may
      * be objects of type  LDAPAddRequest, LDAPDeleteRequest,
@@ -270,7 +258,7 @@ public class LDIFWriter implements LDAPWriter
      * chars, it will be split into multiple lines each of which starts
      * with '#' </p>
      *
-     * @param lines The comment lines to be written to the OutputStream
+     * @param line The comment lines to be written to the OutputStream
      *
      * @throws IOException if an I/O error occurs.
      */
@@ -303,6 +291,14 @@ public class LDIFWriter implements LDAPWriter
             bufWriter.newLine();
         }
         return;
+    }
+
+    /**
+     * Writes an exception as a comment in LDIF.
+     * @param e  Exception to be written.
+     */
+    public void writeError(Exception e) throws IOException {
+        this.writeComments(e.toString());
     }
 
     /**

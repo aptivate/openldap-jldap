@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: DSMLWriter.java,v 1.31 2002/12/11 15:56:50 $
+ * $Novell: DSMLWriter.java,v 1.32 2003/01/22 19:32:48 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -85,29 +85,38 @@ public class DSMLWriter implements LDAPWriter {
     }
 
     /**
-     * Any LDAPException can be written in DSML with this method, via the
-     * <errorResponse> tag.
+     * Any Exception can be written in DSML with this method, via the
+     * <errorResponse> tag. In general LDAPExceptions should be written to the
+     * errorResponse tag and other exception in a SOAP Fault.
      * @param e  LDAPException to be written in DSML.
      */
-    public void writeError(LDAPException e)
-            throws IOException, LDAPLocalException
+    public void writeError(Exception e)
+            throws IOException
     {
         //check if we are in a response, if not set the state and write DSML tag
-        checkState(true);
+        try{
+            checkState(true);
+        } catch (LDAPLocalException lle){
+            throw new IOException(lle.toString());
+        }
         newLine(1);
         out.write("<errorResponse type=\"");
-        switch (e.getResultCode()){
-            case LDAPException.DECODING_ERROR:
-                out.write("malformedRequest\">");
-                break;
-            case LDAPException.LOCAL_ERROR:
-                out.write("gatewayInternalError\">");
-                break;
-            case LDAPException.INVALID_CREDENTIALS:
-                out.write("authenticationFailed\">");
-                break;
-            default:
-                out.write("other\">");
+        if (e instanceof LDAPException){
+            switch (((LDAPException)e).getResultCode()){
+                case LDAPException.DECODING_ERROR:
+                    out.write("malformedRequest\">");
+                    break;
+                case LDAPException.LOCAL_ERROR:
+                    out.write("gatewayInternalError\">");
+                    break;
+                case LDAPException.INVALID_CREDENTIALS:
+                    out.write("authenticationFailed\">");
+                    break;
+                default:
+                    out.write("other\">");
+            }
+        } else {
+            out.write("other\">");
         }
         newLine(2);
         out.write("<message>");
@@ -119,7 +128,7 @@ public class DSMLWriter implements LDAPWriter {
         out.write("</errorResponse>");
         return;
     }
-    
+
     /**
      * Writes closing tags for searchResponse, batchRequests, and batchResponse
      * depending on the current state.
@@ -311,7 +320,7 @@ public class DSMLWriter implements LDAPWriter {
      *
      * <p>You are not allowed to mix request data and content data</p>
      *
-     * @param request LDAPEntry object
+     * @param entry LDAPEntry object
      *
      * @throws IOException if an I/O error occurs.
      *
@@ -324,14 +333,14 @@ public class DSMLWriter implements LDAPWriter {
         writeEntry( entry, null, null);
         return;
     }
-    
+
     /**
      * Write an LDAP entry into LDIF file as LDAPContent data.
      * An LDAPEntry is written as a SearchResultEntry record.
      *
      * <p>You are not allowed to mix request data and content data</p>
      *
-     * @param request LDAPEntry object
+     * @param entry LDAPEntry object
      *
      * @param controls Controls that were returned with this entry
      *
@@ -346,14 +355,14 @@ public class DSMLWriter implements LDAPWriter {
         writeEntry( entry, controls, null);
         return;
     }
-    
+
     /**
      * Write an LDAP entry into LDIF file as LDAPContent data.
      * An LDAPEntry is written as a SearchResultEntry record.
      *
      * <p>You are not allowed to mix request data and content data</p>
      *
-     * @param request LDAPEntry object
+     * @param entry LDAPEntry object
      *
      * @param controls Controls that were returned with this entry
      *
@@ -374,7 +383,7 @@ public class DSMLWriter implements LDAPWriter {
         out.write(entry.getDN());
         if( requestID != null) {
             out.write("\" requestID=\"" + requestID);
-        }    
+        }
         out.write("\">");
         LDAPAttributeSet set = entry.getAttributeSet();
         Iterator i = set.iterator();
@@ -389,7 +398,7 @@ public class DSMLWriter implements LDAPWriter {
 
         return;
     }
-    
+
     /**
      * Writes an XML tag with it's requestID and possibly a matchedDN.
      * @param tag XML tag name to be written

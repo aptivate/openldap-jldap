@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: DOMWriter.java,v 1.9 2002/11/13 23:55:29 $
+ * $Novell: DOMWriter.java,v 1.10 2003/01/22 19:32:48 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -107,18 +107,18 @@ public class DOMWriter implements LDAPWriter
         }
         return;
     }
-    
+
     /**
      * Write an LDAP record into LDIF file as LDAPContent data.
      * An LDAPEntry is written as a DSML SearchResultEntry record.
      *
      * <p>You are not allowed to mix request data and content data</p>
      *
-     * @param request LDAPEntry object
+     * @param entry LDAPEntry object
      *
      * @throws LDAPLocalException if data and content are mixed.
      *
-     * @throws IOException if an I/O error occurs.
+     * @throws LDAPLocalException if an I/O error occurs.
      *
      * @see com.novell.ldap.LDAPEntry
      */
@@ -129,7 +129,7 @@ public class DOMWriter implements LDAPWriter
         myWriteEntry( entry, null);
         return;
     }
-    
+
     // Javadoc from interface
     /**
      * Write an LDAP record into LDIF file as LDAPContent data.
@@ -137,11 +137,9 @@ public class DOMWriter implements LDAPWriter
      *
      * <p>You are not allowed to mix request data and content data</p>
      *
-     * @param request LDAPEntry object
+     * @param entry LDAPEntry object
      *
      * @param controls Controls that were returned with this entry
-     *
-     * @throws IOException if an I/O error occurs.
      *
      * @throws LDAPLocalException if data and content are mixed.
      *
@@ -154,20 +152,18 @@ public class DOMWriter implements LDAPWriter
         myWriteEntry( entry, controls);
         return;
     }
-    
+
     /**
      * Write an LDAP record into LDIF file as LDAPContent data.
      * An LDAPEntry is written as a DSML SearchResultEntry record.
      *
      * <p>You are not allowed to mix request data and content data</p>
      *
-     * @param request LDAPEntry object
+     * @param entry object
      *
      * @param controls Controls that were returned with this entry
      *
      * @param requestID the String that associates this response with the request
-     *
-     * @throws IOException if an I/O error occurs.
      *
      * @throws LDAPLocalException if data and content are mixed.
      *
@@ -185,7 +181,7 @@ public class DOMWriter implements LDAPWriter
         }
         return;
     }
-    
+
     // Javadoc from interface
     private Element myWriteEntry( LDAPEntry entry,
                                   LDAPControl[] controls )
@@ -313,7 +309,7 @@ public class DOMWriter implements LDAPWriter
         }
         return e;
     }
-    
+
     /**
      * Writes the specified LDAPResponse into the specified element.
      * <p>Possible information written to the element is a Result code with a
@@ -384,30 +380,34 @@ public class DOMWriter implements LDAPWriter
     }
 
     /**
-     * Any LDAPException can be written in DSML with this method, via the
-     * <errorResponse> tag.
+     * Any Exception can be written in DSML with this method, via the
+     * <errorResponse> tag. In general LDAPExceptions should be written to the
+     * errorResponse tag and other exception in a SOAP Fault.
      * @param e  LDAPException to be written in DSML.
      */
-    public void writeError(LDAPException e) throws IOException, LDAPLocalException
+    public void writeError(Exception e) throws IOException
     {
         //check if we are in a response, if not set the state and write DSML tag
 
         Element error = doc.createElement("errorResponse");
 
-        switch (e.getResultCode()){
-            case LDAPException.DECODING_ERROR:
-                error.setAttribute("type", "malformedRequest");
-                break;
-            case LDAPException.LOCAL_ERROR:
-                error.setAttribute("type", "gatewayInternalError");
-                break;
-            case LDAPException.INVALID_CREDENTIALS:
-                error.setAttribute("type", "authenticationFailed");
-                break;
-            default:
-                error.setAttribute("type", "other");
+        if (e instanceof LDAPException){
+            switch (((LDAPException)e).getResultCode()){
+                case LDAPException.DECODING_ERROR:
+                    error.setAttribute("type", "malformedRequest");
+                    break;
+                case LDAPException.LOCAL_ERROR:
+                    error.setAttribute("type", "gatewayInternalError");
+                    break;
+                case LDAPException.INVALID_CREDENTIALS:
+                    error.setAttribute("type", "authenticationFailed");
+                    break;
+                default:
+                    error.setAttribute("type", "other");
+            }
+        } else {
+            error.setAttribute("type", "other");
         }
-
         Element message = doc.createElement("message");
         Text messageValue = doc.createTextNode(e.toString());
         message.appendChild(messageValue);
@@ -496,8 +496,8 @@ public class DOMWriter implements LDAPWriter
             root = doc.createElement("batchResponse");
             root.setAttribute("xmlns", "urn:oasis:names:tc:DSML:2:0:core");
             state = RESPONSE_BATCH;
-        }        
-        
+        }
+
         if (state != SEARCH_RESPONSE) {
             searchNode = doc.createElement("searchResponse");
             root.appendChild(searchNode);
@@ -527,7 +527,7 @@ public class DOMWriter implements LDAPWriter
     public Element getRootElement() {
         return root;
     }
-    
+
     public void finish() throws IOException
     {
         return;
