@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttributeSet.java,v 1.16 2000/11/15 23:35:13 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttributeSet.java,v 1.17 2000/12/07 16:31:01 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -163,7 +163,51 @@ public class LDAPAttributeSet implements Cloneable {
     *
     */
    public LDAPAttribute getAttribute(String attrName, String lang) {
-      throw new RuntimeException("Method LDAPAttributeSet.getAttribute not implemented");
+      
+	  LDAPAttribute attrib, partialMatch;
+	  int partialMatchLen;
+
+	  partialMatch = null;
+	  partialMatchLen = 0;
+      Enumeration enumAttr = attrs.elements();
+      
+	  while( enumAttr.hasMoreElements()){
+      
+	    attrib = (LDAPAttribute) enumAttr.nextElement();
+
+		// Find a matching attrubute
+        if(attrib.getName().equals(attrName)){
+
+			// Get the lang subtype for this attribute
+			String attribSubType = attrib.getLangSubtype();
+
+			// Return this attribute if this is a full match.
+			if (attribSubType.equals(lang))
+				return attrib;
+
+			// Save this attribute off if we have a partial match
+			if (lang.startsWith(attribSubType)) {
+				
+				// Get the length of the partial string that matched the subtype
+				int matchedLen = attribSubType.length();
+
+				// Was this a bettter (Longer) match, If yes the replace last matched
+				// attribute with this better match
+				if (matchedLen > partialMatchLen) {
+					partialMatch = attrib;
+					partialMatchLen = matchedLen;
+				}
+			}
+
+			// else goto next attribute
+				
+		}
+      }
+
+	  // Return a partial match if there was one, else we will be returning a
+	  // null pointer
+      return partialMatch;
+
    }
 
    /**
