@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: LDAPAttributeSchema.java,v 1.3 2000/05/17 19:03:42 bgudmundson Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/org/ietf/ldap/LDAPAttributeSchema.java,v 1.4 2000/08/03 22:06:13 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -20,18 +20,21 @@ import com.novell.ldap.client.AttributeQualifier;
 import java.util.Enumeration;
 import java.io.IOException;
 
-/**
+/*
  * 4.2 public class LDAPAttributeSchema
  *                extends LDAPSchemaElement
+ */
+ 
+/**
+ *  Represents the definition of an attribute. 
  *
- *  The LDAPAttributeSchema class represents the definition of an
- *  attribute. It is used to query attribute syntax, and to add or delete
- *  an attribute definition in a Directory. See [2] for a description of
- *  attribute representation in LDAP.
+ *  <p>The LDAPAttributeSchema class is used to query attribute syntax, 
+ *  and to add or delete an attribute definition in a directory. See 
+ *  RFC 2252 for a description of attribute representation in LDAP.</p>
  *
- *  [2]  M. Wahl, A. Coulbeck, T. Howes, S. Kille, "Lightweight Directory
+ *  <p>  M. Wahl, A. Coulbeck, T. Howes, S. Kille, "Lightweight Directory
  *       Access Protocol: Attribute Syntax Definitions",
- *       RFC 2252, December 1997
+ *       RFC 2252, December 1997 </p>
  */
 public class LDAPAttributeSchema extends LDAPSchemaElement {
 
@@ -45,24 +48,25 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
 
    /**
     * Constructs an attribute definition for adding to or deleting from a
-    * Directory.
-    * name           Name of the attribute.
+    * directory.
     *
-    * oid            Unique Object Identifer of the attribute - in
+    * @param name  Name of the attribute.
+    *
+    * @param oid   Object identifer of the attribute, in
     *              dotted numerical format.
     *
-    * description    Optional description of the attribute.
+    * @param description   Optional description of the attribute.
     *
-    * syntaxString   Unique Object Identifer of the syntax of the
-    *              attribute - in dotted numerical format.
+    * @param syntaxString  Object identifer of the syntax of the
+    *              attribute, in dotted numerical format.
     *
-    * single         True if the attribute is to be single-valued.
+    * @param single    True if the attribute is to be single-valued.
     *
-    * superior       Optional name of the attribute type which this
+    * @param superior  Optional name of the attribute type which this
     *              attribute type derives from; null if there is no
     *              superior attribute type.
     *
-    * aliases        Optional list of additional names by which the
+    * @param aliases   Optional list of additional names by which the
     *              attribute may be known; null if there are no
     *              aliases.
     */
@@ -86,10 +90,10 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
    }
 
    /**
-    * Constructs an attribute definition from the raw String value returned
-    * on a Directory query for "attributetypes".
+    * Constructs an attribute definition from the raw string value returned
+    * on a directory query for "attributetypes".
     *
-    *  raw            The raw String value returned on a Directory
+    *  @param raw      The raw string value returned on a directory
     *                  query for "attributetypes".
     */
    public LDAPAttributeSchema(String raw) {
@@ -153,7 +157,7 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
     */
 
    /**
-    * Returns the Unique Object Identifer of the syntax of the attribute in
+    * Returns the object identifer of the syntax of the attribute, in
     * dotted numerical format.
     */
    public String getSyntaxString() {
@@ -161,7 +165,7 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
    }
 
    /*
-    * 4.2.3 getSuperior
+    * 4.2.4 getSuperior
     */
 
    /**
@@ -173,7 +177,7 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
    }
 
    /*
-    * 4.2.4 isSingleValued
+    * 4.2.3 isSingleValued
     */
 
    /**
@@ -184,8 +188,8 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
    }
 
    /**
-    * Returns a String in a format suitable for directly adding to a
-    * Directory, as a value of the particular schema element attribute.
+    * Returns a string in a format suitable for directly adding to a
+    * directory, as a value of the particular schema element attribute.
     */
    public String getValue() {
 
