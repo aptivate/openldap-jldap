@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchListener.java,v 1.27 2001/03/06 19:19:12 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchListener.java,v 1.28 2001/04/12 21:39:30 jhammons Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -66,7 +66,6 @@ public class LDAPSearchListener implements LDAPListener
         return name;
     }
 
-   /**
    /**
     * Returns the internal client listener object
     *

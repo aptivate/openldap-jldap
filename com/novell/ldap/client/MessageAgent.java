@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/client/MessageAgent.java,v 1.13 2001/04/19 22:25:20 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/client/MessageAgent.java,v 1.14 2001/05/01 21:57:14 vtag Exp $
 *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -162,7 +162,6 @@ public class MessageAgent
                     info.getMessageID() + ")" + " Messages in queue");
                 debugDisplayMessages();
             }
-            info.cleanup();                 // Get rid of resources
             return;
         } catch( NoSuchFieldException ex ) {
             if( Debug.LDAP_DEBUG) {
@@ -192,7 +191,6 @@ public class MessageAgent
             }
             info.abandon( null, null);
             messages.removeElement( info);
-            info.cleanup();                 // Get rid of resources
         }
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.messages, name +
@@ -315,7 +313,7 @@ public class MessageAgent
                             info.getMessageID() + ")");
                         debugDisplayMessages();
                     }
-                    info.cleanup();                 // Get rid of resources
+                    info.abandon(null, null);      // Get rid of resources
                 } else {
                     if( Debug.LDAP_DEBUG) {
                         Debug.trace( Debug.messages, name +
@@ -363,7 +361,7 @@ public class MessageAgent
                                     info.getMessageID() + ")");
                                 debugDisplayMessages();
                              }
-                            info.cleanup();            // Get rid of resources
+                            info.abandon(null, null); // Get rid of resources
                           } else {
                              if( Debug.LDAP_DEBUG) {
                                 Debug.trace( Debug.messages, name +

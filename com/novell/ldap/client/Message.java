@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/client/Message.java,v 1.20 2001/05/01 21:57:14 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/client/Message.java,v 1.21 2001/05/01 22:35:38 vtag Exp $
 *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -486,13 +486,14 @@ public class Message
             // caller queues dummy response with error status
             sleepersAwake();
         }
+        cleanup();
         return;
     }
 
     /**
      * Release reply messages
      */
-    /* package */
+    private
     void cleanup()
     {
         if( Debug.LDAP_DEBUG) {
