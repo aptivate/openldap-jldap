@@ -246,9 +246,8 @@ public class LDAPAttributeSet implements java.lang.Cloneable,
             #iterator()">
             com.novell.ldap.LDAPAttributeSet.iterator()</a>
      */
-    public Iterator iterator()
-    {
-        return attrSet.iterator( );
+    public Iterator iterator() {
+        return new WrappedIterator(this.attrSet.iterator());
     }
 
     /**
@@ -337,4 +336,35 @@ public class LDAPAttributeSet implements java.lang.Cloneable,
         }
         return newAttrs;
     }
+    
+/**
+ * An iterator that creates org.ietf.ldap.LDAPAttribute instances
+ * from an iterator of com.novell.ldap.LDAPAttribute instances.
+ */
+private static final class WrappedIterator implements Iterator { 
+
+    // Iterator containing com.novell.ldap.LDAPAttribute instances.
+    private final Iterator iterator;
+
+    WrappedIterator(final Iterator iterator) { 
+       this.iterator = iterator;
+    }
+
+    public boolean hasNext() { 
+      return this.iterator.hasNext();
 }
+
+    public Object next() { 
+      com.novell.ldap.LDAPAttribute attr = 
+        (com.novell.ldap.LDAPAttribute) this.iterator.next();
+      return new LDAPAttribute(attr);
+    }
+    
+    public void remove() {
+    }
+};
+
+}
+
+
+
