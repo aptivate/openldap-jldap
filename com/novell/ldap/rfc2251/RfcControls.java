@@ -1,6 +1,12 @@
+/* **************************************************************************
+ * $Novell$
+ *
+ * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
+ ***************************************************************************/
 
 package com.novell.asn1.ldap;
 
+import java.io.*;
 import com.novell.asn1.*;
 
 /**
@@ -8,16 +14,36 @@ import com.novell.asn1.*;
  */
 public class Controls extends ASN1SequenceOf {
 
+   /**
+    * Controls context specific tag
+    */
+   public final static int CONTROLS = 0;
+
 	//*************************************************************************
 	// Constructors for Controls
 	//*************************************************************************
 
 	/**
-	 *
+	 * Constructs a Controls object. This constructor is used in combination
+	 * with the add() method to construct a set of Controls to send to the
+	 * server.
 	 */
 	public Controls()
 	{
 		super(5);
+	}
+
+	/**
+	 * Constructs a Controls object by decoding it from an InputStream.
+	 */
+	public Controls(ASN1Decoder dec, InputStream in, int len)
+		throws IOException
+	{
+		super(dec, in, len);
+
+//		// Convert each SEQUENCE element to a Control
+//		for(int i=0; i < size(); i++) {
+//		}
 	}
 
 	//*************************************************************************
@@ -25,7 +51,7 @@ public class Controls extends ASN1SequenceOf {
 	//*************************************************************************
 
 	/**
-	 * Override add() of ASN1SequenceOf to only accept Control.
+	 * Override add() of ASN1SequenceOf to only accept a Control type.
 	 */
 	public void add(Control control)
 	{
@@ -33,7 +59,7 @@ public class Controls extends ASN1SequenceOf {
 	}
 
 	/**
-	 * Override set() of ASN1SequenceOf to only accept Control.
+	 * Override set() of ASN1SequenceOf to only accept a Control type.
 	 */
 	public void set(int index, Control control)
 	{
@@ -43,6 +69,14 @@ public class Controls extends ASN1SequenceOf {
 	//*************************************************************************
 	// Accessors
 	//*************************************************************************
+
+	/**
+	 * Override getIdentifier to return a context specific id.
+	 */
+	public ASN1Identifier getIdentifier()
+	{
+		return new ASN1Identifier(ASN1Identifier.CONTEXT, true, CONTROLS);
+	}
 
 }
 

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/client/Connection.java,v 1.9 2000/08/18 00:43:39 smerrill Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/client/Connection.java,v 1.10 2000/08/21 18:35:40 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -256,7 +256,7 @@ public final class Connection implements Runnable {
 				// ------------------------------------------------------------
 				// Process the decoded LDAPMessage.
 				// ------------------------------------------------------------
-				int msgId = msg.getMessageID().getInt();
+				int msgId = msg.getMessageID();
 
 				if(msgId == 0) {
 					// Process Unsolicited Notification

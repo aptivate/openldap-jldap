@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: LDAPMessageQueue.java,v 1.3 2000/08/10 17:53:01 smerrill Exp $
+ * $Id: LDAPMessageQueue.java,v 1.4 2000/08/21 18:35:40 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -71,7 +71,7 @@ public class LDAPMessageQueue {
 	public void removeResponses(int msgId) {
 		for(int i=responses.size()-1; i>=0; i--) {
 			LDAPMessage message = (LDAPMessage)responses.elementAt(i);
-			if(message.getMessageID().getInt() == msgId) {
+			if(message.getMessageID() == msgId) {
 				responses.removeElementAt(i);
 			}
 		}

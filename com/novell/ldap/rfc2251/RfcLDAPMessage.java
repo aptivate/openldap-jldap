@@ -1,3 +1,8 @@
+/* **************************************************************************
+ * $Novell$
+ *
+ * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
+ ***************************************************************************/
 
 package com.novell.asn1.ldap;
 
@@ -29,25 +34,32 @@ import com.novell.asn1.*;
  *                       extendedReq     ExtendedRequest,
  *                       extendedResp    ExtendedResponse },
  *                controls       [0] Controls OPTIONAL }
+ *
+ * Note: The creation of a MessageID should be hidden within the creation of
+ *       an LDAPMessage. The MessageID needs to be in sequence, and has an
+ *       upper and lower limit. There is never a case when a user should be
+ *       able to specify the MessageID for an LDAPMessage. The MessageID()
+ *       constructor should be package protected. (So the MessageID value
+ *       isn't arbitrarily run up.)
  */
 public class LDAPMessage extends ASN1Sequence {
 
    /**
-    * Create an LDAPMessage from input parameters.
+    * Create an LDAPMessage using the specified LDAP Request Protocol Op.
     */
-   public LDAPMessage(MessageID mid, Request op)
+   public LDAPMessage(Request op)
    {
-      this(mid, op, null);
+      this(op, null);
    }
 
    /**
     * Create an LDAPMessage from input parameters.
     */
-   public LDAPMessage(MessageID mid, Request op, Controls controls)
+   public LDAPMessage(Request op, Controls controls)
    {
       super(3);
 
-      add(mid);
+      add(new MessageID()); // MessageID has static counter
       add((ASN1Object)op);
       if(controls != null)
          add(controls);
@@ -61,16 +73,17 @@ public class LDAPMessage extends ASN1Sequence {
    {
       super(dec, in, len);
 
-      set(0, new MessageID(((ASN1Integer)get(0)).getInt()));
+		byte[] content;
+		ByteArrayInputStream bais;
+
+//      set(0, new MessageID(((ASN1Integer)get(0)).getInt()));
 
       // Decode implicitly tagged protocol operation from an ASN1Tagged type
       // to its appropriate application type.
       ASN1Tagged protocolOp = (ASN1Tagged)get(1);
       ASN1Identifier protocolOpId = protocolOp.getIdentifier();
-      byte[] content =
-         ((ASN1OctetString)protocolOp.getContent()).getContent();
-      ByteArrayInputStream bais =
-          new ByteArrayInputStream(content);
+      content = ((ASN1OctetString)protocolOp.getContent()).getContent();
+      bais = new ByteArrayInputStream(content);
 
       switch(protocolOpId.getTag()) {
 			case ProtocolOp.SEARCH_RESULT_ENTRY:
@@ -105,7 +118,17 @@ public class LDAPMessage extends ASN1Sequence {
             break;
       }
 
-      // decode optional implicitly tagged controls
+      // decode optional implicitly tagged controls from ASN1Tagged type to
+		// to RFC 2251 types.
+		if(size() > 2) {
+			ASN1Tagged controls = (ASN1Tagged)get(2);
+//			ASN1Identifier controlsId = protocolOp.getIdentifier();
+			// we could check to make sure we have controls here....
+
+			content = ((ASN1OctetString)controls.getContent()).getContent();
+			bais = new ByteArrayInputStream(content);
+			set(2, new Controls(dec, bais, content.length));
+		}
 
    }
 
@@ -114,15 +137,15 @@ public class LDAPMessage extends ASN1Sequence {
    //*************************************************************************
 
    /**
-    *
+    * Returns this LDAPMessage's messageID as an int.
     */
-   public MessageID getMessageID()
+   public int getMessageID()
    {
-      return (MessageID)get(0);
+      return ((ASN1Integer)get(0)).getInt();
    }
 
    /**
-    *
+    * Returns the Protocol Operation for this LDAPMessage.
     */
    public ASN1Object getProtocolOp()
    {
@@ -130,7 +153,7 @@ public class LDAPMessage extends ASN1Sequence {
    }
 
    /**
-    *
+    * Returns the optional Controls for this LDAPMessage.
     */
    public Controls getControls()
    {

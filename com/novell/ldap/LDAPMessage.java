@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/org/ietf/ldap/LDAPMessage.java,v 1.5 2000/08/10 17:53:02 smerrill Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/org/ietf/ldap/LDAPMessage.java,v 1.6 2000/08/21 18:35:42 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -71,8 +71,7 @@ public class LDAPMessage {
 		}
 
 		// create RFC 2251 LDAPMessage
-		message = new com.novell.asn1.ldap.LDAPMessage(
-			new MessageID(), op, asn1Ctrls);
+		message = new com.novell.asn1.ldap.LDAPMessage(op, asn1Ctrls);
 	}
 
 	/**
@@ -120,7 +119,7 @@ public class LDAPMessage {
     * Returns the message ID.
     */
    public int getMessageID() {
-      return message.getMessageID().getInt();
+      return message.getMessageID();
    }
 
    /**
@@ -154,7 +153,7 @@ public class LDAPMessage {
    }
 
 	/**
-	 *
+	 * Returns the RFC 2251 LDAPMessage composed in this object.
 	 */
 	public com.novell.asn1.ldap.LDAPMessage getASN1Object()
 	{
@@ -162,3 +161,4 @@ public class LDAPMessage {
 	}
 
 }
+

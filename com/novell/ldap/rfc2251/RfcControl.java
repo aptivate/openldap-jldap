@@ -1,3 +1,8 @@
+/* **************************************************************************
+ * $Novell$
+ *
+ * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
+ ***************************************************************************/
 
 package com.novell.asn1.ldap;
 
@@ -34,13 +39,17 @@ public class Control extends ASN1Sequence {
 
 	/**
 	 *
+	 * Note: criticality is only added if true, as per RFC 2251 sec 5.1 part
+	 *       (4): If a value of a type is its default value, it MUST be
+	 *       absent.
 	 */
 	public Control(LDAPOID controlType, ASN1Boolean criticality,
 		            ASN1OctetString controlValue)
 	{
 		super(3);
 		add(controlType);
-		add(criticality);
+		if(criticality.getContent() == true)
+			add(criticality);
 		if(controlValue != null)
 			add(controlValue);
 	}
@@ -55,36 +64,50 @@ public class Control extends ASN1Sequence {
 	}
 
 	//*************************************************************************
-	// Mutators
-	//*************************************************************************
-
-	//*************************************************************************
 	// Accessors
 	//*************************************************************************
 
 	/**
 	 *
 	 */
-	public LDAPOID getControlType()
+	public ASN1OctetString getControlType()
 	{
-		return (LDAPOID)get(0);
+		return (ASN1OctetString)get(0);
 	}
 
 	/**
+	 * Returns criticality.
 	 *
+	 * If no value present, return the default value of FALSE.
 	 */
 	public ASN1Boolean getCriticality()
 	{
-		return (ASN1Boolean)get(1);
+		if(size() > 1) { // MAY be a criticality
+			ASN1Object obj = get(1);
+			if(obj instanceof ASN1Boolean)
+				return (ASN1Boolean)obj;
+		}
+
+		return new ASN1Boolean(false);
 	}
 
 	/**
 	 * Since controlValue is an OPTIONAL component, we need to check
-	 * to see if one is available.
+	 * to see if one is available. Remember that if criticality is of default
+	 * value, it will not be present.
 	 */
 	public ASN1OctetString getControlValue()
 	{
-		return (size()==3) ? (ASN1OctetString)get(2) : null;
+		if(size() > 2) { // MUST be a control value
+			return (ASN1OctetString)get(2);
+		}
+		else if(size() > 1) { // MAY be a control value
+			ASN1Object obj = get(1);
+			if(obj instanceof ASN1OctetString)
+				return (ASN1OctetString)obj;
+		}
+		return null;
+
 	}
 
 }
