@@ -49,7 +49,7 @@ import java.io.IOException;
  * @see DSETimeStamp
  */
 public class EntryEventData implements EventResponseData {
-    private final String prepetratorDN;
+    private final String perpetratorDN;
     private final String entry;
     private final String newdn;
     private final String classid;
@@ -74,7 +74,7 @@ public class EntryEventData implements EventResponseData {
 
         int[] length = new int[1];
 
-        prepetratorDN =
+        perpetratorDN =
             ((ASN1OctetString) decode.decode(in, length)).stringValue();
         entry =
             ((ASN1OctetString) decode.decode(in, length)).stringValue();
@@ -103,8 +103,8 @@ public class EntryEventData implements EventResponseData {
      *
      * @return Prepetrator DN as String.
      */
-    public String getPrepetratorDN() {
-        return prepetratorDN;
+    public String getPerpetratorDN() {
+        return perpetratorDN;
     }
 
     /**
@@ -176,8 +176,8 @@ public class EntryEventData implements EventResponseData {
         StringBuffer buf = new StringBuffer();
         buf.append("EntryEventData[");
         addObject(buf, "Entry", getEntry());
-        addObject(buf, "Prepetrator", getPrepetratorDN());
-        addObject(buf, "Class", getPrepetratorDN());
+        addObject(buf, "Prepetrator", getPerpetratorDN());
+        addObject(buf, "ClassId", getClassid());
         buf.append("(Verb=" + getVerb() + ")");
         buf.append("(Flags=" + getFlags() + ")");
         buf.append("(NewDN=" + getNewdn() + ")");

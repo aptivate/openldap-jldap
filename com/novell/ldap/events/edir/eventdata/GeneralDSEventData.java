@@ -177,7 +177,7 @@ public class GeneralDSEventData implements EventResponseData {
      *
      * @return Time as integer.
      */
-    public int getMilliseconds() {
+    public int getMilliSeconds() {
         return milliseconds;
     }
 
@@ -309,7 +309,7 @@ public class GeneralDSEventData implements EventResponseData {
         StringBuffer buf = new StringBuffer();
         buf.append("[GeneralDSEventData");
         buf.append("(DSTime =" + getDsTime() + ")");
-        buf.append("(MilliSeconds=" + getMilliseconds() + ")");
+        buf.append("(MilliSeconds=" + getMilliSeconds() + ")");
         buf.append("(verb =" + getVerb() + ")");
         buf.append("(currentProcess " + getCurrentProcess() + ")");
         buf.append("(PerpetartorDN =" + getPerpetratorDN() + ")");

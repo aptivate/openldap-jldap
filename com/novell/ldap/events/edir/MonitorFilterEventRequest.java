@@ -151,7 +151,7 @@ public class MonitorFilterEventRequest extends LDAPExtendedOperation {
             for (int i = 0; i < specifiers.length; i++) {
                 ASN1Sequence specifiersequence = new ASN1Sequence();
                 specifiersequence.add(
-                    new ASN1Integer(specifiers[i].getEventclassfication())
+                    new ASN1Integer(specifiers[i].getEventclassification())
                 );
                 specifiersequence.add(
                     new ASN1Enumerated(specifiers[i].getEventtype())

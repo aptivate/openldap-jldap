@@ -29,7 +29,7 @@ package com.novell.ldap.events.edir;
  * @see EdirEventSource#registerforFilterEvent
  */
 public class EdirEventSpecifier {
-    private final int eventClassfication;
+    private final int eventClassification;
     private final int eventType;
     private final String filter;
 
@@ -54,7 +54,7 @@ public class EdirEventSpecifier {
     public EdirEventSpecifier(
         final int classification, final int type, final String afilter
     ) {
-        eventClassfication = classification;
+        eventClassification = classification;
         eventType = type;
         filter = afilter;
     }
@@ -64,8 +64,8 @@ public class EdirEventSpecifier {
      *
      * @return Event Classification as int.
      */
-    public int getEventclassfication() {
-        return eventClassfication;
+    public int getEventclassification() {
+        return eventClassification;
     }
 
     /**

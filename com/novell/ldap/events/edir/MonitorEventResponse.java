@@ -74,7 +74,7 @@ public class MonitorEventResponse extends LDAPExtendedResponse {
 
     /**
      * Default Constructor for MonitorEventResponse, called by
-     * LDAPIntermediateResponse Object.
+     * ExtResponseFactory Object.
      *
      * @param message The RFCLDAPMessage to parse.
      *

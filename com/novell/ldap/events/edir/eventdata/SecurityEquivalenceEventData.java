@@ -33,15 +33,7 @@ import java.util.List;
  * This class represents the data for Security Equivalence Events. The event data has
  * the following encoding:-
  * 
- * <p>
- * BinderyObjectInfo [APPLICATION 5]::= <br>
- * &nbsp;&nbsp;&nbsp;&nbsp;SEQUENCE {<br>
- * &nbsp;&nbsp;&nbsp;&nbsp;entry        LDAPDN,<br>
- * &nbsp;&nbsp;&nbsp;&nbsp;type         INTEGER,<br>
- * &nbsp;&nbsp;&nbsp;&nbsp;emuObjFlags  INTEGER,<br>
- * &nbsp;&nbsp;&nbsp;&nbsp;security     INTEGER,<br>
- * &nbsp;&nbsp;&nbsp;&nbsp;name          LDAPString (48)<br>
- * &nbsp;&nbsp;&nbsp;&nbsp;}<br>
+ * <p> 
  * DSESEVInfo ::= [APPLICATION 6]<br>
  * &nbsp;&nbsp;&nbsp;&nbsp;SEQUENCE {<br>
  * &nbsp;&nbsp;&nbsp;&nbsp;entry        LDAPDN, <br>
