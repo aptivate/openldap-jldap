@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPUrl.java,v 1.24 2001/03/01 00:29:58 cmorris Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPUrl.java,v 1.25 2001/04/19 18:55:53 cmorris Exp $
 *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -94,8 +94,11 @@ public class LDAPUrl {
     *  @param dn       Distinguished name of the base object of the search.
     *
     * <br><br>
-    *  @param attrNames Names or OIDs of attributes to retrieve. null
-    *                   for all user attributes.
+    *  @param attrNames Names or OIDs of attributes to retrieve.  Passing a
+    *                   null array signifies that all user attributes are to be
+    *                   retrieved. Passing a value of "*" allows you to specify
+    *                   that all user attributes as well as any specified
+    *                   operational attributes are to be retrieved.
     *
     *<br><br>
     *  @param scope    Depth of search (in DN namespace). Use one of
@@ -131,8 +134,11 @@ public class LDAPUrl {
     *<br><br>
     *  @param dn       Distinguished name of the base object of the search.
     *<br><br>
-    *  @param attrNames Names or OIDs of attributes to retrieve. null
-    *                  for all user attributes.
+    *  @param attrNames Names or OIDs of attributes to retrieve.  Passing a
+    *                   null array signifies that all user attributes are to be
+    *                   retrieved. Passing a value of "*" allows you to specify
+    *                   that all user attributes as well as any specified
+    *                   operational attributes are to be retrieved.
     *
     *<br><br>
     *  @param scope    Depth of search (in DN namespace). Use one of
