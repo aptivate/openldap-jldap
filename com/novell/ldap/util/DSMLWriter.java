@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: DSMLWriter.java,v 1.28 2002/11/27 20:52:26 $
+ * $Novell: DSMLWriter.java,v 1.29 2002/12/02 15:28:33 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -30,7 +30,6 @@ import java.util.Iterator;
  */
 public class DSMLWriter implements LDAPWriter {
 
-    private static LDAPMessage currentChange = null;
     private Writer out = null;
     private int state = NEW_BATCH;
     private static final int NEW_BATCH = 0;
@@ -59,10 +58,16 @@ public class DSMLWriter implements LDAPWriter {
     /**
      * Initializes this writer with the specified outputstream to write DSML
      * into.
+     *
+     * Note that the output characters will be UTF-8 encoded.
      * @param stream  Output stream to write DSML
      */
     public DSMLWriter(OutputStream stream){
-        out = new OutputStreamWriter(stream);
+        try {
+            out = new OutputStreamWriter(stream, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException (e);
+        }
     }
 
     /**
