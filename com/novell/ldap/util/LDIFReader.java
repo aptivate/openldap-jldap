@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: LDIFReader.java,v 1.25 2002/10/15 16:28:41 $
+ * $Novell: LDIFReader.java,v 1.26 2002/10/15 18:16:18 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -322,7 +322,6 @@ public class LDIFReader extends LDIF implements LDAPReader {
      */
     private void  readRecordFields() throws IOException, LDAPLocalException {
 
-        boolean control = false;
         String line;
         StringBuffer bLine = new StringBuffer();
         this.rFields.clear();
@@ -394,9 +393,8 @@ public class LDIFReader extends LDIF implements LDAPReader {
      */
     private void toRecordProperties() throws IOException, LDAPLocalException {
 
-        int i, index;
+        int index;
         String req;
-        boolean criticality;
 
         // set entry DN
         if ( (((StringBuffer)this.rFields.get(0)).charAt(3)) != ':') {
@@ -739,31 +737,7 @@ public class LDIFReader extends LDIF implements LDAPReader {
         return -1;
     }
 
-    /**
-     * Returns the index within this StringBuffer object
-     * of the first occurence of the specified character,
-     * starting at tje specified index.
-     *
-     * @param bl  The StringBuffer object
-     * @param ch  The character to look for in the StringBuffer object
-     *
-     * @return The index of the first occurence of the character in the
-     * StringBuffer object, starting at the specified idex.
-     * -1 is returned if the character does not occur.
-     */
-    private int IndexOf(StringBuffer bl, int ch, int si) {
-        if (bl != null && si<bl.length()) {
-            for (int i=si;i<bl.length(); i++) {
-                if(bl.charAt(i) == ch) {
-                    return i;
-                }
-            }
-        }
-        return -1;
-    }
-
-
-    /**
+     /**
      * <tt>trimField<tt> trims off extra spaces in a field. It also
      * trims confield and constructs control onjects.
      */
@@ -915,7 +889,7 @@ public class LDIFReader extends LDIF implements LDAPReader {
             c++;
         }
 
-        if( c <= lastChar) {  // thers is a value spec specified
+        if( c <= lastChar) {  // there is a value spec specified
             line.getChars(c, lastChar+1, newChars, charIndex);
             charIndex += lastChar - c + 1;
 

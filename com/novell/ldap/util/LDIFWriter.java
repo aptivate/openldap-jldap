@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell$
+ * $Novell: LDIFWriter.java,v 1.26 2002/10/15 16:28:42 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -40,7 +40,6 @@ import com.novell.ldap.ldif_dsml.Base64;
 
 public class LDIFWriter extends LDIF implements LDAPWriter {
 
-    private String         dn;                            // record dn
     private BufferedWriter bufWriter;
     private LDAPControl[]  currentControls;
     private LDAPEntry      currentEntry = null;
@@ -235,9 +234,6 @@ public class LDIFWriter extends LDIF implements LDAPWriter {
      * Write a number of content records into LDIF content file.
      *
      * @param entries LDAPEntry array object
-     * @param ctrls LDAPControl[] object
-     *
-     * @throws IOException if an I/O error occurs.
      */
     public void writeContents(LDAPEntry[] entries)
     throws IOException  {
@@ -252,7 +248,6 @@ public class LDIFWriter extends LDIF implements LDAPWriter {
      * Write a content record into LDIF content file
      *
      * @param entry LDAPEntry object
-     * @param ctrls LDAPControl[] object
      *
      * @throws IOException if an I/O error occurs.
      */
@@ -296,7 +291,7 @@ public class LDIFWriter extends LDIF implements LDAPWriter {
      * @see LDAPModDN
      * @see LDAPModify
      *
-     * @param change LDAPRequest object
+     * @param request LDAPRequest object
      *
      * @throws IOException if an I/O error occurs.
      */
@@ -317,19 +312,19 @@ public class LDIFWriter extends LDIF implements LDAPWriter {
         }
         else if ( request instanceof LDAPDelete ) {
             // LDAPDelete request, write to outputStream
-            writeRecordLines( this.dn, this.currentControls );
+            writeRecordLines( request.getDN(), this.currentControls );
         }
         else if ( request instanceof LDAPModDN ) {
             // LDAPModDN request, get moddn info
             modInfo = (String[])request.getRequestInfo();
             // write to outputStream
-            writeRecordLines( dn, modInfo, this.currentControls );
+            writeRecordLines( request.getDN(), modInfo, this.currentControls );
         }
         else if ( request instanceof LDAPModify) {
             // LDAPModify request, get LDAPModification array
             mods = (LDAPModification[])request.getRequestInfo();
             // write to outputStream
-            writeRecordLines( dn, mods, this.currentControls );
+            writeRecordLines( request.getDN(), mods, this.currentControls );
         }
         else {
             throw new RuntimeException("Not supported request type");
@@ -499,6 +494,8 @@ public class LDIFWriter extends LDIF implements LDAPWriter {
      *
      * @param dn      String object representing entry DN
      * @param modInfo ModInfo object
+     * @param ctrls   representing entry DN
+     * @param modInfo ModInfo object
      * @param ctrls   LDAPControl array object
      *
      */
@@ -518,8 +515,8 @@ public class LDIFWriter extends LDIF implements LDAPWriter {
         }
         else {
             // base64 encod newRDN
-            // put newRDN into record fields with a trailing space
-            writeLine(new String("newrdn:: " + Base64.encode(modInfo[0])));
+            // put newRDN into record fields
+            writeLine("newrdn:: " + Base64.encode(modInfo[0]));
         }
 
         // save deleteOldRDN
@@ -533,7 +530,7 @@ public class LDIFWriter extends LDIF implements LDAPWriter {
             }
             else {
                 // base64 encod newRDN
-                // put newSuperior into record fields with a trailing space
+                // put newSuperior into record fields
                 writeLine("newsuperior:: " +  Base64.encode(modInfo[2]));
             }
         }
@@ -571,7 +568,7 @@ public class LDIFWriter extends LDIF implements LDAPWriter {
             writeLine("dn: " + dn);
         }
         else { // not safe
-            writeLine("dn:: " + Base64.encode(dn) + " ");
+            writeLine("dn:: " + Base64.encode(dn));
         }
     }
 
@@ -591,12 +588,9 @@ public class LDIFWriter extends LDIF implements LDAPWriter {
 
             if ( cVal != null && cVal.length > 0 ) {
                 // always encode control value(s) ?
-                cVal = Base64.encode(cVal);
-                String controlValue = new String(cVal);
-                // a trailing space is add to the end
                 writeLine( "control: " + ctrls[i].getID() + " "
                                        + ctrls[i].isCritical() + ":: "
-                                       + controlValue);
+                                       + Base64.encode(cVal));
             }
             else {
                 writeLine("control: " + ctrls[i].getID() + " "
@@ -622,9 +616,7 @@ public class LDIFWriter extends LDIF implements LDAPWriter {
             else {
                 // IF attrVal contains NON-SAFE-INIT-CHAR or NON-SAFE-CHAR,
                 // it has to be base64 encoded
-                attrVal = Base64.encode(attrVal);
-                // base64 encoded attribute spec ended with white spavce
-                writeLine(attrName + ":: " + attrVal + " " );
+                writeLine(attrName + ":: " + Base64.encode(attrVal));
             }
         }
     }
