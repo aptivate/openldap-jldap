@@ -1,4 +1,4 @@
-    $Novell: /ldap/src/jldap/README,v 1.2 2000/08/17 22:37:41 vtag Exp $
+    $Novell: /ldap/src/jldap/README,v 1.3 2000/08/18 15:37:03 vtag Exp $
 
                               Building JLDAP
 
@@ -18,7 +18,9 @@ For Win32
 
 For Linux / Unix
     If Linux running bourne shell, and this source directory is located
-    in /usr/home/jldap, and if java is installed in /usr/local/jdk1.2.2 then:
+    in /usr/home/jldap, and if java is installed in /usr/local/jdk1.2.2 then
+    set in your environment:
+
         ANT_HOME=$PWD/jldap/ant
         JAVA_HOME=/usr/local/jdk1.2.2
         PATH="$ANT_HOME/bin:$PATH"
@@ -29,29 +31,29 @@ To build everything just invoke ant as follows from the top of the source tree:
     ant all
 
 Targets available at the top of the source tree are:
-     clean   - Cleans all generated files and directories in this and    
-               subbordinate directories                                  
-     cleanpkg- Cleans pkg directory                                      
-     doc     - Builds javadoc files                                      
-     debug   - Builds debug classes and jar files                        
-     release - Builds release classes and jar files                      
-     lib     - Builds debug & release classes and jar files.             
-     jar     - Synonym for lib                                           
+     clean   - Cleans all generated files and directories in this and
+               subbordinate directories
+     cleanpkg- Cleans pkg directory
+     doc     - Builds javadoc files
+     debug   - Builds debug classes and jar files
+     release - Builds release classes and jar files
+     lib     - Builds debug & release classes and jar files.
+     jar     - Synonym for lib
      all     - Builds everything possible. It will build in all directories -
                debug and release jar files, java doc, samples, test programs,
-			   and create an installation directory called pkg.
-     install - Copies build results from all directories and creates the 
+               and create an installation directory called pkg.
+     install - Copies build results from all directories and creates the
                pkg directory.
-     pkg     - Synonym for install                                           
+     pkg     - Synonym for install
 
 Targets available int the the ldap and novp directories are:
-     clean   - Cleans all generated files and directories in this    
-               and subbordinate directories                          
-     doc     - Builds javadoc files                                  
-     debug   - Builds debug classes and jar files                    
-     release - Builds release classes and jar files                  
-     lib     - Builds debug & release classes and jar files          
-     jar     - Synonym for lib                                           
+     clean   - Cleans all generated files and directories in this
+               and subbordinate directories
+     doc     - Builds javadoc files
+     debug   - Builds debug classes and jar files
+     release - Builds release classes and jar files
+     lib     - Builds debug & release classes and jar files
+     jar     - Synonym for lib
      all     - Builds everything possible in this directory  It will build
                debug and release jar files, javadoc, samples, and test programs.
 
@@ -63,23 +65,31 @@ Targets available int the the diretories containing java files are:
 
 The following directories are created when "ant all" is run:
 
-	Contents of directories in the ldap directory
-		jldap/ldap/classes			/* Classes used to build lib/ldap.jar */
-		jldap/ldap/classes_debug	/* Classes used to build lib_debug/ldap.jar */
-		jldap/ldap/classes_tests	/* Classes for the test programs */
-		jldap/ldap/classes_samples	/* Classes for the sample programs */
-		jldap/ldap/lib				/* Jar file for ldap - optimized, debug off */
-		jldap/ldap/lib_debug		/* Jar file for ldap - not optimized, debug on */
-		jldap/ldap/doc				/* Javadoc for ldap.jar classes */
+    Contents of directories in the ldap directory
+        jldap/ldap/classes          /* Classes used to build lib/ldap.jar */
+        jldap/ldap/classes_debug    /* Classes used to build lib_debug/ldap.jar */
+        jldap/ldap/classes_tests    /* Classes for the test programs */
+        jldap/ldap/classes_samples  /* Classes for the sample programs */
+        jldap/ldap/lib              /* Jar file for ldap - optimized, debug off */
+        jldap/ldap/lib_debug        /* Jar file for ldap - not optimized, debug on */
+        jldap/ldap/doc              /* Javadoc for ldap.jar classes */
 
-	Contents of directories in the novbp directory
-		jldap/novbp/classes			/* Classes used to build lib/novbp.jar */
-		jldap/novbp/classes_debu	/* Classes used to build lib_debug/novbp.jar */g
-		jldap/novbp/classes_tests	/* Classes for the test programs */
-		jldap/novbp/classes_samples	/* Classes for the sample programs */
-		jldap/novbp/lib				/* Jar file for novbp - optimized, debug off */
-		jldap/novbp/lib_debug		/* Jar file for novbp - not optimized, debug on */
-		jldap/novbp/doc				/* Javadoc for novbp.jar classes */
+    Contents of directories in the novbp directory
+        jldap/novbp/classes         /* Classes used to build lib/novbp.jar */
+        jldap/novbp/classes_debu    /* Classes used to build lib_debug/novbp.jar */g
+        jldap/novbp/classes_tests   /* Classes for the test programs */
+        jldap/novbp/classes_samples /* Classes for the sample programs */
+        jldap/novbp/lib             /* Jar file for novbp - optimized, debug off */
+        jldap/novbp/lib_debug       /* Jar file for novbp - not optimized, debug on */
+        jldap/novbp/doc             /* Javadoc for novbp.jar classes */
 
-	Contents of directories in the jldap directory
-		jldap/pkg					/* Distribution directories and files */
+    Contents of directories in the jldap directory
+        jldap/pkg                   /* Distribution directories and files */
+        jldap/pkg/doc               /* javadoc */
+        jldap/pkg/doc/ldap          /* javadoc for ldap classes */
+        jldap/pkg/doc/novbp         /* javadoc for novbp classes */
+        jldap/pkg/lib               /* Jar file for ldap - optimized, debug off */
+        jldap/pkg/lib_debug         /* Jar file for ldap - not optimized, debug on */
+        jldap/pkg/samples           /* Sample programs */
+        jldap/pkg/samples/ldap      /* Sample programs for ldap.jar classes */
+        jldap/pkg/samples/novbp/ext /* Sample programs for novbp.jar ext classes */
