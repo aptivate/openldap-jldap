@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.33 2000/09/14 15:29:29 judy Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.34 2000/09/14 20:06:14 judy Exp $
 *
 * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
 * 
@@ -55,69 +55,85 @@ public class LDAPConnection implements
    private String authenticationMethod = new String("none");
    private Hashtable authenticationHash = null;
 
+  /**
+   * A <code>setOption</code> key that specifies whether aliases are dereferenced.
+   *
+   * <p>Can be set to the following values:</p>
+   *<ul>
+   *<li>DEREF_NEVER = 0</li>
+   *<li>DEREF_FINDING = 1</li>
+   *<li>DEREF_SEARCHING = 2</li>
+   *<li>DEREF_ALWAYS = 3</li>
+   *</ul>
+   * <p> Default value: DEREF = 0 </p>
+   *
+   * @see LDAPv2#setOption(int, java.lang.Object)
+   * @see LDAPv2#getOption(int)
+   * @see #DEREF_NEVER
+   * @see #DEREF_FINDING
+   * @see #DEREF_SEARCHING
+   * @see #DEREF_ALWAYS
+   */
+   public static final int DEREF = 2;
+
    /**
-   * An identifier that specifies that aliases are never dereferenced.
+   * An <code>setOption</code> key, the corresponding value
+   * of which controls the the constraint specifying
+   * if aliases are dereferenced.
    *
    * <p> DEREF_NEVER = 0 </p>
    *
+   * @see LDAPv2#setOption(int, java.lang.Object)
+   * @see LDAPv2#getOption(int)
    * @see #DEREF
    */
    public static final int DEREF_NEVER  = 0;
    
    /**
-   * An identifier that specifies that aliases are dereferenced when
-   * searching the entries beneath the starting point but not when 
-   * searching for the starting entry.
-   *
-   * <p> DEREF_SEARCHING = 1 </p>
-   *
-   * @see #DEREF
-   */
-   public static final int DEREF_SEARCHING = 1;
-   
-   /**
-   * An identifier that specifies that aliases are dereferenced when
+   * An <code>setOption</code> key value that specifies the constraint
+   * that aliases are dereferenced when
    * searching for the starting entry but are not dereferenced when
    * searching the entries beneath the starting point.
    *
    * <p> DEREF_FINDING = 2 </p>
    *
+   * @see LDAPv2#setOption(int, java.lang.Object)
+   * @see LDAPv2#getOption(int)
    * @see #DEREF
    */
-   public static final int DEREF_FINDING = 2;
+   public static final int DEREF_FINDING = 1;
+   
+   /**
+   * An <code>setOption</code> key value that specifies the constraint
+   * that aliases are dereferenced when
+   * searching the entries beneath the starting point but not when 
+   * searching for the starting entry.
+   *
+   * <p> DEREF_SEARCHING = 1 </p>
+   *
+   * @see LDAPv2#setOption(int, java.lang.Object)
+   * @see LDAPv2#getOption(int)
+   * @see #DEREF
+   */
+   public static final int DEREF_SEARCHING = 2;
    
   /**
-   * An identifier that specifies that aliases are dereferenced always 
+   * An <code>setOption</code> key value that specifies the constraint
+   * that aliases are dereferenced always 
    * (when searching for the starting entry and when
    * searching the entries beneath the starting point).
    *
    * <p> DEREF_ALWAYS = 3 </p>
    *
+   * @see LDAPv2#setOption(int, java.lang.Object)
+   * @see LDAPv2#getOption(int)
    * @see #DEREF
    */
    public static final int DEREF_ALWAYS = 3;
-
-  /**
-   * An option that specifies whether aliases are dereferenced.
-   *
-   * <p>Can be set to the following values:</p>
-   *<ul>
-   *<li>DEREF_NEVER = 0</li>
-   *<li>DEREF_SEARCHING = 1</li>
-   *<li>DEREF_FINDING = 2</li>
-   *<li>DEREF_ALWAYS = 3</li>
-   *</ul>
-   * <p> Default value: DEREF = 0 </p>
-   *
-   * @see #DEREF_NEVER
-   * @see #DEREF_SEARCHING
-   * @see #DEREF_FINDING
-   * @see #DEREF_ALWAYS
-   */
-   public static final int DEREF = 1;
    
   /**
-   * An option that specifies the maximum number of search results to
+   * An <code>setOption</code> key, the corresponding value of which
+   * specifies the maximum number of search results to
    * return.
    *
    * <p>If this option is set to 0, there is no maximum limit.
@@ -125,39 +141,80 @@ public class LDAPConnection implements
    * <p> The value must be an Integer.</p>
    * <p>Default value: 1000</p>
    *
-   * @see #setOption(int, java.lang.Object)
-   * @see #getOption(int)
+   * @see LDAPv2#setOption(int, java.lang.Object)
+   * @see LDAPv2#getOption(int)
    */
-   public static final int SIZELIMIT = 2;
-   
+   public static final int SIZELIMIT = 3;
+
   /**
-   * An option that specifies the maximum number of seconds the server 
-   * is to wait when returning search results.
-   *
-   * <p>This option is only recoginzed on search operations.</p>
-   *
-   * <p> The value must be an Integer.</p>
-   * <p>Default value: 0 
-   */
-   public static final int SERVER_TIMELIMIT = 3;
-   
-  /**
-   * An option that specifies the maximum number of milliseconds the client
+   * An <code>setOption</code> key, the corresponding value of which
+   * specifies the maximum number of milliseconds the client
    * waits for an operation to complete. 
    *
    * <p>If this option is set to 0, there is no maximum time limit.
    *
    * <p> The value must be an Integer.</p>
    * Default value: 0
+   *
+   * @see LDAPv2#setOption(int, java.lang.Object)
+   * @see LDAPv2#getOption(int)
    */
    public static final int TIMELIMIT = 4;
    
   /**
-   * An option that specifies whether or not the client follows referrals
+   * An <code>setOption</code> key, the corresponding value of which
+   * specifies the maximum number of seconds the server 
+   * is to wait when returning search results.
+   *
+   * <p>This option is only recoginzed on search operations.</p>
+   *
+   * <p> The value must be an Integer.</p>
+   * <p>Default value: 0 
+   *
+   * @see LDAPv2#setOption(int, java.lang.Object)
+   * @see LDAPv2#getOption(int)
+   */
+   public static final int SERVER_TIMELIMIT = 5;
+   
+  /**
+   * An <code>setOption</code> key, the corresponding value of which
+   * specifies the maximum number of encoding format for strintgs.
+   * By default, the value of this options is LDAPConnection.UTF8.
+   *
+   * @see LDAPv2#setOption(int, java.lang.Object)
+   * @see LDAPv2#getOption(int)
+   * @see #UTF8
+   * @see #T61
+   */
+   public static final int STRING_FORMAT = 6;
+
+  /**
+   * An <code>setOption</code> key value that specifies that
+   * strings are encoded as UTF8.
+   *
+   * @see LDAPv2#setOption(int, java.lang.Object)
+   * @see LDAPv2#getOption(int)
+   * @see #T61
+   */
+   public static final int UTF8 = 0;
+
+  /**
+   * An <code>setOption</code> key value that specifies that
+   * strings are encoded as T61.
+   *
+   * @see LDAPv2#setOption(int, java.lang.Object)
+   * @see LDAPv2#getOption(int)
+   * @see #UTF8
+   */
+   public static final int T61 = 1;
+   
+  /**
+   * An <code>setOption</code> key, the corresponding value of which
+   * specifies whether or not the client follows referrals
    * automatically.
    *
    * <p> If false, an LDAPReferralException is raised when a referral is
-   * detected. If true, referrals are followed automatically. </p>
+   * detected. If true, referrals are followed automatically.</p>
    *
    * <p> Referrals of any type other than to an LDAP server (for example, 
    * a referral URL other than ldap://something) are ignored on automaic
@@ -165,11 +222,15 @@ public class LDAPConnection implements
    *
    * <p> The value must be a Boolean.</p>
    * <p>Default value: false</p>
+   *
+   * @see LDAPv2#setOption(int, java.lang.Object)
+   * @see LDAPv2#getOption(int)
    */
-   public static final int REFERRALS = 5;
+   public static final int REFERRALS = 8;
    
   /**
-   * An option that specifies an object that implements the LDAPRebind
+   * An <code>setOption</code> key, the corresponding value of which
+   * specifies an object that implements the LDAPRebind
    * interface.
    *
    * <p>A user of the class library must define the LDAPRebind class 
@@ -181,59 +242,79 @@ public class LDAPConnection implements
    *
    * <p> The value must be an LDAPRebind object.</p>
    * <p>Default value: null</p>
+   *
+   * @see LDAPv2#setOption(int, java.lang.Object)
+   * @see LDAPv2#getOption(int)
    */
-   public static final int REFERRALS_REAUTHENTICATION = 6;
+   public static final int REFERRALS_REBIND_PROC = 9;
    
    /**
-   * An option that specifies an object that can process an authentication
+   * An <code>setOption</code> key, the corresponding value of which
+   * specifies the maximum number of referrals in a sequence
+   * that the client will follow.
+   *
+   * <p>For example, if REFERRALS_HOP_LIMIT is set to 5, the client follows
+   * no more than 5 referrals in a row when resolving a single LDAP 
+   * request.</p>
+   *
+   * <p> The value must be an Integer.</p>
+   * <p>Default value: 10
+   *
+   * @see LDAPv2#setOption(int, java.lang.Object)
+   * @see LDAPv2#getOption(int)
+   */
+   public static final int REFERRALS_HOP_LIMIT = 10;
+   
+   /**
+   * An <code>setOption</code> key, the corresponding value of which
+   * specifies an object that can process an authentication
    * request, overriding the default authentication behavior.
    *
    * <p> The object is typically used for processing authentication when
    * following referrals.</p>
    *
    * <p> The value must be an LDAPBind object.</p>
+   *
+   * @see LDAPv2#setOption(int, java.lang.Object)
+   * @see LDAPv2#getOption(int)
    */
-   public static final int BIND = 7;
+   public static final int BIND = 13;
    
    /**
-   * An option that specifies the maximum number of referrals in a sequence
-   * that the client will follow.
-   *
-   * <p>For example, if REFERRALS_HOP_LIMIT is set to 5, the client follows
-   * no more than 5 referrals in a row when resolving a single LDAP 
-   * request. </p>
-   *
-   * <p> The value must be an Integer.</p>
-   * <p>Default value: 10
-   */
-   public static final int REFERRALS_HOP_LIMIT = 8;
-   
-   /**
-   * An option that specifies the number of search results to return at a
+   * An <code>setOption</code> key, the corresponding value of which
+   * specifies the number of search results to return at a
    * time.
    *
    * <p>For example, if BATCHSIZE is 1, enumerating an LDAPSearchResults
    * blocks only until one entry is available. If it is set to 0, enumerating
-   * blocks until all entries have been retrieved from the server. </p>
+   * blocks until all entries have been retrieved from the server.</p>
    *
    * <p> The value must be an Integer.</p>
    * <p>Default value: 1 </p>
+   *
+   * @see LDAPv2#setOption(int, java.lang.Object)
+   * @see LDAPv2#getOption(int)
    */
-   public static final int BATCHSIZE = 9;
+   public static final int BATCHSIZE = 20;
 
   /**
-   * An identifier that specifies the LDAPv2 protocol version.
+   * Specifies the value for the LDAPv2 protocol version.
    *
-   * <p>You can use this identifier with the LDAPConnection.bind method
-   * in the version parameter to specify an LDAPv2 bind. </p>
+   * <p>You can use this identifier with the LDAPConnection.bind or
+   * LDAPConnection.connect methods
+   * in the version parameter to specify an LDAPv2 bind.</p>
+   *
+   * @see LDAPv2#setOption(int, java.lang.Object)
+   * @see LDAPv2#getOption(int)
    */
    public static final int LDAP_V2 = 2;
    
   /**
-   * An identifier that specifies the LDAPv3 protocol version.
+   * Specifies the value for the LDAPv3 protocol version.
    *
-   * <p>You can use this identifier with the LDAPConnection.bind method
-   * in the version parameter to specify an LDAPv3 bind. </p>
+   * <p>You can use this identifier with the LDAPConnection.bind or
+   * LDAPConnection.connect methods
+   * in the version parameter to specify an LDAPv3 bind.</p>
    */
    public static final int LDAP_V3 = 3;
 
@@ -255,7 +336,7 @@ public class LDAPConnection implements
     * to an LDAP server.
     *
     * <p>Calling the constructor does not actually establish the connection.
-    * To connect to the LDAP server, use the connect method. </p>
+    * To connect to the LDAP server, use the connect method.</p>
     */
    public LDAPConnection()
    {
@@ -365,7 +446,8 @@ public class LDAPConnection implements
     * or no authentication Hashtable is present.</p>
     *
     * @return The hashTable used for authentication information or null if the 
-    * object is not present or authenticated.
+    * object is not present or authenticated.  The object returned may
+	* be either of type <code>Hashtable</code> or <code>Properties</code>.
     */
    public Hashtable getAuthenticationQualifiers()
    {
@@ -490,7 +572,7 @@ public class LDAPConnection implements
     * specified when calling an operation method).
     *
     * <p> The getOption method can be used to get individual
-    * constraints (rather than getting the entire set of constraints). </p>
+    * constraints (rather than getting the entire set of constraints).</p>
     *
     * @return The set of default contraints that apply to this connection.
     *
@@ -602,7 +684,7 @@ public class LDAPConnection implements
     *
     * <p>No property names have been defined at this time, but the mechanism
     * is in place in order to support revisional as well as dynamic
-    * extensions to operation modifiers. </p>
+    * extensions to operation modifiers.</p>
     * 
     * 
     * @param name    Name of the property to set.<br><br>
@@ -625,7 +707,7 @@ public class LDAPConnection implements
     *
     * <p>Typically, the setSearchConstraints method is used to create a
     * slightly different set of search constraints to apply to a particular
-    * search. </p>
+    * search.</p>
     *
     * @param cons The search constraints to set.
     */
@@ -643,7 +725,7 @@ public class LDAPConnection implements
     * It should be called before the first connect method. If called 
     * (for the first time) after connecting, the new factory will not
     * be used until or unless a new connection is attempted 
-    * with the object. </p>
+    * with the object.</p>
     *
     * <p>The following code snippet provides a typical usage example:
     * <pre><code>
@@ -766,6 +848,25 @@ public class LDAPConnection implements
       return;
    }
 
+   /**
+    * Abandons all non-search operations for a listener.
+    *
+    * <p>All operations in progress which are managed by the listener 
+    * are abandoned.</p>
+    *
+    *  @param listener  The handler returned for messages returned on a
+    *                   search request. 
+    *
+    *  @exception LDAPException A general exception which includes an error 
+    *  message and an LDAP error code.
+    */
+   public void abandon(LDAPResponseListener listener)
+      throws LDAPException
+   {
+      abandon(listener, defSearchCons);
+      return;
+   }
+
    /*
    * Not in the draft
    */
@@ -782,7 +883,7 @@ public class LDAPConnection implements
     *  @exception LDAPException A general exception which includes an error 
     *  message and an LDAP error code.
     */
-   public void abandon(LDAPSearchListener listener, LDAPConstraints cons)
+   public void abandon(LDAPListener listener, LDAPConstraints cons)
       throws LDAPException
    {
       if(listener != null) {
@@ -998,7 +1099,7 @@ public class LDAPConnection implements
     * this method attempts to reconnect to the server. If the object
     * has already authenticated, the old authentication is discarded.</p>
     *
-    *  @param version  The LDAP protocol version, either 2 or 3. <br><br>
+    *  @param version  The LDAP protocol version, either 2 or 3.<br><br>
     *
     *  @param dn       If non-null and non-empty, specifies that the
     *                  connection and all operations through it should
@@ -1079,7 +1180,7 @@ public class LDAPConnection implements
     *
     * <p>If the object has been disconnected from an LDAP server,
     * this method attempts to reconnect to the server. If the object
-    * had already authenticated, the old authentication is discarded. </p>
+    * had already authenticated, the old authentication is discarded.</p>
     *
     *  @param version  The LDAP protocol version, either 2 or 3.<br><br>
     * 
@@ -1354,7 +1455,7 @@ public class LDAPConnection implements
    }
 
    /*
-    * See LDAPv2
+    * See LDAPv2 Interface
     */
    public void connect(String host, int port, String dn, String passwd)
       throws LDAPException
@@ -1620,7 +1721,7 @@ public class LDAPConnection implements
     * @param op  The object which contains (1) an identifier of an extended
     *            operation which should be recognized by the particular LDAP 
     *            server this client is connected to and (2)an operation-specific 
-    *            sequence of octet strings or BER-encoded values. <br><br>
+    *            sequence of octet strings or BER-encoded values.<br><br>
     *
     * @param listener  The handler for messages returned from a server in
     *                  response to this request. If it is null, a listener
@@ -1732,7 +1833,7 @@ public class LDAPConnection implements
             return new Integer(defSearchCons.getTimeLimit());
          case LDAPConnection.REFERRALS:
             return new Boolean(defSearchCons.getReferrals());
-         case LDAPConnection.REFERRALS_REAUTHENTICATION:
+         case LDAPConnection.REFERRALS_REBIND_PROC:
             return defSearchCons.getRebindProc();
          case LDAPConnection.BIND:
             return defSearchCons.getBindProc();
@@ -1818,7 +1919,7 @@ public class LDAPConnection implements
     * directory.
     *
     * <p>For example, changes the value of an attribute, adds a new attribute
-    * value, or removes an existing attribute value. </p>
+    * value, or removes an existing attribute value.</p>
     *
     * <p>The LDAPModification object specifies both the change to be made and
     * the LDAPAttribute value to be changed.</p>
@@ -1881,7 +1982,7 @@ public class LDAPConnection implements
     * directory.
     *
     * <p>For example, changes attribute values, adds new attribute values, 
-    * or removes existing attribute values. </p>
+    * or removes existing attribute values.</p>
     *
     *  @param dn         The distinguished name of the entry to modify.<br><br>
     *
@@ -1907,7 +2008,7 @@ public class LDAPConnection implements
     * directory, using the specified constraints and listener.
     *
     * <p>For example, changes attribute values, adds new attribute values, 
-    * or removes existing attribute values. </p>
+    * or removes existing attribute values.</p>
     *
     *  @param dn         The distinguished name of the entry to modify.<br><br>
     *
@@ -2037,12 +2138,12 @@ public class LDAPConnection implements
     * <p>When this read method is called, a new connection is created
     * automatically, using the host and port specified in the URL. After
     * finding the entry, the method closes the connection (in other words,
-    * it disconnects from the LDAP server). </p>
+    * it disconnects from the LDAP server).</p>
     *
     * <p>If the URL specifies a filter and scope, these are not used. Of the
     * information specified in the URL, this method only uses the LDAP host
     * name and port number, the base distinguished name (DN), and the list
-    * of attributes to return. </p>
+    * of attributes to return.</p>
     *
     *  @param toGet           LDAP URL specifying the entry to read.
     *
@@ -2517,7 +2618,7 @@ public class LDAPConnection implements
     * automatically, using the host and port specified in the URL. After
     * all search results have been received from the server, the method
     * closes the connection (in other words, it disconnects from the LDAP
-    * server). </p>
+    * server).</p>
     *
     * <p>As part of the search constraints, a choice can be made as to whether
     * to have the results delivered all at once or in smaller batches. If
@@ -2577,7 +2678,7 @@ public class LDAPConnection implements
          case LDAPConnection.REFERRALS:
             defSearchCons.setReferrals(((Boolean)value).booleanValue());
             break;
-         case LDAPConnection.REFERRALS_REAUTHENTICATION:
+         case LDAPConnection.REFERRALS_REBIND_PROC:
             defSearchCons.setRebindProc((LDAPRebind)value);
             break;
          case LDAPConnection.BIND:

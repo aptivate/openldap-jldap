@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchConstraints.java,v 1.5 2000/09/11 22:47:50 judy Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchConstraints.java,v 1.6 2000/09/12 22:50:13 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -31,7 +31,7 @@ package com.novell.ldap;
  */
 public class LDAPSearchConstraints extends LDAPConstraints {
 
-	private int dereference = LDAPv2.LDAP_DEREF_NEVER;
+	private int dereference = LDAPConnection.DEREF_NEVER;
 	private int serverTimeLimit = 0;
 	private int maxResults = 1000;
 	private int batchSize = 1;
@@ -63,10 +63,10 @@ public class LDAPSearchConstraints extends LDAPConstraints {
     *                         limit.
     *<br><br>
     *  @param dereference     Specifies when aliases should be dereferenced.
-    *                         Must be either LDAP_DEREF_NEVER,
-    *                         LDAP_DEREF_FINDING, LDAP_DEREF_SEARCHING, or
-    *                         LDAP_DEREF_ALWAYS from the LDAPv2 class.
-    *                         Default: LDAPv2.LDAP_DEREF_NEVER
+    *                         Must be either DEREF_NEVER,
+    *                         DEREF_FINDING, DEREF_SEARCHING, or
+    *                         DEREF_ALWAYS from the LDAPv2 class.
+    *                         Default: LDAPConnection.DEREF_NEVER
     *<br><br> 
     *  @param maxResults      The maximum number of search results to return.
     *                         Default: 1000
@@ -120,10 +120,10 @@ public class LDAPSearchConstraints extends LDAPConstraints {
     *                         limit.
     *<br><br>
     *  @param dereference     Specifies when aliases should be dereferenced.
-    *                         Must be either LDAP_DEREF_NEVER,
-    *                         LDAP_DEREF_FINDING, LDAP_DEREF_SEARCHING, or
-    *                         LDAP_DEREF_ALWAYS from the LDAPv2 class.
-    *                         Default: LDAPv2.LDAP_DEREF_NEVER
+    *                         Must be either DEREF_NEVER,
+    *                         DEREF_FINDING, DEREF_SEARCHING, or
+    *                         DEREF_ALWAYS from the LDAPv2 class.
+    *                         Default: LDAPConnection.DEREF_NEVER
     *<br><br>
     *  @param maxResults      The maximum number of search results to return.
     *                         Default: 1000
@@ -193,10 +193,10 @@ public class LDAPSearchConstraints extends LDAPConstraints {
     *
     * <p>Returns one of the following:
     * <ul>
-    *   <li>LDAP_DEREF_NEVER</li>
-    *   <li>LDAP_DEREF_FINDING</li>
-    *   <li>LDAP_DEREF_SEARCHING</li>
-    *   <li>LDAP_DEREF_ALWAYS</li> 
+    *   <li>DEREF_NEVER</li>
+    *   <li>DEREF_FINDING</li>
+    *   <li>DEREF_SEARCHING</li>
+    *   <li>DEREF_ALWAYS</li> 
     * </ul>
     *
     * @return When aliases are dereferenced.
@@ -263,13 +263,13 @@ public class LDAPSearchConstraints extends LDAPConstraints {
     *
     *  @param dereference  One of the following dereference values:
     * <ul>
-    *                  <li>LDAP_DEREF_NEVER - do not dereference aliases</li>
-    *                  <li>LDAP_DEREF_FINDING - dereference aliases when finding
+    *                  <li>DEREF_NEVER - do not dereference aliases</li>
+    *                  <li>DEREF_FINDING - dereference aliases when finding
     *                            the base object to start the search</li>
-    *                  <li>LDAP_DEREF_SEARCHING - dereference aliases when 
+    *                  <li>DEREF_SEARCHING - dereference aliases when 
     *                                 searching but not when finding the base 
     *                                 object to start the search</li>
-    *                  <li>LDAP_DEREF_ALWAYS - dereference aliases when finding 
+    *                  <li>DEREF_ALWAYS - dereference aliases when finding 
     *                         the base object and when searching</li>
     * </ul>
     */

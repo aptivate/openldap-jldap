@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPv2.java,v 1.7 2000/09/14 15:29:31 judy Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPv2.java,v 1.8 2000/09/14 20:06:15 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -48,48 +48,6 @@ public interface LDAPv2 {
   * Searches the base object and all entries within its subtree.
   */
    public int SCOPE_SUB    = 2;
-
-  /**
-   * An identifier that specifies that aliases are never dereferenced.
-   *
-   * <p> LDAP_DEREF_NEVER = 0 </p>
-   *
-   * @see LDAPConnection#DEREF
-   */
-   public int LDAP_DEREF_NEVER      = 0; // default
-   
-  /**
-   * An identifier that specifies that aliases are dereferenced when
-   * searching the entries beneath the starting point but not when 
-   * searching for the starting entry.
-   *
-   * <p> LDAP_DEREF_SEARCHING = 1 </p>
-   *
-   * @see LDAPConnection#DEREF
-   */
-   public int LDAP_DEREF_SEARCHING  = 1;
-   
-  /**
-   * An identifier that specifies that aliases are dereferenced when
-   * searching for the starting entry but are not dereferenced when
-   * searching the entries beneath the starting point.
-   *
-   * <p> LDAP_DEREF_FINDING = 2 </p>
-   *
-   * @see LDAPConnection#DEREF
-   */
-   public int LDAP_DEREF_FINDING    = 2;
-   
-  /**
-   * An identifier that specifies that aliases are dereferenced always 
-   * (when searching for the starting entry and when
-   * searching the entries beneath the starting point).
-   *
-   * <p> LDAP_DEREF_ALWAYS = 3 </p>
-   *
-   * @see LDAPConnection#DEREF
-   */
-   public int LDAP_DEREF_ALWAYS     = 3;
 
    /**
     * 
@@ -445,16 +403,17 @@ public interface LDAPv2 {
     *                          message and an LDAP error code.
     *
     * @see #setOption(int, Object)
-    * @see LDAPConnection#DEREF
-    * @see LDAPConnection#SIZELIMIT
-    * @see LDAPConnection#SERVER_TIMELIMIT
-    * @see LDAPConnection#TIMELIMIT
-    * @see LDAPConnection#REFERRALS
-    * @see LDAPConnection#REFERRALS_REAUTHENTICATION
-    * @see LDAPConnection#BIND
-    * @see LDAPConnection#REFERRALS_HOP_LIMIT
     * @see LDAPConnection#BATCHSIZE
-    *
+    * @see LDAPConnection#BIND
+	* @see LDAPv3#CLIENTCONTROLS
+    * @see LDAPConnection#DEREF
+    * @see LDAPConnection#REFERRALS
+    * @see LDAPConnection#REFERRALS_HOP_LIMIT
+    * @see LDAPConnection#REFERRALS_REBIND_PROC
+	* @see LDAPv3#SERVERCONTROLS
+    * @see LDAPConnection#SERVER_TIMELIMIT
+    * @see LDAPConnection#SIZELIMIT
+    * @see LDAPConnection#STRING_FORMAT
     */
    public Object getOption(int option) throws LDAPException;
 
@@ -732,50 +691,6 @@ public interface LDAPv2 {
                                    LDAPSearchConstraints cons)
       throws LDAPException;
 
-   /*
-    * Synchronously performs the search specified by the LDAP URL, returning
-    * an enumerable LDAPSearchResults object.
-    *
-    * @param toGet The LDAP URL specifying the entry to read.
-    *
-    * @exception LDAPException A general exception which includes an error 
-    * message and an LDAP error code.
-    */
-/*
-   public static LDAPSearchResults search(LDAPUrl toGet)
-                                          throws LDAPException;
-*/   
-
-   /*
-    * Synchronously perfoms the search specified by the LDAP URL. This method 
-    * also allows specifying constraints for the search (such as the maximum 
-    * number of entries to find or the maximum time to wait for search results).
-    *
-    * <p>When this method is called, a new connection is created
-    * automatically, using the host and port specified in the URL. After
-    * all search results have been received from the server, the method
-    * closes the connection (in other words, it disconnects from the LDAP
-    * server). </p>
-    *
-    * <p>As part of the search constraints, a choice can be made as to whether
-    * to have the results delivered all at once or in smaller batches. If
-    * the results are to be delivered in smaller batches, each iteration
-    * blocks only until the next batch of results is returned.</p>
-    *
-    *
-    *  @param toGet          LDAP URL specifying the entry to read.
-    *<br><br>
-    *  @param cons           The constraints specific to the search.
-    *
-    *  @exception LDAPException A general exception which includes an error 
-    *  message and an LDAP error code.
-    */
-    
-/*
-   public static LDAPSearchResults search(LDAPUrl toGet,
-                                          LDAPSearchConstraints cons)
-                                          throws LDAPException;
-*/  
    /**
     *
     * Sets the value of the specified option for this object.
@@ -805,15 +720,19 @@ public interface LDAPv2 {
     * @exception LDAPException A general exception which includes an error 
     * message and an LDAP error code.
     *
-    * @see LDAPConnection#DEREF
-    * @see LDAPConnection#SIZELIMIT
-    * @see LDAPConnection#SERVER_TIMELIMIT
-    * @see LDAPConnection#TIMELIMIT
-    * @see LDAPConnection#REFERRALS
-    * @see LDAPConnection#REFERRALS_REAUTHENTICATION
-    * @see LDAPConnection#BIND
-    * @see LDAPConnection#REFERRALS_HOP_LIMIT
+    * @see #getOption(int)
     * @see LDAPConnection#BATCHSIZE
+    * @see LDAPConnection#BIND
+	* @see LDAPv3#CLIENTCONTROLS
+    * @see LDAPConnection#DEREF
+    * @see LDAPConnection#REFERRALS
+    * @see LDAPConnection#REFERRALS_HOP_LIMIT
+    * @see LDAPConnection#REFERRALS_REBIND_PROC
+	* @see LDAPv3#SERVERCONTROLS
+    * @see LDAPConnection#SERVER_TIMELIMIT
+    * @see LDAPConnection#SIZELIMIT
+    * @see LDAPConnection#STRING_FORMAT
+    * @see LDAPConnection#TIMELIMIT
     */
    public void setOption(int option,
                          Object value)
