@@ -464,7 +464,7 @@ public class LDAPConnection implements Cloneable
     public InputStream getInputStream() {
         throw new UnsupportedOperationException(
              "Method LDAPConnection.getInputStream not implemented");
-        
+
     }
 
     /**
@@ -958,7 +958,7 @@ public class LDAPConnection implements Cloneable
         abandon( queue, defSearchCons);
         return;
     }
-    
+
     /**
      * Abandons all outstanding operations managed by the queue.
      *
@@ -995,7 +995,7 @@ public class LDAPConnection implements Cloneable
         }
         return;
     }
-    
+
     //*************************************************************************
     // add methods
     //*************************************************************************
@@ -1070,7 +1070,7 @@ public class LDAPConnection implements Cloneable
     {
         return add(entry, queue, defSearchCons);
     }
-    
+
     /**
      * Asynchronously adds an entry to the directory, using the specified
      * constraints.
@@ -1131,7 +1131,7 @@ public class LDAPConnection implements Cloneable
 
         return sendRequest(msg, cons.getTimeLimit(), queue, null);
     }
-    
+
     //*************************************************************************
     // bind methods
     //*************************************************************************
@@ -1172,8 +1172,8 @@ public class LDAPConnection implements Cloneable
     {
         bind( LDAP_V3, dn, passwd, defSearchCons);
         return;
-    }    
-    
+    }
+
     /**
      * Authenticates to the LDAP server (that the object is currently
      * connected to) using the specified name, password, and LDAP version.
@@ -1429,7 +1429,7 @@ public class LDAPConnection implements Cloneable
     {
         return bind(version, dn, passwd, queue, defSearchCons);
     }
-    
+
     /**
      * Asynchronously authenticates to the LDAP server (that the object is
      * currently connected to) using the specified name, password, LDAP
@@ -1504,7 +1504,7 @@ public class LDAPConnection implements Cloneable
 
         return sendRequest( msg,cons.getTimeLimit(), queue, bindProps);
     }
-    
+
     //*************************************************************************
     // SASL bind methods
     //*************************************************************************
@@ -1600,7 +1600,7 @@ public class LDAPConnection implements Cloneable
     public void bind(String dn,
                      String authzId,
                      Map props,
-                     Object cbh,/*javax.security.auth.callback.CallbackHandler*/ 
+                     Object cbh,/*javax.security.auth.callback.CallbackHandler*/
                      LDAPConstraints cons)
                      throws LDAPException
     {
@@ -1997,6 +1997,9 @@ public class LDAPConnection implements Cloneable
      * Synchronously deletes the entry with the specified distinguished name
      * from the directory.
      *
+     * <p>Note: A Delete operation will not remove an entry that contains
+     * subordinate entries, nor will it dereference alias entries. </p>
+     *
      *  @param dn      The distinguished name of the entry to delete.
      *
      *  @exception LDAPException A general exception which includes an error
@@ -2013,6 +2016,9 @@ public class LDAPConnection implements Cloneable
     /**
      * Synchronously deletes the entry with the specified distinguished name
      * from the directory, using the specified constraints.
+     *
+     * <p>Note: A Delete operation will not remove an entry that contains
+     * subordinate entries, nor will it dereference alias entries. </p>
      *
      *  @param dn      The distinguished name of the entry to delete.
      *<br><br>
@@ -2045,6 +2051,9 @@ public class LDAPConnection implements Cloneable
      * Asynchronously deletes the entry with the specified distinguished name
      * from the directory and returns the results to the specified queue.
      *
+     * <p>Note: A Delete operation will not remove an entry that contains
+     * subordinate entries, nor will it dereference alias entries. </p>
+     *
      *  @param dn      The distinguished name of the entry to modify.
      *<br><br>
      *  @param queue     The handler for messages returned from a server in
@@ -2060,10 +2069,13 @@ public class LDAPConnection implements Cloneable
     {
         return delete(dn, queue, defSearchCons);
     }
-    
+
     /**
      * Asynchronously deletes the entry with the specified distinguished name
      * from the directory, using the specified contraints and queue.
+     *
+     * <p>Note: A Delete operation will not remove an entry that contains
+     * subordinate entries, nor will it dereference alias entries. </p>
      *
      *  @param dn      The distinguished name of the entry to delete.
      *<br><br>
@@ -2312,7 +2324,7 @@ public class LDAPConnection implements Cloneable
         LDAPMessage msg = makeExtendedOperation(op, cons, queue);
         return sendRequest(msg, cons.getTimeLimit(), queue, null);
     }
-    
+
     /**
      * Formulates the extended operation, constraints into an
      * LDAPMessage and returns the LDAPMessage.  This is used by
@@ -2473,7 +2485,7 @@ public class LDAPConnection implements Cloneable
      *
      * <p>For example, this modify method changes attribute values, adds
      * new attribute values, or removes existing attribute values.</p>
-     *   
+     *
      * <p>Because the server applies all changes in an LDAPModification array
      * atomically, the application can expect that no changes
      * have been performed if an error is returned.
@@ -2608,7 +2620,7 @@ public class LDAPConnection implements Cloneable
         mods[0] = mod;
         return modify(dn, mods, queue, cons);
     }
-    
+
     /**
      * Asynchronously makes a set of changes to an existing entry in the
      * directory.
@@ -2729,7 +2741,7 @@ public class LDAPConnection implements Cloneable
      *
      *  @param dn        The distinguished name of the entry to retrieve.
      *
-     *  @return the LDAPEntry read from the server.  
+     *  @return the LDAPEntry read from the server.
      *
      *  @exception LDAPException if the object was not found
      */
@@ -3127,7 +3139,7 @@ public class LDAPConnection implements Cloneable
         return rename(dn, newRdn, newParentdn,
                       deleteOldRdn, queue, defSearchCons);
     }
-    
+
     /**
      * Asynchronously renames an existing entry in the directory, using the
      * specified constraints and possibily repositioning the entry in the
@@ -3613,7 +3625,7 @@ public class LDAPConnection implements Cloneable
                         try {
                             if( Debug.LDAP_DEBUG) {
                                 Debug.trace( Debug.referrals, name +
-                                    "getReferralConnection, exception " + 
+                                    "getReferralConnection, exception " +
                                     "binding for referral" + lex.toString());
                             }
                             rconn.disconnect();
@@ -4001,11 +4013,11 @@ public class LDAPConnection implements Cloneable
         }
         return;
     }
-    
+
     //*************************************************************************
     // deprecated methods
     //*************************************************************************
-    
+
     /**
      * Abandons all outstanding operations managed by the queue.
      *
@@ -4021,7 +4033,7 @@ public class LDAPConnection implements Cloneable
         abandon( (LDAPMessageQueue)queue, defSearchCons);
         return;
     }
-    
+
     /**
      * Abandons all outstanding operations managed by the listener.
      *
@@ -4037,7 +4049,7 @@ public class LDAPConnection implements Cloneable
         abandon( (LDAPMessageQueue)queue, cons);
         return;
     }
-    
+
     /**
      * Asynchronously adds an entry to the directory.
      *
@@ -4088,7 +4100,7 @@ public class LDAPConnection implements Cloneable
     {
         return compare(dn, attr, (LDAPResponseQueue)queue, defSearchCons);
     }
-    
+
     /**
      * Asynchronously compares an attribute value with one in the directory,
      * using the specified queue and contraints.
@@ -4124,7 +4136,7 @@ public class LDAPConnection implements Cloneable
     {
         return delete(dn, (LDAPResponseQueue)queue, defSearchCons);
     }
-    
+
     /**
      * Asynchronously deletes the entry with the specified distinguished name
      * from the directory, using the specified contraints and queue.
@@ -4134,7 +4146,7 @@ public class LDAPConnection implements Cloneable
      * as of IETF draft 17 of the Java LDAP API
      * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
      * in fall of 2003.
-     */ 
+     */
     public LDAPResponseListener delete(String dn,
                                     LDAPResponseListener queue,
                                     LDAPConstraints cons)
@@ -4142,7 +4154,7 @@ public class LDAPConnection implements Cloneable
     {
         return delete( dn, (LDAPResponseQueue)queue, cons);
     }
-    
+
     /**
      * Provides an asynchronous means to access extended, non-mandatory
      * operations offered by a particular LDAPv3 compliant server.
@@ -4159,13 +4171,13 @@ public class LDAPConnection implements Cloneable
     {
 
         return extendedOperation(op, defSearchCons, (LDAPResponseQueue)queue);
-    }    
-    
+    }
+
     /**
      * Provides an asynchronous means to access extended, non-mandatory
      * operations offered by a particular LDAPv3 compliant server.
      *
-     * @deprecated see #extendedOperaiont(LDAPExtendedOperation, 
+     * @deprecated see #extendedOperation(LDAPExtendedOperation,
      *   LDAPConstraints, LDAPResponseQueue).
      * This method has been changed to use the LDAPMessageQueue parameter
      * as of IETF draft 17 of the Java LDAP API
@@ -4179,7 +4191,7 @@ public class LDAPConnection implements Cloneable
     {
         return extendedOperation(op, cons, (LDAPResponseQueue)queue);
     }
-    
+
     /**
      * Asynchronously makes a single change to an existing entry in the
      * directory.
@@ -4197,7 +4209,7 @@ public class LDAPConnection implements Cloneable
     {
         return modify(dn, mod, (LDAPResponseQueue)queue, defSearchCons);
     }
-    
+
     /**
      * Asynchronously makes a single change to an existing entry in the
      * directory, using the specified constraints and queue.
@@ -4217,7 +4229,7 @@ public class LDAPConnection implements Cloneable
     {
         return modify(dn, mod, (LDAPResponseQueue)queue, cons);
     }
-    
+
     /**
      * Asynchronously makes a set of changes to an existing entry in the
      * directory.
@@ -4235,7 +4247,7 @@ public class LDAPConnection implements Cloneable
     {
         return modify(dn, mods.toArray(), (LDAPResponseQueue)queue);
     }
-    
+
     /**
      * Asynchronously makes a set of changes to an existing entry in the
      * directory, using the specified constraints and queue.
@@ -4246,7 +4258,7 @@ public class LDAPConnection implements Cloneable
      * as of IETF draft 17 of the Java LDAP API
      * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
      * in fall of 2003.
-     */ 
+     */
     public LDAPResponseListener modify(String dn,
                                        LDAPModificationSet mods,
                                        LDAPResponseListener queue,
@@ -4255,7 +4267,7 @@ public class LDAPConnection implements Cloneable
     {
         return modify(dn, mods.toArray(), (LDAPResponseQueue)queue, cons);
     }
-    
+
     /**
      * Synchronously makes a set of changes to an existing entry in the
      * directory.
@@ -4307,10 +4319,10 @@ public class LDAPConnection implements Cloneable
                                        LDAPResponseListener queue)
         throws LDAPException
     {
-        return rename(dn, newRdn, deleteOldRdn, 
+        return rename(dn, newRdn, deleteOldRdn,
                                 (LDAPResponseQueue)queue, defSearchCons);
     }
-    
+
     /**
      * Asynchronously renames an existing entry in the directory, using the
      * specified constraints.
@@ -4332,7 +4344,7 @@ public class LDAPConnection implements Cloneable
         return rename(dn, newRdn, null, deleteOldRdn,
                                             (LDAPResponseQueue)queue, cons);
     }
-    
+
     /**
      * Asynchronously renames an existing entry in the directory, possibly
      * repositioning the entry in the directory.
@@ -4342,7 +4354,7 @@ public class LDAPConnection implements Cloneable
      * as of IETF draft 17 of the Java LDAP API
      * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
      * in fall of 2003.
-     */ 
+     */
     public LDAPResponseListener rename(String dn,
                                        String newRdn,
                                        String newParentdn,
@@ -4353,7 +4365,7 @@ public class LDAPConnection implements Cloneable
         return rename(dn, newRdn, newParentdn, deleteOldRdn,
                                        (LDAPResponseQueue)queue, defSearchCons);
     }
-    
+
     /**
      * Asynchronously renames an existing entry in the directory, using the
      * specified constraints and possibily repositioning the entry in the
@@ -4365,7 +4377,7 @@ public class LDAPConnection implements Cloneable
      * as of IETF draft 17 of the Java LDAP API
      * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
      * in fall of 2003.
-     */ 
+     */
     public LDAPResponseListener rename(String dn,
                                        String newRdn,
                                        String newParentdn,
@@ -4377,7 +4389,7 @@ public class LDAPConnection implements Cloneable
         return rename(dn, newRdn, newParentdn, deleteOldRdn,
                                             (LDAPResponseQueue)queue, cons);
     }
-    
+
     /**
      * Asynchronously performs the search specified by the parameters.
      *
@@ -4399,7 +4411,7 @@ public class LDAPConnection implements Cloneable
         return search(base, scope, filter, attrs, typesOnly,
                       (LDAPSearchListener)queue, defSearchCons);
     }
-    
+
     /**
      * Asynchronously performs the search specified by the parameters,
      * also allowing specification of constraints for the search (such
@@ -4425,7 +4437,7 @@ public class LDAPConnection implements Cloneable
         return search(base, scope, filter, attrs, typesOnly,
                       (LDAPSearchListener)queue, cons);
     }
-    
+
     /**
      * Sets a property of a connection object.
      *
@@ -4476,11 +4488,11 @@ public class LDAPConnection implements Cloneable
         return;
     }
 
-    
+
     //*************************************************************************
     // deprecated bind methods
     //*************************************************************************
-    
+
     /**
      * Asynchronously authenticates to the LDAP server (that the object is
      * currently connected to) using the specified name, password, LDAP
@@ -4523,7 +4535,7 @@ public class LDAPConnection implements Cloneable
     {
         return bind(version, dn, passwd, (LDAPResponseQueue)queue, cons);
     }
-    
+
     /**
      *
      * Authenticates to the LDAP server (that the object is currently
@@ -4605,7 +4617,7 @@ public class LDAPConnection implements Cloneable
      *  @exception LDAPException A general exception which includes an error
      *  message and an LDAP error code.
      *
-     * @deprecated replaced by {@link #bind(int, String, byte[], 
+     * @deprecated replaced by {@link #bind(int, String, byte[],
            LDAPResponseQueue, LDAPConstraints)}.
      * This method has been changed to use the LDAPMessageQueue and byte[]
      * parameters as of IETF draft 17 of the Java LDAP API
@@ -4620,7 +4632,7 @@ public class LDAPConnection implements Cloneable
     {
         LDAPResponseListener l;
         try {
-            l = bind(LDAP_V3, dn, passwd.getBytes("UTF8"), 
+            l = bind(LDAP_V3, dn, passwd.getBytes("UTF8"),
                                         (LDAPResponseQueue)listener, cons);
         } catch( UnsupportedEncodingException ex) {
             throw new RuntimeException( ex.toString());
@@ -4709,7 +4721,7 @@ public class LDAPConnection implements Cloneable
      *  @exception LDAPException A general exception which includes an error
      *  message and an LDAP error code.
      *
-     * @deprecated replaced by {@link #bind(int, String, byte[], 
+     * @deprecated replaced by {@link #bind(int, String, byte[],
                LDAPResponseListener, LDAPConstraints)}.
      * This method has been changed to use the LDAPMessageQueue and byte[]
      * parameters as of IETF draft 17 of the Java LDAP API
@@ -4725,7 +4737,7 @@ public class LDAPConnection implements Cloneable
     {
         LDAPResponseListener l;
         try {
-            l = bind( version, dn, passwd.getBytes("UTF8"), 
+            l = bind( version, dn, passwd.getBytes("UTF8"),
                                             (LDAPResponseQueue)listener, cons);
         } catch( UnsupportedEncodingException ex) {
             throw new RuntimeException( ex.toString());
