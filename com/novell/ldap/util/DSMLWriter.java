@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: DSMLWriter.java,v 1.22 2002/11/25 23:58:10 $
+ * $Novell: DSMLWriter.java,v 1.23 2002/11/26 00:09:28 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -430,7 +430,7 @@ public class DSMLWriter implements LDAPWriter {
             writeControls(controls, 3);
         }
         newLine(2);
-        out.write("</searchResultEntry>");       p
+        out.write("</searchResultEntry>");
 
         return;
     }
