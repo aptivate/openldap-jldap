@@ -243,7 +243,7 @@ public class LDAPConstraints implements Cloneable {
      */
     public void setControls(LDAPControl control)
     {
-        controls = new LDAPControl[1];
+        this.controls = new LDAPControl[1];
         this.controls[0] = (LDAPControl)control.clone();
         return;
     }
@@ -255,7 +255,7 @@ public class LDAPConstraints implements Cloneable {
      */
     public void setControls(LDAPControl[] controls)
     {
-        controls = new LDAPControl[controls.length];
+        this.controls = new LDAPControl[controls.length];
         for( int i=0; i<controls.length; i++) {
             this.controls[i] = (LDAPControl)controls[i].clone();
         }
