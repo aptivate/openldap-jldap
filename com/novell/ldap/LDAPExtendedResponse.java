@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: LDAPExtendedResponse.java,v 1.4 2000/07/26 16:48:25 javed Exp $
+ * $Id: LDAPExtendedResponse.java,v 1.5 2000/07/26 20:33:26 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -42,9 +42,12 @@ public class LDAPExtendedResponse extends LDAPResponse {
 		throws IOException
 	{
 		super(messageID, EXTENDED_RESPONSE, lber, isLdapv3);
-
-		this.oid = lber.parseStringWithTag(Lber.ASN_EXOP_RESP_OID, true, null);
-		this.vals = lber.parseOctetString(Lber.ASN_EXOP_RESP_VALUE, null);
+        
+		if((lber.bytesLeft() > 0) && (lber.peekByte() == Lber.ASN_EXOP_RESP_OID) )
+               this.oid = lber.parseStringWithTag(Lber.ASN_EXOP_RESP_OID, true, null);
+        
+		if((lber.bytesLeft() > 0) && (lber.peekByte() == Lber.ASN_EXOP_RESP_OID) )
+		    this.vals = lber.parseOctetString(Lber.ASN_EXOP_RESP_OID, null);
 
 	}
 

@@ -14,7 +14,9 @@
  ***************************************************************************/
 package com.novell.ldap.ext; 
 
+import com.novell.ldap.*;
 import com.novell.ldap.client.protocol.lber.*;
+import java.io.IOException;
  
 /**
  * 4.11 public class CreateNamingContextRequest
@@ -22,27 +24,33 @@ import com.novell.ldap.client.protocol.lber.*;
  */
 public class CreateNamingContextRequest extends LDAPExtendedOperation {
    
-    private static final String requestOID  = "";
-    private static final String respOID  = "";
-    
-    protected LberEncoder lber;
+    private static final String requestOID  = "2.16.840.1.113719.1.27.100.3";
+    private static final String respOID  = "2.16.840.1.113719.1.27.100.4";
     
     public CreateNamingContextRequest(String dn, int flags) 
                 throws LDAPException {
         
         super(requestOID, null);
         
-        // ber encode the parameters and set the requestValue
-        requestlber = new LberEncoder();
+        try {
+            // ber encode the parameters and set the requestValue
+            LberEncoder requestlber = new LberEncoder();
         
-        lber.encodeInt(flags);
-        
-        if (dn == null)
-            throw new LDAPException("Invalid parameter",
-				                     LDAPException.PARAM_ERROR;
-        lber.encodeString(dn, true)
-                
-        setValue(requestlber.getBug());
+            requestlber.encodeInt(flags);
+            
+            if (dn == null)
+                throw new LDAPException("Invalid parameter",
+				                        LDAPException.PARAM_ERROR);
+            
+            requestlber.encodeString(dn, true);
+                    
+            setValue(requestlber.getTrimmedBuf());
+            
+        }
+		catch(IOException ioe) {
+			throw new LDAPException("Encoding Error",
+				                     LDAPException.ENCODING_ERROR);
+		}
    }
 
 }

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: LDAPExtendedOperation.java,v 1.2 2000/03/14 18:17:27 smerrill Exp $
+ * $Id: LDAPExtendedOperation.java,v 1.3 2000/07/26 20:33:26 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -68,7 +68,7 @@ public class LDAPExtendedOperation {
    }
    
    /**
-    * Note defined in the spec but used by extension code
+    * Not defined in the spec but used by extension code
     */
    protected void setValue(byte[] newVals) {
         this.vals = newVals;
