@@ -35,7 +35,6 @@ public class RfcAttributeTypeAndValues extends ASN1Sequence {
 		super(2);
 		add(type);
 		add(vals);
+        return;
 	}
-
 }
-

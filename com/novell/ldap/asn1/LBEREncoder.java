@@ -115,8 +115,6 @@ public class LBEREncoder implements ASN1Encoder {
    }
    */
 
-
-
    /**
     * Encode an ASN1Null directly into the specified outputstream.
     */
@@ -128,8 +126,6 @@ public class LBEREncoder implements ASN1Encoder {
       return;
    }
 
-
-
    /* ASN1 TYPE NOT YET SUPPORTED
     * Encode an ASN1BitString directly to a stream.
    public void encode(ASN1BitString bs, OutputStream out)
@@ -138,8 +134,6 @@ public class LBEREncoder implements ASN1Encoder {
       throw new IOException("LBEREncoder: Encode to a stream not implemented");
    }
    */
-
-
 
    /**
     * Encode an ASN1OctetString directly into the specified outputstream.
@@ -153,8 +147,6 @@ public class LBEREncoder implements ASN1Encoder {
       return;
    }
 
-
-
    /* ASN1 TYPE NOT YET SUPPORTED
     * Encode an ASN1ObjectIdentifier directly to a stream.
     * public void encode(ASN1ObjectIdentifier oi, OutputStream out)
@@ -163,7 +155,6 @@ public class LBEREncoder implements ASN1Encoder {
     * throw new IOException("LBEREncoder: Encode to a stream not implemented");
     * }
     */
-
 
    /* ASN1 TYPE NOT YET SUPPORTED
     * Encode an ASN1CharacterString directly to a stream.
@@ -174,10 +165,9 @@ public class LBEREncoder implements ASN1Encoder {
     * }
     */
 
-
-
    /* Encoders for ASN.1 structured types
     */
+    
    /**
     * Encode an ASN1Structured into the specified outputstream.  This method
     * can be used to encode SET, SET_OF, SEQUENCE, SEQUENCE_OF
@@ -189,29 +179,17 @@ public class LBEREncoder implements ASN1Encoder {
 
       ArrayList value = c.getContent();
 
-//*      ArrayList codes = new ArrayList(value.size());
- //*     int length = 0;
       ByteArrayOutputStream output = new ByteArrayOutputStream();
 
       /* Cycle through each element encoding each element */
       for( int i=0; i < value.size(); i++) {
-      //*   ByteArrayOutputStream output = new ByteArrayOutputStream();
-      //*   ((ASN1Object)value.get(i)).encode(this, output);
          ((ASN1Object)value.get(i)).encode(this, output);
-      //*   codes.add(output);
-      //*   length += output.size();
       }
 
       /* Encode the length */
-      //* encodeLength(length, out);
       encodeLength(output.size(), out);
 
       /* Add each encoded element into the output stream */
-
-//*      for( int i=0; i< codes.size(); i++) {
-//*          ByteArrayOutputStream output = (ByteArrayOutputStream)codes.get(i);
-//*          out.write(output.toByteArray());
-//*      }
       out.write(output.toByteArray());
       return;
    }

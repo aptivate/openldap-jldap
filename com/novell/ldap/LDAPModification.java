@@ -88,6 +88,7 @@ public class LDAPModification {
    {
       this.op = op;
       this.attr = attr;
+      return;
    }
 
    /**
@@ -116,6 +117,4 @@ public class LDAPModification {
    {
       return op;
    }
-
 }
-

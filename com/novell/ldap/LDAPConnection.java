@@ -2666,9 +2666,11 @@ public class LDAPConnection implements Cloneable
 
             // place modification attribute values in ASN1SetOf
             ASN1SetOf vals = new ASN1SetOf();
-            Enumeration attrEnum = attr.getByteValues();
-            while(attrEnum.hasMoreElements()) {
-                vals.add(new RfcAttributeValue((byte[])attrEnum.nextElement()));
+            if( attr.size() > 0) {
+                Enumeration attrEnum = attr.getByteValues();
+                while(attrEnum.hasMoreElements()) {
+                    vals.add(new RfcAttributeValue((byte[])attrEnum.nextElement()));
+                }
             }
 
             // create SEQUENCE containing mod operation and attr type and vals

@@ -191,7 +191,6 @@ public class LDAPAttribute implements java.lang.Cloneable,
         } catch( UnsupportedEncodingException ue ) {
             throw new RuntimeException( ue.toString());
         }
-
         return;
     }
 
@@ -209,9 +208,8 @@ public class LDAPAttribute implements java.lang.Cloneable,
         if( attrBytes == null) {
             throw new IllegalArgumentException("Attribute value cannot be null");
         }
-        if( null != attrBytes) {
-            this.add(attrBytes);
-        }
+        this.add(attrBytes);
+        return;    
     }
 
     /**
@@ -289,11 +287,11 @@ public class LDAPAttribute implements java.lang.Cloneable,
      *
      *          <p>If <code>this</code> attribute has more than one value the
      *          first value is converted to a UTF-8 encoded <code>String</code>
-     *          and returned.
+     *          and returned. It should be noted, that the directory may
+     *          return attribute values in any order, so that the first
+     *          value may vary from one call to another.
      *
      *          <p>If the attribute has no values <code>null</code> is returned
-     *
-     *
      */
     public String getStringValue()
     {
@@ -313,6 +311,8 @@ public class LDAPAttribute implements java.lang.Cloneable,
      *
      * @return  The binary value of <code>this</code> attribute or
      * <code>null</code> if <code>this</code> attribute doesn't have a value.
+     *
+     * <p>If the attribute has no values <code>null</code> is returned
      */
      public byte[] getByteValue()
      {
@@ -629,7 +629,7 @@ public class LDAPAttribute implements java.lang.Cloneable,
     }
 
     /**
-     * Replaces all values with the specified value.  This protected method is
+     * Replaces all values with the specified value. This protected method is
      * used by sub-classes of LDAPSchemaElement because the value cannot be set
      * with a contructor.
      */
