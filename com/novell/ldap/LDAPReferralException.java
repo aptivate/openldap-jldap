@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPReferralException.java,v 1.3 2000/08/03 22:06:16 smerrill Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPReferralException.java,v 1.4 2000/08/28 22:18:57 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -15,13 +15,14 @@
  
 package com.novell.ldap;
  
-/**
- * 4.20 public class LDAPReferralException
+/*
+ * 4.26 public class LDAPReferralException
  *                 extends LDAPException
- *
- *  This exception, derived from LDAPException, is thrown when a server
- *  returns a referral and automatic referral following has not been
- *  enabled.
+ */
+ 
+/**
+ *  Thrown when a server returns a referral and automatic referral following
+ *  has not been enabled.
  */
 public class LDAPReferralException extends LDAPException {
 
@@ -37,20 +38,26 @@ public class LDAPReferralException extends LDAPException {
 
    /**
     * Constructs a default exception with a specified string as additional
-    * information. This form is used for lower-level errors.
+    * information. 
+    *
+    * <p>This form is used for lower-level errors.</p>
+    *
+    *@param message The additional error information.
     */
    public LDAPReferralException(String message) {
    }
 
    /**
-    * Parameters are:
     *
-    *  message        The additional error information.
+    * Constructs an exception with a specified error string, result code, and 
+    * an error message from the server.
     *
-    *  resultCode     The result code returned
-    *
-    *  serverMessage  Error message specifying additional information
-    *                  from the server.
+    *  @param message        The additional error information.
+    *<br><br>
+    *  @param resultCode     The result code returned.
+    *<br><br>
+    *  @param serverMessage  Error message specifying additional information
+    *                        from the server.
     */
    public LDAPReferralException(String message,
                                 int resultCode,
@@ -58,15 +65,17 @@ public class LDAPReferralException extends LDAPException {
    }
 
    /*
-    * 4.20.2 getURLs
+    * 4.26.2 getURLs
     */
 
    /**
     * Gets the list of referrals (LDAP URLs to other servers) returned by
-    * the LDAP server. This exception is only thrown, and therefor the URL
-    * list only available, if automatic referral following is not enabled.
+    * the LDAP server. 
+    *
+    * <p>This exception is only thrown, and therefore the URL
+    * list is only available, if automatic referral following is not enabled.
     * The referrals may include URLs of a type other than ones for an LDAP
-    * server (i.e. a referral URL other than ldap://something).
+    * server (for example, a referral URL other than ldap://something).</p>
     */
    public LDAPUrl[] getURLs() {
       return null;

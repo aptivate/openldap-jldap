@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/src/com/novell/ldap/LDAPResponseListener.java,v 1.8 2000/08/28 22:18:58 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPResponseListener.java,v 1.9 2000/09/11 21:05:50 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -20,16 +20,20 @@ import java.util.Vector;
 import com.novell.ldap.client.*;
 import com.novell.ldap.protocol.*;
 
-/**
+/*
  * 4.5 public class LDAPResponseListener
- *
+ */
+ 
+/**
  *  Represents the message queue associated with a particular LDAP
  *  operation or operations.
  */
 public class LDAPResponseListener extends LDAPListener {
 
 	/**
-	 * Constructor
+	 * Constructs a response listener on the specifiec connection.
+     *
+     *  @param conn The connection for the listener.
 	 */
 	public LDAPResponseListener(Connection conn)
 	{
@@ -44,10 +48,17 @@ public class LDAPResponseListener extends LDAPListener {
     */
 
    /**
-    * Blocks until a response is available, or until all operations
-    * associated with the object have completed or been canceled, and
+    * Returns the response.
+    *
+    * <p>Blocks until a response is available, or until all operations
+    * associated with the object have completed or been canceled, and then
     * returns the response. It is the responsibility of the client to
-	 * process the responses returned from a listener.
+	* process the responses returned from a listener.</p>
+    *
+    * @return The response.
+    *
+    * @exception LDAPException A general exception which includes an error
+    *  message and an LDAP error code.
     */
    public LDAPResponse getResponse()
 		throws LDAPException

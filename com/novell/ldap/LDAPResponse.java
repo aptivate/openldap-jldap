@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/src/com/novell/ldap/LDAPResponse.java,v 1.8 2000/08/28 22:18:57 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPResponse.java,v 1.9 2000/09/11 21:05:50 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -29,6 +29,8 @@ public class LDAPResponse extends LDAPMessage {
 	/**
 	 * Creates an LDAPMessage when receiving an RFC 2251 LDAPMessage from a
 	 * server.
+     *
+     *  @param message  The LDAPMessage from a server.
 	 */
 	public LDAPResponse(com.novell.ldap.protocol.LDAPMessage message)
 	{
@@ -37,6 +39,8 @@ public class LDAPResponse extends LDAPMessage {
 
    /**
     * Returns any error message in the response.
+    *
+    * @return Any error message in the response.
     */
    public String getErrorMessage()
 	{
@@ -46,6 +50,9 @@ public class LDAPResponse extends LDAPMessage {
 
    /**
     * Returns the partially matched DN field, if any, in a server response.
+    *
+    * @return The partially matched DN field, if the response contains one.
+    *         
     */
    public String getMatchedDN()
 	{
@@ -55,6 +62,8 @@ public class LDAPResponse extends LDAPMessage {
 
    /**
     * Returns all referrals, if any, in a server response.
+    *
+    * @return All the referrals in the server response.
     */
    public String[] getReferrals() {
 		String[] referrals = null;
@@ -73,7 +82,11 @@ public class LDAPResponse extends LDAPMessage {
    }
 
    /**
-    * Returns the result code in a server response, as defined in [LDAPv3].
+    * Returns the result code in a server response.
+    *
+    * <p> For a list of result codes, see the LDAPException class. </p>
+    *
+    * @return The result code.
     */
    public int getResultCode()
 	{
@@ -81,7 +94,7 @@ public class LDAPResponse extends LDAPMessage {
    }
 
    /**
-    * Check the resultCode and throw the appropriate exception
+    * Checks the resultCode and throws the appropriate exception.
     */
    public void chkResultCode() throws LDAPException {
       switch(getResultCode()) {

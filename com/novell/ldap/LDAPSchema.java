@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPSchema.java,v 1.5 2000/08/25 23:28:21 bgudmundson Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPSchema.java,v 1.6 2000/08/28 22:18:58 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -18,10 +18,12 @@ package com.novell.ldap;
 import java.util.Enumeration;
 import java.util.*;
 
+/*
+ * 4.29 public class LDAPSchema
+ */
+ 
 /**
- * 4.21 public class LDAPSchema
- *
- *  The LDAPSchema supports querying a Directory Server for its schema,
+ *  Supports querying a directory server for its schema,
  *  and obtaining definitions of individual schema elements.
  */
 public class LDAPSchema {
@@ -34,7 +36,7 @@ public class LDAPSchema {
 	//private static final int superior = 2;
 
    /*
-    * 4.21.1 Constructors
+    * 4.29.1 Constructors
     */
 
    /**
@@ -46,11 +48,16 @@ public class LDAPSchema {
    }
 
    /*
-    * 4.21.2 fetchSchema
+    * 4.29.2 fetchSchema
     */
 
    /**
-    * Retrieves the entire schema from a Directory Server.
+    * Retrieves the entire schema from a directory server.
+    *
+    *  @param ld       An open connection to a directory server.
+    *
+    *  @exception LDAPException A general exception which includes an error 
+    *   message and an LDAP error code.
     */
    public void fetchSchema(LDAPConnection ld) throws LDAPException {
 
@@ -63,23 +70,24 @@ public class LDAPSchema {
 
    }
     /**
-    * Retrieves the schema in effect at a particular entry in the Directory
-    * Server.
+    * Retrieves the schema in effect at a particular entry in the directory
+    * server.
     *
-    * The fetchSchema methods are the only methods that interact with a
-    * Directory Server. The other methods access information acquired
+    * <p>The fetchSchema methods are the only methods that interact with a
+    * directory server. The other methods access information acquired
     * through fetchSchema. An LDAPException is thrown as for
-    * LDAPConnection.search() (4.28.12) if the schema cannot be retrieved
-    * with the specified connection.
+    * LDAPConnection.search method if the schema cannot be retrieved
+    * with the specified connection.</p>
     *
-    * Parameters are:
-    *
-    *  ld             An open connection to a Directory Server.
-    *
-    *  dn             Distinguished name of the entry from which to
+    *  @param ld       An open connection to a directory server.
+    *<br><br>
+    *  @param dn       The distinguished name of the entry from which to
     *                  return schema. The subschemasubentry attribute of
     *                  the entry is queried to find the location of the
     *                  schema to be returned.
+    *
+    *  @exception LDAPException A general exception which includes an error 
+    *   message and an LDAP error code.
     */
    public void fetchSchema(LDAPConnection ld,
                            String dn) throws LDAPException {
@@ -190,55 +198,55 @@ public class LDAPSchema {
    }
 
    /*
-    * 4.21.3 getAttribute
+    * 4.29.3 getAttribute
     */
 
    /**
     * Returns a particular attribute definition, or null if not found.
     *
-    * Parameters are:
-    *
-    *  name           Name of the attribute for which a definition is
+    *  @param name     Name of the attribute for which a definition is
     *                  to be returned.
+    *
+    *  @return The attribute definition, or null if not found.
     */
    public LDAPAttributeSchema getAttribute( String name ) {
       return null;
    }
 
    /*
-    * 4.21.4 getObjectClass
+    * 4.29.4 getObjectClass
     */
 
    /**
     * Returns a particular object class definition, or null if not found.
     *
-    * Parameters are:
+    *  @param name    The name of the object class for which a definition
+    *                 is to be returned.
     *
-    *  name           Name of the object class for which a definition
-    *                  is to be returned.
+    * @return The object class definition, or null if not found.
     */
    public LDAPObjectClassSchema getObjectClass( String name ) {
       return null;
    }
 
    /*
-    * 4.21.5 getMatchingRule
+    * 4.29.5 getMatchingRule
     */
 
    /**
     * Returns a particular matching rule definition, or null if not found.
     *
-    * Parameters are:
-    *
-    *  name           Name of the matching rule for which a definition
+    *  @param name     The name of the matching rule for which a definition
     *                  is to be returned.
+    *
+    *  @return The matching rule definition, or null if not found.
     */
    public LDAPMatchingRuleSchema getMatchingRule( String name ) {
       return null;
    }
 
    /*
-    * 4.21.6 getAttributes
+    * 4.29.11 getAttributes
     */
 
    /**
@@ -249,7 +257,7 @@ public class LDAPSchema {
    }
 
    /*
-    * 4.21.7 getObjectClasses
+    * 4.29.12 getObjectClasses
     */
 
    /**
@@ -260,7 +268,7 @@ public class LDAPSchema {
    }
 
    /*
-    * 4.21.8 getMatchingRules
+    * 4.29.13 getMatchingRules
     */
 
    /**
@@ -271,7 +279,7 @@ public class LDAPSchema {
    }
 
    /*
-    * 4.21.9 getAttributeNames
+    * 4.29.19 getAttributeNames
     */
 
    /**
@@ -282,7 +290,7 @@ public class LDAPSchema {
    }
 
    /*
-    * 4.21.10 getObjectClassNames
+    * 4.29.20 getObjectClassNames
     */
 
    /**
@@ -293,7 +301,7 @@ public class LDAPSchema {
    }
 
    /*
-    * 4.21.11 getMatchingRuleNames
+    * 4.29.21 getMatchingRuleNames
     */
 
    /**

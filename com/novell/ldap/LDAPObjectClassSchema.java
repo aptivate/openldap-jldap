@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPObjectClassSchema.java,v 1.4 2000/08/03 22:06:16 smerrill Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPObjectClassSchema.java,v 1.5 2000/08/28 22:18:57 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -15,13 +15,18 @@
 
 package com.novell.ldap;
 
-/**
+/*
  * 4.17 public class LDAPObjectClassSchema
+ */
+ 
+/**
  *
- *  The LDAPObjectClassSchema class represents the definition of an
- *  object class. It is used to query the syntax of an object class, and
- *  to add or delete an object class definition in a Directory. See [2]
- *  for a description of object class representation in LDAP.
+ *  Represents the definition of an object class. 
+ *
+ *  <p>The LDAPObjectClassSchema class is used to query the syntax of an object
+ *  class, and to add or delete an object class definition from a directory's
+ *  schema. </p>
+ *
  */
 public class LDAPObjectClassSchema extends LDAPSchemaElement{
   String[] superiors;
@@ -29,8 +34,19 @@ public class LDAPObjectClassSchema extends LDAPSchemaElement{
   String[] optional;
   int type;
 
+ /**
+  * This class definition defines an abstract schema class.
+  */
   public final static int ABSTRACT = 0;
+  
+ /**
+  * This class definition defines a structural schema class.
+  */
   public final static int STRUCTURAL = 1;
+  
+ /**
+  * This class definition defines an auxiliary schema class.
+  */
   public final static int AUXILIARY = 2;
 
    /*
@@ -39,31 +55,30 @@ public class LDAPObjectClassSchema extends LDAPSchemaElement{
 
    /**
     * Constructs an object class definition for adding to or deleting from
-    * a Directory.
+    * a directory's schema.
     *
-    * Parameters are:
-    *
-    *  name           Name of the object class.
-    *
-    *  oid            Unique Object Identifer of the object class - in
-    *                  dotted numerical format.
-    *
-    *  description    Optional description of the object class.
-    *
-    *  superiors      The object classes this one derives from.
-    *
-    *  required       A list of attributes required for an entry with
-    *                  this object class.
-    *
-    *  optional       A list of attributes acceptable but not required
-    *                  for an entry with this object class.
-    *
-    *  type           One of ABSTRACT, AUXILIARY, or STRUCTURAL. These
-    *                  are constants defined in LDAPObjectClassSchema.
-    *
-    *  aliases        Optional list of additional names by which the
-    *                 object class may be known; null if there are no
-    *                 aliases.
+    *  @param name      Name of the object class.
+    *<br><br>
+    *  @param oid       Unique object identifer of the object class, in
+    *                   dotted numerical format.
+    *<br><br>
+    *  @param description    Optional description of the object class.
+    *<br><br>
+    *  @param superiors      The object classes from which this one derives.
+    *<br><br>
+    *  @param required       A list of attributes required for an entry with
+    *                        this object class.
+    *<br><br>
+    *  @param optional       A list of attributes acceptable but not required
+    *                        for an entry with this object class.
+    *<br><br>
+    *  @param type           The type of class. Must be one of following:
+    *                        ABSTRACT, AUXILIARY, or STRUCTURAL. These
+    *                        constants are defined in LDAPObjectClassSchema.
+    *<br><br>
+    *  @param aliases        Optional list of additional names by which the
+    *                        object class may be known; null if there are no
+    *                        aliases.
     *
     */
    public LDAPObjectClassSchema(String name,
@@ -100,13 +115,11 @@ public class LDAPObjectClassSchema extends LDAPSchemaElement{
    }
 
    /**
-    * Constructs an object class definition from the raw String value
-    * returned on a Directory query for "objectclasses".
+    * Constructs an object class definition from the raw string value
+    * returned on a directory query for "objectClasses".
     *
-    * Parameters are:
-    *
-    *  raw            The raw String value returned on a Directory
-    *                  query for "objectclasses".
+    *  @param raw      The raw string value returned on a directory
+    *                  query for "objectClasses".
     */
    public LDAPObjectClassSchema(String raw) {
    }
@@ -116,7 +129,9 @@ public class LDAPObjectClassSchema extends LDAPSchemaElement{
     */
 
    /**
-    * Returns the object classes which this one derives from.
+    * Returns the object classes from which this one derives.
+    *
+    * @return The object classes superior to this class.
     */
    public String[] getSuperiors() {
       return null;
@@ -129,6 +144,8 @@ public class LDAPObjectClassSchema extends LDAPSchemaElement{
    /**
     * Returns a list of attributes required of an entry with this object
     * class.
+    *
+    * @return The list of required attributes defined for this class.
     */
    public String[] getRequiredAttributes() {
       return null;
@@ -139,8 +156,10 @@ public class LDAPObjectClassSchema extends LDAPSchemaElement{
     */
 
    /**
-    * Returns a list of attributes acceptable but not required of an entry
+    * Returns a list of optional attributes but not required of an entry
     * with this object class.
+    *
+    * @return The list of optional attributes defined for this class.
     */
    public String[] getOptionalAttributes() {
       return null;
@@ -153,6 +172,8 @@ public class LDAPObjectClassSchema extends LDAPSchemaElement{
    /**
     * Returns one of ABSTRACT, AUXILIARY, or STRUCTURAL. These are
     * constants defined in LDAPObjectClassSchema.
+    *
+    * @return The type of object class.
     */
    public int getType() {
       return type;
