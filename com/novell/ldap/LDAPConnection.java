@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/org/ietf/ldap/LDAPConnection.java,v 1.14 2000/08/03 22:06:14 smerrill Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/org/ietf/ldap/LDAPConnection.java,v 1.15 2000/08/10 17:53:01 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -16,6 +16,7 @@
 package org.ietf.ldap;
 
 import java.io.*;
+import java.util.*;
 import java.net.Socket;
 
 import com.novell.ldap.client.*;
@@ -537,9 +538,7 @@ public class LDAPConnection implements
    public void add(LDAPEntry entry)
 		throws LDAPException
 	{
-/*
       add(entry, defSearchCons);
-*/	
    }
 
    /**
@@ -558,11 +557,9 @@ public class LDAPConnection implements
                    LDAPConstraints cons)
 		throws LDAPException
 	{
-/*
 		LDAPResponseListener listener =
 			add(entry, (LDAPResponseListener)null, cons);
 		listener.getResponse().chkResultCode();
-*/	
    }
 
    /**
@@ -1493,20 +1490,28 @@ public class LDAPConnection implements
 //		LDAPRequest req = new ExtendedRequest(op, conn.getMessageID(),
 //			                              cons.getClientControls(), ldapv3);
 
+		ASN1OctetString value = 
+			(op.getValue() != null) ? new ASN1OctetString(op.getValue()) : null;
+
+		ExtendedRequest er = new ExtendedRequest(new LDAPOID(op.getID()),
+			                                      value);
+
+		LDAPMessage msg = new LDAPMessage(er, cons.getServerControls());
+
 		// Create a listener if we do not have one already
 		if(listener == null)
 			listener = new LDAPResponseListener(conn);
 
-//		try {
+		try {
 			// Start timer for message if needed, add messageID to messageID queue,
 			// and then send the message to the server.
-//			listener.writeMessage(req, cons.getTimeLimit());
-//		}
-//		catch(IOException ioe) {
+			listener.writeMessage(msg, cons.getTimeLimit());
+		}
+		catch(IOException ioe) {
 
-//			throw new LDAPException("Communication error.",
-//				                     LDAPException.OTHER);
-//		}
+			throw new LDAPException("Communication error.",
+				                     LDAPException.OTHER);
+		}
 
 		return listener;
 	}
@@ -1716,20 +1721,40 @@ public class LDAPConnection implements
 //		LDAPRequest req = new AddRequest(entry, conn.getMessageID(),
 //			                              cons.getClientControls(), ldapv3);
 
+		// convert from Java-api to RFC2251
+		AttributeList al = new AttributeList();
+		LDAPAttributeSet attrSet = entry.getAttributeSet();
+		Enumeration enum = attrSet.getAttributes();
+		while(enum.hasMoreElements()) {
+			LDAPAttribute attr = (LDAPAttribute)enum.nextElement();
+			ASN1SetOf vals = new ASN1SetOf();
+			Enumeration attrEnum = attr.getByteValues();
+			while(attrEnum.hasMoreElements()) {
+				vals.add(new AttributeValue((byte[])attrEnum.nextElement()));
+			}
+			al.add(new AttributeTypeAndValues(
+				new AttributeDescription(attr.getName()), vals));
+		}
+
+		AddRequest ar = new AddRequest(
+			new org.ietf.asn1.ldap.LDAPDN(entry.getDN()), al);
+
+		LDAPMessage msg = new LDAPMessage(ar, cons.getServerControls());
+
 		if(listener == null)
 			listener = new LDAPResponseListener(conn);
 
-//		try {
+		try {
 			// Start timer for message if needed, add messageID to messageID queue,
 			// and then send the message to the server.
-//			listener.writeMessage(req, cons.getTimeLimit());
-//		}
-//		catch(IOException ioe) {
+			listener.writeMessage(msg, cons.getTimeLimit());
+		}
+		catch(IOException ioe) {
 			// do we need to remove message id here?
 
-//			throw new LDAPException("Communication error.",
-//				                     LDAPException.OTHER);
-//		}
+			throw new LDAPException("Communication error.",
+				                     LDAPException.OTHER);
+		}
 
 		return listener;
    }
@@ -1987,20 +2012,23 @@ public class LDAPConnection implements
 //		LDAPRequest req = new DelRequest(dn, conn.getMessageID(),
 //			                              cons.getClientControls(), ldapv3);
 
+		LDAPMessage msg = new LDAPMessage(new DelRequest(dn),
+			                               cons.getServerControls());
+
 		if(listener == null)
 			listener = new LDAPResponseListener(conn);
 
-//		try {
+		try {
 			// Start timer for message if needed, add messageID to messageID queue,
 			// and then send the message to the server.
-//			listener.writeMessage(req, cons.getTimeLimit());
-//		}
-//		catch(IOException ioe) {
+			listener.writeMessage(msg, cons.getTimeLimit());
+		}
+		catch(IOException ioe) {
 			// do we need to remove message id here?
 
-//			throw new LDAPException("Communication error.",
-//				                     LDAPException.OTHER);
-//		}
+			throw new LDAPException("Communication error.",
+				                     LDAPException.OTHER);
+		}
 
 		return listener;
    }

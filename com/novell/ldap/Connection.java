@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: Connection.java,v 1.5 2000/03/13 23:26:33 smerrill Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/client/Connection.java,v 1.6 2000/08/10 17:53:00 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -25,6 +25,7 @@ import java.util.Vector;
 
 import org.ietf.ldap.*;
 import org.ietf.asn1.*;
+import org.ietf.asn1.ldap.UnbindRequest;
 
 /**
   * A thread that creates a connection to an LDAP server.
@@ -201,28 +202,6 @@ public final class Connection implements Runnable {
 			}
 	}
 
-	//------------------------------------------------------------------------
-   // Methods to unbind from the server and clean up resources when this
-	// object is destroyed.
-
-//   private synchronized void ldapUnbind(LDAPControl[] reqCtls) {
-//      try {
-//			LDAPRequest req = new UnbindRequest(getMessageID(), reqCtls, v3);
-
-//         out.write(req.getLber().getBuf(), 0,
-//				             req.getLber().getDataLen());
-//         out.flush();
-//      }
-//		catch(LDAPException e) {
-			// encoding errors
-//		}
-//      catch(IOException ex) {
-			// communication errors
-//      }
-
-      // An UnbindRequest will not return anything...
-//   }
-
 	/**
 	 *
 	 */
@@ -231,7 +210,8 @@ public final class Connection implements Runnable {
    }
 
 	/**
-	 *
+	 * This method may be called by finalize() for the connection, or it may
+	 * be called by LDAPConnection.disconnect().
 	 */
    public synchronized void cleanup(LDAPControl[] reqCtls) {
 
@@ -239,9 +219,12 @@ public final class Connection implements Runnable {
          try {
             // abandonOutstandingReqs(reqCtls);
             if(bound) {
-//               ldapUnbind(reqCtls);
+					writeMessage(new LDAPMessage(new UnbindRequest(), reqCtls));
             }
          }
+			catch(IOException ioe) {
+
+			}
          finally {
             try {
                out.flush();
@@ -310,3 +293,4 @@ public final class Connection implements Runnable {
    }
 
 }
+

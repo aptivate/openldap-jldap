@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/org/ietf/ldap/LDAPExtendedResponse.java,v 1.8 2000/08/03 22:06:15 smerrill Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/org/ietf/ldap/LDAPExtendedResponse.java,v 1.9 2000/08/10 17:53:01 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -18,6 +18,7 @@ package org.ietf.ldap;
 import java.io.IOException;
 
 import org.ietf.ldap.LDAPResponse;
+import org.ietf.asn1.ldap.*;
 //import com.novell.ldap.client.protocol.lber.*;
 
 
@@ -34,12 +35,9 @@ import org.ietf.ldap.LDAPResponse;
  */
 public class LDAPExtendedResponse extends LDAPResponse {
 
-    private String oid;
-    private byte[] vals;
-
 	 /**
-	  * Creates an LDAPMessage when receiving an RFC 2251 LDAPMessage from a
-	  * server.
+	  * Creates a Java-API LDAPExtendedResponse (which is an Java-API
+	  * LDAPMessage) when receiving an RFC 2251 LDAPMessage from a server.
 	  */
 	 public LDAPExtendedResponse(org.ietf.asn1.ldap.LDAPMessage message)
 	 {
@@ -69,7 +67,7 @@ public class LDAPExtendedResponse extends LDAPResponse {
     * Returns the OID of the response.
     */
    public String getID() {
-      return oid;
+		return ((ExtendedResponse)message.getProtocolOp()).getResponseName().getString();
    }
 
    /*
@@ -80,7 +78,7 @@ public class LDAPExtendedResponse extends LDAPResponse {
     * Returns the raw bytes of the value part of the response.
     */
    public byte[] getValue() {
-      return vals;
+		return ((ExtendedResponse)message.getProtocolOp()).getResponse().getContent();
    }
 
 }

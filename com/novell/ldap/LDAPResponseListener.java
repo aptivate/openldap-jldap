@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/org/ietf/ldap/LDAPResponseListener.java,v 1.4 2000/08/03 22:06:17 smerrill Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/org/ietf/ldap/LDAPResponseListener.java,v 1.5 2000/08/10 17:53:02 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -15,8 +15,10 @@
 
 package org.ietf.ldap;
 
-import com.novell.ldap.client.*;
 import java.util.Vector;
+
+import com.novell.ldap.client.*;
+import org.ietf.asn1.ldap.*;
 
 /**
  * 4.5 public class LDAPResponseListener
@@ -50,8 +52,12 @@ public class LDAPResponseListener extends LDAPListener {
    public LDAPResponse getResponse()
 		throws LDAPException
 	{
+		LDAPResponse response;
 		org.ietf.asn1.ldap.LDAPMessage message = queue.getLDAPMessage();
-		LDAPResponse response = new LDAPResponse(message);
+		if(message.getProtocolOp() instanceof ExtendedResponse)
+			response = new LDAPExtendedResponse(message);
+		else
+			response = new LDAPResponse(message);
 		queue.removeMessageID(response.getMessageID());
 		return response;
    }
