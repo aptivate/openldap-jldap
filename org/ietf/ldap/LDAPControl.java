@@ -21,7 +21,8 @@ import com.novell.ldap.rfc2251.RfcControl;
  *  Encapsulates additional optional parameters for an
  *  LDAP operation, either on the server or on the client.
  *
- * @see com.novell.ldap.LDAPControl
+ * @see <a href="../../../../doc/com/novell/ldap/LDAPControl.html">
+            com.novell.ldap.LDAPControl</a>
  */
 public class LDAPControl
                 extends com.novell.ldap.LDAPControl
@@ -39,7 +40,9 @@ public class LDAPControl
     /**
      * Constructs a new LDAPControl object using the specified values.
      *
-     * @see com.novell.ldap.LDAPControl#LDAPControl(String,boolean,byte[])
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPControl.html
+            #LDAPControl(java.lang.String, boolean, byte[])">
+            com.novell.ldap.LDAPControl.LDAPControl(String, boolean, byte[])</a>
      */
     public LDAPControl(String id, boolean critical, byte[] vals)
     {
@@ -47,10 +50,12 @@ public class LDAPControl
         return;
     }
 
-    /*
+    /**
      * Sets the control-specific data of the object.
      *
-     * @see com.novell.ldap.LDAPControl#setValue(byte[])
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPControl.html
+            #setValue(byte[])">
+            com.novell.ldap.LDAPControl.setValue(byte[])</a>
      */
     protected void setValue(byte[] controlValue)
     {
