@@ -174,9 +174,9 @@ public class LDAPDITStructureRuleSchema
       String token;
       String[] strArray;
 
-      if( (token = getID()) != null){
-        valueBuffer.append(token);
-      }
+	  token = String.valueOf( getRuleID());
+      valueBuffer.append(token);
+
       strArray = getAliases();
       if( (token = getName()) != null){
         valueBuffer.append(" NAME ");
