@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.50 2000/11/03 18:43:30 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.51 2000/11/03 18:52:59 vtag Exp $
 *
 * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
 * 
@@ -2791,7 +2791,7 @@ public class LDAPConnection implements Cloneable
    public LDAPSearchResults search(String base,
                                    int scope,
                                    String filter,
-                                   String attrs[],
+                                   String[] attrs,
                                    boolean typesOnly)
       throws LDAPException
    {
@@ -2839,7 +2839,7 @@ public class LDAPConnection implements Cloneable
    public LDAPSearchResults search(String base,
                                    int scope,
                                    String filter,
-                                   String attrs[],
+                                   String[] attrs,
                                    boolean typesOnly,
                                    LDAPSearchConstraints cons)
       throws LDAPException
@@ -2887,7 +2887,7 @@ public class LDAPConnection implements Cloneable
    public LDAPSearchListener search(String base,
                                     int scope,
                                     String filter,
-                                    String attrs[],
+                                    String[] attrs,
                                     boolean typesOnly,
                                     LDAPSearchListener listener)
       throws LDAPException
@@ -2934,7 +2934,7 @@ public class LDAPConnection implements Cloneable
    public LDAPSearchListener search(String base,
                                     int scope,
                                     String filter,
-                                    String attrs[],
+                                    String[] attrs,
                                     boolean typesOnly,
                                     LDAPSearchListener listener,
                                     LDAPSearchConstraints cons)
