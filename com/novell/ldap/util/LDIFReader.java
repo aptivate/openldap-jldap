@@ -509,30 +509,37 @@ public class LDIFReader implements LDAPReader {
 
             // get attribute name
             attrName = currentField.substring(0,index);
-
             // if attrName not existing in attrSet, add it
             if ( attrSet.getAttribute(attrName) == null ) {
                 // add it to attrSet with no value
                 attrSet.add(new LDAPAttribute(attrName));
             }
 
+            if(currentField.length() > index+1)
+            {
             // add attr value to attr
-            if (currentField.charAt(index+1)==':') {
-                // base64 encoded attribute value
-                attrSet.getAttribute(attrName).addBase64Value(currentField.
+                if (currentField.charAt(index+1)==':') {
+                    // base64 encoded attribute value
+                    attrSet.getAttribute(attrName).addBase64Value(currentField.
                                                            substring(index+2));
-            }
-            else if (currentField.charAt(index+1)=='<'){
-                // file URL attribute value
-                attrSet.getAttribute(attrName).addBase64Value(currentField.
+                }
+                else if (currentField.charAt(index+1)=='<'){
+                    // file URL attribute value
+                    attrSet.getAttribute(attrName).addBase64Value(currentField.
                                                            substring(index+2));
-            }
-            else {
-                // string value
-                String vals=currentField.substring(index+1).trim();
-                attrSet.getAttribute(attrName).addValue(vals);
-//                attrSet.getAttribute(attrName).addValue(currentField.
+                }
+                else {
+                    // string value
+                    String vals=currentField.substring(index+1).trim();
+                    attrSet.getAttribute(attrName).addValue(vals);
+//                  attrSet.getAttribute(attrName).addValue(currentField.
 //                                                           substring(index+1));
+                }
+            }
+            else if(currentField.length() == index+1)
+            {
+                String vals=new String("");
+                attrSet.getAttribute(attrName).addValue(vals);
             }
 
         }
@@ -855,9 +862,9 @@ public class LDIFReader implements LDAPReader {
 			// for case like attr: <value>
 			boolean nonfile=false;
 		    String fredir= line.substring(c);            
-		    if(fredir.charAt(0) != '<'){
+		    if(fredir.length()>0 && fredir.charAt(0) != '<'){
 			         String cstr=fredir.trim();
-			         if(cstr.charAt(0) == '<'){
+			         if(cstr.length()>0 && cstr.charAt(0) == '<'){
                           nonfile=true;
                      }
                 }
@@ -885,6 +892,14 @@ public class LDIFReader implements LDAPReader {
                 // return the trimed field
                 return newBuf;
             }
+            else if ( line.length() == c){
+                StringBuffer newBuf= new StringBuffer();
+                line.getChars(c, lastChar+1, newChars, charIndex);
+                charIndex += lastChar - c + 1;
+                newBuf.append( newChars, 0, charIndex);	
+                return newBuf;
+            }
+            
             else {  // there is no value specified
                 throw new LDAPLocalException("com.novell.ldap.ldif_dsml."
                         + "LDIFReader: a field contains no value after ':'. the "
