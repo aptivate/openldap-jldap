@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttributeSchema.java,v 1.12 2000/10/23 22:49:12 bgudmundson Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttributeSchema.java,v 1.13 2000/10/23 23:28:56 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -108,7 +108,7 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
     * @param userMod	False if this attribute is a read-only attribute
 	*<br><br>
     * @param useage		Describes what the attribute is used for. Must be
-	*				one of the following: USER_APPLICATIONS, 
+	*				one of the following: USER_APPLICATIONS,
 	*				DIRECTORY_OPERATION, DISTRIBUTED_OPERATION or
 	*				DSA_OPERATION.
     */
@@ -119,25 +119,25 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
                               String substring, boolean collective, boolean userMod,
                               int usage) {
 
-		super.name = new String(name);
-		super.oid = new String(oid);
-		super.description = new String(description);
-		this.syntaxString = new String (syntaxString);
+		super.name = name;
+		super.oid = oid;
+		super.description = description;
+		this.syntaxString = syntaxString;
 		this.single = single;
-		this.superior = new String(superior);
-                if( aliases != null){
-                  super.aliases = new String[aliases.length];
-		  for( int i = 0; i < super.aliases.length; i++ ){
-	  		super.aliases[i] = aliases[i];
-		  }
-                }
-                this.obsolete = obsolete;
-                this.equality = new String(equality);
-                this.ordering = new String(ordering);
-                this.substring = new String(substring);
-                this.collective = collective;
-                this.userMod = userMod;
-                this.usage = usage;
+		this.superior = superior;
+        if( aliases != null){
+            super.aliases = new String[aliases.length];
+		    for( int i = 0; i < super.aliases.length; i++ ){
+	  	        super.aliases[i] = aliases[i];
+		    }
+        }
+        this.obsolete = obsolete;
+        this.equality = equality;
+        this.ordering = ordering;
+        this.substring = substring;
+        this.collective = collective;
+        this.userMod = userMod;
+        this.usage = usage;
    }
 
    /**
@@ -224,8 +224,8 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
    /**
     * Returns the matching rule for this attribute.
     *
-    * @return The attribute's equality matching rule; null if it has no equality 
-    *		  matching rule. 
+    * @return The attribute's equality matching rule; null if it has no equality
+    *		  matching rule.
     */
    public String getEqualityMatchingRule() {
       return equality;
@@ -238,8 +238,8 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
    /**
     * Returns the ordering matching rule for this attribute.
     *
-    * @return The attribute's ordering matching rule; null if it has no ordering  
-    *		  matching rule. 
+    * @return The attribute's ordering matching rule; null if it has no ordering
+    *		  matching rule.
     */
 
    public String getOrderingMatchingRule() {
@@ -253,8 +253,8 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
   /**
     * Returns the substring matching rule for this attribute.
     *
-    * @return The attribute's substring matching rule; null if it has no substring  
-    *		  matching rule. 
+    * @return The attribute's substring matching rule; null if it has no substring
+    *		  matching rule.
     */
 
    public String getSubstringMatchingRule() {
@@ -296,9 +296,9 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
    /**
     * Returns the usage of the attribute.
     *
-    * @return Returns one of the following values: USER_APPLICATIONS, 
+    * @return Returns one of the following values: USER_APPLICATIONS,
 	*		  DIRECTORY_OPERATION, DISTRIBUTED_OPERATION or
-	*		  DSA_OPERATION.  
+	*		  DSA_OPERATION.
     */
 
    public int getUsage() {
