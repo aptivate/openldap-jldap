@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: LDAPAttributeSet.java,v 1.3 2000/05/22 20:36:17 bgudmundson Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/org/ietf/ldap/LDAPAttributeSet.java,v 1.4 2000/08/03 22:06:13 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -17,12 +17,14 @@ package org.ietf.ldap;
 
 import java.util.*;
 
-/**
+/*
  * 4.3 public class LDAPAttributeSet
  *                implements Cloneable
- *
- *  An LDAPAttributeSet is a collection of LDAPAttributes, as returned in
- *  an entry on a search or read operation, or used to construct an entry
+ */
+
+/**
+ *  Represents a collection of LDAPAttributes, as returned in an entry
+ *  on a search or read operation, or used to construct an entry
  *  to be added to a directory.
  */
 public class LDAPAttributeSet implements Cloneable {
@@ -45,7 +47,8 @@ public class LDAPAttributeSet implements Cloneable {
 
    /**
     * Adds the specified attribute to this attribute set.
-    * attr Attribute to add to this set.
+    *
+    * @param attr Attribute to add to this set.
     */
    public synchronized void add(LDAPAttribute attr) {
       attrs.add(attr);
@@ -57,6 +60,8 @@ public class LDAPAttributeSet implements Cloneable {
 
    /**
     * Returns a deep copy of this attribute set.
+    *
+    * @return A deep copy of this attribute set.
     */
    public Object clone() {
       return null;
@@ -70,7 +75,13 @@ public class LDAPAttributeSet implements Cloneable {
     * Returns the attribute at the position specified by the index. The
     * index is 0-based.
     *
-    * index           Index of the attribute to get.
+    * @param index    Index of the attribute to get.
+    *
+    * @return    The attribute at the position specified.
+    *
+    * @exception ArrayIndexOutOfBoundsException The value specified by the 
+    * index is outside of the array.
+    *
     */
    public LDAPAttribute elementAt(int index)
     throws ArrayIndexOutOfBoundsException {
@@ -82,17 +93,23 @@ public class LDAPAttributeSet implements Cloneable {
     */
 
    /**
-    * Returns the attribute matching the specified attrName. For example,
-    * getAttribute("cn")          returns only the "cn" attribute
-    * getAttribute("cn;lang-en")  returns only the "cn;lang-en"
-    *                             attribute.
+    * Returns the attribute matching the specified attrName. 
     *
-    * In both cases, null is returned if there is no exact match to the
-    * specified attrName.
+    * <p>For example:</p>
+    * <ul>
+    * <li>getAttribute("cn")          returns only the "cn" attribute</li>
+    * <li>getAttribute("cn;lang-en")  returns only the "cn;lang-en"
+    *                                 attribute.</li>
+    * </ul>
+    * <p>In both cases, null is returned if there is no exact match to the
+    * specified attrName.</p>
     *
-    * attrName     The name of an attribute to retrieve, with or without
-    * subtype specification(s). "cn", "cn;phonetic", and cn;binary" are
-    * valid attribute names.
+    * @param attrName   The name of an attribute to retrieve, with or without
+    * subtype specification(s). For example, "cn", "cn;phonetic", and 
+    * cn;binary" are valid attribute names.
+    *
+    * @return The attribute matching the specified attrName, or null if there
+    * is no exact match.
     */
    public LDAPAttribute getAttribute(String attrName) {
       LDAPAttribute attrib;
@@ -107,50 +124,58 @@ public class LDAPAttributeSet implements Cloneable {
    }
 
    /**
-    * Returns a single best-match attribute, or none if no match is
+    * Returns a single best-match attribute, or null if no match is
     * available in the entry.
     *
-    * LDAP version 3 allows adding a subtype specification to an attribute
-    * name. "cn;lang-ja", for example, indicates a Japanese language
-    * subtype of the "cn" attribute. "cn;lang-ja-JP-kanji" may be a subtype
+    * <p>LDAP version 3 allows adding a subtype specification to an attribute
+    * name. For example, "cn;lang-ja" indicates a Japanese language
+    * subtype of the "cn" attribute and "cn;lang-ja-JP-kanji" may be a subtype
     * of "cn;lang-ja". This feature may be used to provide multiple
-    * localizations in the same Directory. For attributes which do not vary
+    * localizations in the same directory. For attributes which do not vary
     * among localizations, only the base attribute may be stored, whereas
-    * for others there may be varying degrees of specialization.
+    * for others there may be varying degrees of specialization.</p>
     *
-    * getAttribute(attrName,lang) returns the subtype that matches attrName
-    * and that best matches lang. If there are subtypes other than "lang"
-    * subtypes included in attrName, e.g. "cn;binary", only attributes with
-    * all of those subtypes are returned. If lang is null or empty, the
+    * <p>For example, getAttribute(attrName,lang) returns the subtype that 
+    * matches attrName and that best matches lang.</p> 
+    *
+    * <p>If there are subtypes other than "lang" subtypes included
+    * in attrName, for example, "cn;binary", only attributes with all of
+    * those subtypes are returned. If lang is null or empty, the
     * method behaves as getAttribute(attrName). If there are no matching
-    * attributes, null is returned.
+    * attributes, null is returned. </p>
     *
-    * Example:
     *
-    * Assume the entry contains only the following attributes:
+    * <p>Assume the entry contains only the following attributes:</p>
     *
-    *    cn;lang-en
-    *    cn;lang-ja-JP-kanji
-    *    sn
+    *  <ul>
+    *  <li>cn;lang-en</li>
+    *  <li>cn;lang-ja-JP-kanji</li>
+    *  <li>sn</li>
+    *  </ul>
     *
-    *    getAttribute( "cn" )               returns null.
-    *    getAttribute( "sn" )               returns the "sn" attribute.
-    *    getAttribute( "cn", "lang-en-us" ) returns the "cn;lang-en"
-    *                                       attribute.
-    *    getAttribute( "cn", "lang-en" )    returns the "cn;lang-en"
-    *                                       attribute.
-    *    getAttribute( "cn", "lang-ja" )    returns null.
-    *    getAttribute( "sn", "lang-en" )    returns the "sn" attribute.
+    *  <p>Examples:</p>
+    *  <ul>
+    *  <li>getAttribute( "cn" )               returns null.</li>
+    *  <li>getAttribute( "sn" )               returns the "sn" attribute.</li>
+    *  <li>getAttribute( "cn", "lang-en-us" ) returns the "cn;lang-en"
+    *                                         attribute.</li>
+    *   <li>getAttribute( "cn", "lang-en" )   returns the "cn;lang-en"
+    *                                         attribute.</li>
+    *   <li>getAttribute( "cn", "lang-ja" )   returns null.</li>
+    *   <li>getAttribute( "sn", "lang-en" )   returns the "sn" attribute.</li>
+    *  </ul>
     *
-    * attrName     The name of an attribute to retrieve, with or without
-    * subtype specification(s). "cn", "cn;phonetic", and cn;binary" are
-    * valid attribute names.
+    * @param attrName  The name of an attribute to retrieve, with or without
+    * subtype specifications. For example, "cn", "cn;phonetic", and 
+    * cn;binary" are valid attribute names.
     *
-    *  lang           A language specification as in [10], with
-    *                  optional subtypes appended using "-" as
-    *                  separator. "lang-en", "lang-en-us", "lang-ja",
-    *                  and "lang-ja-JP-kanji" are valid language
-    *                  specification.
+    * @param lang   A language specification with optional subtypes 
+    * appended using "-" as separator. For example, "lang-en", "lang-en-us", 
+    * "lang-ja", and "lang-ja-JP-kanji" are valid language specification.
+    *    
+    * @return A single best-match attribute, or null if no match is
+    * found in the entry.
+    *     
     */
    public LDAPAttribute[] getAttribute(String attrName, String lang) {
       return null;
@@ -162,6 +187,8 @@ public class LDAPAttributeSet implements Cloneable {
 
    /**
     * Returns an enumeration of the attributes in this attribute set.
+    *
+    * @return  An enumeration of the attributes in this attribute set.
     */
    public Enumeration getAttributes() {
       return attrs.elements();
@@ -175,28 +202,33 @@ public class LDAPAttributeSet implements Cloneable {
     * Creates a new attribute set containing only the attributes that have
     * the specified subtypes.
     *
-    * For example, suppose an attribute set contains the following
-    * attributes:
+    * <p>For example, suppose an attribute set contains the following
+    * attributes:</p>
     *
-    *     cn
-    *     cn;lang-ja
-    *     sn;phonetic;lang-ja
-    *     sn;lang-us
+    * <ul>
+    * <li>    cn</li>
+    * <li>    cn;lang-ja</li>
+    * <li>    sn;phonetic;lang-ja</li>
+    * <li>    sn;lang-us</li>
+    * </ul>
     *
-    * Calling the getSubset method and passing lang-ja as the argument, the
-    * method returns an attribute set containing the following attributes:
+    * <p>Calling the getSubset method and passing lang-ja as the argument, the
+    * method returns an attribute set containing the following attributes:</p>
     *
-    *     cn;lang-ja
-    *     sn;phonetic;lang-ja
+    * <ul>
+    *     <li>cn;lang-ja</li>
+    *     <li>sn;phonetic;lang-ja</li>
+    * </ul>
     *
-    *       subtype - Semi-colon delimited list of subtypes to include. For
-    *                       example:
-    *                      "lang-ja"        // Only Japanese language
-    *                       subtypes
-    *                      "binary"         // Only binary subtypes
-    *                      "binary;lang-ja" // Only Japanese language
-    *                       subtypes
-    *                                          which also are binary
+    *  @param subtype - Semi-colon delimited list of subtypes to include. For
+    *  example:
+    * <ul>
+    * <li> "lang-ja" specifies only Japanese language subtypes</li>
+    * <li> "binary" specifies only binary subtypes</li>
+    * <li> "binary;lang-ja" specifies only Japanese language subtypes
+    *       which also are binary</li> 
+    * </ul>               
+    *                                          
     */
    public LDAPAttributeSet getSubset(String subtype) {
       return null;
@@ -209,11 +241,12 @@ public class LDAPAttributeSet implements Cloneable {
    /**
     * Removes the specified attribute from the set. If the attribute is not
     * a member of the set, nothing happens.
+    * 
+    * <p> To remove an LDAPAttribute by object, the LDAPAttribute.getName 
+    * method can be used: LDAPAttributeSet.remove( attr.getName() );</p>
     *
-    * name         Name of the attribute to remove from this set. To
-    *              remove an LDAPAttribute by object, the
-    *              LDAPAttribute.getName method can be used:
-    *              LDAPAttributeSet.remove( attr.getName() );
+    * @param name  Name of the attribute to remove from this set. 
+    *              
     */
    public synchronized void remove(String name) {
    }
@@ -226,7 +259,11 @@ public class LDAPAttributeSet implements Cloneable {
     * Removes the attribute at the position specified by the index.  The
     * index is 0-based.
     *
-    * index  Index of the attribute to remove.
+    * @param index  Index of the attribute to remove.
+    *
+    * @exception ArrayIndexOutOfBoundsException The value specified by the 
+    * index is outside of the array.
+    *
     */
    public void removeElementAt(int index)
    throws ArrayIndexOutOfBoundsException {
@@ -239,6 +276,8 @@ public class LDAPAttributeSet implements Cloneable {
 
    /**
     * Returns the number of attributes in this set.
+    *
+    * @return The number of attributes in this set.
     */
    public int size() {
       return attrs.size();
