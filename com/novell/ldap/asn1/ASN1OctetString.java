@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/src/com/novell/ldap/asn1/ASN1OctetString.java,v 1.6 2000/09/03 06:43:08 smerrill Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1OctetString.java,v 1.7 2000/09/11 21:05:53 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  ***************************************************************************/
@@ -42,7 +42,14 @@ public class ASN1OctetString extends ASN1Simple {
     */
    public ASN1OctetString(String content)
    {
-      this(content.getBytes());
+      //this(content.getBytes());
+      //content must be converted to utf8 data
+      id = new ASN1Identifier(ASN1Identifier.UNIVERSAL, false, TAG);
+      try {
+        this.content = content.getBytes("UTF8");
+      }
+      catch(UnsupportedEncodingException uee) {
+      }
    }
 
    /**
