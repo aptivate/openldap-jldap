@@ -286,8 +286,13 @@ public class LDAPAttributeSet
     public boolean add(Object attr) {
         //We must enforce that attr is an LDAPAttribute
         LDAPAttribute attribute = (LDAPAttribute) attr;
-        return (this.map.put(attribute.getName().toUpperCase(),
-                             attribute) != null);
+        String name = attribute.getName().toUpperCase();
+        if( this.map.containsKey(name))
+            return false;
+        else{
+            this.map.put(name, attribute);
+            return true;
+        }
     }
 
     /**
