@@ -62,129 +62,131 @@ import org.ietf.asn1.*;
  */
 public class LDAPResult extends ASN1Sequence implements Response {
 
-	/**
-	 * Context-specific TAG for optional Referral.
-	 */
-	public final static int REFERRAL = 3;
+   /**
+    * Context-specific TAG for optional Referral.
+    */
+   public final static int REFERRAL = 3;
 
-	//*************************************************************************
-	// Constructors for LDAPResult
-	//*************************************************************************
+   //*************************************************************************
+   // Constructors for LDAPResult
+   //*************************************************************************
 
-	/**
-	 *
-	 */
-	public LDAPResult(ASN1Enumerated resultCode, LDAPDN matchedDN,
-		               LDAPString errorMessage)
-	{
-		this(resultCode, matchedDN, errorMessage, null);
-	}
+   /**
+    *
+    */
+//   public LDAPResult(ASN1Enumerated resultCode, LDAPDN matchedDN,
+//                     LDAPString errorMessage)
+//  {
+//     this(resultCode, matchedDN, errorMessage, null);
+//   }
 
-	/**
-	 *
-	 */
-	public LDAPResult(ASN1Enumerated resultCode, LDAPDN matchedDN,
-	                  LDAPString errorMessage, Referral referral)
-	{
-		super(4);
-		setResultCode(resultCode);
-		setMatchedDN(matchedDN);
-		setErrorMessage(errorMessage);
-		if(referral != null)
-			setReferral(referral);
-	}
+   /**
+    *
+    */
+//   public LDAPResult(ASN1Enumerated resultCode, LDAPDN matchedDN,
+//                     LDAPString errorMessage, Referral referral)
+//   {
+//      super(4);
+//      setResultCode(resultCode);
+//      setMatchedDN(matchedDN);
+//      setErrorMessage(errorMessage);
+//      if(referral != null)
+//         setReferral(referral);
+//   }
 
-	/**
-	 *
-	 */
-	public LDAPResult(ASN1Decoder dec, InputStream in, int len)
-		throws IOException
-	{
-		super(dec, in, len);
+   /**
+    *
+    */
+   public LDAPResult(ASN1Decoder dec, InputStream in, int len)
+      throws IOException
+   {
+      super(dec, in, len);
 
-		// Decode optional referral from ASN1OctetString to Referral.
-		if(size() > 3) {
-			ASN1Tagged obj = (ASN1Tagged)get(3);
-			ASN1Identifier id = obj.getIdentifier();
-			if(id.getTag() == LDAPResult.REFERRAL) {
-				byte[] content =
-					((ASN1OctetString)obj.getContent()).getContent();
-				ByteArrayInputStream bais = new ByteArrayInputStream(content);
-				set(3, new Referral(dec, bais, content.length));
-			}
-		}
-	}
+      // Decode optional referral from ASN1OctetString to Referral.
+      if(size() > 3) {
+         ASN1Tagged obj = (ASN1Tagged)get(3);
+         ASN1Identifier id = obj.getIdentifier();
+         if(id.getTag() == LDAPResult.REFERRAL) {
+            byte[] content =
+               ((ASN1OctetString)obj.getContent()).getContent();
+            ByteArrayInputStream bais = new ByteArrayInputStream(content);
+            set(3, new Referral(dec, bais, content.length));
+         }
+      }
+   }
 
-	//*************************************************************************
-	// Mutators
-	//*************************************************************************
+   //*************************************************************************
+   // Mutators
+   //*************************************************************************
 
-	/**
-	 *
-	 */
-	public void setResultCode(ASN1Enumerated resultCode)
-	{
-		set(0, resultCode);
-	}
+   /**
+    *
+    */
+//   public void setResultCode(ASN1Enumerated resultCode)
+//   {
+//      set(0, resultCode);
+//   }
 
-	/**
-	 *
-	 */
-	public void setMatchedDN(LDAPDN matchedDN)
-	{
-		set(1, matchedDN);
-	}
+   /**
+    *
+    */
+//   public void setMatchedDN(LDAPDN matchedDN)
+//   {
+//      set(1, matchedDN);
+//   }
 
-	/**
-	 *
-	 */
-	public void setErrorMessage(LDAPString errorMessage)
-	{
-		set(2, errorMessage);
-	}
+   /**
+    *
+    */
+//   public void setErrorMessage(LDAPString errorMessage)
+//   {
+//      set(2, errorMessage);
+//   }
 
-	/**
-	 *
-	 */
-	public void setReferral(Referral referral)
-	{
-		set(3, referral);
-	}
+   /**
+    *
+    */
+//   public void setReferral(Referral referral)
+//   {
+//      set(3, referral);
+//   }
 
-	//*************************************************************************
-	// Accessors
-	//*************************************************************************
+   //*************************************************************************
+   // Accessors
+   //*************************************************************************
 
-	/**
-	 *
-	 */
-	public ASN1Enumerated getResultCode()
-	{
-		return (ASN1Enumerated)get(0);
-	}
+   /**
+    *
+    */
+   public ASN1Enumerated getResultCode()
+   {
+      return (ASN1Enumerated)get(0);
+   }
 
-	/**
-	 *
-	 */
-	public LDAPDN getMatchedDN()
-	{
-		return new LDAPDN(((ASN1OctetString)get(1)).getContent()); // fix this!!
-	}
+   /**
+    *
+    */
+   public LDAPDN getMatchedDN()
+   {
+//      return new LDAPDN(((ASN1OctetString)get(1)).getContent()); // fix this!!
+      return (LDAPDN)get(1);
+   }
 
-	/**
-	 *
-	 */
-	public LDAPString getErrorMessage()
-	{
-		return new LDAPString(((ASN1OctetString)get(2)).getContent()); // fix this!!
-	}
+   /**
+    *
+    */
+   public LDAPString getErrorMessage()
+   {
+//      return new LDAPString(((ASN1OctetString)get(2)).getContent()); // fix this!!
+      return (LDAPString)get(2);
+   }
 
-	/**
-	 *
-	 */
-	public Referral getReferral()
-	{
-		return (Referral)get(3);
-	}
+   /**
+    *
+    */
+   public Referral getReferral()
+   {
+      return (Referral)get(3);
+   }
 }
 

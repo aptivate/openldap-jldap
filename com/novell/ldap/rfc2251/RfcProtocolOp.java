@@ -28,15 +28,15 @@ import org.ietf.asn1.*;
  */
 public class ProtocolOp extends ASN1Choice {
 
-	/*
-	 * Protocol Operation application tags
-	 */
+   /*
+    * Protocol Operation application tags
+    */
    public final static int BIND_REQUEST            = 0;
    public final static int BIND_RESPONSE           = 1;
    public final static int UNBIND_REQUEST          = 2;
    public final static int SEARCH_REQUEST          = 3;
-   public final static int SEARCH_RESPONSE         = 4;
-   public final static int SEARCH_RESULT           = 5;
+   public final static int SEARCH_RESULT_ENTRY     = 4;
+   public final static int SEARCH_RESULT_DONE      = 5;
    public final static int MODIFY_REQUEST          = 6;
    public final static int MODIFY_RESPONSE         = 7;
    public final static int ADD_REQUEST             = 8;
@@ -52,31 +52,31 @@ public class ProtocolOp extends ASN1Choice {
    public final static int EXTENDED_REQUEST        = 23;
    public final static int EXTENDED_RESPONSE       = 24;
 
-	//*************************************************************************
-	// Constructor for ProtocolOp
-	//*************************************************************************
+   //*************************************************************************
+   // Constructor for ProtocolOp
+   //*************************************************************************
 
-	/**
-	 * Typically, a class which extends ASN1Choice would accept an ASN1Tagged
-	 * type for its constructor. Since the LDAP protocol employs the notion of
-	 * IMPLICIT TAGS, all of the application specific classes can extend some
-	 * ASN1Object and override the getIdentification method. (This could not
-	 * be done if EXPLICIT tags were used, since EXPLICIT tags encode both the
-	 * application specific tag, and the tag of the base type.) By extending
-	 * a base type, we can set the Identifier of the new type, while it
-	 * maintains its base type.
-	 */
-	public ProtocolOp(ASN1Object choice)
-	{
-		super(choice);
-	}
+   /**
+    * Typically, a class which extends ASN1Choice would accept an ASN1Tagged
+    * type for its constructor. Since the LDAP protocol employs the notion of
+    * IMPLICIT TAGS, all of the application specific classes can extend some
+    * ASN1Object and override the getIdentification method. (This could not
+    * be done if EXPLICIT tags were used, since EXPLICIT tags encode both the
+    * application specific tag, and the tag of the base type.) By extending
+    * a base type, we can set the Identifier of the new type, while it
+    * maintains its base type.
+    */
+   public ProtocolOp(ASN1Object choice)
+   {
+      super(choice);
+   }
 
-	//*************************************************************************
-	// Mutators
-	//*************************************************************************
+   //*************************************************************************
+   // Mutators
+   //*************************************************************************
 
-	//*************************************************************************
-	// Accessors
-	//*************************************************************************
+   //*************************************************************************
+   // Accessors
+   //*************************************************************************
 }
 
