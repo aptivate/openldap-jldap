@@ -1,0 +1,39 @@
+<!-- ======================================================================= -->
+<!-- ORG.IETF.ASN1 build file                                                -->
+<!-- ======================================================================= -->
+<project name="ASN1 LDAP Classes" default="all" basedir=".">
+
+	<property name="src.dir" value="${basedir}"/>
+	<property name="classes.dir" value="../../../../../classes"/>
+	<property name="classpath" value="../../../../../../lib/asn1.jar"/>
+	<property name="debug" value="on"/>
+	<property name="optimize" value="on"/>
+
+
+    <!-- =================================================================== -->
+    <!-- initialization                                                      -->
+    <!-- =================================================================== -->
+    <target name="init">
+        <tstamp/>
+		<mkdir dir="${classes.dir}"/>
+    </target>
+
+    <!-- =================================================================== -->
+    <!-- all task (default                                                   -->
+    <!-- =================================================================== -->
+    <target name="all" depends="init, compile"/>
+
+    <!-- =================================================================== -->
+    <!-- compile java files                                                  -->
+    <!-- =================================================================== -->
+    <target name="compile" depends="init">
+        <javac srcdir="${src.dir}"
+                destdir="${classes.dir}"
+                classpath="${classpath}"
+                debug="${debug}"
+                deprecation="off"
+                optimize="${optimize}">
+            <include name="*.java"/>
+        </javac>
+    </target>
+</project>
