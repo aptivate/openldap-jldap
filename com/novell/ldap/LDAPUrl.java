@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPUrl.java,v 1.25 2001/04/19 18:55:53 cmorris Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPUrl.java,v 1.26 2001/04/24 17:18:29 cmorris Exp $
 *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -459,7 +459,7 @@ public class LDAPUrl {
         if( Debug.LDAP_DEBUG)
             Debug.trace( Debug.urlParse, "parseList(" + listStr.substring(listStart,listEnd) + ")");
         // Check for and empty string
-        if( (listEnd - listStart) <= 2) {
+        if( (listEnd - listStart) < 1) {
             return null;
         }
         // First count how many items are specified
