@@ -735,11 +735,15 @@ public class DOMWriter implements LDAPWriter
             if (isResponse) {
                 root = doc.createElement("batchResponse");
                 root.setAttribute("xmlns", "urn:oasis:names:tc:DSML:2:0:core");
+                root.setAttribute("xmlns:xsd","http://www.w3.org/2001/XMLSchema");
+                root.setAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance");
                 state = RESPONSE_BATCH;
             }
             else{
                 root = doc.createElement("batchRequest");
                 root.setAttribute("xmlns", "urn:oasis:names:tc:DSML:2:0:core");
+                root.setAttribute("xmlns:xsd","http://www.w3.org/2001/XMLSchema");
+                root.setAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance");
                 state = REQUEST_BATCH;
             }
         }
@@ -795,6 +799,8 @@ public class DOMWriter implements LDAPWriter
         if (state == NEW_BATCH) {
             root = doc.createElement("batchResponse");
             root.setAttribute("xmlns", "urn:oasis:names:tc:DSML:2:0:core");
+            root.setAttribute("xmlns:xsd","http://www.w3.org/2001/XMLSchema");
+            root.setAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance");
             state = RESPONSE_BATCH;
         }
 
