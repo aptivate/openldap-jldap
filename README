@@ -36,9 +36,9 @@ Table of Contents
           directory <javasource_home>/external/jsse/lib.  If you obtain
           the libraries from the www.sun.com website, you will place
           three jar files in the external/jsse/lib directory as follows:
-                  external/jsse/lib/jcert.jar
-                  external/jsse/lib/jnet.jar
-                  external/jsse/lib/jsse.jar
+                external/jsse/lib/jcert.jar
+                external/jsse/lib/jnet.jar
+                external/jsse/lib/jsse.jar
 
      -    The Ant build tool for Java.  Ant was developed by
           the jakarta.apache.org project and can be obtained
@@ -46,18 +46,18 @@ Table of Contents
           Ant version 1.2 compiled on October 24 2000.
           The ant tool is placed in the following directory structure
           under the root of the source.
-                ant/antdoc.html
-                ant/LICENSE
-                ant/bin
-                ant/bin/ant
-                ant/bin/ant.bat
-                ant/bin/antRun
-                ant/bin/antRun.bat
-                ant/bin/lcp.bat
-                ant/bin/runant.pl
-                ant/lib/ant.jar
-                ant/lib/jaxp.jar
-                ant/lib/parser.jar
+                external/ant/antdoc.html
+                external/ant/LICENSE
+                external/ant/bin
+                external/ant/bin/ant
+                external/ant/bin/ant.bat
+                external/ant/bin/antRun
+                external/ant/bin/antRun.bat
+                external/ant/bin/lcp.bat
+                external/ant/bin/runant.pl
+                external/ant/lib/ant.jar
+                external/ant/lib/jaxp.jar
+                external/ant/lib/parser.jar
 
      Running an application that uses the LDAP Class Libraries for
      Java is dependent upon the following:
@@ -106,7 +106,7 @@ For Win32
     in d:\jdk1.3 then you set in your environment:
 
         set JAVA_HOME=d:\jdk1.3
-        set ANT_HOME=d:\jldap\ant
+        set ANT_HOME=d:\jldap\external\ant
         PATH %ANT_HOME%\bin;%JAVA_HOME%\bin;%PATH%
 
     Note that your SYSTEM path variable (which gets prepended to the above path
@@ -119,9 +119,9 @@ For Linux / Unix
         3) The Java jdk is installed in /usr/local/jdk1.3
     then export in your environment:
 
-        ANT_HOME=/work/jldap/ant
+        ANT_HOME=/work/jldap/external/ant
         JAVA_HOME=/usr/local/jdk1.3
-        PATH="$ANT_HOME/bin:$PATH"
+        PATH="$ANT_HOME/bin:$JAVA_HOME/bin:$PATH"
         export ANT_HOME JAVA_HOME PATH
 
 To build everything just invoke ant as follows from the top of the source tree:
