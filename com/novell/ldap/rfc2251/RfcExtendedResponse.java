@@ -76,12 +76,22 @@ public class RfcExtendedResponse extends ASN1Sequence implements RfcResponse {
 	   add(resultCode);
 	   add(matchedDN);
 	   add(errorMessage);
+	   int counter = 3;
 	   if(referral != null)
+	   {	   
 		   add(referral);
+		referralIndex = counter++;
+	   }
 		if (responseName != null)
+	   {		
+		responseNameIndex = counter++;
 			add(responseName);
+	   }
 		if (response != null)
+	   {
 			add(response);
+		responseIndex = counter++;
+	   } 
 	   return;
 	}
     /**
