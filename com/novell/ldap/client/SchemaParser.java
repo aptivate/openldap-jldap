@@ -407,8 +407,7 @@ public class SchemaParser{
     private AttributeQualifier parseQualifier( StreamTokenizer st, String name )
             throws IOException
     {
-        com.novell.ldap.client.ArrayList values =
-                new com.novell.ldap.client.ArrayList(5);
+        ArrayList values = new ArrayList(5);
         try{
             if(st.nextToken() == '\'' ){
                 values.add(st.sval);
@@ -422,6 +421,8 @@ public class SchemaParser{
         catch(IOException e){
             throw e;
         }
-        return new AttributeQualifier(name, (String[])values.toArray() );
+        String[] valArray = new String[ values.size() ];
+        valArray = (String[])values.toArray( valArray);
+        return new AttributeQualifier( name, valArray );
     }
 }
