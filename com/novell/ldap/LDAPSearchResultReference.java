@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/org/ietf/ldap/LDAPSearchResultReference.java,v 1.4 2000/08/03 22:06:18 smerrill Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/org/ietf/ldap/LDAPSearchResultReference.java,v 1.5 2000/08/10 17:53:03 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -33,7 +33,7 @@ public class LDAPSearchResultReference extends LDAPMessage {
 
 	/**
 	 */
-	public LDAPSearchResultReference(org.ietf.asn1.ldap.LDAPMessage message)
+	public LDAPSearchResultReference(com.novell.asn1.ldap.LDAPMessage message)
 	{
 		super(message);
 	}

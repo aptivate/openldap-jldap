@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/org/ietf/ldap/LDAPExtendedResponse.java,v 1.9 2000/08/10 17:53:01 smerrill Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/org/ietf/ldap/LDAPExtendedResponse.java,v 1.10 2000/08/11 19:41:43 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -18,7 +18,7 @@ package org.ietf.ldap;
 import java.io.IOException;
 
 import org.ietf.ldap.LDAPResponse;
-import org.ietf.asn1.ldap.*;
+import com.novell.asn1.ldap.*;
 //import com.novell.ldap.client.protocol.lber.*;
 
 
@@ -39,7 +39,7 @@ public class LDAPExtendedResponse extends LDAPResponse {
 	  * Creates a Java-API LDAPExtendedResponse (which is an Java-API
 	  * LDAPMessage) when receiving an RFC 2251 LDAPMessage from a server.
 	  */
-	 public LDAPExtendedResponse(org.ietf.asn1.ldap.LDAPMessage message)
+	 public LDAPExtendedResponse(com.novell.asn1.ldap.LDAPMessage message)
 	 {
 		 super(message);
 	 }

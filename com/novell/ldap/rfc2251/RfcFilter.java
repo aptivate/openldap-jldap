@@ -1,10 +1,10 @@
 
-package org.ietf.asn1.ldap;
+package com.novell.asn1.ldap;
 
 import java.util.*;
 import java.io.*;
 
-import org.ietf.asn1.*;
+import com.novell.asn1.*;
 
 /**
  *       Filter ::= CHOICE {

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: LDAPMessageQueue.java,v 1.2 2000/03/14 18:17:31 smerrill Exp $
+ * $Id: LDAPMessageQueue.java,v 1.3 2000/08/10 17:53:01 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -16,7 +16,7 @@
 package com.novell.ldap.client;
 
 import java.util.Vector;
-import org.ietf.asn1.ldap.*;
+import com.novell.asn1.ldap.*;
 
 public class LDAPMessageQueue {
 

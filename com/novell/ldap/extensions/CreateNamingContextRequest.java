@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: CreateNamingContextRequest.java,v 1.8 2000/08/08 16:58:41 javed Exp $
+ * $Id: CreateNamingContextRequest.java,v 1.9 2000/08/08 21:28:50 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -15,7 +15,7 @@
 package com.novell.ldap.ext; 
 
 import org.ietf.ldap.*;
-import org.ietf.asn1.*;
+import com.novell.asn1.*;
 import java.io.*;
  
 /**

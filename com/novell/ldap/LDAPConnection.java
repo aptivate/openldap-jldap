@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/org/ietf/ldap/LDAPConnection.java,v 1.17 2000/08/12 20:41:06 smerrill Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/org/ietf/ldap/LDAPConnection.java,v 1.18 2000/08/18 00:43:41 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -19,8 +19,8 @@ import java.io.*;
 import java.util.*;
 
 import com.novell.ldap.client.*;
-import org.ietf.asn1.*;
-import org.ietf.asn1.ldap.*;
+import com.novell.asn1.*;
+import com.novell.asn1.ldap.*;
 
 /**
  * 4.6 public class LDAPConnection
@@ -619,7 +619,7 @@ public class LDAPConnection implements
       LDAPMessage msg =
 			new LDAPMessage(
 				new AddRequest(
-					new org.ietf.asn1.ldap.LDAPDN(entry.getDN()),
+					new com.novell.asn1.ldap.LDAPDN(entry.getDN()),
 					attrList),
 				cons.getServerControls());
 
@@ -792,7 +792,7 @@ public class LDAPConnection implements
 			new LDAPMessage(
 				new BindRequest(
 					new ASN1Integer(version),
-					new org.ietf.asn1.ldap.LDAPDN(dn),
+					new com.novell.asn1.ldap.LDAPDN(dn),
 					new AuthenticationChoice(
 						new ASN1Tagged(
 							new ASN1Identifier(ASN1Identifier.CONTEXT, false, 0),
@@ -973,7 +973,7 @@ public class LDAPConnection implements
       LDAPMessage msg =
 			new LDAPMessage(
 				new CompareRequest(
-					new org.ietf.asn1.ldap.LDAPDN(dn),
+					new com.novell.asn1.ldap.LDAPDN(dn),
 					new AttributeValueAssertion(
 						new AttributeDescription(type),
 						new AssertionValue(value))),
@@ -1553,7 +1553,7 @@ public class LDAPConnection implements
       LDAPMessage msg =
 			new LDAPMessage(
 				new ModifyRequest(
-					new org.ietf.asn1.ldap.LDAPDN(dn),
+					new com.novell.asn1.ldap.LDAPDN(dn),
 					rfcMods),
 				cons.getServerControls());
 
@@ -1945,11 +1945,11 @@ public class LDAPConnection implements
       LDAPMessage msg =
 			new LDAPMessage(
 				new ModifyDNRequest(
-					new org.ietf.asn1.ldap.LDAPDN(dn),
+					new com.novell.asn1.ldap.LDAPDN(dn),
 					new RelativeLDAPDN(newRdn),
 					new ASN1Boolean(deleteOldRdn),
 					(newParentdn != null) ?
-						new org.ietf.asn1.ldap.LDAPDN(newParentdn) : null),
+						new com.novell.asn1.ldap.LDAPDN(newParentdn) : null),
 				cons.getServerControls());
 
       if(listener == null)
@@ -2166,7 +2166,7 @@ public class LDAPConnection implements
 
       LDAPMessage msg = new LDAPMessage(
          new SearchRequest(
-            new org.ietf.asn1.ldap.LDAPDN(base),
+            new com.novell.asn1.ldap.LDAPDN(base),
             new ASN1Enumerated(scope),
             new ASN1Enumerated(cons.getDereference()),
             new ASN1Integer(cons.getMaxResults()),

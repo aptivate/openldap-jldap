@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: NamingContextEntryCountResponse.java,v 1.4 2000/08/08 19:43:55 javed Exp $
+ * $Id: NamingContextEntryCountResponse.java,v 1.5 2000/08/08 21:28:52 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -15,7 +15,7 @@
 package com.novell.ldap.ext; 
 
 import org.ietf.ldap.*;
-import org.ietf.asn1.*;
+import com.novell.asn1.*;
 import java.io.*;
  
 /**

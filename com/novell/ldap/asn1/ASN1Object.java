@@ -1,5 +1,5 @@
 
-package org.ietf.asn1;
+package com.novell.asn1;
 
 import java.io.*;
 

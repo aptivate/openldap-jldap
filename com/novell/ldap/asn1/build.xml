@@ -1,5 +1,5 @@
 <!-- ======================================================================= -->
-<!-- ORG.IETF.ASN1 build file                                                -->
+<!-- COM.NOVELL.ASN1 build file                                                -->
 <!-- ======================================================================= -->
 <project name="ASN1" default="compile" basedir=".">
 	<!-- Targets                                                             -->
@@ -26,7 +26,7 @@
     <!-- clean class files                                                  -->
     <!-- =================================================================== -->
     <target name="clean" depends="init">
-		<delete dir="${top}/${build}/org/ietf/asn1" includes="*.class"/>
+		<delete dir="${top}/${build}/com/novell/asn1" includes="*.class"/>
 	</target>
 
     <!-- =================================================================== -->
@@ -35,7 +35,7 @@
     <target name="compile" depends="init">
 		<mkdir dir="${top}/${build}"/>
         <javac srcdir="${top}/src"
-				includes="org/ietf/asn1/*.java"
+				includes="com/novell/asn1/*.java"
                 destdir="${top}/${build}"
                 deprecation="off"
                 debug="${debug}"

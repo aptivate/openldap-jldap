@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/org/ietf/ldap/LDAPControl.java,v 1.3 2000/08/03 22:06:14 smerrill Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/org/ietf/ldap/LDAPControl.java,v 1.4 2000/08/10 17:53:01 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -15,8 +15,8 @@
  
 package org.ietf.ldap;
  
-import org.ietf.asn1.*;
-import org.ietf.asn1.ldap.*;
+import com.novell.asn1.*;
+import com.novell.asn1.ldap.*;
 
 /**
  *  An LDAPControl encapsulates optional additional parameters or

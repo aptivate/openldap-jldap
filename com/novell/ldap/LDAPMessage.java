@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/org/ietf/ldap/LDAPMessage.java,v 1.4 2000/08/03 22:06:16 smerrill Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/org/ietf/ldap/LDAPMessage.java,v 1.5 2000/08/10 17:53:02 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -15,15 +15,15 @@
  
 package org.ietf.ldap;
 
-//import org.ietf.asn1.ASN1Object;
-import org.ietf.asn1.ldap.*;
+//import com.novell.asn1.ASN1Object;
+import com.novell.asn1.ldap.*;
 
 /**
  *  Base class for LDAP request and response messages.
  */
 public class LDAPMessage {
 
-	protected org.ietf.asn1.ldap.LDAPMessage message;
+	protected com.novell.asn1.ldap.LDAPMessage message;
 
    public final static int BIND_REQUEST            = 0;
    public final static int BIND_RESPONSE           = 1;
@@ -71,7 +71,7 @@ public class LDAPMessage {
 		}
 
 		// create RFC 2251 LDAPMessage
-		message = new org.ietf.asn1.ldap.LDAPMessage(
+		message = new com.novell.asn1.ldap.LDAPMessage(
 			new MessageID(), op, asn1Ctrls);
 	}
 
@@ -79,7 +79,7 @@ public class LDAPMessage {
 	 * Creates an LDAPMessage when receiving an RFC 2251 LDAPMessage from a
 	 * server.
 	 */
-	public LDAPMessage(org.ietf.asn1.ldap.LDAPMessage message)
+	public LDAPMessage(com.novell.asn1.ldap.LDAPMessage message)
 	{
 		this.message = message;
 	}
@@ -156,7 +156,7 @@ public class LDAPMessage {
 	/**
 	 *
 	 */
-	public org.ietf.asn1.ldap.LDAPMessage getASN1Object()
+	public com.novell.asn1.ldap.LDAPMessage getASN1Object()
 	{
 		return message;
 	}

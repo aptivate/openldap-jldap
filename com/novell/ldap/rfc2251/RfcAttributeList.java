@@ -1,8 +1,8 @@
 
-package org.ietf.asn1.ldap;
+package com.novell.asn1.ldap;
 
 import java.io.*;
-import org.ietf.asn1.*;
+import com.novell.asn1.*;
 
 /**
  *       AttributeList ::= SEQUENCE OF SEQUENCE {

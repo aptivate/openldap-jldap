@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/org/ietf/ldap/LDAPSearchResult.java,v 1.7 2000/08/13 21:23:32 smerrill Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/org/ietf/ldap/LDAPSearchResult.java,v 1.8 2000/08/15 00:53:09 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -18,8 +18,8 @@ package org.ietf.ldap;
 import java.io.IOException;
 import java.util.*;
 
-import org.ietf.asn1.*;
-import org.ietf.asn1.ldap.*;
+import com.novell.asn1.*;
+import com.novell.asn1.ldap.*;
 
 /**
  *  An LDAPSearchResult object encapsulates a single search result.
@@ -59,7 +59,7 @@ public class LDAPSearchResult extends LDAPMessage {
 
    /**
     */
-   public LDAPSearchResult(org.ietf.asn1.ldap.LDAPMessage message)
+   public LDAPSearchResult(com.novell.asn1.ldap.LDAPMessage message)
    {
       super(message);
    }

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/client/Connection.java,v 1.8 2000/08/16 23:29:26 smerrill Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/client/Connection.java,v 1.9 2000/08/18 00:43:39 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -20,8 +20,8 @@ import java.net.Socket;
 import java.util.Vector;
 
 import org.ietf.ldap.*;
-import org.ietf.asn1.*;
-import org.ietf.asn1.ldap.UnbindRequest;
+import com.novell.asn1.*;
+import com.novell.asn1.ldap.UnbindRequest;
 
 /**
   * A thread that creates a connection to an LDAP server. After the
@@ -249,8 +249,8 @@ public final class Connection implements Runnable {
 
 				ASN1Length asn1Len = new ASN1Length(in);
 
-				org.ietf.asn1.ldap.LDAPMessage msg =
-					 new org.ietf.asn1.ldap.LDAPMessage(
+				com.novell.asn1.ldap.LDAPMessage msg =
+					 new com.novell.asn1.ldap.LDAPMessage(
 						 decoder, in, asn1Len.getLength());
 
 				// ------------------------------------------------------------

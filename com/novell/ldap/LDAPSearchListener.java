@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/org/ietf/ldap/LDAPSearchListener.java,v 1.8 2000/08/15 00:53:08 smerrill Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/org/ietf/ldap/LDAPSearchListener.java,v 1.9 2000/08/16 23:29:27 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -18,7 +18,7 @@ package org.ietf.ldap;
 import com.novell.ldap.client.*;
 import java.util.Vector;
 
-import org.ietf.asn1.ldap.*;
+import com.novell.asn1.ldap.*;
 
 /**
  * 4.6 public class LDAPSearchListener
@@ -57,7 +57,7 @@ public class LDAPSearchListener extends LDAPListener {
       throws LDAPException
    {
       LDAPMessage message;
-      org.ietf.asn1.ldap.LDAPMessage msg = queue.getLDAPMessage(); // blocks
+      com.novell.asn1.ldap.LDAPMessage msg = queue.getLDAPMessage(); // blocks
 
       if(msg == null)
          return null;

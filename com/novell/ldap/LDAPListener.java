@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/org/ietf/ldap/LDAPListener.java,v 1.5 2000/08/03 22:06:15 smerrill Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/org/ietf/ldap/LDAPListener.java,v 1.6 2000/08/10 17:53:02 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -18,7 +18,7 @@ package org.ietf.ldap;
 import java.io.*;
 import java.util.Vector;
 
-import org.ietf.asn1.ldap.*;
+import com.novell.asn1.ldap.*;
 import com.novell.ldap.client.*;
 //import com.novell.ldap.client.protocol.AbandonRequest;
 
@@ -142,12 +142,12 @@ public abstract class LDAPListener implements TimerListener {
 	/**
 	 *
 	 */
-	public void addLDAPMessage(org.ietf.asn1.ldap.LDAPMessage message)
+	public void addLDAPMessage(com.novell.asn1.ldap.LDAPMessage message)
 	{
 		queue.addLDAPMessage(message);
 	}
 
-	public org.ietf.asn1.ldap.LDAPMessage getLDAPMessage()
+	public com.novell.asn1.ldap.LDAPMessage getLDAPMessage()
 	{
 		return queue.getLDAPMessage();
 	}

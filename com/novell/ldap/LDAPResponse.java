@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/org/ietf/ldap/LDAPResponse.java,v 1.4 2000/08/03 22:06:17 smerrill Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/org/ietf/ldap/LDAPResponse.java,v 1.5 2000/08/10 17:53:02 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -18,8 +18,8 @@ package org.ietf.ldap;
 import java.io.IOException;
 import java.util.Vector;
 
-import org.ietf.asn1.*;
-import org.ietf.asn1.ldap.*;
+import com.novell.asn1.*;
+import com.novell.asn1.ldap.*;
 //import com.novell.ldap.client.protocol.lber.*;
 
 /**
@@ -38,7 +38,7 @@ public class LDAPResponse extends LDAPMessage {
 	 * Creates an LDAPMessage when receiving an RFC 2251 LDAPMessage from a
 	 * server.
 	 */
-	public LDAPResponse(org.ietf.asn1.ldap.LDAPMessage message)
+	public LDAPResponse(com.novell.asn1.ldap.LDAPMessage message)
 	{
 		super(message);
 	}

@@ -1,7 +1,7 @@
 
-package org.ietf.asn1.ldap;
+package com.novell.asn1.ldap;
 
-import org.ietf.asn1.*;
+import com.novell.asn1.*;
 
 /**
  *       UnbindRequest ::= [APPLICATION 2] NULL
