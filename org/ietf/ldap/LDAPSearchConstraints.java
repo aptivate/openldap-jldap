@@ -19,7 +19,8 @@ package org.ietf.ldap;
  *
  *  Defines the options controlling search operations.
  *
- * @see com.novell.ldap.LDAPSearchConstraints
+ *  @see <a href="../../../../doc/com/novell/ldap/LDAPSearchConstraints.html">
+            com.novell.ldap.LDAPSearchConstraints</a>
  */
 public class LDAPSearchConstraints extends LDAPConstraints
 {
@@ -29,7 +30,9 @@ public class LDAPSearchConstraints extends LDAPConstraints
     /**
      * Used to indicate that aliases are never dereferenced.
      *
-     * @see com.novell.ldap.LDAPSearchConstraints#DEREF_NEVER
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPSearchConstraints.html
+            #DEREF_NEVER">
+            com.novell.ldap.LDAPSearchConstraints.DEREF_NEVER</a>
      */
     public static final int DEREF_NEVER  = 
                 com.novell.ldap.LDAPSearchConstraints.DEREF_NEVER;
@@ -39,7 +42,9 @@ public class LDAPSearchConstraints extends LDAPConstraints
      * searching the entries beneath the starting point but not when
      * searching for the starting entry.
      *
-     * @see com.novell.ldap.LDAPSearchConstraints#DEREF_SEARCHING
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPSearchConstraints.html
+            #DEREF_SEARCHING">
+            com.novell.ldap.LDAPSearchConstraints.DEREF_SEARCHING</a>
      */
     public static final int DEREF_SEARCHING = 
                 com.novell.ldap.LDAPSearchConstraints.DEREF_SEARCHING;
@@ -49,7 +54,9 @@ public class LDAPSearchConstraints extends LDAPConstraints
      * searching for the starting entry but are not dereferenced when
      * searching the entries beneath the starting point.
      *
-     * @see com.novell.ldap.LDAPSearchConstraints#DEREF_FINDING
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPSearchConstraints.html
+            #DEREF_FINDING">
+            com.novell.ldap.LDAPSearchConstraints.DEREF_FINDING</a>
      */
     public static final int DEREF_FINDING = 
                 com.novell.ldap.LDAPSearchConstraints.DEREF_FINDING;
@@ -59,7 +66,9 @@ public class LDAPSearchConstraints extends LDAPConstraints
      * searching for the starting entry and when
      * searching the entries beneath the starting point.
      *
-     * @see com.novell.ldap.LDAPSearchConstraints#DEREF_ALWAYS
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPSearchConstraints.html
+            #DEREF_ALWAYS">
+            com.novell.ldap.LDAPSearchConstraints.DEREF_ALWAYS</a>
      */
     public static final int DEREF_ALWAYS = 
                 com.novell.ldap.LDAPSearchConstraints.DEREF_ALWAYS;
@@ -80,7 +89,9 @@ public class LDAPSearchConstraints extends LDAPConstraints
      * Constructs an LDAPSearchConstraints object using the default values for
      * the search constraints.
      *
-     * @see com.novell.ldap.LDAPSearchConstraints#LDAPSearchConstraints()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPSearchConstraints.html
+            #LDAPSearchConstraints()">
+            com.novell.ldap.LDAPSearchConstraints.LDAPSearchConstraints()</a>
      */
     public LDAPSearchConstraints()
     {
@@ -94,8 +105,11 @@ public class LDAPSearchConstraints extends LDAPConstraints
      * the operational constraints in that object, including the LDAPBind
      * object.
      *
-     * @see com.novell.ldap.LDAPSearchConstraints#LDAPSearchConstraints(
-                int,int,int,int,boolean,int,LDAPReferralHandler,int)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPSearchConstraints.html
+            #LDAPSearchConstraints(int, int, int, int, boolean, int, 
+            com.novell.ldap.LDAPReferralHandler, int)">
+            com.novell.ldap.LDAPSearchConstraints.LDAPSearchConstraints(
+            int, int, int, int, boolean, int, LDAPReferralHandler, int)</a>
      */
     public LDAPSearchConstraints(int msLimit,
                                  int serverTimeLimit,
@@ -126,7 +140,9 @@ public class LDAPSearchConstraints extends LDAPConstraints
     /**
      * Returns how results are returned during a search.
      *
-     * @see com.novell.ldap.LDAPSearchConstraints#getBatchSize()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPSearchConstraints.html
+            #getBatchSize()">
+            com.novell.ldap.LDAPSearchConstraints.getBatchSize()</a>
      */
     public int getBatchSize()
     {
@@ -136,7 +152,9 @@ public class LDAPSearchConstraints extends LDAPConstraints
     /**
      * Specifies when aliases should be dereferenced.
      *
-     * @see com.novell.ldap.LDAPSearchConstraints#getDereference()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPSearchConstraints.html
+            #getDereference()">
+            com.novell.ldap.LDAPSearchConstraints.getDereference()</a>
      */
     public int getDereference()
     {
@@ -147,7 +165,9 @@ public class LDAPSearchConstraints extends LDAPConstraints
      * Returns the maximum number of search results to be returned; 0 means
      * no limit.
      *
-     * @see com.novell.ldap.LDAPSearchConstraints#getMaxResults()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPSearchConstraints.html
+            #getMaxResults()">
+            com.novell.ldap.LDAPSearchConstraints.getMaxResults()</a>
      */
     public int getMaxResults()
     {
@@ -158,7 +178,9 @@ public class LDAPSearchConstraints extends LDAPConstraints
      * Reports the maximum number of seconds that the server is to wait when
      * returning search results while using this constraint object.
      *
-     * @see com.novell.ldap.LDAPSearchConstraints#getServerTimeLimit()
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPSearchConstraints.html
+            #getServerTimeLimit()">
+            com.novell.ldap.LDAPSearchConstraints.getServerTimeLimit()</a>
      */
     public int getServerTimeLimit()
     {
@@ -168,7 +190,9 @@ public class LDAPSearchConstraints extends LDAPConstraints
     /**
      *  Specifies how results are returned during a search operation.
      *
-     * @see com.novell.ldap.LDAPSearchConstraints#setBatchSize(int)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPSearchConstraints.html
+            #setBatchSize(int)">
+            com.novell.ldap.LDAPSearchConstraints.setBatchSize(int)</a>
      */
     public void setBatchSize(int batchSize)
     {
@@ -180,7 +204,9 @@ public class LDAPSearchConstraints extends LDAPConstraints
      * Sets a preference indicating whether or not aliases should be
      * dereferenced, and if so, when.
      *
-     * @see com.novell.ldap.LDAPSearchConstraints#setDereference(int)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPSearchConstraints.html
+            #setDereference(int)">
+            com.novell.ldap.LDAPSearchConstraints.setDereference(int)</a>
      */
     public void setDereference(int dereference)
     {
@@ -192,7 +218,9 @@ public class LDAPSearchConstraints extends LDAPConstraints
      * Sets the maximum number of search results to be returned; 0 means no
      * limit.  The default is 1000.
      *
-     * @see com.novell.ldap.LDAPSearchConstraints#setMaxResults(int)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPSearchConstraints.html
+            #setMaxResults(int)">
+            com.novell.ldap.LDAPSearchConstraints.setMaxResults(int)</a>
      */
     public void setMaxResults(int maxResults)
     {
@@ -204,7 +232,9 @@ public class LDAPSearchConstraints extends LDAPConstraints
      * Sets the maximum number of seconds that the server is to wait when
      * returning search results.
      *
-     * @see com.novell.ldap.LDAPSearchConstraints#setServerTimeLimit(int)
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPSearchConstraints.html
+            #setServerTimeLimit(int)">
+            com.novell.ldap.LDAPSearchConstraints.setServerTimeLimit(int)</a>
      */
     public void setServerTimeLimit(int seconds)
     {
