@@ -323,7 +323,7 @@ public class LDAPUrl implements java.lang.Cloneable,Externalizable
              (currChar == '#' ) || (currChar == '%' ) || (currChar == '{' ) ||
              (currChar == '}' ) || (currChar == '|' ) || (currChar == '\\' ) ||
              (currChar == '^' ) || (currChar == '~' ) || (currChar == '[' ) ||
-             (currChar == '\'' )) ||
+             (currChar == '\'' ) || (currChar == ' ' )) ||
               //Reserved chars:
             ((currChar == ';' ) || (currChar == '/' ) || (currChar == '?' ) ||
              (currChar == ':' ) || (currChar == '@' ) || (currChar == '=' ) ||
