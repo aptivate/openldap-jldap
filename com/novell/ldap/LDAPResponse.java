@@ -1,7 +1,7 @@
 /* **************************************************************************
  * $OpenLDAP$
  *
- * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
+ * Copyright (C) 1999 - 2002 Novell, Inc. All Rights Reserved.
  *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
@@ -26,8 +26,7 @@ import com.novell.ldap.client.*;
  *  A message received from an LDAPServer
  *  in response to an asynchronous request.
  *
- *  <p>Sample Code: <a href="http://developer.novell.com/ndk/doc/samplecode/
- *jldap_sample/asynchronous/Searchas.java.html">Searchas.java</p>
+ *  <p>Sample Code: <a href="http://developer.novell.com/ndk/doc/samplecode/jldap_sample/asynchronous/Searchas.java.html">Searchas.java</p>
  *
  * @see LDAPConnection#search
  */
@@ -292,7 +291,7 @@ public class LDAPResponse extends LDAPMessage
         if( exception != null) {
             return exception.getMessageID();
        }
-        return super.getMessageID();
+       return super.getMessageID();
     }
 
     /**
@@ -303,11 +302,11 @@ public class LDAPResponse extends LDAPMessage
      * @see com.novell.ldap.LDAPMessage#getType()
      */
     public int getType()
-	{
+     {
         if( exception != null) {
            return exception.getReplyType();
         }
-		return super.getType();
+        return super.getType();
     }
 
     /**

@@ -1,7 +1,7 @@
 /* **************************************************************************
  * $OpenLDAP$
  *
- * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
+ * Copyright (C) 1999 - 2002 Novell, Inc. All Rights Reserved.
  *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
@@ -16,13 +16,12 @@
 package com.novell.ldap;
 
 /**
- *  @deprecated replaced by {@link LDAPAuthHandler}.  This interface
- *  has been renamed to LDAPReferralHandler in IETF draft 17 of the Java LDAP
- *  API (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
- *  in fall of 2003.
+ *  <p>This interface has been renamed to LDAPReferralHandler in IETF draft 17
+ *  of the Java LDAP API (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be
+ *  removed from the LDAP Classes for Java in the fall of 2003.</p>
  *
- *  Used to provide credentials for reauthentication when processing a
- *  referral.
+ *  <p>Used to provide credentials for reauthentication when processing a
+ *  referral.</p>
  *
  *  <p>A programmer desiring to supply credentials to the default
  *  reauthentication behavior when automatically following referrals must
@@ -32,11 +31,12 @@ package com.novell.ldap;
  *  referral URL other than ldap://something) are ignored on automatic referral
  *  following.</p>
  *
- *  <p>Sample Code: <a href="http://developer.novell.com/ndk/doc/samplecode/
- *jldap_sample/jldap_sample/SearchUtil.java.html">SearchUtil.java</p>
+ *  <p>Sample Code: <a href="http://developer.novell.com/ndk/doc/samplecode/jldap_sample/jldap_sample/SearchUtil.java.html">SearchUtil.java</p>
  *
  *  @see LDAPBind
  *  @see LDAPConstraints#setReferralFollowing(boolean)
+ *
+ *  @deprecated replaced by {@link LDAPAuthHandler}.
  */
 public interface LDAPRebind extends LDAPReferralHandler
 {

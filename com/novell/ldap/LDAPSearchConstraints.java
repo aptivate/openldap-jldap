@@ -1,7 +1,7 @@
 /* **************************************************************************
  * $OpenLDAP$
  *
- * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
+ * Copyright (C) 1999 - 2002 Novell, Inc. All Rights Reserved.
  *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
@@ -27,8 +27,7 @@ import com.novell.ldap.client.Debug;
  *  LDAPConnection.setConstraints method, or overridden by passing
  *  an LDAPSearchConstraints object to the search operation.</p>
  *
- *  <p>Sample Code: <a href="http://developer.novell.com/ndk/doc/samplecode/
- *jldap_sample/jldap_sample/Search.java.html">Search.java</p>
+ *  <p>Sample Code: <a href="http://developer.novell.com/ndk/doc/samplecode/jldap_sample/jldap_sample/Search.java.html">Search.java</p>
  *
  *  @see LDAPConstraints
  *  @see LDAPConnection#setConstraints(LDAPConstraints)
@@ -110,7 +109,7 @@ public class LDAPSearchConstraints extends LDAPConstraints {
      * Constructs an LDAPSearchConstraints object initialized with values
      * from an existing constraints object (LDAPConstraints
      * or LDAPSearchConstraints).
-     */ 
+     */
     public LDAPSearchConstraints( LDAPConstraints cons)
     {
         super( cons.getTimeLimit(), cons.getReferralFollowing(),
@@ -123,7 +122,7 @@ public class LDAPSearchConstraints extends LDAPConstraints {
         if( lp != null) {
             super.setProperties( (Hashtable)lp.clone());
         }
-        
+
         if( cons instanceof LDAPSearchConstraints) {
             LDAPSearchConstraints scons = (LDAPSearchConstraints)cons;
             this.serverTimeLimit = scons.getServerTimeLimit();
@@ -141,7 +140,7 @@ public class LDAPSearchConstraints extends LDAPConstraints {
         }
         return;
     }
-    
+
     /**
      * Constructs a new LDAPSearchConstraints object and allows the
      * specification operational constraints in that object.
@@ -163,7 +162,7 @@ public class LDAPSearchConstraints extends LDAPConstraints {
      *                  operation exceeds the time limit.
      *<br><br>
      *  @param dereference Specifies when aliases should be dereferenced.
-     *                  Must be either DEREF_NEVER, DEREF_FINDING, 
+     *                  Must be either DEREF_NEVER, DEREF_FINDING,
      *                  DEREF_SEARCHING, or DEREF_ALWAYS from this class.
      *                  Default: DEREF_NEVER
      *<br><br>
@@ -309,7 +308,7 @@ public class LDAPSearchConstraints extends LDAPConstraints {
 
     /**
      *  Specifies the number of results to return in a batch.
-     
+
      *  <p>Specifying 0 means to block until all results are received.
      *  Specifying 1 means to return results one result at a time.  Default: 1
      *  </p>
@@ -378,7 +377,7 @@ public class LDAPSearchConstraints extends LDAPConstraints {
      * The search operation will be terminated with an
      * LDAPException.TIME_LIMIT_EXCEEDED if the operation exceeds the time
      * limit.
-     * 
+     *
      * <p>The parameter is only recognized on search operations. </p>
      *
      * @param seconds The number of seconds to wait for search results.

@@ -1,7 +1,7 @@
 /* **************************************************************************
  * $OpenLDAP$
  *
- * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
+ * Copyright (C) 1999 - 2002 Novell, Inc. All Rights Reserved.
  *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
@@ -29,8 +29,7 @@ import java.util.NoSuchElementException;
  * operation. It provides access to all results received during the
  * operation (entries and exceptions).</p>
  *
- *  <p>Sample Code: <a href="http://developer.novell.com/ndk/doc/samplecode/
- *jldap_sample/asynchronous/Searchas.java.html">Searchas.java</p>
+ *  <p>Sample Code: <a href="http://developer.novell.com/ndk/doc/samplecode/jldap_sample/asynchronous/Searchas.java.html">Searchas.java</p>
  *
  * @see LDAPConnection#search
  */
@@ -459,12 +458,16 @@ public class LDAPSearchResults
 
     /**
      * Reports if there are more search results in the enumeration.
-
-     * @deprecated replaced by {@link #hasMore}.  This method will be
-     *  removed in the fall 2003 NDK.
+     *
+     * <p>This method
+     *  has been renamed to {@link #hasMore} in IETF draft 17 of the Java
+     *  LDAP API (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
+     *  from the API in the fall of 2003.</p>
      *
      * @return True, if there are more search results; false, if there are no
      *         more search results.
+     *
+     * @deprecated replaced by {@link #hasMore}.
      */
     public boolean hasMoreElements()
     {
@@ -474,14 +477,18 @@ public class LDAPSearchResults
     /**
      * Returns the next result in the enumeration as an Object.
      *
-     * @deprecated use instead {@link #next} This method will be
-     *  removed in the fall 2003 NDK.
+     * <p>This method
+     *  has been replaced by {@link #next} in IETF draft 17 of the Java
+     *  LDAP API (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
+     *  from the API in the fall of 2003.</p>
      *
      * <p>The nextElement method is the default implementation of the
      * Enumeration.nextElement method. The returned value may be an LDAPEntry
      * or an LDAPReferralException. </p>
      *
      * @return The next element in the enumeration.
+     *
+     * @deprecated use instead {@link #next}
      */
     public Object nextElement()
     {
@@ -552,9 +559,13 @@ public class LDAPSearchResults
     }
 
     /**
-     * @deprecated replaced by Collections mechanisms. LDAPEntry now
-     * implements the Comparable interface. See {@link LDAPEntry}.
-     * This method will be removed in the fall 2003 NDK.
+     * <p>This method
+     *  has been replaced by the Collections mechanisms in IETF draft 17 of
+     *  the Java LDAP API (draft-ietf-ldapext-ldap-java-api-xx.txt) and will
+     *  be removed from the API in the fall of 2003.</p>
+     *
+     * @deprecated replaced by Collections mechanisms. {@link LDAPEntry}
+     * and {@link LDAPAttribute} now implement the Comparable interface.
      *
      */
     public void sort(LDAPEntryComparator comp)
@@ -640,9 +651,9 @@ public class LDAPSearchResults
      * @patam b  Index to the other element
      */
     private static void swap(Vector x, int a, int b) {
-   	    Object t = x.elementAt(a);
-   	    x.setElementAt( x.elementAt(b),a);
-   	    x.setElementAt(t, b);
+         Object t = x.elementAt(a);
+         x.setElementAt( x.elementAt(b),a);
+         x.setElementAt(t, b);
         return;
     }
 }

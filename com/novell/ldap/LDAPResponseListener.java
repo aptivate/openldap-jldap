@@ -1,7 +1,7 @@
 /* **************************************************************************
  * $OpenLDAP$
  *
- * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
+ * Copyright (C) 1999 - 2002 Novell, Inc. All Rights Reserved.
  *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
@@ -21,14 +21,15 @@ import com.novell.ldap.client.*;
 import com.novell.ldap.rfc2251.*;
 
 /**
- *  @deprecated replaced by {@link LDAPResponseQueue}.  This class
- *  has been renamed to LDAPResponseQueue in IETF draft 17 of the Java LDAP API
- *  (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
- *  in fall of 2003.
+ *  <p>This class has been renamed to LDAPResponseQueue in IETF draft 17
+ *  of the Java LDAP API (draft-ietf-ldapext-ldap-java-api-xx.txt) and will
+ *  be removed from the LDAP Classes for Java API in the fall of 2003.</p>
  *
- *  Encapsulates a mechanism for processing asynchronous messages
+ *  <p>Encapsulates a mechanism for processing asynchronous messages
  *  received from a server.  It represents the message queue associated
- *  with a particular asynchronous LDAP operation or operations.
+ *  with a particular asynchronous LDAP operation or operations.</p>
+ *
+ *  @deprecated replaced by {@link LDAPResponseQueue}.
  */
 public class LDAPResponseListener implements LDAPMessageQueue
 {
@@ -102,7 +103,7 @@ public class LDAPResponseListener implements LDAPMessageQueue
         merge( (LDAPMessageQueue)queue2);
         return;
     }
-    
+
     public void merge(LDAPMessageQueue queue2)
     {
         if( queue2 instanceof LDAPResponseQueue) {

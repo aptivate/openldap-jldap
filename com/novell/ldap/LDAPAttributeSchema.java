@@ -1,7 +1,7 @@
 /* **************************************************************************
  * $OpenLDAP$
  *
- * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
+ * Copyright (C) 1999 - 2002 Novell, Inc. All Rights Reserved.
  *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
@@ -33,8 +33,7 @@ import java.io.IOException;
  * defines the schema descriptions and non-standard syntaxes
  * used by Novell eDirectory.
  *
- *  <p>Sample Code: <a href="http://developer.novell.com/ndk/doc/samplecode/
- *jldap_sample/jldap_sample/ExtendSchema.java.html">ExtendSchema.java</p>
+ *  <p>Sample Code: <a href="http://developer.novell.com/ndk/doc/samplecode/jldap_sample/jldap_sample/ExtendSchema.java.html">ExtendSchema.java</p>
  *
  * @see LDAPSchema
  */
@@ -379,14 +378,19 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
 
 
    // #######################################################################
-   //  The following are deprecated and will be removed in fall of 2003
+   //  The following are deprecated and will be removed in the fall of 2003
    // #######################################################################
 
    /**
-    * @deprecated replaced by {@link LDAPSchema#add}.  This method
-    * has been move to the object LDAPSchema in IETF draft 17 of the Java LDAP
-    * API (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-    *  in fall of 2003.
+    * <p>This method removed in the IETF draft 17 of the
+    * Java LDAP API (draft-ietf-ldapext-ldap-java-api-xx.txt), and will be removed
+    * from the LDAP Classes for Java API in the fall of 2003.</p>
+    *
+    * <p>LDAPSchemaElement now extends {@link LDAPAttribute} and can
+    * be used directly with {@link LDAPModification},
+    * see {@link LDAPConnection#modify LDAPConnection.modify()}</p>
+    *
+    * @deprecated replaced by {@link LDAPConnection#modify LDAPConnection.modify()}.
     */
    public void add(LDAPConnection ld) throws LDAPException {
        try {
@@ -397,10 +401,15 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
    }
 
    /**
-    * @deprecated replaced by {@link LDAPSchema#add}.  This method
-    * has been move to the object LDAPSchema in IETF draft 17 of the Java LDAP
-    * API (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-    *  in fall of 2003.
+    * <p>This method removed in the IETF draft 17 of the
+    * Java LDAP API (draft-ietf-ldapext-ldap-java-api-xx.txt), and will be removed
+    * from the LDAP Classes for Java API in the fall of 2003.</p>
+    *
+    * <p>LDAPSchemaElement now extends {@link LDAPAttribute} and can
+    * be used directly with {@link LDAPModification},
+    * see {@link LDAPConnection#modify LDAPConnection.modify()}</p>
+    *
+    * @deprecated replaced by {@link LDAPConnection#modify LDAPConnection.modify()}.
     */
   public void add(LDAPConnection ld, String dn) throws LDAPException {
     try{
@@ -455,10 +464,15 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
   }
 
   /**
-    * @deprecated replaced by {@link LDAPSchema#remove}.  This method
-    * has been move to the object LDAPSchema in IETF draft 17 of the Java LDAP
-    * API (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-    *  in fall of 2003.
+    * <p>This method removed in the IETF draft 17 of the
+    * Java LDAP API (draft-ietf-ldapext-ldap-java-api-xx.txt), and will be removed
+    * from the LDAP Classes for Java API in the fall of 2003.</p>
+    * 
+    * <p>LDAPSchemaElement now extends {@link LDAPAttribute} and can
+    * be used directly with {@link LDAPModification},
+    * see {@link LDAPConnection#modify LDAPConnection.modify()}</p>
+    *
+    * @deprecated replaced by {@link LDAPConnection#modify LDAPConnection.modify()}.
     */
   public void remove(LDAPConnection ld) throws LDAPException {
     try{
@@ -470,10 +484,15 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
   }
 
   /**
-    * @deprecated replaced by {@link LDAPSchema#remove}.  This method
-    * has been move to the object LDAPSchema in IETF draft 17 of the Java LDAP
-    * API (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-    *  in fall of 2003.
+    * <p>This method removed in the IETF draft 17 of the
+    * Java LDAP API (draft-ietf-ldapext-ldap-java-api-xx.txt), and will be removed
+    * from the LDAP Classes for Java API in the fall of 2003.</p>
+    * 
+    * <p>LDAPSchemaElement now extends {@link LDAPAttribute} and can
+    * be used directly with {@link LDAPModification},
+    * see {@link LDAPConnection#modify LDAPConnection.modify()}</p>
+    *
+    * @deprecated replaced by {@link LDAPConnection#modify LDAPConnection.modify()}.
     */
   public void remove(LDAPConnection ld, String dn) throws LDAPException {
     try{
@@ -528,10 +547,15 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
   }
 
   /**
-    * @deprecated replaced by {@link LDAPSchema#modify}.  This method
-    * has been move to the object LDAPSchema in IETF draft 17 of the Java LDAP
-    * API (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-    *  in fall of 2003.
+    * <p>This method removed in the IETF draft 17 of the
+    * Java LDAP API (draft-ietf-ldapext-ldap-java-api-xx.txt), and will be removed
+    * from the LDAP Classes for Java API in the fall of 2003.</p>
+    *
+    * <p>LDAPSchemaElement now extends {@link LDAPAttribute} and can
+    * be used directly with {@link LDAPModification},
+    * see {@link LDAPConnection#modify LDAPConnection.modify()}</p>
+    *
+    * @deprecated replaced by {@link LDAPConnection#modify LDAPConnection.modify()}.
     */
   public void modify(LDAPConnection ld, LDAPSchemaElement newValue) throws LDAPException {
     try{
@@ -543,10 +567,15 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
   }
 
   /**
-    * @deprecated replaced by {@link LDAPSchema#modify}.  This method
-    * has been move to the object LDAPSchema in IETF draft 17 of the Java LDAP
-    * API (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-    *  in fall of 2003.
+    * <p>This method removed in the IETF draft 17 of the
+    * Java LDAP API (draft-ietf-ldapext-ldap-java-api-xx.txt), and will be removed
+    * from the LDAP Classes for Java API in the fall of 2003.</p>
+    *
+    * <p>LDAPSchemaElement now extends {@link LDAPAttribute} and can
+    * be used directly with {@link LDAPModification},
+    * see {@link LDAPConnection#modify LDAPConnection.modify()}</p>
+    *
+    * @deprecated replaced by {@link LDAPConnection#modify LDAPConnection.modify()}.
     */
   public void modify(LDAPConnection ld, LDAPSchemaElement newValue, String dn) throws LDAPException {
     if( newValue instanceof LDAPAttributeSchema != true ){
@@ -606,32 +635,29 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
     }
 
    /**
-    *  @deprecated replaced by {@link #toString}.  This method
-    *  has been renamed to toString in IETF draft 17 of the Java LDAP API
-    *  (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-    *  in fall of 2003.
+    * This method removed in the IETF draft 17 of the
+    * Java LDAP API (draft-ietf-ldapext-ldap-java-api-xx.txt), and will be removed
+    * from the LDAP Classes for Java API in the fall of 2003.
+    * @deprecated replaced by {@link #toString}.
     */
    public String getValue(){
         return toString();
    }
 
    /**
-    *  @deprecated replaced by {@link #isUserModifiable}.  This method
-    *  has been renamed to isUserModifiable in IETF draft 17 of the Java LDAP
-    *  API (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-    *  in fall of 2003.
+    * This method removed in the IETF draft 17 of the
+    * Java LDAP API (draft-ietf-ldapext-ldap-java-api-xx.txt), and will be removed
+    * from the LDAP Classes for Java API in the fall of 2003.
+    *  @deprecated replaced by {@link #isUserModifiable}.
     */
    public boolean isModifiable() {
       return isUserModifiable();
    }
 
    /**
-    *  @deprecated replaced by {@link #LDAPAttributeSchema( String[], String,
-    *       String, String, boolean, String, boolean, String, String, String,
-    *       boolean, boolean, int) LDAPAttributeSchema}.  This contructor
-    *  has been changed in IETF draft 17 of the Java LDAP API
-    *  (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-    *  in fall of 2003.
+    * This constructor has been changed in the IETF draft 17 of the
+    * Java LDAP API (draft-ietf-ldapext-ldap-java-api-xx.txt), and will be removed
+    * from the LDAP Classes for Java API in the fall of 2003.
     *
     * Constructs an attribute definition for adding to or deleting from a
     * directory's schema.
@@ -639,6 +665,10 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
     * @param aliases   Optional list of additional names by which the
     *              attribute may be known; null if there are no
     *              aliases.
+
+    *  @deprecated replaced by {@link #LDAPAttributeSchema( String[], String,
+    *       String, String, boolean, String, boolean, String, String, String,
+    *       boolean, boolean, int) LDAPAttributeSchema}.
     */
    public LDAPAttributeSchema(String name, String oid, String description,
                               String syntaxString, boolean single,

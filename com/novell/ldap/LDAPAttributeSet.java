@@ -1,7 +1,7 @@
 /* **************************************************************************
  * $OpenLDAP$
  *
- * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
+ * Copyright (C) 1999 - 2002 Novell, Inc. All Rights Reserved.
  *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
@@ -27,13 +27,12 @@ import com.novell.ldap.client.EnumeratedIterator;
  * <p>An <tt>LDAPAttributeSet</tt> is a collection of <tt>LDAPAttribute</tt>
  * classes as returned from an <tt>LDAPEntry</tt> on a search or read
  * operation. <tt>LDAPAttributeSet</tt> may be also used to contruct an entry
- * to be added to a directory.  If the <tt>add()</tt> or <tt>addAll()</tt> 
+ * to be added to a directory.  If the <tt>add()</tt> or <tt>addAll()</tt>
  * methods are called and one or more of the objects to be added is not
  * an <tt>LDAPAttribute, ClassCastException</tt> is thrown (as discussed in the
  * documentation for <tt>java.util.Collection</tt>).
  *
- * <p>Sample Code: <a href="http://developer.novell.com/ndk/doc/samplecode/
- *jldap_sample/jldap_sample/AddEntry.java.html">AddEntry.java</p>
+ * <p>Sample Code: <a href="http://developer.novell.com/ndk/doc/samplecode/jldap_sample/jldap_sample/AddEntry.java.html">AddEntry.java</p>
  *
  * @see LDAPAttribute
  * @see LDAPEntry
@@ -113,7 +112,7 @@ public class LDAPAttributeSet
      * among localizations, only the base attribute may be stored, whereas
      * for others there may be varying degrees of specialization.</p>
      *
-     * <p>For example, <tt>getAttribute(attrName,lang)</tt> returns the 
+     * <p>For example, <tt>getAttribute(attrName,lang)</tt> returns the
      * <tt>LDAPAttribute</tt> that exactly matches attrName and that
      * best matches lang.</p>
      *
@@ -352,10 +351,10 @@ public class LDAPAttributeSet
 // --- deprecated methods ---
 
     /**
-     *  @deprecated replaced by {@link #iterator}.  This method
-     *  has been removed in IETF draft 18 of the Java LDAP API
-     *  (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-     *  from the API in the fall of 2003.
+     * This method is removed in the IETF draft 18 of the
+     * Java LDAP API (draft-ietf-ldapext-ldap-java-api-xx.txt), and will
+     * be removed from the LDAP Classes for Java API in the fall of 2003.
+     * @deprecated replaced by {@link #iterator}.
      */
     public java.util.Enumeration getAttributes() {
         return new com.novell.ldap.client.EnumeratedIterator(
@@ -363,10 +362,10 @@ public class LDAPAttributeSet
     }
 
     /**
-     *  @deprecated replaced by {@link #iterator}.  This method
-     *  has been removed in IETF draft 18 of the Java LDAP API
-     *  (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-     *  from the API in the fall of 2003.
+     * This method is removed in the IETF draft 18 of the
+     * Java LDAP API (draft-ietf-ldapext-ldap-java-api-xx.txt), and will
+     * be removed from the LDAP Classes for Java API in the fall of 2003.
+     * @deprecated replaced by {@link #iterator}.
      */
     public LDAPAttribute elementAt(int index)
             throws ArrayIndexOutOfBoundsException {
@@ -374,10 +373,10 @@ public class LDAPAttributeSet
     }
 
     /**
-     *  @deprecated replaced by {@link #remove}.  This method
-     *  has been removed in IETF draft 18 of the Java LDAP API
-     *  (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-     *  from the API in the fall of 2003.
+     * This method is removed in the IETF draft 18 of the
+     * Java LDAP API (draft-ietf-ldapext-ldap-java-api-xx.txt), and will
+     * be removed from the LDAP Classes for Java API in the fall of 2003.
+     * @deprecated replaced by {@link #remove}.
      */
     public void removeElementAt(int index)
             throws ArrayIndexOutOfBoundsException {

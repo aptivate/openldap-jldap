@@ -1,7 +1,7 @@
 /* **************************************************************************
  * $OpenLDAP$
  *
- * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
+ * Copyright (C) 1999 - 2002 Novell, Inc. All Rights Reserved.
  *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
@@ -16,18 +16,18 @@
 package com.novell.ldap;
 
 /**
- *  @deprecated replaced by {@link LDAPAuthProvider}.  This interface
- *  has been renamed to LDAPAuthProvider in IETF draft 17 of the Java LDAP API
- *  (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
- *  in fall of 2003.
+ *  <p>This interface has been renamed to LDAPAuthProvider in IETF draft 17
+ *  of the Java LDAP API (draft-ietf-ldapext-ldap-java-api-xx.txt) and will
+ *  be removed from the LDAP Classes for Java API in the fall of 2003.</p>
  *
- *  An implementation of LDAPRebind must be able to provide an LDAPRebindAuth
+ *  <p>An implementation of LDAPRebind must be able to provide an LDAPRebindAuth
  *  object at the time of a referral.  The class encapsulates reauthentiation
- *  credentials for the specified host and port.
+ *  credentials for the specified host and port.</p>
  *
  *  @see LDAPRebind
  *  @see LDAPBind
  *  @see LDAPConstraints#setReferralFollowing(boolean)
+ *
  *  @deprecated replaced by {@link LDAPAuthProvider}
  */
 public class LDAPRebindAuth {

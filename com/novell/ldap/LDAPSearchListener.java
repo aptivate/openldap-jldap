@@ -1,7 +1,7 @@
 /* **************************************************************************
  * $OpenLDAP$
  *
- * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
+ * Copyright (C) 1999 - 2002 Novell, Inc. All Rights Reserved.
  *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
@@ -21,15 +21,16 @@ import java.util.Vector;
 import com.novell.ldap.rfc2251.*;
 
 /**
- *  @deprecated replaced by {@link LDAPSearchQueue}.  This class
- *  has been renamed to LDAPSearchQueue in IETF draft 17 of the Java LDAP API
- *  (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
- *  in fall of 2003.
+ *  <p>This class has been renamed to LDAPSearchQueue in IETF
+ *  draft 17 of the Java LDAP API (draft-ietf-ldapext-ldap-java-api-xx.txt)
+ *  and will be removed from the LDAP Classes for Java API in the fall of 2003.</p>
  *
- *  A mechanism for queuing asynchronous search results
- *  and references received from a server.
+ *  <p>A mechanism for queuing asynchronous search results
+ *  and references received from a server.</p>
  *
  * @see LDAPConnection#search
+ *
+ * @deprecated replaced by {@link LDAPSearchQueue}.
  */
 public class LDAPSearchListener implements LDAPMessageQueue
 {
@@ -102,9 +103,9 @@ public class LDAPSearchListener implements LDAPMessageQueue
     public void merge(LDAPListener queue2)
     {
         merge( (LDAPMessageQueue)queue2);
-        return;    
+        return;
     }
-    
+
     public void merge(LDAPMessageQueue queue2)
     {
         if( queue2 instanceof LDAPResponseQueue) {

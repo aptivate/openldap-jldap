@@ -1,7 +1,7 @@
 /* **************************************************************************
  * $OpenLDAP$
  *
-  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
+  * Copyright (C) 1999 - 2002 Novell, Inc. All Rights Reserved.
  *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
@@ -104,7 +104,7 @@ public class LDAPConstraints implements Cloneable {
      * @see LDAPReferralException
      * @see LDAPBindHandler
      * @see LDAPAuthHandler
-     
+
      */
     public LDAPConstraints(int msLimit,
                       boolean doReferrals,
@@ -158,7 +158,7 @@ public class LDAPConstraints implements Cloneable {
 
     /**
      * Gets a property of the constraints object which has been
-     * assigned with {@link #setProperty(String, Object)}.  
+     * assigned with {@link #setProperty(String, Object)}.
      *
      * @param name   Name of the property to be returned.
      *
@@ -172,13 +172,13 @@ public class LDAPConstraints implements Cloneable {
     {
         if( properties == null) {
             return null;            // Requested property not available.
-        }      
+        }
         return properties.get( name);
     }
-    
+
     /**
      * Gets all the properties of the constraints object which has been
-     * assigned with {@link #setProperty(String, Object)}.  
+     * assigned with {@link #setProperty(String, Object)}.
      * A value of <code>null</code> is returned if no properties are defined.
      *
      * @see #setProperty(String, Object)
@@ -189,7 +189,7 @@ public class LDAPConstraints implements Cloneable {
     {
         return properties;
     }
-    
+
     /**
      * Specified whether or not referrals are followed automatically.
      *
@@ -200,7 +200,7 @@ public class LDAPConstraints implements Cloneable {
     {
         return doReferrals;
     }
-    
+
     /**
      * Returns an object that can process authentication for automatic
      * referral handling.
@@ -319,7 +319,7 @@ public class LDAPConstraints implements Cloneable {
         properties.put( name, value);
         return;
     }
-    
+
     /**
      * Sets all the properties of the constraints object.
      *
@@ -354,7 +354,7 @@ public class LDAPConstraints implements Cloneable {
         }
         return;
     }
-    
+
     /**
      * Specifies the object that will process authentication requests
      * during automatic referral following.
@@ -393,7 +393,7 @@ public class LDAPConstraints implements Cloneable {
         this.msLimit = msLimit;
         return;
     }
-    
+
     /**
      * Clones an LDAPConstraints object.
      *
@@ -430,10 +430,12 @@ public class LDAPConstraints implements Cloneable {
      *
      * @return The server controls.
      *
+     * This method has been renamed to getControls
+     * in the IETF draft 17 of the Java LDAP API
+     * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
+     * from the LDAP Classes for Java API in the fall of 2003.
+     *
      * @deprecated replaced by {@link #getControls()}. This method
-     * has been renamed to getControls in IETF draft 17 of the Java LDAP
-     * API (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-     * in fall of 2003.
      */
     public LDAPControl[] getServerControls()
     {
@@ -445,10 +447,12 @@ public class LDAPConstraints implements Cloneable {
      *
      * @param control     A single control to be sent to the server.
      *
-     * @deprecated replaced by {@link #setControls(LDAPControl)}. This method
-     * has been renamed to setControls in IETF draft 17 of the Java LDAP
-     * API (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-     * in fall of 2003.
+     * This method has been renamed to setControls
+     * in the IETF draft 17 of the Java LDAP API
+     * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
+     * from the LDAP Classes for Java API in the fall of 2003.
+     *
+     * @deprecated replaced by {@link #setControls(LDAPControl)}.
      */
     public void setServerControls(LDAPControl control)
     {
@@ -461,10 +465,12 @@ public class LDAPConstraints implements Cloneable {
      *
      * @param controls       An array of controls to be sent to the server.
      *
-     * @deprecated replaced by {@link #setControls(LDAPControl[])}. This method
-     * has been renamed to setControls in IETF draft 17 of the Java LDAP
-     * API (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-     * in fall of 2003.
+     * This method has been renamed to getControls
+     * in the IETF draft 17 of the Java LDAP API
+     * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
+     * from the LDAP Classes for Java API in the fall of 2003.
+     *
+     * @deprecated replaced by {@link #setControls(LDAPControl[])}.
      */
     public void setServerControls(LDAPControl[] controls)
     {

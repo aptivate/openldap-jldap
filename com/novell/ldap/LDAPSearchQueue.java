@@ -1,7 +1,7 @@
 /* **************************************************************************
  * $OpenLDAP$
  *
- * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
+ * Copyright (C) 1999 - 2002 Novell, Inc. All Rights Reserved.
  *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
@@ -24,8 +24,7 @@ import com.novell.ldap.client.MessageAgent;
  * @see LDAPConnection#search
  * @see LDAPResponseQueue
  *
- *  <p>Sample Code: <a href="http://developer.novell.com/ndk/doc/samplecode/
- *jldap_sample/asynchronous/Searchas.java.html">Searchas.java</p>
+ *  <p>Sample Code: <a href="http://developer.novell.com/ndk/doc/samplecode/jldap_sample/asynchronous/Searchas.java.html">Searchas.java</p>
  */
 public class LDAPSearchQueue extends LDAPSearchListener
 {
@@ -40,7 +39,7 @@ public class LDAPSearchQueue extends LDAPSearchListener
         super( agent);
         return;
     }
-    
+
     /**
      * Returns the name used for debug
      *

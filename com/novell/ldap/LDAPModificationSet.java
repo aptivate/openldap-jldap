@@ -1,7 +1,7 @@
 /* **************************************************************************
  * $OpenLDAP$
  *
- * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
+ * Copyright (C) 1999 - 2002 Novell, Inc. All Rights Reserved.
  *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
@@ -20,13 +20,15 @@ import com.novell.ldap.client.ArrayList;
 /**
  * A set of {@link LDAPModification} objects.
  *
- *  @deprecated replaced by {@link LDAPModification}[].  This class
- *  has been removed as of draft 17 of the Java LDAP API
- *  (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
- *  from the Java LDAP API jar file in fall of 2003.
+ * <p>This class has been removed as of draft 17 of the Java LDAP API
+ * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
+ * from the LDAP Classes for JavaAPI in the fall of 2003.</p>
  *
  * @see LDAPModification
  * @see LDAPConnection#modify(String, LDAPModification[])
+ *
+ *  @deprecated replaced by {@link LDAPModification}[], i.e., an array of
+ * {@link LDAPModification} objects.
  */
 public class LDAPModificationSet {
 

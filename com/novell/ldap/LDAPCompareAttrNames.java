@@ -1,7 +1,7 @@
 /* **************************************************************************
  * $OpenLDAP$
  *
- * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
+ * Copyright (C) 1999 - 2002 Novell, Inc. All Rights Reserved.
  *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
@@ -245,10 +245,10 @@ public class LDAPCompareAttrNames
    }
 
    /**
-    *  @deprecated replaced by {@link #compare }.  This method
-    *  has been replaced in IETF draft 18 of the Java LDAP API
-    *  (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-    *  in fall of 2003.
+    * This method is replaced in the IETF draft 18 of the
+    * Java LDAP API (draft-ietf-ldapext-ldap-java-api-xx.txt), and will
+    * be removed from the LDAP Classes for Java API in the fall of 2003.
+    * @deprecated replaced by {@link #compare }.
     */
    public boolean isGreater (LDAPEntry entry1, LDAPEntry entry2) {
        return (compare(entry1, entry2) > 0) ? true : false;

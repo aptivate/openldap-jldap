@@ -1,7 +1,7 @@
 /* **************************************************************************
  * $OpenLDAP$
  *
- * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
+ * Copyright (C) 1999 - 2002 Novell, Inc. All Rights Reserved.
  *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
@@ -55,51 +55,55 @@ import java.util.Locale;
  *  of a server response, can be identified as <tt>instanceof
  *  {@link LDAPLocalException}</tt>
  *
- *  <p>The following lists the standard LDAP result codes.
+ *  <p>The following table lists the standard LDAP result codes.
  *  See RFC2251 for a discussion of the meanings of the result codes.
  *  The corresponding ASN.1 definition from RFC2251 is provided in parentheses.</p>
- *
- *   <li> ADMIN_LIMIT_EXCEEDED (adminLimitExceeded)</li>
- *   <li> AFFECTS_MULTIPLE_DSAS (affectsMultipleDSAs</li>
- *   <li> ALIAS_DEREFERENCING_PROBLEM (aliasDereferencingProblem)</li>
- *   <li> ALIAS_PROBLEM (aliasProblem)</li>
- *   <li> ATTRIBUTE_OR_VALUE_EXISTS (AttributeOrValueExists)</li>
- *   <li> AUTH_METHOD_NOT_SUPPORTED (authMethodNotSupported)</li>
- *   <li> BUSY (busy)</li>
- *   <li> COMPARE_FALSE (compareFalse)</li>
- *   <li> COMPARE_TRUE (compareTrue)</li>
- *   <li> CONFIDENTIALITY_REQUIRED (confidentialityRequired)</li>
- *   <li> CONSTRAINT_VIOLATION (constraintViolation)</li>
- *   <li> ENTRY_ALREADY_EXISTS (entryAlreadyExists)</li>
- *   <li> INAPPROPRIATE_AUTHENTICATION (inappropriateAuthentication)</li>
- *   <li> INAPPROPRIATE_MATCHING (inappropriateMatching)</li>
- *   <li> INSUFFICIENT_ACCESS_RIGHTS (insufficientAccessRights)</li>
- *   <li> INVALID_ATTRIBUTE_SYNTAX (invalidAttributeSyntax)</li>
- *   <li> INVALID_CREDENTIALS (invalidCredentials)</li>
- *   <li> INVALID_DN_SYNTAX (invalidDNSyntax)</li>
- *   <li> IS_LEAF (isLeaf)</li>
- *   <li> LOOP_DETECT (loopDetect)</li>
- *   <li> NAMING_VIOLATION (namingViolation)</li>
- *   <li> NO_SUCH_ATTRIBUTE (noSuchAttribute)</li>
- *   <li> NO_SUCH_OBJECT (noSuchObject)</li>
- *   <li> NOT_ALLOWED_ON_NONLEAF (notAllowedOnNonLeaf)</li>
- *   <li> NOT_ALLOWED_ON_RDN (notAllowedOnRDN)</li>
- *   <li> OBJECT_CLASS_MODS_PROHIBITED (objectClassModsProhibited)</li>
- *   <li> OBJECT_CLASS_VIOLATION (objectClassViolation)</li>
- *   <li> OPERATIONS_ERROR (operationsError)</li>
- *   <li> OTHER (other)</li>
- *   <li> PROTOCOL_ERROR (protocolError)</li>
- *   <li> REFERRAL (referral)</li>
- *   <li> SASL_BIND_IN_PROGRESS (saslBindInProgress)</li>
- *   <li> SIZE_LIMIT_EXCEEDED (sizeLimitExceeded)</li>
- *   <li> STRONG_AUTH_REQUIRED (strongAuthRequired)</li>
- *   <li> SUCCESS (success)</li>
- *   <li> TIME_LIMIT_EXCEEDED (timeLimitExceeded)</li>
- *   <li> UNAVAILABLE (unavailable)</li>
- *   <li> UNAVAILABLE_CRITICAL_EXTENSION (unavailableCriticalExtension)</li>
- *   <li> UNDEFINED_ATTRIBUTE_TYPE (undefinedAttributeType)</li>
- *   <li> UNWILLING_TO_PERFORM (unwillingToPerform)</li>
- *
+ *  <table>
+ *   <tr>
+ *   <td><b>Result Code</b>
+ *   <td><b>Value</b>
+ *   </tr>
+ *   <tr><td> ADMIN_LIMIT_EXCEEDED (adminLimitExceeded)</td><td>11</td></tr>
+ *   <tr><td> AFFECTS_MULTIPLE_DSAS (affectsMultipleDSAs</td><td>71</td></tr>
+ *   <tr><td> ALIAS_DEREFERENCING_PROBLEM (aliasDereferencingProblem)</td><td>36</td></tr>
+ *   <tr><td> ALIAS_PROBLEM (aliasProblem)</td><td>33</td></tr>
+ *   <tr><td> ATTRIBUTE_OR_VALUE_EXISTS (AttributeOrValueExists)</td><td>20</td></tr>
+ *   <tr><td> AUTH_METHOD_NOT_SUPPORTED (authMethodNotSupported)</td><td>7</td></tr>
+ *   <tr><td> BUSY (busy)</td><td>51</td></tr>
+ *   <tr><td> COMPARE_FALSE (compareFalse)</td><td>5</td></tr>
+ *   <tr><td> COMPARE_TRUE (compareTrue)</td><td>6</td></tr>
+ *   <tr><td> CONFIDENTIALITY_REQUIRED (confidentialityRequired)</td><td>13</td></tr>
+ *   <tr><td> CONSTRAINT_VIOLATION (constraintViolation)</td><td>19</td></tr>
+ *   <tr><td> ENTRY_ALREADY_EXISTS (entryAlreadyExists)</td><td>68</td></tr>
+ *   <tr><td> INAPPROPRIATE_AUTHENTICATION (inappropriateAuthentication)</td><td>48</td></tr>
+ *   <tr><td> INAPPROPRIATE_MATCHING (inappropriateMatching)</td><td>18</td></tr>
+ *   <tr><td> INSUFFICIENT_ACCESS_RIGHTS (insufficientAccessRights)</td><td>50</td></tr>
+ *   <tr><td> INVALID_ATTRIBUTE_SYNTAX (invalidAttributeSyntax)</td><td>21</td></tr>
+ *   <tr><td> INVALID_CREDENTIALS (invalidCredentials)</td><td>49</td></tr>
+ *   <tr><td> INVALID_DN_SYNTAX (invalidDNSyntax)</td><td>34</td></tr>
+ *   <tr><td> IS_LEAF (isLeaf)</td><td>35</td></tr>
+ *   <tr><td> LOOP_DETECT (loopDetect)</td><td>54</td></tr>
+ *   <tr><td> NAMING_VIOLATION (namingViolation)</td><td>64</td></tr>
+ *   <tr><td> NO_SUCH_ATTRIBUTE (noSuchAttribute)</td><td>16</td></tr>
+ *   <tr><td> NO_SUCH_OBJECT (noSuchObject)</td><td>32</td></tr>
+ *   <tr><td> NOT_ALLOWED_ON_NONLEAF (notAllowedOnNonLeaf)</td><td>66</td></tr>
+ *   <tr><td> NOT_ALLOWED_ON_RDN (notAllowedOnRDN)</td><td>67</td></tr>
+ *   <tr><td> OBJECT_CLASS_MODS_PROHIBITED (objectClassModsProhibited)</td><td>69</td></tr>
+ *   <tr><td> OBJECT_CLASS_VIOLATION (objectClassViolation)</td><td>65</td></tr>
+ *   <tr><td> OPERATIONS_ERROR (operationsError)</td><td>1</td></tr>
+ *   <tr><td> OTHER (other)</td><td>80</td></tr>
+ *   <tr><td> PROTOCOL_ERROR (protocolError)</td><td>2</td></tr>
+ *   <tr><td> REFERRAL (referral)</td><td>10</td></tr>
+ *   <tr><td> SASL_BIND_IN_PROGRESS (saslBindInProgress)</td><td>14</td></tr>
+ *   <tr><td> SIZE_LIMIT_EXCEEDED (sizeLimitExceeded)</td><td>4</td></tr>
+ *   <tr><td> STRONG_AUTH_REQUIRED (strongAuthRequired)</td><td>8</td></tr>
+ *   <tr><td> SUCCESS (success)</td><td>0</td></tr>
+ *   <tr><td> TIME_LIMIT_EXCEEDED (timeLimitExceeded)</td><td>3</td></tr>
+ *   <tr><td> UNAVAILABLE (unavailable)</td><td>52</td></tr>
+ *   <tr><td> UNAVAILABLE_CRITICAL_EXTENSION (unavailableCriticalExtension)</td><td>12</td></tr>
+ *   <tr><td> UNDEFINED_ATTRIBUTE_TYPE (undefinedAttributeType)</td><td>17</td></tr>
+ *   <tr><td> UNWILLING_TO_PERFORM (unwillingToPerform)</td><td>53</td></tr>
+ *  </table>
  *  <p>Local errors, resulting from actions other than an operation on a
  *  server.</p>
  *
@@ -540,7 +544,7 @@ public class LDAPException extends Exception
   /////////////////////////////////////////////////////////////////////////////
   // Local Errors, resulting from actions other than an operation on a server
   /////////////////////////////////////////////////////////////////////////////
-  
+
   /**
    * Indicates that the LDAP libraries cannot establish an initial connection
    * with the LDAP server. Either the LDAP server is down or the specified
@@ -613,7 +617,7 @@ public class LDAPException extends Exception
    *
    * This parameter has been removed in IETF draft 17 of the Java LDAP API
    * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-   * from the API in the fall of 2003.
+   * from the LDAP Classes for Java API in the fall of 2003.
    *
    * @deprecated No longer used - invalid parameters generate a RuntimeException
    */
@@ -728,7 +732,7 @@ public class LDAPException extends Exception
       super();
       return;
    }
-   
+
    /**
     * <p>Constructs an exception with a detailed message obtained from the
     * specified <code>MessageOrKey</code> String, the result code,
@@ -761,7 +765,7 @@ public class LDAPException extends Exception
     * <p>The String is used either as a message key to obtain a localized
     * messsage from ExceptionMessages, or if there is no key in the
     * resource matching the text, it is used as the detailed message itself.</p>
-    * 
+    *
     * <p>The message in the default locale is built with the supplied arguments,
     * which are saved to be used for building messages for other locales.</p>
     *
@@ -1110,12 +1114,12 @@ public class LDAPException extends Exception
    {
       return resultCodeToString();
    }
-    
+
    public String getLocalizedMessage()
    {
       return resultCodeToString();
    }
-    
+
    /**
     * returns a string of information about the exception and the
     * the nested exceptions, if any.
@@ -1124,20 +1128,20 @@ public class LDAPException extends Exception
    {
        return getExceptionString("LDAPException");
    }
-   
+
    /**
     * builds a string of information about the exception and the
     * the nested exceptions, if any.
     *
     * @param exception The name of the exception class
     */
-   /* package */ 
+   /* package */
    String getExceptionString( String exception)
    {
       String tmsg;
-        
+
         // Format the basic exception information
-        
+
         // Craft a string from the resouce file
         String msg = ResourcesHandler.getMessage("TOSTRING",
                                                  new Object[]
@@ -1149,7 +1153,7 @@ public class LDAPException extends Exception
         if( msg.equalsIgnoreCase( "TOSTRING")) {
             msg = exception + ": (" + resultCode + ") " + resultCodeToString();
         }
-        
+
         // Add server message
         if( serverMessage != null) {
             tmsg = ResourcesHandler.getMessage("SERVER_MSG",
@@ -1159,12 +1163,12 @@ public class LDAPException extends Exception
                                                 });
             // If found no string from resource file, use a default string
             if( tmsg.equalsIgnoreCase( "SERVER_MSG")) {
-                tmsg = exception + ": Server Message: " + serverMessage; 
+                tmsg = exception + ": Server Message: " + serverMessage;
             }
-            
+
             msg = msg + '\n' + tmsg;
         }
-        
+
         // Add Matched DN message
         if( matchedDN != null) {
             tmsg = ResourcesHandler.getMessage("MATCHED_DN",
@@ -1174,21 +1178,21 @@ public class LDAPException extends Exception
                                                 });
             // If found no string from resource file, use a default string
             if( tmsg.equalsIgnoreCase( "MATCHED_DN")) {
-                tmsg = exception + ": Matched DN: " + matchedDN; 
+                tmsg = exception + ": Matched DN: " + matchedDN;
             }
-            
+
             msg = msg + '\n' + tmsg;
         }
-        
+
         if( rootException != null) {
                 msg = msg + '\n' + rootException.toString();
         }
         return msg;
     }
-    
-    ///////////////////////////////////////////////////////////////////////////    
+
+    ///////////////////////////////////////////////////////////////////////////
     // Deprecated APIs, will be removed in the Sep 2003 NDK
-    ///////////////////////////////////////////////////////////////////////////    
+    ///////////////////////////////////////////////////////////////////////////
 
    /**
     * Constructs an exception with a detailed message obtained from the
@@ -1196,7 +1200,7 @@ public class LDAPException extends Exception
     *
     * <p>This method has been removed in IETF draft 17 of the Java LDAP API
     * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-    * from the API in the fall of 2003.</p>
+    * from the LDAP Classes for Java API in the fall of 2003.</p>
     *
     * @deprecated replaced by {@link #LDAPException(java.lang.String,int,java.lang.String)}.
     */
@@ -1205,13 +1209,13 @@ public class LDAPException extends Exception
       this( messageOrKey, null, resultCode, null, null, null);
       return;
    }
-   
+
    /**
     * Constructs an exception with a detailed message obtained from the
     * specified <code>MessageOrKey</code> String and modifying arguments.
     * Additional parameters specify the result code.
     *
-    * <p>This method will be removed from the API in the fall of 2003.</p>
+    * <p>This method will be removed from the LDAP Classes for Java API in the fall of 2003.</p>
     *
     * @deprecated replaced by {@link #LDAPException(java.lang.String,java.lang.Object[],int,java.lang.String)}.
     */
@@ -1228,10 +1232,10 @@ public class LDAPException extends Exception
     * specified <code>MessageOrKey</code> String.
     * Additional parameters specify the result code and a rootException which
     * is the underlying cause of an error on the client.
-    * 
+    *
     * <p>This method has been removed in IETF draft 17 of the Java LDAP API
     * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-    * from the API in the fall of 2003.</p>
+    * from the LDAP Classes for Java API in the fall of 2003.</p>
     *
     * @deprecated replaced by {@link #LDAPException(java.lang.String,int,java.lang.String,java.lang.Throwable)}.
     */
@@ -1250,7 +1254,7 @@ public class LDAPException extends Exception
     * and a rootException which is the underlying cause of an error
     * on the client.
     *
-    * <p>This method will be removed from the API in the fall of 2003.</p>
+    * <p>This method will be removed from the LDAP Classes for Java API in the fall of 2003.</p>
     *
     * @deprecated replaced by {@link #LDAPException(java.lang.String,java.lang.Object[],int,java.lang.String,java.lang.Throwable)}.
     */
@@ -1269,7 +1273,7 @@ public class LDAPException extends Exception
     *
     * <p>This method has been removed in IETF draft 17 of the Java LDAP API
     * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-    * from the API in the fall of 2003.</p>
+    * from the LDAP Classes for Java API in the fall of 2003.</p>
     *
     * @deprecated replaced by {@link #resultCodeToString()}.
     */
@@ -1284,7 +1288,7 @@ public class LDAPException extends Exception
     *
     * <p>This method has been removed in IETF draft 17 of the Java LDAP API
     * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-    * from the API in the fall of 2003.</p>
+    * from the LDAP Classes for Java API in the fall of 2003.</p>
     *
     * @deprecated replaced by {@link #resultCodeToString(int)}.
     */
@@ -1300,7 +1304,7 @@ public class LDAPException extends Exception
     *
     * <p>This method has been removed in IETF draft 17 of the Java LDAP API
     * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-    * from the API in the fall of 2003.</p>
+    * from the LDAP Classes for Java API in the fall of 2003.</p>
     *
     * @deprecated replaced by {@link #resultCodeToString(java.util.Locale)}.
     */
@@ -1316,7 +1320,7 @@ public class LDAPException extends Exception
     *
     * <p>This method has been removed in IETF draft 17 of the Java LDAP API
     * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-    * from the API in the fall of 2003.</p>
+    * from the LDAP Classes for Java API in the fall of 2003.</p>
     *
     * @deprecated replaced by {@link #resultCodeToString(int, java.util.Locale)}.
     */
@@ -1330,7 +1334,7 @@ public class LDAPException extends Exception
     *
     * This method has been removed in IETF draft 17 of the Java LDAP API
     * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-    * from the API in the fall of 2003.
+    * from the LDAP Classes for Java API in the fall of 2003.
     *
     * @deprecated replaced by {@link #getResultCode()}.
     */

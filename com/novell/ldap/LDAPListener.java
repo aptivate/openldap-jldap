@@ -1,7 +1,7 @@
 /* **************************************************************************
  * $OpenLDAP$
  *
- * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
+ * Copyright (C) 1999 - 2002 Novell, Inc. All Rights Reserved.
  *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
@@ -18,14 +18,16 @@ package com.novell.ldap;
 import com.novell.ldap.client.*;
 
 /**
- *  @deprecated replaced by {@link LDAPMessageQueue}.  This interface
+ *  This interface
  *  has been renamed to LDAPMessageQueue in IETF draft 17 of the Java LDAP API
  *  (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
- *  in fall of 2003.
+ *  in the fall of 2003.
  *
  *  <p>The common interface for {@link LDAPResponseListener} and
  *  {@link LDAPSearchListener}.  It represents a queue of incoming
  *  asynchronous messages from the server.</p>
+ *
+ *  @deprecated replaced by {@link LDAPMessageQueue}.
  */
 public interface LDAPListener
 {

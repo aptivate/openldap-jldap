@@ -28,15 +28,14 @@ import com.novell.ldap.client.ArrayEnumeration;
  *  An LDAPUrl object can be passed to LDAPConnection.search to retrieve
  *  search results.
  *
- *  <p>Sample Code: <a href="http://developer.novell.com/ndk/doc/samplecode/
- *jldap_sample/jldap_sample/UrlSearch.java.html">UrlSearch.java</p>
+ *  <p>Sample Code: <a href="http://developer.novell.com/ndk/doc/samplecode/jldap_sample/jldap_sample/UrlSearch.java.html">UrlSearch.java</p>
  *
  * @see LDAPConnection#search
  */
 public class LDAPUrl implements java.lang.Cloneable {
 
-	static private final String DEFAULT_FILTER = "(objectClass=*)";
-	static private final int    DEFAULT_SCOPE  = LDAPConnection.SCOPE_BASE;
+     static private final String DEFAULT_FILTER = "(objectClass=*)";
+     static private final int    DEFAULT_SCOPE  = LDAPConnection.SCOPE_BASE;
     // Broken out parts of the URL
     private boolean    secure = false;               // URL scheme ldap/ldaps
     private boolean    ipV6 = false;                 // TCP/IP V6
@@ -81,10 +80,10 @@ public class LDAPUrl implements java.lang.Cloneable {
     public LDAPUrl(String host,
                    int port,
                    String dn) {
-		this.host = host;
-		this.port = port;
-		this.dn = dn;
-		return;
+          this.host = host;
+          this.port = port;
+          this.dn = dn;
+          return;
     }
 
     /**
@@ -129,14 +128,14 @@ public class LDAPUrl implements java.lang.Cloneable {
                    int scope,
                    String filter,
                    String extensions[]) {
-		this.host = host;
-		this.port = port;
-		this.dn = dn;
-		this.attrs = (String[])attrNames.clone();
-		this.scope = scope;
-		this.filter = filter;
+        this.host = host;
+        this.port = port;
+        this.dn = dn;
+        this.attrs = (String[])attrNames.clone();
+        this.scope = scope;
+        this.filter = filter;
         this.extensions = (String[])extensions.clone();
-		return;
+        return;
     }
 
     /**
@@ -190,14 +189,14 @@ public class LDAPUrl implements java.lang.Cloneable {
                    boolean secure)
     {
         this.host = host;
-		this.port = port;
-		this.dn = dn;
-		this.attrs = (String[])attrNames;
-		this.scope = scope;
-		this.filter = filter;
+        this.port = port;
+        this.dn = dn;
+        this.attrs = (String[])attrNames;
+        this.scope = scope;
+        this.filter = filter;
         this.extensions = (String[])extensions.clone();
-		this.secure = secure;
-		return;
+        this.secure = secure;
+        return;
     }
 
     /**
@@ -229,53 +228,53 @@ public class LDAPUrl implements java.lang.Cloneable {
         if( Debug.LDAP_DEBUG)
             Debug.trace( Debug.urlParse, "decode(" + URLEncoded + ")");
 
-		int searchStart = 0;
-		int fieldStart;
+          int searchStart = 0;
+          int fieldStart;
 
         fieldStart = URLEncoded.indexOf("%", searchStart);
-		// Return now if no encoded data
-		if( fieldStart < 0 ) {
-			return URLEncoded;
-		}
+          // Return now if no encoded data
+          if( fieldStart < 0 ) {
+               return URLEncoded;
+          }
 
-		// Decode the %HH value and copy to new string buffer
-		int fieldEnd = 0;	// end of previous field
-		int value;
-		int dataLen = URLEncoded.length();
+          // Decode the %HH value and copy to new string buffer
+          int fieldEnd = 0;   // end of previous field
+          int value;
+          int dataLen = URLEncoded.length();
 
-		StringBuffer decoded = new StringBuffer( dataLen );
+          StringBuffer decoded = new StringBuffer( dataLen );
 
-		while( true ) {
-			if( fieldStart > (dataLen-3) ) {
-	            throw new MalformedURLException(
-	            "LDAPUrl.decode: must be two hex characters following escape character '%'");
-			}
-			if( fieldStart < 0 )
-				fieldStart = dataLen;
-			// Copy to string buffer from end of last field to start of next
-			decoded.append( URLEncoded.substring(fieldEnd, fieldStart) );
-			fieldStart += 1;
-			if( fieldStart >= dataLen)
-				break;
-			fieldEnd = fieldStart + 2;
-			try {
-				decoded.append(
-					(char)Integer.parseInt(
-						URLEncoded.substring( fieldStart, fieldEnd ), 16) );
-			} catch ( NumberFormatException ex ) {
-	            throw new MalformedURLException(
-		            "LDAPUrl.decode: error converting hex characters to integer \""
-	            	+ ex.getMessage() + "\"");
-			}
-			searchStart = fieldEnd;
-			if( searchStart == dataLen )
-				break;
-	        fieldStart = URLEncoded.indexOf("%", searchStart);
-		}
+          while( true ) {
+               if( fieldStart > (dataLen-3) ) {
+                 throw new MalformedURLException(
+                 "LDAPUrl.decode: must be two hex characters following escape character '%'");
+               }
+               if( fieldStart < 0 )
+                    fieldStart = dataLen;
+               // Copy to string buffer from end of last field to start of next
+               decoded.append( URLEncoded.substring(fieldEnd, fieldStart) );
+               fieldStart += 1;
+               if( fieldStart >= dataLen)
+                    break;
+               fieldEnd = fieldStart + 2;
+               try {
+                    decoded.append(
+                         (char)Integer.parseInt(
+                              URLEncoded.substring( fieldStart, fieldEnd ), 16) );
+               } catch ( NumberFormatException ex ) {
+                 throw new MalformedURLException(
+                      "LDAPUrl.decode: error converting hex characters to integer \""
+                    + ex.getMessage() + "\"");
+               }
+               searchStart = fieldEnd;
+               if( searchStart == dataLen )
+                    break;
+             fieldStart = URLEncoded.indexOf("%", searchStart);
+          }
 
         if( Debug.LDAP_DEBUG)
             Debug.trace( Debug.urlParse, "decode returns(" + decoded + ")");
-		return( decoded.toString() );
+          return( decoded.toString() );
     }
 
     /**
@@ -326,7 +325,7 @@ public class LDAPUrl implements java.lang.Cloneable {
     * @return An array of attribute names in the URL.
     */
     public String[] getAttributeArray() {
-		return attrs;
+          return attrs;
     }
 
     /**
@@ -344,7 +343,7 @@ public class LDAPUrl implements java.lang.Cloneable {
     * @return The base distinguished name specified in the URL.
     */
     public String getDN() {
-		return dn;
+          return dn;
     }
 
     /**
@@ -365,7 +364,7 @@ public class LDAPUrl implements java.lang.Cloneable {
     * @return The search filter.
     */
     public String getFilter() {
-		return filter;
+        return filter;
     }
 
     /**
@@ -374,7 +373,7 @@ public class LDAPUrl implements java.lang.Cloneable {
     * @return The host name specified in the URL.
     */
     public String getHost() {
-		return host;
+        return host;
     }
 
     /**
@@ -384,18 +383,18 @@ public class LDAPUrl implements java.lang.Cloneable {
     */
     public int getPort()
     {
-		return port;
+          return port;
     }
 
     /**
     * Returns the depth of search. It returns one of the following from
-	* LDAPConnection: SCOPE_BASE, SCOPE_ONE, or SCOPE_SUB.
+     * LDAPConnection: SCOPE_BASE, SCOPE_ONE, or SCOPE_SUB.
     *
     * @return The search scope.
     */
     public int getScope()
     {
-		return scope;
+          return scope;
     }
 
     /**
@@ -415,76 +414,76 @@ public class LDAPUrl implements java.lang.Cloneable {
     */
     public String toString()
     {
-		StringBuffer url = new StringBuffer( 256 );
-		// Scheme
-		if( secure ) {
-			url.append( "ldaps://" );
-		} else {
-			url.append( "ldap://" );
-		}
-		// Host:port/dn
-		if( ipV6 ) {
-			url.append( "[" );
-		}
-		url.append( host + ":" + port + "/" + dn );
+          StringBuffer url = new StringBuffer( 256 );
+          // Scheme
+          if( secure ) {
+               url.append( "ldaps://" );
+          } else {
+               url.append( "ldap://" );
+          }
+          // Host:port/dn
+          if( ipV6 ) {
+               url.append( "[" );
+          }
+          url.append( host + ":" + port + "/" + dn );
 
-		if( (attrs == null) && (scope == DEFAULT_SCOPE) &&
-				(filter == null) && (extensions == null) ) {
-			return url.toString();
-		}
+          if( (attrs == null) && (scope == DEFAULT_SCOPE) &&
+                    (filter == null) && (extensions == null) ) {
+               return url.toString();
+          }
 
-		// attributes
-		url.append( "?" );
-		if( attrs != null) {  //should we check also for attrs != "*"
-			for( int i = 0; i < attrs.length; i++ ) {
-				url.append( attrs[i]);
-				if( i < (attrs.length - 1)) {
-					url.append( "," );
-				}
-			}
-		}
+          // attributes
+          url.append( "?" );
+          if( attrs != null) {  //should we check also for attrs != "*"
+               for( int i = 0; i < attrs.length; i++ ) {
+                    url.append( attrs[i]);
+                    if( i < (attrs.length - 1)) {
+                         url.append( "," );
+                    }
+               }
+          }
 
-		if( (scope == DEFAULT_SCOPE) &&
-				(filter == null) && (extensions == null) ) {
-			return url.toString();
-		}
+          if( (scope == DEFAULT_SCOPE) &&
+                    (filter == null) && (extensions == null) ) {
+               return url.toString();
+          }
 
-		// scope
-		url.append( "?" );
-		if( scope != DEFAULT_SCOPE ) {
-			if( scope == LDAPConnection.SCOPE_ONE) {
-				url.append( "one" );
-			} else {
-				url.append( "sub" );
-			}
-		}
+          // scope
+          url.append( "?" );
+          if( scope != DEFAULT_SCOPE ) {
+               if( scope == LDAPConnection.SCOPE_ONE) {
+                    url.append( "one" );
+               } else {
+                    url.append( "sub" );
+               }
+          }
 
-		if( (filter == null) && (extensions == null) ) {
-			return url.toString();
-		}
+          if( (filter == null) && (extensions == null) ) {
+               return url.toString();
+          }
 
-		// filter
-		if( filter == null ) {
-			url.append( "?" );
-		} else {
-			url.append( "?" + getFilter() );
-		}
+          // filter
+          if( filter == null ) {
+               url.append( "?" );
+          } else {
+               url.append( "?" + getFilter() );
+          }
 
-		if( extensions == null) {
-			return url.toString();
-		}
+          if( extensions == null) {
+               return url.toString();
+          }
 
-		// extensions
-		url.append( "?" );
-		if( extensions != null) {
-			for( int i = 0; i < extensions.length; i++ ) {
-				url.append( extensions[i]);
-				if( i < (extensions.length - 1) ) {
-					url.append( "," );
-				}
-			}
-		}
-		return url.toString();
+          // extensions
+          url.append( "?" );
+          if( extensions != null) {
+               for( int i = 0; i < extensions.length; i++ ) {
+                    url.append( extensions[i]);
+                    if( i < (extensions.length - 1) ) {
+                         url.append( "," );
+                    }
+               }
+          }
+          return url.toString();
     }
 
     private String[] parseList( String listStr,    // input String
@@ -576,7 +575,7 @@ public class LDAPUrl implements java.lang.Cloneable {
         // Find where host:port ends and dn begins
         int dnStart = url.indexOf("/", scanStart);
         int hostPortEnd = scanEnd;
-		boolean novell = false;
+          boolean novell = false;
         if( dnStart < 0) {
             /*
              * Kludge. check for ldap://111.222.333.444:389??cn=abc,o=company
@@ -591,7 +590,7 @@ public class LDAPUrl implements java.lang.Cloneable {
                 if( url.charAt( dnStart+1) == '?') {
                     hostPortEnd = dnStart;
                     dnStart += 1;
-					novell = true;
+                         novell = true;
                     if( Debug.LDAP_DEBUG)
                         Debug.trace(  Debug.urlParse, "parseURL: wierd novell syntax found");
                 } else {
@@ -655,7 +654,7 @@ public class LDAPUrl implements java.lang.Cloneable {
         if( Debug.LDAP_DEBUG)
             Debug.trace(  Debug.urlParse, "parseURL: dn " + dn);
         scanStart = attrsStart + 1;
-		// Wierd novell syntax can have nothing beyond the dn
+          // Wierd novell syntax can have nothing beyond the dn
         if( (scanStart >= scanEnd) || (attrsStart < 0) || novell )
             return;
 
@@ -754,11 +753,12 @@ public class LDAPUrl implements java.lang.Cloneable {
 
     /*****************Deprecated methods removed in draft 18************/
     /**
-    *  @deprecated replaced by {@link #LDAPUrl(String, int, String, String[],
-    * int, String, String[] extensions)} This method has been
-    *  removed in IETF draft 18 of the Java LDAP API
+    *  This method has been removed in IETF draft 18 of the Java LDAP API
     *  (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
     *  from the API in the fall of 2003.
+    *
+    *  @deprecated replaced by {@link #LDAPUrl(String, int, String, String[],
+    * int, String, String[] extensions)}.
     */
     public LDAPUrl(String host,
                    int port,
@@ -766,21 +766,22 @@ public class LDAPUrl implements java.lang.Cloneable {
                    String attrNames[],
                    int scope,
                    String filter) {
-		this.host = host;
-		this.port = port;
-		this.dn = dn;
-		this.attrs = (String[])attrNames.clone();
-		this.scope = scope;
-		this.filter = filter;
-		return;
+        this.host = host;
+        this.port = port;
+        this.dn = dn;
+        this.attrs = (String[])attrNames.clone();
+        this.scope = scope;
+        this.filter = filter;
+        return;
     }
 
     /**
-    *  @deprecated replaced by {@link #LDAPUrl(String, int, String, String[],
-    * int, String, String[] extensions, boolean isSecure)} This method has been
-    *  removed in IETF draft 18 of the Java LDAP API
+    *  This method has been removed in IETF draft 18 of the Java LDAP API
     *  (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
     *  from the API in the fall of 2003.
+    *
+    *  @deprecated replaced by {@link #LDAPUrl(String, int, String, String[],
+    * int, String, String[] extensions, boolean isSecure)}.
     */
     public LDAPUrl(String host,
                    int port,
@@ -791,20 +792,21 @@ public class LDAPUrl implements java.lang.Cloneable {
                    boolean secure)
     {
         this.host = host;
-		this.port = port;
-		this.dn = dn;
-		this.attrs = (String[])attrNames.clone();
-		this.scope = scope;
-		this.filter = filter;
-		this.secure = secure;
-		return;
+        this.port = port;
+        this.dn = dn;
+        this.attrs = (String[])attrNames.clone();
+        this.scope = scope;
+        this.filter = filter;
+        this.secure = secure;
+        return;
     }
 
     /**
-     *  @deprecated replaced by {@link #toString()} This method has been
-     *  removed in IETF draft 18 of the Java LDAP API
+     *  This method has been removed in IETF draft 18 of the Java LDAP API
      *  (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
      *  from the API in the fall of 2003.
+     *
+     *  @deprecated replaced by {@link #toString()}.
      */
     public String getUrl(){
         return toString();

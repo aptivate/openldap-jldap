@@ -1,7 +1,7 @@
 /* **************************************************************************
  * $OpenLDAP$
  *
- * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
+ * Copyright (C) 1999 - 2002 Novell, Inc. All Rights Reserved.
  *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
@@ -58,12 +58,12 @@ public abstract class LDAPSchemaElement extends LDAPAttribute {
    /**
     * The OID for the schema element.
     */
-	protected String oid = "";
+     protected String oid = "";
 
    /**
     * The description for the schema element.
     */
-	protected String description = "";
+     protected String description = "";
 
    /**
     * If present, indicates that the element is obsolete, no longer in use in
@@ -78,7 +78,7 @@ public abstract class LDAPSchemaElement extends LDAPAttribute {
     * <p> These optional qualifiers begin with "X-"; the Novell eDirectory
     * specific qualifiers begin with "X-NDS". </p>
     */
-	protected String[] qualifier = {""};
+     protected String[] qualifier = {""};
 
    /**
    * A hash table that contains the vendor-specific qualifiers (for example,
@@ -245,14 +245,15 @@ public abstract class LDAPSchemaElement extends LDAPAttribute {
     }
 
     // #######################################################################
-    //   The following are deprecated and will be removed in fall of 2003
+    //   The following are deprecated and will be removed in the fall of 2003
     // #######################################################################
 
    /**
-     *  @deprecated replaced by {@link #getNames}.  This method
-     *  has been replaced with getNames in IETF draft 17 of the Java LDAP API
-     *  (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-     *  in fall of 2003.
+     *  This method has been replaced with getNames in IETF
+     *  draft 17 of the Java LDAP API (draft-ietf-ldapext-ldap-java-api-xx.txt)
+     *  and will be removed from the LDAP Classes for Java API in the fall of 2003.
+     *
+     *  @deprecated replaced by {@link #getNames}.
      */
     public String[] getAliases()
     {
@@ -265,10 +266,11 @@ public abstract class LDAPSchemaElement extends LDAPAttribute {
         return null;
     }
     /**
-     * @deprecated replaced by {@link #toString}.  This method
-     * has been renamed to toString in IETF draft 17 of the Java LDAP API
-     *  (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-     *  in fall of 2003.
+     *  This method has been renamed to toString in IETF
+     *  draft 17 of the Java LDAP API (draft-ietf-ldapext-ldap-java-api-xx.txt)
+     *  and will be removed from the LDAP Classes for Java API in the fall of 2003.
+     *
+     * @deprecated replaced by {@link #toString}.
      */
     public String getValue()
     {

@@ -1,7 +1,7 @@
 /* **************************************************************************
  * $OpenLDAP$
  *
- * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
+ * Copyright (C) 1999 - 2002 Novell, Inc. All Rights Reserved.
  *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
@@ -22,8 +22,8 @@ import com.novell.ldap.resources.ExceptionMessages;
 import com.novell.ldap.client.EnumeratedIterator;
 
 /**
- * Represents a schema entry that controls one or more entries held by a
- * Directory Server.
+ * <p>Represents a schema entry that controls one or more entries held by a
+ * Directory Server.</p>
  *
  * <p><code>LDAPSchema</code> Contains methods to parse schema attributes into
  * individual schema definitions, represented by subclasses of
@@ -58,20 +58,15 @@ import com.novell.ldap.client.EnumeratedIterator;
  * <p><B>Other sample code:</B>
  * <DL>
  *     <DT>Adding and deleting Schema.
- *     <DD><a href="http://developer.novell.com/ndk/doc/samplecode/
- *jldap_sample/jldap_sample/ExtendSchema.java.html">ExtendSchema.java</a>
+ *     <DD><a href="http://developer.novell.com/ndk/doc/samplecode/jldap_sample/jldap_sample/ExtendSchema.java.html">ExtendSchema.java</a>
  *
  *     <DT>Modifing an existing schema element
- *     <DD><a href="http://developer.novell.com/ndk/doc/samplecode/
- *jldap_sample/jldap_sample/MakeContainer.java.html">MakeContainer.java</a>
+ *     <DD><a href="http://developer.novell.com/ndk/doc/samplecode/jldap_sample/jldap_sample/MakeContainer.java.html">MakeContainer.java</a>
  *
  *     <DT>Listing schema in a GUI
- *     <DD><a href="http://developer.novell.com/ndk/doc/samplecode/jldap_sample/
- *jldap_sample/ListSchema.java.html">ListSchema.java</a>
- *     <DD><a href="http://developer.novell.com/ndk/doc/samplecode/jldap_sample/
- *schema/ListAttributeSchema.java.html">ListAttributeSchema.java</a>
- *     <DD><a href="http://developer.novell.com/ndk/doc/samplecode/jldap_sample/
- *schema/ListObjectClassSchema.java.html">ListObjectClassSchema.java</a>
+ *     <DD><a href="http://developer.novell.com/ndk/doc/samplecode/jldap_sample/jldap_sample/ListSchema.java.html">ListSchema.java</a>
+ *     <DD><a href="http://developer.novell.com/ndk/doc/samplecode/jldap_sample/schema/ListAttributeSchema.java.html">ListAttributeSchema.java</a>
+ *     <DD><a href="http://developer.novell.com/ndk/doc/samplecode/jldap_sample/schema/ListObjectClassSchema.java.html">ListObjectClassSchema.java</a>
 
  * </DL>
  *
@@ -668,10 +663,11 @@ public class LDAPSchema extends LDAPEntry {
     }
 
     /**
-     *  @deprecated replaced by {@link #getDITContentRuleSchema}.  This method
-     *  has been renamed to getDITContentRuleSchema in IETF draft 17 of the Java
-     *  LDAP API (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-     *  in fall of 2003.
+     *  This method has been renamed to getDITContentRuleSchema in IETF draft 17
+     *  of the Java LDAP API (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be
+     *  removed from the LDAP Classes for Java API in the fall of 2003.
+     *
+     *  @deprecated replaced by {@link #getDITContentRuleSchema}.
      */
     public LDAPDITContentRuleSchema getDITContentRule(String name)
     {
@@ -679,10 +675,11 @@ public class LDAPSchema extends LDAPEntry {
     }
 
     /**
-     *  @deprecated replaced by {@link #getDITContentRuleSchemas}.  This method
-     *  has been renamed to getDITContentRuleSchemas in IETF draft 17 of the
+     *  This method has been renamed to getDITContentRuleSchemas in IETF draft 17 of the
      *  Java LDAP API (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be
-     *  removed in fall of 2003.
+     *  removed from the LDAP Classes for Java API in the fall of 2003.
+     *
+     *  @deprecated replaced by {@link #getDITContentRuleSchemas}.
      */
     public Enumeration getDITContentRules()
     {
@@ -690,10 +687,11 @@ public class LDAPSchema extends LDAPEntry {
     }
 
     /**
-     *  @deprecated replaced by {@link #getDITStructureRuleSchema}.  This method
-     *  has been renamed to getDITStructureRuleSchema in IETF draft 17 of the
-     *  Java LDAP API (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be
-     *  removed in fall of 2003.
+     *  This method has been renamed to getDITStructureRuleSchema in IETF
+     *  draft 17 of the Java LDAP API (draft-ietf-ldapext-ldap-java-api-xx.txt)
+     *  and will be removed from the LDAP Classes for Java API in the fall of 2003.
+     *
+     *  @deprecated replaced by {@link #getDITStructureRuleSchema}.
      */
     public LDAPDITStructureRuleSchema getDITStructureRule(int id)
     {
@@ -701,10 +699,11 @@ public class LDAPSchema extends LDAPEntry {
     }
 
     /**
-     *  @deprecated replaced by {@link #getDITStructureRuleSchemas}. This method
-     *  has been renamed to getDITStructureRuleSchemas in IETF draft 17 of the
-     *  Java LDAP API (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be
-     *  removed in fall of 2003.
+     *  This method has been renamed to getDITStructureRuleSchemas in IETF
+     *  draft 17 of the Java LDAP API (draft-ietf-ldapext-ldap-java-api-xx.txt)
+     *  and will be removed from the LDAP Classes for Java API in the fall of 2003.
+     *
+     *  @deprecated replaced by {@link #getDITStructureRuleSchemas}.
      */
     public Enumeration getDITStructureRules()
     {
@@ -712,10 +711,11 @@ public class LDAPSchema extends LDAPEntry {
     }
 
     /**
-     *  @deprecated replaced by {@link #getMatchingRuleSchema}.  This method
-     *  has been renamed to getMatchingRuleSchema in IETF draft 17 of the Java
-     *  LDAP API (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-     *  in fall of 2003.
+     *  This method has been renamed to getMatchingRuleSchema in IETF
+     *  draft 17 of the Java LDAP API (draft-ietf-ldapext-ldap-java-api-xx.txt)
+     *  and will be removed from the LDAP Classes for Java API in the fall of 2003.
+     *
+     *  @deprecated replaced by {@link #getMatchingRuleSchema}.
      */
     public LDAPMatchingRuleSchema getMatchingRule(String name)
     {
@@ -723,20 +723,22 @@ public class LDAPSchema extends LDAPEntry {
     }
 
     /**
-     *  @deprecated replaced by {@link #getMatchingRuleSchemas}.  This method
-     *  has been renamed to getMatchingRuleSchemas in IETF draft 17 of the Java
-     *  LDAP API (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-     *  in fall of 2003.
+     *  This method has been renamed to getMatchingRuleSchemas in IETF
+     *  draft 17 of the Java LDAP API (draft-ietf-ldapext-ldap-java-api-xx.txt)
+     *  and will be removed from the LDAP Classes for Java API in the fall of 2003.
+     *
+     *  @deprecated replaced by {@link #getMatchingRuleSchemas}.
      */
     public Enumeration getMatchingRules()
     {
         return this.getMatchingRuleSchemas();
     }
     /**
-     *  @deprecated replaced by {@link #getMatchingRuleUseSchema}.  This method
-     *  has been renamed to getMatchingRuleUseSchema in IETF draft 17 of the
-     *  Java LDAP API (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be
-     *  removed in fall of 2003.
+     *  This method has been renamed to getMatchingRuleUseSchema in IETF
+     *  draft 17 of the Java LDAP API (draft-ietf-ldapext-ldap-java-api-xx.txt)
+     *  and will be removed from the LDAP Classes for Java API in the fall of 2003.
+     *
+     *  @deprecated replaced by {@link #getMatchingRuleUseSchema}.
      */
     public LDAPMatchingRuleUseSchema getMatchingRuleUse(String name)
     {
@@ -744,10 +746,11 @@ public class LDAPSchema extends LDAPEntry {
     }
 
     /**
-     *  @deprecated replaced by {@link #getMatchingRuleUseSchemas}.  This method
-     *  has been renamed to getMatchingRuleUseSchemas in IETF draft 17 of the
-     *  Java LDAP API (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be
-     *  removed in fall of 2003.
+     *  This method has been renamed to getMatchingRuleUseSchemas in IETF
+     *  draft 17 of the Java LDAP API (draft-ietf-ldapext-ldap-java-api-xx.txt)
+     *  and will be removed from the LDAP Classes for Java API in the fall of 2003.
+     *
+     *  @deprecated replaced by {@link #getMatchingRuleUseSchemas}.
      */
     public Enumeration getMatchingRuleUses()
     {
@@ -755,10 +758,12 @@ public class LDAPSchema extends LDAPEntry {
     }
 
     /**
-     *  @deprecated replaced by {@link #getNameFormSchema}.  This method
+     *  This method
      *  has been renamed to getNameFormSchema in IETF draft 17 of the Java
      *  LDAP API (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-     *  in fall of 2003.
+     *  in the fall of 2003.
+     *
+     *  @deprecated replaced by {@link #getNameFormSchema}.
      */
     public LDAPNameFormSchema getNameForm(String name)
     {
@@ -766,10 +771,11 @@ public class LDAPSchema extends LDAPEntry {
     }
 
     /**
-     *  @deprecated replaced by {@link #getNameFormSchemas}.  This method
-     *  has been renamed to getNameFormSchemas in IETF draft 17 of the Java
-     *  LDAP API (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-     *  in fall of 2003.
+     *  This method has been renamed to getNameFormSchemas in IETF
+     *  draft 17 of the Java LDAP API (draft-ietf-ldapext-ldap-java-api-xx.txt)
+     *  and will be removed from the LDAP Classes for Java API in the fall of 2003.
+     *
+     *  @deprecated replaced by {@link #getNameFormSchemas}.
      */
     public Enumeration getNameForms()
     {
@@ -777,10 +783,11 @@ public class LDAPSchema extends LDAPEntry {
     }
 
     /**
-     *  @deprecated replaced by {@link #getObjectClassSchema}.  This method
-     *  has been renamed to getObjectClassSchema in IETF draft 17 of the Java
-     *  LDAP API (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-     *  in fall of 2003.
+     *  This method has been renamed to getObjectClassSchema in IETF
+     *  draft 17 of the Java LDAP API (draft-ietf-ldapext-ldap-java-api-xx.txt)
+     *  and will be removed from the LDAP Classes for Java API in the fall of 2003.
+     *
+     *  @deprecated replaced by {@link #getObjectClassSchema}.
      */
     public LDAPObjectClassSchema getObjectClass(String name)
     {
@@ -788,10 +795,11 @@ public class LDAPSchema extends LDAPEntry {
     }
 
     /**
-     *  @deprecated replaced by {@link #getObjectClassSchemas}.  This method
-     *  has been renamed to getObjectClassSchemas in IETF draft 17 of the Java
-     *  LDAP API (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-     *  in fall of 2003.
+     *  This method has been renamed to getObjectClassSchemas in IETF
+     *  draft 17 of the Java LDAP API (draft-ietf-ldapext-ldap-java-api-xx.txt)
+     *  and will be removed from the LDAP Classes for Java API in the fall of 2003.
+     *
+     *  @deprecated replaced by {@link #getObjectClassSchemas}.
      */
     public Enumeration getObjectClasses()
     {
@@ -799,10 +807,11 @@ public class LDAPSchema extends LDAPEntry {
     }
 
     /**
-     *  @deprecated replaced by {@link #getSyntaxSchema}.  This method
-     *  has been renamed to getSyntaxSchema in IETF draft 17 of the Java
-     *  LDAP API (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-     *  in fall of 2003.
+     *  This method has been renamed to getSyntaxSchema in IETF
+     *  draft 17 of the Java LDAP API (draft-ietf-ldapext-ldap-java-api-xx.txt)
+     *  and will be removed from the LDAP Classes for Java API in the fall of 2003.
+     *
+     *  @deprecated replaced by {@link #getSyntaxSchema}.
      */
     public LDAPSyntaxSchema getSyntax(String name)
     {
@@ -810,10 +819,11 @@ public class LDAPSchema extends LDAPEntry {
     }
 
     /**
-     *  @deprecated replaced by {@link #getSyntaxSchemas}.  This method
-     *  has been renamed to getSyntaxSchemas in IETF draft 17 of the Java
-     *  LDAP API (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-     *  in fall of 2003.
+     *  This method has been renamed to getSyntaxSchemas in IETF
+     *  draft 17 of the Java LDAP API (draft-ietf-ldapext-ldap-java-api-xx.txt)
+     *  and will be removed from the LDAP Classes for Java API in the fall of 2003.
+     *
+     *  @deprecated replaced by {@link #getSyntaxSchemas}.
      */
     public Enumeration getSyntaxes()
     {
@@ -823,11 +833,12 @@ public class LDAPSchema extends LDAPEntry {
 /***********************changes since draft 17*******************/
 
     /**
+     *  <p>This method has been removed in IETF
+     *  draft 18 of the Java LDAP API (draft-ietf-ldapext-ldap-java-api-xx.txt)
+     *  and will be removed from the LDAP Classes for Java API in the fall of 2003.</p>
+     *
      *  @deprecated replaced by {@link #LDAPSchema(LDAPEntry)} and
-     *  {@link LDAPConnection#fetchSchema}.  This method
-     *  has been removed in IETF draft 18 of the Java LDAP API
-     *  (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-     *  in fall of 2003.
+     *  {@link LDAPConnection#fetchSchema}.
      */
     public LDAPSchema() {
         for (int i=0; i< schemaTypeNames.length; i++) {
@@ -838,10 +849,11 @@ public class LDAPSchema extends LDAPEntry {
     }
 
    /**
-     *  @deprecated replaced by {@link LDAPConnection#fetchSchema}.  This method
-     *  has been removed in IETF draft 18 of the Java LDAP API
-     *  (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-     *  in fall of 2003.
+     *  <p>This method has been removed in IETF
+     *  draft 18 of the Java LDAP API (draft-ietf-ldapext-ldap-java-api-xx.txt)
+     *  and will be removed from the LDAP Classes for Java API in the fall of 2003.</p>
+     *
+     *  @deprecated replaced by {@link LDAPConnection#fetchSchema LDAPConnection.fetchSchema()}.
     */
    public void fetchSchema(LDAPConnection ld) throws LDAPException
    {
@@ -850,10 +862,11 @@ public class LDAPSchema extends LDAPEntry {
    }
 
     /**
-     *  @deprecated replaced by {@link LDAPConnection#fetchSchema}.  This method
-     *  has been removed in IETF draft 18 of the Java LDAP API
-     *  (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-     *  in fall of 2003.
+     *  <p>This method has been removed in IETF
+     *  draft 18 of the Java LDAP API (draft-ietf-ldapext-ldap-java-api-xx.txt)
+     *  and will be removed from the LDAP Classes for Java API in the fall of 2003.</p>
+     *
+     *  @deprecated replaced by {@link LDAPConnection#fetchSchema LDAPConnection.fetchSchema()}.
      */
     public void fetchSchema(LDAPConnection ld, String dn) throws LDAPException
     {
@@ -866,11 +879,15 @@ public class LDAPSchema extends LDAPEntry {
         return;
     }
     /**
-     *  @deprecated LDAPSchemaElement now extends LDAPAttribute and can be
-     *  used directly with {@link LDAPModification} This method
-     *  has been removed in IETF draft 18 of the Java LDAP API
-     *  (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-     *  in fall of 2003.
+     *  <p>This method has been removed in IETF
+     *  draft 18 of the Java LDAP API (draft-ietf-ldapext-ldap-java-api-xx.txt)
+     *  and will be removed from the LDAP Classes for Java API in the fall of 2003.</p>
+     *
+     * <p>LDAPSchemaElement now extends {@link LDAPAttribute} and can
+     * be used directly with {@link LDAPModification},
+     * see {@link LDAPConnection#modify LDAPConnection.modify()}.</p>
+     *
+     * @deprecated replaced by {@link LDAPConnection#modify LDAPConnection.modify()}.
      */
     public void saveSchema (LDAPConnection ld) throws LDAPException
     {
@@ -879,11 +896,16 @@ public class LDAPSchema extends LDAPEntry {
     }
 
     /**
-     *  @deprecated LDAPSchemaElement now extends LDAPAttribute and can be
-     *  used directly with {@link LDAPModification} This method
-     *  has been removed in IETF draft 18 of the Java LDAP API
-     *  (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-     *  in fall of 2003.
+     *  <p>This method has been removed in IETF
+     *  draft 18 of the Java LDAP API (draft-ietf-ldapext-ldap-java-api-xx.txt)
+     *  and will be removed from the LDAP Classes for Java API in the fall of
+     *  2003.</p>
+     *
+     * <p>LDAPSchemaElement now extends {@link LDAPAttribute} and can
+     * be used directly with {@link LDAPModification},
+     * see {@link LDAPConnection#modify LDAPConnection.modify()}.</p>
+     *
+     * @deprecated replaced by {@link LDAPConnection#modify LDAPConnection.modify()}.
      */
     public void saveSchema (LDAPConnection ld, String dn) throws LDAPException
     {
@@ -904,11 +926,16 @@ public class LDAPSchema extends LDAPEntry {
 // ########################################################################
 
     /**
-     *  @deprecated LDAPSchemaElement now extends LDAPAttribute and can be
-     *  used directly with {@link LDAPModification} This method
-     *  has been removed in IETF draft 18 of the Java LDAP API
-     *  (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-     *  in fall of 2003.
+     *  <p>This method has been removed in IETF
+     *  draft 18 of the Java LDAP API (draft-ietf-ldapext-ldap-java-api-xx.txt)
+     *  and will be removed from the LDAP Classes for Java API in the fall of
+     *  2003.</p>
+     *
+     * <p>LDAPSchemaElement now extends {@link LDAPAttribute} and can
+     * be used directly with {@link LDAPModification},
+     * see {@link LDAPConnection#modify LDAPConnection.modify()}.</p>
+     *
+     * @deprecated replaced by {@link LDAPConnection#modify LDAPConnection.modify()}.
      */
 
     public void add(LDAPSchemaElement element)
@@ -942,11 +969,16 @@ public class LDAPSchema extends LDAPEntry {
     }
 
     /**
-     *  @deprecated LDAPSchemaElement now extends LDAPAttribute and can be
-     *  used directly with {@link LDAPModification} This method
-     *  has been removed in IETF draft 18 of the Java LDAP API
-     *  (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-     *  in fall of 2003.
+     *  <p>This method has been removed in IETF
+     *  draft 18 of the Java LDAP API (draft-ietf-ldapext-ldap-java-api-xx.txt)
+     *  and will be removed from the LDAP Classes for Java API in the fall ofu
+     *  2003.</p>
+     *
+     * <p>LDAPSchemaElement now extends {@link LDAPAttribute} and can
+     * be used directly with {@link LDAPModification},
+     * see {@link LDAPConnection#modify LDAPConnection.modify()}.</p>
+     *
+     * @deprecated replaced by {@link LDAPConnection#modify LDAPConnection.modify()}.
      */
     public void modify( LDAPSchemaElement element )
     {
@@ -966,34 +998,16 @@ public class LDAPSchema extends LDAPEntry {
     }
 
     /**
-     *  Removes a schema element definition from the schema object.
-     *  <p>Use LDAPConnection.modify methods instead of this method.
-     *  For example, for code something like:
-     *  <pre><code>
-     *  LDAPSchema schema;
-     *  schema = new LDAPSchema();
-     *  schema.fetchSchema(lc);
+     *  <p>This method has been removed in IETF
+     *  draft 18 of the Java LDAP API (draft-ietf-ldapext-ldap-java-api-xx.txt)
+     *  and will be removed from the LDAP Classes for Java API in the fall of
+     *  2003.</p>
      *
-     *  schema.remove(newAuxClass);
-     *  schema.remove(newObjClass);
-     *  schema.saveSchema(lc);
-     *  </code>
-     *  change to
-     *  <code>
-     *  LDAPModification[] mods = new LDAPModification[2];
-     *  mods[0] = new LDAPModification(LDAPModification.DELETE, newAuxClass);
-     *  mods[1] = new LDAPModification(LDAPModification.DELETE, newObjClass);
-     *  lc.modify(lc.getSchemaDN(), mods);
-     *  </code></pre></p>
+     * <p>LDAPSchemaElement now extends {@link LDAPAttribute} and can
+     * be used directly with {@link LDAPModification},
+     * see {@link LDAPConnection#modify LDAPConnection.modify()}.</p>
      *
-     *  It is not necessary to fetch the schema to perform schema modifications.
-     *  The LDAPSchema class is read-only, and is used to examine the schema.
-     *
-     *  @deprecated LDAPSchemaElement now extends LDAPAttribute and can be
-     *  used directly with {@link LDAPModification} This method has been
-     *  removed in IETF draft 18 of the Java LDAP API
-     *  (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-     *  from the API in the fall of 2003.
+     * @deprecated replaced by {@link LDAPConnection#modify LDAPConnection.modify()}.
      */
     public void remove( LDAPSchemaElement element )
     {

@@ -1,7 +1,7 @@
 /* **************************************************************************
  * $OpenLDAP$
  *
- * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
+ * Copyright (C) 1999 - 2002 Novell, Inc. All Rights Reserved.
  *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
@@ -16,10 +16,9 @@
 package com.novell.ldap;
 
 /**
- *  @deprecated replaced by {@link LDAPBindHandler}.  This interface
- *  has been renamed to LDAPBindHandler in IETF draft 17 of the Java LDAP API
- *  (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
- *  in fall of 2003.
+ *  This interface is renamed to LDAPBindHandler in IETF draft 17
+ *  of the Java LDAP API (draft-ietf-ldapext-ldap-java-api-xx.txt) and
+ *  will be removed from the LDAP Classes for Java API in the fall of 2003.
  *
  *  Used to do explicit bind processing on a referral.
  *
@@ -33,11 +32,12 @@ package com.novell.ldap;
  *  or for all operations (through the LDAPContraints object
  *  associated with the connection).
  *
- *  <p>Sample Code: <a href="http://developer.novell.com/ndk/doc/samplecode/
- *jldap_sample/jldap_sample/SearchUtil.java.html">SearchUtil.java</p>
+ *  <p>Sample Code: <a href="http://developer.novell.com/ndk/doc/samplecode/jldap_sample/jldap_sample/SearchUtil.java.html">SearchUtil.java</p>
  *
  *  @see LDAPRebind
  *  @see LDAPConstraints#setReferralFollowing(boolean)
+ *
+ *  @deprecated replaced by {@link LDAPBindHandler}.
  */
 public interface LDAPBind extends LDAPReferralHandler
 {
