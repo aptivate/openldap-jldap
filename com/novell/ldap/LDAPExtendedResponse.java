@@ -49,7 +49,11 @@ public class LDAPExtendedResponse extends LDAPResponse {
      */
     public String getID()
     {
-        return((RfcExtendedResponse)message.getProtocolOp()).getResponseName().getString();
+        RfcLDAPOID respOID =
+            ((RfcExtendedResponse)message.getProtocolOp()).getResponseName();
+        if (respOID == null)
+            return null;
+        return respOID.getString();
     }
 
     /**
