@@ -16,35 +16,22 @@
 package org.ietf.ldap;
 
 /**
- *
  *  Used to provide credentials for reauthentication when processing a
  *  referral.
  *
- *  <p>A programmer desiring to supply credentials to the default
- *  reauthentication behavior when automatically following referrals must
- *  implement this interface. If LDAPRebind or LDAPBind are not implemented,
- *  automatically followed referrals will use anonymous authentication.
- *  Referrals of any type other than to an LDAP server (i.e. a
- *  referral URL other than ldap://something) are ignored on automatic referral
- *  following.</p>
- *
- *  @see LDAPBind
- *  @see LDAPConstraints#setReferralFollowing(boolean)
+ *  @see <a href="../../../../doc/com/novell/ldap/LDAPRebind.html">
+            com.novell.ldap.LDAPRebind</a>
  */
 public interface LDAPRebind extends LDAPReferralHandler
 {
-
    /**
     * Returns an object which can provide credentials for authenticating to
     * a server at the specified host and port.
     *
-    *  @param host    Contains a host name or the IP address (in dotted string
-    *                 format) of a host running an LDAP server.
-    *<br><br>
-    *  @param port    Contains the TCP or UDP port number of the host.
-    *
-    *  @return An object with authentication credentials to the specified
-    *          host and port.
+    * @see <a href="../../../../doc/com/novell/ldap/LDAPRebind.html
+            #getRebindAuthentication(java.lang.String, int)">
+            com.novell.ldap.LDAPRebind.getRebindAuthentication(
+            String, int)</a>
     */
    public LDAPRebindAuth getRebindAuthentication (String host, int port);
 }
