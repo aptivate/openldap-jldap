@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSchema.java,v 1.17 2000/12/08 16:27:54 bgudmundson Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSchema.java,v 1.18 2000/12/09 00:19:51 bgudmundson Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -34,6 +34,7 @@ public class LDAPSchema {
 	private Hashtable attributeHashtable;
 	private Hashtable matchingRuleHashtable;
 	private Hashtable matchingRuleUseHashtable;
+	private Hashtable syntaxHashtable;
 
 	//private static final int objectClass = 0;
     //private static final int attribute = 1;
@@ -47,6 +48,7 @@ public class LDAPSchema {
 		attributeHashtable = new Hashtable();
 		matchingRuleHashtable = new Hashtable();
 		matchingRuleUseHashtable = new Hashtable();
+		syntaxHashtable = new Hashtable();
    }
 
    /**
@@ -186,6 +188,17 @@ public class LDAPSchema {
 										value = (String) enumString.nextElement();
 										matchingRuleUseSchema = new LDAPMatchingRuleUseSchema( value );
           								matchingRuleUseHashtable.put(matchingRuleUseSchema.getName(), matchingRuleUseSchema );
+									}
+								}
+								else if(attrName.equals("ldapSyntaxes")){
+									enumString = attr.getStringValues();
+									String value;
+									LDAPSyntaxSchema syntaxSchema;
+									while(enumString.hasMoreElements())
+									{
+										value = (String) enumString.nextElement();
+										syntaxSchema = new LDAPSyntaxSchema( value );
+          								syntaxHashtable.put(syntaxSchema.getID(), syntaxSchema );
 									}
 								}
 								else{
@@ -342,7 +355,9 @@ public class LDAPSchema {
     */
    public LDAPSyntaxSchema getSyntax( String oid ) {
 
-      throw new RuntimeException("Method LDAPSchema.getSyntax not implemented");
+      if( syntaxHashtable.isEmpty() == true || syntaxHashtable.containsKey(oid) == false)
+      	return null;
+      return (LDAPSyntaxSchema) syntaxHashtable.get(oid);
 
    }	
 
@@ -415,7 +430,7 @@ public class LDAPSchema {
     * @return An enumeration of syntax definitions.
     */
    public Enumeration getSyntaxes() {
-      throw new RuntimeException("Method LDAPSchema.getSyntaxes not implemented");
+      return syntaxHashtable.elements();
    }	
 
    /**

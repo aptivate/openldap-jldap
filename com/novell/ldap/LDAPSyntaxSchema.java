@@ -1,4 +1,8 @@
 package com.novell.ldap;
+import com.novell.ldap.client.SchemaParser;
+import com.novell.ldap.client.AttributeQualifier;
+import java.util.Enumeration;
+import java.io.IOException;
 
 /* public class LDAPSyntaxSchema
  *              extends LDAPSchemaElement
@@ -35,7 +39,8 @@ public class LDAPSyntaxSchema
     public LDAPSyntaxSchema(String oid,
                            String description)
     {
-        throw new RuntimeException("Object LDAPSyntaxSchema not implemented");
+        super.oid = oid;
+      	super.description = description;
     }
 
     /**
@@ -47,6 +52,246 @@ public class LDAPSyntaxSchema
      */
     public LDAPSyntaxSchema(String raw)
     {
-        throw new RuntimeException("Object LDAPSyntaxSchema not implemented");
+    	try{
+			SchemaParser parser = new SchemaParser( raw );
+
+    		if( parser.getID() != null)
+        		super.oid = new String(parser.getID());
+        	if( parser.getDescription() != null)
+        		super.description = new String(parser.getDescription());
+        	Enumeration qualifiers = parser.getQualifiers();
+        	AttributeQualifier attrQualifier;
+        	while(qualifiers.hasMoreElements()){
+        		attrQualifier = (AttributeQualifier) qualifiers.nextElement();
+        		setQualifier(attrQualifier.getName(), attrQualifier.getValues());
+         	}
+
+		}
+        catch( IOException e){
+        }
     }
+	/**
+    * Returns a string in a format suitable for directly adding to a
+    * directory, as a value of the particular schema element class.
+    *
+    * @return A string representation of the syntax's definition.
+    */
+   public String getValue() {
+
+      StringBuffer valueBuffer = new StringBuffer("( ");
+      String token;
+      String[] strArray;
+
+      if( (token = getID()) != null){
+        valueBuffer.append(token);
+      }
+      if( (token = getDescription()) != null){
+        valueBuffer.append(" DESC ");
+        valueBuffer.append("'" + token + "'");
+      }
+      
+      Enumeration en;
+      if( (en = getQualifierNames()) != null){
+      	String qualName;
+       	String[] qualValue;
+      	while( en.hasMoreElements() ) {
+       		qualName = (String)en.nextElement();
+         	valueBuffer.append( " " + qualName + " ");
+          	if((qualValue = getQualifier( qualName )) != null){
+           		if( qualValue.length > 1)
+             			valueBuffer.append("( ");
+                       	for(int i = 0; i < qualValue.length; i++ ){
+                          	if( i > 0 )
+                           		valueBuffer.append(" ");
+                        	valueBuffer.append( "'" + qualValue[i] + "'");
+                      	}
+                       if( qualValue.length > 1)
+                       	valueBuffer.append(" )");
+            	}
+      	}
+      }
+      valueBuffer.append(" )");
+      return valueBuffer.toString();
+
+   }
+
+  public void add(LDAPConnection ld) throws LDAPException {
+    try{
+        add(ld,"");
+    }
+    catch(LDAPException e){
+        throw e;
+    }
+  }
+  public void add(LDAPConnection ld, String dn) throws LDAPException {
+    try{
+        String attrSubSchema[] = { "subschemaSubentry" };
+        LDAPSearchResults sr = ld.search( dn,
+	                  LDAPConnection.SCOPE_BASE,
+					  "objectclass=*",
+					  attrSubSchema,
+					  false);
+        if(sr != null && sr.hasMoreElements()){
+            String schemaDN;
+	        LDAPEntry ent = sr.next();
+	        LDAPAttributeSet attrSet = ent.getAttributeSet();
+	        Enumeration en = attrSet.getAttributes();
+	        LDAPAttribute attr;
+	        if(en.hasMoreElements()){
+	            attr = (LDAPAttribute) en.nextElement();
+	            Enumeration enumString = attr.getStringValues();
+	            if(enumString.hasMoreElements()){
+                    schemaDN = (String) enumString.nextElement();
+                    String[] attrSearchName= { "ldapSyntaxes" };
+	                sr = ld.search( schemaDN,
+	                        LDAPConnection.SCOPE_BASE,
+	                        "objectclass=*",
+			                attrSearchName,
+			                false);
+	                String attrName;
+	                if(sr != null && sr.hasMoreElements()){
+	                    ent = sr.next();
+		                attrSet = ent.getAttributeSet();
+		                en = attrSet.getAttributes();
+		                while(en.hasMoreElements()){
+		                    attr = (LDAPAttribute) en.nextElement();
+                            attrName = attr.getName();
+		                    if(attrName.equals("ldapSyntaxes")){
+                            // add the value to the syntax values
+							LDAPAttribute newValue = new LDAPAttribute(
+                                        "ldapSyntaxes",getValue());
+                            LDAPModification lModify = new LDAPModification(
+                                LDAPModification.ADD,newValue);
+                            ld.modify(schemaDN,lModify);
+                        }
+		                continue;
+                    }
+	            }
+	        }
+          }
+	    }
+      }
+
+    catch( LDAPException e){
+      throw e;
+    }
+  }
+
+  public void remove(LDAPConnection ld) throws LDAPException {
+    try{
+        remove(ld,"");
+    }
+    catch(LDAPException e){
+        throw e;
+    }
+  }
+
+  public void remove(LDAPConnection ld, String dn) throws LDAPException {
+    try{
+        String attrSubSchema[] = { "subschemaSubentry" };
+        LDAPSearchResults sr = ld.search( dn,
+	                            LDAPConnection.SCOPE_BASE, "objectclass=*",
+					            attrSubSchema, false);
+	    if(sr != null && sr.hasMoreElements()){
+            String schemaDN;
+	        LDAPEntry ent = sr.next();
+	        LDAPAttributeSet attrSet = ent.getAttributeSet();
+	        Enumeration en = attrSet.getAttributes();
+	        LDAPAttribute attr;
+	        if(en.hasMoreElements()){
+	            attr = (LDAPAttribute) en.nextElement();
+	            Enumeration enumString = attr.getStringValues();
+	            if(enumString.hasMoreElements()){
+                    schemaDN = (String) enumString.nextElement();
+                    String[] attrSearchName= { "ldapSyntaxes" };
+	                sr = ld.search( schemaDN,
+	                        LDAPConnection.SCOPE_BASE, "objectclass=*",
+			                attrSearchName, false);
+	                String attrName;
+	                if(sr != null && sr.hasMoreElements()){
+	                    ent = sr.next();
+		                attrSet = ent.getAttributeSet();
+		                en = attrSet.getAttributes();
+		                while(en.hasMoreElements()){
+		                    attr = (LDAPAttribute) en.nextElement();
+                            attrName = attr.getName();
+		                    if(attrName.equals("ldapSyntaxes")){
+                                // remove the value from the attributes values
+                                LDAPAttribute newValue = new LDAPAttribute(
+                                	"ldapSyntaxes",getValue());
+                            	LDAPModification lModify = new LDAPModification(
+                                	LDAPModification.DELETE,newValue);
+                            	ld.modify(schemaDN,lModify);
+                            }
+		                    continue;
+                      }
+	                }
+	            }
+            }
+	    }
+      }
+
+      catch( LDAPException e){
+        throw e;
+      }
+  }
+
+  public void modify(LDAPConnection ld, LDAPSchemaElement newValue) throws LDAPException {
+    try{
+        modify(ld, newValue, "");
+    }
+    catch(LDAPException e){
+        throw e;
+    }
+  }
+
+  public void modify(LDAPConnection ld, LDAPSchemaElement newValue, String dn) throws LDAPException {
+    try{
+        String attrSubSchema[] = { "subschemaSubentry" };
+        LDAPSearchResults sr = ld.search( dn,
+	                            LDAPConnection.SCOPE_BASE, "objectclass=*",
+					            attrSubSchema, false);
+	    if(sr != null && sr.hasMoreElements()){
+            String schemaDN;
+	        LDAPEntry ent = sr.next();
+	        LDAPAttributeSet attrSet = ent.getAttributeSet();
+	        Enumeration en = attrSet.getAttributes();
+	        LDAPAttribute attr;
+	        if(en.hasMoreElements()){
+	            attr = (LDAPAttribute) en.nextElement();
+	            Enumeration enumString = attr.getStringValues();
+	            if(enumString.hasMoreElements()){
+                    schemaDN = (String) enumString.nextElement();
+                    String[] attrSearchName= { "ldapSyntaxes" };
+	                sr = ld.search( schemaDN, LDAPConnection.SCOPE_BASE,
+	                      "objectclass=*", attrSearchName, false);
+	                String attrName;
+	                if(sr != null && sr.hasMoreElements()){
+	                    ent = sr.next();
+		                attrSet = ent.getAttributeSet();
+		                en = attrSet.getAttributes();
+		            while(en.hasMoreElements()){
+		                attr = (LDAPAttribute) en.nextElement();
+                        attrName = attr.getName();
+		                if(attrName.equals("ldapSyntaxes")){
+                        	// modify the attribute
+                            LDAPAttribute modValue = new LDAPAttribute(
+                                        "ldapSyntaxes", newValue.getValue());
+							LDAPModificationSet mods = new LDAPModificationSet();
+                            mods.add(LDAPModification.DELETE, modValue);
+							mods.add(LDAPModification.ADD, modValue);
+                            ld.modify(schemaDN,mods);
+                    }
+		            continue;
+              }
+	         }
+	        }
+          }
+	    }
+    }
+
+    catch( LDAPException e){
+      throw e;
+    }
+  }
 }
