@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/src/com/novell/ldap/protocol/Control.java,v 1.3 2000/08/22 01:47:25 smerrill Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/protocol/Control.java,v 1.4 2000/09/11 21:06:00 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  ***************************************************************************/
@@ -108,6 +108,43 @@ public class Control extends ASN1Sequence {
 		}
 		return null;
 
+	}
+
+   /**
+	 * Called to set/replace the ControlValue.  Will normally be called by
+	 * the child classes after the parent has been instantiated.
+	 */
+	package void setControlValue(ASN1OctetString controlValue)
+	{
+
+		if (controlValue == null)
+			return;
+
+		if(size() == 3) { 
+			// We already have a control value, replace it
+			set(2, controlValue);
+			return;
+
+		} 
+		
+		if (size() == 2) {
+			
+			// Get the second element
+			ASN1Object obj = get(1);
+
+			// Is this a control value
+			if(obj instanceof ASN1OctetString) {
+			
+				// replace this one
+				set(1, controlValue);
+				return;
+			}
+			else {
+				// add a new one at the end
+				add(controlValue);
+				return;
+			}
+		}
 	}
 
 }
