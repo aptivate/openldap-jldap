@@ -1,7 +1,7 @@
 /* **************************************************************************
  * $OpenLDAP$
  *
- * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
+ * Copyright (C) 1999 - 2002 Novell, Inc. All Rights Reserved.
  *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
@@ -135,6 +135,12 @@ public final class Connection implements Runnable
     public Connection( LDAPSocketFactory factory)
     {
         if( factory != null) {
+            /* verify the 'setFactory' permision is set */
+            SecurityManager security = System.getSecurityManager();
+            if (security != null){
+                security.checkSetFactory();
+            }
+
             // save socket factory
             mySocketFactory = factory;
         } else {
@@ -380,13 +386,9 @@ public final class Connection implements Runnable
         this.host = host;
         this.port = port;
         // start the reader thread
-        Thread r = new Thread(this);
-        r.setDaemon(true); // If this is the last thread running, allow exit.
-        r.start();
-        freeWriteSemaphore(semId);
-        // Wait for new reader to start
-        waitForReader(r);
+        this.startReader();
 
+        freeWriteSemaphore(semId);
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.messages, name + " connect: setup complete");
         }
@@ -503,6 +505,11 @@ public final class Connection implements Runnable
      */
     public static void setSocketFactory( LDAPSocketFactory factory)
     {
+        /* verify the 'setFactory' permision is set */
+        SecurityManager security = System.getSecurityManager();
+        if (security != null){
+            security.checkSetFactory();
+        }
         socketFactory = factory;
         return;
     }
@@ -747,7 +754,6 @@ public final class Connection implements Runnable
             }
             socket = null;
         }
-
         freeWriteSemaphore( semId);
         return;
     }
@@ -827,6 +833,20 @@ public final class Connection implements Runnable
         return;
     }
 
+    /** startReader
+     *  startReader should be called when socket and io streams have been
+     *  set or changed.  In particular after client.Connection.startTLS()
+     *  It assumes the reader thread is not running.
+     */
+    public void startReader() throws LDAPException {
+        // Start Reader Thread
+        Thread r = new Thread(this);
+        r.setDaemon(true); // If the last thread running, allow exit.
+        r.start();
+        waitForReader(r);
+        return;
+    }
+
     /**
      * Indicates if the connection is using TLS protection.
      *
@@ -837,10 +857,17 @@ public final class Connection implements Runnable
     }
 
     /**
-     * Starts TLS on this connection
-     * The writeSemaphore should already have been acquired,
-     * the reader thread stopped, checked that no messages are outstanding
-     * on this connection.
+     * StartsTLS, in this package, assumes the caller has:
+     * 1) Acquired the writeSemaphore
+     * 2) Stopped the reader thread
+     * 3) checked that no messages are outstanding on this connection.
+     *
+     * After calling this method upper layers should start the reader
+     * by calling startReader()
+     *
+     * In the client.Connection, StartTLS assumes LDAP.LDAPConnection will
+     * stop and start the reader thread.  Connection.StopTLS will stop
+     * and start the reader thread.
      */
     public void startTLS()
         throws LDAPException
@@ -874,12 +901,6 @@ public final class Connection implements Runnable
                         nonTLSBackup +", TLSSocket:"+socket+", input:"+ in +","
                         +"output:"+out  );
             }
-
-            // Start Reader Thread
-            Thread r = new Thread(this);
-            r.setDaemon(true); // If the last thread running, allow exit.
-            r.start();
-            waitForReader(r);
         }
         catch( java.net.UnknownHostException uhe) {
             this.nonTLSBackup = null;
@@ -894,17 +915,19 @@ public final class Connection implements Runnable
         return;
     }
 
-    /** stopTLS needs to do the following
-     *  1) block writing (acquireWriteSemaphore).
-     *  2) check that no messages are outstanding.
-     *  3) close the current socket
+    /** StopTLS, in this package, assumes the caller has:
+     *  1) blocked writing (acquireWriteSemaphore).
+     *  2) checked that no messages are outstanding.
+     *
+     *  StopTLS Needs to do the following:
+     *  1) close the current socket
      *      - This stops the reader thread
      *      - set STOP_READING flag on stopReaderMessageID so that
      *        the reader knows that the IOException is planned.
-     *  4) replace the current socket with nonTLSBackup,
-     *  5) and set nonTLSBackup to null;
-     *  6) reset input and outputstreams
-     *  7) restart reader.
+     *  2) replace the current socket with nonTLSBackup,
+     *  3) and set nonTLSBackup to null;
+     *  4) reset input and outputstreams
+     *  5) start the reader thread by calling startReader
      *
      *  Note: Sun's JSSE doesn't allow the nonTLSBackup socket to be
      * used any more, even though autoclose was false: you get an IOException.
@@ -912,14 +935,7 @@ public final class Connection implements Runnable
      */
     public void stopTLS() throws LDAPException
     {
-        int semaphoreID = this.acquireWriteSemaphore();
         try{
-            if (!this.areMessagesComplete()) {
-                throw new LDAPException(
-                        ExceptionMessages.OUTSTANDING_OPERATIONS,
-                        LDAPException.OPERATIONS_ERROR );
-            }
-
             this.stopReaderMessageID = this.STOP_READING;
             this.socket.close();
             waitForReader(null);
@@ -933,16 +949,12 @@ public final class Connection implements Runnable
             }
             // Allow the new reader to start
             this.stopReaderMessageID = this.CONTINUE_READING;
-            // start the reader thread
-            Thread r = new Thread(this);
-            r.setDaemon(true); // If the last thread running, allow exit.
-            r.start();
-            waitForReader(r);
         }catch (IOException ioe){
             throw new LDAPException(ExceptionMessages.STOPTLS_ERROR,
                         LDAPException.CONNECT_ERROR, ioe);
         }finally {
-            this.freeWriteSemaphore(semaphoreID);
+            this.nonTLSBackup = null;
+            startReader();
         }
         return;
     }

@@ -1,7 +1,7 @@
 /* **************************************************************************
  * $OpenLDAP$
  *
- * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
+ * Copyright (C) 1999 - 2002 Novell, Inc. All Rights Reserved.
  *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
@@ -113,7 +113,7 @@ public class LDAPConnection implements Cloneable
      * in some circumstances, but is not supported.
      * Use protocol version is LDAP_V3</p>
      *
-     * @deprecated @see LDAP_V3
+     * @deprecated use {@link #LDAP_V3}
      *<p>LDAP_V2 = 2</p>
      *
      * @see #LDAP_V3
@@ -579,7 +579,7 @@ public class LDAPConnection implements Cloneable
      */
     public boolean isTLS()
     {
-       return this.conn.isTLS();
+       return conn.isTLS();
     }
 
     /**
@@ -763,11 +763,10 @@ public class LDAPConnection implements Cloneable
             response.chkResultCode();
 
             conn.startTLS();
-            // Note: We need to add code for the case that if startTLS
-            // fails, we need to restart the reader.
         }
         finally {
             //Free this semaphore no matter what exceptions get thrown
+            conn.startReader();
             conn.freeWriteSemaphore( tlsID ) ;
         }
         return;
@@ -777,26 +776,45 @@ public class LDAPConnection implements Cloneable
      * Stops Transport Layer Security(TLS) on the LDAPConnection and reverts
      * back to an anonymous state.
      *
-     * @throws LDAPException This can occur for the following reasons: <br>
-     *          StartTLS has not been called before stopTLS<br>
-     *          There exists outstanding messages that have not received all
-     *          responses<br>
-     *          The sever was not able to support the operation
+     * @throws LDAPException This can occur for the following reasons: <UL>
+     *          <LI>StartTLS has not been called before stopTLS
+     *          <LI>There exists outstanding messages that have not received all
+     *          responses
+     *          <LI>The sever was not able to support the operation</UL>
      *
-     * <p>
-     * Note: The Sun and IBM implementions of JSSE do not allow this function
-     * to work correctly.  The alternative is to close the connection
-     * instead of calling stopTLS.</p>
+     * <p>Note: The Sun and IBM implementions of JSSE do not currently allow
+     * stopping TLS on an open Socket.  In order to produce the same results
+     * this method currently disconnects the socket and reconnects, giving
+     * the application an anonymous connection to the server, as required
+     * by StopTLS.</p>
      *
      * @see #startTLS
      * @see #isTLS
      */
     public void stopTLS() throws LDAPException {
+
         if (!isTLS()){
             throw new LDAPException(ExceptionMessages.NO_STARTTLS,
                     LDAPException.OPERATIONS_ERROR );
         }
-        this.conn.stopTLS();
+
+        int semaphoreID = conn.acquireWriteSemaphore();
+        try{
+            if (!conn.areMessagesComplete()) {
+                throw new LDAPException(
+                        ExceptionMessages.OUTSTANDING_OPERATIONS,
+                        LDAPException.OPERATIONS_ERROR );
+            }
+            //stopTLS stops and starts the reader thread for us.
+            conn.stopTLS();
+        }
+        finally {
+            conn.freeWriteSemaphore(semaphoreID);
+
+            /* Now that the TLS socket is closed, reset everything.  This next
+            line is temporary until JSSE is fixed to properly handle TLS stop */
+            this.connect(this.getHost(), this.getPort());
+        }
         return;
     }
     //*************************************************************************
@@ -1900,7 +1918,7 @@ public class LDAPConnection implements Cloneable
         // Step through the space-delimited list
         StringTokenizer hostList = new StringTokenizer(host," ");
         String address = null;
-//        String portString;
+
         int specifiedPort;
         int colonIndex; //after the colon is the port
         while (hostList.hasMoreTokens()) {
@@ -3417,7 +3435,7 @@ public class LDAPConnection implements Cloneable
     {
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.apiRequests,
-                    "LDAPConnection.search(" + toGet.getUrl() + ")");
+                    "LDAPConnection.search(" + toGet.toString() + ")");
         }
         LDAPConnection conn = new LDAPConnection();
         conn.connect(toGet.getHost(),toGet.getPort());
@@ -3807,7 +3825,7 @@ public class LDAPConnection implements Cloneable
                          LDAPException.CONNECT_ERROR, null, ex);
                     rex.setReferrals( searchReferral);
                     ReferralInfo ref=rconn.getConnection().getActiveReferral();
-                    rex.setFailedReferral( ref.getReferralUrl().getUrl());
+                    rex.setFailedReferral( ref.getReferralUrl().toString());
                     throw rex;
                 }
 
@@ -3837,7 +3855,7 @@ public class LDAPConnection implements Cloneable
                         ExceptionMessages.REFERRAL_ERROR, ex);
                     rex.setReferrals( refs);
                     if( rinfo != null) {
-                        rex.setFailedReferral( rinfo.getReferralUrl().getUrl());
+                        rex.setFailedReferral( rinfo.getReferralUrl().toString());
                     } else {
                         rex.setFailedReferral( refs[refs.length - 1]);
                     }
@@ -4065,7 +4083,7 @@ public class LDAPConnection implements Cloneable
     /**
      * Abandons all outstanding operations managed by the queue.
      *
-     * @deprecated @see abandon(LDAPMessageQueue).
+     * @deprecated replaced by {@link #abandon(LDAPMessageQueue)}.
      * This method has been changed to use the LDAPMessageQueue parameter
      * as of IETF draft 17 of the Java LDAP API
      * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
@@ -4081,7 +4099,8 @@ public class LDAPConnection implements Cloneable
     /**
      * Abandons all outstanding operations managed by the listener.
      *
-     * @deprecated @see abandon(LDAPMessageQueue, LDAPConstraints).
+     * @deprecated replaced by
+     * {@link #abandon(LDAPMessageQueue, LDAPConstraints)}.
      * This method has been changed to use the LDAPMessageQueue parameter
      * as of IETF draft 17 of the Java LDAP API
      * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
@@ -4097,7 +4116,7 @@ public class LDAPConnection implements Cloneable
     /**
      * Asynchronously adds an entry to the directory.
      *
-     * @deprecated see #add(LDAPEntry, LDAPResponseQueue).
+     * @deprecated replaced by {@link #add(LDAPEntry, LDAPResponseQueue)}.
      * This method has been changed to use the LDAPMessageQueue parameter
      * as of IETF draft 17 of the Java LDAP API
      * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
@@ -4113,7 +4132,8 @@ public class LDAPConnection implements Cloneable
      * Asynchronously adds an entry to the directory, using the specified
      * constraints.
      *
-     * @deprecated see #add(LDAPEntry, LDAPResponseQueue, LDAPConstraints).
+     * @deprecated replaced by
+     * {@link #add(LDAPEntry, LDAPResponseQueue, LDAPConstraints)}.
      * This method has been changed to use the LDAPMessageQueue parameter
      * as of IETF draft 17 of the Java LDAP API
      * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
@@ -4131,7 +4151,8 @@ public class LDAPConnection implements Cloneable
      * Asynchronously compares an attribute value with one in the directory,
      * using the specified queue.
      *
-     * @deprecated see #compare(String, LDAPAttribute, LDAPResponseQueue).
+     * @deprecated replaced by
+     * {@link #compare(String, LDAPAttribute, LDAPResponseQueue)}.
      * This method has been changed to use the LDAPMessageQueue parameter
      * as of IETF draft 17 of the Java LDAP API
      * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
@@ -4149,8 +4170,8 @@ public class LDAPConnection implements Cloneable
      * Asynchronously compares an attribute value with one in the directory,
      * using the specified queue and contraints.
      *
-     * @deprecated see #compare(String, LDAPAttribute,
-                            LDAPResponseQueue, LDAPConstraints).
+     * @deprecated replaced by {@link #compare(String, LDAPAttribute,
+                            LDAPResponseQueue, LDAPConstraints)}.
      * This method has been changed to use the LDAPMessageQueue parameter
      * as of IETF draft 17 of the Java LDAP API
      * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
@@ -4169,7 +4190,7 @@ public class LDAPConnection implements Cloneable
      * Asynchronously deletes the entry with the specified distinguished name
      * from the directory and returns the results to the specified queue.
      *
-     * @deprecated see #delete(String, LDAPResponseQueue).
+     * @deprecated replaced by {@link #delete(String, LDAPResponseQueue)}.
      * This method has been changed to use the LDAPMessageQueue parameter
      * as of IETF draft 17 of the Java LDAP API
      * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
@@ -4185,7 +4206,8 @@ public class LDAPConnection implements Cloneable
      * Asynchronously deletes the entry with the specified distinguished name
      * from the directory, using the specified contraints and queue.
      *
-     * @deprecated see #delete(String, LDAPResponseQueue, LDAPConstraints).
+     * @deprecated replaced by
+     * {@link #delete(String, LDAPResponseQueue, LDAPConstraints)}.
      * This method has been changed to use the LDAPMessageQueue parameter
      * as of IETF draft 17 of the Java LDAP API
      * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
@@ -4203,7 +4225,8 @@ public class LDAPConnection implements Cloneable
      * Provides an asynchronous means to access extended, non-mandatory
      * operations offered by a particular LDAPv3 compliant server.
      *
-     * @deprecated see #extendedOperaiont(LDAPExtendedOperation, LDAPResponseQueue).
+     * @deprecated replaced by
+     * {@link #extendedOperation(LDAPExtendedOperation, LDAPResponseQueue)}.
      * This method has been changed to use the LDAPMessageQueue parameter
      * as of IETF draft 17 of the Java LDAP API
      * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
@@ -4221,8 +4244,8 @@ public class LDAPConnection implements Cloneable
      * Provides an asynchronous means to access extended, non-mandatory
      * operations offered by a particular LDAPv3 compliant server.
      *
-     * @deprecated see #extendedOperation(LDAPExtendedOperation,
-     *   LDAPConstraints, LDAPResponseQueue).
+     * @deprecated replaced by {@link #extendedOperation(LDAPExtendedOperation,
+     *   LDAPConstraints, LDAPResponseQueue)}.
      * This method has been changed to use the LDAPMessageQueue parameter
      * as of IETF draft 17 of the Java LDAP API
      * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
@@ -4240,7 +4263,8 @@ public class LDAPConnection implements Cloneable
      * Asynchronously makes a single change to an existing entry in the
      * directory.
      *
-     * @deprecated see #modify(String, LDAPModification, LDAPResponseQueue).
+     * @deprecated replaced by
+     * {@link #modify(String, LDAPModification, LDAPResponseQueue)}.
      * This method has been changed to use the LDAPMessageQueue parameter
      * as of IETF draft 17 of the Java LDAP API
      * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
@@ -4258,8 +4282,9 @@ public class LDAPConnection implements Cloneable
      * Asynchronously makes a single change to an existing entry in the
      * directory, using the specified constraints and queue.
      *
-     * @deprecated see #modify(String, LDAPModification, LDAPResponseQueue,
-     *  LDAPConstraints).
+     * @deprecated replaced by
+     * {@link #modify(String, LDAPModification, LDAPResponseQueue,
+     * LDAPConstraints)}.
      * This method has been changed to use the LDAPMessageQueue parameter
      * as of IETF draft 17 of the Java LDAP API
      * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
@@ -4278,7 +4303,8 @@ public class LDAPConnection implements Cloneable
      * Asynchronously makes a set of changes to an existing entry in the
      * directory.
      *
-     * @deprecated see #modify(String, LDAPModificationSet, LDAPResponseQueue).
+     * @deprecated replaced by
+     * {@link #modify(String, LDAPModification[], LDAPResponseQueue)}.
      * This method has been changed to use the LDAPMessageQueue parameter
      * as of IETF draft 17 of the Java LDAP API
      * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
@@ -4296,8 +4322,9 @@ public class LDAPConnection implements Cloneable
      * Asynchronously makes a set of changes to an existing entry in the
      * directory, using the specified constraints and queue.
      *
-     * @deprecated see #modify(String, LDAPModificationSet,
-     *  LDAPResponseQueue, LDAPConstraints).
+     * @deprecated replaced by
+     * {@link #modify(String, LDAPModification[],
+     *  LDAPResponseQueue, LDAPConstraints)}.
      * This method has been changed to use the LDAPMessageQueue parameter
      * as of IETF draft 17 of the Java LDAP API
      * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
@@ -4316,7 +4343,7 @@ public class LDAPConnection implements Cloneable
      * Synchronously makes a set of changes to an existing entry in the
      * directory.
      *
-     * @deprecated see #modify(String, LDAPModification[])
+     * @deprecated replaced by {@link #modify(String, LDAPModification[])}
      * This method has been changed to use the LDAPModificaton[] parameter
      * as of IETF draft 17 of the Java LDAP API
      * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
@@ -4333,7 +4360,8 @@ public class LDAPConnection implements Cloneable
      * Synchronously makes a set of changes to an existing entry in the
      * directory, using the specified constraints.
      *
-     * @deprecated see #modify(String, LDAPModification[], LDAPConstraints)
+     * @deprecated replaced by
+     * {@link #modify(String, LDAPModification[], LDAPConstraints)}
      * This method has been changed to use the LDAPModificaton[] parameter
      * as of IETF draft 17 of the Java LDAP API
      * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
@@ -4351,7 +4379,8 @@ public class LDAPConnection implements Cloneable
     /**
      * Asynchronously renames an existing entry in the directory.
      *
-     * @deprecated see #rename(String, String, boolean, LDAPResponseQueue).
+     * @deprecated replaced by
+     * {@link #rename(String, String, boolean, LDAPResponseQueue)}.
      * This method has been changed to use the LDAPMessageQueue parameter
      * as of IETF draft 17 of the Java LDAP API
      * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
@@ -4371,8 +4400,9 @@ public class LDAPConnection implements Cloneable
      * Asynchronously renames an existing entry in the directory, using the
      * specified constraints.
      *
-     * @deprecated see #rename(String, String, boolean, LDAPResponseQueue,
-     *    LDAPConstraints).
+     * @deprecated replaced by
+     * {@link #rename(String, String, boolean, LDAPResponseQueue,
+     *  LDAPConstraints)}.
      * This method has been changed to use the LDAPMessageQueue parameter
      * as of IETF draft 17 of the Java LDAP API
      * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
@@ -4392,8 +4422,8 @@ public class LDAPConnection implements Cloneable
     /**
      * Asynchronously renames an existing entry in the directory, possibly
      * repositioning the entry in the directory.
-     * @deprecated see #rename(String, String, String, boolean,
-     *    LDAPResponseQueue).
+     * @deprecated replaced by {@link #rename(String, String, String, boolean,
+     *    LDAPResponseQueue)}.
      * This method has been changed to use the LDAPMessageQueue parameter
      * as of IETF draft 17 of the Java LDAP API
      * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
@@ -4415,8 +4445,8 @@ public class LDAPConnection implements Cloneable
      * specified constraints and possibily repositioning the entry in the
      * directory.
      *
-     * @deprecated see #rename(String, String, String, boolean,
-     *    LDAPResponseQueue, LDAPConstraints).
+     * @deprecated replaced by {@link #rename(String, String, String, boolean,
+     *    LDAPResponseQueue, LDAPConstraints)}.
      * This method has been changed to use the LDAPMessageQueue parameter
      * as of IETF draft 17 of the Java LDAP API
      * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
@@ -4437,8 +4467,8 @@ public class LDAPConnection implements Cloneable
     /**
      * Asynchronously performs the search specified by the parameters.
      *
-     * @deprecated see #search(String, int, String, String[], boolean,
-     *   LDAPSearchQueue).
+     * @deprecated replaced by {@link #search(String, int, String, String[], boolean,
+     *   LDAPSearchQueue)}.
      * This method has been changed to use the LDAPMessageQueue parameter
      * as of IETF draft 17 of the Java LDAP API
      * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
@@ -4462,8 +4492,8 @@ public class LDAPConnection implements Cloneable
      * as the maximum number of entries to find or the maximum time to
      * wait for search results).
      *
-     * @deprecated see #search(String, int, String, String[], boolean,
-     *   LDAPSearchQueue, LDAPSearchConstraints).
+     * @deprecated replaced by {@link #search(String, int, String, String[], boolean,
+     *   LDAPSearchQueue, LDAPSearchConstraints)}.
      * This method has been changed to use the LDAPMessageQueue parameter
      * as of IETF draft 17 of the Java LDAP API
      * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
@@ -4542,7 +4572,8 @@ public class LDAPConnection implements Cloneable
      * currently connected to) using the specified name, password, LDAP
      * version, and queue.
      *
-     * @deprecated see #bind(int, String, byte[], LDAPResponseQueue).
+     * @deprecated replaced by
+     * {@link #bind(int, String, byte[], LDAPResponseQueue)}.
      * This method has been changed to use the LDAPMessageQueue
      * parameter as of IETF draft 17 of the Java LDAP API
      * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
@@ -4563,8 +4594,9 @@ public class LDAPConnection implements Cloneable
      * currently connected to) using the specified name, password, LDAP
      * version, queue, and constraints.
      *
-     * @deprecated see #bind(int, String, byte[], LDAPResponseQueue,
-     *  LDAPConstraints).
+     * @deprecated replaced by
+     * {@link #bind(int, String, byte[], LDAPResponseQueue,
+     *  LDAPConstraints)}.
      * This method has been changed to use the LDAPMessageQueue
      * parameter as of IETF draft 17 of the Java LDAP API
      * (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
