@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.74 2001/02/05 16:33:14 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.75 2001/02/13 18:36:47 cmorris Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -680,42 +680,41 @@ public class LDAPConnection implements Cloneable
     }
 
     /**
-     * Enables the processing of unsolicited messages from the server.
+     * Registers an object to be notified on arrival of an unsolicited 
+	 * message from a server.
      *
-     * <p>An unsolicited message has the ID 0. If unsolicited
-     * notifications are enabled, unsolicited messages can be queried and
-     * retrieved from the response listener with isResponseReceived(0) and
-     * getResponse(0). The default is for unsolicited messages to be
-     * discarded.</p>
+     * <p>An unsolicited message has the ID 0. A new thread is created and
+	 * the method "messageReceived" in each registered object is called in 
+	 * turn.</p>
      *
-     *  @param listener  The listener returned for messages unsolicited
-     *                   messages returned, or null if a new listener
-     *                   is to be created.
+     *  @param listener  An object to be notified on arrival of an 
+     *         unsolicited message from a server.  This object must
+	 *		   implement the LDAPUnsolicitedNotificationListener interface.
      *
-     *  @return The listener used to handle unsolicited messages.
      */
-    public LDAPResponseListener addUnsolicitedNotificationListener (
-                LDAPResponseListener listener)
-    {
+    public void addUnsolicitedNotificationListener( LDAPUnsolicitedNotificationListener listener)
+	{
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.apiRequests, name +
             "addUnsolicitedNOtificationListener()");
         }
         throw new RuntimeException("Method LDAPConnection.addUnsolicitedNotificationListener not implemented");
     }
+    
+
 
     /**
-     * Disables the processing of unsolicited messages from the server.
+	 * Deregisters an object so that it will no longer be notified on 
+	 * arrival of an unsolicited message from a server. If the object is 
+	 * null or was not previously registered for unsolicited notifications, 
+	 * the method does nothing. 
      *
      *
-     *  @param listener  The listener used for handling unsolicited
-     *                   messages returned.  Upon return from this
-     *                   method, no more unsolicited messages from
-     *                   this connection will be received by this listener.
+     *  @param listener  An object to no longer be notified on arrival of 
+     *                   an unsolicited message from a server. 
      *
      */
-    public void removeUnsolicitedNotificationListener (
-                LDAPResponseListener listener)
+    public void removeUnsolicitedNotificationListener (LDAPUnsolicitedNotificationListener listener)
     {
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.apiRequests, name +
