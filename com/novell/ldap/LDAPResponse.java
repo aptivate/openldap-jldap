@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPResponse.java,v 1.27 2001/03/05 20:14:33 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPResponse.java,v 1.28 2001/03/05 20:49:07 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -36,27 +36,32 @@ import com.novell.ldap.client.*;
 public class LDAPResponse extends LDAPMessage
 {
     private LocalException exception = null;
-    private String[] referralList;
-    private String activeReferral;
+    private ReferralInfo activeReferral;
 
     /**
-     * Creates an LDAPMessage using an LDAPException
+     * Creates an LDAPResponse using an LDAPException.
+     * Used to wake up the user following an abandon.
+     * Note: The abandon doesn't have to be user initiated
+     * but may be the result of error conditions.
+     * <br>
+     * Referral information is available if this connection created solely
+     * to follow a referral.
      *
-     *  @param message  The exception
+     *  @param ex  The exception
      * <br><br>
-     *  @param refeerralException  True if exception came from a connection
-     *                             created to follow referrals.
+     *  @param refeerralList  The list of referrals from the server
+     * <br><br>
+     *  @param activeReferral  The referral actually used to create the
+     *                             connection
      */
     public LDAPResponse( LocalException ex,
-                         String[] referralList,
-                         String activeReferral)
+                         ReferralInfo activeReferral)
     {
         exception = ex;
-        this.referralList = referralList;
         this.activeReferral = activeReferral;
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.messages,
-                "new LDAPResponse: referral " + (this.referralList != null) +
+                "new LDAPResponse: referral " + (this.activeReferral != null) +
                 "\n\texception:" +  ex.toString());
         }
 
@@ -321,25 +326,13 @@ public class LDAPResponse extends LDAPMessage
      }
 
     /**
-     * Returns the list of referals if
-     * connection created to follow referrals.
-     *
-     * @return list of referrals
-     */
-     /*package*/
-     String[] getReferralList()
-     {
-        return referralList;
-     }
-
-    /**
      * Indicates the referral instance being followed if the
      * connection created to follow referrals.
      *
      * @return the referral being followed
      */
      /*package*/
-     String getActiveReferral()
+     ReferralInfo getActiveReferral()
      {
         return activeReferral;
      }

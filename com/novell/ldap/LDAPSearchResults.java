@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResults.java,v 1.39 2001/03/02 23:10:29 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResults.java,v 1.40 2001/03/26 19:54:56 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -227,20 +227,22 @@ public class LDAPSearchResults implements Enumeration
             }
             if(element instanceof LDAPResponse) {         // Search done w/bad status
                 if( ((LDAPResponse)element).hasException()) {
+
+                    LDAPResponse lr = (LDAPResponse)element;
+                    ReferralInfo ri = lr.getActiveReferral();
+
                     if( Debug.LDAP_DEBUG ) {
                         Debug.trace( Debug.messages, name +
                             "next: LDAPResponse has embedded exception" +
-                            " from following referral - " +
-                            ((((LDAPResponse)element).getReferralList()) != null));
+                            " from following referral - " + (ri != null));
                     }
-                    LDAPResponse lr = (LDAPResponse)element;
-                    if( lr.getReferralList() != null) {
+                    if( ri != null) {
                         // Error attempting to follow a search continuation reference
                         LDAPReferralException rex = new LDAPReferralException(
                             LDAPExceptionMessageResource.REFERENCE_ERROR,
                             lr.getException());
-                        rex.setReferrals(lr.getReferralList());
-                        rex.setFailedReferral( lr.getActiveReferral());
+                        rex.setReferrals(ri.getReferralList());
+                        rex.setFailedReferral( ri.getReferralUrl().getUrl());
                         throw rex;
                     }
                 }

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPExceptionMessageResource.java,v 1.12 2001/03/14 19:25:58 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPExceptionMessageResource.java,v 1.13 2001/04/17 21:24:29 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -37,6 +37,7 @@ public class LDAPExceptionMessageResource extends java.util.ListResourceBundle {
   public final static String REFERENCE_NOFOLLOW   = "REFERENCE_NOFOLLOW";
   public final static String REFERRAL_INTERNAL    = "REFERRAL_INTERNAL";
   public final static String REFERRAL_BIND        = "REFERRAL_BIND";
+  public final static String REFERRAL_BIND_MATCH  = "REFERRAL_BIND_MATCH";
   public final static String NO_DUP_REQUEST       = "NO_DUP_REQUEST";
   public final static String SERVER_CONNECT_ERROR = "SERVER_CONNECT_ERROR";
   public final static String NO_PROPERTY          = "NO_PROPERTY";
@@ -87,6 +88,7 @@ public class LDAPExceptionMessageResource extends java.util.ListResourceBundle {
       {"REFERENCE_NOFOLLOW", "Search result reference received, and referral following is off"},
       {"REFERRAL_INTERNAL", "LDAPConnection: checkForReferral: internal error"},
       {"REFERRAL_BIND", "LDAPBind.bind() function returned null"},
+      {"REFERRAL_BIND_MATCH", "Could not match LDAPBind.bind() connection with Server Referral URL list"},
       {"NO_DUP_REQUEST", "Cannot duplicate message to follow referral for {0} request, not allowed"},
       {"SERVER_CONNECT_ERROR","Error connecting to server {0} while attempting to follow a referral"},
       {"NO_PROPERTY","Requested property is not available."},

@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/client/Message.java,v 1.14 2001/03/06 19:19:13 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/client/Message.java,v 1.15 2001/03/06 23:34:49 vtag Exp $
 *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -344,14 +344,20 @@ public class Message extends Thread
                     // and removeElementAt are multiple statements.
                     // Another thread could remove the object between statements.
                     msg = replies.remove(0); // Atomic get and remove
-                    if( Debug.LDAP_DEBUG) {
-                        Debug.trace( Debug.messages, name +
-                            "Got reply from queue(" +
-                            replies.size() + " remaining in queue)");
-                    }
                     if( (complete || ! acceptReplies) && replies.isEmpty()) {
                         // Remove msg from connection queue when last reply read
                         conn.removeMessage(this);
+                        if( Debug.LDAP_DEBUG) {
+                            Debug.trace( Debug.messages, name +
+                                "Last message removed, remove msg from Connection");
+                        }
+                    }
+                    else {
+                        if( Debug.LDAP_DEBUG) {
+                            Debug.trace( Debug.messages, name +
+                                "Got reply from queue(" +
+                                replies.size() + " remaining in queue)");
+                        }
                     }
                     return msg;
                 } catch( ArrayIndexOutOfBoundsException ex ) {
@@ -468,13 +474,14 @@ public class Message extends Thread
         cleanup();
         if( informUserEx != null) {
             replies.addElement( new LDAPResponse( informUserEx,
-                    conn.getReferralList(), conn.getActiveReferral()));
+                        conn.getActiveReferral()));
             if( Debug.LDAP_DEBUG) {
                 Debug.trace( Debug.messages, name +
                         "Queued exception as LDAPResponse (" + replies.size() +
                         " in queue):" +
-                        " following referral=" + (conn.getReferralList() != null) +
-                        "\n\texception: " + informUserEx.getLDAPErrorMessage());
+                        " following referral=" +
+                        (conn.getActiveReferral() != null) + "\n\texception: " +
+                        informUserEx.getLDAPErrorMessage());
             }
             // wake up waiting threads
             sleepersAwake();

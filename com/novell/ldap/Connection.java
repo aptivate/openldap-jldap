@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.47 2001/04/17 21:24:30 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.48 2001/04/18 17:09:29 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -82,8 +82,7 @@ public final class Connection implements Runnable
     private MessageVector messages = new MessageVector(5,5);
 
     // Connection created to follow referral
-    private String[] referralList = null;
-    private String activeReferral = null;
+    private ReferralInfo activeReferral = null;
 
     // Place to save unsolicited message listeners
     private Vector2 unsolicitedListeners = new Vector2(3,3);
@@ -941,30 +940,12 @@ public final class Connection implements Runnable
         }
         return;
     }
-    /**
-     * Marks this LDAPConnection as one created to follow a referral
-     */
-    public void setReferralList( String[] referrals)
-    {
-        referralList = referrals;
-        return;
-    }
-
-    /**
-     * Returns the referral list if this connection used to follow a referral
-     *
-     * @return the referral list
-     */
-    public String[] getReferralList()
-    {
-        return referralList;
-    }
 
     /**
      * Sets the current referral active on this connection if created to
      * follow referrals.
      */
-    public void setActiveReferral( String referral)
+    public void setActiveReferral( ReferralInfo referral)
     {
         activeReferral = referral;
         return;
@@ -976,7 +957,7 @@ public final class Connection implements Runnable
      *
      * @return the active referral url
      */
-    public String getActiveReferral()
+    public ReferralInfo getActiveReferral()
     {
         return activeReferral;
     }

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.90 2001/04/18 15:59:24 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.91 2001/04/18 17:09:27 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -16,6 +16,7 @@
 package com.novell.ldap;
 
 import com.novell.ldap.client.ArrayList;
+import com.novell.ldap.client.ReferralInfo;
 import java.io.*;
 import java.util.*;
 import java.net.MalformedURLException;
@@ -26,7 +27,6 @@ import com.novell.ldap.asn1.*;
 import com.novell.ldap.rfc2251.*;
 
 /**
- *
  *  Represents the central class that encapsulates the connection
  *  to a directory server through the LDAP protocol.
  *
@@ -51,7 +51,6 @@ public class LDAPConnection implements Cloneable
     private static Object nameLock = new Object(); // protect agentNum
     private static int lConnNum = 0;  // Debug, LDAPConnection number
     private String name;             // String name for debug
-    private LDAPUrl referralURL = null; // Url used to follow a referral
 
     /**
      * Used with search to specify that the scope of entrys to search is to
@@ -3247,17 +3246,16 @@ public class LDAPConnection implements Cloneable
     private LDAPResponseListener sendRequest(
                                         LDAPMessage msg,
                                         int timeout,
-                                        LDAPResponseListener listener,
+                                        LDAPResponseListener listen,
                                         BindProperties bindProps)
             throws LDAPException
     {
         MessageAgent agent;
-        LDAPResponseListener listen = listener;
         if(listen == null) {
             agent = new MessageAgent();
             listen = new LDAPResponseListener( agent);
         } else {
-            agent = listener.getMessageAgent();
+            agent = listen.getMessageAgent();
         }
 
         agent.sendMessage( conn, msg, timeout, listen, bindProps);
@@ -3287,30 +3285,6 @@ public class LDAPConnection implements Cloneable
     }
 
     /**
-     * Save the URL used to follow a referral for this connection
-     *
-     * @param url the referral URL
-     */
-    /* package */
-    void setReferralURL( LDAPUrl url)
-    {
-        referralURL = url;
-        return;
-    }
-
-    /**
-     * Get the URL used to follow a referral for this connection
-     *
-     * @return the referral URL
-     */
-    /* package */
-    LDAPUrl getReferralURL( )
-    {
-        return referralURL;
-    }
-
-
-    /**
      * get an LDAPConnection object so that we can follow a referral.
      * This function is never called if cons.getReferralFollowing() returns false.
      *
@@ -3320,15 +3294,15 @@ public class LDAPConnection implements Cloneable
      *<br><br>
      * @param returnUrl the LDAPUrl that was connected to
      *
-     * @return the new LDAPConnection object
+     * @return The referralInfo object
      */
-    /* package*/
-    LDAPConnection getReferralConnection( String[] referrals,
+    private ReferralInfo getReferralConnection( String[] referrals,
                                           boolean search)
                     throws LDAPReferralException
     {
-        LDAPConnection rconn = null;
+        ReferralInfo refInfo = null;
         Throwable ex = null;
+        LDAPConnection rconn = null;
         LDAPReferralHandler rh = defSearchCons.getReferralHandler();
         int i = 0;
         // Check if we use LDAPRebind to get authentication credentials
@@ -3344,7 +3318,6 @@ public class LDAPConnection implements Cloneable
                                                     "url=" + referrals[i]);
                     }
                     rconn = new LDAPConnection( conn.getSocketFactory());
-                    // This connection created to follow a referral
                     rconn.setConstraints( defSearchCons);
                     if( search) {
                         rconn.setSearchConstraints( defSearchCons);
@@ -3360,9 +3333,9 @@ public class LDAPConnection implements Cloneable
                     }
                     rconn.bind( dn, pw);
                     ex = null;
-                    rconn.setReferralURL( url);
-                    rconn.setReferralList( referrals);
-                    rconn.setActiveReferral( referrals[i]);
+                    refInfo = new ReferralInfo(rconn, referrals, url);
+                    // Indicate this connection created to follow referral
+                    rconn.getConnection().setActiveReferral( refInfo);
                     break;
                 } catch( Exception lex) {
                     if( rconn != null) {
@@ -3387,14 +3360,57 @@ public class LDAPConnection implements Cloneable
         else { //  rh instanceof LDAPBind
             try {
                 if( Debug.LDAP_DEBUG) {
-                    Debug.trace( Debug.referrals,   name +
+                    Debug.trace( Debug.referrals, name +
                                                 "getReferralConnection: " +
                                                 "Call LDAPBind.bind()");
                 }
                 rconn = ((LDAPBind)rh).bind( referrals, this);
-                // This connection created to follow a referral
-                rconn.setReferralList( referrals);
+                if( rconn == null) {
+                    LDAPReferralException rex = new LDAPReferralException(
+                        LDAPExceptionMessageResource.REFERRAL_ERROR);
+                    rex.setReferrals( referrals);
+                    throw rex;
+                }
+                // Figure out which Url belongs to the connection
+                for( int idx = 0; idx < referrals.length; idx++) {
+                    try {
+                        LDAPUrl url = new LDAPUrl( referrals[idx]);
+                        if( Debug.LDAP_DEBUG) {
+                            Debug.trace( Debug.referrals, name +
+                                        "Compare host port " +
+                                        url.getHost() + "-" + rconn.getHost() +
+                                        " & " +
+                                        url.getPort() + "-" + rconn.getPort());
+                        }
+                        if( url.getHost().equalsIgnoreCase(rconn.getHost()) &&
+                                (url.getPort() == rconn.getPort())) {
+                            refInfo = new ReferralInfo(rconn, referrals, url);
+                            break;
+                        }
+                    } catch ( Exception e) {
+                        ; // ignore
+                    }
+                }
+                if( refInfo == null) {
+                    if( Debug.LDAP_DEBUG) {
+                        Debug.trace( Debug.referrals, name +
+                                    "getReferralConnection: " +
+                                    "LDAPBind.bind(): " +
+                                    " could not match connection with URL" +
+                                    referrals.toString());
+                    }
+                    // Could not match LDAPBind.bind() connecction with URL list
+                    ex = new LDAPException(
+                            LDAPExceptionMessageResource.REFERRAL_BIND_MATCH,
+                            LDAPException.CONNECT_ERROR);
+                }
             } catch( LDAPReferralException lex) {
+                if( Debug.LDAP_DEBUG) {
+                    Debug.trace( Debug.referrals, name +
+                                "getReferralConnection: " +
+                                "Exception from LDAPBind.bind(): " +
+                                lex.toString());
+                }
                 rconn = null;
                 ex = lex;
             }
@@ -3423,23 +3439,8 @@ public class LDAPConnection implements Cloneable
             throw rex;
         }
 
-        /*
-         * We had no errors, but just could not connect and authenticate
-         * I'm not sure how we can get this
-         */
-        if( rconn == null) {
-                // Could not create any connection to follow referral
-                LDAPReferralException rex = new LDAPReferralException(
-                        LDAPExceptionMessageResource.NO_CONNECT,
-                        LDAPException.LOCAL_ERROR, null);
-            rex.setReferrals(referrals);
-            // Use last URL string for the failed referral
-            rex.setFailedReferral( referrals[referrals.length-1]);
-            throw rex;
-        }
-
         // We now have an authenticated connection to be used to follow the referral.
-        return rconn;
+        return refInfo;
     }
 
     /**
@@ -3479,6 +3480,7 @@ public class LDAPConnection implements Cloneable
     {
         ArrayList refList = referralList;
         LDAPConnection rconn = null; // new conn for following referral
+        ReferralInfo rinfo = null;   // referral info
         LDAPMessage origMsg;
 
         // Get a place to store new connections
@@ -3535,8 +3537,9 @@ public class LDAPConnection implements Cloneable
                         LDAPException.REFERRAL_LIMIT_EXCEEDED);
                 }
                 // Get a connection to follow the referral
-                rconn = getReferralConnection( refs, searchReference);
-                refUrl = rconn.getReferralURL();
+                rinfo = getReferralConnection( refs, searchReference);
+                rconn = rinfo.getReferralConnection();
+                refUrl = rinfo.getReferralUrl();
                 refList.add( rconn);
 
                 if( Debug.LDAP_DEBUG) {
@@ -3572,7 +3575,8 @@ public class LDAPConnection implements Cloneable
                          LDAPExceptionMessageResource.REFERRAL_SEND,
                          LDAPException.CONNECT_ERROR, null, ex);
                     rex.setReferrals( searchReferral);
-                    rex.setFailedReferral( rconn.getConnection().getActiveReferral());
+                    ReferralInfo ref = rconn.getConnection().getActiveReferral();
+                    rex.setFailedReferral( ref.getReferralUrl().getUrl());
                     throw rex;
                 }
 
@@ -3601,8 +3605,8 @@ public class LDAPConnection implements Cloneable
                     LDAPReferralException rex = new LDAPReferralException(
                         LDAPExceptionMessageResource.REFERRAL_ERROR, ex);
                     rex.setReferrals( refs);
-                    if( rconn != null) {
-                        rex.setFailedReferral( rconn.getConnection().getActiveReferral());
+                    if( rinfo != null) {
+                        rex.setFailedReferral( rinfo.getReferralUrl().getUrl());
                     } else {
                         rex.setFailedReferral( refs[refs.length - 1]);
                     }
@@ -3672,38 +3676,6 @@ public class LDAPConnection implements Cloneable
                 (RfcLDAPMessage)rfcMsg.dupMessage( dn, filter, reference);
 
         return new LDAPMessage( newRfcMsg);
-    }
-
-    /**
-     * Marks this LDAPConnection as one created to follow a referral
-     */
-    /*package*/
-    void setReferralList( String[] referrals)
-    {
-        conn.setReferralList( referrals);
-        return;
-    }
-
-    /**
-     * Indiciates if this LDAPConnection as one created to follow a referral
-     *
-     * @return true if LDAPConnection created to follow a referral on a
-     * synchronous request.
-     */
-    /*package*/
-    String[] getReferralConnection()
-    {
-        return conn.getReferralList();
-    }
-
-    /**
-     * Sets the active referral for this connection
-     */
-    /*package*/
-    void setActiveReferral( String referral)
-    {
-        conn.setActiveReferral( referral);
-        return;
     }
 
     /*
