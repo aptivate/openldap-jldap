@@ -25,7 +25,7 @@ import java.util.Enumeration;
  *  @see <a href="../../../../doc/com/novell/ldap/LDAPUrl.html">
             com.novell.ldap.LDAPUrl</a>
  */
-public class LDAPUrl {
+public class LDAPUrl implements Cloneable {
 
     private com.novell.ldap.LDAPUrl url;
 
@@ -61,21 +61,42 @@ public class LDAPUrl {
      * specify an LDAP search operation.
      *
      * @see <a href="../../../../doc/com/novell/ldap/LDAPUrl.html
-            #LDAPUrl(java.lang.String, int, java.lang.String, 
-            java.lang.String[], int, java.lang.String)">
+     * #LDAPUrl(java.lang.String, int, java.lang.String,
+     * java.lang.String[], int, java.lang.String, java.lang.String[])">
             com.novell.ldap.LDAPUrl.LDAPUrl(String, int, String,
-            String[], int, String)</a>
+            String[], int, String, String[])</a>
      */
     public LDAPUrl(String host,
                    int port,
                    String dn,
                    String[] attrNames,
                    int scope,
-                   String filter)
+                   String filter,
+                   String extensions[])
     {
 		url = new com.novell.ldap.LDAPUrl(
-		                        host, port, dn, attrNames, scope, filter);
+                host, port, dn, attrNames, scope, filter, extensions);
 		return;
+    }
+
+    /**
+     * Returns a clone of this URL object.
+     *
+     * @return clone of this URL object.
+     *
+     * @see <a href="../../../../doc/com/novell/ldap/LDAPUrl.html
+            #clone()">com.novell.ldap.LDAPUrl.clone()</a>
+     */
+    public Object clone(){
+        return new LDAPUrl((com.novell.ldap.LDAPUrl)this.url);
+    }
+
+    /**
+     * This constructor is used by clone and sets wrapped novell URL
+     */
+    /*package*/
+    LDAPUrl( com.novell.ldap.LDAPUrl novellURL ){
+        this.url = novellURL;
     }
 
     /**
@@ -213,6 +234,6 @@ public class LDAPUrl {
      */
     public String toString()
     {
-        return "org.ietf.ldap.LDAPUrl:" + url.getUrl();
+        return url.toString();
     }
 }
