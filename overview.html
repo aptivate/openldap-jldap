@@ -21,14 +21,12 @@
 
 <b>Introduction</b>
 
-</p>The LDAP class library is designed to provide powerful, yet simple,
-access to LDAP directory services. It defines both asynchronous and
+</p>The LDAP class libraries are designed to provide powerful, yet simple,
+access to LDAP directory services. This API defines both asynchronous and
 synchronous interfaces to LDAP to suit a wide variety of
 applications. This document gives a brief overview of the LDAP model,
 then an overview of the constituents of the class library.
-The public class methods are described in detail, followed by an
-appendix that provides some example code demonstrating the use of the
-classes, and an appendix listing changes from earlier drafts.</p>
+</p>
 
 <b>Overview of the LDAP model</b>
 
@@ -154,7 +152,7 @@ entry.</p></li>
 closes the connection.</p></li>
 
 <p>There are both synchronous and asynchronous versions of the LDAP
-protocol operations described in this draft. Synchronous methods do
+protocol operations in this API. Synchronous methods do
 not return until the operation has completed.</p>
 
 <p>Asynchronous methods take a listener parameter (either
