@@ -3372,6 +3372,10 @@ public class LDAPConnection implements Cloneable
      * type set to one of the request types. You can build a request by using
      * the request classes found in this package</p>
      *
+     * <p>You should note that, since LDAP requests sent to the server
+     * using sendRequest are asynchronous, automatic referral following
+     * does not apply to these requests.</p>
+     *
      * @param request The LDAP request to send to the directory server.
      * @param queue    The queue for messages returned from a server in
      *                 response to this request. If it is null, a
@@ -3397,6 +3401,10 @@ public class LDAPConnection implements Cloneable
      * {@link LDAPMessage} with the operation type set to one of the request
      * types. You can build a request by using the request classes found in this
      * package</p>
+     *
+     * <p>You should note that, since LDAP requests sent to the server
+     * using sendRequest are asynchronous, automatic referral following
+     * does not apply to these requests.</p>
      *
      * @param request The LDAP request to send to the directory server.
      * @param queue    The queue for messages returned from a server in
