@@ -52,7 +52,7 @@
                 debug="on"
                 optimize="off">
                 <classpath>
-                	<pathelement location="external/ssl/domestic/nssl1.1_dom.jar"/>
+                	<pathelement location="external/ssl/domestic/nssl1.2_dom.jar"/>
 					<pathelement location="external/jsse/lib/jcert.jar"/>
 					<pathelement location="external/jsse/lib/jnet.jar"/>
 					<pathelement location="external/jsse/lib/jsse.jar"/>
@@ -90,7 +90,7 @@
                 debug="off"
                 optimize="on">
                 <classpath>
-                	<pathelement location="external/ssl/domestic/nssl1.1_dom.jar"/>
+                	<pathelement location="external/ssl/domestic/nssl1.2_dom.jar"/>
 					<pathelement location="external/jsse/lib/jcert.jar"/>
 					<pathelement location="external/jsse/lib/jnet.jar"/>
 					<pathelement location="external/jsse/lib/jsse.jar"/>
