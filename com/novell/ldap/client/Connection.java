@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.45 2001/03/23 19:13:33 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.46 2001/03/28 23:23:52 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -62,6 +62,8 @@ public final class Connection implements Runnable
     private int fakeId = -1;
 
     private Thread reader = null; // New thread that reads data from the server.
+    private Thread deadReader = null; // Identity of last reader thread
+    private IOException deadReaderException = null; // Last exception of reader
 
     private LBEREncoder encoder = new LBEREncoder();
     private LBERDecoder decoder = new LBERDecoder();
@@ -236,6 +238,7 @@ public final class Connection implements Runnable
      * @param the thread id to match
      */
     private void waitForReader( Thread thread)
+        throws LDAPException
     {
         // wait for previous reader thread to terminate
         while( reader != thread) {
@@ -250,6 +253,25 @@ public final class Connection implements Runnable
                             "waiting for reader thread to start");
                     }
                 }
+                /*
+                 * The reader thread may start and immediately terminate.
+                 * To prevent the waitForReader from waiting forever
+                 * for the dead to rise, we leave traces of the deceased.
+                 * If the thread is already gone, we throw an exception.
+                 */
+                if( (thread != null) && (thread == deadReader)) {
+                    if( Debug.LDAP_DEBUG) {
+                        Debug.trace( Debug.messages, name +
+                            "reader already terminated, throw exception");
+                    }
+                    IOException lex = deadReaderException;
+                    deadReaderException = null;
+                    deadReader = null;
+                    // Reader thread terminated
+                    throw new LDAPException(
+				        LDAPExceptionMessageResource.CONNECTION_READER,
+                        LDAPException.CONNECT_ERROR, lex);
+                }
                 synchronized( this) {
                     this.wait(1000);
                 }
@@ -257,6 +279,8 @@ public final class Connection implements Runnable
                 ;
             }
         }
+        deadReaderException = null;
+        deadReader = null;
         return;
     }
 
@@ -761,11 +785,13 @@ public final class Connection implements Runnable
         String reason = "reader: thread stopping";
         LocalException notify = null;
         Message info = null;
+        IOException ioex = null;
 
-        if( Debug.LDAP_DEBUG) {
-            Debug.trace( Debug.messages, name + "reader: thread starting");
-        }
         reader = Thread.currentThread();
+        if( Debug.LDAP_DEBUG) {
+            Debug.trace( Debug.messages, name + "reader: thread starting: " +
+                reader.toString());
+        }
         try {
             for(;;) {
                 // ------------------------------------------------------------
@@ -884,6 +910,7 @@ public final class Connection implements Runnable
                     "\n\t" + ioe.toString());
             }
 
+            ioex = ioe;
 			if( ! shutdown) {
                 // Connection lost waiting for results from host:port
                 notify = new LocalException(
@@ -900,6 +927,8 @@ public final class Connection implements Runnable
             // Notify application of exception, if any
             shutdown(reason, 0, notify);
         }
+        deadReaderException = ioex;
+        deadReader = reader;
         reader = null;
         if( Debug.LDAP_DEBUG ) {
             Debug.trace( Debug.messages, name +

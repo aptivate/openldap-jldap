@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPExceptionMessageResource.java,v 1.11 2001/03/09 17:55:37 javed Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPExceptionMessageResource.java,v 1.12 2001/03/14 19:25:58 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -26,6 +26,7 @@ public class LDAPExceptionMessageResource extends java.util.ListResourceBundle {
   public final static String CONNECTION_WAIT      = "CONNECTION_WAIT";
   public final static String CONNECTION_FINALIZED = "CONNECTION_FINALIZED";
   public final static String CONNECTION_CLOSED    = "CONNECTION_CLOSED";
+  public final static String CONNECTION_READER    = "CONNECTION_READER";
   public final static String DUP_ERROR            = "DUP_ERROR";
   public final static String NO_CONNECT           = "NO_CONNECT";
   public final static String REFERRAL_ERROR       = "REFERRAL_ERROR";
@@ -35,6 +36,7 @@ public class LDAPExceptionMessageResource extends java.util.ListResourceBundle {
   public final static String REFERRAL_NOFOLLOW    = "REFERRAL_NOFOLLOW";
   public final static String REFERENCE_NOFOLLOW   = "REFERENCE_NOFOLLOW";
   public final static String REFERRAL_INTERNAL    = "REFERRAL_INTERNAL";
+  public final static String REFERRAL_BIND        = "REFERRAL_BIND";
   public final static String NO_DUP_REQUEST       = "NO_DUP_REQUEST";
   public final static String SERVER_CONNECT_ERROR = "SERVER_CONNECT_ERROR";
   public final static String NO_PROPERTY          = "NO_PROPERTY";
@@ -74,6 +76,7 @@ public class LDAPExceptionMessageResource extends java.util.ListResourceBundle {
       {"CONNECTION_WAIT", "Connection lost waiting for results from {0}:{1}"},
       {"CONNECTION_FINALIZED", "Connection closed by the application finalizing the object"},
       {"CONNECTION_CLOSED", "Connection closed by the application disconnecting"},
+      {"CONNECTION_READER", "Reader thread terminated"},
       {"DUP_ERROR", "RfcLDAPMessage: Cannot duplicate message built from the input stream"},
       {"REFERENCE_ERROR","Error attempting to follow a search continuation reference"},
       {"REFERRAL_ERROR","Error attempting to follow a referral"},
@@ -83,6 +86,7 @@ public class LDAPExceptionMessageResource extends java.util.ListResourceBundle {
       {"REFERRAL_NOFOLLOW", "Referral received, and referral following is off"},
       {"REFERENCE_NOFOLLOW", "Search result reference received, and referral following is off"},
       {"REFERRAL_INTERNAL", "LDAPConnection: checkForReferral: internal error"},
+      {"REFERRAL_BIND", "LDAPBind.bind() function returned null"},
       {"NO_DUP_REQUEST", "Cannot duplicate message to follow referral for {0} request, not allowed"},
       {"SERVER_CONNECT_ERROR","Error connecting to server {0} while attempting to follow a referral"},
       {"NO_PROPERTY","Requested property is not available."},
