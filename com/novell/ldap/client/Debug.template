@@ -1,4 +1,4 @@
-// $Novell: /ldap/src/jldap/com/novell/ldap/client/Debug.template,v 1.8 2001/01/02 23:28:30 vtag Exp $
+// $Novell: /ldap/src/jldap/com/novell/ldap/client/Debug.template,v 1.9 2001/01/26 18:22:11 javed Exp $
 // **
 // ** NOTICE: Do NOT edit file Debug.java, the real file is Debug.template
 // **
@@ -51,7 +51,7 @@ import java.util.StringTokenizer;
  * </ul>
  *
  * @author Steven F. Sonntag
- * @version $Id: Debug.template,v 1.8 2001/01/02 23:28:30 vtag Exp $
+ * @version $Id: Debug.template,v 1.9 2001/01/26 18:22:11 javed Exp $
  */
 
 public abstract class Debug {
@@ -93,7 +93,7 @@ public abstract class Debug {
         /**
      * The string value used to enable debug tracing of Controls
      */
-    public static final String Controls = "Controls";
+    public static final String controls = "Controls";
     /**
      * The string value used to enable debug tracing of BER Encoding.
      */
@@ -223,9 +223,6 @@ public abstract class Debug {
                 } else if( tn.equalsIgnoreCase(objectConstructors)) {
                     dumpObject = true;
                     dumpObjectConstructors = true;
-                } else if( tn.equalsIgnoreCase(Controls)) {
-                    dumpObject = true;
-                    dumpObjectFields = true;
                 } else if( tn.equalsIgnoreCase(objectFields)) {
                     dumpObject = true;
                     dumpObjectFields = true;
@@ -249,7 +246,7 @@ public abstract class Debug {
                     traceConnections = true;                
                 } else if( tn.equalsIgnoreCase(rawInput)) {
                     traceRawInput = toggle( traceRawInput);                
-                } else if( tn.equalsIgnoreCase(Controls)) {
+                } else if( tn.equalsIgnoreCase(controls)) {
                     traceControls = toggle( traceControls);                
                 } else if( tn.equalsIgnoreCase(rawOutput)) {
                     traceRawOutput = toggle( traceRawOutput);                
@@ -311,7 +308,7 @@ public abstract class Debug {
                 return(traceEncoding);
             } else if( type.equalsIgnoreCase(decoding)) {
                 return(traceDecoding);
-            } else if( type.equalsIgnoreCase(Controls)) {
+            } else if( type.equalsIgnoreCase(controls)) {
                 return(traceControls);
             } else if( type.equalsIgnoreCase(connections)) {
                 return(traceConnections);
@@ -343,7 +340,7 @@ public abstract class Debug {
                 traceControls = val;
             } else if( type.equalsIgnoreCase(rawInput)) {
                 traceRawInput = val;
-            } else if( type.equalsIgnoreCase(Controls)) {
+            } else if( type.equalsIgnoreCase(controls)) {
                 traceControls = val;
             } else if( type.equalsIgnoreCase(rawOutput)) {
                 traceRawOutput = val;
@@ -388,7 +385,7 @@ public abstract class Debug {
                             traceUrlParse  ||
                             traceEncoding  ||
                             traceDecoding  ||
-                            traceControls ||
+                            traceControls  ||
                             traceConnections;
                 tracing="all";
             } else if( type.equalsIgnoreCase(rawInput)) {
@@ -400,7 +397,7 @@ public abstract class Debug {
             } else if( type.equalsIgnoreCase(referrals)) {
                 printit = traceReferrals;
                 tracing="traceReferrals";
-            } else if( type.equalsIgnoreCase(Controls)) {
+            } else if( type.equalsIgnoreCase(controls)) {
                 printit = traceControls;
                 tracing="traceControls";
             } else if( type.equalsIgnoreCase(messages)) {
