@@ -116,7 +116,7 @@ public class LDAPSearchConstraints extends LDAPConstraints {
                     cons.getReferralHandler(), cons.getHopLimit());
         LDAPControl[] lsc = cons.getControls();
         if( lsc != null) {
-            super.setControls((LDAPControl)lsc.clone());
+            super.setControls((LDAPControl[])lsc.clone());
         }
         Hashtable lp = cons.getProperties();
         if( lp != null) {
