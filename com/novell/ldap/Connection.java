@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.36 2001/02/23 18:11:55 javed Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.37 2001/02/26 19:58:26 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -347,15 +347,13 @@ public final class Connection implements Runnable
      *
      * @return true if other clones exist
      */
-    public void createClone()
+    synchronized public void createClone()
     {
-        int semId = acquireBindSemaphore();
         cloneCount++;
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.messages, name +
                 "createClone(" + cloneCount + ")");
         }
-        freeBindSemaphore(semId);
         return;
     }
 
@@ -380,10 +378,12 @@ public final class Connection implements Runnable
      *  Connection object is returned.  If not a clone,
      *  the current connnection is destroyed and the
      *  existing object is returned.
+     * 
+     *  Only one clone/destroyClone is allowed to run at any one time
      *
      * @return a Connection object.
      */
-    public Connection destroyClone( boolean how, String host, int port)
+    synchronized public Connection destroyClone( boolean how, String host, int port)
         throws LDAPException
     {
         if( Debug.LDAP_DEBUG) {
@@ -391,7 +391,6 @@ public final class Connection implements Runnable
                 "destroyClone(" + how + "," + host + "," + port + ")");
         }
         Connection conn = this;
-        int semId = acquireBindSemaphore();
 
         if( cloneCount > 0) {
             cloneCount--;
@@ -415,13 +414,13 @@ public final class Connection implements Runnable
                            LDAPExceptionMessageResource.CONNECTION_FINALIZED),
                            new Object[] { host, new Integer(port)},
                            LDAPException.CONNECT_ERROR, null, null);
-                shutdown("destroy clone", semId, notify);
+                shutdown("destroy clone", 0, notify);
+            } else {
             }
         }
         if( host != null) {
-            conn.connect( host, port, semId);
+            conn.connect( host, port, 0);
         }
-        freeBindSemaphore(semId);
         return conn;
     }
 
@@ -620,7 +619,8 @@ public final class Connection implements Runnable
      * Cleans up resources associated with this connection.
      * This method may be called by finalize() for the connection, or it may
      * be called by LDAPConnection.disconnect().
-     *
+     * Should not have a bindSemaphore lock in place, as deadlock can occur
+     * while abandoning connections.
      */
     private void shutdown( String reason, int semaphoreId, LocalException notifyUser)
     {
