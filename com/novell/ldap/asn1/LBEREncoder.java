@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/LBEREncoder.java,v 1.3 2000/09/11 21:05:54 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/LBEREncoder.java,v 1.5 2001/02/28 16:00:05 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  ***************************************************************************/
@@ -96,7 +96,7 @@ public class LBEREncoder implements ASN1Encoder {
    public void encode(ASN1Real r, OutputStream out)
       throws IOException
    {
-      throw new RuntimeException("encode to a stream not implemented");
+      throw new IOException("LBEREncoder: Encode to a stream not implemented");
    }
 
    /**
@@ -116,7 +116,7 @@ public class LBEREncoder implements ASN1Encoder {
    public void encode(ASN1BitString bs, OutputStream out)
       throws IOException
    {
-      throw new RuntimeException("encode to a stream not implemented");
+      throw new IOException("LBEREncoder: Encode to a stream not implemented");
    }
 
    /**
@@ -137,7 +137,7 @@ public class LBEREncoder implements ASN1Encoder {
    public void encode(ASN1ObjectIdentifier oi, OutputStream out)
       throws IOException
    {
-      throw new RuntimeException("encode to a stream not implemented");
+      throw new IOException("LBEREncoder: Encode to a stream not implemented");
    }
 
    /**
@@ -146,7 +146,7 @@ public class LBEREncoder implements ASN1Encoder {
    public void encode(ASN1CharacterString cs, OutputStream out)
       throws IOException
    {
-      throw new RuntimeException("encode to a stream not implemented");
+      throw new IOException("LBEREncoder: Encode to a stream not implemented");
    }
 
    //*************************************************************************
