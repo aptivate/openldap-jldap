@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPObjectClassSchema.java,v 1.16 2000/10/26 00:17:10 bgudmundson Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPObjectClassSchema.java,v 1.17 2000/10/31 23:52:23 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -316,5 +316,187 @@ public class LDAPObjectClassSchema extends LDAPSchemaElement{
       return valueBuffer.toString();
 
    }
+
+  public void add(LDAPConnection ld) throws LDAPException {
+    try{
+        add(ld,"");
+    }
+    catch(LDAPException e){
+        throw e;
+    }
+  }
+  public void add(LDAPConnection ld, String dn) throws LDAPException {
+    try{
+        String attrSubSchema[] = { "subschemaSubentry" };
+        LDAPSearchResults sr = ld.search( dn,
+	                  LDAPConnection.SCOPE_BASE,
+					  "objectclass=*",
+					  attrSubSchema,
+					  false);
+        if(sr != null && sr.hasMoreElements()){
+            String schemaDN;
+	        LDAPEntry ent = sr.next();
+	        LDAPAttributeSet attrSet = ent.getAttributeSet();
+	        Enumeration en = attrSet.getAttributes();
+	        LDAPAttribute attr;
+	        if(en.hasMoreElements()){
+	            attr = (LDAPAttribute) en.nextElement();
+	            Enumeration enumString = attr.getStringValues();
+	            if(enumString.hasMoreElements()){
+                    schemaDN = (String) enumString.nextElement();
+                    String[] attrSearchName= { "objectClasses" };
+	                sr = ld.search( schemaDN,
+	                        LDAPConnection.SCOPE_BASE,
+	                        "objectclass=*",
+			                attrSearchName,
+			                false);
+	                String attrName;
+	                if(sr != null && sr.hasMoreElements()){
+	                    ent = sr.next();
+		                attrSet = ent.getAttributeSet();
+		                en = attrSet.getAttributes();
+		                while(en.hasMoreElements()){
+		                    attr = (LDAPAttribute) en.nextElement();
+                            attrName = attr.getName();
+		                    if(attrName.equals("objectClasses")){
+                            // add the value to the object class values
+							LDAPAttribute newValue = new LDAPAttribute(
+                                        "objectClasses",getValue());
+                            LDAPModification lModify = new LDAPModification(
+                                LDAPModification.ADD,newValue);
+                            ld.modify(schemaDN,lModify);
+                        }
+		                continue;
+                    }
+	            }
+	        }
+          }
+	    }
+      }
+
+    catch( LDAPException e){
+      throw e;
+    }
+  }
+
+  public void remove(LDAPConnection ld) throws LDAPException {
+    try{
+        remove(ld,"");
+    }
+    catch(LDAPException e){
+        throw e;
+    }
+  }
+
+  public void remove(LDAPConnection ld, String dn) throws LDAPException {
+    try{
+        String attrSubSchema[] = { "subschemaSubentry" };
+        LDAPSearchResults sr = ld.search( dn,
+	                            LDAPConnection.SCOPE_BASE, "objectclass=*",
+					            attrSubSchema, false);
+	    if(sr != null && sr.hasMoreElements()){
+            String schemaDN;
+	        LDAPEntry ent = sr.next();
+	        LDAPAttributeSet attrSet = ent.getAttributeSet();
+	        Enumeration en = attrSet.getAttributes();
+	        LDAPAttribute attr;
+	        if(en.hasMoreElements()){
+	            attr = (LDAPAttribute) en.nextElement();
+	            Enumeration enumString = attr.getStringValues();
+	            if(enumString.hasMoreElements()){
+                    schemaDN = (String) enumString.nextElement();
+                    String[] attrSearchName= { "objectClasses" };
+	                sr = ld.search( schemaDN,
+	                        LDAPConnection.SCOPE_BASE, "objectclass=*",
+			                attrSearchName, false);
+	                String attrName;
+	                if(sr != null && sr.hasMoreElements()){
+	                    ent = sr.next();
+		                attrSet = ent.getAttributeSet();
+		                en = attrSet.getAttributes();
+		                while(en.hasMoreElements()){
+		                    attr = (LDAPAttribute) en.nextElement();
+                            attrName = attr.getName();
+		                    if(attrName.equals("objectClasses")){
+                                // remove the value from the attributes values
+                                LDAPAttribute newValue = new LDAPAttribute(
+                                	"objectClasses",getValue());
+                            	LDAPModification lModify = new LDAPModification(
+                                	LDAPModification.DELETE,newValue);
+                            	ld.modify(schemaDN,lModify);
+                            }
+		                    continue;
+                      }
+	                }
+	            }
+            }
+	    }
+      }
+
+      catch( LDAPException e){
+        throw e;
+      }
+  }
+
+  public void modify(LDAPConnection ld, LDAPSchemaElement newValue) throws LDAPException {
+    try{
+        modify(ld, newValue, "");
+    }
+    catch(LDAPException e){
+        throw e;
+    }
+  }
+
+  public void modify(LDAPConnection ld, LDAPSchemaElement newValue, String dn) throws LDAPException {
+    try{
+        String attrSubSchema[] = { "subschemaSubentry" };
+        LDAPSearchResults sr = ld.search( dn,
+	                            LDAPConnection.SCOPE_BASE, "objectclass=*",
+					            attrSubSchema, false);
+	    if(sr != null && sr.hasMoreElements()){
+            String schemaDN;
+	        LDAPEntry ent = sr.next();
+	        LDAPAttributeSet attrSet = ent.getAttributeSet();
+	        Enumeration en = attrSet.getAttributes();
+	        LDAPAttribute attr;
+	        if(en.hasMoreElements()){
+	            attr = (LDAPAttribute) en.nextElement();
+	            Enumeration enumString = attr.getStringValues();
+	            if(enumString.hasMoreElements()){
+                    schemaDN = (String) enumString.nextElement();
+                    String[] attrSearchName= { "objectClasses" };
+	                sr = ld.search( schemaDN, LDAPConnection.SCOPE_BASE,
+	                      "objectclass=*", attrSearchName, false);
+	                String attrName;
+	                if(sr != null && sr.hasMoreElements()){
+	                    ent = sr.next();
+		                attrSet = ent.getAttributeSet();
+		                en = attrSet.getAttributes();
+		            while(en.hasMoreElements()){
+		                attr = (LDAPAttribute) en.nextElement();
+                        attrName = attr.getName();
+		                if(attrName.equals("objectClasses")){
+                        	// modify the attribute
+                            LDAPAttribute modValue = new LDAPAttribute(
+                                        "objectClasses", newValue.getValue());
+                            LDAPModification lModify = new LDAPModification(
+                                LDAPModification.DELETE,modValue);
+                            ld.modify(schemaDN,lModify);
+                            lModify = new LDAPModification(
+                                LDAPModification.ADD, modValue);
+                            ld.modify(schemaDN,lModify);
+                    }
+		            continue;
+              }
+	         }
+	        }
+          }
+	    }
+    }
+
+    catch( LDAPException e){
+      throw e;
+    }
+  }
 
 }

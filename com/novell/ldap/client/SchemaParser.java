@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: SchemaParser.java,v 1.3 2000/10/10 22:26:24 bgudmundson Exp $
+ * $Id: SchemaParser.java,v 1.4 2000/10/17 22:09:53 bgudmundson Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -36,6 +36,7 @@ public class SchemaParser{
         String superiors[];
         String required[];
         String optional[];
+        String applies[];
         boolean single = false;
         boolean obsolete = false;
         String equality;
@@ -227,6 +228,26 @@ public class SchemaParser{
                         }
                         continue;
                       }
+                      if(st2.sval.equals("APPLIES")){
+                        Vector values = new Vector();
+                        st2.nextToken();
+                        if(st2.ttype == '(' ){
+                          st2.nextToken();
+                          while(st2.ttype != ')' ){
+                            if(st2.ttype != '$'){
+                            	values.addElement(st2.sval);
+                             }
+                             st2.nextToken();
+                          }
+                        }
+                      	else
+                      		values.addElement(st2.sval);
+                        if(values.size() > 0){
+                            applies = new String[values.size()];
+                            values.copyInto(applies);
+                          }
+                        continue;
+                      }
                       currName = st2.sval;
                       AttributeQualifier q = parseQualifier( st2, currName );
 		      if( q != null)
@@ -315,6 +336,9 @@ public class SchemaParser{
 	}
  	public String[] getOptional() {
 		return optional;
+    }
+	public String[] getApplies() {
+		return applies;
 	}
 
     private AttributeQualifier parseQualifier( StreamTokenizer st, String name ) throws IOException {

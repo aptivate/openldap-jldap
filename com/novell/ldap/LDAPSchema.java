@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSchema.java,v 1.14 2000/10/31 00:45:07 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSchema.java,v 1.15 2000/10/31 23:52:24 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -32,6 +32,8 @@ public class LDAPSchema {
 
 	private Hashtable objectClassHashtable;
 	private Hashtable attributeHashtable;
+	private Hashtable matchingRuleHashtable;
+	private Hashtable matchingRuleUseHashtable;
 
 	//private static final int objectClass = 0;
     //private static final int attribute = 1;
@@ -43,6 +45,8 @@ public class LDAPSchema {
    public LDAPSchema() {
 		objectClassHashtable = new Hashtable();
 		attributeHashtable = new Hashtable();
+		matchingRuleHashtable = new Hashtable();
+		matchingRuleUseHashtable = new Hashtable();
    }
 
    /**
@@ -142,8 +146,8 @@ public class LDAPSchema {
 									while(enumString.hasMoreElements())
 									{
 										value = (String) enumString.nextElement();
-          									classSchema = new LDAPObjectClassSchema( value );
-                   								objectClassHashtable.put(classSchema.getName(), classSchema);
+          								classSchema = new LDAPObjectClassSchema( value );
+                   						objectClassHashtable.put(classSchema.getName(), classSchema);
 									}
 								}
 								else if(attrName.equals("attributeTypes")){
@@ -154,7 +158,29 @@ public class LDAPSchema {
 									{
 										value = (String) enumString.nextElement();
 										attrSchema = new LDAPAttributeSchema( value );
-          									attributeHashtable.put(attrSchema.getName(), attrSchema );
+          								attributeHashtable.put(attrSchema.getName(), attrSchema );
+									}
+								}
+								else if(attrName.equals("matchingRules")){
+									enumString = attr.getStringValues();
+									String value;
+									LDAPMatchingRuleSchema matchingRuleSchema;
+									while(enumString.hasMoreElements())
+									{
+										value = (String) enumString.nextElement();
+										matchingRuleSchema = new LDAPMatchingRuleSchema( value, null );
+          								matchingRuleHashtable.put(matchingRuleSchema.getName(), matchingRuleSchema );
+									}
+								}
+								else if(attrName.equals("matchingRuleUse")){
+									enumString = attr.getStringValues();
+									String value;
+									LDAPMatchingRuleUseSchema matchingRuleUseSchema;
+									while(enumString.hasMoreElements())
+									{
+										value = (String) enumString.nextElement();
+										matchingRuleUseSchema = new LDAPMatchingRuleUseSchema( value );
+          								matchingRuleUseHashtable.put(matchingRuleUseSchema.getName(), matchingRuleUseSchema );
 									}
 								}
 								else{
@@ -226,7 +252,23 @@ public class LDAPSchema {
     *  @return The matching rule definition, or null if not found.
     */
    public LDAPMatchingRuleSchema getMatchingRule( String name ) {
-      throw new RuntimeException("Method LDAPSchema.getMatchingRule not implemented");
+      if( matchingRuleHashtable.isEmpty() == true || matchingRuleHashtable.containsKey(name) == false)
+      	return null;
+      return (LDAPMatchingRuleSchema) matchingRuleHashtable.get(name);
+   }
+
+   /**
+    * Returns a particular matching rule use definition, or null if not found.
+    *
+    *  @param name     The name of the matching rule use for which a definition
+    *                  is to be returned.
+    *
+    *  @return The matching rule use definition, or null if not found.
+    */
+   public LDAPMatchingRuleUseSchema getMatchingRuleUse( String name ) {
+      if( matchingRuleUseHashtable.isEmpty() == true || matchingRuleUseHashtable.containsKey(name) == false)
+      	return null;
+      return (LDAPMatchingRuleUseSchema) matchingRuleUseHashtable.get(name);
    }
 
    /**
@@ -253,7 +295,16 @@ public class LDAPSchema {
     * @exception An enumeration of matching rule definitions.
     */
    public Enumeration getMatchingRules() {
-      throw new RuntimeException("Method LDAPSchema.getMatchingRules not implemented");
+      return matchingRuleHashtable.elements();
+   }
+
+   /**
+    * Returns an enumeration of matching rule use definitions.
+    *
+    * @exception An enumeration of matching rule use definitions.
+    */
+   public Enumeration getMatchingUseRules() {
+      return matchingRuleUseHashtable.elements();
    }
 
    /**
@@ -280,6 +331,15 @@ public class LDAPSchema {
     * @return An enumeration of matching rule names.
     */
    public Enumeration getMatchingRuleNames() {
-      throw new RuntimeException("Method LDAPSchema.getMatchingRuleNames not implemented");
+      return matchingRuleHashtable.keys();
+   }
+
+   /**
+  	* Returns an enumeration of matching rule use names.
+    *
+    * @return An enumeration of matching rule use names.
+    */
+   public Enumeration getMatchingRuleUseNames() {
+      return matchingRuleUseHashtable.keys();
    }
 }
