@@ -28,7 +28,7 @@
 
 <property name="lib" value="lib"/>
 <property name="doc" value="doc"/>
-<property name="lib.debug" value="lib.debug"/>
+<property name="lib.debug" value="lib_debug"/>
 <property name="ldap" value="ldap"/>
 <property name="novbp" value="novbp"/>
 
@@ -57,7 +57,7 @@
 
   <target name="release" depends="init">
     <ant dir="${basedir}/${ldap}" target="release" />
-    <ant dir="${basedir}/${novbp}" target="lib" />
+    <ant dir="${basedir}/${novbp}" target="release" />
   </target>
 
   <target name="final" depends="release" />
@@ -67,13 +67,18 @@
   <target name="jar" depends="lib"/>
 
   <target name="install" depends="init">
+	<mkdir dir="${ldap}/${doc}"/>
+	<mkdir dir="${ldap}/${lib}"/>
+	<mkdir dir="${ldap}/${lib.debug}"/>
+	<mkdir dir="${novbp}/${doc}"/>
+	<mkdir dir="${novbp}/${lib}"/>
+	<mkdir dir="${novbp}/${lib.debug}"/>
 	<mkdir dir="${pkg.lib}"/>
 	<mkdir dir="${pkg.lib.debug}"/>
 	<mkdir dir="${pkg.doc}"/>
 	<mkdir dir="${pkg.doc}/${ldap}"/>
 	<mkdir dir="${pkg.doc}/${novbp}"/>
-	<mkdir dir="${pkg.samples}.${novbp}"/>
-	<mkdir dir="${pkg.samples}.${ldap}"/>
+	<mkdir dir="${pkg.samples}/${novbp}/ext"/>
 
 	<copydir src="${ldap}/${lib}"         dest="${pkg.lib}"/>
 	<copydir src="${novbp}/${lib}"        dest="${pkg.lib}"/>
@@ -83,9 +88,25 @@
 
 	<copydir src="${ldap}/${doc}"         dest="${pkg.doc}/${ldap}"/>
 	<copydir src="${novbp}/${doc}"        dest="${pkg.doc}/${novbp}"/>
+
+	<copydir src="${novbp}/samples/ldap/ext"  dest="${pkg.samples}/${novbp}/ext"/>
   </target>
 
   <target name="pkg" depends="install"/>
 
-  <target name="all" depends="lib,doc,install"/>
+  <target name="all" depends="init">
+    <ant dir="${basedir}/${ldap}" target="all" />
+    <ant dir="${basedir}/${novbp}" target="all" />
+  </target>
+
+  <target name="samples" depends="init">
+    <ant dir="${basedir}/${ldap}" target="samples" />
+    <ant dir="${basedir}/${novbp}" target="samples" />
+  </target>
+
+  <target name="tests" depends="init">
+    <ant dir="${basedir}/${ldap}" target="tests" />
+    <ant dir="${basedir}/${novbp}" target="tests" />
+  </target>
+
 </project>
