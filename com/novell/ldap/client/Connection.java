@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.34 2001/02/16 18:58:49 javed Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.35 2001/02/16 22:42:50 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -839,6 +839,34 @@ public final class Connection implements Runnable
 		unsolicitedListeners.remove(listener);
 	}
 
+    /** Inner class defined so that we can spawn off each unsolicited
+     *  listener as a seperate thread.  We did not want to call the 
+     *  unsolicited listener method directly as this would have tied up our
+     *  deamon listener thread in the applications unsolicited listener method.
+     *  Since we do not know what the application unsolicited listener
+     *  might be doing and how long it will take to process the uncoslicited
+     *  notification.  We use this class to spawn off the unsolicited
+     *  notification as a seperate thread
+     */
+    private class UnsolicitedListenerThread extends Thread 
+    {
+        private LDAPUnsolicitedNotificationListener listenerObj;
+        private LDAPMessage unsolicitedMsg;
+        
+        public UnsolicitedListenerThread( LDAPUnsolicitedNotificationListener l,
+                                          LDAPMessage m)
+        {
+            this.listenerObj = l;
+            this.unsolicitedMsg = m;
+        }
+        
+        public void run()
+        {
+            listenerObj.messageReceived(unsolicitedMsg);
+        }
+        
+    }
+    
 	private void notifyAllUnsolicitedListeners(RfcLDAPMessage message)
 	{
 		if( Debug.LDAP_DEBUG ) {
@@ -859,14 +887,28 @@ public final class Connection implements Runnable
 			// to have its own copy of the message
 			LDAPMessage tempLDAPMessage = new LDAPExtendedResponse(message);
 			
+			
+			// MISSING:  If this is a shutdown notification from the server
+			// set a flag in the Connection class so that we can throw an
+			// appropriate LDAPException to the application
+			
+			// N  E  E  D   C O D E         H E R E - See javed
+			
 			// Spawn a new thread for each listener to go process the message
-			// INCOMPLETE - THIS IS TO RISKY.  WHAT IF THIS THREAD
-			// BLOCKS - REMEMBER THIS IS A APP SPECIFIED CLASS
-			// WE DO NOT KNOW WHAT THEY MIGHT DO.  THIS WILL BLOCK
-			// THE DEAMON THREAD INDEFINITELY
-			listener.messageReceived(tempLDAPMessage);
+			// The reason we create a new thread rather than just call the 
+			// the messageReceived method directly is beacuse we do not know
+			// what kind of processing the notification listener class will
+			// do.  We do not want our deamon thread to block waiting for
+			// the notification listener method to return.
+			UnsolicitedListenerThread u = new UnsolicitedListenerThread(listener, tempLDAPMessage);
+            u.start();
 
 		}
+		
+		            
+        if( Debug.LDAP_DEBUG ) {
+            Debug.trace( Debug.messages, name + "Done calling all Unsolicited Message Listeners");
+        }
 
 	}
 }
