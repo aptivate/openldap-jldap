@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPModificationSet.java,v 1.12 2001/03/01 00:29:52 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPModificationSet.java,v 1.13 2001/03/28 22:33:01 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -18,9 +18,10 @@ package com.novell.ldap;
 import com.novell.ldap.client.ArrayList;
 
 /**
+ * A set of {@link LDAPModification} objects.
  *
- *  Holds a collection of LDAPModification objects, representing
- *  changes to be made to attributes of a single entry.
+ * @see LDAPModification
+ * @see LDAPConnection#modify
  */
 public class LDAPModificationSet {
 

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttribute.java,v 1.21 2001/04/23 21:09:28 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttribute.java,v 1.22 2001/06/12 20:34:00 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -21,21 +21,17 @@ import com.novell.ldap.client.ArrayEnumeration;
 import java.util.*;
 import java.io.UnsupportedEncodingException;
 /**
- * Represents the name and values of one attribute of a directory entry.
+ * The name and values of one attribute of a directory entry.
+ * 
+ * <p>LDAPAttribute objects are used when searching for, adding,
+ * modifying, and deleting attributes from the directory.
+ * LDAPAttributes are often used in conjunction with an
+ * {@link LDAPAttributeSet} when retrieving or adding multiple
+ * attributes to an entry.
  *
- * <p>The LDAPAttribute class is used to specify an attribute to be added
- * to, deleted from, or modified in a directory entry. An LDAPAttribute object
- * is also returned on a search of a directory.</p>
- *
- * <p> On an instance of an LDAPAttribute object, you can perform the following
- * tasks: </p>
- * <ul>
- *   <li>Get the attribute's name, base name, and subtypes.</li>
- *   <li>Get its type values. </li>
- *   <li>Get its string values. </li>
- *   <li>Add values. </li>
- *   <li>Delete values. </li>
- * </ul>
+ * @see LDAPEntry
+ * @see LDAPAttributeSet
+ * @see LDAPModification
  */
 public class LDAPAttribute {
     private String name;              // full attribute name
@@ -47,7 +43,7 @@ public class LDAPAttribute {
      * Constructs an attribute with copies of all values of the input
      * attribute.
      *
-     * @param attr  An attribute to use as a template.
+     * @param attr  An LDAPAttribute to use as a template.
      */
     public LDAPAttribute(LDAPAttribute attr) {
         this(attr.getName(), attr.getStringValueArray());

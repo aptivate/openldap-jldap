@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPObjectClassSchema.java,v 1.20 2001/03/01 00:29:53 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPObjectClassSchema.java,v 1.21 2001/04/23 21:09:31 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -21,13 +21,15 @@ import java.io.IOException;
 
 /**
  *
- *  Represents the schematic definition of a particular object class in
+ *  The schematic definition of a particular object class in
  *  a particular directory server.
  *
  *  <p>The LDAPObjectClassSchema class is used to query for the definition of an
  *  object class, and to add or delete an object class definition from a
  *  directory's schema. </p>
  *
+ * @see LDAPSchemaElement
+ * @see LDAPSchema
  */
 public class LDAPObjectClassSchema extends LDAPSchemaElement{
   String[] superiors;

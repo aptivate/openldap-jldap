@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPControl.java,v 1.25 2001/03/01 00:29:48 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPControl.java,v 1.26 2001/03/30 01:44:59 javed Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -24,13 +24,19 @@ import com.novell.ldap.asn1.*;
 import com.novell.ldap.rfc2251.*;
 
 /**
- *  Encapsulates additional optional parameters for an
+ *  Encapsulates optional additional parameters or constraints for an
  *  LDAP operation, either on the server or on the client.
  *
  * <p>If set as a server control, it is sent to the server along with the operation
  * request. If set as a client control, it is not sent to the server, but
  * rather interpreted locally by the client. LDAPControl is an LDAPv3 extension,
  * and is not supported in an LDAPv2 environment.</p>
+ *
+ * @see LDAPConnection#getResponseControls
+ * @see LDAPSearchConstraints#getClientControls
+ * @see LDAPSearchConstraints#getServerControls
+ * @see LDAPSearchConstraints#setClientControls
+ * @see LDAPSearchConstraints#setServerControls 
  */
 public class LDAPControl implements Cloneable {
 

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttributeSchema.java,v 1.20 2001/03/01 00:29:46 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttributeSchema.java,v 1.21 2001/04/23 21:09:28 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -21,14 +21,18 @@ import java.util.Enumeration;
 import java.io.IOException;
 
 /**
- * Represents the schematic definition of a
- * particular attribute in a particular Directory Server.
+ * The definition of an attribute type in the schema.
+ * 
+ * <p>LDAPAttributeSchema is used to discover an attribute's
+ * syntax, and add or delete an attribute definition.
+ * RFC 2252, "Lightweight Directory Access Protocol (v3):
+ * Attribute Syntax Definitions" contains a description
+ * of the information on the LDAP representation of schema. 
+ * Draft-sermerseim-nds-ldap-schema-01, "LDAP Schema for NDS"
+ * defines the schema descriptions and non-standard syntaxes
+ * used by NDS.
  *
- *  <p>The LDAPAttributeSchema class is used to query for an attribute's syntax,
- *  to add an attribute definition to a directory's schema, and to delete an
- *  attribute definition from the schema. See RFC 2252 for a description of
- *  attribute representation in LDAP.</p>
- *
+ * @see LDAPSchema
  */
 public class LDAPAttributeSchema extends LDAPSchemaElement {
 
@@ -43,21 +47,21 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
     private boolean userMod = true;
     private int usage = USER_APPLICATIONS;
 
- /**
-  * This attribute definition defines that the attribute usage is applications.
-  */
+    /**
+     * This attribute definition defines that the attribute usage is applications.
+     */
     public final static int USER_APPLICATIONS = 0;
- /**
-  * This attribute definition defines the attribute usage is directory operations.
-  */
+    /**
+     * This attribute definition defines the attribute usage is directory operations.
+     */
     public final static int DIRECTORY_OPERATION = 1;
- /**
-  * This attribute definition defines the attribute usage is shared dsa.
-  */
+    /**
+     * This attribute definition defines the attribute usage is shared dsa.
+     */
     public final static int DISTRIBUTED_OPERATION = 2;
-/**
-  * This class definition defines the attribute usage is local dsa.
-  */
+    /**
+     * This class definition defines the attribute usage is local dsa.
+     */
     public final static int DSA_OPERATION = 3;
 
    /**
@@ -83,26 +87,26 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
     * @param aliases   Optional list of additional names by which the
     *              attribute may be known; null if there are no
     *              aliases.
-	*<br><br>
+	  *<br><br>
     * @param obsolete  True if the attribute is obsolete.
     *<br><br>
     * @param equality  Optional matching rule name; null if there is not
-	*				an equality matching rule for this attribute.
-	*<br><br>
+	  *				an equality matching rule for this attribute.
+	  *<br><br>
     * @param ordering	Optional matching rule name; null if there is not
-	*				an ordering matching rule for this attribute.
-	*<br><br>
+	  *				an ordering matching rule for this attribute.
+  	*<br><br>
     * @param substring	Optional matching rule name; null if there is not
-	*				a substring matching rule for this attribute.
-	*<br><br>
+  	*				a substring matching rule for this attribute.
+  	*<br><br>
     * @param collective	True of this attribute is a collective attribute
-	*<br><br>
+  	*<br><br>
     * @param userMod	False if this attribute is a read-only attribute
-	*<br><br>
+  	*<br><br>
     * @param useage		Describes what the attribute is used for. Must be
-	*				one of the following: USER_APPLICATIONS,
-	*				DIRECTORY_OPERATION, DISTRIBUTED_OPERATION or
-	*				DSA_OPERATION.
+  	*				one of the following: USER_APPLICATIONS,
+  	*				DIRECTORY_OPERATION, DISTRIBUTED_OPERATION or
+  	*				DSA_OPERATION.
     */
    public LDAPAttributeSchema(String name, String oid, String description,
                               String syntaxString, boolean single,
@@ -254,9 +258,9 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
    /**
     * Returns the usage of the attribute.
     *
-    * @return Returns one of the following values: USER_APPLICATIONS,
-	*		  DIRECTORY_OPERATION, DISTRIBUTED_OPERATION or
-	*		  DSA_OPERATION.
+    * @return One of the following values: USER_APPLICATIONS,
+	  *		  DIRECTORY_OPERATION, DISTRIBUTED_OPERATION or
+	  *		  DSA_OPERATION.
     */
 
    public int getUsage() {

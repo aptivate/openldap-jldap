@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPDITContentRuleSchema.java,v 1.7 2001/03/01 00:29:48 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPDITContentRuleSchema.java,v 1.8 2001/04/23 21:09:30 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -21,7 +21,7 @@ import java.util.Enumeration;
 import java.io.IOException;
 
 /**
- *  Represents ia specific DIT (Directory Information Tree) content rule
+ *  A specific DIT (Directory Information Tree) content rule
  *  in the directory schema.
  *
  *  <p>The LDAPDITContentRuleSchema class is used to discover or modify additional

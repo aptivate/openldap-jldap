@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSocketFactory.java,v 1.8 2001/03/01 00:29:57 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSocketFactory.java,v 1.9 2001/04/19 16:49:47 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -27,6 +27,7 @@ import java.io.IOException;
  *  object constructor to implement them using this interface.
  *  An implementation of this interface may, for example, provide a
  *  TLSSocket connected to a secure server.</p>
+ *
  */
 public interface LDAPSocketFactory {
 

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPCompareAttrNames.java,v 1.20 2001/03/02 23:10:26 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPCompareAttrNames.java,v 1.21 2001/04/19 18:55:52 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -22,12 +22,19 @@ import com.novell.ldap.*;
 
 
 /**
+ *  Compares LDAP entries based on attribute name.
+ *
  *  An object of this class supports sorting search results by attribute
  *  name, in ascending or descending order. Sorting is by locale-
  *  sensitive Java String comparison, which may not correspond to the
  *  LDAP ordering rules by which an LDAP server would sort them.
  *
+ *  <p>Note: NDS supports only ascending sort order (A,B,C ...) and allows sorting
+ *  only by one attribute. The NDS server must also be configured to index this
+ *  attribute.</p>
+ *
  *  @see LDAPEntryComparator
+ *  @see LDAPSearchResults#sort
  */
 public class LDAPCompareAttrNames implements LDAPEntryComparator {
    private String[] sortByNames;        //names to to sort by.
@@ -39,7 +46,7 @@ public class LDAPCompareAttrNames implements LDAPEntryComparator {
     * Constructs an object that sorts results by a single attribute, in
     * ascending order.
     *
-    * @param attrName       Name of an attribute to sort by.
+    * @param attrName       Name of an attribute by which to sort.
     *
     */
    public LDAPCompareAttrNames(String attrName) {
@@ -71,7 +78,7 @@ public class LDAPCompareAttrNames implements LDAPEntryComparator {
     * Constructs an object that sorts by one or more attributes, in the
     * order provided, in ascending order.
     *
-    * <p> NDS allows sorting only by one attribute. The NDS server must also be
+    * <p>Note: NDS allows sorting by one attribute only. The NDS server must also be
     * configured to index the specified attribute.</p>
     *
     * @param attrNames      Array of names of attributes to sort by.
@@ -91,7 +98,7 @@ public class LDAPCompareAttrNames implements LDAPEntryComparator {
     * order provided, in either ascending or descending order for each
     * attribute.
     *
-    * <p>NDS supports only ascending sort order (A,B,C ...) and allows sorting
+    * <p>Note: NDS supports only ascending sort order (A,B,C ...) and allows sorting
     * only by one attribute. The NDS server must be configured to index this
     * attribute.</p>
     *

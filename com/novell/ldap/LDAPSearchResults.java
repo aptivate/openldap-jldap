@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResults.java,v 1.43 2001/04/30 22:24:57 dsteck Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResults.java,v 1.44 2001/05/30 17:07:04 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -26,6 +26,8 @@ import java.io.*;
 /**
  *
  *  The enumerable results of a synchronous search operation.
+ *
+ * @see LDAPConnection#search
  */
 public class LDAPSearchResults implements Enumeration
 {

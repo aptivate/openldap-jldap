@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPJSSESecureSocketFactory.java,v 1.1 2001/04/19 16:51:04 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPJSSESecureSocketFactory.java,v 1.2 2001/05/02 20:36:34 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -27,6 +27,7 @@ import com.sun.net.ssl.SSLContext;
  * Represents the socket factory that creates secure socket connections to
  * LDAP servers using JSSE technology.
  *
+ * @see LDAPConnection#setSocketFactory
  */
 public class LDAPJSSESecureSocketFactory implements LDAPSocketFactory {
     private static SocketFactory factory;

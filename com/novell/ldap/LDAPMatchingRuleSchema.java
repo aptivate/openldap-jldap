@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPMatchingRuleSchema.java,v 1.16 2001/03/01 00:29:51 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPMatchingRuleSchema.java,v 1.17 2001/04/23 21:09:30 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -19,7 +19,7 @@ import java.util.Enumeration;
 import java.io.IOException;
 /**
  *
- *  Represents the schematic definition of a particular matching rule
+ *  The schematic definition of a particular matching rule
  *  in a particular Directory Server.
  *
  *  <p>The LDAPMatchingRuleSchema class is used to query
@@ -28,6 +28,10 @@ import java.io.IOException;
  *
  * <p>NDS does not currently allow matching rules to be added or deleted from
  * the schema.</p>
+ *
+ * @see LDAPAttributeSchema
+ * @see LDAPSchemaElement
+ * @see LDAPSchema
  */
 public class LDAPMatchingRuleSchema extends LDAPSchemaElement {
 

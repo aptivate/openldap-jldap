@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPModification.java,v 1.8 2000/10/31 23:52:22 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPModification.java,v 1.9 2001/03/01 00:29:52 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -17,8 +17,16 @@ package com.novell.ldap;
 
 /**
  *
- *  Represents a single add, delete, or replace operation to an LDAPAttribute.
+ * A single add, delete, or replace operation to an LDAPAttribute.
  *
+ * <p>LDAPModifications contain information on the type of modification
+ * being performed, the name of the attribute to be replaced and the new
+ * value.
+ *
+ * @see LDAPConnection#modify
+ * @see LDAPModificationSet
+ * @see LDAPAttribute
+ * 
  */
 public class LDAPModification {
 

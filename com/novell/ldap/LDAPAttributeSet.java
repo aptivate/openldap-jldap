@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttributeSet.java,v 1.23 2001/04/20 21:06:24 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttributeSet.java,v 1.24 2001/04/23 21:09:28 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -20,15 +20,23 @@ import com.novell.ldap.client.ArrayEnumeration;
 import java.util.*;
 
 /**
- *  Represents a collection of LDAPAttributes, either used to construct an entry
- *  to be added to a directory or returned in an entry on a search or read
- *  operation.
+ *  
+ * A set of {@link LDAPAttribute} objects.
+ *
+ * <p>An LDAPAttributeSet can be used when constructing an object, by
+ * adding multiple LDAPAttribute objects in the set and passing this set
+ * when the object is created. LDAPAttributeSet objects can also be retrieved from
+ * LDAPEntry objects when performing searches, allowing you to iterate
+ * through all of an entry's attributes.
+ * 
+ * @see LDAPAttribute
+ * @see LDAPEntry
  */
 public class LDAPAttributeSet implements Cloneable {
    private ArrayList attrs;
 
    /**
-    * Constructs a new set of attributes. This set is initially empty.
+    * Constructs an empty set of attributes.
     */
    public LDAPAttributeSet() {
       attrs = new ArrayList();
@@ -85,7 +93,7 @@ public class LDAPAttributeSet implements Cloneable {
     * <p>In both cases, null is returned if there is no exact match to the
     * specified attrName.</p>
     *
-    * <p>NDS does not yet support language subtypes. It does support the "binary"
+    * <p>Note: NDS does not yet support language subtypes. It does support the "binary"
     *  subtype.</p>
     *
     * @param attrName   The name of an attribute to retrieve, with or without
@@ -149,7 +157,7 @@ public class LDAPAttributeSet implements Cloneable {
     *   <li>getAttribute( "sn", "lang-en" )   returns the "sn" attribute.</li>
     *  </ul>
     *
-    * <p>NDS does not yet support language subtypes. It does support the "binary"
+    * <p>Note: NDS does not yet support language subtypes. It does support the "binary"
     *  subtype.</p>
     *
     * @param attrName  The name of an attribute to retrieve, with or without
@@ -252,7 +260,7 @@ public class LDAPAttributeSet implements Cloneable {
     *       which also are binary</li>
     * </ul>
     *
-    * <p>NDS does not yet support language subtypes. It does support the "binary"
+    * <p>Note: NDS does not yet support language subtypes. It does support the "binary"
     *  subtype.</p>
     *
     * @return An attribute set containing the attributes that match the specified

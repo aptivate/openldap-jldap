@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPReferralHandler.java,v 1.1 2000/10/31 00:45:07 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPReferralHandler.java,v 1.2 2001/03/01 00:29:54 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -19,6 +19,9 @@ package com.novell.ldap;
  *
  *  Shared ancestor to the two types of referral objects - LDAPBind and
  *  LDAPRebind.
+ *
+ * @see LDAPBind
+ * @see LDAPRebind
  *
  */
 public interface LDAPReferralHandler

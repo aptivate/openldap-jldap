@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPMessage.java,v 1.21 2001/01/29 18:56:29 javed Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPMessage.java,v 1.22 2001/03/01 00:29:52 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -19,8 +19,10 @@ import com.novell.ldap.rfc2251.*;
 import com.novell.ldap.asn1.*;
 
 /**
- *  Represents the base class for LDAP request and response messages.
- *  Subclassed by response messages used in asynchronous operations.
+ * The base class for LDAP request and response messages.
+ *  
+ * <p>Subclassed by response messages used in asynchronous operations.
+ *
  */
 public class LDAPMessage {
 

@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPUrl.java,v 1.27 2001/05/08 19:56:22 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPUrl.java,v 1.28 2001/06/05 22:22:14 vtag Exp $
 *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -27,6 +27,8 @@ import com.novell.ldap.client.ArrayEnumeration;
 *
 *  An LDAPUrl object can be passed to LDAPConnection.search to retrieve
 *  search results.
+*
+* @see LDAPConnection#search
 */
 public class LDAPUrl {
 

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.99 2001/05/29 19:23:04 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.100 2001/05/29 19:24:57 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -27,15 +27,21 @@ import com.novell.ldap.asn1.*;
 import com.novell.ldap.rfc2251.*;
 
 /**
- *  Represents the central class that encapsulates the connection
- *  to a directory server through the LDAP protocol.
+ * The central class that encapsulates the connection
+ * to a directory server through the LDAP protocol.
+ * LDAPConnection objects are used to perform common LDAP
+ * operations such as search, modify and add. 
  *
- *  An LDAPConnection object is not connected on
- *  construction and can only be connected to one server at one
- *  port. Multiple threads may share this single connection, typically
- *  by cloning the connection object, one for each thread. An
- *  application may have more than one LDAPConnection object, connected
- *  to the same or different directory servers.</p>
+ * <p>In addition, LDAPConnection objects allow you to bind to an
+ * LDAP server, set connection and search constraints, and perform
+ * several other tasks.
+ *  
+ * <p>An LDAPConnection object is not connected on
+ * construction and can only be connected to one server at one
+ * port. Multiple threads may share this single connection, typically
+ * by cloning the connection object, one for each thread. An
+ * application may have more than one LDAPConnection object, connected
+ * to the same or different directory servers.</p>
  *
  */
 public class LDAPConnection implements Cloneable

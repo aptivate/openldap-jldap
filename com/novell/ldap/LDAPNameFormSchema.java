@@ -20,10 +20,13 @@ import java.util.Enumeration;
 import java.io.IOException;
 
 /**
- *  Represents a specific a name form in the directory schema.
+ * A specific a name form in the directory schema.
  *
- *  <p>The LDAPNameFormSchema class is used to discover or modify the allowed
- *  naming attributes for a particular object class.</p>
+ * <p>The LDAPNameFormSchema class is used to discover or modify the allowed
+ * naming attributes for a particular object class.</p>
+ *
+ * @see LDAPSchemaElement
+ * @see LDAPSchema
  */
 
 public class LDAPNameFormSchema

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPMatchingRuleUseSchema.java,v 1.10 2001/03/01 00:29:51 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPMatchingRuleUseSchema.java,v 1.11 2001/04/23 21:09:31 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -26,6 +26,10 @@ import com.novell.ldap.client.SchemaParser;
  * attributes are suitable for use with an extensible matching rule. It contains
  * the name and identifier of a matching rule, and a list of attributes which
  * it applies to.</p>
+ *
+ * @see LDAPAttributeSchema
+ * @see LDAPSchemaElement
+ * @see LDAPSchema 
  */
 
 

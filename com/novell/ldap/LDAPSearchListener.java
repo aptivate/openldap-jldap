@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchListener.java,v 1.28 2001/04/12 21:39:30 jhammons Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchListener.java,v 1.29 2001/05/02 18:04:03 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -23,6 +23,8 @@ import com.novell.ldap.rfc2251.*;
 /**
  *  A low-level mechanism for queuing asynchronous search results
  *  and references received from a server.
+ *
+ * @see LDAPConnection#search
  */
 public class LDAPSearchListener implements LDAPListener
 {

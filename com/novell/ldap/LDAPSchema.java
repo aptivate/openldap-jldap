@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSchema.java,v 1.21 2001/03/01 00:29:55 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSchema.java,v 1.22 2001/04/23 21:09:31 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -19,14 +19,16 @@ import java.util.Enumeration;
 import java.util.*;
 
 /**
- *  Represents the schema of a particular directory server.
+ *  The schema of a particular directory server.
  *
- *  It supports querying a directory server for its schema
+ *  <p>It supports querying a directory server for its schema
  *  and for definitions of individual schema elements.
  *
  * <p>The fetchSchema methods are the only methods that interact with a
  * directory server. The other methods access information acquired
  * through fetchSchema.</p>
+ *
+ * @see LDAPAttributeSchema 
  */
 public class LDAPSchema {
 

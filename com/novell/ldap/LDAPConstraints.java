@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConstraints.java,v 1.18 2001/03/01 00:29:48 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConstraints.java,v 1.19 2001/04/18 15:59:26 vtag Exp $
  *
   * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -19,11 +19,13 @@ import com.novell.ldap.client.Debug;
 
 /**
  *
- *  Represents a set of options to control an LDAP operation.
+ * A set of options to control any LDAP operation.
  *
  * <p>An LDAPConstraints object is always associated with an LDAPConnection
- * object; its values can be changed with LDAPConnection.setOption, or
+ * object; its values can be changed with LDAPConnection.setConstraints, or
  * overridden by passing an LDAPConstraints object to an operation.</p>
+ *
+ * @see LDAPConnection#setConstriaints
  */
 public class LDAPConstraints implements Cloneable {
 

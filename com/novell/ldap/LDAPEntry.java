@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPEntry.java,v 1.12 2001/02/26 19:58:23 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPEntry.java,v 1.13 2001/03/01 00:29:49 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -16,12 +16,16 @@
 package com.novell.ldap;
 
 /**
+ * Represents a single entry in a directory, consisting of
+ * a distinguished name (DN) and zero or more attributes. 
  *
- *  Represents a single entry in a directory, consisting of
- *  a distinguished name (DN) and zero or more attributes. An instance of
- *  LDAPEntry is created in order to add an entry to a directory, and
- *  instances of LDAPEntry are returned on a search by enumerating an
- *  LDAPSearchResults.
+ * <p>An instance of
+ * LDAPEntry is created in order to add an entry to a directory, and
+ * instances of LDAPEntry are returned on a search by enumerating an
+ * LDAPSearchResults.
+ *
+ * @see LDAPAttribute
+ * @see LDAPAttributeSet
  */
 public class LDAPEntry {
 

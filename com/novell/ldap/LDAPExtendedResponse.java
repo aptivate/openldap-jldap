@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPExtendedResponse.java,v 1.23 2001/02/16 18:58:49 javed Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPExtendedResponse.java,v 1.24 2001/03/01 00:29:51 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -27,7 +27,6 @@ import com.novell.ldap.asn1.*;
  *
  *  The response can contain the OID of the extension, an octet string
  *  with the operation's data, both, or neither.
- *
  */
 public class LDAPExtendedResponse extends LDAPResponse {
 

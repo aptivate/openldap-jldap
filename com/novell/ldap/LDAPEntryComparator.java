@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPEntryComparator.java,v 1.9 2000/11/03 21:36:36 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPEntryComparator.java,v 1.10 2001/03/01 00:29:49 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -16,12 +16,14 @@
 package com.novell.ldap;
 
 /**
- *  An interface to support arbitrary sorting algorithms for entries returned
- *  by a search operation.  The basic Java LDAP classes include one
- *  imiplementaton: LDAPCompareAttrNames, to sort in ascending order based
- *  on one or more attribute names.
+ * An interface to support arbitrary sorting algorithms for entries returned
+ * by a search operation.  
+ * 
+ * <p>The basic Java LDAP classes include one
+ * imiplementaton: LDAPCompareAttrNames, to sort in ascending order based
+ * on one or more attribute names.
  *
- *  @see LDAPCompareAttrNames
+ * @see LDAPCompareAttrNames
  */
 public interface LDAPEntryComparator {
 
