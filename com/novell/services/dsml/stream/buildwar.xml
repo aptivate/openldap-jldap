@@ -99,12 +99,12 @@
 
         <!-- copy source -->
         <copy todir="./war-root/src/com/novell/services/dsml" >
-            <fileset dir="${top}/com/novell/services/dsml">
+            <fileset dir="${srctop}/com/novell/services/dsml">
                 <include name="*.java"/>
             </fileset>
         </copy>
         <copy todir="./war-root/src/com/novell/services/dsml/stream" >
-            <fileset dir="${top}/com/novell/services/dsml/stream">
+            <fileset dir="${srctop}/com/novell/services/dsml/stream">
                 <include name="*.java"/>
             </fileset>
         </copy>
