@@ -14,72 +14,16 @@
  ******************************************************************************/
 package com.novell.ldap.extensions;
 
-import com.novell.ldap.*;
-import com.novell.ldap.asn1.*;
-import com.novell.ldap.resources.*;
-import java.io.IOException;
-import java.io.ByteArrayOutputStream;
+import com.novell.ldap.LDAPException;
 
 /**
- *
- *  Aborts the last naming context operation that
- *  was requested on the specified naming context if the operation is
- *  still pending.
- *
- *  <p>The abortNamingContextRequest extension uses the following OID:<br>
- *  &nbsp;&nbsp;&nbsp;2.16.840.1.113719.1.27.100.29</p>
- *
- *  <p>The requestValue has the following format:<br>
- *
- *  requestValue ::= <br>
- *  &nbsp;&nbsp;&nbsp;&nbsp;  flags&nbsp;&nbsp;&nbsp;&nbsp;       INTEGER<br>
- *  &nbsp;&nbsp;&nbsp;&nbsp;  partitionDN&nbsp;&nbsp;&nbsp;&nbsp; LDAPDN </p>
+ *  deprecated. @see AbortPartitionOperationRequest
  */
-public class AbortNamingContextOperationRequest extends LDAPExtendedOperation {
-
-/**
- * Constructs an extended operation object for aborting a naming context
- * operation.
- *
- * @param partitionDN The distinguished name of the replica's
- *                    partition root.<br><br>
- *
- * @param flags Determines whether all servers in the replica ring must
- *              be up before proceeding. When set to zero, the status of the
- *              servers is not checked. When set to LDAP_ENSURE_SERVERS_UP,
- *              all servers must be up for the operation to proceed.
- *
- * @exception LDAPException A general exception which includes an error message
- *                          and an LDAP error code.
- */
- public AbortNamingContextOperationRequest(String partitionDN, int flags)
+public class AbortNamingContextOperationRequest extends AbortPartitionOperationRequest {
+   public AbortNamingContextOperationRequest(String partitionDN, int flags)
                 throws LDAPException {
 
-        super(NamingContextConstants.ABORT_NAMING_CONTEXT_OP_REQ, null);
+        super(partitionDN, flags);
 
-        try {
-
-            if (partitionDN == null)
-                throw new LDAPException(ExceptionMessages.PARAM_ERROR,
-                                    LDAPException.PARAM_ERROR);
-
-         ByteArrayOutputStream encodedData = new ByteArrayOutputStream();
-         LBEREncoder encoder  = new LBEREncoder();
-
-
-          ASN1Integer asn1_flags = new ASN1Integer(flags);
-          ASN1OctetString asn1_partitionDN = new ASN1OctetString(partitionDN);
-
-            asn1_flags.encode(encoder, encodedData);
-            asn1_partitionDN.encode(encoder, encodedData);
-
-            setValue(encodedData.toByteArray());
-
-        }
-      catch(IOException ioe) {
-         throw new LDAPException(ExceptionMessages.ENCODING_ERROR,
-                                 LDAPException.ENCODING_ERROR);
-      }
    }
-
 }
