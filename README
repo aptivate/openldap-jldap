@@ -162,7 +162,7 @@ Table of Contents
           applications that use the LDAP extensions for partition and
           replica management.
 
-     -    Applications that use com.novell.ldap.util.DSMLReader requires
+     -    Applications that use com.novell.ldap.util.DSMLReader require
           an XML parser (like xerces.jar) in order to run. This jar file needs
           to be in classpath of the Application.
 
