@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/util/RDN.java,v 1.1 2001/03/09 23:15:49 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/util/RDN.java,v 1.2 2001/03/14 19:25:59 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -18,17 +18,16 @@ import java.util.Vector;
 
 /**
  * <P>A RDN encapsulates a single object's name of a Distinguished Name(DN).
- * For example of following DN, 'cn=admin,o=corporation',  cn=admin, and
- * o=corporation are the only object names.</P>
+ * The object name represented by this class contains no context.  Thus a
+ * Relative Distinguished Name (RDN) could be relative to anywhere in the
+ * Directories tree.</P>
+ *
+ * <P>For example, of following DN, 'cn=admin, ou=marketing, o=corporation', all
+ * possible RDNs are 'cn=admin', 'ou=marketing', and 'o=corporation'.</P>
  *
  * <P>Multivalued attributes are encapsulated in this class.  For example the
- * following could be represented by RDN: 'cn=robert + cn=bob + l=US' Because
- * they all name one object</P>
- *
- * <P>Note: While a Relative Distinguished Name may be any name that doesn't
- * include extend to the Root, This class represents only one object name.
- * Likewise the DN class may contain multiple object name but does not
- * necessarily extend to the Root.</P>
+ * following could be represented by an RDN: 'cn=john + l=US', or
+ * 'cn=juan + l=ES' </P>
  *
  * @see DN
  */
@@ -87,9 +86,20 @@ public class RDN extends Object
         this.rawValue += rawValue;
     }
 
+    /**
+     * Creates a string that represents this RDN, according to RFC 2253
+     * @returns An RDN string
+     */
     public String toString(){
         return toString(false);
     }
+
+    /**
+     * Creates a string that represents this RDN.  If noTypes if true then
+     * Atribute types will be ommited.
+     * @noTypes
+     * @return An RDN string
+     */
     public String toString(boolean noTypes){
         int length=types.size();
         String toReturn = "";

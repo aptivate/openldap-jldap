@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/util/DN.java,v 1.2 2001/03/09 23:18:56 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/util/DN.java,v 1.3 2001/03/14 19:25:58 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -13,13 +13,14 @@
  * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
  ******************************************************************************/
 package com.novell.ldap.util;
+import com.novell.ldap.util.RDN;
 import java.util.Vector;
 
 /**
- * <P>A DN encapsulates an ldap name with multiple object names(a Distinguished
- * name. It provides methods to get information about the DN and to manipulate
- * the DN.  Multivalued attributes are all considered to be one component and
- * are represented in one RDN (see RDN)</P>
+ * <P>A DN encapsulates a Distinguished Name (an ldap name with context). A DN
+ * does not need to be fully distinguished, or extend to the Root of a
+ * directory.  It provides methods to get information about the DN and to
+ * manipulate the DN.  </P>
  *
  * <P> The following are examples of valid DN:
  * <ul>
@@ -30,9 +31,8 @@ import java.util.Vector;
  *     <li>2.5.4.3=admin,ou=marketing</li>
  * </ul>
  *
- * <P>Note: While a DN generally means a name that extends to the Root, The
- * Components encapsulated in this class do not neccesarily need to extend to
- * to the Root. Likewise the RDN class only contains one single component
+ * <P>Note: Multivalued attributes are all considered to be one
+ * component and are represented in one RDN (see RDN)
  * </P>
  *
  * @see RDN
@@ -277,7 +277,7 @@ public class DN extends Object
                        currRDN = new RDN();
                    }
 
- /*                 addRDN(attrType, attrValue, rawValue, levelID);
+                /* addRDN(attrType, attrValue, rawValue, levelID);
                   if (currChar != '+')
                      levelID++;*/
                   trailingSpaceCount = 0;
@@ -390,7 +390,7 @@ public class DN extends Object
      * @return  <code>true</code> if the character is a valid hex digit
      */
 
-   public static boolean isHexDigit(char ch){
+   private static boolean isHexDigit(char ch){
       if (((ch < 58) && (ch > 47)) || //ASCII 0-9
           ((ch < 71) && (ch > 64)) || //ASCII a-f
           ((ch < 103) && (ch > 96)))  //ASCII A-F
@@ -432,7 +432,7 @@ public class DN extends Object
      * @return  the character whose value is represented by the parameters.
      */
 
-    public static char hexToChar(char hex1, char hex0)
+    private static char hexToChar(char hex1, char hex0)
         throws IllegalArgumentException {
       int result;
 
@@ -457,16 +457,13 @@ public class DN extends Object
       return (char)result;
    }
 
-
-
-    /**
-     * Return a string representation of the DN
-     *
-     * @param   attrType the type of the RDN
-     * @param   attrValue the value of the RDN
-     * @param   level the level of the RDN
-     */
-
+     /**
+      * Creates and returns a string that represents this DN.  The string
+      * follows RFC 2253, which describes String representation of DN's and
+      * RDN's
+      *
+      * @return A DN string.
+      */
     public String toString() {
         int length=rdnList.size();
         String dn = "";
@@ -511,8 +508,7 @@ public class DN extends Object
      *                 the leftmost rdn in the first element of the array
      *
      */
-
-    public String[] explode(boolean  noTypes) {
+    public String[] explodeDN(boolean  noTypes) {
         int length = rdnList.size();
         String[] rdns = new String[length];
         for(int i=0; i<length; i++)
@@ -520,4 +516,93 @@ public class DN extends Object
         return rdns;
     }
 
+    /**
+     * Retrieves the count of RDNs, or individule names, in the Distinguished name
+     * @return the count of RDN
+     */
+    public int countRDNs(){
+        return rdnList.size();
+    }
+
+    /**
+     * Retrieves a list of RDN Objects, or individual names of the DN
+     * @return list of RDNs
+     */
+     public Vector getRDNs(){
+        return rdnList;
+     }
+
+    /** Determines if this DN is <I>contained</I> by the DN passed in.  For
+     *  example:  "cn=admin, ou=marketing, o=corporation" is contained by
+     *  "o=corporation", "ou=marketing, o=corporation", and "ou=marketing"
+     *  but <B>not</B> by "cn=admin" or "cn=admin,ou=marketing,o=corporation"
+     *
+     * @param DN of a container
+     * @return true if containerDN contains this DN
+     */
+     public boolean containedBy(DN containerDN){
+        int i = containerDN.rdnList.size() -1;  //index to an RDN of the ContainerDN
+        int j = rdnList.size() -1;              //index to an RDN of the ContainedDN
+
+        //Search from the end of the DN for an RDN that matches the end RDN of
+        //containerDN.
+        while ( !((RDN)rdnList.elementAt(j--)).equals(
+                  (RDN)containerDN.rdnList.elementAt(i))){
+            if (j < 0)
+                return false;
+                //if the end RDN of containerDN does not have any equal
+                //RDN in rdnList, then containerDN does not contain this DN
+        }
+        i--;  //avoid a redundant compare
+        j--;
+        //step backwards to verify that all RDNs in containerDN exist in this DN
+        for (/* i, j */ ; i>=0 && j >=0; i--, j--){
+            if (!((RDN)rdnList.elementAt(j)).equals(
+                  (RDN)containerDN.rdnList.elementAt(i)))
+                  return false;
+        }
+        if (j == 0 && i == 0) //the DNs are identical and thus not contained
+            return false;
+
+        return true;
+     }
+
+     /**
+      * <P> Determines if this DN is <I>contained</I> by the DN passed in.  For
+      * example:  "cn=admin, ou=marketing, o=corporation" is contained by
+      * "o=corporation", "ou=marketing, o=corporation", and "ou=marketing"
+      * but <B>not</B> by "cn=admin" or "cn=admin,ou=marketing,o=corporation"
+      * </P><P>Note: This method is identical to containedBy and added for
+      * convenience.</P>
+      *
+      * @param DN of a container
+      * @return true if containerDN contains this DN
+      */
+     public boolean isDescendantOf(DN dn){
+        return this.containedBy(dn);
+     }
+
+     /**
+      * Adds the RDN to the beginning of the current DN.
+      * @param an RDN to be added
+      */
+     public void addRDN(RDN rdn){
+        rdnList.insertElementAt(rdn, 0);
+     }
+
+     /**
+      * Adds the RDN to the beginning of the current DN.
+      * @param an RDN to be added
+      */
+     public void addRDNToFront(RDN rdn){
+        rdnList.insertElementAt(rdn, 0);
+     }
+
+     /**
+      * Adds the RDN to the end of the current DN
+      * @param an RDN to be added
+      */
+     public void addRDNToBack(RDN rdn){
+        rdnList.addElement(rdn);
+     }
 } //end class DN
