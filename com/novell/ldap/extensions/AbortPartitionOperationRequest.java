@@ -22,9 +22,8 @@ import java.io.ByteArrayOutputStream;
 
 /**
  *
- *  Aborts the last naming context operation that
- *  was requested on the specified naming context if the operation is
- *  still pending.
+ *  Aborts the last partition operation that was requested on the 
+ * specified partition if the operation is still pending.
  *
  *  <p>The AbortPartitionRequest extension uses the following OID:<br>
  *  &nbsp;&nbsp;&nbsp;2.16.840.1.113719.1.27.100.29</p>
@@ -38,8 +37,7 @@ import java.io.ByteArrayOutputStream;
 public class AbortPartitionOperationRequest extends LDAPExtendedOperation {
 
 /**
- * Constructs an extended operation object for aborting a naming context
- * operation.
+ * Constructs an extended operation object for aborting a partition operation.
  *
  * @param partitionDN The distinguished name of the replica's
  *                    partition root.<br><br>
@@ -63,12 +61,12 @@ public class AbortPartitionOperationRequest extends LDAPExtendedOperation {
                 throw new LDAPException(ExceptionMessages.PARAM_ERROR,
                                     LDAPException.PARAM_ERROR);
 
-         ByteArrayOutputStream encodedData = new ByteArrayOutputStream();
-         LBEREncoder encoder  = new LBEREncoder();
+            ByteArrayOutputStream encodedData = new ByteArrayOutputStream();
+            LBEREncoder encoder  = new LBEREncoder();
 
 
-          ASN1Integer asn1_flags = new ASN1Integer(flags);
-          ASN1OctetString asn1_partitionDN = new ASN1OctetString(partitionDN);
+            ASN1Integer asn1_flags = new ASN1Integer(flags);
+            ASN1OctetString asn1_partitionDN = new ASN1OctetString(partitionDN);
 
             asn1_flags.encode(encoder, encodedData);
             asn1_partitionDN.encode(encoder, encodedData);
