@@ -59,5 +59,8 @@ public class RfcAddRequest extends ASN1Sequence implements RfcRequest {
 			                       RfcProtocolOp.ADD_REQUEST);
 	}
 
+    public RfcRequest dupRequest(String base, String filter, Integer scope)
+    {
+        throw new RuntimeException("Cannot create new RfcAddRequest, not allowed");
+    }
 }
-

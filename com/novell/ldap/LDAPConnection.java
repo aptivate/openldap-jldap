@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.72 2001/01/25 16:34:17 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.73 2001/01/30 21:21:13 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -45,6 +45,7 @@ public class LDAPConnection implements Cloneable
     private static Object nameLock = new Object(); // protect agentNum
     private static int lConnNum = 0;  // Debug, LDAPConnection number
     private String name;             // String name for debug
+    private LDAPUrl referralURL = null; // Url used to follow a referral
 
     /**
      * Used with search to specify that the scope of entrys to search is to
@@ -2955,7 +2956,7 @@ public class LDAPConnection implements Cloneable
             new RfcFilter(filter),
             new RfcAttributeDescriptionList(attrs)),
         cons.getServerControls());
-
+        
         MessageAgent agent;
         LDAPSearchListener listen = listener;
         if(listen == null) {
@@ -3083,12 +3084,49 @@ public class LDAPConnection implements Cloneable
     }
     
     /**
+     * Return the Connection object assockated with this LDAPConnection
+     *
+     * @return the Connection object
+     */
+    /* package */
+    Connection getConnection( )
+    {
+        return conn;
+    }
+    
+    /**
+     * Save the URL used to follow a referral for this connection
+     *
+     * @param url the referral URL
+     */
+    /* package */
+    void setReferralURL( LDAPUrl url)
+    {
+        referralURL = url;
+        return;
+    }
+    
+    /**
+     * Get the URL used to follow a referral for this connection
+     *
+     * @return the referral URL
+     */
+    /* package */
+    LDAPUrl getReferralURL( )
+    {
+        return referralURL;
+    }
+    
+    
+    /**
      * get an LDAPConnection object so that we can follow a referral.
      * This function is never called if cons.getReferralFollowing() returns false.
      *
      * @param refs the array of referral strings
      *<br><br>
      * @param search true if a search operation
+     *<br><br>
+     * @param returnUrl the LDAPUrl that was connected to
      *
      * @return the new LDAPConnection object
      */
@@ -3131,6 +3169,7 @@ public class LDAPConnection implements Cloneable
                     }
                     rconn.bind( dn, pw);
                     ex = null;
+                    rconn.setReferralURL( url);
                     break;
                 } catch( Exception lex) {
                     if( rconn != null) {
@@ -3147,8 +3186,7 @@ public class LDAPConnection implements Cloneable
             }
         }
         // Check if application gets connection and does bind
-        else {
-        //if( rh instanceof LDAPBind) {
+        else { //  rh instanceof LDAPBind
             try {
                 if( Debug.LDAP_DEBUG) {
                     Debug.trace( Debug.referrals,   name +
@@ -3194,10 +3232,15 @@ public class LDAPConnection implements Cloneable
     /* package */
     void checkForReferral( LDAPResponseListener listen,
                                   int msgId,
-                                  int hops)
+                                  int hops,
+                                  boolean search)
             throws LDAPException
     {
         LDAPResponse resp;
+        LDAPUrl refUrl;
+        LDAPConnection rconn;
+        MessageAgent agent;
+        int id;
         if( msgId == 0) {
             resp = (LDAPResponse)listen.getResponse();
         } else {
@@ -3210,23 +3253,46 @@ public class LDAPConnection implements Cloneable
                 resp.chkResultCode(); // throws Exception for non zero result code
             } else {
                 try {
-                    // increment hop count, check for max hops (stored in original msg)
+                    // incr hop count, check max hops (stored in original msg)
                     if( hops++ > defSearchCons.getHopLimit()) {
                         throw new LDAPException("Max hops exceeded",
                             LDAPException.REFERRAL_LIMIT_EXCEEDED);
                     }
                     // Follow referral
-                    LDAPConnection rconn = 
-                        getReferralConnection(resp.getReferrals(), false);
-                    MessageAgent agent = listen.getMessageAgent();
+                    rconn = getReferralConnection(
+                            resp.getReferrals(), search);
+                    refUrl = rconn.getReferralURL();
+                    
                     // get the original message sent
-                    LDAPMessage origMsg = agent.getMessage(listen.getMessageIDs()[0]).getRequest();
-                
-                    // reencode msg into a new msg changing dn, scope, etc.
+                    agent = listen.getMessageAgent();
+                    LDAPMessage origMsg = agent.getMessage(
+                            listen.getMessageIDs()[0]).getRequest();
+                    
+                    // rebuild msg into a new msg changing dn, scope, etc.
+                    LDAPMessage newMsg = rebuildRequest( origMsg,  refUrl);
+                            
                     // Send message on new connection
-                    // get message number from listener
-                    // merge new listener with passed in listener
-                    // wait for response by id - call checkResultCode(msgId, follow)
+                    try {
+                        agent.sendMessage( rconn.getConnection(), newMsg,
+                                defSearchCons.getTimeLimit(), listen, null);
+                    } catch(IOException ioe) {
+                        throw new LDAPException("Communication error:" +
+                                                 ioe.toString(),
+                                                 LDAPException.CONNECT_ERROR);
+                    }
+                    
+                    if( ! search) {
+                        // get message number
+                        id = newMsg.getMessageID();
+                        // Wait for response by id
+                        // When all responses are complete, the stack unwinds
+                        // back to the original and returns to the application.
+                        checkForReferral( listen, newMsg.getMessageID(), hops, search);
+                        // Figure out how to return status code
+                    } else {
+                        // Just return to the LDAPSearchResults object
+                        return;
+                    }
                 } catch (Exception ex) {
                     throw new LDAPReferralException();
                 }
@@ -3236,4 +3302,60 @@ public class LDAPConnection implements Cloneable
         }
         return;
     }        
+    
+    /**
+     * Builds a new request replacing dn, scope, and filter where approprate
+     *
+     * @param msg the original LDAPMessage to build the new request from
+     * <br><br>
+     * @param url the referral url
+     *
+     * @return a new LDAPMessage with appropriate information replaced
+     */
+
+    private
+    LDAPMessage rebuildRequest( LDAPMessage msg, LDAPUrl url)
+            throws LDAPException, CloneNotSupportedException
+    {
+        
+        ASN1Object op = msg.getASN1Object().getProtocolOp();
+        
+        RfcLDAPMessage rfcMsg = msg.getASN1Object();
+        ASN1Identifier id = rfcMsg.getProtocolOp().getIdentifier();
+        if( Debug.LDAP_DEBUG) {
+            Debug.trace( Debug.messages, name +
+            "rebuildRequest: original request = " + id.getTag());
+        }
+            
+        String dn = url.getDN();
+        String filter = null;
+        Integer scope = null;
+
+        switch( rfcMsg.getProtocolOp().getIdentifier().getTag()) {
+            case RfcProtocolOp.SEARCH_REQUEST:
+                filter = url.getFilter();
+                scope = new Integer( url.getScope());
+                break;
+            case RfcProtocolOp.MODIFY_REQUEST:
+            case RfcProtocolOp.ADD_REQUEST:
+            case RfcProtocolOp.DEL_REQUEST:
+            case RfcProtocolOp.MODIFY_DN_REQUEST:
+            case RfcProtocolOp.COMPARE_REQUEST:
+                break;
+            case RfcProtocolOp.EXTENDED_REQUEST:
+                dn = null;  // dn doesn't make sense here
+                break;
+            case RfcProtocolOp.ABANDON_REQUEST:
+            case RfcProtocolOp.BIND_REQUEST:
+            case RfcProtocolOp.UNBIND_REQUEST:
+            default:    
+                throw new LDAPException( "Referral doesn't make sense for command" +
+                    rfcMsg.getProtocolOp().getIdentifier().getTag(),
+                    LDAPException.LOCAL_ERROR);
+        }
+
+        RfcLDAPMessage newRfcMsg = (RfcLDAPMessage)rfcMsg.dupMessage( dn, filter, scope);
+        
+        return new LDAPMessage( newRfcMsg);
+    }
 }

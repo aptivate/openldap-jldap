@@ -35,5 +35,8 @@ public class RfcUnbindRequest extends ASN1Null implements RfcRequest {
 			                       RfcProtocolOp.UNBIND_REQUEST);
 	}
 
+    public RfcRequest dupRequest(String base, String filter, Integer scope)
+    {
+        throw new RuntimeException("Cannot create new RfcUnbindRequest, not allowed");
+    }
 }
-

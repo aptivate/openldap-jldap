@@ -1,7 +1,9 @@
 
 package com.novell.ldap.rfc2251;
 
+import com.novell.ldap.LDAPException;
 import com.novell.ldap.asn1.*;
+import com.novell.ldap.client.ArrayList;
 
 /**
  *       SearchRequest ::= [APPLICATION 3] SEQUENCE {
@@ -46,6 +48,33 @@ public class RfcSearchRequest extends ASN1Sequence implements RfcRequest {
 		add(attributes);
 	}
 
+    /**
+    * Constructs a new Search Request copying from the ArrayList of
+    * an existing request.
+    */
+    /* package */
+    RfcSearchRequest(   ArrayList origRequest,
+                        String base,
+                        String filter, 
+                        Integer scope)
+            throws LDAPException
+    {
+        super(origRequest.size());
+        for(int i=0; i < origRequest.size(); i++) {
+            content.add(origRequest.get(i));
+        }
+        if( base != null) {
+            content.set(0, new RfcLDAPDN(base));
+        }
+        if( filter != null) {
+            content.set(6, new RfcFilter(filter));
+        }
+        if( scope != null) {
+            content.set(1, new ASN1Enumerated(scope.intValue()));
+        }
+        return;
+    }
+
 	//*************************************************************************
 	// Accessors
 	//*************************************************************************
@@ -61,5 +90,9 @@ public class RfcSearchRequest extends ASN1Sequence implements RfcRequest {
 			                       RfcProtocolOp.SEARCH_REQUEST);
 	}
 
+    public RfcRequest dupRequest(String base, String filter, Integer scope)
+            throws LDAPException
+    {
+        return new RfcSearchRequest( content, base, filter, scope);
+    }
 }
-

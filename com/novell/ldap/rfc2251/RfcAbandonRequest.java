@@ -39,5 +39,8 @@ public class RfcAbandonRequest extends RfcMessageID implements RfcRequest {
 			                       RfcProtocolOp.ABANDON_REQUEST);
 	}
 
+    public RfcRequest dupRequest(String base, String filter, Integer scope)
+    {
+        throw new RuntimeException("Cannot create new RfcAbandonRequest, not allowed");
+    }
 }
-

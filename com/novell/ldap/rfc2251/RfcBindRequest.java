@@ -94,5 +94,8 @@ public class RfcBindRequest extends ASN1Sequence implements RfcRequest {
 			                       RfcProtocolOp.BIND_REQUEST);
 	}
 
+    public RfcRequest dupRequest(String base, String filter, Integer scope)
+    {
+        throw new RuntimeException("Cannot create new RfcBindRequest, not allowed");
+    }
 }
-

@@ -1,4 +1,3 @@
-
 package com.novell.ldap.rfc2251;
 
 import com.novell.ldap.asn1.*;
@@ -54,5 +53,8 @@ public class RfcModifyDNRequest extends ASN1Sequence implements RfcRequest {
 			                       RfcProtocolOp.MODIFY_DN_REQUEST);
 	}
 
+    public RfcRequest dupRequest(String base, String filter, Integer scope)
+    {
+        throw new RuntimeException("Cannot create new RfcModifyDNRequest, not allowed");
+    }
 }
-

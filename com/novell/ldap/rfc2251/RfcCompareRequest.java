@@ -37,5 +37,8 @@ public class RfcCompareRequest extends ASN1Sequence implements RfcRequest {
 			                       RfcProtocolOp.COMPARE_REQUEST);
 	}
 
+    public RfcRequest dupRequest(String base, String filter, Integer scope)
+    {
+        throw new RuntimeException("Cannot create new RfcCompareRequest, not allowed");
+    }
 }
-

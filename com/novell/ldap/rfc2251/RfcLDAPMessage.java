@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/rfc2251/RfcLDAPMessage.java,v 1.15 2001/01/31 20:57:27 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/rfc2251/RfcLDAPMessage.java,v 1.16 2001/01/31 21:27:35 vtag Exp $
 *
 * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
 ***************************************************************************/
@@ -7,8 +7,10 @@
 package com.novell.ldap.rfc2251;
 
 import java.io.*;
+import com.novell.ldap.LDAPException;
 import com.novell.ldap.asn1.*;
 import com.novell.ldap.client.Debug;
+import com.novell.ldap.client.ArrayList;
 
 /**
  *       LDAPMessage ::= SEQUENCE {
@@ -69,6 +71,38 @@ import com.novell.ldap.client.Debug;
 public class RfcLDAPMessage extends ASN1Sequence 
 {
 
+    private RfcRequest op;
+    private RfcControls controls;
+    
+    /**
+     * Create an RfcLDAPMessage by copying the content array
+     *
+     * @parameter origContent the array list to copy
+     */
+    /* package */
+    RfcLDAPMessage( ArrayList origContent,
+                    RfcRequest origRequest,
+                    String dn,
+                    String filter,
+                    Integer scope)
+            throws LDAPException
+    {
+        super( origContent.size());
+
+        add(new RfcMessageID()); // MessageID has static counter
+        
+        RfcRequest req = (RfcRequest)origContent.get(1);
+        origContent.add( req.dupRequest(dn, filter, scope));
+        
+        for( int i = 2; i < origContent.size(); i++) {
+            content.add(origContent.get(i));
+        }
+        Debug.trace( Debug.messages,
+            "RfcLDAPMessage created copy of msg with new id " + getMessageID());
+
+        return;
+    }
+
     /**
      * Create an RfcLDAPMessage using the specified LDAP Request Protocol Op.
      */
@@ -84,6 +118,9 @@ public class RfcLDAPMessage extends ASN1Sequence
     {
         super(3);
 
+        this.op = op;
+        this.controls = controls;
+        
         add(new RfcMessageID()); // MessageID has static counter
         add((ASN1Object)op);
         if(controls != null)
@@ -189,5 +226,23 @@ public class RfcLDAPMessage extends ASN1Sequence
         if(size() > 2)
             return (RfcControls)get(2);
         return null;
+    }
+    
+    public Object dupMessage( String dn, String filter, Integer scope)
+        throws CloneNotSupportedException, LDAPException
+    {
+        if( (op == null)) {
+            throw new CloneNotSupportedException(
+                "Cannot clone object built from the imput stream");
+        }
+        
+        Debug.trace( Debug.messages, "RfcLDAPMessage = " + this.toString());
+        RfcLDAPMessage newMsg = new RfcLDAPMessage( content,
+                                                    (RfcRequest)content.get(1),
+                                                    dn,
+                                                    filter,
+                                                    scope);
+        Debug.trace( Debug.messages, "NewLDAPMessage = " + newMsg.toString());
+        return newMsg;
     }
 }
