@@ -108,7 +108,7 @@ public class Message
                     mslimit = 0;
                     break;
                 default:
-                    // start the reader thread
+                    // start the timer thread
                     timer = new Timeout( mslimit, this);
                     timer.setDaemon(true); // If this is the last thread running, allow exit.
                     timer.start();
