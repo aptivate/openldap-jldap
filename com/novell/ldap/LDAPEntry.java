@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPEntry.java,v 1.9 2000/11/29 21:00:51 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPEntry.java,v 1.10 2000/12/05 20:33:12 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -111,7 +111,7 @@ public class LDAPEntry {
     *         match.
     */
    public LDAPAttributeSet getAttributeSet(String subtype) {
-      throw new RuntimeException("Method LDAPEntry.getAttributeSet not implemented");
+		return attrs.getSubset(subtype);
    }
 
    /**

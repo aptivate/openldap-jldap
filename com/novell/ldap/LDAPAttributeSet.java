@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttributeSet.java,v 1.15 2000/10/31 23:52:18 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttributeSet.java,v 1.16 2000/11/15 23:35:13 cmorris Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -213,7 +213,23 @@ public class LDAPAttributeSet implements Cloneable {
     *         subtype.
     */
    public LDAPAttributeSet getSubset(String subtype) {
-      throw new RuntimeException("Method LDAPAttributeSet.getSubset not implemented");
+	  
+	  // Create a new tempAttributeSet
+      LDAPAttributeSet tempAttributeSet = new LDAPAttributeSet();
+
+      // Cycle throught this.attributeSet
+	  for(int i = 0; i < attrs.size(); i++) {
+		
+		 LDAPAttribute tempAttr = new LDAPAttribute( (LDAPAttribute)attrs.elementAt(i));
+		
+		 // Does this attribute have the subtype we are looking for. If
+		 // yes then add it to our AttributeSet, else next attribute
+		 if (tempAttr.hasSubtype(subtype))
+			tempAttributeSet.add(tempAttr);
+      }
+
+      return tempAttributeSet;
+
    }
 
    /**
