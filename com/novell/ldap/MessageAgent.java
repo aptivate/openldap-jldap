@@ -289,14 +289,15 @@ public class MessageAgent
         Object rfcMsg;
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.messages, name +
-                "getLDAPMessage(" + msgId + ")");
+                "getLDAPMessage(" + msgId + "), " + 
+                messages.size() + " messages active");
+        }
+        // If no messages for this agent, just return null
+        if( messages.size() == 0) {
+            return null;
         }
         if( msgId != null ) {
             // Request messages for a specific ID
-            // If no messages for this agent, just return null
-            if( messages.size() == 0) {
-                return null;
-            }
             try {
                 // Get message for this ID
                 Message info = (Message)messages.findMessageById( msgId.intValue());
@@ -330,12 +331,8 @@ public class MessageAgent
                 while( true) {
                     if( Debug.LDAP_DEBUG) {
                         Debug.trace( Debug.messages, name +
-                            "getLDAPMessage: Look for replies, " +
+                            "getLDAPMessage: Look for any reply, " +
                             messages.size() + " messages active");
-                    }
-                    // If no messages for this agent, just return null
-                    if( messages.size() == 0) {
-                        return null;
                     }
                     int next = indexLastRead + 1;
                     Message info;
