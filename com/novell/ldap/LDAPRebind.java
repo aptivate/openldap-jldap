@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPRebind.java,v 1.4 2000/08/28 22:18:57 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPRebind.java,v 1.5 2000/09/11 22:47:49 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -21,7 +21,7 @@ package com.novell.ldap;
  
 /**
  *
- *  Provides credentials for reauthentication when processing a
+ *  Used to provide credentials for reauthentication when processing a
  *  referral.
  */
 public interface LDAPRebind {
@@ -34,8 +34,8 @@ public interface LDAPRebind {
     * Returns an object which can provide credentials for authenticating to
     * a server at the specified host and port.
     *
-    *  @param host    Contains a hostname or dotted string representing
-    *                 the IP address of a host running an LDAP server.
+    *  @param host    Contains a host name or the IP address (in dotted string 
+    *                 format) of a host running an LDAP server.
     *<br><br>
     *  @param port    Contains the TCP or UDP port number of the host.
     *

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPRebindAuth.java,v 1.4 2000/08/28 22:18:57 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPRebindAuth.java,v 1.5 2000/09/11 22:47:49 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -16,7 +16,7 @@
 package com.novell.ldap;
 
 /*
- *4.18 public class LDAPRebindAuth
+ *4.24 public class LDAPRebindAuth
  */
  
 /**
@@ -29,17 +29,17 @@ public class LDAPRebindAuth {
    private String _password;
 
    /*
-    * 4.18.1 Constructors
+    * 4.24.1 Constructors
     */
 
    /**
     * Constructs information that is used by the client for authentication
     * when following referrals automatically.
     *
-    *  @param dn           The distinguished name to use in authenticating to
-    *                      the server.
+    *  @param dn           The distinguished name to use when authenticating to
+    *                      a server.
     *<br><br>
-    *  @param password     The password to use in authenticating to the server.
+    *  @param password     The password to use when authenticating to a server.
     */
    public LDAPRebindAuth ( String dn, String password ) {
       _dn = dn;
@@ -47,7 +47,7 @@ public class LDAPRebindAuth {
    }
 
    /*
-    * 4.18.2 getDN
+    * 4.24.2 getDN
     */
 
    /**
@@ -61,7 +61,7 @@ public class LDAPRebindAuth {
    }
 
    /*
-    * 4.18.3 getPassword
+    * 4.24.3 getPassword
     */
 
    /**

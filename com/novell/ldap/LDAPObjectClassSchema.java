@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPObjectClassSchema.java,v 1.6 2000/09/11 22:47:49 judy Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPObjectClassSchema.java,v 1.7 2000/09/29 15:17:15 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -16,7 +16,7 @@
 package com.novell.ldap;
 
 /*
- * 4.17 public class LDAPObjectClassSchema
+ * 4.23 public class LDAPObjectClassSchema
  */
  
 /**
@@ -54,7 +54,7 @@ public class LDAPObjectClassSchema extends LDAPSchemaElement{
   public final static int AUXILIARY = 2;
 
    /*
-    * 4.17.1 Constructors
+    * 4.23.1 Constructors
     */
 
    /**
@@ -68,13 +68,14 @@ public class LDAPObjectClassSchema extends LDAPSchemaElement{
     *<br><br>
     *  @param description    Optional description of the object class.
     *<br><br>
-    *  @param superiors      The object classes from which this one derives.
+    *  @param superiors      An array of names for object classes from which 
+    *                        this one inherits.
     *<br><br>
-    *  @param required       A list of attributes required for an entry with
-    *                        this object class.
-    *<br><br>
-    *  @param optional       A list of attributes acceptable but not required
+    *  @param required       An array of names for attributes which are required 
     *                        for an entry with this object class.
+    *<br><br>
+    *  @param optional       An array of names for attributes which are optional
+    *                        but not required for an entry with this object class.
     *<br><br>
     *  @param type           The type of class. Must be one of following:
     *                        ABSTRACT, AUXILIARY, or STRUCTURAL. These
@@ -120,16 +121,16 @@ public class LDAPObjectClassSchema extends LDAPSchemaElement{
 
    /**
     * Constructs an object class definition from the raw string value
-    * returned on a directory query for "objectClasses".
+    * returned from a directory query for "objectClasses".
     *
-    *  @param raw      The raw string value returned on a directory
+    *  @param raw      The raw string value returned from a directory
     *                  query for "objectClasses".
     */
    public LDAPObjectClassSchema(String raw) {
    }
 
    /*
-    * 4.17.2 getSuperiors
+    * 4.23.2 getSuperiors
     */
 
    /**
@@ -142,11 +143,11 @@ public class LDAPObjectClassSchema extends LDAPSchemaElement{
    }
 
    /*
-    * 4.17.3 getRequiredAttributes
+    * 4.23.3 getRequiredAttributes
     */
 
    /**
-    * Returns a list of attributes required of an entry with this object
+    * Returns a list of attributes required for an entry with this object
     * class.
     *
     * @return The list of required attributes defined for this class.
@@ -156,7 +157,7 @@ public class LDAPObjectClassSchema extends LDAPSchemaElement{
    }
 
    /*
-    * 4.17.4 getOptionalAttributes
+    * 4.23.4 getOptionalAttributes
     */
 
    /**
@@ -170,13 +171,19 @@ public class LDAPObjectClassSchema extends LDAPSchemaElement{
    }
 
    /*
-    * 4.17.5 getType
+    * 4.23.5 getType
     */
 
    /**
-    * Returns one of ABSTRACT, AUXILIARY, or STRUCTURAL. These are
-    * constants defined in LDAPObjectClassSchema.
+    * Returns the type of object class.
     *
+    *  <p>The getType method returns one of the following constants defined in 
+    *  LDAPObjectClassSchema:
+    * <ul>
+    *   <li>ABSTRACT</li>
+    *   <li>AUXILIARY</li>
+    *   <li>STRUCTURAL</li> 
+    *</ul>
     * @return The type of object class.
     */
    public int getType() {
