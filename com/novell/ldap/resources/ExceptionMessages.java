@@ -38,19 +38,15 @@ public class ExceptionMessages extends java.util.ListResourceBundle {
   public final static String CONNECTION_CLOSED    = "CONNECTION_CLOSED";
   public final static String CONNECTION_READER    = "CONNECTION_READER";
   public final static String DUP_ERROR            = "DUP_ERROR";
-  public final static String NO_CONNECT           = "NO_CONNECT";
   public final static String REFERRAL_ERROR       = "REFERRAL_ERROR";
   public final static String REFERRAL_LOCAL       = "REFERRAL_LOCAL";
   public final static String REFERENCE_ERROR      = "REFERENCE_ERROR";
   public final static String REFERRAL_SEND        = "REFERRAL_SEND";
-  public final static String REFERRAL_NOFOLLOW    = "REFERRAL_NOFOLLOW";
   public final static String REFERENCE_NOFOLLOW   = "REFERENCE_NOFOLLOW";
-  public final static String REFERRAL_INTERNAL    = "REFERRAL_INTERNAL";
   public final static String REFERRAL_BIND        = "REFERRAL_BIND";
   public final static String REFERRAL_BIND_MATCH  = "REFERRAL_BIND_MATCH";
   public final static String NO_DUP_REQUEST       = "NO_DUP_REQUEST";
   public final static String SERVER_CONNECT_ERROR = "SERVER_CONNECT_ERROR";
-  public final static String NO_PROPERTY          = "NO_PROPERTY";
   public final static String NO_SUP_PROPERTY      = "NO_SUP_PROPERTY";
   public final static String ENTRY_PARAM_ERROR    = "ENTRY_PARAM_ERROR";
   public final static String DN_PARAM_ERROR       = "DN_PARAM_ERROR";
@@ -61,20 +57,24 @@ public class ExceptionMessages extends java.util.ListResourceBundle {
   public final static String ENCODING_ERROR       = "ENCODING_ERROR";
   public final static String IO_EXCEPTION         = "IO_EXCEPTION";
   public final static String INVALID_ESCAPE       = "INVALID_ESCAPE";
+  public final static String SHORT_ESCAPE       = "SHORT_ESCAPE";
   public final static String INVALID_CHAR_IN_FILTER = "INVALID_CHAR_IN_FILTER";
+  public final static String INVALID_CHAR_IN_DESCR = "INVALID_CHAR_IN_DESCR";
+  public final static String INVALID_ESC_IN_DESCR = "INVALID_ESC_IN_DESCR";
   public final static String UNEXPECTED_END       = "UNEXPECTED_END";
   public final static String MISSING_LEFT_PAREN   = "MISSING_LEFT_PAREN";
   public final static String MISSING_RIGHT_PAREN  = "MISSING_RIGHT_PAREN";
-  public final static String INVALID_FILTER       = "INVALID_FILTER";
+  public final static String EXPECTING_RIGHT_PAREN  = "EXPECTING_RIGHT_PAREN";
+  public final static String EXPECTING_LEFT_PAREN  = "EXPECTING_LEFT_PAREN";
+  public final static String NO_OPTION            = "NO_OPTION";
+  public final static String INVALID_FILTER_COMPARISON  = "INVALID_FILTER_COMPARISON";
+  public final static String NO_MATCHING_RULE     = "NO_MATCHING_RULE";
+  public final static String NO_ATTRIBUTE_NAME    = "NO_ATTRIBUTE_NAME";
+  public final static String NO_DN_NOR_MATCHING_RULE = "NO_DN_NOR_MATCHING_RULE";
   public final static String NOT_AN_ATTRIBUTE     = "NOT_AN_ATTRIBUTE";
   public final static String UNEQUAL_LENGTHS      = "UNEQUAL_LENGTHS";
-  public final static String COMMUNICATE_ERROR    = "COMMUNICATE_ERROR";
-  public final static String MAXHOPS_EXCEEDED     = "MAXHOPS_EXCEEDED";
   public final static String IMPROPER_REFERRAL    = "IMPROPER_REFERRAL";
-  public final static String NOT_A_RULESCHEMA     = "NOT_A_RULESCHEMA";
-  public final static String NOT_A_RULEUSESHCEMA  = "NOT_A_RULEUSESHCEMA";
   public final static String NOT_IMPLEMENTED      = "NOT_IMPLEMENTED";
-  public final static String MISSING_EQUAL        = "MISSING_EQUAL";
   public final static String NO_MEMORY            = "NO_MEMORY";
   public final static String SERVER_SHUTDOWN_REQ  = "SERVER_SHUTDOWN_REQ";
   public final static String INVALID_ADDRESS      = "INVALID_ADDRESS";
@@ -106,16 +106,12 @@ public class ExceptionMessages extends java.util.ListResourceBundle {
       {"REFERENCE_ERROR","Error attempting to follow a search continuation reference"},
       {"REFERRAL_ERROR","Error attempting to follow a referral"},
       {"REFERRAL_LOCAL", "LDAPSearchResults.{0}(): No entry found & request is not complete"},
-      {"NO_CONNECT", "Could not create any connection to follow referral"},
       {"REFERRAL_SEND", "Error sending request to referred server"},
-      {"REFERRAL_NOFOLLOW", "Referral received, and referral following is off"},
       {"REFERENCE_NOFOLLOW", "Search result reference received, and referral following is off"},
-      {"REFERRAL_INTERNAL", "LDAPConnection: checkForReferral: internal error"},
       {"REFERRAL_BIND", "LDAPBind.bind() function returned null"},
       {"REFERRAL_BIND_MATCH", "Could not match LDAPBind.bind() connection with Server Referral URL list"},
       {"NO_DUP_REQUEST", "Cannot duplicate message to follow referral for {0} request, not allowed"},
       {"SERVER_CONNECT_ERROR","Error connecting to server {0} while attempting to follow a referral"},
-      {"NO_PROPERTY","Requested property is not available."},
       {"NO_SUP_PROPERTY","Requested property is not supported."},
       {"ENTRY_PARAM_ERROR", "Invalid Entry parameter"},
       {"DN_PARAM_ERROR", "Invalid DN parameter"},
@@ -125,21 +121,25 @@ public class ExceptionMessages extends java.util.ListResourceBundle {
       {"DECODING_ERROR", "Error Decoding responseValue"},
       {"ENCODING_ERROR","Encoding Error"},
       {"IO_EXCEPTION", "I/O Exception on host {0}, port {1}"},
-      {"INVALID_ESCAPE", "Invalid escape value" },
+      {"INVALID_ESCAPE", "Invalid value in escape sequence \"{0}\"" },
+      {"SHORT_ESCAPE", "Incomplete escape sequence"},
       {"UNEXPECTED_END", "Unexpected end of filter"},
-      {"MISSING_LEFT_PAREN", "Missing left paren"},
-      {"MISSING_RIGHT_PAREN", "Missing right paren"},
-      {"INVALID_FILTER", "Invalid filter type"},
-      {"INVALID_CHAR_IN_FILTER", "The invalid character \"{0}\" needs to be escaped in a search filter"},
+      {"MISSING_LEFT_PAREN", "Unmatched parentheses, left parenthesis missing"},
+      {"NO_OPTION", "Semicolon present, but no option specified"},
+      {"MISSING_RIGHT_PAREN", "Unmatched parentheses, right parenthesis missing"},
+      {"EXPECTING_RIGHT_PAREN", "Expecting right parenthesis, found \"{0}\""},
+      {"EXPECTING_LEFT_PAREN", "Expecting left parenthesis, found \"{0}\""},
+      {"NO_ATTRIBUTE_NAME", "Missing attribute description"},
+      {"NO_DN_NOR_MATCHING_RULE", "DN and matching rule not specified"},
+      {"NO_MATCHING_RULE", "Missing matching rule"},
+      {"INVALID_FILTER_COMPARISON", "Invalid comparison operator"},
+      {"INVALID_CHAR_IN_FILTER", "The invalid character \"{0}\" needs to be escaped as \"{1}\""},
+      {"INVALID_ESC_IN_DESCR", "Escape sequence not allowed in attribute description"},
+      {"INVALID_CHAR_IN_DESCR", "The invalid character \"{0}\" in attribute description"},
       {"NOT_AN_ATTRIBUTE", "Schema element is not an LDAPAttributeSchema object"},
       {"UNEQUAL_LENGTHS","Length of attribute Name array does not equal length of Flags array"},
-      {"COMMUNICATE_ERROR","Communication error: {0}"},
-      {"MAXHOPS_EXCEEDED","Max hops exceeded"},
       {"IMPROPER_REFERRAL","Referral not supported for command {0}"},
-      {"NOT_A_RULESCHEMA","Schema element is not an LDAPMatchingRuleSchema object"},
-      {"NOT_A_RULEUSESHCEMA","Schema element is not an LDAPMatchingRuleUseSchema object"},
       {"NOT_IMPLEMENTED","Method LDAPConnection.startTLS not implemented"},
-      {"MISSING_EQUAL","Attribute type and name must be separated by an equal symbol, '='"},
       {"NO_MEMORY","All results could not be stored in memory, sort failed"},
 	  {"SERVER_SHUTDOWN_REQ","Received unsolicited notification from server {0}:{1} to shutdown"},
       {"INVALID_ADDRESS","Invalid syntax for address with port; {0}"},

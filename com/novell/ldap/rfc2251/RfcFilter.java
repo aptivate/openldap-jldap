@@ -15,6 +15,7 @@
 
 package com.novell.ldap.rfc2251;
 
+import java.io.UnsupportedEncodingException;
 import java.util.StringTokenizer;
 import java.util.Stack;
 
@@ -146,8 +147,69 @@ public class RfcFilter extends ASN1Choice
             filterExpr = new String("(objectclass=*)");
         }
 
-        if(filterExpr.charAt(0) != '(')
-            filterExpr = "(" + filterExpr + ")";
+        int idx;
+        if( (idx = filterExpr.indexOf('\\')) != -1) {
+            StringBuffer sb = new StringBuffer(filterExpr);
+            int i = idx;
+            while(i < (sb.length()-1)) {
+                char c = sb.charAt(i++);
+                if (c == '\\') {
+                    // found '\' (backslash)
+                    // If V2 escape, turn to a V3 escape
+                    c = sb.charAt(i);
+                    if(c =='*' || c =='(' || c==')' || c =='\\' ) {
+                        // LDAP v2 filter, convert them into hex chars
+                        sb.delete(i,i+1);
+                        sb.insert(i, Integer.toHexString((int)c));
+                        i+=2;
+                    }
+                }
+            }
+            filterExpr = sb.toString();
+        }
+
+        // missing opening and closing parentheses, must be V2, add parentheses
+        if( (filterExpr.charAt(0) != '(') &&
+            (filterExpr.charAt(filterExpr.length()-1) != ')')) {
+                filterExpr = "(" + filterExpr + ")";
+        }
+
+        char ch = filterExpr.charAt(0);
+        int len = filterExpr.length();
+
+        // missing opening parenthesis ?
+        if (ch!='(') {
+            throw new LDAPLocalException( ExceptionMessages.MISSING_LEFT_PAREN,
+                                          LDAPException.FILTER_ERROR);
+        }
+
+        // missing closing parenthesis ?
+        if( filterExpr.charAt(len-1) != ')') {
+            throw new LDAPLocalException( ExceptionMessages.MISSING_RIGHT_PAREN,
+                                          LDAPException.FILTER_ERROR);
+        }
+
+        // unmatched parentheses ?
+        int parenCount = 0;
+        for (int i=0; i<len; i++) {
+            if (filterExpr.charAt(i) == '(') {
+                parenCount++;
+            }
+
+            if (filterExpr.charAt(i) == ')' ) {
+                parenCount--;
+            }
+        }
+
+        if (parenCount > 0) {
+            throw new LDAPLocalException( ExceptionMessages.MISSING_RIGHT_PAREN,
+                                          LDAPException.FILTER_ERROR);
+        }
+        
+        if (parenCount < 0) {
+            throw new LDAPLocalException( ExceptionMessages.MISSING_LEFT_PAREN,
+                                          LDAPException.FILTER_ERROR);
+        }
 
         ft = new FilterTokenizer(filterExpr);
 
@@ -349,7 +411,7 @@ public class RfcFilter extends ASN1Choice
      * Convert hex character to an integer. Return -1 if char is something
      * other than a hex char.
      */
-    private final int hex2int(char c)
+    static final int hex2int(char c)
     {
         return
             (c >= '0' && c <= '9') ? c - '0'      :
@@ -390,15 +452,11 @@ public class RfcFilter extends ASN1Choice
             ch = string.charAt(iString);
             if(escape) {
                 if((ival = hex2int(ch)) < 0) {
-                    // V2 escaped "*()" chars differently: \*, \(, \)
-                    if(escStart) {
-                        escStart = escape = false;
-                        octets[iOctets++] = (byte) ch;
-                    } else {
-                        // "Invalid escape value",
-                        throw new LDAPException(ExceptionMessages.INVALID_ESCAPE,
-                                           LDAPException.FILTER_ERROR);
-                    }
+                    // Invalid escape value
+                    throw new LDAPLocalException(
+                                      ExceptionMessages.INVALID_ESCAPE,
+                                      new Object[] {new Character(ch)},
+                                      LDAPException.FILTER_ERROR);
                 } else {
                     // V3 escaped: \\**
                     if(escStart) {
@@ -425,9 +483,27 @@ public class RfcFilter extends ASN1Choice
                     escape = false;
                 } else {
                     // found invalid character
+                    String escString = "";
+                    try {
+                        char[] ca = new char[1];
+                        ca[0] = ch;
+                        byte[] utf8Bytes = new String(ca).getBytes("UTF-8");
+                        for( int i=0; i < utf8Bytes.length; i++) {
+                            byte u = utf8Bytes[i];
+                            if( (u >= 0) && (u < 0x10)) {
+                                escString = escString + "\\0" + Integer.toHexString(u & 0xff);
+                            } else {
+                                escString = escString + "\\" + Integer.toHexString(u & 0xff);
+                            }
+                        }
+                    } catch ( UnsupportedEncodingException ue) {
+                        throw new RuntimeException(
+                            "UTF-8 String encoding not supported by JVM");
+                    }
+
                     throw new LDAPLocalException(
                             ExceptionMessages.INVALID_CHAR_IN_FILTER,
-                            new Object[] { new Character(ch) },
+                            new Object[] { new Character(ch), escString },
                             LDAPException.FILTER_ERROR);
                 }
             }
@@ -435,7 +511,7 @@ public class RfcFilter extends ASN1Choice
 
         // Verify that any escape sequence completed
         if (escStart || escape) {
-            throw new LDAPException(ExceptionMessages.INVALID_ESCAPE,
+            throw new LDAPLocalException(ExceptionMessages.SHORT_ESCAPE,
                                     LDAPException.FILTER_ERROR);
         }
 
@@ -733,10 +809,10 @@ class FilterTokenizer
     // Private variables
     //*************************************************************************
 
-    private String filter; // The filter string to parse
-    private String attr;   // Name of the attribute just parsed
-    private int i;         // Offset pointer into the filter string
-    private int len;       // Length of the filter string to parse
+    private String filter;    // The filter string to parse
+    private String attr;      // Name of the attribute just parsed
+    private int offset;       // Offset pointer into the filter string
+    private int filterLength; // Length of the filter string to parse
 
     //*************************************************************************
     // Constructor
@@ -747,8 +823,8 @@ class FilterTokenizer
      */
     public FilterTokenizer(String filter) {
         this.filter = filter;
-        this.i = 0;
-        this.len = filter.length();
+        this.offset = 0;
+        this.filterLength = filter.length();
         return;
     }
 
@@ -763,15 +839,16 @@ class FilterTokenizer
     public final void getLeftParen()
             throws LDAPException
     {
-        if(i >= len) {
+        if(offset >= filterLength) {
             //"Unexpected end of filter",
-            throw new LDAPException(ExceptionMessages.UNEXPECTED_END,
+            throw new LDAPLocalException(ExceptionMessages.UNEXPECTED_END,
                                     LDAPException.FILTER_ERROR);
         }
-        if(filter.charAt(i++) != '(') {
+        if(filter.charAt(offset++) != '(') {
             //"Missing left paren",
-            throw new LDAPException(ExceptionMessages.MISSING_LEFT_PAREN,
-                                    LDAPException.FILTER_ERROR);
+            throw new LDAPLocalException(ExceptionMessages.EXPECTING_LEFT_PAREN,
+                    new Object[] { new Character( filter.charAt(offset-=1)) },
+                    LDAPException.FILTER_ERROR);
         }
         return;
     }
@@ -783,15 +860,16 @@ class FilterTokenizer
     public final void getRightParen()
             throws LDAPException
     {
-        if(i >= len) {
+        if(offset >= filterLength) {
             //"Unexpected end of filter",
-            throw new LDAPException(ExceptionMessages.UNEXPECTED_END,
+            throw new LDAPLocalException(ExceptionMessages.UNEXPECTED_END,
                                     LDAPException.FILTER_ERROR);
         }
-        if(filter.charAt(i++) != ')') {
+        if(filter.charAt(offset++) != ')') {
             //"Missing right paren",
-            throw new LDAPException(ExceptionMessages.MISSING_RIGHT_PAREN,
-                                    LDAPException.FILTER_ERROR);
+            throw new LDAPLocalException(ExceptionMessages.EXPECTING_RIGHT_PAREN,
+                    new Object[] { new Character(filter.charAt(offset-1)) },
+                    LDAPException.FILTER_ERROR);
         }
         return;
     }
@@ -810,34 +888,88 @@ class FilterTokenizer
     public final int getOpOrAttr()
             throws LDAPException
     {
-        if(i >= len) {
+        int index;
+
+        if(offset >= filterLength) {
             //"Unexpected end of filter",
-            throw new LDAPException(ExceptionMessages.UNEXPECTED_END,
+            throw new LDAPLocalException(ExceptionMessages.UNEXPECTED_END,
                                     LDAPException.FILTER_ERROR);
         }
         int ret;
-        int testChar = filter.charAt(i);
+        int testChar = filter.charAt(offset);
         if(testChar == '&') {
-            i++;
+            offset++;
             ret = RfcFilter.AND;
-        } else
-        if(testChar == '|') {
-            i++;
+        }
+        else if(testChar == '|') {
+            offset++;
             ret = RfcFilter.OR;
-        } else
-        if(testChar == '!') {
-            i++;
+        }
+        else if(testChar == '!') {
+            offset++;
             ret = RfcFilter.NOT;
-        } else {
+        }
+        else {
+            if (filter.startsWith(":=", offset) == true) {
+                throw new LDAPLocalException(
+                    ExceptionMessages.NO_MATCHING_RULE,
+                    LDAPException.FILTER_ERROR);
+            }
+
+            if (filter.startsWith("::=", offset) == true ||
+                filter.startsWith(":::=", offset) == true ) {
+                throw new LDAPLocalException(
+                    ExceptionMessages.NO_DN_NOR_MATCHING_RULE,
+                    LDAPException.FILTER_ERROR);
+            }
+
+
             // get first component of 'item' (attr or :dn or :matchingrule)
             String delims = "=~<>()";
             StringBuffer sb = new StringBuffer();
-            while(delims.indexOf(filter.charAt(i)) == -1 &&
-                    filter.startsWith(":=", i) == false) {
-                sb.append(filter.charAt(i++));
+
+            while(delims.indexOf(filter.charAt(offset)) == -1 &&
+                  filter.startsWith(":=", offset) == false) {
+                sb.append(filter.charAt(offset++));
             }
 
             attr = sb.toString().trim();
+
+            // is there an attribute name specified in the filter ?
+            if (attr.length() == 0 || attr.charAt(0) == ';') {
+                throw new LDAPLocalException(
+                    ExceptionMessages.NO_ATTRIBUTE_NAME,
+                    LDAPException.FILTER_ERROR);
+            }
+
+            for (index=0; index<attr.length(); index++) {
+                char atIndex = attr.charAt(index);
+                if (!(Character.isLetterOrDigit(atIndex) ||
+                      atIndex == '-' ||
+                      atIndex == '.' ||
+                      atIndex == ';' ||
+                      atIndex == ':'    )) {
+                
+                    if( atIndex == '\\' ) {
+                        throw new LDAPLocalException(
+                            ExceptionMessages.INVALID_ESC_IN_DESCR,
+                            LDAPException.FILTER_ERROR);
+                    } else {
+                        throw new LDAPLocalException(
+                            ExceptionMessages.INVALID_CHAR_IN_DESCR,
+                            new Object[] {new Character(atIndex)},
+                            LDAPException.FILTER_ERROR);
+                    }            
+                }
+            }
+
+            // is there an option specified in the filter ?
+            index = attr.indexOf(';');
+            if (index!=-1 && index==attr.length()-1) {
+                throw new LDAPLocalException(
+                    ExceptionMessages.NO_OPTION,
+                    LDAPException.FILTER_ERROR);
+            }
             ret = -1;
         }
         return ret;
@@ -850,58 +982,60 @@ class FilterTokenizer
     public final int getFilterType()
             throws LDAPException
     {
-        if(i >= len) {
+        if(offset >= filterLength) {
             //"Unexpected end of filter",
-            throw new LDAPException(ExceptionMessages.UNEXPECTED_END,
+            throw new LDAPLocalException(ExceptionMessages.UNEXPECTED_END,
                                     LDAPException.FILTER_ERROR);
         }
         int ret;
-        if(filter.startsWith(">=", i)) {
-            i+=2;
+        if(filter.startsWith(">=", offset)) {
+            offset+=2;
             ret = RfcFilter.GREATER_OR_EQUAL;
         } else
-        if(filter.startsWith("<=", i)) {
-            i+=2;
+        if(filter.startsWith("<=", offset)) {
+            offset+=2;
             ret = RfcFilter.LESS_OR_EQUAL;
         } else
-        if(filter.startsWith("~=", i)) {
-            i+=2;
+        if(filter.startsWith("~=", offset)) {
+            offset+=2;
             ret = RfcFilter.APPROX_MATCH;
         } else
-        if(filter.startsWith(":=", i)) {
-            i+=2;
+        if(filter.startsWith(":=", offset)) {
+            offset+=2;
             ret = RfcFilter.EXTENSIBLE_MATCH;
         } else
-        if(filter.charAt(i) == '=') {
-            i++;
+        if(filter.charAt(offset) == '=') {
+            offset++;
             ret = RfcFilter.EQUALITY_MATCH;
         } else {
-            //"Invalid filter type",
-            throw new LDAPException(ExceptionMessages.INVALID_FILTER,
-                                    LDAPException.FILTER_ERROR);
+            //"Invalid comparison operator",
+            throw new LDAPLocalException(
+                ExceptionMessages.INVALID_FILTER_COMPARISON,
+                LDAPException.FILTER_ERROR);
         }
         return ret;
     }
 
     /**
-     * Reads a value from a filter string and returns it after trimming any
-     * superfluous spaces from the beginning or end of the value.
+     * Reads a value from a filter string.
      */
     public final String getValue()
             throws LDAPException
     {
-        if(i >= len) {
+        if(offset >= filterLength) {
             //"Unexpected end of filter",
-            throw new LDAPException(ExceptionMessages.UNEXPECTED_END,
+            throw new LDAPLocalException(ExceptionMessages.UNEXPECTED_END,
                                     LDAPException.FILTER_ERROR);
         }
-        StringBuffer sb = new StringBuffer();
-        while(i < len && filter.charAt(i) != ')') {
-            sb.append(filter.charAt(i++));
-        }
 
-        // new lines end here
-        return sb.toString();
+        int idx = filter.indexOf( ')', offset);
+        if( idx == -1) {
+            idx = filterLength;
+        } 
+        String ret = filter.substring( offset, idx);
+        offset = idx;
+        
+        return ret;
     }
 
     /**
@@ -920,12 +1054,12 @@ class FilterTokenizer
     public final char peekChar()
             throws LDAPException
     {
-        if(i >= len) {
+        if(offset >= filterLength) {
             //"Unexpected end of filter",
-            throw new LDAPException(ExceptionMessages.UNEXPECTED_END,
+            throw new LDAPLocalException(ExceptionMessages.UNEXPECTED_END,
                                     LDAPException.FILTER_ERROR);
         }
-        return filter.charAt(i);
+        return filter.charAt(offset);
     }
 
 }
