@@ -31,6 +31,7 @@ import com.novell.ldap.rfc2251.*;
  * by the client with a new requested position or length and sent to the 
  * server to obtain a different segment of the virtual list.
  *
+ * The following is the ASN.1 of the VLV Request packet:
  *
  *           VirtualListViewRequest ::= SEQUENCE {
  *                beforeCount    INTEGER (0..maxInt),
@@ -51,8 +52,10 @@ public class LDAPVirtualListControl extends LDAPControl {
     public static final String OID = "2.16.840.1.113730.3.4.9";
 
 	// Private copy of various fields that can be set on the 
-	// VLV control
-	private ASN1Sequence m_vlvRequest;
+	// VLV control.  One could have managed without
+	// really defining these private variables as each of these
+	// can be reverse engineered from the encoded ASN.1.  However
+	// that would have complicated/slowed down the code.  
 	private int m_beforeCount;
 	private int m_afterCount;
 	private String m_jumpTo;
@@ -60,7 +63,9 @@ public class LDAPVirtualListControl extends LDAPControl {
 	private int m_startIndex = 0;
 	private	int m_contentCount = -1;
 
-
+    // The encoded ASN.1 is stored in this variable
+    private ASN1Sequence m_vlvRequest;
+   
    /**
 	* 3.1.1 Constructors 
 	* Constructs a virtual list control using the specified filter 
@@ -88,6 +93,7 @@ public class LDAPVirtualListControl extends LDAPControl {
 									int		beforeCount, 
 									int		afterCount ) 
 	{
+	    // Set the OPTIONAL context field to null
 		this(jumpTo, beforeCount, afterCount, null);
 	}
  
@@ -129,24 +135,26 @@ public class LDAPVirtualListControl extends LDAPControl {
 									String	context ) 
 	{
 
-		// Draft requires this to be a critical control
+		// Draft requires this to be a critical control. Hence the 
+		// true value for the criticality
         super(OID, true, null);
 
-		// Save off the fields locally
+		// Save off the fields in local variables
 		m_beforeCount = beforeCount;
 		m_afterCount = afterCount;
 		m_jumpTo = jumpTo;
 		m_context = context;
 
-		// Build the request
+		// Build the request using private method
 		BuildTypedVLVRequest();
 
-		// Set the request data in the parent LDAPControl
+		// Set the request data in the parent LDAPControl value
+		// field.  This encoding will be appended to the search request
 		setValue (m_vlvRequest.getEncoding(new LBEREncoder()));
 	}
 
 	/** Private method used to construct the ber encoded control
-	 *  Used only when using the typed mode of VLV Control
+	 *  Used only when using the typed mode of VLV Control.
 	 */
 	private void BuildTypedVLVRequest() 
 	{
@@ -156,13 +164,14 @@ public class LDAPVirtualListControl extends LDAPControl {
         m_vlvRequest.add(new ASN1Integer(m_beforeCount));
 		m_vlvRequest.add(new ASN1Integer(m_afterCount));
 
-		// Add the CHOICE option corresponding to greaterthanOrEqual
-		m_vlvRequest.add(new ASN1Tagged(	new ASN1Identifier(ASN1Identifier.CONTEXT, false,
-											GREATERTHANOREQUAL),
+		// Add the CHOICE option corresponding to greaterthanOrEqual OCTET STRING
+		m_vlvRequest.add(new ASN1Tagged(new ASN1Identifier( ASN1Identifier.CONTEXT, 
+		                                                    false,
+											                GREATERTHANOREQUAL),
 										new RfcAssertionValue(m_jumpTo),
 										false));
 
-		// Add the optional context string if one is avaialable
+		// Add the optional context string if one was provided
 		if (m_context != null)
 			m_vlvRequest.add(new ASN1OctetString(m_context));
 
@@ -194,6 +203,7 @@ public class LDAPVirtualListControl extends LDAPControl {
 									int		afterCount, 
 									int		contentCount ) 
 	{
+	    // Set the context field to null
 		this(startIndex, beforeCount, afterCount, contentCount, null);
 	}
 
@@ -236,7 +246,7 @@ public class LDAPVirtualListControl extends LDAPControl {
         super(OID, true, null);
 
         
-		// Save off the fields locally
+		// Save off the fields in local variables
 		m_beforeCount = beforeCount;
 		m_afterCount = afterCount;
 		m_startIndex = startIndex;
@@ -360,6 +370,15 @@ public class LDAPVirtualListControl extends LDAPControl {
                          int afterCount ) 
     {
 
+        // Save off the fields in local variables
+		m_beforeCount = beforeCount;
+		m_afterCount = afterCount;
+		m_startIndex = listIndex;
+
+		// Rebuild the request
+		BuildIndexedVLVRequest();
+
+		setValue (m_vlvRequest.getEncoding(new LBEREncoder()));
 
 	}
 
@@ -390,7 +409,17 @@ public class LDAPVirtualListControl extends LDAPControl {
                          int beforeCount, 
                          int afterCount ) 
     {
+		// Save off the fields in local variables
+		m_beforeCount = beforeCount;
+		m_afterCount = afterCount;
+		m_jumpTo = jumpTo;
 
+		// Rebuild the request using private method
+		BuildTypedVLVRequest();
+
+		// Set the request data in the parent LDAPControl value
+		// field.  This encoding will be appended to the search request
+		setValue (m_vlvRequest.getEncoding(new LBEREncoder()));
 	}
     
   /**
