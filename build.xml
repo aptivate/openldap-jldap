@@ -59,7 +59,7 @@
     <!-- =================================================================== -->
     <!-- all - clean, build debug, release, dist                             -->
     <!-- =================================================================== -->
-	<target name="all" depends="init, cleanpkg, lib, doc, tests, samples, install" />
+	<target name="all" depends="init, cleanpkg, lib, tests, samples, doc, install" />
 
     <!-- =================================================================== -->
     <!-- clean all files                                                     -->
