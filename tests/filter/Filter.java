@@ -146,7 +146,7 @@ public class Filter
                 } catch( LDAPException e) {
                     if( errorResult) {
                         System.out.println( "Expected filter exception \"" +
-                                inFilter + "\"" + e.toString() + "\n");
+                                inFilter + "\" " + e.toString() + "\n");
                     } else {
                         errorCount++;
                         System.out.println( 
