@@ -5,9 +5,11 @@
 	<!-- Targets                                                             -->
 	<!--     clean   - Cleans all generated class files                      -->
 	<!--     compile - Builds debug classes and jar files                    -->
+	<!--     all     - Synonym for compile                                   -->
 
 	<property name="top" value="../../../.."/>
     <property name="build" value="classes_debug"/>
+    <property name="lib" value="lib_debug"/>
 	<property name="optimize" value="off"/>
 	<property name="debug" value="on"/>
 
@@ -24,7 +26,7 @@
     <!-- clean class files                                                  -->
     <!-- =================================================================== -->
     <target name="clean" depends="init">
-		<deltree dir="${top}/${build}/org/ietf/asn1"/>
+		<delete dir="${top}/${build}/org/ietf/asn1" includes="*.class"/>
 	</target>
 
     <!-- =================================================================== -->
@@ -32,13 +34,15 @@
     <!-- =================================================================== -->
     <target name="compile" depends="init">
 		<mkdir dir="${top}/${build}"/>
-        <javac srcdir="."
+        <javac srcdir="${top}/src"
+				includes="org/ietf/asn1/*.java"
                 destdir="${top}/${build}"
                 deprecation="off"
                 debug="${debug}"
                 optimize="${optimize}">
-            <include name="*.java"/>
         </javac>
     </target>
+
+	<target name="all" depends="compile"/>
 
 </project>

@@ -1,10 +1,11 @@
 <!-- ======================================================================= -->
-<!-- ORG.IETF.ASN1 build file                                                -->
+<!-- ORG.IETF.ASN1.LDAP build file                                                -->
 <!-- ======================================================================= -->
-<project name="ASN1" default="compile" basedir=".">
+<project name="ASN1.LDAP" default="compile" basedir=".">
 	<!-- Targets                                                             -->
 	<!--     clean   - Cleans all generated class files                      -->
 	<!--     compile - Builds debug classes and jar files                    -->
+	<!--     all     - Synonym for compile                                   -->
 
 	<property name="top" value="../../../../.."/>
     <property name="build" value="classes_debug"/>
@@ -24,7 +25,7 @@
     <!-- clean class files                                                  -->
     <!-- =================================================================== -->
     <target name="clean" depends="init">
-		<deltree dir="${top}/${build}/org/ietf/asn1/ldap"/>
+		<delete dir="${top}/${build}/org/ietf/asn1/ldap" includes="*.class"/>
 	</target>
 
     <!-- =================================================================== -->
@@ -32,14 +33,15 @@
     <!-- =================================================================== -->
     <target name="compile" depends="init">
 		<mkdir dir="${top}/${build}"/>
-        <javac srcdir="."
+        <javac srcdir="${top}/src"
+				includes="org/ietf/asn1/ldap/*.java"
                 destdir="${top}/${build}"
-				classpath="${top}/${build}"
                 deprecation="off"
                 debug="${debug}"
                 optimize="${optimize}">
-            <include name="*.java"/>
         </javac>
     </target>
+
+	<target name="all" depends="compile"/>
 
 </project>
