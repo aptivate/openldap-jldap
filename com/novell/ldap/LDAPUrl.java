@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPUrl.java,v 1.26 2001/04/24 17:18:29 cmorris Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPUrl.java,v 1.27 2001/05/08 19:56:22 vtag Exp $
 *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -17,7 +17,9 @@ package com.novell.ldap;
 
 import java.util.*;
 import java.net.*;
+
 import com.novell.ldap.client.Debug;
+import com.novell.ldap.client.ArrayEnumeration;
 
 /**
 *
@@ -290,7 +292,7 @@ public class LDAPUrl {
     * @return An enumeration of attribute names.
     */
     public Enumeration getAttributes() {
-        return new AttributeEnumeration( attrs );
+        return new ArrayEnumeration( attrs );
     }
 
     /**
