@@ -196,7 +196,7 @@ public class DSMLWriter implements LDAPWriter {
             case LDAPMessage.BIND_REQUEST:
             case LDAPMessage.UNBIND_REQUEST:
             case LDAPMessage.BIND_RESPONSE:
-            case LDAPMessage.COMPARE_REQUEST:
+//            case LDAPMessage.COMPARE_REQUEST:
             case LDAPMessage.ABANDON_REQUEST:
 //            case LDAPMessage.EXTENDED_REQUEST:
                 throw new java.lang.UnsupportedOperationException(
@@ -221,6 +221,14 @@ public class DSMLWriter implements LDAPWriter {
                 writeExtendedRequest((LDAPExtendedRequest) messageToWrite);
                 break;
 
+            case LDAPMessage.COMPARE_REQUEST:
+                if (state != SEARCH_TAG){
+                    newLine(1);
+                    writeTagWithID("compareRequest", messageToWrite);
+                    state = REQUEST_BATCH;
+                }
+                writeCompareRequest((LDAPCompareRequest) messageToWrite);
+                break;
 
             case LDAPMessage.ADD_REQUEST:
                 if (state != SEARCH_TAG){
@@ -806,6 +814,39 @@ public class DSMLWriter implements LDAPWriter {
     }    
     
     /*
+     * Writes  LDAP Compare Request as a XML document 
+     *
+     * @param request LDAPCompareRequest object
+	 * @param controls Controls that were returned with this entry
+     * @param requestID the String representing a Request ID
+     *
+     * @throws IOException if an I/O error occurs.
+     *
+     * @see com.novell.ldap.LDAPCompareRequest
+     */
+    private void writeCompareRequestEntry( LDAPCompareRequest request,
+                            	   LDAPControl[] controls,
+                            	   String requestID)
+            throws IOException, LDAPLocalException
+    {
+        checkState(false);
+        newLine(2);
+        out.write("<assertion name=\"" + request.getAttributeDescription());
+        out.write("\">");
+        newLine(3);
+        out.write("<value>");
+        byte[] vals=request.getAssertionValue();
+        if (Base64.isLDIFSafe(vals)) 
+            out.write(new String(vals,"UTF-8"));
+        else
+            out.write(Base64.encode(vals));
+        out.write("</value>");
+        newLine(2);
+        out.write("</assertion>");
+        newLine(1);
+        out.write("</compareRequest>");
+    }
+    /*
      * Writes  LDAP Add Request as a XML document 
      *
      * @param request LDAPAddRequest object
@@ -899,6 +940,11 @@ public class DSMLWriter implements LDAPWriter {
             if (matchedDN != null && !matchedDN.equals("")){
                 out.write(" matchedDN=\"" + matchedDN + "\"");
             }
+        }
+
+        if( message instanceof LDAPCompareRequest) {
+            String dn = ((LDAPCompareRequest) message).getDN();
+            out.write(" dn=\"" + dn + "\"");
         }
 
         if( message instanceof LDAPExtendedRequest) {
@@ -1056,7 +1102,7 @@ public class DSMLWriter implements LDAPWriter {
     {
         for(int i=0; i<controls.length; i++){
             newLine(indent);
-            out.write("<control numericOID=\"");
+            out.write("<control type=\"");
             out.write(controls[i].getID());
             out.write("\" criticality=\""+controls[i].isCritical()+ "\"");
 
@@ -1133,6 +1179,20 @@ public class DSMLWriter implements LDAPWriter {
             throws IOException, LDAPLocalException
     {
         writeAddRequestEntry( request,
+                           request.getControls(),
+                           DOMWriter.findRequestID(request));
+        return;
+    }
+
+    /**
+     * Writes the Compare request requested within a LDAP Compare 
+     * request
+     * @param request a search request entry
+     */
+    private void writeCompareRequest(LDAPCompareRequest request)
+            throws IOException, LDAPLocalException
+    {
+        writeCompareRequestEntry( request,
                            request.getControls(),
                            DOMWriter.findRequestID(request));
         return;

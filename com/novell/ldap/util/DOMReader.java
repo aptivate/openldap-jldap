@@ -161,9 +161,9 @@ public class DOMReader implements LDAPReader{
      */
     public LDAPMessage readMessage()
     {
-        if (this.messageIndex >= handler.queue.size())
+        if (this.messageIndex >= handler.getQueue().size())
             return null;
-        return (LDAPMessage) handler.queue.get( this.messageIndex ++ );
+        return (LDAPMessage) handler.getQueue().get( this.messageIndex ++ );
     }
 
     /**
