@@ -216,6 +216,7 @@ public class LDIFWriter extends LDIF implements LDAPExport {
 
         // write the content line into LDIF file
         writeRecordLines();
+        flushStream();
 
     }
 
@@ -254,6 +255,8 @@ public class LDIFWriter extends LDIF implements LDAPExport {
         this.currentControls = change.getControls();
         LDAPModification[] mods;
         String[] modInfo;
+
+        this.rFields.clear();
 
         if ( change instanceof LDAPAdd) {
 
