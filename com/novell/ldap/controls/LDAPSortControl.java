@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPSortControl.java,v 1.1 2000/09/19 17:37:09 smerrill Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPSortControl.java,v 1.2 2000/10/18 15:52:23 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -72,14 +72,14 @@ public class LDAPSortControl extends LDAPControl {
             
 			ASN1Sequence key = new ASN1Sequence();
 
-            key.add(new AttributeDescription(keys[i].getKey()));
+            key.add(new RfcAttributeDescription(keys[i].getKey()));
             
 			if(keys[i].getMatchRule() != null) {
                 key.add(
                     new ASN1Tagged(
                         new ASN1Identifier(ASN1Identifier.CONTEXT, false,
                                            ORDERING_RULE),
-                        new MatchingRuleId(keys[i].getMatchRule()),
+                        new RfcMatchingRuleId(keys[i].getMatchRule()),
                         false));
             }
             

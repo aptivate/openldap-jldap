@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/protocol/MessageID.java,v 1.6 2000/09/11 21:06:02 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/protocol/RfcMessageID.java,v 1.7 2000/11/09 18:27:22 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  ***************************************************************************/
@@ -21,7 +21,7 @@ import com.novell.ldap.asn1.*;
  *       class should be package protected. (So the MessageID value isn't
  *       arbitrarily run up.)
  */
-class MessageID extends ASN1Integer {
+class RfcMessageID extends ASN1Integer {
 
    private static int messageID;
 
@@ -30,7 +30,7 @@ class MessageID extends ASN1Integer {
 	 *
 	 * Bounds: (0 .. 2,147,483,647) (2^^31 - 1 or Integer.MAX_VALUE)
     */
-   protected MessageID()
+   protected RfcMessageID()
    {
 		super((messageID < Integer.MAX_VALUE) ? ++messageID : (messageID = 0));
    }
@@ -38,7 +38,7 @@ class MessageID extends ASN1Integer {
    /**
     * Creates a MessageID with a specified int value.
     */
-   protected MessageID(int i)
+   protected RfcMessageID(int i)
    {
       super(i);
    }

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchListener.java,v 1.19 2000/11/08 22:41:33 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchListener.java,v 1.20 2000/11/09 18:27:17 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -142,10 +142,10 @@ public class LDAPSearchListener implements LDAPListener
       if(msg == null)
          return null;
 
-      if(msg.getProtocolOp() instanceof SearchResultEntry) {
+      if(msg.getProtocolOp() instanceof RfcSearchResultEntry) {
          message = new LDAPSearchResult(msg);
       }
-      else if(msg.getProtocolOp() instanceof SearchResultReference) {
+      else if(msg.getProtocolOp() instanceof RfcSearchResultReference) {
          message = new LDAPSearchResultReference(msg);
       }
       else { // must be SearchResultDone

@@ -60,7 +60,7 @@ import com.novell.ldap.asn1.*;
  *               referral        [3] Referral OPTIONAL }
  *
  */
-public class RfcLDAPResult extends ASN1Sequence implements Response {
+public class RfcLDAPResult extends ASN1Sequence implements RfcResponse {
 
    /**
     * Context-specific TAG for optional Referral.
@@ -110,7 +110,7 @@ public class RfcLDAPResult extends ASN1Sequence implements Response {
             byte[] content =
                ((ASN1OctetString)obj.getContent()).getContent();
             ByteArrayInputStream bais = new ByteArrayInputStream(content);
-            set(3, new Referral(dec, bais, content.length));
+            set(3, new RfcReferral(dec, bais, content.length));
          }
       }
    }
@@ -182,9 +182,9 @@ public class RfcLDAPResult extends ASN1Sequence implements Response {
    /**
     *
     */
-   public Referral getReferral()
+   public RfcReferral getReferral()
    {
-		return (size() > 3) ? (Referral)get(3) : null;
+		return (size() > 3) ? (RfcReferral)get(3) : null;
    }
 }
 

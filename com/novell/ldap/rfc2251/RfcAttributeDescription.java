@@ -7,12 +7,12 @@ import com.novell.ldap.asn1.*;
 /**
  *
  */
-public class AttributeDescription extends RfcLDAPString {
+public class RfcAttributeDescription extends RfcLDAPString {
 
 	/**
 	 *
 	 */
-	public AttributeDescription(String s)
+	public RfcAttributeDescription(String s)
 	{
 		super(s);
 	}
@@ -20,7 +20,7 @@ public class AttributeDescription extends RfcLDAPString {
 	/**
 	 *
 	 */
-	public AttributeDescription(ASN1Decoder dec, InputStream in, int len)
+	public RfcAttributeDescription(ASN1Decoder dec, InputStream in, int len)
 		throws IOException
 	{
 		super(dec, in, len);

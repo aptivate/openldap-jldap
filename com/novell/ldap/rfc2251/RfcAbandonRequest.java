@@ -6,7 +6,7 @@ import com.novell.ldap.asn1.*;
 /**
  *       AbandonRequest ::= [APPLICATION 16] MessageID
  */
-public class AbandonRequest extends MessageID implements Request {
+public class RfcAbandonRequest extends RfcMessageID implements RfcRequest {
 
 	//*************************************************************************
 	// Constructor for AbandonRequest
@@ -15,7 +15,7 @@ public class AbandonRequest extends MessageID implements Request {
 	/**
 	 *
 	 */
-	public AbandonRequest(int msgId)
+	public RfcAbandonRequest(int msgId)
 	{
 		super(msgId);
 	}
@@ -36,7 +36,7 @@ public class AbandonRequest extends MessageID implements Request {
 	public ASN1Identifier getIdentifier()
 	{
 		return new ASN1Identifier(ASN1Identifier.APPLICATION, false,
-			                       ProtocolOp.ABANDON_REQUEST);
+			                       RfcProtocolOp.ABANDON_REQUEST);
 	}
 
 }

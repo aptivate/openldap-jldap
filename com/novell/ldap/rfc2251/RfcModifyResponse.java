@@ -7,7 +7,7 @@ import com.novell.ldap.asn1.*;
 /**
  *      ModifyResponse ::= [APPLICATION 7] LDAPResult
  */
-public class ModifyResponse extends RfcLDAPResult {
+public class RfcModifyResponse extends RfcLDAPResult {
 
 	//*************************************************************************
 	// Constructor for ModifyResponse
@@ -17,7 +17,7 @@ public class ModifyResponse extends RfcLDAPResult {
 	 * The only time a client will create a ModifyResponse is when it is
 	 * decoding it from an InputStream
 	 */
-	public ModifyResponse(ASN1Decoder dec, InputStream in, int len)
+	public RfcModifyResponse(ASN1Decoder dec, InputStream in, int len)
 		throws IOException
 	{
 		super(dec, in, len);
@@ -33,7 +33,7 @@ public class ModifyResponse extends RfcLDAPResult {
 	public ASN1Identifier getIdentifier()
 	{
 		return new ASN1Identifier(ASN1Identifier.APPLICATION, true,
-			                       ProtocolOp.MODIFY_RESPONSE);
+			                       RfcProtocolOp.MODIFY_RESPONSE);
 	}
 
 }

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResultReference.java,v 1.13 2000/11/03 23:26:29 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResultReference.java,v 1.14 2000/11/09 18:27:18 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -47,7 +47,7 @@ public class LDAPSearchResultReference extends LDAPMessage {
     * @return The URLs.
     */
    public String[] getReferrals() {
-        SearchResultReference sresref = (SearchResultReference)message.getProtocolOp();
+        RfcSearchResultReference sresref = (RfcSearchResultReference)message.getProtocolOp();
         Enumeration references = sresref.elements();
         srefs = new String[sresref.size()];
         for( int i=0; sresref.hasMoreElements(); i++) {

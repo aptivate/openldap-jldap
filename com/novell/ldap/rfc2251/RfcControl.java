@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/protocol/Control.java,v 1.8 2000/11/08 17:40:49 javed Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/protocol/RfcControl.java,v 1.9 2000/11/09 18:27:19 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  ***************************************************************************/
@@ -15,7 +15,7 @@ import com.novell.ldap.asn1.*;
  *               criticality             BOOLEAN DEFAULT FALSE,
  *               controlValue            OCTET STRING OPTIONAL }
  */
-public class Control extends ASN1Sequence {
+public class RfcControl extends ASN1Sequence {
 
 	//*************************************************************************
 	// Constructors for Control
@@ -24,7 +24,7 @@ public class Control extends ASN1Sequence {
 	/**
 	 *
 	 */
-	public Control(RfcLDAPOID controlType)
+	public RfcControl(RfcLDAPOID controlType)
 	{
 		this(controlType, new ASN1Boolean(false), null);
 	}
@@ -32,7 +32,7 @@ public class Control extends ASN1Sequence {
 	/**
 	 *
 	 */
-	public Control(RfcLDAPOID controlType, ASN1Boolean criticality)
+	public RfcControl(RfcLDAPOID controlType, ASN1Boolean criticality)
 	{
 		this(controlType, criticality, null);
 	}
@@ -43,7 +43,7 @@ public class Control extends ASN1Sequence {
 	 *       (4): If a value of a type is its default value, it MUST be
 	 *       absent.
 	 */
-	public Control(RfcLDAPOID controlType, ASN1Boolean criticality,
+	public RfcControl(RfcLDAPOID controlType, ASN1Boolean criticality,
 		            ASN1OctetString controlValue)
 	{
 		super(3);
@@ -57,7 +57,7 @@ public class Control extends ASN1Sequence {
 	/**
 	 * Constructs a Control object by decoding it from an InputStream.
 	 */
-	public Control(ASN1Decoder dec, InputStream in, int len)
+	public RfcControl(ASN1Decoder dec, InputStream in, int len)
 		throws IOException
 	{
 		super(dec, in, len);
@@ -66,7 +66,7 @@ public class Control extends ASN1Sequence {
 	/**
 	 * Constructs a Control object by decoding from an ASN1Sequence
 	 */
-	public Control(ASN1Sequence seqObj)
+	public RfcControl(ASN1Sequence seqObj)
 		throws IOException
 	{
 	    super(3);

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPResponse.java,v 1.19 2000/11/06 22:29:49 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPResponse.java,v 1.20 2000/11/09 18:27:16 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -48,7 +48,7 @@ public class LDAPResponse extends LDAPMessage
     public String getErrorMessage()
     {
         return
-            ((Response)message.getProtocolOp()).getErrorMessage().getString();
+            ((RfcResponse)message.getProtocolOp()).getErrorMessage().getString();
     }
 
     /**
@@ -60,7 +60,7 @@ public class LDAPResponse extends LDAPMessage
      */
     public String getMatchedDN()
     {
-        return ((Response)message.getProtocolOp()).getMatchedDN().getString();
+        return ((RfcResponse)message.getProtocolOp()).getMatchedDN().getString();
     }
 
     /**
@@ -71,7 +71,7 @@ public class LDAPResponse extends LDAPMessage
     public String[] getReferrals()
     {
         String[] referrals = null;
-        Referral ref = ((Response)message.getProtocolOp()).getReferral();
+        RfcReferral ref = ((RfcResponse)message.getProtocolOp()).getReferral();
         
         if(ref != null) {
             // convert RFC 2251 Referral to String[]
@@ -94,7 +94,7 @@ public class LDAPResponse extends LDAPMessage
      */
     public int getResultCode()
     {
-        return ((Response)message.getProtocolOp()).getResultCode().getInt();
+        return ((RfcResponse)message.getProtocolOp()).getResultCode().getInt();
     }
 
     /**
@@ -183,7 +183,7 @@ public class LDAPResponse extends LDAPMessage
             // enabled.
             String[] refs = getReferrals();
             if( Debug.LDAP_DEBUG ) {
-                Debug.trace( Debug.messages, "LDAPResponse: Generating Referral Exception");
+                Debug.trace( Debug.messages, "LDAPResponse: Generating RfcReferral Exception");
                 for( int i = 0; i < refs.length; i++) {
                     Debug.trace( Debug.messages, "LDAPResponse: \t" + refs[i]);
                 }

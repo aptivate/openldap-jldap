@@ -8,7 +8,7 @@ import com.novell.ldap.asn1.*;
  *               entry           LDAPDN,
  *               ava             AttributeValueAssertion }
  */
-public class CompareRequest extends ASN1Sequence implements Request {
+public class RfcCompareRequest extends ASN1Sequence implements RfcRequest {
 
 	//*************************************************************************
 	// Constructor for CompareRequest
@@ -17,7 +17,7 @@ public class CompareRequest extends ASN1Sequence implements Request {
 	/**
 	 *
 	 */
-	public CompareRequest(RfcLDAPDN entry, AttributeValueAssertion ava)
+	public RfcCompareRequest(RfcLDAPDN entry, RfcAttributeValueAssertion ava)
 	{
 		super(2);
 		add(entry);
@@ -34,7 +34,7 @@ public class CompareRequest extends ASN1Sequence implements Request {
 	public ASN1Identifier getIdentifier()
 	{
 		return new ASN1Identifier(ASN1Identifier.APPLICATION, true,
-			                       ProtocolOp.COMPARE_REQUEST);
+			                       RfcProtocolOp.COMPARE_REQUEST);
 	}
 
 }

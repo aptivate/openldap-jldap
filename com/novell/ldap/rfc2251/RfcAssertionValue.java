@@ -6,19 +6,19 @@ import com.novell.ldap.asn1.*;
 /**
  *        AssertionValue ::= OCTET STRING
  */
-public class AssertionValue extends ASN1OctetString {
+public class RfcAssertionValue extends ASN1OctetString {
 
 	/**
 	 *
 	 */
-	public AssertionValue(byte[] value) {
+	public RfcAssertionValue(byte[] value) {
 		super(value);
 	}
 
 	/**
 	 *
 	 */
-	public AssertionValue(String value) {
+	public RfcAssertionValue(String value) {
 		super(value);
 	}
 

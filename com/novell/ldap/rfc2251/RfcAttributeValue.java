@@ -6,12 +6,12 @@ import com.novell.ldap.asn1.*;
 /**
  *
  */
-public class AttributeValue extends ASN1OctetString {
+public class RfcAttributeValue extends ASN1OctetString {
 
 	/**
 	 *
 	 */
-	public AttributeValue(String value)
+	public RfcAttributeValue(String value)
 	{
 		super(value);
 	}
@@ -19,7 +19,7 @@ public class AttributeValue extends ASN1OctetString {
 	/**
 	 *
 	 */
-	public AttributeValue(byte[] value)
+	public RfcAttributeValue(byte[] value)
 	{
 		super(value);
 	}

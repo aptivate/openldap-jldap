@@ -9,7 +9,7 @@ import com.novell.ldap.asn1.*;
  *                                        -- 1 and 2 reserved
  *               sasl                    [3] SaslCredentials }
  */
-public class AuthenticationChoice extends ASN1Choice {
+public class RfcAuthenticationChoice extends ASN1Choice {
 
 	//*************************************************************************
 	// Constructors for AuthenticationChoice
@@ -18,7 +18,7 @@ public class AuthenticationChoice extends ASN1Choice {
 	/**
 	 *
 	 */
-	public AuthenticationChoice(ASN1Tagged choice)
+	public RfcAuthenticationChoice(ASN1Tagged choice)
 	{
 		super(choice);
 	}

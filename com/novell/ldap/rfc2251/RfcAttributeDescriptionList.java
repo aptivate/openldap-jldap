@@ -14,12 +14,12 @@ import com.novell.ldap.asn1.*;
  * @see ASN1SequenceOf
  * @see SearchRequest
  */
-public class AttributeDescriptionList extends ASN1SequenceOf {
+public class RfcAttributeDescriptionList extends ASN1SequenceOf {
 
    /**
     *
     */
-   public AttributeDescriptionList()
+   public RfcAttributeDescriptionList()
    {
       super();
    }
@@ -27,7 +27,7 @@ public class AttributeDescriptionList extends ASN1SequenceOf {
    /**
     *
     */
-   public AttributeDescriptionList(int size)
+   public RfcAttributeDescriptionList(int size)
    {
       super(size);
    }
@@ -36,13 +36,13 @@ public class AttributeDescriptionList extends ASN1SequenceOf {
     * Convenience constructor. This constructor will construct an
     * AttributeDescriptionList using the supplied array of Strings.
     */
-   public AttributeDescriptionList(String[] attrs)
+   public RfcAttributeDescriptionList(String[] attrs)
    {
       super(attrs == null ? 0 : attrs.length);
 
 		if(attrs != null) {
 			for(int i=0; i<attrs.length; i++) {
-				add(new AttributeDescription(attrs[i]));
+				add(new RfcAttributeDescription(attrs[i]));
 			}
 		}
    }

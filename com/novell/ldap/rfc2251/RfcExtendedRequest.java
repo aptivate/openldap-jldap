@@ -8,7 +8,7 @@ import com.novell.ldap.asn1.*;
  *               requestName      [0] LDAPOID,
  *               requestValue     [1] OCTET STRING OPTIONAL }
  */
-public class ExtendedRequest extends ASN1Sequence implements Request {
+public class RfcExtendedRequest extends ASN1Sequence implements RfcRequest {
 
 	/**
 	 * Context-specific TAG for optional requestName.
@@ -28,7 +28,7 @@ public class ExtendedRequest extends ASN1Sequence implements Request {
 	 *
 	 * @param requestName The OID for this extended operation.
 	 */
-	public ExtendedRequest(RfcLDAPOID requestName)
+	public RfcExtendedRequest(RfcLDAPOID requestName)
 	{
 		this(requestName, null);
 	}
@@ -39,7 +39,7 @@ public class ExtendedRequest extends ASN1Sequence implements Request {
 	 * @param requestName The OID for this extended operation.
 	 * @param requestValue An optional request value.
 	 */
-	public ExtendedRequest(RfcLDAPOID requestName, ASN1OctetString requestValue)
+	public RfcExtendedRequest(RfcLDAPOID requestName, ASN1OctetString requestValue)
 	{
 		super(2);
 		add(new ASN1Tagged(
@@ -63,7 +63,7 @@ public class ExtendedRequest extends ASN1Sequence implements Request {
 	public ASN1Identifier getIdentifier()
 	{
 		return new ASN1Identifier(ASN1Identifier.APPLICATION, true,
-			                       ProtocolOp.EXTENDED_REQUEST);
+			                       RfcProtocolOp.EXTENDED_REQUEST);
 	}
 
 }

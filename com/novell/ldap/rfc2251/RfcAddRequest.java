@@ -8,7 +8,7 @@ import com.novell.ldap.asn1.*;
  *               entry           LDAPDN,
  *               attributes      AttributeList }
  */
-public class AddRequest extends ASN1Sequence implements Request {
+public class RfcAddRequest extends ASN1Sequence implements RfcRequest {
 
 	//*************************************************************************
 	// Constructors for AddRequest
@@ -17,7 +17,7 @@ public class AddRequest extends ASN1Sequence implements Request {
 	/**
 	 *
 	 */
-	public AddRequest(RfcLDAPDN entry, AttributeList attributes)
+	public RfcAddRequest(RfcLDAPDN entry, RfcAttributeList attributes)
 	{
 		super(2);
 		add(entry);
@@ -43,9 +43,9 @@ public class AddRequest extends ASN1Sequence implements Request {
 	/**
 	 *
 	 */
-	public AttributeList getAttributes()
+	public RfcAttributeList getAttributes()
 	{
-		return (AttributeList)get(1);
+		return (RfcAttributeList)get(1);
 	}
 
 	/**
@@ -56,7 +56,7 @@ public class AddRequest extends ASN1Sequence implements Request {
 	public ASN1Identifier getIdentifier()
 	{
 		return new ASN1Identifier(ASN1Identifier.APPLICATION, true,
-			                       ProtocolOp.ADD_REQUEST);
+			                       RfcProtocolOp.ADD_REQUEST);
 	}
 
 }

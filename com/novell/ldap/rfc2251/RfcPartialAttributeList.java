@@ -8,7 +8,7 @@ import com.novell.ldap.asn1.*;
  *               type    AttributeDescription,
  *               vals    SET OF AttributeValue }
  */
-public class PartialAttributeList extends ASN1SequenceOf {
+public class RfcPartialAttributeList extends ASN1SequenceOf {
 
    //*************************************************************************
    // Constructor for PartialAttributeList

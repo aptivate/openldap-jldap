@@ -10,7 +10,7 @@ import com.novell.ldap.asn1.*;
  *               responseName     [10] LDAPOID OPTIONAL,
  *               response         [11] OCTET STRING OPTIONAL }
  */
-public class ExtendedResponse extends ASN1Sequence implements Response {
+public class RfcExtendedResponse extends ASN1Sequence implements RfcResponse {
 
 	/**
 	 * Context-specific TAG for optional responseName.
@@ -33,7 +33,7 @@ public class ExtendedResponse extends ASN1Sequence implements Response {
 	 * The only time a client will create a ExtendedResponse is when it is
 	 * decoding it from an InputStream
 	 */
-	public ExtendedResponse(ASN1Decoder dec, InputStream in, int len)
+	public RfcExtendedResponse(ASN1Decoder dec, InputStream in, int len)
 		throws IOException
 	{
 		super(dec, in, len);
@@ -50,7 +50,7 @@ public class ExtendedResponse extends ASN1Sequence implements Response {
 							((ASN1OctetString)obj.getContent()).getContent();
 						ByteArrayInputStream bais = 
 							new ByteArrayInputStream(content);
-						set(i, new Referral(dec, bais, content.length));
+						set(i, new RfcReferral(dec, bais, content.length));
 						referralIndex = i;
 						break;
 					case RESPONSE_NAME:
@@ -99,9 +99,9 @@ public class ExtendedResponse extends ASN1Sequence implements Response {
 	/**
 	 *
 	 */
-	public Referral getReferral()
+	public RfcReferral getReferral()
 	{
-		return (referralIndex != 0) ? (Referral)get(referralIndex) : null;
+		return (referralIndex != 0) ? (RfcReferral)get(referralIndex) : null;
 	}
 
 	/**
@@ -128,7 +128,7 @@ public class ExtendedResponse extends ASN1Sequence implements Response {
 	public ASN1Identifier getIdentifier()
 	{
 		return new ASN1Identifier(ASN1Identifier.APPLICATION, true,
-			                       ProtocolOp.EXTENDED_RESPONSE);
+			                       RfcProtocolOp.EXTENDED_RESPONSE);
 	}
 
 }

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.19 2000/11/08 22:41:33 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.20 2000/11/09 18:27:18 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -22,7 +22,7 @@ import java.util.Vector;
 import com.novell.ldap.*;
 import com.novell.ldap.protocol.RfcLDAPMessage;
 import com.novell.ldap.asn1.*;
-import com.novell.ldap.protocol.UnbindRequest;
+import com.novell.ldap.protocol.RfcUnbindRequest;
 import com.novell.ldap.client.Debug;
 
 /**
@@ -195,7 +195,7 @@ public final class Connection implements Runnable {
          try {
             // abandonOutstandingReqs(reqCtls);
             if(bound) {
-               writeMessage(new LDAPMessage(new UnbindRequest(), reqCtls));
+               writeMessage(new LDAPMessage(new RfcUnbindRequest(), reqCtls));
             }
          }
          catch(IOException ioe) {

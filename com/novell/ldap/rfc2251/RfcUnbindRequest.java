@@ -6,7 +6,7 @@ import com.novell.ldap.asn1.*;
 /**
  *       UnbindRequest ::= [APPLICATION 2] NULL
  */
-public class UnbindRequest extends ASN1Null implements Request {
+public class RfcUnbindRequest extends ASN1Null implements RfcRequest {
 
 	//*************************************************************************
 	// Constructor for UnbindRequest
@@ -15,7 +15,7 @@ public class UnbindRequest extends ASN1Null implements Request {
 	/**
 	 *
 	 */
-	public UnbindRequest()
+	public RfcUnbindRequest()
 	{
 		super();
 	}
@@ -32,7 +32,7 @@ public class UnbindRequest extends ASN1Null implements Request {
 	public ASN1Identifier getIdentifier()
 	{
 		return new ASN1Identifier(ASN1Identifier.APPLICATION, false,
-			                       ProtocolOp.UNBIND_REQUEST);
+			                       RfcProtocolOp.UNBIND_REQUEST);
 	}
 
 }

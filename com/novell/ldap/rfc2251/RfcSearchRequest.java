@@ -21,7 +21,7 @@ import com.novell.ldap.asn1.*;
  *               filter          Filter,
  *               attributes      AttributeDescriptionList }
  */
-public class SearchRequest extends ASN1Sequence implements Request {
+public class RfcSearchRequest extends ASN1Sequence implements RfcRequest {
 
 	//*************************************************************************
 	// Constructors for SearchRequest
@@ -30,10 +30,10 @@ public class SearchRequest extends ASN1Sequence implements Request {
 	/**
 	 *
 	 */
-	public SearchRequest(RfcLDAPDN baseObject, ASN1Enumerated scope,
+	public RfcSearchRequest(RfcLDAPDN baseObject, ASN1Enumerated scope,
 		                  ASN1Enumerated derefAliases, ASN1Integer sizeLimit,
 		                  ASN1Integer timeLimit, ASN1Boolean typesOnly,
-		                  Filter filter, AttributeDescriptionList attributes)
+		                  RfcFilter filter, RfcAttributeDescriptionList attributes)
 	{
 		super(8);
 		add(baseObject);
@@ -58,7 +58,7 @@ public class SearchRequest extends ASN1Sequence implements Request {
 	public ASN1Identifier getIdentifier()
 	{
 		return new ASN1Identifier(ASN1Identifier.APPLICATION, true,
-			                       ProtocolOp.SEARCH_REQUEST);
+			                       RfcProtocolOp.SEARCH_REQUEST);
 	}
 
 }

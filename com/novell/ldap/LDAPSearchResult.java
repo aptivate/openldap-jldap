@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResult.java,v 1.16 2000/11/03 23:18:59 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResult.java,v 1.17 2000/11/09 18:27:17 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -47,7 +47,7 @@ public class LDAPSearchResult extends LDAPMessage {
       LDAPAttributeSet attrs = new LDAPAttributeSet();
 
       ASN1Sequence attrList =
-         ((SearchResultEntry)message.getProtocolOp()).getAttributes();
+         ((RfcSearchResultEntry)message.getProtocolOp()).getAttributes();
 
       Enumeration seqEnum = attrList.elements();
       while(seqEnum.hasMoreElements()) {
@@ -65,7 +65,7 @@ public class LDAPSearchResult extends LDAPMessage {
       }
       
       return new LDAPEntry(
-         ((SearchResultEntry)message.getProtocolOp()).getObjectName().getString(),
+         ((RfcSearchResultEntry)message.getProtocolOp()).getObjectName().getString(),
          attrs);
    }
 

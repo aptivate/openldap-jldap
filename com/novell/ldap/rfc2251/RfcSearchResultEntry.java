@@ -9,7 +9,7 @@ import com.novell.ldap.asn1.*;
  *               objectName      LDAPDN,
  *               attributes      PartialAttributeList }
  */
-public class SearchResultEntry extends ASN1Sequence {
+public class RfcSearchResultEntry extends ASN1Sequence {
 
    //*************************************************************************
    // Constructors for SearchResultEntry
@@ -19,7 +19,7 @@ public class SearchResultEntry extends ASN1Sequence {
     * The only time a client will create a SearchResultEntry is when it is
     * decoding it from an InputStream
     */
-   public SearchResultEntry(ASN1Decoder dec, InputStream in, int len)
+   public RfcSearchResultEntry(ASN1Decoder dec, InputStream in, int len)
       throws IOException
    {
       super(dec, in, len);
@@ -60,7 +60,7 @@ public class SearchResultEntry extends ASN1Sequence {
    public ASN1Identifier getIdentifier()
    {
       return new ASN1Identifier(ASN1Identifier.APPLICATION, true,
-                                ProtocolOp.SEARCH_RESULT_ENTRY);
+                                RfcProtocolOp.SEARCH_RESULT_ENTRY);
    }
 
 }

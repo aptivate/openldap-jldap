@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/client/ClientListener.java,v 1.3 2000/11/08 22:41:33 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/client/ClientListener.java,v 1.4 2000/11/09 18:27:18 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -169,7 +169,7 @@ public class ClientListener implements TimerListener {
             new LDAPException("Client timeout", LDAPException.LDAP_TIMEOUT));
         queue.removeTimer(msgId); // timer thread does not need to be stopped.
         try {
-            conn.writeMessage(new LDAPMessage(new AbandonRequest(msgId)));
+            conn.writeMessage(new LDAPMessage(new RfcAbandonRequest(msgId)));
 //                new AbandonRequest(conn.getMessageID(), msgId,
 //                                         (LDAPControl[])null, true
 //                                        ).getLber());
@@ -190,7 +190,7 @@ public class ClientListener implements TimerListener {
         int[] ids = queue.getMessageIDs();
         try {
             for(int i=0; i<ids.length; i++) {
-                conn.writeMessage(new LDAPMessage(new AbandonRequest(ids[i])));
+                conn.writeMessage(new LDAPMessage(new RfcAbandonRequest(ids[i])));
 //                conn.writeMessage(
 //                    new AbandonRequest(conn.getMessageID(), ids[i],
 //                                             (LDAPControl[])null, true

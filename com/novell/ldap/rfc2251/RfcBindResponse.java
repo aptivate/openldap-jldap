@@ -10,7 +10,7 @@ import com.novell.ldap.asn1.*;
  *            COMPONENTS OF LDAPResult,
  *            serverSaslCreds    [7] OCTET STRING OPTIONAL }
  */
-public class BindResponse extends ASN1Sequence implements Response {
+public class RfcBindResponse extends ASN1Sequence implements RfcResponse {
 
 	//*************************************************************************
 	// Constructors for BindResponse
@@ -23,7 +23,7 @@ public class BindResponse extends ASN1Sequence implements Response {
 	 * Note: If serverSaslCreds is included in the BindResponse, it does not
 	 *       need to be decoded since it is already an OCTET STRING.
 	 */
-	public BindResponse(ASN1Decoder dec, InputStream in, int len)
+	public RfcBindResponse(ASN1Decoder dec, InputStream in, int len)
 		throws IOException
 	{
 		super(dec, in, len);
@@ -36,7 +36,7 @@ public class BindResponse extends ASN1Sequence implements Response {
 				byte[] content =
 					((ASN1OctetString)obj.getContent()).getContent();
 				ByteArrayInputStream bais = new ByteArrayInputStream(content);
-				set(3, new Referral(dec, bais, content.length));
+				set(3, new RfcReferral(dec, bais, content.length));
 			}
 		}
 
@@ -73,11 +73,11 @@ public class BindResponse extends ASN1Sequence implements Response {
 	/**
 	 *
 	 */
-	public Referral getReferral()
+	public RfcReferral getReferral()
 	{
 		ASN1Object obj = get(3);
-		if(obj instanceof Referral)
-			return (Referral)obj;
+		if(obj instanceof RfcReferral)
+			return (RfcReferral)obj;
 		return null;
 	}
 
@@ -105,7 +105,7 @@ public class BindResponse extends ASN1Sequence implements Response {
 	public ASN1Identifier getIdentifier()
 	{
 		return new ASN1Identifier(ASN1Identifier.APPLICATION, true,
-			                       ProtocolOp.BIND_RESPONSE);
+			                       RfcProtocolOp.BIND_RESPONSE);
 	}
 
 }

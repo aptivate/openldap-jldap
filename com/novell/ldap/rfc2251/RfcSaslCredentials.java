@@ -8,7 +8,7 @@ import com.novell.ldap.asn1.*;
  *               mechanism               LDAPString,
  *               credentials             OCTET STRING OPTIONAL }
  */
-public class SaslCredentials extends ASN1Sequence {
+public class RfcSaslCredentials extends ASN1Sequence {
 
 	//*************************************************************************
 	// Constructors for SaslCredentials
@@ -17,7 +17,7 @@ public class SaslCredentials extends ASN1Sequence {
 	/**
 	 *
 	 */
-	public SaslCredentials(RfcLDAPString mechanism)
+	public RfcSaslCredentials(RfcLDAPString mechanism)
 	{
 		this(mechanism, null);
 	}
@@ -25,7 +25,7 @@ public class SaslCredentials extends ASN1Sequence {
 	/**
 	 *
 	 */
-	public SaslCredentials(RfcLDAPString mechanism, ASN1OctetString credentials)
+	public RfcSaslCredentials(RfcLDAPString mechanism, ASN1OctetString credentials)
 	{
 		super(2);
 		add(mechanism);

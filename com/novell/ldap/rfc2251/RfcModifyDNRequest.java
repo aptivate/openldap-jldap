@@ -10,7 +10,7 @@ import com.novell.ldap.asn1.*;
  *               deleteoldrdn    BOOLEAN,
  *               newSuperior     [0] LDAPDN OPTIONAL }
  */
-public class ModifyDNRequest extends ASN1Sequence implements Request {
+public class RfcModifyDNRequest extends ASN1Sequence implements RfcRequest {
 
 	//*************************************************************************
 	// Constructors for ModifyDNRequest
@@ -19,7 +19,7 @@ public class ModifyDNRequest extends ASN1Sequence implements Request {
 	/**
 	 *
 	 */
-	public ModifyDNRequest(RfcLDAPDN entry, RelativeLDAPDN newrdn,
+	public RfcModifyDNRequest(RfcLDAPDN entry, RfcRelativeLDAPDN newrdn,
 		                    ASN1Boolean deleteoldrdn)
 	{
 		this(entry, newrdn, deleteoldrdn, null);
@@ -28,7 +28,7 @@ public class ModifyDNRequest extends ASN1Sequence implements Request {
 	/**
 	 *
 	 */
-	public ModifyDNRequest(RfcLDAPDN entry, RelativeLDAPDN newrdn,
+	public RfcModifyDNRequest(RfcLDAPDN entry, RfcRelativeLDAPDN newrdn,
 		                    ASN1Boolean deleteoldrdn, RfcLDAPDN newSuperior)
 	{
 		super(4);
@@ -51,7 +51,7 @@ public class ModifyDNRequest extends ASN1Sequence implements Request {
 	public ASN1Identifier getIdentifier()
 	{
 		return new ASN1Identifier(ASN1Identifier.APPLICATION, true,
-			                       ProtocolOp.MODIFY_DN_REQUEST);
+			                       RfcProtocolOp.MODIFY_DN_REQUEST);
 	}
 
 }

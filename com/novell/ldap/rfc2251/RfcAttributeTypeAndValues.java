@@ -9,7 +9,7 @@ import com.novell.ldap.asn1.*;
  *               type    AttributeDescription,
  *               vals    SET OF AttributeValue }
  */
-public class AttributeTypeAndValues extends ASN1Sequence {
+public class RfcAttributeTypeAndValues extends ASN1Sequence {
 
 	//*************************************************************************
 	// Constructor for AttributeTypeAndValues
@@ -18,7 +18,7 @@ public class AttributeTypeAndValues extends ASN1Sequence {
 	/**
 	 *
 	 */
-	public AttributeTypeAndValues(AttributeDescription type, ASN1SetOf vals)
+	public RfcAttributeTypeAndValues(RfcAttributeDescription type, ASN1SetOf vals)
 	{
 		super(2);
 		add(type);

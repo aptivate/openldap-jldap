@@ -8,7 +8,7 @@ import com.novell.ldap.asn1.*;
  * server. If the protocol operation of the RfcLDAPMessage is of this type,
  * it contains at least an RfcLDAPResult.
  */
-public interface Response {
+public interface RfcResponse {
 
 	/**
 	 *
@@ -28,7 +28,7 @@ public interface Response {
 	/**
 	 *
 	 */
-	public Referral getReferral();
+	public RfcReferral getReferral();
 
 }
 

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/protocol/Filter.java,v 1.15 2000/09/21 16:24:13 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/protocol/RfcFilter.java,v 1.16 2000/11/09 18:27:20 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  ***************************************************************************/
@@ -25,7 +25,7 @@ import com.novell.ldap.LDAPException;
  *               approxMatch     [8] AttributeValueAssertion,
  *               extensibleMatch [9] MatchingRuleAssertion }
  */
-public class Filter extends ASN1Choice {
+public class RfcFilter extends ASN1Choice {
 
    //*************************************************************************
    // Public variables for Filter
@@ -98,7 +98,7 @@ public class Filter extends ASN1Choice {
    /**
     * Constructs a Filter object by parsing an RFC 2254 Search Filter String.
     */
-   public Filter(String filter)
+   public RfcFilter(String filter)
       throws LDAPException
    {
       setContent(parse(filter));
@@ -175,9 +175,9 @@ public class Filter extends ASN1Choice {
                   tag = new ASN1Tagged(
                      new ASN1Identifier(ASN1Identifier.CONTEXT, true,
                                         filterType),
-                     new AttributeValueAssertion(
-                        new AttributeDescription(ft.getAttr()),
-                        new AssertionValue(escaped2unicode(value))),
+                     new RfcAttributeValueAssertion(
+                        new RfcAttributeDescription(ft.getAttr()),
+                        new RfcAssertionValue(escaped2unicode(value))),
                      false);
                   break;
                case EQUALITY_MATCH: // may be PRESENT or SUBSTRINGS also
@@ -185,7 +185,7 @@ public class Filter extends ASN1Choice {
                      tag = new ASN1Tagged(
                         new ASN1Identifier(ASN1Identifier.CONTEXT, false,
                                            PRESENT),
-                        new AttributeDescription(ft.getAttr()),
+                        new RfcAttributeDescription(ft.getAttr()),
                         false);
                   }
                   else if(value.indexOf('*') != -1) { // substrings
@@ -233,8 +233,8 @@ public class Filter extends ASN1Choice {
                      tag = new ASN1Tagged(
                         new ASN1Identifier(ASN1Identifier.CONTEXT, true,
                                            SUBSTRINGS),
-                        new SubstringFilter(
-                           new AttributeDescription(ft.getAttr()),
+                        new RfcSubstringFilter(
+                           new RfcAttributeDescription(ft.getAttr()),
                            seq),
                         false);
                   }
@@ -242,9 +242,9 @@ public class Filter extends ASN1Choice {
                      tag = new ASN1Tagged(
                         new ASN1Identifier(ASN1Identifier.CONTEXT, true,
                                            EQUALITY_MATCH),
-                        new AttributeValueAssertion(
-                           new AttributeDescription(ft.getAttr()),
-                           new AssertionValue(escaped2unicode(value))),
+                        new RfcAttributeValueAssertion(
+                           new RfcAttributeDescription(ft.getAttr()),
+                           new RfcAssertionValue(escaped2unicode(value))),
                         false);
                   }
                   break;
@@ -272,12 +272,12 @@ public class Filter extends ASN1Choice {
                   tag = new ASN1Tagged(
                      new ASN1Identifier(ASN1Identifier.CONTEXT, true,
                                         EXTENSIBLE_MATCH),
-                     new MatchingRuleAssertion(
+                     new RfcMatchingRuleAssertion(
                         (matchingRule == null) ? null :
-                            new MatchingRuleId(matchingRule),
+                            new RfcMatchingRuleId(matchingRule),
                         (type == null) ? null :
-                            new AttributeDescription(type),
-                        new AssertionValue(escaped2unicode(value)),
+                            new RfcAttributeDescription(type),
+                        new RfcAssertionValue(escaped2unicode(value)),
                         (dnAttributes == false) ? null :
                             new ASN1Boolean(true)),
                      false);
@@ -451,15 +451,15 @@ class FilterTokenizer {
 
       if(filter.charAt(i) == '&') {
          i++;
-         return Filter.AND;
+         return RfcFilter.AND;
       }
       if(filter.charAt(i) == '|') {
          i++;
-         return Filter.OR;
+         return RfcFilter.OR;
       }
       if(filter.charAt(i) == '!') {
          i++;
-         return Filter.NOT;
+         return RfcFilter.NOT;
       }
 
       // get first component of 'item' (attr or :dn or :matchingrule)
@@ -487,23 +487,23 @@ class FilterTokenizer {
 
       if(filter.startsWith(">=", i)) {
          i+=2;
-         return Filter.GREATER_OR_EQUAL;
+         return RfcFilter.GREATER_OR_EQUAL;
       }
       if(filter.startsWith("<=", i)) {
          i+=2;
-         return Filter.LESS_OR_EQUAL;
+         return RfcFilter.LESS_OR_EQUAL;
       }
       if(filter.startsWith("~=", i)) {
          i+=2;
-         return Filter.APPROX_MATCH;
+         return RfcFilter.APPROX_MATCH;
       }
       if(filter.startsWith(":=", i)) {
          i+=2;
-         return Filter.EXTENSIBLE_MATCH;
+         return RfcFilter.EXTENSIBLE_MATCH;
       }
       if(filter.charAt(i) == '=') {
          i++;
-         return Filter.EQUALITY_MATCH;
+         return RfcFilter.EQUALITY_MATCH;
       }
       throw new LDAPException("Invalid filter type",
                               LDAPException.FILTER_ERROR);

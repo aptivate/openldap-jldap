@@ -6,12 +6,12 @@ import com.novell.ldap.asn1.*;
 /**
  *
  */
-public class RelativeLDAPDN extends RfcLDAPString {
+public class RfcRelativeLDAPDN extends RfcLDAPString {
 
 	/**
 	 *
 	 */
-	public RelativeLDAPDN(String s)
+	public RfcRelativeLDAPDN(String s)
 	{
 		super(s);
 	}

@@ -6,12 +6,12 @@ import com.novell.ldap.asn1.*;
 /**
  *
  */
-public class AttributeType extends RfcLDAPString {
+public class RfcAttributeType extends RfcLDAPString {
 
 	/**
 	 *
 	 */
-	public AttributeType(String s)
+	public RfcAttributeType(String s)
 	{
 		super(s);
 	}

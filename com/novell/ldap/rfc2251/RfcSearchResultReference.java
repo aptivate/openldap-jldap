@@ -9,7 +9,7 @@ import com.novell.ldap.client.Debug;
 /**
  *       SearchResultReference ::= [APPLICATION 19] SEQUENCE OF LDAPURL
  */
-public class SearchResultReference extends ASN1SequenceOf 
+public class RfcSearchResultReference extends ASN1SequenceOf 
                                     implements Enumeration {
 
     //*************************************************************************
@@ -22,7 +22,7 @@ public class SearchResultReference extends ASN1SequenceOf
      * The only time a client will create a SearchResultReference is when it is
      * decoding it from an InputStream
      */
-    public SearchResultReference(ASN1Decoder dec, InputStream in, int len)
+    public RfcSearchResultReference(ASN1Decoder dec, InputStream in, int len)
        throws IOException
     {
         super(dec, in, len);
@@ -39,7 +39,7 @@ public class SearchResultReference extends ASN1SequenceOf
     public ASN1Identifier getIdentifier()
     {
         return new ASN1Identifier(ASN1Identifier.APPLICATION, true,
-                                ProtocolOp.SEARCH_RESULT_REFERENCE);
+                                RfcProtocolOp.SEARCH_RESULT_REFERENCE);
     }
 
     public Enumeration elements()

@@ -9,12 +9,12 @@ import com.novell.ldap.asn1.*;
  *               type    AttributeDescription,
  *               vals    SET OF AttributeValue }
  */
-public class Attribute extends ASN1Sequence {
+public class RfcAttribute extends ASN1Sequence {
 
 	/**
 	 *
 	 */
-	public Attribute(AttributeDescription type, ASN1SetOf vals) {
+	public RfcAttribute(RfcAttributeDescription type, ASN1SetOf vals) {
 		super(2);
 		setType(type);
 		setVals(vals);
@@ -23,7 +23,7 @@ public class Attribute extends ASN1Sequence {
 	/**
 	 *
 	 */
-	public Attribute(ASN1Decoder dec, InputStream in, int len)
+	public RfcAttribute(ASN1Decoder dec, InputStream in, int len)
 		throws IOException
 	{
 		super(dec, in, len);
@@ -32,7 +32,7 @@ public class Attribute extends ASN1Sequence {
 	/**
 	 *
 	 */
-	public void setType(AttributeDescription type)
+	public void setType(RfcAttributeDescription type)
 	{
 		set(0, type);
 	}
@@ -48,9 +48,9 @@ public class Attribute extends ASN1Sequence {
 	/**
 	 *
 	 */
-	public AttributeDescription getType()
+	public RfcAttributeDescription getType()
 	{
-		return (AttributeDescription)get(0);
+		return (RfcAttributeDescription)get(0);
 	}
 
 	/**

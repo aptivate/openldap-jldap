@@ -13,7 +13,7 @@ import com.novell.ldap.asn1.*;
  *                                               replace (2) },
  *                       modification    AttributeTypeAndValues } }
  */
-public class ModifyRequest extends ASN1Sequence implements Request {
+public class RfcModifyRequest extends ASN1Sequence implements RfcRequest {
 
 	//*************************************************************************
 	// Constructor for ModifyRequest
@@ -22,7 +22,7 @@ public class ModifyRequest extends ASN1Sequence implements Request {
 	/**
 	 *
 	 */
-	public ModifyRequest(RfcLDAPDN object, ASN1SequenceOf modification)
+	public RfcModifyRequest(RfcLDAPDN object, ASN1SequenceOf modification)
 	{
 		super(2);
 		add(object);
@@ -39,7 +39,7 @@ public class ModifyRequest extends ASN1Sequence implements Request {
 	public ASN1Identifier getIdentifier()
 	{
 		return new ASN1Identifier(ASN1Identifier.APPLICATION, true,
-			                       ProtocolOp.MODIFY_REQUEST);
+			                       RfcProtocolOp.MODIFY_REQUEST);
 	}
 
 }

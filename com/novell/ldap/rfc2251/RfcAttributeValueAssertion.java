@@ -9,12 +9,12 @@ import com.novell.ldap.asn1.*;
  *               assertionValue  AssertionValue }
  *
  */
-public class AttributeValueAssertion extends ASN1Sequence {
+public class RfcAttributeValueAssertion extends ASN1Sequence {
 
 	/**
 	 *
 	 */
-	public AttributeValueAssertion(AttributeDescription ad, AssertionValue av)
+	public RfcAttributeValueAssertion(RfcAttributeDescription ad, RfcAssertionValue av)
 	{
 		super(2);
 		add(ad);

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/protocol/RfcLDAPMessage.java,v 1.10 2000/11/08 22:41:34 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/protocol/RfcLDAPMessage.java,v 1.11 2000/11/09 18:27:23 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  ***************************************************************************/
@@ -48,7 +48,7 @@ public class RfcLDAPMessage extends ASN1Sequence {
    /**
     * Create an RfcLDAPMessage using the specified LDAP Request Protocol Op.
     */
-   public RfcLDAPMessage(Request op)
+   public RfcLDAPMessage(RfcRequest op)
    {
       this(op, null);
    }
@@ -56,11 +56,11 @@ public class RfcLDAPMessage extends ASN1Sequence {
    /**
     * Create an RfcLDAPMessage from input parameters.
     */
-   public RfcLDAPMessage(Request op, Controls controls)
+   public RfcLDAPMessage(RfcRequest op, RfcControls controls)
    {
       super(3);
 
-      add(new MessageID()); // MessageID has static counter
+      add(new RfcMessageID()); // MessageID has static counter
       add((ASN1Object)op);
       if(controls != null)
          add(controls);
@@ -91,35 +91,35 @@ public class RfcLDAPMessage extends ASN1Sequence {
             protocolOpId.getTag());
       }
       switch(protocolOpId.getTag()) {
-         case ProtocolOp.SEARCH_RESULT_ENTRY:
-            set(1, new SearchResultEntry(dec, bais, content.length));
+         case RfcProtocolOp.SEARCH_RESULT_ENTRY:
+            set(1, new RfcSearchResultEntry(dec, bais, content.length));
             break;
-         case ProtocolOp.SEARCH_RESULT_DONE:
-            set(1, new SearchResultDone(dec, bais, content.length));
+         case RfcProtocolOp.SEARCH_RESULT_DONE:
+            set(1, new RfcSearchResultDone(dec, bais, content.length));
             break;
-         case ProtocolOp.SEARCH_RESULT_REFERENCE:
-            set(1, new SearchResultReference(dec, bais, content.length));
+         case RfcProtocolOp.SEARCH_RESULT_REFERENCE:
+            set(1, new RfcSearchResultReference(dec, bais, content.length));
             break;
-         case ProtocolOp.ADD_RESPONSE:
-            set(1, new AddResponse(dec, bais, content.length));
+         case RfcProtocolOp.ADD_RESPONSE:
+            set(1, new RfcAddResponse(dec, bais, content.length));
             break;
-         case ProtocolOp.BIND_RESPONSE:
-            set(1, new BindResponse(dec, bais, content.length));
+         case RfcProtocolOp.BIND_RESPONSE:
+            set(1, new RfcBindResponse(dec, bais, content.length));
             break;
-         case ProtocolOp.COMPARE_RESPONSE:
-            set(1, new CompareResponse(dec, bais, content.length));
+         case RfcProtocolOp.COMPARE_RESPONSE:
+            set(1, new RfcCompareResponse(dec, bais, content.length));
             break;
-         case ProtocolOp.DEL_RESPONSE:
-            set(1, new DelResponse(dec, bais, content.length));
+         case RfcProtocolOp.DEL_RESPONSE:
+            set(1, new RfcDelResponse(dec, bais, content.length));
             break;
-         case ProtocolOp.EXTENDED_RESPONSE:
-            set(1, new ExtendedResponse(dec, bais, content.length));
+         case RfcProtocolOp.EXTENDED_RESPONSE:
+            set(1, new RfcExtendedResponse(dec, bais, content.length));
             break;
-         case ProtocolOp.MODIFY_RESPONSE:
-            set(1, new ModifyResponse(dec, bais, content.length));
+         case RfcProtocolOp.MODIFY_RESPONSE:
+            set(1, new RfcModifyResponse(dec, bais, content.length));
             break;
-         case ProtocolOp.MODIFY_DN_RESPONSE:
-            set(1, new ModifyDNResponse(dec, bais, content.length));
+         case RfcProtocolOp.MODIFY_DN_RESPONSE:
+            set(1, new RfcModifyDNResponse(dec, bais, content.length));
             break;
       }
 
@@ -132,7 +132,7 @@ public class RfcLDAPMessage extends ASN1Sequence {
 
          content = ((ASN1OctetString)controls.getContent()).getContent();
          bais = new ByteArrayInputStream(content);
-         set(2, new Controls(dec, bais, content.length));
+         set(2, new RfcControls(dec, bais, content.length));
       }
       return;
    }
@@ -160,10 +160,10 @@ public class RfcLDAPMessage extends ASN1Sequence {
    /**
     * Returns the optional Controls for this RfcLDAPMessage.
     */
-   public Controls getControls()
+   public RfcControls getControls()
    {
         if(size() > 2)
-            return (Controls)get(2);
+            return (RfcControls)get(2);
         return null;
    }
 

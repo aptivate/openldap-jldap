@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/protocol/DelRequest.java,v 1.4 2000/09/11 21:06:00 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/protocol/RfcDelRequest.java,v 1.5 2000/11/09 18:27:19 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  ***************************************************************************/
@@ -11,7 +11,7 @@ import com.novell.ldap.asn1.*;
 /**
  *       DelRequest ::= [APPLICATION 10] LDAPDN
  */
-public class DelRequest extends RfcLDAPDN implements Request {
+public class RfcDelRequest extends RfcLDAPDN implements RfcRequest {
 
    //*************************************************************************
    // Constructor for DelRequest
@@ -22,7 +22,7 @@ public class DelRequest extends RfcLDAPDN implements Request {
     *
     * @param dn The Distinguished Name of the entry to delete.
     */
-   public DelRequest(String dn)
+   public RfcDelRequest(String dn)
    {
       super(dn);
    }
@@ -37,7 +37,7 @@ public class DelRequest extends RfcLDAPDN implements Request {
    public ASN1Identifier getIdentifier()
    {
       return new ASN1Identifier(ASN1Identifier.APPLICATION, false,
-                                ProtocolOp.DEL_REQUEST);
+                                RfcProtocolOp.DEL_REQUEST);
    }
 
 }

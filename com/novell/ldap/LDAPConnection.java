@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.53 2000/11/06 22:29:47 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.54 2000/11/09 18:27:14 vtag Exp $
 *
 * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
 * 
@@ -897,7 +897,7 @@ public class LDAPConnection implements Cloneable
                                  LDAPException.PARAM_ERROR);
 
       // convert Java-API LDAPEntry to RFC2251 AttributeList
-      AttributeList attrList = new AttributeList();
+      RfcAttributeList attrList = new RfcAttributeList();
       LDAPAttributeSet attrSet = entry.getAttributeSet();
       Enumeration enum = attrSet.getAttributes();
       while(enum.hasMoreElements()) {
@@ -905,15 +905,15 @@ public class LDAPConnection implements Cloneable
          ASN1SetOf vals = new ASN1SetOf();
          Enumeration attrEnum = attr.getByteValues();
          while(attrEnum.hasMoreElements()) {
-            vals.add(new AttributeValue((byte[])attrEnum.nextElement()));
+            vals.add(new RfcAttributeValue((byte[])attrEnum.nextElement()));
          }
-         attrList.add(new AttributeTypeAndValues(
-            new AttributeDescription(attr.getName()), vals));
+         attrList.add(new RfcAttributeTypeAndValues(
+            new RfcAttributeDescription(attr.getName()), vals));
       }
 
       LDAPMessage msg =
             new LDAPMessage(
-                new AddRequest(
+                new RfcAddRequest(
                     new RfcLDAPDN(entry.getDN()),
                     attrList),
                 cons.getServerControls());
@@ -1271,10 +1271,10 @@ public class LDAPConnection implements Cloneable
 
       LDAPMessage msg =
             new LDAPMessage(
-                new BindRequest(
+                new RfcBindRequest(
                     new ASN1Integer(version),
                     new RfcLDAPDN(dn),
-                    new AuthenticationChoice(
+                    new RfcAuthenticationChoice(
                         new ASN1Tagged(
                             new ASN1Identifier(ASN1Identifier.CONTEXT, false, 0),
                             new ASN1OctetString(passwd),
@@ -1615,11 +1615,11 @@ public class LDAPConnection implements Cloneable
 
       LDAPMessage msg =
             new LDAPMessage(
-                new CompareRequest(
+                new RfcCompareRequest(
                     new RfcLDAPDN(dn),
-                    new AttributeValueAssertion(
-                        new AttributeDescription(type),
-                        new AssertionValue(value))),
+                    new RfcAttributeValueAssertion(
+                        new RfcAttributeDescription(type),
+                        new RfcAssertionValue(value))),
                 cons.getServerControls());
 
       if(listener == null) {
@@ -1810,7 +1810,7 @@ public class LDAPConnection implements Cloneable
 
       LDAPMessage msg =
             new LDAPMessage(
-                new DelRequest(dn),
+                new RfcDelRequest(dn),
                 cons.getServerControls());
 
       if(listener == null) {
@@ -2010,7 +2010,7 @@ public class LDAPConnection implements Cloneable
       ASN1OctetString value = 
          (op.getValue() != null) ? new ASN1OctetString(op.getValue()) : null;
 
-      ExtendedRequest er = new ExtendedRequest(new RfcLDAPOID(op.getID()),
+      RfcExtendedRequest er = new RfcExtendedRequest(new RfcLDAPOID(op.getID()),
                                                value);
 
       LDAPMessage msg = new LDAPMessage(er, cons.getServerControls());
@@ -2299,14 +2299,14 @@ public class LDAPConnection implements Cloneable
             ASN1SetOf vals = new ASN1SetOf();
             Enumeration attrEnum = attr.getByteValues();
             while(attrEnum.hasMoreElements()) {
-                vals.add(new AttributeValue((byte[])attrEnum.nextElement()));
+                vals.add(new RfcAttributeValue((byte[])attrEnum.nextElement()));
             }
 
             // create SEQUENCE containing mod operation and attr type and vals
             ASN1Sequence rfcMod = new ASN1Sequence();
             rfcMod.add(new ASN1Enumerated(mod.getOp()));
-            rfcMod.add(new AttributeTypeAndValues(
-                new AttributeDescription(attr.getName()), vals));
+            rfcMod.add(new RfcAttributeTypeAndValues(
+                new RfcAttributeDescription(attr.getName()), vals));
 
             // place SEQUENCE into SEQUENCE OF
             rfcMods.add(rfcMod);
@@ -2314,7 +2314,7 @@ public class LDAPConnection implements Cloneable
 
       LDAPMessage msg =
             new LDAPMessage(
-                new ModifyRequest(
+                new RfcModifyRequest(
                     new RfcLDAPDN(dn),
                     rfcMods),
                 cons.getServerControls());
@@ -2745,9 +2745,9 @@ public class LDAPConnection implements Cloneable
 
       LDAPMessage msg =
             new LDAPMessage(
-                new ModifyDNRequest(
+                new RfcModifyDNRequest(
                     new RfcLDAPDN(dn),
-                    new RelativeLDAPDN(newRdn),
+                    new RfcRelativeLDAPDN(newRdn),
                     new ASN1Boolean(deleteOldRdn),
                     (newParentdn != null) ?
                         new RfcLDAPDN(newParentdn) : null),
@@ -2963,15 +2963,15 @@ public class LDAPConnection implements Cloneable
          cons = defSearchCons;
 
       LDAPMessage msg = new LDAPMessage(
-         new SearchRequest(
+         new RfcSearchRequest(
             new RfcLDAPDN(base),
             new ASN1Enumerated(scope),
             new ASN1Enumerated(cons.getDereference()),
             new ASN1Integer(cons.getMaxResults()),
             new ASN1Integer(cons.getServerTimeLimit()),
             new ASN1Boolean(typesOnly),
-            new Filter(filter),
-            new AttributeDescriptionList(attrs)),
+            new RfcFilter(filter),
+            new RfcAttributeDescriptionList(attrs)),
          cons.getServerControls());
 
       if(listener == null) {

@@ -9,7 +9,7 @@ import com.novell.ldap.asn1.*;
  *               name                    LDAPDN,
  *               authentication          AuthenticationChoice }
  */
-public class BindRequest extends ASN1Sequence implements Request {
+public class RfcBindRequest extends ASN1Sequence implements RfcRequest {
 
 	//*************************************************************************
 	// Constructors for BindRequest
@@ -18,8 +18,8 @@ public class BindRequest extends ASN1Sequence implements Request {
 	/**
 	 *
 	 */
-	public BindRequest(ASN1Integer version, RfcLDAPDN name,
-		                AuthenticationChoice auth)
+	public RfcBindRequest(ASN1Integer version, RfcLDAPDN name,
+		                RfcAuthenticationChoice auth)
 	{
 		super(3);
 		add(version);
@@ -50,7 +50,7 @@ public class BindRequest extends ASN1Sequence implements Request {
 	/**
 	 *
 	 */
-	public void setAuthenticationChoice(AuthenticationChoice auth)
+	public void setAuthenticationChoice(RfcAuthenticationChoice auth)
 	{
 		set(2, auth);
 	}
@@ -78,9 +78,9 @@ public class BindRequest extends ASN1Sequence implements Request {
 	/**
 	 *
 	 */
-	public AuthenticationChoice getAuthenticationChoice()
+	public RfcAuthenticationChoice getAuthenticationChoice()
 	{
-		return (AuthenticationChoice)get(2);
+		return (RfcAuthenticationChoice)get(2);
 	}
 
 	/**
@@ -91,7 +91,7 @@ public class BindRequest extends ASN1Sequence implements Request {
 	public ASN1Identifier getIdentifier()
 	{
 		return new ASN1Identifier(ASN1Identifier.APPLICATION, true,
-			                       ProtocolOp.BIND_REQUEST);
+			                       RfcProtocolOp.BIND_REQUEST);
 	}
 
 }

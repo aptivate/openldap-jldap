@@ -26,7 +26,7 @@ import com.novell.ldap.asn1.*;
  *                       extendedReq     ExtendedRequest,
  *                       extendedResp    ExtendedResponse },
  */
-public class ProtocolOp extends ASN1Choice {
+public class RfcProtocolOp extends ASN1Choice {
 
    /*
     * Protocol Operation application tags
@@ -66,7 +66,7 @@ public class ProtocolOp extends ASN1Choice {
     * a base type, we can set the Identifier of the new type, while it
     * maintains its base type.
     */
-   public ProtocolOp(ASN1Object choice)
+   public RfcProtocolOp(ASN1Object choice)
    {
       super(choice);
    }

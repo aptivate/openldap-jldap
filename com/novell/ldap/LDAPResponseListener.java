@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPResponseListener.java,v 1.18 2000/11/08 22:41:32 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPResponseListener.java,v 1.19 2000/11/09 18:27:17 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -124,7 +124,7 @@ public class LDAPResponseListener implements LDAPListener
     {
         LDAPResponse response;
         RfcLDAPMessage message = listen.getLDAPMessage();
-        if(message.getProtocolOp() instanceof ExtendedResponse)
+        if(message.getProtocolOp() instanceof RfcExtendedResponse)
             response = new LDAPExtendedResponse(message);
         else
             response = new LDAPResponse(message);

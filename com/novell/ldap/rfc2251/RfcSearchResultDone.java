@@ -7,7 +7,7 @@ import com.novell.ldap.asn1.*;
 /**
  *       SearchResultDone ::= [APPLICATION 5] LDAPResult
  */
-public class SearchResultDone extends RfcLDAPResult {
+public class RfcSearchResultDone extends RfcLDAPResult {
 
    //*************************************************************************
    // Constructors for SearchResultDone
@@ -17,7 +17,7 @@ public class SearchResultDone extends RfcLDAPResult {
     * The only time a client will create a SearchResultDone is when it is
     * decoding it from an InputStream
     */
-   public SearchResultDone(ASN1Decoder dec, InputStream in, int len)
+   public RfcSearchResultDone(ASN1Decoder dec, InputStream in, int len)
       throws IOException
    {
       super(dec, in, len);
@@ -33,7 +33,7 @@ public class SearchResultDone extends RfcLDAPResult {
    public ASN1Identifier getIdentifier()
    {
       return new ASN1Identifier(ASN1Identifier.APPLICATION, true,
-                                ProtocolOp.SEARCH_RESULT_DONE);
+                                RfcProtocolOp.SEARCH_RESULT_DONE);
    }
 
 }

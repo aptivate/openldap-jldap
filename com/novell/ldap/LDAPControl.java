@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPControl.java,v 1.15 2000/11/03 21:27:00 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPControl.java,v 1.16 2000/11/09 18:27:16 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -29,7 +29,7 @@ import com.novell.ldap.protocol.*;
  */
 public class LDAPControl implements Cloneable {
 
-    private Control control; // An RFC 2251 Control
+    private RfcControl control; // An RFC 2251 Control
 
     /**
      * Constructs a new LDAPControl object using the specified values.
@@ -44,14 +44,14 @@ public class LDAPControl implements Cloneable {
      */
     public LDAPControl(String id, boolean critical, byte[] vals)
     {
-        control = new Control(new RfcLDAPOID(id), new ASN1Boolean(critical),
+        control = new RfcControl(new RfcLDAPOID(id), new ASN1Boolean(critical),
                               new ASN1OctetString(vals));
     }
 
     /**
      * Create an LDAPControl from an existing control. 
      */
-    /*package*/ LDAPControl(Control control)
+    /*package*/ LDAPControl(RfcControl control)
     {
         this.control = control;
     }
@@ -141,7 +141,7 @@ public class LDAPControl implements Cloneable {
      *
      * @return An ASN.1 RFC 2251 Control.
      */
-    /*package*/ Control getASN1Object()
+    /*package*/ RfcControl getASN1Object()
     {
         return control;
     }

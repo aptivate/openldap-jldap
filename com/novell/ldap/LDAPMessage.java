@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPMessage.java,v 1.14 2000/11/02 19:02:28 javed Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPMessage.java,v 1.15 2000/11/09 18:27:16 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -137,7 +137,7 @@ public class LDAPMessage {
      *
      * @see #getType
 	 */
-	public LDAPMessage(Request op)
+	public LDAPMessage(RfcRequest op)
 	{
 		this(op, null);
 	}
@@ -152,13 +152,13 @@ public class LDAPMessage {
      *
      * @see #getType
 	 */
-	public LDAPMessage(Request op, LDAPControl[] controls)
+	public LDAPMessage(RfcRequest op, LDAPControl[] controls)
 	{
-		Controls asn1Ctrls = null;
+	 RfcControls asn1Ctrls = null;
 
 		if(controls != null) {
 			// Move LDAPControls into an RFC 2251 Controls object.
-			asn1Ctrls = new Controls();
+			asn1Ctrls = new RfcControls();
 			for(int i=0; i<controls.length; i++) {
 				asn1Ctrls.add(controls[i].getASN1Object());
 			}
@@ -198,13 +198,13 @@ public class LDAPMessage {
     */
    public LDAPControl[] getControls() {
 		LDAPControl[] controls = null;
-		Controls asn1Ctrls = message.getControls();
+	 RfcControls asn1Ctrls = message.getControls();
 
 		// convert from RFC 2251 Controls to LDAPControl[].
 		if(asn1Ctrls != null) {
 			controls = new LDAPControl[asn1Ctrls.size()];
 			for(int i=0; i<asn1Ctrls.size(); i++) {
-			    controls[i] = new LDAPControl((Control)asn1Ctrls.get(i));
+			    controls[i] = new LDAPControl((RfcControl)asn1Ctrls.get(i));
 			}
 		}
 

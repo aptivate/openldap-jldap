@@ -10,7 +10,7 @@ import com.novell.ldap.asn1.*;
  *               matchValue      [3] AssertionValue,
  *               dnAttributes    [4] BOOLEAN DEFAULT FALSE }
  */
-public class MatchingRuleAssertion extends ASN1Sequence {
+public class RfcMatchingRuleAssertion extends ASN1Sequence {
 
 	//*************************************************************************
 	// Constructors for MatchingRuleAssertion
@@ -21,7 +21,7 @@ public class MatchingRuleAssertion extends ASN1Sequence {
 	 *
 	 * @param matchValue The assertion value.
 	 */
-	public MatchingRuleAssertion(AssertionValue matchValue)
+	public RfcMatchingRuleAssertion(RfcAssertionValue matchValue)
 	{
 		this(null, null, matchValue, null);
 	}
@@ -36,9 +36,9 @@ public class MatchingRuleAssertion extends ASN1Sequence {
 	 * @param type Optional attribute description.
 	 * @param dnAttributes ASN1Boolean value. (default false)
 	 */
-	public MatchingRuleAssertion(MatchingRuleId matchingRule,
-		                          AttributeDescription type,
-		                          AssertionValue matchValue, 
+	public RfcMatchingRuleAssertion(RfcMatchingRuleId matchingRule,
+		                          RfcAttributeDescription type,
+		                          RfcAssertionValue matchValue, 
 		                          ASN1Boolean dnAttributes)
 	{
 		super(4);

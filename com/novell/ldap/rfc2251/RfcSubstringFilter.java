@@ -12,7 +12,7 @@ import com.novell.ldap.asn1.*;
  *                       any     [1] LDAPString,
  *                       final   [2] LDAPString } }
  */
-public class SubstringFilter extends ASN1Sequence {
+public class RfcSubstringFilter extends ASN1Sequence {
 
 	//*************************************************************************
 	// Constructors for SubstringFilter
@@ -21,7 +21,7 @@ public class SubstringFilter extends ASN1Sequence {
 	/**
 	 *
 	 */
-	public SubstringFilter(AttributeDescription type,
+	public RfcSubstringFilter(RfcAttributeDescription type,
 		                    ASN1SequenceOf substrings)
 	{
 		super(2);
