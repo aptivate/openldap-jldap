@@ -42,16 +42,14 @@ public class LDAPJSSESecureSocketFactory
         factory = SSLSocketFactory.getDefault();
     }
 
-    /*
-     * Needed for TLS, doesn't work yet.
-     *
+    /**
      * Constructs a SecureSocketFactory using the SSLContext as specified.  Note
      * that ctx should be initialized by the method init before calling this
      * method.
-     *
+     */
     public LDAPJSSESecureSocketFactory(SSLContext ctx){
         factory = ctx.getSocketFactory();
-    }*/
+    }
 
     /**
      * Returns the socket connected to the LDAP server with the specified
@@ -85,16 +83,4 @@ public class LDAPJSSESecureSocketFactory
            throw new IOException( e.toString());
         }
     }
-
-/*
-    *  Useful for testing
-    *
-    public void testInstallation(String inetaddress, int port) throws java.io.IOException {
-        SSLSocket sslSocket = (SSLSocket)factory.createSocket(inetaddress, port);
-        String [] cipherSuites = sslSocket.getEnabledCipherSuites();
-        //we don't want to expose the cipher suits being used.
-        //for(int i= 0; i < cipherSuites.length; i++){
-        //    System.out.println("Cipher Suite " + i + " = " + cipherSuites[i]);
-        }
-    }*/
 }
