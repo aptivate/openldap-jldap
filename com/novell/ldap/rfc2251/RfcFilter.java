@@ -459,8 +459,9 @@ public class RfcFilter extends ASN1Choice
 
         int ival, length = string.length();
         byte utf8Bytes[];
-        char ch;    // Character we are adding to the octet string
+        char ch;                 // Character we are adding to the octet string
         char ca[] = new char[1]; // used while converting multibyte UTF-8 char
+        char temp = 0;           // holds the value of the escaped sequence
 
         // loop through each character of the string and copy them into octets
         // converting escaped sequences when needed
@@ -474,7 +475,6 @@ public class RfcFilter extends ASN1Choice
                                       new Object[] {new Character(ch)},
                                       LDAPException.FILTER_ERROR);
                 } else {
-                    char temp = 0;  // get the value of the excaped sequence
                     // V3 escaped: \\**
                     if(escStart) {
                         temp = (char)(ival<<4); // high bits of escaped char
