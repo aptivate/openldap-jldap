@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/util/DN.java,v 1.4 2001/03/19 20:00:36 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/util/DN.java,v 1.5 2001/03/26 23:43:51 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -51,6 +51,7 @@ public class DN extends Object
 
     private Vector rdnList = new Vector();
 
+    public DN (){}
     /**
      * Constructs a new DN based on the specified string representation of a
      * distinguished name. The syntax of the DN must conform to that specified
@@ -61,325 +62,347 @@ public class DN extends Object
      *               parameter does not adhere to the syntax described in
      *               RFC 2253
      */
-   public DN(String dnString){
-      char     currChar;
-      char     nextChar;
-      int      currIndex;
-      char[]   tokenBuf = new char[dnString.length()];
-      int      tokenIndex;
-      int      lastIndex;
-      int      valueStart;
-      boolean  escapedChar = false;
-      int      state;
-      int      trailingSpaceCount = 0;
-      String   attrType = "";
-      String   attrValue = "";
-      String   rawValue = "";
-      int      hexDigitCount = 0;
-      RDN      currRDN = new RDN();
+    public DN(String dnString){
+        char     currChar;
+        char     nextChar;
+        int      currIndex;
+        char[]   tokenBuf = new char[dnString.length()];
+        int      tokenIndex;
+        int      lastIndex;
+        int      valueStart;
+        boolean  escapedChar = false;
+        int      state;
+        int      trailingSpaceCount = 0;
+        String   attrType = "";
+        String   attrValue = "";
+        String   rawValue = "";
+        int      hexDigitCount = 0;
+        RDN      currRDN = new RDN();
 
-      tokenIndex = 0;
-      currIndex = 0;
-      valueStart = 0;
-      state = LOOK_FOR_RDN_ATTR_TYPE;
-      lastIndex = dnString.length()-1;
-      while (currIndex <= lastIndex)
-      {
-         currChar = dnString.charAt(currIndex);
-         switch (state)
-         {
-         case LOOK_FOR_RDN_ATTR_TYPE: //parsing and RDName
-            if (Character.isLetter(currChar))
+        tokenIndex = 0;
+        currIndex = 0;
+        valueStart = 0;
+        state = LOOK_FOR_RDN_ATTR_TYPE;
+        lastIndex = dnString.length()-1;
+        while (currIndex <= lastIndex)
+        {
+            currChar = dnString.charAt(currIndex);
+            switch (state)
             {
-               if (dnString.startsWith("oid.", currIndex) ||
-                   dnString.startsWith("OID.", currIndex))
-               {  //form is "oid.###.##.###... or OID.###.##.###...
-                  currIndex += 4; //skip oid. prefix and get to actual oid
-                  if (currIndex > lastIndex)
-                     throw new IllegalArgumentException(dnString);
-                  currChar = dnString.charAt(currIndex);
-                  if (Character.isDigit(currChar))
-                  {
-                     tokenBuf[tokenIndex++] = currChar;
-                     state = OID_ATTR_TYPE;
-                  }
-                  else
-                     throw new IllegalArgumentException(dnString);
-               }
-               else
-               {
-                  tokenBuf[tokenIndex++] = currChar;
-                  state = ALPHA_ATTR_TYPE;
-               }
+            case LOOK_FOR_RDN_ATTR_TYPE: //parsing and RDName
+            if (isAlpha(currChar))
+            {
+                if (dnString.startsWith("oid.", currIndex) ||
+                       dnString.startsWith("OID.", currIndex))
+                {  //form is "oid.###.##.###... or OID.###.##.###...
+                    currIndex += 4; //skip oid. prefix and get to actual oid
+                    if (currIndex > lastIndex)
+                        throw new IllegalArgumentException(dnString);
+                    currChar = dnString.charAt(currIndex);
+                    if (isDigit(currChar))
+                    {
+                        tokenBuf[tokenIndex++] = currChar;
+                        state = OID_ATTR_TYPE;
+                    }
+                    else
+                        throw new IllegalArgumentException(dnString);
+                }
+                else
+                {
+                    tokenBuf[tokenIndex++] = currChar;
+                    state = ALPHA_ATTR_TYPE;
+                }
             }
-            else if (Character.isDigit(currChar))
+            else if (isDigit(currChar))
             {
-               tokenBuf[tokenIndex++] = currChar;
-               state = OID_ATTR_TYPE;
+                tokenBuf[tokenIndex++] = currChar;
+                state = OID_ATTR_TYPE;
             }
             else if (!Character.isSpaceChar(currChar))
-               throw new IllegalArgumentException(dnString);
+                throw new IllegalArgumentException(dnString);
             break;
 
-         case ALPHA_ATTR_TYPE:
-            if (Character.isLetter(currChar) || Character.isDigit(currChar) ||
-                    (currChar == '-'))
-               tokenBuf[tokenIndex++] = currChar;
+            case ALPHA_ATTR_TYPE:
+            if (isAlpha(currChar) || isDigit(currChar) || (currChar == '-'))
+                tokenBuf[tokenIndex++] = currChar;
             else
             {
-               //skip any white space
-               while ((currChar == ' ') && (currIndex < lastIndex))
-                  currChar = dnString.charAt(++currIndex);
-               if (currChar == '=')
-               {
-                  attrType = new String(tokenBuf, 0, tokenIndex);
-                  tokenIndex = 0;
-                  state = LOOK_FOR_RDN_VALUE;
-               }
-               else
-                  throw new IllegalArgumentException(dnString);
+                //skip any white space
+                while ((currChar == ' ') && (currIndex < lastIndex))
+                    currChar = dnString.charAt(++currIndex);
+                if (currChar == '=')
+                {
+                    attrType = new String(tokenBuf, 0, tokenIndex);
+                    tokenIndex = 0;
+                    state = LOOK_FOR_RDN_VALUE;
+                }
+                else
+                    throw new IllegalArgumentException(dnString);
             }
             break;
 
-         case OID_ATTR_TYPE:
-            if (Character.isDigit(currChar) || (currChar == '.'))
-               tokenBuf[tokenIndex++] = currChar;
+            case OID_ATTR_TYPE:
+            if (isDigit(currChar) || (currChar == '.'))
+                tokenBuf[tokenIndex++] = currChar;
             else
             {
-               //skip any white space
-               while (currChar == ' ')
-                  currChar = dnString.charAt(++currIndex);
-               if (currChar == '=')
-               {
-                  attrType = new String(tokenBuf, 0, tokenIndex);
-                  tokenIndex = 0;
-                  state = LOOK_FOR_RDN_VALUE;
-               }
-               else
-                  throw new IllegalArgumentException(dnString);
+                //skip any white space
+                while (currChar == ' ')
+                    currChar = dnString.charAt(++currIndex);
+                if (currChar == '=')
+                {
+                    attrType = new String(tokenBuf, 0, tokenIndex);
+                    tokenIndex = 0;
+                    state = LOOK_FOR_RDN_VALUE;
+                }
+                else
+                    throw new IllegalArgumentException(dnString);
             }
             break;
 
-         case LOOK_FOR_RDN_VALUE:
-            //skip any white space
+            case LOOK_FOR_RDN_VALUE:
+                //skip any white space
             while (currChar == ' ')
             {
-               if (currIndex < lastIndex)
-                  currChar = dnString.charAt(++currIndex);
-               else
-                  throw new IllegalArgumentException(dnString);
+                if (currIndex < lastIndex)
+                    currChar = dnString.charAt(++currIndex);
+                else
+                    throw new IllegalArgumentException(dnString);
             }
             if (currChar == '"')
             {
-               state = QUOTED_RDN_VALUE;
-               valueStart = currIndex;
+                state = QUOTED_RDN_VALUE;
+                valueStart = currIndex;
             }
             else if (currChar == '#')
             {
-               hexDigitCount = 0;
-               tokenBuf[tokenIndex++] = currChar;
-               valueStart = currIndex;
-               state = HEX_RDN_VALUE;
+                hexDigitCount = 0;
+                tokenBuf[tokenIndex++] = currChar;
+                valueStart = currIndex;
+                state = HEX_RDN_VALUE;
             }
             else
             {
-               valueStart = currIndex;
-               //check this character again in the UNQUOTED_RDN_VALUE state
-               currIndex--;
-               state = UNQUOTED_RDN_VALUE;
+                valueStart = currIndex;
+                //check this character again in the UNQUOTED_RDN_VALUE state
+                currIndex--;
+                state = UNQUOTED_RDN_VALUE;
             }
             break;
 
-         case UNQUOTED_RDN_VALUE:
+            case UNQUOTED_RDN_VALUE:
             if (currChar == '\\')
             {
-               if (!(currIndex < lastIndex))
-                  throw new IllegalArgumentException(dnString);
-               currChar = dnString.charAt(++currIndex);
-               if (isHexDigit(currChar))
-               {
-                  if (!(currIndex < lastIndex))
-                     throw new IllegalArgumentException(dnString);
-                  nextChar = dnString.charAt(++currIndex);
-                  if (isHexDigit(nextChar))
-                  {
-                     tokenBuf[tokenIndex++] = hexToChar(currChar, nextChar);
-                     trailingSpaceCount = 0;
-                  }
-                  else
-                     throw new IllegalArgumentException(dnString);
-               }
-               else if (needsEscape(currChar))
-               {
-                  tokenBuf[tokenIndex++] = currChar;
-                  trailingSpaceCount = 0;
-               }
-               else
-                  throw new IllegalArgumentException(dnString);
+                if (!(currIndex < lastIndex))
+                    throw new IllegalArgumentException(dnString);
+                currChar = dnString.charAt(++currIndex);
+                if (isHexDigit(currChar))
+                {
+                    if (!(currIndex < lastIndex))
+                        throw new IllegalArgumentException(dnString);
+                    nextChar = dnString.charAt(++currIndex);
+                    if (isHexDigit(nextChar))
+                    {
+                        tokenBuf[tokenIndex++] = hexToChar(currChar, nextChar);
+                        trailingSpaceCount = 0;
+                    }
+                    else
+                        throw new IllegalArgumentException(dnString);
+                }
+                else if (needsEscape(currChar))
+                {
+                    tokenBuf[tokenIndex++] = currChar;
+                    trailingSpaceCount = 0;
+                }
+                else
+                    throw new IllegalArgumentException(dnString);
             }
             else if (currChar == ' ')
             {
-               trailingSpaceCount++;
-               tokenBuf[tokenIndex++] = currChar;
+                trailingSpaceCount++;
+                tokenBuf[tokenIndex++] = currChar;
             }
             else if ((currChar == ',') ||
                      (currChar == ';') ||
                      (currChar == '+'))
             {
-               attrValue =
-                new String(tokenBuf, 0, tokenIndex - trailingSpaceCount);
-               rawValue =
-                dnString.substring(valueStart, currIndex-trailingSpaceCount);
+                attrValue =
+                    new String(tokenBuf, 0, tokenIndex - trailingSpaceCount);
+                rawValue =
+                    dnString.substring(valueStart, currIndex-trailingSpaceCount);
 
-               //added by cameron
-               currRDN.add(attrType, attrValue, rawValue);
-               if (currChar != '+'){
-                   rdnList.addElement(currRDN);
-                   currRDN = new RDN();
-               }
+                //added by cameron
+                currRDN.add(attrType, attrValue, rawValue);
+                if (currChar != '+'){
+                    rdnList.addElement(currRDN);
+                    currRDN = new RDN();
+                }
 
-               /*taken out by cameron
-               addRDN(attrType, attrValue, rawValue, levelID);
-               if (currChar != '+')
-                  levelID++;*/
-               trailingSpaceCount = 0;
-               tokenIndex = 0;
-               state = LOOK_FOR_RDN_ATTR_TYPE;
+                /*taken out by cameron
+                addRDN(attrType, attrValue, rawValue, levelID);
+                if (currChar != '+')
+                   levelID++;*/
+                trailingSpaceCount = 0;
+                tokenIndex = 0;
+                state = LOOK_FOR_RDN_ATTR_TYPE;
             }
             else
             {
-               trailingSpaceCount = 0;
-               tokenBuf[tokenIndex++] = currChar;
+                trailingSpaceCount = 0;
+                tokenBuf[tokenIndex++] = currChar;
             }
-            break;
+            break; //end UNQUOTED RDN VALUE
 
-         case QUOTED_RDN_VALUE:
+            case QUOTED_RDN_VALUE:
             if (currChar == '"')
             {
-               rawValue = dnString.substring(valueStart, currIndex+1);
-               if (currIndex < lastIndex)
-                  currChar = dnString.charAt(++currIndex);
-               //skip any white space
-               while ((currChar == ' ') && (currIndex < lastIndex))
-                  currChar = dnString.charAt(++currIndex);
-               if ((currChar == ',') ||
-                   (currChar == ';') ||
-                   (currChar == '+') ||
-                   (currIndex == lastIndex))
-               {
-                  attrValue = new String(tokenBuf, 0, tokenIndex);
+                rawValue = dnString.substring(valueStart, currIndex+1);
+                if (currIndex < lastIndex)
+                    currChar = dnString.charAt(++currIndex);
+                //skip any white space
+                while ((currChar == ' ') && (currIndex < lastIndex))
+                    currChar = dnString.charAt(++currIndex);
+                if ((currChar == ',') ||
+                    (currChar == ';') ||
+                    (currChar == '+') ||
+                    (currIndex == lastIndex))
+                {
+                    attrValue = new String(tokenBuf, 0, tokenIndex);
 
-                   //added by cameron
-                   currRDN.add(attrType, attrValue, rawValue);
-                   if (currChar != '+'){
-                       rdnList.addElement(currRDN);
-                       currRDN = new RDN();
-                   }
-
-                /* addRDN(attrType, attrValue, rawValue, levelID);
-                  if (currChar != '+')
-                     levelID++;*/
-                  trailingSpaceCount = 0;
-                  tokenIndex = 0;
-                  state = LOOK_FOR_RDN_ATTR_TYPE;
-               }
-               else
-                  throw new IllegalArgumentException(dnString);
+                    currRDN.add(attrType, attrValue, rawValue);
+                    if (currChar != '+'){
+                        rdnList.addElement(currRDN);
+                        currRDN = new RDN();
+                    }
+                    trailingSpaceCount = 0;
+                    tokenIndex = 0;
+                    state = LOOK_FOR_RDN_ATTR_TYPE;
+                }
+                else
+                    throw new IllegalArgumentException(dnString);
             }
             else if (currChar == '\\')
             {
-               currChar = dnString.charAt(++currIndex);
-               if (isHexDigit(currChar))
-               {
-                  nextChar = dnString.charAt(++currIndex);
-                  if (isHexDigit(nextChar))
-                  {
-                     tokenBuf[tokenIndex++] = hexToChar(currChar, nextChar);
-                     trailingSpaceCount = 0;
-                  }
-                  else
-                     throw new IllegalArgumentException(dnString);
-               }
-               else if (needsEscape(currChar))
-               {
-                  tokenBuf[tokenIndex++] = currChar;
-                  trailingSpaceCount = 0;
-               }
-               else
-                  throw new IllegalArgumentException(dnString);
+                currChar = dnString.charAt(++currIndex);
+                if (isHexDigit(currChar))
+                {
+                    nextChar = dnString.charAt(++currIndex);
+                    if (isHexDigit(nextChar))
+                    {
+                        tokenBuf[tokenIndex++] = hexToChar(currChar, nextChar);
+                        trailingSpaceCount = 0;
+                    }
+                    else
+                        throw new IllegalArgumentException(dnString);
+                }
+                else if (needsEscape(currChar))
+                {
+                    tokenBuf[tokenIndex++] = currChar;
+                    trailingSpaceCount = 0;
+                }
+                else
+                    throw new IllegalArgumentException(dnString);
             }
             else
-               tokenBuf[tokenIndex++] = currChar;
-            break;
+                tokenBuf[tokenIndex++] = currChar;
+            break; //end QUOTED RDN VALUE
 
-         case HEX_RDN_VALUE:
+            case HEX_RDN_VALUE:
             if ((!isHexDigit(currChar)) || (currIndex > lastIndex))
             {
-               //check for odd number of hex digits
-               if ((hexDigitCount%2) != 0)
-                  throw new IllegalArgumentException(dnString);
-               else
-               {
-                  rawValue = dnString.substring(valueStart, currIndex);
-                  //skip any white space
-                  while ((currChar == ' ') && (currIndex < lastIndex))
-                     currChar = dnString.charAt(++currIndex);
-                  if ((currChar == ',') ||
-                      (currChar == ';') ||
-                      (currChar == '+') ||
-                      (currIndex == lastIndex))
-                  {
-                      attrValue = new String(tokenBuf, 0, tokenIndex);
+                //check for odd number of hex digits
+                if ((hexDigitCount%2) != 0)
+                    throw new IllegalArgumentException(dnString);
+                else
+                {
+                    rawValue = dnString.substring(valueStart, currIndex);
+                    //skip any white space
+                    while ((currChar == ' ') && (currIndex < lastIndex))
+                        currChar = dnString.charAt(++currIndex);
+                    if ((currChar == ',') ||
+                        (currChar == ';') ||
+                        (currChar == '+') ||
+                        (currIndex == lastIndex))
+                    {
+                        attrValue = new String(tokenBuf, 0, tokenIndex);
 
-                      //added by cameron
-                      currRDN.add(attrType, attrValue, rawValue);
-                      if (currChar != '+'){
-                          rdnList.addElement(currRDN);
-                          currRDN = new RDN();
-                      }
-
-                      /*addRDN(attrType, attrValue, rawValue, levelID);
-                      if (currChar != '+')
-                          levelID++;*/
-
-                      tokenIndex = 0;
-                      state = LOOK_FOR_RDN_ATTR_TYPE;
-                  }
-                  else
-                  {
-                     throw new IllegalArgumentException(dnString);
-                  }
-
-               }
+                        //added by cameron
+                        currRDN.add(attrType, attrValue, rawValue);
+                        if (currChar != '+'){
+                            rdnList.addElement(currRDN);
+                            currRDN = new RDN();
+                        }
+                        tokenIndex = 0;
+                        state = LOOK_FOR_RDN_ATTR_TYPE;
+                    }
+                    else
+                    {
+                        throw new IllegalArgumentException(dnString);
+                    }
+                }
             }
             else
             {
-               tokenBuf[tokenIndex++] = currChar;
-               hexDigitCount++;
+                tokenBuf[tokenIndex++] = currChar;
+                hexDigitCount++;
             }
-            break;
-         }
-         currIndex++;
-      }
+            break; //end HEX RDN VALUE
+            }//end switch
+            currIndex++;
+        }//end while
 
-      //check ending state
-      if (state == UNQUOTED_RDN_VALUE || state == HEX_RDN_VALUE)
-      {
-         attrValue =
-          new String(tokenBuf, 0, tokenIndex - trailingSpaceCount);
-         rawValue =
-          dnString.substring(valueStart, currIndex - trailingSpaceCount);
-         currRDN.add(attrType,attrValue,rawValue);
-         rdnList.addElement(currRDN);
-         //addRDN(attrType, attrValue, rawValue, levelID);
-      }
-      else if (state != LOOK_FOR_RDN_ATTR_TYPE)
-      {
-         throw new IllegalArgumentException(dnString);
-      }
-   }
+        //check ending state
+        if (state == UNQUOTED_RDN_VALUE || state == HEX_RDN_VALUE)
+        {
+            attrValue =
+                new String(tokenBuf, 0, tokenIndex - trailingSpaceCount);
+            rawValue =
+                dnString.substring(valueStart, currIndex - trailingSpaceCount);
+            currRDN.add(attrType,attrValue,rawValue);
+            rdnList.addElement(currRDN);
+        }
+        else if (state != LOOK_FOR_RDN_ATTR_TYPE)
+        {
+            throw new IllegalArgumentException(dnString);
+        }
+    } //end DN constructor (string dn)
 
 
+    /**
+     * Checks a character to see if it is an ascii alphabetic character in
+     * ranges 65-90 or 97-122.
+     *
+     * @param   ch the character to be tested.
+     * @return  <code>true</code> if the character is an ascii alphabetic
+     *            character
+     */
+    private boolean isAlpha(
+        char ch)
+    {
+        if (((ch < 91) && (ch > 64)) || //ASCII a-z
+            ((ch < 123) && (ch > 96)))  //ASCII A-Z
+            return true;
+        else
+            return false;
+    }
+
+
+    /**
+     * Checks a character to see if it is an ascii digit (0-9) character in
+     * the ascii value range 48-57.
+     *
+     * @param   ch the character to be tested.
+     * @return  <code>true</code> if the character is an ascii alphabetic
+     *            character
+     */
+    private boolean isDigit(
+        char ch)
+    {
+        if ((ch < 58) && (ch > 47)) //ASCII 0-9
+            return true;
+        else
+            return false;
+    }
 
     /**
      * Checks a character to see if it is valid hex digit 0-9, a-f, or
@@ -389,14 +412,14 @@ public class DN extends Object
      * @return  <code>true</code> if the character is a valid hex digit
      */
 
-   private static boolean isHexDigit(char ch){
-      if (((ch < 58) && (ch > 47)) || //ASCII 0-9
-          ((ch < 71) && (ch > 64)) || //ASCII a-f
-          ((ch < 103) && (ch > 96)))  //ASCII A-F
-         return true;
-      else
-         return false;
-   }
+    private static boolean isHexDigit(char ch){
+        if (((ch < 58) && (ch > 47)) || //ASCII 0-9
+            ((ch < 71) && (ch > 64)) || //ASCII a-f
+            ((ch < 103) && (ch > 96)))  //ASCII A-F
+            return true;
+        else
+            return false;
+    }
 
     /**
      * Checks a character to see if it ever needs to be escaped in the
@@ -406,20 +429,20 @@ public class DN extends Object
      * @return  <code>true</code> if the character needs to be escaped in at
      *            least some instances.
      */
-   private boolean needsEscape( char ch) {
-      if ((ch == ' ') || //space (only needs escape at end of value
-          (ch == ',') ||
-          (ch == ';') ||
-          (ch == '=') ||
-          (ch == '\\') ||
-          (ch == '+') ||
-          (ch == '<') ||
-          (ch == '>') ||
-          (ch == '#'))
-         return true;
-      else
-         return false;
-   }
+    private boolean needsEscape( char ch) {
+        if ((ch == ' ') || //space (only needs escape at end of value
+            (ch == ',') ||
+            (ch == ';') ||
+            (ch == '=') ||
+            (ch == '\\') ||
+            (ch == '+') ||
+            (ch == '<') ||
+            (ch == '>') ||
+            (ch == '#'))
+            return true;
+        else
+            return false;
+    }
 
     /**
      * Converts two valid hex digit characters that form the string
@@ -433,36 +456,36 @@ public class DN extends Object
 
     private static char hexToChar(char hex1, char hex0)
         throws IllegalArgumentException {
-      int result;
+        int result;
 
-      if ((hex1 < 58) && (hex1 > 47)) //ASCII 0-9
-         result = (hex1-48) * 16;
-      else if ((hex1 < 71) && (hex1 > 64)) //ASCII a-f
-         result = (hex1-55) * 16;
-      else if ((hex1 < 103) && (hex1 > 96))  //ASCII A-F
-         result = (hex1-87) * 16;
-      else
-         throw new IllegalArgumentException("Not hex digit");
+        if ((hex1 < 58) && (hex1 > 47)) //ASCII 0-9
+            result = (hex1-48) * 16;
+        else if ((hex1 < 71) && (hex1 > 64)) //ASCII a-f
+            result = (hex1-55) * 16;
+        else if ((hex1 < 103) && (hex1 > 96))  //ASCII A-F
+            result = (hex1-87) * 16;
+        else
+            throw new IllegalArgumentException("Not hex digit");
 
-      if ((hex0 < 58) && (hex0 > 47)) //ASCII 0-9
-         result += (hex0-48);
-      else if ((hex0 < 71) && (hex0 > 64)) //ASCII a-f
-         result += (hex0-55);
-      else if ((hex0 < 103) && (hex0 > 96))  //ASCII A-F
-         result += (hex0-87);
-      else
-         throw new IllegalArgumentException("Not hex digit");
+        if ((hex0 < 58) && (hex0 > 47)) //ASCII 0-9
+            result += (hex0-48);
+        else if ((hex0 < 71) && (hex0 > 64)) //ASCII a-f
+            result += (hex0-55);
+        else if ((hex0 < 103) && (hex0 > 96))  //ASCII A-F
+            result += (hex0-87);
+        else
+            throw new IllegalArgumentException("Not hex digit");
 
-      return (char)result;
-   }
+        return (char)result;
+    }
 
-     /**
-      * Creates and returns a string that represents this DN.  The string
-      * follows RFC 2253, which describes String representation of DN's and
-      * RDN's
-      *
-      * @return A DN string.
-      */
+    /**
+     * Creates and returns a string that represents this DN.  The string
+     * follows RFC 2253, which describes String representation of DN's and
+     * RDN's
+     *
+     * @return A DN string.
+     */
     public String toString() {
         int length=rdnList.size();
         String dn = "";
@@ -470,7 +493,7 @@ public class DN extends Object
             return null;
         dn = ((RDN)rdnList.get(0)).toString();
         for (int i=1; i<length; i++)
-            dn += ", " + ((RDN)rdnList.get(i)).toString();
+            dn += "," + ((RDN)rdnList.get(i)).toString();
         return dn;
     }
 
@@ -493,7 +516,7 @@ public class DN extends Object
                 return false;
         }
         return true;
-   }
+    }
 
     /**
      * return a string array of the individual RDNs contained in the DN
@@ -527,9 +550,9 @@ public class DN extends Object
      * Retrieves a list of RDN Objects, or individual names of the DN
      * @return list of RDNs
      */
-     public Vector getRDNs(){
-        return rdnList;
-     }
+    public Vector getRDNs(){
+        return (Vector)rdnList.clone();
+    }
 
     /** Determines if this DN is <I>contained</I> by the DN passed in.  For
      *  example:  "cn=admin, ou=marketing, o=corporation" is contained by
@@ -540,15 +563,13 @@ public class DN extends Object
      * @param DN of a container
      * @return true if containerDN contains this DN
      */
-
-     public boolean isDescendantOf(DN containerDN){
+    public boolean isDescendantOf(DN containerDN){
         int i = containerDN.rdnList.size() -1;  //index to an RDN of the ContainerDN
         int j = this.rdnList.size() -1;              //index to an RDN of the ContainedDN
-
         //Search from the end of the DN for an RDN that matches the end RDN of
         //containerDN.
         while ( !((RDN)this.rdnList.elementAt(j--)).equals(
-                  (RDN)containerDN.rdnList.elementAt(i))){
+                (RDN)containerDN.rdnList.elementAt(i))){
             if (j <= 0)
                 return false;
                 //if the end RDN of containerDN does not have any equal
@@ -559,36 +580,48 @@ public class DN extends Object
         //step backwards to verify that all RDNs in containerDN exist in this DN
         for (/* i, j */ ; i>=0 && j >=0; i--, j--){
             if (!((RDN)this.rdnList.elementAt(j)).equals(
-                  (RDN)containerDN.rdnList.elementAt(i)))
-                  return false;
+                (RDN)containerDN.rdnList.elementAt(i)))
+                return false;
         }
         if (j == 0 && i == 0) //the DNs are identical and thus not contained
             return false;
 
         return true;
-     }
+    }
 
-     /**
-      * Adds the RDN to the beginning of the current DN.
-      * @param an RDN to be added
-      */
-     public void addRDN(RDN rdn){
-        rdnList.insertElementAt(rdn, 0);
-     }
+    /**
+     * Returns the Parent of this DN
+     * @returns Parent DN
+     */
+    public DN getParent(){
+       DN parent = new DN();
+       parent.rdnList = (Vector)this.rdnList.clone();
+       if (parent.rdnList.size() >= 1)
+           parent.rdnList.remove(0);  //remove first object
+       return parent;
+    }
 
-     /**
-      * Adds the RDN to the beginning of the current DN.
-      * @param an RDN to be added
-      */
-     public void addRDNToFront(RDN rdn){
-        rdnList.insertElementAt(rdn, 0);
-     }
+    /**
+     * Adds the RDN to the beginning of the current DN.
+     * @param an RDN to be added
+     */
+    public void addRDN(RDN rdn){
+       rdnList.insertElementAt(rdn, 0);
+    }
 
-     /**
-      * Adds the RDN to the end of the current DN
-      * @param an RDN to be added
-      */
-     public void addRDNToBack(RDN rdn){
+    /**
+     * Adds the RDN to the beginning of the current DN.
+     * @param an RDN to be added
+     */
+    public void addRDNToFront(RDN rdn){
+       rdnList.insertElementAt(rdn, 0);
+    }
+
+    /**
+     * Adds the RDN to the end of the current DN
+     * @param an RDN to be added
+     */
+    public void addRDNToBack(RDN rdn){
         rdnList.addElement(rdn);
-     }
+    }
 } //end class DN
