@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: LDIFWriter.java,v 1.31 2002/11/13 22:54:14 $
+ * $Novell: LDIFWriter.java,v 1.32 2002/12/19 16:46:24 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -134,6 +134,45 @@ public class LDIFWriter implements LDAPWriter
         return;
     }
 
+    /**
+     * Write an LDAP record into LDIF file as LDAPContent data.
+     *
+     * <p>You are not allowed to mix request data and content data</p>
+     *
+     * @param request LDAPEntry object
+     *
+     * @throws IOException if an I/O error occurs.
+     *
+     * @see com.novell.ldap.LDAPEntry
+     */
+    public void writeEntry(LDAPEntry entry)
+                throws IOException
+    {
+            writeEntry(entry, new LDAPControl[]{});
+            return;
+    }
+
+    /**
+     * Write an LDAP record into LDIF file as LDAPContent data.
+     *
+     * <p>You are not allowed to mix request data and content data</p>
+     *
+     * @param request LDAPEntry object
+     *
+     * @param controls Controls that were returned with this entry
+     *
+     * @throws IOException if an I/O error occurs.
+     *
+     * @see com.novell.ldap.LDAPEntry
+     */
+    public void writeEntry(LDAPEntry entry, LDAPControl[] controls)
+                throws IOException
+    {
+            requestFile = Boolean.FALSE; // This is a content file
+            writeAddRequest(entry, controls);
+            return;
+    }
+    
     /**
      * Write an LDAP record into LDIF file. A request or change operation may
      * be objects of type  LDAPAddRequest, LDAPDeleteRequest,
@@ -344,37 +383,35 @@ public class LDIFWriter implements LDAPWriter
      *
      * @throws IOException if an I/O error occurs.
      */
-    private void writeLine (String line) throws IOException
+    private void writeLine(String line) throws IOException
     {
-        if ( line != null && line.length() != 0) {
-
-            if (line.length() <= 80) {
+        int len = line.length();
+        if ( (line != null) && (len != 0)) {
+            if (len <= 76) {
                 // write short line
-                bufWriter.write(line, 0, line.length());
-            }
-            else {
-                // berak long line
-                StringBuffer longLine = new StringBuffer();
-                longLine.append(line);
-                // write the first 80 chars to outputStream
-                bufWriter.write(longLine.toString(), 0, 80);
+                bufWriter.write(line, 0, len);
+            } else {
+                int pos = 0;
+                // break up long line
+                // write the first 80 chars to outputStream (no blank at front)
+                bufWriter.write(line, pos, 76);
+                pos += 76;
                 // remove the chars that already been written out
-                longLine.delete(0, 80);
                 bufWriter.newLine();
 
-                while(longLine.length() > 79) {
+                while((len - pos) > 75) {
                     // write continuation line
-                    bufWriter.write(" " + longLine, 0, 80);
+                    bufWriter.write(" ", 0, 1);
+                    bufWriter.write(line, pos, 75);
                     // remove the chars that already been written out
-                    longLine.delete(0, 79);
+                    pos += 75;
                     // start a new line
                     bufWriter.newLine();
                 }
-
                 // write the remaining part of the lien out
-                bufWriter.write(" " + longLine, 0, longLine.length()+1);
+                bufWriter.write(" ", 0, 1);
+                bufWriter.write(line, pos, len - pos);
             }
-
             // write an empty line
             bufWriter.newLine();
         }
@@ -629,9 +666,11 @@ public class LDIFWriter implements LDAPWriter
     }
 
     /**
-     * Close the outputStream
+     * Write all remaining data to the output stream
      */
-    public void close() throws IOException {
-        bufWriter.close();
+    public void finish() throws IOException
+    {
+        bufWriter.flush();
+        return;
     }
 }

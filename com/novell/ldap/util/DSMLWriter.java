@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: DSMLWriter.java,v 1.30 2002/12/09 23:52:22 $
+ * $Novell: DSMLWriter.java,v 1.31 2002/12/11 15:56:50 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -51,8 +51,10 @@ public class DSMLWriter implements LDAPWriter {
      * @throws FileNotFoundException occurs when the specified file could not
      * be opened or is not found.
      */
-    public DSMLWriter(String file) throws FileNotFoundException {
+    public DSMLWriter(String file) throws FileNotFoundException
+    {
         this( new FileOutputStream(file, true));
+        return;
     }
 
     /**
@@ -62,7 +64,8 @@ public class DSMLWriter implements LDAPWriter {
      * Note that the output characters will be UTF-8 encoded.
      * @param stream  Output stream to write DSML
      */
-    public DSMLWriter(OutputStream stream){
+    public DSMLWriter(OutputStream stream)
+    {
         try {
             out = new OutputStreamWriter(stream, "UTF-8");
         } catch (UnsupportedEncodingException e) {
@@ -75,8 +78,10 @@ public class DSMLWriter implements LDAPWriter {
      * Initializes this writer with the specified writer to write DSML into.
      * @param writer Writer to write DSML
      */
-    public DSMLWriter(Writer writer){
+    public DSMLWriter(Writer writer)
+    {
         out = writer;
+        return;
     }
 
     /**
@@ -112,13 +117,15 @@ public class DSMLWriter implements LDAPWriter {
         out.write("</message>");
         newLine(1);
         out.write("</errorResponse>");
+        return;
     }
-
+    
     /**
      * Writes closing tags for searchResponse, batchRequests, and batchResponse
      * depending on the current state.
      */
-    public void finish() throws IOException {
+    public void finish() throws IOException
+    {
         newLine(0);
         switch(state){
             case REQUEST_BATCH:
@@ -135,14 +142,16 @@ public class DSMLWriter implements LDAPWriter {
                 out.write("</batchResponse>");
         }
         newLine(0);
-        //out.flush();
+        out.flush();
+        return;
     }
 
     /**
      * Writes the specified strings as XML comments.
      * @param lines Comments to be written
      */
-    public void writeComments(String lines) throws IOException {
+    public void writeComments(String lines) throws IOException
+    {
         newLine(1);
         out.write("<!-- ");
         out.write(lines);
@@ -293,8 +302,94 @@ public class DSMLWriter implements LDAPWriter {
                 out.write("</extendedResponse>");
                 break;
         }
+        return;
     }
 
+    /**
+     * Write an LDAP entry into LDIF file as LDAPContent data.
+     * An LDAPEntry is written as a SearchResultEntry record.
+     *
+     * <p>You are not allowed to mix request data and content data</p>
+     *
+     * @param request LDAPEntry object
+     *
+     * @throws IOException if an I/O error occurs.
+     *
+     * @see com.novell.ldap.LDAPEntry
+     */
+    public void writeEntry( LDAPEntry entry)
+            throws IOException, LDAPLocalException
+    {
+        checkState(true);
+        writeEntry( entry, null, null);
+        return;
+    }
+    
+    /**
+     * Write an LDAP entry into LDIF file as LDAPContent data.
+     * An LDAPEntry is written as a SearchResultEntry record.
+     *
+     * <p>You are not allowed to mix request data and content data</p>
+     *
+     * @param request LDAPEntry object
+     *
+     * @param controls Controls that were returned with this entry
+     *
+     * @throws IOException if an I/O error occurs.
+     *
+     * @see com.novell.ldap.LDAPEntry
+     */
+    public void writeEntry( LDAPEntry entry, LDAPControl[] controls)
+            throws IOException, LDAPLocalException
+    {
+        checkState(true);
+        writeEntry( entry, controls, null);
+        return;
+    }
+    
+    /**
+     * Write an LDAP entry into LDIF file as LDAPContent data.
+     * An LDAPEntry is written as a SearchResultEntry record.
+     *
+     * <p>You are not allowed to mix request data and content data</p>
+     *
+     * @param request LDAPEntry object
+     *
+     * @param controls Controls that were returned with this entry
+     *
+     * @param requestID the String that associates this response with the request
+     *
+     * @throws IOException if an I/O error occurs.
+     *
+     * @see com.novell.ldap.LDAPEntry
+     */
+    public void writeEntry( LDAPEntry entry,
+                            LDAPControl[] controls,
+                            String requestID)
+            throws IOException, LDAPLocalException
+    {
+        checkState(true);
+        newLine(2);
+        out.write("<searchResultEntry dn=\"");
+        out.write(entry.getDN());
+        if( requestID != null) {
+            out.write("\" requestID=\"" + requestID);
+        }    
+        out.write("\">");
+        LDAPAttributeSet set = entry.getAttributeSet();
+        Iterator i = set.iterator();
+        while (i.hasNext()){
+            writeAttribute( (LDAPAttribute) i.next());
+        }
+        if( (controls !=null) && (controls.length != 0)) {
+            writeControls(controls, 3);
+        }
+        newLine(2);
+        out.write("</searchResultEntry>");
+
+        return;
+    }
+    
     /**
      * Writes an XML tag with it's requestID and possibly a matchedDN.
      * @param tag XML tag name to be written
@@ -312,6 +407,7 @@ public class DSMLWriter implements LDAPWriter {
             }
         }
         out.write(">");
+        return;
     }
 
     /**
@@ -341,7 +437,8 @@ public class DSMLWriter implements LDAPWriter {
      * @param result result to be written
      * @param indent number of indentation this result should use for writing
      */
-    private void writeResult(LDAPResponse result, int indent) throws IOException {
+    private void writeResult(LDAPResponse result, int indent) throws IOException
+    {
         /* controls: */
         LDAPControl[] controls = result.getControls();
         if (controls != null){
@@ -382,7 +479,9 @@ public class DSMLWriter implements LDAPWriter {
      * @param controls Controls to be written
      * @param indent  Size of indentation for writting.
      */
-    private void writeControls(LDAPControl[] controls, int indent) throws IOException {
+    private void writeControls(LDAPControl[] controls, int indent)
+            throws IOException
+    {
         for(int i=0; i<controls.length; i++){
             newLine(indent);
             out.write("<control numericOID=\"");
@@ -402,6 +501,7 @@ public class DSMLWriter implements LDAPWriter {
                 out.write("</control>");
             }
         }
+        return;
     }
 
     /**
@@ -430,27 +530,11 @@ public class DSMLWriter implements LDAPWriter {
      * @param result a search result entry
      */
     private void writeSearchResponse(LDAPSearchResult result)
-            throws IOException
+            throws IOException, LDAPLocalException
     {
-        LDAPEntry entry = result.getEntry();
-        newLine(2);
-        out.write("<searchResultEntry dn=\"");
-        out.write(entry.getDN());
-        out.write("\" requestID=\"");
-        out.write(""+DOMWriter.findRequestID(result));
-        out.write("\">");
-        LDAPAttributeSet set = entry.getAttributeSet();
-        Iterator i = set.iterator();
-        while (i.hasNext()){
-            writeAttribute( (LDAPAttribute) i.next());
-        }
-        LDAPControl controls[] = result.getControls();
-        if (controls !=null){
-            writeControls(controls, 3);
-        }
-        newLine(2);
-        out.write("</searchResultEntry>");
-
+        writeEntry( result.getEntry(),
+                    result.getControls(),
+                    DOMWriter.findRequestID(result));
         return;
     }
 
@@ -458,7 +542,8 @@ public class DSMLWriter implements LDAPWriter {
      * Used to write an attribute and its values.
      * @param attr Attribute to be written.
      */
-    private void writeAttribute(LDAPAttribute attr) throws IOException {
+    private void writeAttribute(LDAPAttribute attr) throws IOException
+    {
         newLine(3);
         out.write("<attr name=\"");
         out.write(attr.getName());
@@ -528,7 +613,8 @@ public class DSMLWriter implements LDAPWriter {
      * is set to <tt>false</tt>.
      * @param indentTabs number of tabs to indent.
      */
-    private void newLine(int indentTabs) throws IOException {
+    private void newLine(int indentTabs) throws IOException
+    {
         if (!indent)
             return;
         out.write("\n");
@@ -550,8 +636,10 @@ public class DSMLWriter implements LDAPWriter {
      * written to make the output DSML more readable.
      * @see #setIndent
      */
-    public void useIndent( boolean useIndent ){
+    public void useIndent( boolean useIndent )
+    {
         this.indent = useIndent;
+        return;
     }
 
     /**
@@ -562,11 +650,13 @@ public class DSMLWriter implements LDAPWriter {
      * @param spaces Number of spaces used in each indentation.
      * @see #useIndent
      */
-    public void setIndent(int spaces){
+    public void setIndent(int spaces)
+    {
         StringBuffer temp = new StringBuffer();
         for (int i=0; i< spaces; i++){
             temp.append(' ');
         }
         this.tabString = temp.toString();
+        return;
     }
 }

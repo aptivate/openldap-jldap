@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: DOMWriter.java,v 1.8 2002/11/12 23:21:05 $
+ * $Novell: DOMWriter.java,v 1.9 2002/11/13 23:55:29 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -107,10 +107,125 @@ public class DOMWriter implements LDAPWriter
         }
         return;
     }
+    
+    /**
+     * Write an LDAP record into LDIF file as LDAPContent data.
+     * An LDAPEntry is written as a DSML SearchResultEntry record.
+     *
+     * <p>You are not allowed to mix request data and content data</p>
+     *
+     * @param request LDAPEntry object
+     *
+     * @throws LDAPLocalException if data and content are mixed.
+     *
+     * @throws IOException if an I/O error occurs.
+     *
+     * @see com.novell.ldap.LDAPEntry
+     */
+    public void writeEntry( LDAPEntry entry)
+            throws LDAPLocalException
+    {
+        checkState( entry);
+        myWriteEntry( entry, null);
+        return;
+    }
+    
+    // Javadoc from interface
+    /**
+     * Write an LDAP record into LDIF file as LDAPContent data.
+     * An LDAPEntry is written as a DSML SearchResultEntry record.
+     *
+     * <p>You are not allowed to mix request data and content data</p>
+     *
+     * @param request LDAPEntry object
+     *
+     * @param controls Controls that were returned with this entry
+     *
+     * @throws IOException if an I/O error occurs.
+     *
+     * @throws LDAPLocalException if data and content are mixed.
+     *
+     * @see com.novell.ldap.LDAPEntry
+     */
+    public void writeEntry( LDAPEntry entry, LDAPControl[] controls)
+            throws LDAPLocalException
+    {
+        checkState( entry);
+        myWriteEntry( entry, controls);
+        return;
+    }
+    
+    /**
+     * Write an LDAP record into LDIF file as LDAPContent data.
+     * An LDAPEntry is written as a DSML SearchResultEntry record.
+     *
+     * <p>You are not allowed to mix request data and content data</p>
+     *
+     * @param request LDAPEntry object
+     *
+     * @param controls Controls that were returned with this entry
+     *
+     * @param requestID the String that associates this response with the request
+     *
+     * @throws IOException if an I/O error occurs.
+     *
+     * @throws LDAPLocalException if data and content are mixed.
+     *
+     * @see com.novell.ldap.LDAPEntry
+     */
+    public void writeEntry( LDAPEntry entry,
+                            LDAPControl[] controls,
+                            String requestID)
+            throws LDAPLocalException
+    {
+        checkState( entry);
+        Element e = myWriteEntry( entry, controls);
+        if( (requestID != null) && (requestID.length() != 0)) {
+            e.setAttribute("requestID", requestID);
+        }
+        return;
+    }
+    
+    // Javadoc from interface
+    private Element myWriteEntry( LDAPEntry entry,
+                                  LDAPControl[] controls )
+    {
+        Element e = doc.createElement("searchResultEntry");
+        e.setAttribute("dn", entry.getDN());
+
+        LDAPAttributeSet set = entry.getAttributeSet();
+        Iterator iterator = set.iterator();
+        while (iterator.hasNext()){
+            LDAPAttribute attr = (LDAPAttribute)iterator.next();
+            Element attribute = doc.createElement("attr");
+            attribute.setAttribute("name", attr.getName());
+
+            String values[] = attr.getStringValueArray();
+            byte bytevalues[][] = attr.getByteValueArray();
+            for(int i=0; i<values.length; i++){
+                Element value = doc.createElement("value");
+                if (Base64.isValidUTF8(bytevalues[i], false)){
+                    value.appendChild(doc.createTextNode(values[i]));
+                } else {
+                    value.setAttribute("xsi:type", "base64Binary");
+                    value.appendChild(doc.createTextNode(
+                            Base64.encode(bytevalues[i])));
+                }
+                attribute.appendChild(value);
+            }
+            e.appendChild(attribute);
+        }
+        if (controls != null) {
+            writeControls(e, controls);
+        }
+        searchNode.appendChild( e);
+        return e;
+    }
 
     /**
      * Utility method to convert an LDAPMessage to a DSML DOM element.
      * @param message  An LDAPMessage to be converted to a DSML DOM element.
+     *
      * @return element A DOM element representing either a response or a
      * request in DSML.
      */
@@ -135,36 +250,8 @@ public class DOMWriter implements LDAPWriter
 
             //Responses:
             case LDAPMessage.SEARCH_RESPONSE:
-                LDAPEntry entry = ((LDAPSearchResult)message).getEntry();
-                e = doc.createElement("searchResultEntry");
-                e.setAttribute("dn", entry.getDN());
-
-                LDAPAttributeSet set = entry.getAttributeSet();
-                Iterator iterator = set.iterator();
-                while (iterator.hasNext()){
-                    LDAPAttribute attr = (LDAPAttribute)iterator.next();
-                    Element attribute = doc.createElement("attr");
-                    attribute.setAttribute("name", attr.getName());
-
-                    String values[] = attr.getStringValueArray();
-                    byte bytevalues[][] = attr.getByteValueArray();
-                    for(int i=0; i<values.length; i++){
-                        Element value = doc.createElement("value");
-                        if (Base64.isValidUTF8(bytevalues[i], false)){
-                            value.appendChild(doc.createTextNode(values[i]));
-                        } else {
-                            value.setAttribute("xsi:type", "base64Binary");
-                            value.appendChild(doc.createTextNode(
-                                    Base64.encode(bytevalues[i])));
-                        }
-                        attribute.appendChild(value);
-                    }
-                    e.appendChild(attribute);
-                }
-                LDAPControl controls[] = message.getControls();
-                if (controls!=null){
-                    writeControls(e, controls);
-                }
+                e = myWriteEntry( ((LDAPSearchResult)message).getEntry(),
+                                  message.getControls());
                 break;
             case LDAPMessage.SEARCH_RESULT_REFERENCE:
                 e = doc.createElement("searchResultReference");
@@ -220,10 +307,13 @@ public class DOMWriter implements LDAPWriter
                 break;
         }
         //if valid tag && write requestIDs is set.
-        e.setAttribute("requestID", ""+findRequestID(message));
+        String id =  findRequestID(message);
+        if( (id != null) && (id.length() != 0)) {
+            e.setAttribute("requestID", id);
+        }
         return e;
     }
-
+    
     /**
      * Writes the specified LDAPResponse into the specified element.
      * <p>Possible information written to the element is a Result code with a
@@ -387,6 +477,40 @@ public class DOMWriter implements LDAPWriter
         return;
     }
 
+    /**
+     * Tests the current state with a new message that is either a response or
+     * request.
+     * <p>If the state is NEW_BATCH, check_state will create the
+     * appropriate batch element and set it as root.  If the state is
+     * SEARCH_RESPONSE then the new message is verified to be a search result,
+     * search response or search reference.<p>
+     *
+     * @param entry Message to be written
+     * @throws LDAPLocalException
+     */
+    private void checkState(LDAPEntry entry)
+            throws LDAPLocalException
+    {
+        boolean isResponse = true;
+        if (state == NEW_BATCH) {
+            root = doc.createElement("batchResponse");
+            root.setAttribute("xmlns", "urn:oasis:names:tc:DSML:2:0:core");
+            state = RESPONSE_BATCH;
+        }        
+        
+        if (state != SEARCH_RESPONSE) {
+            searchNode = doc.createElement("searchResponse");
+            root.appendChild(searchNode);
+            state = SEARCH_RESPONSE;
+        }
+        else if ((state == REQUEST_BATCH) && (isResponse)) {
+            throw new LDAPLocalException(
+                "Attempted insertion of a response message in a request batch",
+                LDAPException.ENCODING_ERROR);
+        }
+        return;
+    }
+
     static String findRequestID(LDAPMessage message) {
         String tag = message.getTag();
         if (tag == null){
@@ -402,5 +526,10 @@ public class DOMWriter implements LDAPWriter
      */
     public Element getRootElement() {
         return root;
+    }
+    
+    public void finish() throws IOException
+    {
+        return;
     }
 }

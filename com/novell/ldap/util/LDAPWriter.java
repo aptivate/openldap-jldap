@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell$
+ * $Novell: LDAPWriter.java,v 1.4 2002/10/28 23:16:10 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -15,6 +15,8 @@
 package com.novell.ldap.util;
 
 import java.io.IOException;
+import com.novell.ldap.LDAPControl;
+import com.novell.ldap.LDAPEntry;
 import com.novell.ldap.LDAPException;
 import com.novell.ldap.LDAPMessage;
 import com.novell.ldap.LDAPMessageQueue;
@@ -47,8 +49,34 @@ public interface LDAPWriter
      * Writes an LDAPMessage to the data stream.
      *
      * @param message the LDAPMesssage to write.
+     *
+     * @throws IOException if an I/O error occurs.
+     *
+     * @throws LDAPException for exceptions from LDAP
      */
      public void writeMessage( LDAPMessage message)
+            throws IOException, LDAPException;
+
+    /**
+     * Writes an LDAPEntry to the data stream.
+     *
+     * @param entry the LDAPEntry to write.
+     */
+     public void writeEntry( LDAPEntry entry)
+            throws IOException, LDAPException;
+
+    /**
+     * Writes an LDAPEntry to the data stream.
+     *
+     * @param entry the LDAPEntry to write.
+     *
+     * @param controls any controls associated with the entry
+     *
+     * @throws IOException if an I/O error occurs.
+     *
+     * @throws LDAPException for exceptions from LDAP
+     */
+     public void writeEntry( LDAPEntry entry, LDAPControl[] controls)
             throws IOException, LDAPException;
 
     /**
@@ -57,5 +85,11 @@ public interface LDAPWriter
      * @param comments The comments to write
      */
      public void writeComments( String comments) 
+            throws IOException;
+
+    /**
+     * Writes any remaining data to the output stream.
+     */
+     public void finish() 
             throws IOException;
 }
