@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: LDAPWriter.java,v 1.5 2003/01/22 19:32:49 $
+ * $Novell: LDAPWriter.java,v 1.6 2003/01/22 22:30:28 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -22,21 +22,22 @@ import com.novell.ldap.LDAPMessage;
 
 /**
  * Describes the interfaces used by applications to write
- * LDAP messages to an output stream.
+ * LDAP messages to an output destination.
  *
  * @see LDAPReader
  */
 public interface LDAPWriter
 {
     /**
-     * Returns version of data to write to the stream.
+     * Returns the version of data that will be writen to the output
+     * destination.
      *
      * @return the data version as a String value.
      */
     public String getVersion();
 
     /**
-     * Returns the type of data to write to the stream,
+     * Returns the type of data to write to the output destination,
      * true if request data, or false if result data.
      *
      * @return  true if the data type is request data.
@@ -45,7 +46,7 @@ public interface LDAPWriter
 
 
     /**
-     * Writes an LDAPMessage to the data stream.
+     * Writes an LDAPMessage to the output destination.
      *
      * @param message the LDAPMesssage to write.
      *
@@ -57,7 +58,7 @@ public interface LDAPWriter
             throws IOException, LDAPException;
 
     /**
-     * Writes an LDAPEntry to the data stream.
+     * Writes an LDAPEntry to the output destination.
      *
      * @param entry the LDAPEntry to write.
      */
@@ -65,7 +66,7 @@ public interface LDAPWriter
             throws IOException, LDAPException;
 
     /**
-     * Writes an LDAPEntry to the data stream.
+     * Writes an LDAPEntry to the output destination.
      *
      * @param entry the LDAPEntry to write.
      *
@@ -79,7 +80,7 @@ public interface LDAPWriter
             throws IOException, LDAPException;
 
     /**
-     * Writes an comments to the data stream.
+     * Writes an comments to the output destination.
      *
      * @param comments The comments to write
      */
@@ -87,7 +88,7 @@ public interface LDAPWriter
             throws IOException;
 
     /**
-     * Writes an Exception to the data stream.
+     * Writes an Exception to the output destination.
      *
      * @param e  Exception to be written.
      */
@@ -95,7 +96,7 @@ public interface LDAPWriter
 
 
     /**
-     * Writes any remaining data to the output stream.
+     * Writes any remaining data to the output destination.
      */
      public void finish()
             throws IOException;

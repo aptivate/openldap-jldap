@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: LDAPReader.java,v 1.3 2002/10/28 23:16:10 $
+ * $Novell: LDAPReader.java,v 1.4 2002/11/13 16:49:15 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -20,21 +20,21 @@ import com.novell.ldap.LDAPMessage;
 
 /**
  * Describes the interfaces used by applications to read
- * LDAP messages from an input stream.
+ * LDAP messages from an input source.
  *
  * @see LDAPWriter
  */
 public interface LDAPReader
 {
     /**
-     * Returns version of data format being read from the stream.
+     * Returns version of data format being read from the source.
      *
      * @return the data version as a String value.
      */
     public String getVersion();
 
     /**
-     * Returns the type of messages being read from the stream,
+     * Returns the type of messages being read from the source,
      * true if request data or false if result data.
      *
      * @return  true if the data type is request data.
@@ -42,9 +42,9 @@ public interface LDAPReader
     public boolean isRequest();
 
     /**
-     * Writes an LDAPMessage to the data stream.
+     * Reads an LDAPMessage from the data source.
      *
-     * @return the LDAPMesssage read from the input stream.
+     * @return the LDAPMesssage read from the input source.
      */
      public LDAPMessage readMessage()
             throws LDAPException, IOException;
