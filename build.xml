@@ -45,13 +45,18 @@
 	<deltree dir="${pkg}"/>
   </target>
 
-  <target name="doc" depends="init">
+  <target name="doc" depends="ldap.debug">
     <ant dir="${basedir}/${ldap}" target="doc"/>
     <ant dir="${basedir}/${novbp}" target="doc"/>
   </target>
 
-  <target name="debug" depends="init">
+  <target name="debug" depends="ldap.debug, novbp.debug"/>
+
+  <target name="ldap.debug" depends="init">
     <ant dir="${basedir}/${ldap}" target="debug" />
+  </target>
+
+  <target name="novbp.debug" depends="init">
     <ant dir="${basedir}/${novbp}" target="debug" />
   </target>
 
