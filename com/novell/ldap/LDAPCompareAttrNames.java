@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: LDAPCompareAttrNames.java,v 1.2 2000/03/14 18:17:26 smerrill Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/org/ietf/ldap/LDAPCompareAttrNames.java,v 1.3 2000/08/03 22:06:14 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -16,12 +16,15 @@
 package org.ietf.ldap;
 
 import java.util.Locale;
- 
-/**
+
+/*
  * 4.5 public class LDAPCompareAttrNames
  *                implements LDAPEntryComparator
+*/
+ 
+/**
  *
- *  An object of this class supports sorting search results by attribute
+ *  Represents an object that supports sorting search results by attribute
  *  name, in ascending or descending order.
  */
 public class LDAPCompareAttrNames implements LDAPEntryComparator {
@@ -31,44 +34,53 @@ public class LDAPCompareAttrNames implements LDAPEntryComparator {
     */
 
    /**
-    * Constructs an object that will sort results by a single attribute, in
+    * Constructs an object that sorts results by a single attribute, in
     * ascending order.
+    *
+    * @param attrName       Name of an attribute to sort by.
+    *
     */
    public LDAPCompareAttrNames(String attrName) {
    }
 
    /**
-    * Constructs an object that will sort results by a single attribute, in
+    * Constructs an object that sorts results by a single attribute, in
     * either ascending or descending order.
+    *
+    * @param attrName       Name of an attribute to sort by.
+    *
+    * @param ascendingFlag  True specifies ascending order; false specifies
+    *                 descending order.
     */
    public LDAPCompareAttrNames(String attrName, boolean ascendingFlag) {
    }
 
 
    /**
-    * Constructs an object that will sort by one or more attributes, in the
+    * Constructs an object that sorts by one or more attributes, in the
     * order provided, in ascending order.
+    *
+    * @param attrNames      Array of names of attributes to sort by.
+    *
     */
    public LDAPCompareAttrNames(String[] attrNames) {
    }
 
    /**
-    * Constructs an object that will sort by one or more attributes, in the
+    * Constructs an object that sorts by one or more attributes, in the
     * order provided, in either ascending or descending order for each
     * attribute.
     *
-    * attrName       Name of an attribute to sort by.
+    * @param attrNames      Array of names of attributes to sort by.
     *
-    * attrNames      Array of names of attributes to sort by.
-    *
-    * ascendingFlag  true to sort in ascending order, false for
-    *                 descending order.
-    *
-    * ascendingFlags Array of flags, one for each attrName, where each
-    *                one is true to sort in ascending order, false for
+    * @param ascendingFlags  Array of flags, one for each attrName, where
+    *                true specifies ascending order and false specifies
     *                descending order. An LDAPException is thrown if
     *                the length of ascendingFlags is not greater than
     *                or equal to the length of attrNames.
+    *
+    * @exception LDAPException A general exception which includes an error 
+    * message and an LDAP error code.
     */
    public LDAPCompareAttrNames(String[] attrNames,
                                boolean[] ascendingFlags)
@@ -80,9 +92,13 @@ public class LDAPCompareAttrNames implements LDAPEntryComparator {
     */
 
    /**
-    * Returns the Locale to be used for sorting, if a Locale has been
-    * specified. If null, a basic String.compareTo() is used for collation.
-    * If non-null, a Locale-specific collation is used.
+    * Returns the locale to be used for sorting, if a locale has been
+    * specified. 
+    *
+    * <p>If locale is null, a basic String.compareTo() is used for collation.
+    * If non-null, a locale-specific collation is used. </p>
+    *
+    * @return The locale if one has been specified
     */
    public Locale getLocale () {
       return null;
@@ -93,9 +109,9 @@ public class LDAPCompareAttrNames implements LDAPEntryComparator {
     */
 
    /**
-    * Sets the Locale to be used for sorting.
+    * Sets the locale to be used for sorting.
     *
-    * locale         The Locale to be used for sorting.
+    * @param locale   The locale to be used for sorting.
     */
    public void setLocale (Locale locale) {
    }
@@ -109,9 +125,11 @@ public class LDAPCompareAttrNames implements LDAPEntryComparator {
     * the purpose of sorting, based on the attribute name or names provided
     * on object construction.
     *
-    * entry1         Target entry for comparison.
+    * @param entry1         Target entry for comparison.
     *
-    * entry2         Entry to be compared to.
+    * @param entry2         Entry to be compared to.
+    *
+    * @return True if entry1 is greater than enter2; otherwise, false.
     */
    public boolean isGreater (LDAPEntry entry1, LDAPEntry entry2) {
       return false;
