@@ -28,8 +28,7 @@ import com.novell.ldap.client.Debug;
  *  marked "critical", the whole search operation will fail if the sort
  *  control is not supported.
  *
- * <p>Sample Code: <a href="http://developer.novell.com/ndk/doc/samplecode/
- *jldap_sample/controls/AsyncSortControl.java.html">AsyncSortControl.java</p>
+ * <p>Sample Code: <a href="http://developer.novell.com/ndk/doc/samplecode/jldap_sample/controls/AsyncSortControl.java.html">AsyncSortControl.java</p>
  */
 public class LDAPSortControl extends LDAPControl {
 

@@ -26,8 +26,7 @@ import com.novell.ldap.client.Debug;
  *  contains additional information about a change such as what type of
  *  change occurred.
  *
- *  <p>Sample Code: <a href="http://developer.novell.com/ndk/doc/samplecode/
- *jldap_sample/controls/SearchPersist.java.html">SearchPersist.java</p>
+ *  <p>Sample Code: <a href="http://developer.novell.com/ndk/doc/samplecode/jldap_sample/controls/SearchPersist.java.html">SearchPersist.java</p>
  */
 public class LDAPEntryChangeControl extends LDAPControl
 {

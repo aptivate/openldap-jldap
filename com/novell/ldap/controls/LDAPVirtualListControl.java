@@ -44,8 +44,7 @@ import com.novell.ldap.client.Debug;
  * by the client with a new requested position or length and sent to the
  * server to obtain a different segment of the virtual list.</p>
  *
- * <p>Sample Code: <a href="http://developer.novell.com/ndk/doc/samplecode/
- *jldap_sample/controls/VLVControl.java.html">VLVControl.java</p>
+ * <p>Sample Code: <a href="http://developer.novell.com/ndk/doc/samplecode/jldap_sample/controls/VLVControl.java.html">VLVControl.java</p>
  */
 public class LDAPVirtualListControl extends LDAPControl {
 

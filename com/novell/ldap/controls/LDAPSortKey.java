@@ -18,8 +18,7 @@ package com.novell.ldap.controls;
 /**
  * Encapsulates parameters for sorting search results.
  *
- * <p>Sample Code: <a href="http://developer.novell.com/ndk/doc/samplecode/
- *jldap_sample/controls/AsyncSortControl.java.html">AsyncSortControl.java</p>
+ * <p>Sample Code: <a href="http://developer.novell.com/ndk/doc/samplecode/jldap_sample/controls/AsyncSortControl.java.html">AsyncSortControl.java</p>
  */
 public class LDAPSortKey {
 

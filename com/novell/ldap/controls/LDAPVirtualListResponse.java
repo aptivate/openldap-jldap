@@ -33,8 +33,7 @@ import com.novell.ldap.asn1.*;
  * <li> an optional context field to be returned to the server with
  * subsequent VLV request.
  *
- * <p>Sample Code: <a href="http://developer.novell.com/ndk/doc/samplecode/
- *jldap_sample/controls/VLVControl.java.html">VLVControl.java</p>
+ * <p>Sample Code: <a href="http://developer.novell.com/ndk/doc/samplecode/jldap_sample/controls/VLVControl.java.html">VLVControl.java</p>
  */
 public class LDAPVirtualListResponse extends LDAPControl
 {
