@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResults.java,v 1.21 2000/10/02 19:46:53 judy Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResults.java,v 1.22 2000/10/03 21:44:00 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -401,9 +401,7 @@ public class LDAPSearchResults implements Enumeration
                     // how can we arrive here?
                     // we would have to have no responses, no message IDs and no
                     // exceptions
-                    throw new RuntimeException(
-                        name + ".getBatchOfResults(): " +
-                        "getResponse returned null");
+                    throw new LDAPException( null, LDAPException.LDAP_TIMEOUT );
                 }
             } catch(LDAPException e) { // network error
                 // ?? Shouldn't exception be returned to application????
