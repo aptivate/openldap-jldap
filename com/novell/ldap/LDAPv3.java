@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPv3.java,v 1.5 2000/08/28 22:19:00 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPv3.java,v 1.6 2000/09/13 20:17:58 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -17,14 +17,19 @@ package com.novell.ldap;
 
 import java.util.*;
  
-/**
+/*
  * 4.29 public interface LDAPv3
  *                     extends LDAPv2
+ */
+ 
+/**
  *
- *  LDAPv3 extends LDAPv2 by adding support for features of version 3 of
- *  the LDAP protocol. LDAPConnection implements at least LDAPv2, and may
- *  also implement LDAPv3. Applications can test for support of these
- *  protocol levels in a given package with the instanceof operator.
+ *  Extends LDAPv2 by adding support for features of version 3 of
+ *  the LDAP protocol. 
+ *
+ *  <p> The LDAPConnection class implements the LDAPv2 interface and the
+ *  LDAPv3 interface. Applications can test for support of these
+ *  protocol levels in a given package with the instanceof operator.</p>
  */
 public interface LDAPv3 extends LDAPv2 {
 
@@ -35,36 +40,42 @@ public interface LDAPv3 extends LDAPv2 {
    public int SERVERCONTROLS  = 0;
    public int CLIENTCONTROLS  = 1;
 
+  /**
+   * Used with search instead of an attribute list to indicate that no attributes
+   * are to be returned.
+   */
 	public String NO_ATTRS = "1.1"; // from rfc 2251, sec 4.5.1
 
 
    /*
-    * 4.29.1 bind
+    * 4.40.1 bind
     */
 
    /**
+    *
     * Authenticates to the LDAP server (that the object is currently
-    * connected to) using the specified name and password, with the
-    * specified LDAP protocol version. If the server does not support the
-    * requested protocol version, an exception is thrown.  If the object
-    * has been disconnected from an LDAP server, this method attempts to
-    * reconnect to the server. If the object had already authenticated, the
-    * old authentication is discarded.
+    * connected to) using the specified name, password, and LDAP version.  
     *
-    * Parameters are:
+    * <p>If the object has been disconnected from an LDAP server,
+    * this method attempts to reconnect to the server. If the object
+    * has already authenticated, the old authentication is discarded.</p>
     *
-    *  version        LDAP protocol version requested: currently 2 or
-    *                  3.
+    *  @param version  The version of the LDAP protocol to use 
+    *                  in the bind, either 2 or 3. 
+    *<br><br>
+    *  @param dn      If non-null and non-empty, specifies that the
+    *                 connection and all operations through it should
+    *                 be authenticated with dn as the distinguished
+    *                 name.
+    *<br><br>
+    *  @param passwd  If non-null and non-empty, specifies that the
+    *                 connection and all operations through it should
+    *                 be authenticated with dn as the distinguished
+    *                 name and passwd as password.
     *
-    *  dn              If non-null and non-empty, specifies that the
-    *                  connection and all operations through it should
-    *                  be authenticated with dn as the distinguished
-    *                  name.
+    *  @exception LDAPException A general exception which includes an error 
+    *  message and an LDAP error code.
     *
-    *  passwd         If non-null and non-empty, specifies that the
-    *                  connection and all operations through it should
-    *                  be authenticated with dn as the distinguished
-    *                  name and passwd as password.
     */
    public void bind(int version,
                     String dn,
@@ -73,27 +84,28 @@ public interface LDAPv3 extends LDAPv2 {
 
    /**
     * Authenticates to the LDAP server (that the object is currently
-    * connected to) using the specified name and of a specified set of
-    * mechanisms. If none of the requested SASL mechanisms is available, an
+    * connected to) using the specified name and the specified set of
+    * mechanisms. 
+    *
+    * <p>If none of the requested SASL mechanisms is available, an
     * exception is thrown.  If the object has been disconnected from an
     * LDAP server, this method attempts to reconnect to the server. If the
     * object had already authenticated, the old authentication is
     * discarded. If mechanisms is null, or if the first version of the
     * method is called, the LDAP server will be interrogated for its
     * supportedSaslMechanisms attribute of its root DSE. See RFC 2251 for a
-    * discussion of the SASL classes.
+    * discussion of the SASL classes. </p>
     *
-    * Parameters are:
     *
-    *  dn              If non-null and non-empty, specifies that the
+    *  @param dn       If non-null and non-empty, specifies that the
     *                  connection and all operations through it should
     *                  be authenticated with dn as the distinguished
     *                  name.
-    *
-    *  props          Optional qualifiers for the authentication
-    *                  session, as defined in RFC 2251.
-    *
-    *  cbh            A class which may be called by the Mechanism
+    *<br><br>
+    *  @param props    The optional qualifiers for the authentication
+    *                  session.
+    *<br><br>
+    *  @param cbh      A class which may be called by the Mechanism
     *                  Driver to obtain additional information required,
     *                  such as additional credentials.
     */
@@ -104,30 +116,30 @@ public interface LDAPv3 extends LDAPv2 {
 
    /**
     * Authenticates to the LDAP server (that the object is currently
-    * connected to) using the specified name and of a specified set of
-    * mechanisms. If none of the requested SASL mechanisms is available, an
+    * connected to) using the specified name and the specified set of
+    * mechanisms. 
+    *
+    * <p>If none of the requested SASL mechanisms is available, an
     * exception is thrown.  If the object has been disconnected from an
     * LDAP server, this method attempts to reconnect to the server. If the
     * object had already authenticated, the old authentication is
     * discarded. If mechanisms is null, or if the first version of the
     * method is called, the LDAP server will be interrogated for its
     * supportedSaslMechanisms attribute of its root DSE. See RFC 2251 for a
-    * discussion of the SASL classes.
+    * discussion of the SASL classes. </p>
     *
-    * Parameters are:
-    *
-    *  dn              If non-null and non-empty, specifies that the
+    *  @param dn       If non-null and non-empty, specifies that the
     *                  connection and all operations through it should
     *                  be authenticated with dn as the distinguished
     *                  name.
-    *
-    *  mechanisms     An array of IANA-registered SASL mechanisms which
-    *                  the client is willing to use for authentication.
-    *
-    *  props          Optional qualifiers for the authentication
-    *                  session, as defined in RFC 2251.
-    *
-    *  cbh            A class which may be called by the Mechanism
+    *<br><br>
+    *  @param mechanisms    An array of IANA-registered SASL mechanisms which
+    *                       the client is willing to use for authentication.
+    *<br><br>
+    *  @param props    The optional qualifiers for the authentication
+    *                  session.
+    *<br><br>
+    *  @param cbh      A class which may be called by the Mechanism
     *                  Driver to obtain additional information required,
     *                  such as additional credentials.
     */
@@ -138,51 +150,55 @@ public interface LDAPv3 extends LDAPv2 {
                     throws LDAPException;
 
    /*
-    * 4.29.2 connect
+    * 4.40.2 connect
     */
 
    /**
-    * Connects to the specified host and port and uses the specified DN and
-    * password to authenticate to the server, with the specified LDAP
-    * protocol version. If the server does not support the requested
-    * protocol version, an exception is thrown. If this LDAPConnection
-    * object represents an open connection, the connection is closed first
-    * before the new connection is opened. This is equivalent to
-    * connect(host, port) followed by bind(version, dn, passwd).
     *
-    * Parameters are:
+    *  Connects to the specified host and port, using the specified name,
+    *  password, and LDAP version. 
     *
-    *  version        LDAP protocol version requested: currently 2 or
-    *                  3.
+    *  <p>If this LDAPConnection object represents an open connection, the
+    *  connection is colosed first before the new connection is opened. 
+    *  This is equivalent to connect (host, port) followed by bind (dn, 
+    *  passwd).</p>
     *
-    *  host           Contains a hostname or dotted string representing
-    *                  the IP address of a host running an LDAP server
-    *                  to connect to. Alternatively, it may contain a
-    *                  list of host names, space-delimited.  Each host
-    *                  name may include a trailing colon and port
-    *                  number.  In the case where more than one host
-    *                  name is specified, each host name in turn will be
-    *                  contacted until a connection can be established.
-    *                  Examples:
+    *  <p>When more than one host name is specified, each host is contacted
+    *  in turn until a connection can be established.</p>
     *
-    *     "directory.knowledge.com"
-    *     "199.254.1.2"
-    *     "directory.knowledge.com:1050 people.catalog.com 199.254.1.2"
+    *  <p>If the server does not support the requested protocol version, 
+    *  an exception is thrown.</p> 
     *
-    *  port           Contains the TCP or UDP port number to connect to
-    *                  or contact. The default LDAP port is 389. "port"
-    *                  is ignored for any host name which includes a
-    *                  colon and port number.
+    *  @param version  The LDAP protocol version, either 2 or 3.<br><br>
     *
-    *  dn             If non-null and non-empty, specifies that the
-    *                  connection and all operations through it should
-    *                  be authenticated with dn as the distinguished
-    *                  name.
+    *  @param host A host name or a dotted string representing the IP address
+    *              of a host running an LDAP server to connect to. It may also
+    *              contain a list of host names, space-delimited. Each host 
+    *              name can include a trailing colon and port number. Examples:
+    *<ul>
+    *              <li> directory.knowledge.com </li>
+    *              <li> 199.254.1.2 </li>
+    *              <li> directory.knowledge.com:1050 people.catalog.com 199.254.1.2
+    *                    </li></ul>
+    *<br>
     *
-    *  passwd         If non-null and non-empty, specifies that the
-    *                  connection and all operations through it should
-    *                  be authenticated with dn as the distinguished
-    *                  name and passwd as password.
+    *  @param port The TCP or UDP port number to connect to or contact. 
+    *              The default LDAP port is 389. The port parameter is 
+    *              ignored for any host hame which includes a colon and 
+    *              port number.<br><br>
+    *
+    *  @param dn   If non-null and non-empty, specifies that the 
+    *              connection and all operations through it should be 
+    *              authenticated with the DN as the distinguished name.<br><br>
+    *
+    *  @param passwd   If non-null and non-empty, specifies that the
+    *                  connection and all operations through it should 
+    *                  be authenticated with the dn as the distinguished 
+    *                  name and passwd as the password.
+    *
+    *  @exception LDAPException A general exception which includes an error 
+    *  message and an LDAP error code.
+    *
     */
    public void connect(int version,
                        String host,
@@ -192,62 +208,65 @@ public interface LDAPv3 extends LDAPv2 {
                        throws LDAPException;
 
    /*
-    * 4.29.3 extendedOperation
+    * 4.40.3 extendedOperation
     */
 
    /**
-    * Provides a means to access extended, non-mandatory operations offered
-    * by a particular LDAP version 3 compliant server.
     *
-    * Returns an operation-specific object, containing an ID and an Octet
-    * String or BER-encoded value(s).
+    * Provides a synchronous means to access extended, non-mandatory  
+    * operations offered by a particular LDAPv3 compliant server.
     *
-    *  Note that the return value is different from that defined int the
-    *  current draft.  The draft will be changed to match what we have
-    *  here.
+    * @param op  The object which contains (1) an identifier of an extended
+    *            operation which should be recognized by the particular LDAP 
+    *            server this client is connected to and (2)an operation-specific
+    *            sequence of octet strings or BER-encoded values. 
     *
-    * Parameters are:
+    * @return An operation-specific object, containing an ID and an octet string
+    * or BER-encoded values.
     *
-    *  op             Object which contains an identifier of the
-    *                  extended operation, which should be one
-    *                  recognized by the particular server this client
-    *                  is connected to, and  operation-specific sequence
-    *                  of Octet String or BER-encoded value(s).
+    * @exception LDAPException A general exception which includes an error 
+    *  message and an LDAP error code.
     */
    public LDAPExtendedResponse extendedOperation(
                                    LDAPExtendedOperation op )
                                    throws LDAPException;
 
    /*
-    * 4.29.4 getResponseControls
+    * 4.40.4 getResponseControls
     */
 
-   /**
-    * Returns the latest Server Controls returned by a Directory Server
-    * with a response to an LDAP request from the current thread, or null
-    * if the latest response contained no Server Controls.
+    /**
+    *
+    *  Returns the latest server controls which an LDAP server returned with 
+    *  its latest response to an LDAP request from the current thread or null 
+    *  it the latest response contains no server controls.
+    *
+    *  @return The server controls from the latest response or null if the 
+    *  response contains no server controls.
     */
    public LDAPControl[] getResponseControls();
 
    /*
-    * 4.29.5 rename
+    * 4.40.5 rename
     */
 
    /**
-    * Renames an existing entry in the directory, possibly repositioning it
-    * in the directory tree.
+    * Synchronously renames an existing entry in the directory, possibly
+    * repositioning the entry in the directory tree.
     *
-    * Parameters are:
+    *  @param dn             The current distinguished name of the entry.
+    *<br><br>
+    *  @param newRdn         The new relative distinguished name for the entry.
+    *<br><br>
+    *  @param newParentdn    The distinguished name of an existing entry which 
+    *                        is to be the new parent of the entry.
+    *<br><br>
+    *  @param deleteOldRdn   If true, the old name is not retained as an
+    *                        attribute value. If false, the old name is
+    *                        retained as an attribute value.
     *
-    *  dn             Current distinguished name of the entry.
-    *
-    *  newRdn         New relative distinguished name for the entry.
-    *
-    *  newParentdn    Distinguished name of the existing entry which is
-    *                  to be the new parent of the entry.
-    *
-    *  deleteOldRdn   If true, the old name is not retained as an
-    *                  attribute value.
+    * @exception LDAPException A general exception which includes an error 
+    *                          message and an LDAP error code.
     */
    public void rename(String dn,
                       String newRdn,
@@ -256,22 +275,26 @@ public interface LDAPv3 extends LDAPv2 {
                       throws LDAPException;
 
    /**
-    * Renames an existing entry in the directory, possibly repositioning it
-    * in the directory tree.
     *
-    * Parameters are:
+    * Synchronously renames an existing entry in the directory, using the 
+    * specified constraints, and possibly repositioning the entry in the 
+    * directory tree.
     *
-    *  dn             Current distinguished name of the entry.
+    *  @param dn             The current distinguished name of the entry.
+    *<br><br>
+    *  @param newRdn         The new relative distinguished name for the entry.
+    *<br><br>
+    *  @param newParentdn    The distinguished name of an existing entry which 
+    *                        is to be the new parent of the entry.
+    *<br><br>
+    *  @param deleteOldRdn   If true, the old name is not retained as an
+    *                        attribute value. If false, the old name is
+    *                        retained as an attribute value.
+    *<br><br>
+    *  @param cons           The constraints specific to the operation.
     *
-    *  newRdn         New relative distinguished name for the entry.
-    *
-    *  newParentdn    Distinguished name of the existing entry which is
-    *                  to be the new parent of the entry.
-    *
-    *  deleteOldRdn   If true, the old name is not retained as an
-    *                  attribute value.
-    *
-    *  cons           Constraints specific to the operation.
+    * @exception LDAPException A general exception which includes an error 
+    * message and an LDAP error code.
     */
    public void rename(String dn,
                       String newRdn,

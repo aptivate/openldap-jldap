@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPv2.java,v 1.6 2000/09/13 16:15:40 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPv2.java,v 1.7 2000/09/14 15:29:31 judy Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -49,7 +49,7 @@ public interface LDAPv2 {
   */
    public int SCOPE_SUB    = 2;
 
-   /**
+  /**
    * An identifier that specifies that aliases are never dereferenced.
    *
    * <p> LDAP_DEREF_NEVER = 0 </p>
@@ -58,7 +58,7 @@ public interface LDAPv2 {
    */
    public int LDAP_DEREF_NEVER      = 0; // default
    
-   /**
+  /**
    * An identifier that specifies that aliases are dereferenced when
    * searching the entries beneath the starting point but not when 
    * searching for the starting entry.
@@ -69,7 +69,7 @@ public interface LDAPv2 {
    */
    public int LDAP_DEREF_SEARCHING  = 1;
    
-   /**
+  /**
    * An identifier that specifies that aliases are dereferenced when
    * searching for the starting entry but are not dereferenced when
    * searching the entries beneath the starting point.
