@@ -215,7 +215,25 @@
 	<!-- =================================================================== -->
 	<!-- build Sample classes                                                -->
 	<!-- =================================================================== -->
-	<target name="samples" depends="debug"/>
+    <target name="samples" depends="debug">
+	    <mkdir dir="${build.samples}"/>
+
+        <echo message="DEBUG compile samples" />
+		<ant dir="${basedir}/samples/" target="all">
+			<property name="build" value="${build.samples}"/>
+			<property name="lib" value="${lib.debug}"/>
+			<property name="debug" value="on"/>
+			<property name="optimize" value="off"/>
+		</ant>
+
+        <echo message="DEBUG compile samples/extensions" />
+		<ant dir="${basedir}/samples/extensions/" target="all">
+			<property name="build" value="${build.samples}/extensions"/>
+			<property name="lib" value="${lib.debug}"/>
+			<property name="debug" value="on"/>
+			<property name="optimize" value="off"/>
+		</ant>
+	</target>
 
     <!-- =================================================================== -->
     <!-- create javadoc for IETF ldap classes                                --> 
