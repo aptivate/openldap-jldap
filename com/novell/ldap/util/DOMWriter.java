@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: DOMWriter.java,v 1.7 2002/11/11 23:08:45 $
+ * $Novell: DOMWriter.java,v 1.8 2002/11/12 23:21:05 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -25,7 +25,7 @@ import java.io.IOException;
 import java.util.Iterator;
 
 /**
- * Writes LDAPMessages into a DOM structure for DSML batch requests and
+ * Writes LDAPMessages into a DOM structure as DSML batch requests and
  * batch responses.
  *
  * @see DOMReader
@@ -388,7 +388,7 @@ public class DOMWriter implements LDAPWriter
     }
 
     static String findRequestID(LDAPMessage message) {
-        String tag= null;//= message.getTag();
+        String tag = message.getTag();
         if (tag == null){
             tag = message.getMessageID() + "";
         }
