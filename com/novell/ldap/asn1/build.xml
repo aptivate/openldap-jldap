@@ -1,0 +1,38 @@
+<!-- ======================================================================= -->
+<!-- ORG.IETF.ASN1 build file                                                -->
+<!-- ======================================================================= -->
+<project name="ASN1 Classes" default="all" basedir=".">
+
+	<property name="src.dir" value="${basedir}"/>
+	<property name="classes.dir" value="../../../../classes"/>
+	<property name="classpath" value=""/>
+	<property name="optimize" value="on"/>
+
+
+    <!-- =================================================================== -->
+    <!-- initialization                                                      -->
+    <!-- =================================================================== -->
+    <target name="init">
+        <tstamp/>
+		<mkdir dir="${classes.dir}"/>
+    </target>
+
+    <!-- =================================================================== -->
+    <!-- all task (default                                                   -->
+    <!-- =================================================================== -->
+    <target name="all" depends="init, compile"/>
+
+    <!-- =================================================================== -->
+    <!-- compile java files                                                  -->
+    <!-- =================================================================== -->
+    <target name="compile" depends="init">
+        <javac srcdir="${src.dir}"
+                destdir="${classes.dir}"
+                classpath="${classpath}"
+                debug="on"
+                deprecation="off"
+                optimize="${optimize}">
+            <include name="*.java"/>
+        </javac>
+    </target>
+</project>
