@@ -91,4 +91,20 @@ public class LDAPSearchResult extends LDAPMessage
         }            
         return entry;
     }
+
+    /**
+     * Return a String representation of this object.
+     *
+     * @return a String representing this object.
+     */
+    public String toString()
+    {
+        String str;
+        if( entry == null) {
+            str = super.toString();
+        } else {
+            str = entry.toString();
+        }
+        return str;
+    }
 }
