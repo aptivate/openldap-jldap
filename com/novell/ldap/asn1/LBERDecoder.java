@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/LBERDecoder.java,v 1.10 2001/04/06 18:06:02 javed Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/LBERDecoder.java,v 1.11 2001/06/08 20:41:19 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -54,9 +54,9 @@ import java.io.*;
 public class LBERDecoder implements ASN1Decoder
 {
     //used to speed up decode, so it doesn't need to recreate an identifier every time
-    //instead just reset is called
-    private static ASN1Identifier   asn1ID  = new ASN1Identifier();
-    private static ASN1Length       asn1Len = new ASN1Length();
+    //instead just reset is called CANNOT be static for multiple connections
+    private ASN1Identifier   asn1ID  = new ASN1Identifier();
+    private ASN1Length       asn1Len = new ASN1Length();
 
 
    /* Generic decode routines

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/rfc2251/RfcBindRequest.java,v 1.10 2001/03/01 00:30:15 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/rfc2251/RfcBindRequest.java,v 1.11 2001/03/01 18:11:25 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -24,6 +24,14 @@ import com.novell.ldap.*;
  *               authentication          AuthenticationChoice }
  */
 public class RfcBindRequest extends ASN1Sequence implements RfcRequest {
+
+   /**
+    * ID is added for Optimization. ID needs only be one Value for every instance
+    * Thus we create it only once.
+    */
+    private static final ASN1Identifier ID =
+        new ASN1Identifier(ASN1Identifier.APPLICATION, true, RfcProtocolOp.BIND_REQUEST);
+
 
 	//*************************************************************************
 	// Constructors for BindRequest
@@ -104,8 +112,7 @@ public class RfcBindRequest extends ASN1Sequence implements RfcRequest {
 	 */
 	public ASN1Identifier getIdentifier()
 	{
-		return new ASN1Identifier(ASN1Identifier.APPLICATION, true,
-			                       RfcProtocolOp.BIND_REQUEST);
+		return ID; // new ASN1Identifier(ASN1Identifier.APPLICATION, true, RfcProtocolOp.BIND_REQUEST);
 	}
 
     public RfcRequest dupRequest(String base, String filter, boolean request)
