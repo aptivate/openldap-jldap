@@ -32,7 +32,6 @@ import com.novell.ldap.LDAPEntry;
 import com.novell.ldap.LDAPException;
 import com.novell.ldap.LDAPModification;
 import com.novell.ldap.ldif_dsml.LDAPOperation;
-import com.novell.ldap.ldif_dsml.ModInfo;
 import com.novell.ldap.ldif_dsml.Base64Encoder;
 
 /**
@@ -254,7 +253,7 @@ public class LDIFWriter extends LDIF implements LDAPExport {
         this.dn = change.getDN();
         this.currentControls = change.getControls();
         LDAPModification[] mods;
-        ModInfo modInfo;
+        String[] modInfo;
 
         if ( change instanceof LDAPAdd) {
 
@@ -447,8 +446,8 @@ public class LDIFWriter extends LDIF implements LDAPExport {
 
             modOp = mods[i].getOp();
             attr =  mods[i].getAttribute();
-            attrName = attr.getName().trim();
-            attrValue = attr.getStringValue().trim();
+            attrName = attr.getName();
+            attrValue = attr.getStringValue();
 
             switch ( modOp )  {
                 case LDAPModification.ADD:
@@ -493,7 +492,7 @@ public class LDIFWriter extends LDIF implements LDAPExport {
      *
      * @see ModInfo
      */
-    public void toRecordLines( String dn, ModInfo modInfo )
+    public void toRecordLines( String dn, String[] modInfo )
     throws UnsupportedEncodingException {
 
         toRecordLines( dn, modInfo, null );
@@ -511,7 +510,7 @@ public class LDIFWriter extends LDIF implements LDAPExport {
      *
      * @see ModInfo
      */
-    public void toRecordLines( String dn, ModInfo modInfo,
+    public void toRecordLines( String dn, String[] modInfo,
     LDAPControl[] ctrls ) throws UnsupportedEncodingException {
 
         String tempString;
@@ -527,28 +526,28 @@ public class LDIFWriter extends LDIF implements LDAPExport {
         this.rFields.add(new String("changetype: moddn"));
 
         // save new RDN
-        if ( isSafeString(modInfo.newRDN) ) {
-            this.rFields.add(new String("newrdn:" + modInfo.newRDN));
+        if ( isSafeString(modInfo[0]) ) {
+            this.rFields.add(new String("newrdn:" + modInfo[0]));
         }
         else {
             // base64 encod newRDN
-            tempString = base64Encoder.encoder(modInfo.newRDN);
+            tempString = base64Encoder.encoder(modInfo[0]);
             // put newRDN into record fields with a trailing space
             this.rFields.add(new String("newrdn:" + tempString + " "));
         }
 
         // save deleteOldRDN
-        this.rFields.add(new String("deleteoldrdn:" + modInfo.deleteOldRDN));
+        this.rFields.add(new String("deleteoldrdn:" + modInfo[1]));
 
         // save newSuperior
-        if ( ((modInfo.newSuperior).length()) != 0) {
+        if ( ((modInfo[2]).length()) != 0) {
 
-            if ( isSafeString(modInfo.newSuperior) ) {
-                this.rFields.add(new String("newsuperior:" + modInfo.newSuperior));
+            if ( isSafeString(modInfo[2]) ) {
+                this.rFields.add(new String("newsuperior:" + modInfo[2]));
             }
             else {
                 // base64 encod newRDN
-                tempString = base64Encoder.encoder(modInfo.newSuperior);
+                tempString = base64Encoder.encoder(modInfo[2]);
                 // put newSuperior into record fields with a trailing space
                 this.rFields.add(new String("newsuperior:" + tempString));
             }
@@ -716,7 +715,7 @@ public class LDIFWriter extends LDIF implements LDAPExport {
             criticality = ctrls[i].isCritical();
             byteValue = ctrls[i].getValue();
 
-            if ( byteValue.length > 0 ) {
+            if ( (byteValue != null) && (byteValue.length > 0) ) {
                 //controlValue = new String( byteValue, "UTF8");
 
                 // always encode control value(s) ?
@@ -745,15 +744,17 @@ public class LDIFWriter extends LDIF implements LDAPExport {
     public void addAttrValueToRecordFields(String attrName, String attrSpec)
     throws UnsupportedEncodingException {
 
-        if ( !isSafeString(attrSpec) ) {
-            // IF attrSpec contains NON-SAFE-INIT-CHAR or NON-SAFE-CHAR,
-            // it has to be base64 encoded
-            attrSpec = base64Encoder.encoder(attrSpec);
-            // base64 encoded attribute spec ended with white spavce
-            this.rFields.add( new String(attrName + ":: " + attrSpec + " " ));
-        }
-        else {
-            this.rFields.add( new String(attrName + ": " + attrSpec ));
+        if (attrSpec != null) {
+            if ( !isSafeString(attrSpec) ) {
+                // IF attrSpec contains NON-SAFE-INIT-CHAR or NON-SAFE-CHAR,
+                // it has to be base64 encoded
+                attrSpec = base64Encoder.encoder(attrSpec);
+                // base64 encoded attribute spec ended with white spavce
+                this.rFields.add( new String(attrName + ":: " + attrSpec + " " ));
+            }
+            else {
+                this.rFields.add( new String(attrName + ": " + attrSpec ));
+            }
         }
 
     }
