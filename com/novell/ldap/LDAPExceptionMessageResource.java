@@ -39,7 +39,7 @@ public class LDAPExceptionMessageResource extends java.util.ListResourceBundle {
       {"UNEQUAL_LENGTHS","Length of attribute Name array does not equal length of Flags array"},
       {"COMMUNICATE_ERROR","Communication error: {0}"},
       {"MAXHOPS_EXCEEDED","Max hops exceeded"},
-      {"IMPROPER_REFERRAL","Referral doesnt make sense for command, {0}"},
+      {"IMPROPER_REFERRAL","Referral does not make sense for command, {0}"},
       {"NOT_A_RULESCHEMA","Schema element is not an LDAPMatchingRuleSchema object"},
       {"NOT_A_RULEUSESHCEMA","Schema element is not an LDAPMatchingRuleUseSchema object"}
   // END OF MATERIAL TO LOCALIZE
