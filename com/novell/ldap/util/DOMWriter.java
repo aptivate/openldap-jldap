@@ -22,6 +22,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.Iterator;
 
 /**
@@ -50,7 +51,8 @@ public class DOMWriter implements LDAPWriter
      * @throws ParserConfigurationException
      *  Occurs if a parser could not be found or is misconfigured.
      */
-    public DOMWriter() throws ParserConfigurationException {
+    public DOMWriter() throws ParserConfigurationException
+    {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
         doc = builder.newDocument();
@@ -62,7 +64,8 @@ public class DOMWriter implements LDAPWriter
      * supported.
      *  @return Version of DSML being used.
      */
-    public String getVersion() {
+    public String getVersion()
+    {
         return "2.0";
     }
 
@@ -71,14 +74,16 @@ public class DOMWriter implements LDAPWriter
      * @return true if the root node of the DOM is a batchRequest and false
      * otherwise.
      */
-    public boolean isRequest() {
+    public boolean isRequest()
+    {
         return root.getNodeName().equals("batchRequest");
     }
 
     /**
      * This method is not implemented and is silently ignored.
      */
-    public void writeComments(String comments) throws IOException {
+    public void writeComments(String comments) throws IOException
+    {
         return;
     }
 
@@ -194,21 +199,7 @@ public class DOMWriter implements LDAPWriter
         while (iterator.hasNext()){
             LDAPAttribute attr = (LDAPAttribute)iterator.next();
             Element attribute = doc.createElement("attr");
-            attribute.setAttribute("name", attr.getName());
-
-            String values[] = attr.getStringValueArray();
-            byte bytevalues[][] = attr.getByteValueArray();
-            for(int i=0; i<values.length; i++){
-                Element value = doc.createElement("value");
-                if (Base64.isValidUTF8(bytevalues[i], false)){
-                    value.appendChild(doc.createTextNode(values[i]));
-                } else {
-                    value.setAttribute("xsi:type", "base64Binary");
-                    value.appendChild(doc.createTextNode(
-                            Base64.encode(bytevalues[i])));
-                }
-                attribute.appendChild(value);
-            }
+            writeAttribute(attribute, attr);
             e.appendChild(attribute);
         }
         if (controls != null) {
@@ -217,6 +208,25 @@ public class DOMWriter implements LDAPWriter
         searchNode.appendChild( e);
         return e;
     }
+
+    private void writeAttribute(Element attribute, LDAPAttribute attr)
+    {
+         attribute.setAttribute("name", attr.getName());
+
+         String values[] = attr.getStringValueArray();
+         byte bytevalues[][] = attr.getByteValueArray();
+         for(int i=0; i<values.length; i++){
+             Element value = doc.createElement("value");
+             if (Base64.isValidUTF8(bytevalues[i], false)){
+                 value.appendChild(doc.createTextNode(values[i]));
+             } else {
+                 value.setAttribute("xsi:type", "base64Binary");
+                 value.appendChild(doc.createTextNode(
+                         Base64.encode(bytevalues[i])));
+             }
+             attribute.appendChild(value);
+         }
+     }
 
     /**
      * Utility method to convert an LDAPMessage to a DSML DOM element.
@@ -231,19 +241,173 @@ public class DOMWriter implements LDAPWriter
         switch (message.getType()) {
             //requests:
             case LDAPMessage.BIND_REQUEST:
+                e = doc.createElement("authRequest");
+                e.setAttribute("principle", ((LDAPBindRequest)message).getAuthenticationDN());
+                break;
             case LDAPMessage.UNBIND_REQUEST:
-            case LDAPMessage.SEARCH_REQUEST:
-            case LDAPMessage.BIND_RESPONSE:
-            case LDAPMessage.MODIFY_REQUEST:
-            case LDAPMessage.ADD_REQUEST:
-            case LDAPMessage.DEL_REQUEST:
-            case LDAPMessage.MODIFY_RDN_REQUEST:
-            case LDAPMessage.COMPARE_REQUEST:
-            case LDAPMessage.ABANDON_REQUEST:
-            case LDAPMessage.EXTENDED_REQUEST:
                 throw new java.lang.UnsupportedOperationException(
-                        "Writing of Request messages is not yet supported");
+                    "Writing of an unbind request is not currently supported");
+            case LDAPMessage.SEARCH_REQUEST:{
+                e = doc.createElement("searchRequest");
+                LDAPSearchRequest sr = (LDAPSearchRequest) message;
+                e.setAttribute("dn", sr.getDN());
 
+                //filter
+                Element filter = doc.createElement("filter");
+                writeFilter(filter, sr.getSearchFilter());
+                e.appendChild(filter);
+
+                //attributes
+                Element attributes = doc.createElement("attributes");
+                String attrNames[] = sr.getAttributes();
+                for (int i=0; i< attrNames.length; i++){
+                    Element attribute = doc.createElement("attribute");
+                    attribute.setAttribute("name", attrNames[i]);
+                    attributes.appendChild(attribute);
+                }
+                e.appendChild(attributes);
+
+                //scope
+                int temp = sr.getScope();
+                if (temp==LDAPConnection.SCOPE_BASE){
+                    e.setAttribute("scope", "baseObject");
+                } else if (temp==LDAPConnection.SCOPE_ONE){
+                    e.setAttribute("scope", "singleLevel");
+                } else if (temp==LDAPConnection.SCOPE_SUB){
+                    e.setAttribute("scope", "wholeSubtree");
+                }
+
+                //dereference aliases
+                temp = sr.getDereference();
+                if (temp==LDAPSearchConstraints.DEREF_NEVER){
+                    e.setAttribute("derefAliases", "neverDerefAliases");
+                } else if (temp==LDAPSearchConstraints.DEREF_SEARCHING){
+                    e.setAttribute("derefAliases", "derefInSearching");
+                } else if (temp==LDAPSearchConstraints.DEREF_FINDING){
+                    e.setAttribute("derefAliases", "derefFindingBaseObj");
+                } else if (temp==LDAPSearchConstraints.DEREF_ALWAYS){
+                    e.setAttribute("derefAliases", "derefAlways");
+                }
+
+                //sizeLimit 0 is default
+                temp = sr.getMaxResults();
+                if (temp != 0){
+                    e.setAttribute("sizeLimit", Integer.toString(temp));
+                }
+
+                //timeLimit 0 is default
+                temp = sr.getServerTimeLimit();
+                if (temp != 0){
+                    e.setAttribute("timeLimit", Integer.toString(temp));
+                }
+
+                //typesOnly false is default
+                if ( sr.isTypesOnly() )
+                {
+                    e.setAttribute("typesOnly", "true");
+                }
+                break;
+            }
+            case LDAPMessage.MODIFY_REQUEST:{
+                e = doc.createElement("modifyRequest");
+                LDAPModifyRequest modreq= (LDAPModifyRequest)message;
+                e.setAttribute("dn", modreq.getDN());
+
+                LDAPModification[] mods = modreq.getModifications();
+                for(int i=0;i<mods.length; i++){
+                    Element m = doc.createElement("modification");
+                    LDAPAttribute attr = mods[i].getAttribute();
+                    if (mods[i].getOp() == LDAPModification.ADD){
+                        m.setAttribute("operation", "add");
+                    } else if (mods[i].getOp() == LDAPModification.DELETE){
+                        m.setAttribute("operation", "delete");
+                    } else if (mods[i].getOp() == LDAPModification.REPLACE){
+                        m.setAttribute("operation", "replace");
+                    }
+                    writeAttribute(m, attr);
+                    e.appendChild(m);
+                }
+                break;
+            }
+            case LDAPMessage.ADD_REQUEST:{
+                e = doc.createElement("addRequest");
+                LDAPAddRequest add = (LDAPAddRequest)message;
+                LDAPEntry entry = add.getEntry();
+                e.setAttribute("dn", entry.getDN());
+                Iterator attrs = entry.getAttributeSet().iterator();
+                while(attrs.hasNext()){
+                    Element a = doc.createElement("attr");
+                    writeAttribute(a, (LDAPAttribute)attrs.next());
+                    e.appendChild(a);
+                }
+                break;
+            }
+            case LDAPMessage.DEL_REQUEST:
+                e = doc.createElement("delRequest");
+                e.setAttribute("dn", ((LDAPDeleteRequest)message).getDN());
+                break;
+            case LDAPMessage.MODIFY_RDN_REQUEST:{
+                e = doc.createElement("modDNRequest");
+                LDAPModifyDNRequest moddn = (LDAPModifyDNRequest)message;
+                e.setAttribute("dn", moddn.getDN());
+                e.setAttribute("newrdn", moddn.getNewRDN());
+                e.setAttribute("deleteoldrdn", moddn.getDeleteOldRDN()+"");
+                String temp = moddn.getParentDN();
+                if (temp != null && temp.length() >0){
+                    e.setAttribute("newSuperior", temp);
+                }
+                break;
+            }
+            case LDAPMessage.COMPARE_REQUEST: {
+                e = doc.createElement("compareRequest");
+                LDAPCompareRequest comp = (LDAPCompareRequest) message;
+                e.setAttribute("dn", comp.getDN());
+
+                Element assertion = doc.createElement("assertion");
+                assertion.setAttribute("name", comp.getAttributeDescription());
+                e.appendChild(assertion);
+
+                Element value = doc.createElement("value");
+                assertion.appendChild(value);
+
+                byte[] compareValue = comp.getAssertionValue();
+                if (Base64.isValidUTF8(compareValue, false)){
+                    try {
+                        value.appendChild(doc.createTextNode(
+                                new String(compareValue, "UTF-8")));
+                    } catch (UnsupportedEncodingException uee) {
+                        throw new RuntimeException("UTF-8 not supported by JVM:"
+                                + uee);
+                    }
+                } else {
+                    value.setNodeValue(Base64.encode(compareValue));
+                    //value.appendChild(doc.createTextNode(
+                    //        Base64.encode(compareValue)));
+                }
+                break;
+            }
+            case LDAPMessage.ABANDON_REQUEST:
+                e = doc.createElement("abandonRequest");
+                e.setAttribute("abandonID",findRequestID(message));
+                break;
+            case LDAPMessage.EXTENDED_REQUEST:{
+                e = doc.createElement("extendedRequest");
+                LDAPExtendedOperation xreq =
+                        ((LDAPExtendedRequest)message).getExtendedOperation();
+                Element reqName = doc.createElement("requestName");
+                reqName.appendChild(doc.createTextNode(xreq.getID()));
+                e.appendChild(reqName);
+
+                byte value[] = xreq.getValue();
+                if (value != null){
+                    Element reqValue = doc.createElement("requestValue");
+                    reqValue.setAttribute("xsi:type", "xsd:base64Binary");
+                    reqValue.appendChild(
+                            doc.createTextNode(Base64.encode(xreq.getValue())));
+                    e.appendChild(reqValue);
+                }
+                break;
+            }
             //Responses:
             case LDAPMessage.SEARCH_RESPONSE:
                 e = myWriteEntry( ((LDAPSearchResult)message).getEntry(),
@@ -288,6 +452,7 @@ public class DOMWriter implements LDAPWriter
             case LDAPMessage.EXTENDED_RESPONSE:
                 LDAPExtendedResponse xResp = (LDAPExtendedResponse) message;
                 e = doc.createElement("extendedResponse");
+                writeResult(e, (LDAPResponse)message);
                 Element resp = doc.createElement("responseName");
                 Text text = doc.createTextNode(xResp.getID());
                 resp.appendChild(text);
@@ -311,6 +476,139 @@ public class DOMWriter implements LDAPWriter
     }
 
     /**
+     * Common code for =, >=, <=, and ~=.
+     */
+    private void writeMatching( Element newElement, Iterator itr)
+    {
+        newElement.setAttribute("name", (String)itr.next());
+        Element valueNode = doc.createElement("value");
+        newElement.appendChild(valueNode);
+        byte[] value = (byte[])itr.next();
+        String text = byte2String(value);
+        valueNode.appendChild(doc.createTextNode(text));
+        return;
+    }
+
+    /**
+     *
+     * @param e element to add a DSML search filter component (filter or a
+     * AND, OR or NOT )
+     * @param itr
+     */
+    private void writeFilter(Element e, Iterator itr)
+    {
+        int op=-1;
+        Element newElement = null;
+        while (itr.hasNext()){
+            Object filterpart = itr.next();
+            if (filterpart instanceof Integer) {
+                op = ((Integer)filterpart).intValue();
+                switch (op){
+                    case LDAPSearchRequest.AND:
+                        newElement = doc.createElement("and");
+                        break;
+
+                    case LDAPSearchRequest.OR:
+                        newElement = doc.createElement("or");
+                        break;
+
+                    case LDAPSearchRequest.NOT:
+                        newElement = doc.createElement("not");
+                        break;
+                        
+                    case LDAPSearchRequest.EQUALITY_MATCH:
+                        newElement = doc.createElement("equalityMatch");
+                        writeMatching( newElement, itr);
+                        break;
+
+                    case LDAPSearchRequest.GREATER_OR_EQUAL:
+                        newElement = doc.createElement("greaterOrEqual");
+                        writeMatching( newElement, itr);
+                        break;
+
+                    case LDAPSearchRequest.LESS_OR_EQUAL:
+                        newElement = doc.createElement("lessOrEqual");
+                        writeMatching( newElement, itr);
+                        break;
+
+                    case LDAPSearchRequest.APPROX_MATCH:
+                        newElement = doc.createElement("approxMatch");
+                        writeMatching( newElement, itr);
+                        break;
+
+                    case LDAPSearchRequest.PRESENT:
+                        newElement = doc.createElement("present");
+                        newElement.setAttribute("name", (String)itr.next());
+                        break;
+
+                    case LDAPSearchRequest.EXTENSIBLE_MATCH:{
+                        newElement = doc.createElement("extensibleMatch");
+                        newElement.setAttribute("matchingRule",
+                                (String)itr.next());
+                        newElement.setAttribute("name",
+                                (String)itr.next());
+
+                        Element value = doc.createElement("value");
+                        value.appendChild(doc.createTextNode((String)itr.next()));
+                        newElement.appendChild(value);
+
+                        //TODO DN matching
+                        break;
+                    }
+
+                    case LDAPSearchRequest.SUBSTRINGS:{
+                        newElement = doc.createElement("substrings");
+                        newElement.setAttribute("name", (String)itr.next());
+
+                        //loop through all substrings
+                        while (itr.hasNext()){
+                            op = ((Integer)itr.next()).intValue();
+                            Element nextSubString = null;
+                            switch(op){
+                                case LDAPSearchRequest.INITIAL:
+                                    nextSubString = doc.createElement("initial");
+                                    break;
+                                case LDAPSearchRequest.ANY:
+                                    nextSubString = doc.createElement("any");
+                                    break;
+                                case LDAPSearchRequest.FINAL:
+                                    nextSubString = doc.createElement("final");
+                                    break;
+                            }
+                            String value = (String)itr.next();
+                            nextSubString.appendChild(
+                                    doc.createTextNode(value));
+                            newElement.appendChild(nextSubString);
+                        }
+                        break;
+                    }
+                }
+            } else if (filterpart instanceof Iterator){
+                //This case will occur after AND, OR and NOT
+                writeFilter(newElement, (Iterator)filterpart);
+            }
+        }
+        e.appendChild(newElement);
+        return;
+    }
+
+    private String byte2String(byte[] value)
+    {
+        String text = null;
+        if (Base64.isValidUTF8(value, false)){
+            try {
+                text = new String(value, "UTF-8");
+            } catch (UnsupportedEncodingException uee) {
+                throw new RuntimeException(
+                        "UTF-8 not supported by JVM" + uee);
+            }
+        } else {
+            text = Base64.encode(value);
+        }
+        return text;
+    }
+
+    /**
      * Writes the specified LDAPResponse into the specified element.
      * <p>Possible information written to the element is a Result code with a
      * description, a server response, and a matched DN.  Controls and referrals
@@ -318,7 +616,8 @@ public class DOMWriter implements LDAPWriter
      * @param e  Element to insert response info into.
      * @param response  Response message to write.
      */
-    private void writeResult(Element e, LDAPResponse response){
+    private void writeResult(Element e, LDAPResponse response)
+    {
 
         /* controls: */
         LDAPControl controls[] = response.getControls();
@@ -361,7 +660,8 @@ public class DOMWriter implements LDAPWriter
 
     }
 
-    private void writeControls(Element e, LDAPControl[] controls) {
+    private void writeControls(Element e, LDAPControl[] controls)
+    {
         for (int i=0; i< controls.length; i++){
             Element el = doc.createElement("control");
             el.setAttribute("NumericOID", controls[i].getID());
@@ -511,7 +811,8 @@ public class DOMWriter implements LDAPWriter
         return;
     }
 
-    static String findRequestID(LDAPMessage message) {
+    static String findRequestID(LDAPMessage message)
+    {
         String tag = message.getTag();
         if (tag == null){
             tag = message.getMessageID() + "";
@@ -524,12 +825,14 @@ public class DOMWriter implements LDAPWriter
      * writer.
      * @return A batchRequest or batchResponse element.
      */
-    public Element getRootElement() {
+    public Element getRootElement()
+    {
         return root;
     }
 
     public void finish() throws IOException
     {
+        doc.appendChild(root);
         return;
     }
 }
