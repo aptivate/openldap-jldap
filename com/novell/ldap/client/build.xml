@@ -13,7 +13,11 @@
  ******************************************************************************
 -->
 <!-- ======================================================================= -->
-<!-- COM.NOVELL.LDAP.CLIENT build file                                                -->
+<!-- COM.NOVELL.LDAP.CLIENT build file                                       -->
+<!--                              											 -->
+<!-- Note: This makefile works only if other packages are already built.     -->
+<!--       It only does a debug build of files in com.novell.ldap.client     -->
+<!--       It is typically used when checking for compile errors or debugging-->
 <!-- ======================================================================= -->
 <project name="LDAP.CLIENT" default="compile" basedir=".">
 	<!-- Targets                                                             -->
@@ -37,11 +41,13 @@
 
 
     <!-- =================================================================== -->
-    <!-- clean class files                                                  -->
+    <!-- clean class files                                                   -->
     <!-- =================================================================== -->
     <target name="clean" depends="init">
-		<delete dir="${top}/${build}/com/novell/ldap/client" includes="*.class"/>
 		<delete file="Debug.java"/>
+		<delete>
+			<fileset dir="${top}/${build}/com/novell/ldap/client" includes="*.class"/>
+		</delete>
 	</target>
 
     <!-- =================================================================== -->
@@ -51,16 +57,21 @@
 		<mkdir dir="${top}/${build}"/>
 		<filter token="COMPILE_DEBUG" value="true"/>
 		<delete file="Debug.java"/>
-		<copyfile src="Debug.template" dest="Debug.java" filtering="YES"/>
+		<copy
+			file="Debug.template"
+			tofile="Debug.java"
+			filtering="YES"
+			overwrite="YES"/>
+		<touch file="Debug.java"/>
         <javac srcdir="${top}"
-				includes="com/novell/ldap/*.java,com/novell/ldap/client/*.java"
+				includes="com/novell/ldap/client/*.java"
                 destdir="${top}/${build}"
                 deprecation="off"
                 debug="${debug}"
                 optimize="${optimize}">
 				<classpath>
 					<pathelement location="${top}/${build}"/>
-					<pathelement location="${top}/../external/ssl/domestic/nssl1.1_dom.jar"/>
+					<pathelement location="${top}/external/ssl/domestic/nssl1.1_dom.jar"/>
 				</classpath>
         </javac>
     </target>
