@@ -38,6 +38,7 @@ public class ExtendedResponse extends ASN1Sequence implements Response {
 	{
 		super(dec, in, len);
 
+
 		// decode optional tagged elements
 		if(size() > 3) {
 			for(int i=3; i<size(); i++) {

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/com/novell/asn1/LBERDecoder.java,v 1.2 2000/09/03 06:43:08 smerrill Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/com/novell/asn1/LBERDecoder.java,v 1.3 2000/09/03 19:55:55 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  ***************************************************************************/
@@ -214,9 +214,10 @@ public class LBERDecoder implements ASN1Decoder {
       byte[] octets = new byte[len];
 
       for(int i=0; i<len; i++) {
-         octets[i] = (byte)in.read(); // blocks
-         if(octets[i] < 0)
+         int ret = in.read();
+         if(ret == -1)
             throw new EOFException("LBER: OCTET STRING: decode error: EOF");
+         octets[i] = (byte)ret;
       }
 
       return octets;
