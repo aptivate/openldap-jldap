@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell$
+ * $Novell: /ldap/src/jldap/ldap/src/com/novell/asn1/ldap/Filter.java,v 1.4 2000/08/22 22:51:04 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  ***************************************************************************/
@@ -237,39 +237,32 @@ public class Filter extends ASN1Choice {
 						false);
 				}
 				else if(value.indexOf('*') != -1) { // substring
-					// parse: [initial], any, [final] into an ASN1SequenceOf
-					int begin=0, end;
-					ASN1SequenceOf seq = new ASN1SequenceOf(3); // max 3 elements
+					// parse: [initial], *any*, [final] into an ASN1SequenceOf
+					StringTokenizer sub = new StringTokenizer(value, "*", true);
+					ASN1SequenceOf seq = new ASN1SequenceOf(5);
+
 					if(value.charAt(0) != '*') { // initial
-						end = value.indexOf('*');
 						seq.add(
 							new ASN1Tagged(
 								new ASN1Identifier(ASN1Identifier.CONTEXT, false,
 									                INITIAL),
-								new LDAPString(
-									escaped2unicode(value.substring(begin, end))),
+								new LDAPString(escaped2unicode(sub.nextToken())),
 								false));
-
-						begin = end;
 					}
 
-					end = value.lastIndexOf('*'); // any
 					seq.add(
 						new ASN1Tagged(
 							new ASN1Identifier(ASN1Identifier.CONTEXT, false, ANY),
 							new LDAPString(
-								escaped2unicode(value.substring(begin, end))),
+								escaped2unicode(value)),
 							false));
 
-					if((value.length() - end) > 0) { // final
-						seq.add(
-							new ASN1Tagged(
-								new ASN1Identifier(ASN1Identifier.CONTEXT, false,
-									                FINAL),
-								new LDAPString(
-									escaped2unicode(value.substring(end))),
-								false));
-					}
+					seq.add(
+						new ASN1Tagged(
+							new ASN1Identifier(ASN1Identifier.CONTEXT, false, FINAL),
+							new LDAPString(
+								escaped2unicode(value)),
+							false));
 
 					return new ASN1Tagged(
 						new ASN1Identifier(ASN1Identifier.CONTEXT, true,
