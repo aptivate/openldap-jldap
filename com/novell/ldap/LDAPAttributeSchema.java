@@ -376,9 +376,9 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
    }
 
 
-/*#######################################################################
-   The following are deprecated and will be removed in fall of 2003
- ########################################################################*/
+   // #######################################################################
+   //  The following are deprecated and will be removed in fall of 2003
+   // #######################################################################
 
    /**
     * @deprecated replaced by {@link LDAPSchema#add}.  This method

@@ -385,9 +385,9 @@ public class LDAPSchema {
         return;
     }
 
-/*#######################################################################
-   The following methods retrieve a SchemaElement given a Key name:
- ########################################################################*/
+// #######################################################################
+//   The following methods retrieve a SchemaElement given a Key name:
+// #######################################################################
 
     /**
      * This function abstracts retrieving LDAPSchemaElements from the local
@@ -539,9 +539,9 @@ public class LDAPSchema {
         return (LDAPSyntaxSchema) getSchemaElement( SYNTAX, oid);
     }
 
-/*#######################################################################
- The following methods return an Enumeration of SchemaElements by schema type:
- ########################################################################*/
+// ########################################################################
+// The following methods return an Enumeration of SchemaElements by schema type
+// ########################################################################
 
     /**
      * Returns an enumeration of attribute definitions.
@@ -623,9 +623,9 @@ public class LDAPSchema {
         return idTable[SYNTAX].elements();
     }
 
-/*#######################################################################
-   The following methods retrieve an Enumeration of Names of a schema type
- ########################################################################*/
+// #######################################################################
+//  The following methods retrieve an Enumeration of Names of a schema type
+// #######################################################################
 
     /**
      * Returns an enumeration of attribute names.
@@ -698,9 +698,9 @@ public class LDAPSchema {
     }
 
 
-/*#######################################################################
-   The following methods add, modify, and remove schema definitions
- ########################################################################*/
+// #######################################################################
+//  The following methods add, modify, and remove schema definitions
+// #######################################################################
 
     /**
      * Adds a schema element definition to the local copy of schema in this
@@ -853,9 +853,9 @@ public class LDAPSchema {
                 "The specified schema element type is not recognized");
     }
 
-/*#######################################################################
-   The following methods are deprecated and will be removed Fall 2003
- ########################################################################*/
+// #######################################################################
+//  The following methods are deprecated and will be removed Fall 2003
+// #######################################################################
 
     /**
      *  @deprecated replaced by {@link #getAttributeSchema}.  This method

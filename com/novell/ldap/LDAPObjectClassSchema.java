@@ -307,9 +307,9 @@ public class LDAPObjectClassSchema extends LDAPSchemaElement{
       return valueBuffer.toString();
    }
 
-/*#######################################################################
-   The following are deprecated and will be removed in fall of 2003
- ########################################################################*/
+    // #######################################################################
+    //  The following are deprecated and will be removed in fall of 2003
+    // #######################################################################
 
    /**
     * @deprecated replaced by {@link #toString}.  This method

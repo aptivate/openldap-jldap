@@ -131,16 +131,16 @@ public class LDAPSyntaxSchema
 
    }
 
-/*#######################################################################
-   The following are deprecated and will be removed in fall of 2003
- ########################################################################*/
+    // #######################################################################
+    //   The following are deprecated and will be removed in fall of 2003
+    // #######################################################################
 
-   /**
-    * @deprecated replaced by {@link #toString}.  This method
-    * has been renamed to toString in IETF draft 17 of the Java LDAP
-    * API (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
-    *  in fall of 2003.
-    */
+    /**
+     * @deprecated replaced by {@link #toString}.  This method
+     * has been renamed to toString in IETF draft 17 of the Java LDAP
+     * API (draft-ietf-ldapext-ldap-java-api-xx.txt) and will be removed
+     *  in fall of 2003.
+     */
     public String getValue() {
         return this.toString();
     }
