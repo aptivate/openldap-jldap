@@ -179,8 +179,17 @@ public abstract class LDAPSchemaElement extends LDAPAttribute {
      */
     public String toString()
     {
-        return super.getStringValue();
+        return formatString();
     }
+
+    /**
+     * Implementations of formatString format a schema element into a string
+     * suitable for using in a modify (ADD) operation to the directory.
+     * toString uses this method.  This method is needed because a call to
+     * setQualifier requires reconstructing the string value of the schema
+     * element.
+     */
+    abstract protected String formatString();
 
     /**
      * Sets the values of a specified optional or non-standard qualifier of
@@ -198,6 +207,12 @@ public abstract class LDAPSchemaElement extends LDAPAttribute {
         AttributeQualifier attrQualifier =
                 new AttributeQualifier( name, values );
         hashQualifier.put(name, attrQualifier);
+
+        /* 
+         * This is the only method that modifies the schema element.
+         * We need to reset the attribute value since it has changed.
+         */
+        super.setValue( formatString() );
         return;
     }
 
