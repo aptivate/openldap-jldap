@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: LDAPSchema.java,v 1.3 2000/05/17 19:03:42 bgudmundson Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/org/ietf/ldap/LDAPSchema.java,v 1.4 2000/08/03 22:06:17 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -86,7 +86,7 @@ public class LDAPSchema {
 
 		try{
 
-			String attrSubSchema[] = { "subschemaSubentry", null };
+			String attrSubSchema[] = { "subschemaSubentry" };
 
 			LDAPSearchResults sr = ld.search( dn,
 									LDAPv2.SCOPE_BASE,
