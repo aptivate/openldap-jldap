@@ -192,6 +192,15 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
                attrQualifier = (AttributeQualifier) qualifiers.nextElement();
                setQualifier(attrQualifier.getName(), attrQualifier.getValues());
            }
+		   if(parser.getEquality() != null)
+                this.equality = parser.getEquality();
+          
+          if(parser.getOrdering() != null)
+          		this.ordering = parser.getOrdering();
+          
+          if(parser.getSubstring() != null)
+          		this.substring = parser.getSubstring();
+         
            super.setValue(formatString());
        }
        catch( IOException e){
@@ -409,8 +418,7 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
 			 String[] qualifierVals = readObject.getQualifier(xname);
 			 this.setQualifier(xname, qualifierVals);		
 		 }
-		 super.setValue(formatString());
-		  
+		 		  
 		//class specific properties
 		this.collective = readObject.isCollective();
 		this.equality = readObject.getEqualityMatchingRule();
@@ -420,7 +428,9 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
 		this.superior = readObject.getSuperior();
 		this.syntaxString = readObject.getSyntaxString();
 		this.usage = readObject.getUsage();
-		this.userMod = readObject.isUserModifiable();		 
+		this.userMod = readObject.isUserModifiable();
+		
+		super.setValue(formatString());
 	
 		 //Garbage collect the readObject from readDSML()..	
 		 readObject = null;
@@ -529,6 +539,16 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
 			   attrQualifier = (AttributeQualifier) qualifiers.nextElement();
 				attr.setQualifier(attrQualifier.getName(), attrQualifier.getValues());
 		   }
+			
+		  if(parser.getEquality() != null)
+                attr.equality = parser.getEquality();
+           
+          if(parser.getOrdering() != null)
+          		attr.ordering = parser.getOrdering();
+          
+          if(parser.getSubstring() != null)
+          		attr.substring = parser.getSubstring();
+
 		   attr.setValue(attr.formatString());
 		   } catch( IOException e) {
 			   throw new RuntimeException(e.toString());
