@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.23 2000/11/22 22:17:40 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.24 2000/11/27 18:20:00 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -82,7 +82,6 @@ public final class Connection implements Runnable
     private Hashtable saslBindProperties = null;
     private Object /* javax.security.auth.callback.CallbackHandler */
                 saslBindCallbackHandler = null;
-    private boolean keepNotifications = false;
     private int cloneCount = 0;
     // Connection number & name used for debug
     private static int connNum = 0;
@@ -379,27 +378,6 @@ public final class Connection implements Runnable
     }
 
     /**
-     * Gets the setting of unsolicited notifications
-     *
-     * @return true if accepting unsolicited notifications, false if not
-     */
-    public boolean getUnsolicitedNotifications()
-    {
-        return keepNotifications;
-    }
-
-    /**
-     * Sets whether or not to keep unsolicited notifications
-     *
-     * @param true if to allow unsolicited notifications, false if not
-     */
-    public void setUnsolicitedNotifications( boolean allow)
-    {
-        keepNotifications = allow;
-        return;
-    }
-
-    /**
      * Removes a Message class from the Connection's list
      *
      * @param info the Message class to remove from the list
@@ -580,30 +558,25 @@ public final class Connection implements Runnable
                 // ------------------------------------------------------------
                 int msgId = msg.getMessageID();
 
-                if(msgId == 0) {
-                    // Unsolicited Notification
-                    reply0.addElement( msg); 
-                } else {
-                    // Find the message which requested this response.
-                    // It is possible to receive a response for a request which
-                    // has been abandoned. If abandoned, throw it away
-                    //??               int cnt = ldapListeners.size();
-                    try {
-                        info = messages.findMessageById( msgId);
-                        if( Debug.LDAP_DEBUG ) {
-                            Debug.trace( Debug.messages, name +
-                                "queue message(" + msgId + ")");
-                            Debug.trace( Debug.buffer, name +
-                                "message(" + msgId + ")=" +
-                                msg.toString());
-                        }
-                        info.putReply( msg);   // queue & wake up waiting thread
-                    } catch ( NoSuchFieldException ex) {
-                        if( Debug.LDAP_DEBUG ) {
-                            Debug.trace( Debug.messages, name +
-                                "discarding message(" + msgId + ")");
-                        }        
+                // Find the message which requested this response.
+                // It is possible to receive a response for a request which
+                // has been abandoned. If abandoned, throw it away
+                //??               int cnt = ldapListeners.size();
+                try {
+                    info = messages.findMessageById( msgId);
+                    if( Debug.LDAP_DEBUG ) {
+                        Debug.trace( Debug.messages, name +
+                            "queue message(" + msgId + ")");
+                        Debug.trace( Debug.buffer, name +
+                            "message(" + msgId + ")=" +
+                            msg.toString());
                     }
+                    info.putReply( msg);   // queue & wake up waiting thread
+                } catch ( NoSuchFieldException ex) {
+                    if( Debug.LDAP_DEBUG ) {
+                        Debug.trace( Debug.messages, name +
+                            "discarding message(" + msgId + ")");
+                    }        
                 }
             }
         }

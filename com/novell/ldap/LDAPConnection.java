@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.58 2000/11/22 22:17:38 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.59 2000/11/27 18:19:59 vtag Exp $
 *
 * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
 * 
@@ -409,23 +409,6 @@ public class LDAPConnection implements Cloneable
         return conn.getSaslCallbackHandler();
     }
 
-
-   /**
-    * Indicates if unsolicited messages from the server are accepted or 
-    * not. An unsolicited message has the ID 0. If unsolicited 
-    * notifications are enabled, unsolicited messages can be queried and 
-    * retrieved from a response listener with isResponseReceived(0) and 
-    * getResponse(0). The default is for unsolicited messages to be 
-    * discarded. 
-    *
-    * @return true if unsolicited notifications are enabled
-    */
-    public boolean getUnsolicitedNotifications()
-    {
-        return conn.getUnsolicitedNotifications();
-    }
-    
-    
    /**
     * Returns a copy of the set of search constraints associated with this
     * connection. These constraints apply to search operations performed
@@ -618,22 +601,53 @@ public class LDAPConnection implements Cloneable
    }
   
    /**
-    * Enables or disables the processing of unsolicited messages from the 
-    * server.
+    * Enables the processing of unsolicited messages from the server.
     *
     * <p>An unsolicited message has the ID 0. If unsolicited 
     * notifications are enabled, unsolicited messages can be queried and 
-    * retrieved from a response listener with isResponseReceived(0) and 
+    * retrieved from the response listener with isResponseReceived(0) and 
     * getResponse(0). The default is for unsolicited messages to be 
     * discarded.</p>
     *   
-    * @param allow If true, keep unsolicited notifications and make 
-    *              them available as message ID 0. 
+    *  @param listener  The listener returned for messages unsolicited
+    *                   messages returned, or null if a new listener
+    *                   is to be created.
+    *
+    *  @return The listener used to handle unsolicited messages.
+    */
+   public LDAPResponseListener addUnsolicitedNotificationListener (
+            LDAPResponseListener listener) 
+   {
+      throw new RuntimeException("Method LDAPConnection.addUnsolicitedNotificationListener not implemented");
+   }
+
+   /**
+    * Disables the processing of unsolicited messages from the server.
+    *
+    *   
+    *  @param listener  The listener used for handling unsolicited
+    *                   messages returned.  Upon return from this
+    *                   method, no more unsolicited messages from
+    *                   this connection will be received by this listener.
     *
     */
-   public void setUnsolicitedNotifications (boolean allow) 
+   public void removeUnsolicitedNotificationListener ( 
+            LDAPResponseListener listener) 
    {
-      conn.setUnsolicitedNotifications(allow);
+      throw new RuntimeException("Method LDAPConnection.removeUnsolicitedNotificationListener not implemented");
+   }
+
+   /**
+    * Returns a list of LDAPResponseListeners that are enabled to
+    * receive unsolicited messages.
+    *
+    * @return an array of LDAPResponseListeners that receive unsolicited
+    *              messages for this connection.
+    *
+    */
+   public LDAPResponseListener[] getUnsolicitedNotificationListeners( ) 
+   {
+      throw new RuntimeException("Method LDAPConnection.getUnsolicitedNotificationListener not implemented");
    }
    
    /**
