@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.53 2001/05/18 16:54:19 javed Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.54 2001/06/15 15:14:05 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -346,9 +346,9 @@ public final class Connection implements Runnable
             // Unable to connect to server host:port
             freeBindSemaphore(semId);
             throw new LDAPException(
-              LDAPExceptionMessageResource.CONNECTION_ERROR,
-              new Object[] { host, new Integer(port) },
-              LDAPException.CONNECT_ERROR);
+                  LDAPExceptionMessageResource.CONNECTION_ERROR,
+                  new Object[] { host, new Integer(port) },
+                  LDAPException.CONNECT_ERROR, ioe);
         }
         // Set host and port
         this.host = host;
