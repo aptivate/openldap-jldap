@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: PoolManager.java,v 1.4 2003/01/14 22:38:22 $
+ * $Novell: PoolManager.java,v 1.5 2003/01/23 00:47:54 $
  *
  * Copyright (C) 2002 - 2003 Novell, Inc. All Rights Reserved.
  *
@@ -25,7 +25,7 @@ import java.lang.IndexOutOfBoundsException;
  *
  * <p></p>
  */
-public class PoolManager 
+public class PoolManager
 {
     private String host = "localhost";
     private int port = 389;
@@ -36,7 +36,7 @@ public class PoolManager
     private ListOfSharedConnections availableListOfSharedConnections;
     /** Set by finalize. This tells any waiting thread to shutdown.*/
     private boolean shuttingDown;
-    
+
     /**
      * Initialize connection pool.
      *
@@ -47,24 +47,24 @@ public class PoolManager
      * @param port - Port number
      * @param maxConns - Max number of connection allowed to this host.
      * @param maxSharedConns - Max number of shared connections per DN
-     * @param keystore - Used for keystore in LDAPConnection
+     * @param keyStore - Used for keystore in LDAPConnection
      */
     public PoolManager(String host,
                           int port,
                           int maxConns,
                           int maxSharedConns,
-                          String keyStore)    
+                          String keyStore)
         throws LDAPException
-    {        
+    {
         LDAPSocketFactory fac = null;
         this.host = host;
-        this.port = port;        
-        
+        this.port = port;
+
         // Use the keystore file if it is there.
         if(null != keyStore)
         {
-            // Dynamically set JSSE as a security provider
-            Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider());
+            // To set the JSSE provider see the security.properties files
+            // Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider());
 
             // Dynamically set the property that JSSE uses to identify
             // the keystore that holds trusted root certificates
@@ -95,19 +95,19 @@ public class PoolManager
         }
         shuttingDown = false;
     }
-    
+
     /**
      * getBoundConnection - Get a bound connection.
      * <p>This returns a bound (bind) connection for the desired DN and
      * password.</p>
      * @param DN  Authentication DN used for bind and key.
-     * @param PW  Authentication password used for bind and key.     
+     * @param PW  Authentication password used for bind and key.
      * @throws LDAPException if an LDAPConnection could not be bound.
      */
     public LDAPConnection getBoundConnection(String DN, byte[] PW)
             throws LDAPException, InterruptedException
     {
-        
+
         Connection  conn        = null;
         SharedConnection sharedConns     = null;
         boolean           needToBind  = false;
@@ -124,7 +124,7 @@ public class PoolManager
                 return conn;
             }
         }
-        
+
         synchronized (availableListOfSharedConnections)
         {
             // See if there are shared connections that are available
@@ -146,7 +146,7 @@ public class PoolManager
                 sharedConns.setPW(PW);
                 needToBind = true;
             }
-            
+
             // Remove sharedConns from available.
             availableListOfSharedConnections.remove(sharedConns);
             // Get the first connection and mark it inuse
@@ -173,14 +173,14 @@ public class PoolManager
     public void makeConnectionAvailable(LDAPConnection baseConn)
     {
         SharedConnection sharedConns = null;
-        
+
         synchronized(inUseListOfSharedConnections)
         {
-            // Mark this connection available.        
+            // Mark this connection available.
             ((Connection)baseConn).clearInUse();
-            
+
             sharedConns = inUseListOfSharedConnections.getSharedConns((Connection)baseConn);
-                
+
             // If all connections in this instance are available move to
             // from in use to available.
             if(sharedConns.allConnectionsAvailable())
@@ -188,7 +188,7 @@ public class PoolManager
                 inUseListOfSharedConnections.remove(sharedConns);
             }
         }
-        
+
         if(null != sharedConns)
         {
             synchronized(availableListOfSharedConnections)
@@ -200,7 +200,7 @@ public class PoolManager
         }
         return;
     }
-    
+
     /**
      * finalize - free connections.
      * <p> Tell all waiting threads that we are shutting down.
