@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: AbortNamingContextOperationRequest.java,v 1.3 2000/08/04 15:32:29 javed Exp $
+ * $Id: AbortNamingContextOperationRequest.java,v 1.4 2000/08/04 17:25:00 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -65,7 +65,7 @@ public class AbortNamingContextOperationRequest extends LDAPExtendedOperation {
                                
                                    
 		    ASN1Integer asn1_flags = new ASN1Integer(flags);
-		    ASN1String asn1_partitionDN = new ASN1String(partitionDN);
+		    ASN1OctetString asn1_partitionDN = new ASN1OctetString(partitionDN);
             
             asn1_flags.encode(encoder, encodedData);
             asn1_partitionDN.encode(encoder, encodedData);

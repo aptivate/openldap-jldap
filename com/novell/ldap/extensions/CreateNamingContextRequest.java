@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: CreateNamingContextRequest.java,v 1.6 2000/08/01 01:03:31 javed Exp $
+ * $Id: CreateNamingContextRequest.java,v 1.7 2000/08/04 15:32:29 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -16,7 +16,7 @@ package com.novell.ldap.ext;
 
 import org.ietf.ldap.*;
 import org.ietf.asn1.*;
-import java.io.IOException;
+import java.io.*;
  
 /**
  *
@@ -54,18 +54,21 @@ public class CreateNamingContextRequest extends LDAPExtendedOperation {
         super(NamingContextConstants.CREATE_NAMING_CONTEXT_REQ, null);
         
         try {
-            // ber encode the parameters and set the requestValue
-            LberEncoder requestlber = new LberEncoder();
-        
-            requestlber.encodeInt(flags);
             
             if (dn == null)
                 throw new LDAPException("Invalid parameter",
 				                        LDAPException.PARAM_ERROR);
+				                        
+            ByteArrayOutputStream encodedData = new ByteArrayOutputStream();
+			BEREncoder encoder  = new BEREncoder();
+                                     
+		    ASN1Integer asn1_flags = new ASN1Integer(flags);
+		    ASN1OctetString asn1_dn = new ASN1OctetString(dn);
+
+            asn1_flags.encode(encoder, encodedData);
+            asn1_dn.encode(encoder, encodedData);
             
-            requestlber.encodeString(dn, true);
-                    
-            setValue(requestlber.getTrimmedBuf());
+            setValue(encodedData.toByteArray());
             
         }
 		catch(IOException ioe) {

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: GetEffectivePrivilegesRequest.java,v 1.1 2000/08/01 02:05:55 javed Exp $
+ * $Id: GetEffectivePrivilegesRequest.java,v 1.2 2000/08/04 15:32:30 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -16,7 +16,7 @@ package com.novell.ldap.ext;
 
 import org.ietf.ldap.*;
 import org.ietf.asn1.*;
-import java.io.IOException;
+import java.io.*;
  
 /**
  *
@@ -63,19 +63,24 @@ import java.io.IOException;
         super(NamingContextConstants.GET_EFFECTIVE_PRIVILEGES_REQ, null);
         
         try {
-            // ber encode the parameters and set the requestValue
-            LberEncoder requestlber = new LberEncoder();
             
             if ( (dn == null) )
                 throw new LDAPException("Invalid parameter",
 				                        LDAPException.PARAM_ERROR);
-				                        
-		    requestlber.encodeString(dn, true);
-		    requestlber.encodeString(trusteeDN, true);
-		    requestlber.encodeString(attrName, true);		    
-                    
-            setValue(requestlber.getTrimmedBuf());
+			
+			ByteArrayOutputStream encodedData = new ByteArrayOutputStream();
+			BEREncoder encoder  = new BEREncoder();
+                               
+		    ASN1OctetString asn1_dn = new ASN1OctetString(dn);
+		    ASN1OctetString asn1_trusteeDN = new ASN1OctetString(trusteeDN);
+		    ASN1OctetString asn1_attrName = new ASN1OctetString(attrName);
             
+            asn1_dn.encode(encoder, encodedData);
+            asn1_trusteeDN.encode(encoder, encodedData);
+            asn1_attrName.encode(encoder, encodedData);
+            
+            setValue(encodedData.toByteArray());
+            	    
         }
 		catch(IOException ioe) {
 			throw new LDAPException("Encoding Error",
