@@ -60,10 +60,10 @@ import org.ietf.asn1.*;
  *               referral        [3] Referral OPTIONAL }
  *
  */
-public class LDAPResult extends ASN1Sequence {
+public class LDAPResult extends ASN1Sequence implements Response {
 
 	/**
-	 *
+	 * Context-specific TAG for optional Referral.
 	 */
 	public final static int REFERRAL = 3;
 
@@ -101,6 +101,18 @@ public class LDAPResult extends ASN1Sequence {
 		throws IOException
 	{
 		super(dec, in, len);
+
+		// Decode optional referral from ASN1OctetString to Referral.
+		if(size() > 3) {
+			ASN1Tagged obj = (ASN1Tagged)get(3);
+			ASN1Identifier id = obj.getIdentifier();
+			if(id.getTag() == LDAPResult.REFERRAL) {
+				byte[] content =
+					((ASN1OctetString)obj.getContent()).getContent();
+				ByteArrayInputStream bais = new ByteArrayInputStream(content);
+				set(3, new Referral(dec, bais, content.length));
+			}
+		}
 	}
 
 	//*************************************************************************
@@ -156,7 +168,7 @@ public class LDAPResult extends ASN1Sequence {
 	 */
 	public LDAPDN getMatchedDN()
 	{
-		return (LDAPDN)get(1);
+		return new LDAPDN(((ASN1OctetString)get(1)).getContent()); // fix this!!
 	}
 
 	/**
@@ -164,7 +176,7 @@ public class LDAPResult extends ASN1Sequence {
 	 */
 	public LDAPString getErrorMessage()
 	{
-		return (LDAPString)get(2);
+		return new LDAPString(((ASN1OctetString)get(2)).getContent()); // fix this!!
 	}
 
 	/**
