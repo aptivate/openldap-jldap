@@ -16,6 +16,7 @@
 package com.novell.ldap.util;
 
 import com.novell.ldap.*;
+import com.novell.ldap.rfc2251.RfcFilter;
 
 import java.io.*;
 import java.util.Iterator;
@@ -30,6 +31,7 @@ import java.util.Iterator;
  */
 public class DSMLWriter implements LDAPWriter {
 
+    private static boolean fswitch = true;
     private Writer out = null;
     private int state = NEW_BATCH;
     private static final int NEW_BATCH = 0;
@@ -193,19 +195,70 @@ public class DSMLWriter implements LDAPWriter {
             //requests:
             case LDAPMessage.BIND_REQUEST:
             case LDAPMessage.UNBIND_REQUEST:
-            case LDAPMessage.SEARCH_REQUEST:
             case LDAPMessage.BIND_RESPONSE:
-            case LDAPMessage.MODIFY_REQUEST:
-            case LDAPMessage.ADD_REQUEST:
-            case LDAPMessage.DEL_REQUEST:
-            case LDAPMessage.MODIFY_RDN_REQUEST:
             case LDAPMessage.COMPARE_REQUEST:
             case LDAPMessage.ABANDON_REQUEST:
-            case LDAPMessage.EXTENDED_REQUEST:
+//            case LDAPMessage.EXTENDED_REQUEST:
                 throw new java.lang.UnsupportedOperationException(
                         "Writing of this message is not supported");
 
             //Responses:
+            case LDAPMessage.SEARCH_REQUEST:
+                if (state != SEARCH_TAG){
+                    newLine(1);
+                    writeTagWithID("searchRequest", messageToWrite);
+                    state = REQUEST_BATCH;
+                }
+                writeSearchRequest((LDAPSearchRequest) messageToWrite);
+                break;
+
+            case LDAPMessage.EXTENDED_REQUEST:
+                if (state != SEARCH_TAG){
+                    newLine(1);
+                    writeTagWithID("extendedRequest", messageToWrite);
+                    state = REQUEST_BATCH;
+                }
+                writeExtendedRequest((LDAPExtendedRequest) messageToWrite);
+                break;
+
+
+            case LDAPMessage.ADD_REQUEST:
+                if (state != SEARCH_TAG){
+                    newLine(1);
+                    writeTagWithID("addRequest", messageToWrite);
+                    state = REQUEST_BATCH;
+                }
+                writeAddRequest((LDAPAddRequest) messageToWrite);
+                break;
+
+            case LDAPMessage.MODIFY_REQUEST:
+                if (state != SEARCH_TAG){
+                    newLine(1);
+                    writeTagWithID("modifyRequest", messageToWrite);
+                    state = REQUEST_BATCH;
+                }
+                writeModifyRequest((LDAPModifyRequest) messageToWrite);
+                break;
+
+            case LDAPMessage.MODIFY_RDN_REQUEST:
+                if (state != SEARCH_TAG){
+                    newLine(1);
+                    writeTagWithID("modDNRequest", messageToWrite);
+                    state = REQUEST_BATCH;
+                }
+                writeModifyDNRequest((LDAPModifyDNRequest) messageToWrite);
+                break;
+                
+            case LDAPMessage.DEL_REQUEST:
+                if (state != SEARCH_TAG){
+                    newLine(1);
+                    writeTagWithID("delRequest", messageToWrite);
+                    state = REQUEST_BATCH;
+                }
+                writeDeleteRequest((LDAPDeleteRequest) messageToWrite);
+                break;
+
+                        
             case LDAPMessage.SEARCH_RESPONSE:
                 if (state != SEARCH_TAG){
                     newLine(1);
@@ -401,6 +454,437 @@ public class DSMLWriter implements LDAPWriter {
     }
 
     /**
+     * Convert a UTF8 encoded string, or binary data, into a String encoded for
+     * a string filter.
+     */
+    private static String byteString(byte[] value) {
+        String toReturn = null;
+        if (com.novell.ldap.util.Base64.isValidUTF8(value, true)) {
+            try {
+                toReturn = new String(value, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                throw new RuntimeException(
+                        "Default JVM does not support UTF-8 encoding" + e);
+            }
+        } else {
+            StringBuffer binary = new StringBuffer();
+            for (int i=0; i<value.length; i++){
+                //TODO repair binary output
+                //Every octet needs to be escaped
+                if (value[i] >=0) {
+                    //one character hex string
+                    binary.append("\\0");
+                    binary.append(Integer.toHexString(value[i]));
+                } else {
+                    //negative (eight character) hex string
+                    binary.append("\\"+
+                            Integer.toHexString(value[i]).substring(6));
+                }
+            }
+            toReturn = binary.toString();
+        }
+        return toReturn;
+    }
+
+    /*
+     * Writes  LDAP Search Filter as a XML document 
+     *
+     * @param itr Iterator object representing RfcFilter object
+     *
+     * @see com.novell.ldap.rfc2251.RfcFilter
+     */
+	private void writeFilter ( Iterator itr )
+                throws IOException, LDAPLocalException	
+	{
+        int op=-1;
+				
+        while (itr.hasNext()){
+            Object filterpart = itr.next();
+            if (filterpart instanceof Integer){
+                op = ((Integer)filterpart).intValue();
+                switch (op){
+                    case RfcFilter.AND:
+                        newLine(3);
+                        out.write("<and>");
+                        break;
+                    case RfcFilter.OR:
+                        newLine(3);
+                        out.write("<or>");
+                        break;
+                    case RfcFilter.NOT:
+                        newLine(3);
+                        out.write("<not>");
+                        break;
+                    case RfcFilter.EQUALITY_MATCH:{
+                         newLine(4);
+                         out.write("<equalityMatch name=\"");
+                         out.write((String)itr.next());
+                         out.write("\">");
+                         byte[] value = (byte[])itr.next();
+                         newLine(5);                         
+                         out.write("<value>");
+                         out.write(byteString(value));
+                         out.write("</value>");
+                         newLine(4);                         
+                         out.write("</equalityMatch>");                         
+                         break;
+                    }
+                    case RfcFilter.GREATER_OR_EQUAL:{                    
+                         newLine(4);
+                         out.write("<greaterOrEqual name=\"");
+                         out.write((String)itr.next());
+                         out.write("\">");
+                         byte[] value = (byte[])itr.next();
+                         newLine(5);                         
+                         out.write("<value>");
+                         out.write(byteString(value));
+                         out.write("</value>");
+                         newLine(4);                         
+                         out.write("</greaterOrEqual>");                         
+                         break;
+                    }
+                    
+                    case RfcFilter.LESS_OR_EQUAL:{                    
+                         newLine(4);
+                         out.write("<lessOrEqual name=\"");
+                         out.write((String)itr.next());
+                         out.write("\">");
+                         byte[] value = (byte[])itr.next();
+                         newLine(5);                         
+                         out.write("<value>");
+                         out.write(byteString(value));
+                         out.write("</value>");
+                         newLine(4);                         
+                         out.write("</lessOrEqual>");                         
+                         break;
+                    }
+                    
+                    case RfcFilter.PRESENT:{                    
+                         newLine(4);
+                         out.write("<present name=\"");
+                         out.write((String)itr.next());
+                         out.write("\">");
+                         newLine(4);                         
+                         out.write("</present>");                         
+                         break;
+                    }
+                    
+                    case RfcFilter.APPROX_MATCH:{                    
+                         newLine(4);
+                         out.write("<approxMatch name=\"");
+                         out.write((String)itr.next());
+                         out.write("\">");
+                         byte[] value = (byte[])itr.next();
+                         newLine(5);                         
+                         out.write("<value>");
+                         out.write(byteString(value));
+                         out.write("</value>");
+                         newLine(4);                         
+                         out.write("</approxMatch>");                         
+                         break;
+                    }
+                    
+                    case RfcFilter.SUBSTRINGS:{                    
+                         newLine(4);
+                         out.write("<substrings name=\"");
+                         out.write((String)itr.next());
+                         out.write("\">");
+                         boolean noStarLast = false;                         
+                         while (itr.hasNext()){
+                            op = ((Integer)itr.next()).intValue();
+                            switch(op){
+                                case RfcFilter.INITIAL:
+                                    newLine(5);                         
+                                    out.write("<initial>");
+                                    out.write((String)itr.next());
+                                    out.write("</initial>");
+                                    noStarLast = false;
+                                    break;
+                                case RfcFilter.ANY:
+                                    newLine(5);                         
+                                    out.write("<any>");
+                                    out.write((String)itr.next());
+                                    out.write("</any>");
+                                    noStarLast = false;
+                                    break;
+                                case RfcFilter.FINAL:
+                                    newLine(5);                         
+                                    out.write("<final>");
+                                    out.write((String)itr.next());
+                                    out.write("</final>");
+                                    break;
+                            }
+                        }
+                         newLine(4);
+                         out.write("</substrings>");
+                         break;
+                    }
+                    
+                    
+                }
+            } else if( filterpart instanceof Iterator ) {
+                writeFilter( (Iterator)filterpart);
+                switch (op) {
+                    case RfcFilter.AND:
+                        if(fswitch){
+                            fswitch=false;
+                        }  else{
+                            newLine(3);
+                            out.write("</and>");
+                            fswitch=true;
+                        }
+                        break;
+
+                    case RfcFilter.OR:
+                        if(fswitch){
+                            fswitch=false;
+                        }  else {
+                            newLine(3);
+                            out.write("</or>");
+                            fswitch = true;
+                        }
+                        break;
+                
+                    case RfcFilter.NOT:
+                        newLine(3);                    
+                        out.write("</not>");
+                        break;
+                
+                    default:
+
+                }
+            }
+                    
+        }
+            
+
+    }
+
+    /*
+     * Writes  LDAP ModifyDN Request as a XML document 
+     *
+     * @param request LDAPModifyDNRequest object
+	 * @param controls Controls that were returned with this entry
+     * @param requestID the String representing a Request ID
+     *
+     * @throws IOException if an I/O error occurs.
+     *
+     * @see com.novell.ldap.LDAPModifyDNRequest
+     */
+    private void writeModifyDNRequestEntry( LDAPModifyDNRequest request,
+                            	   LDAPControl[] controls,
+                            	   String requestID)
+            throws IOException, LDAPLocalException
+    {
+        checkState(false);
+        newLine(1);
+        out.write("</modifyDNRequest>");
+        return;
+    }
+        
+    /*
+     * Writes  LDAP Modify Request as a XML document 
+     *
+     * @param request LDAPModifyRequest object
+	 * @param controls Controls that were returned with this entry
+     * @param requestID the String representing a Request ID
+     *
+     * @throws IOException if an I/O error occurs.
+     *
+     * @see com.novell.ldap.LDAPModifyRequest
+     */
+    private void writeModifyRequestEntry( LDAPModifyRequest request,
+                            	   LDAPControl[] controls,
+                            	   String requestID)
+            throws IOException, LDAPLocalException
+    {
+        checkState(false);
+        LDAPModification[] modList=request.getModifications();
+        for(int i=0; i< modList.length; i++){
+            LDAPAttribute attr=modList[i].getAttribute();
+            newLine(2);
+            out.write("<modification name=\"");
+            out.write(attr.getName());
+            out.write("\" operation=\"");
+            switch(modList[i].getOp())
+            {
+                case LDAPModification.ADD:
+                    out.write("add");
+                    break;
+
+                case LDAPModification.DELETE:
+                    out.write("delete");
+                    break;
+
+                case LDAPModification.REPLACE:
+                    out.write("replace");
+                    break;
+            }
+                    
+            out.write("\">");
+        
+            String values[] = attr.getStringValueArray();
+            byte bytevalues[][] = attr.getByteValueArray();
+            for(int j=0; j<values.length; j++){
+                newLine(3);
+                if (Base64.isValidUTF8(bytevalues[j], false)){
+                    out.write("<value>");
+                    out.write(values[j]);
+                    out.write("</value>");
+                } else {
+                    out.write("<value xsi:type=\"xsd:base64Binary\">");
+                    out.write(Base64.encode(bytevalues[j]));
+                    out.write("</value>");
+                }
+
+            }
+            newLine(2);
+            out.write("</modification>");
+        }
+        newLine(1);
+        out.write("</modifyRequest>");
+        return;
+    }
+
+    /*
+     * Writes  LDAP Delete Request as a XML document 
+     *
+     * @param request LDAPDeleteRequest object
+	 * @param controls Controls that were returned with this entry
+     * @param requestID the String representing a Request ID
+     *
+     * @throws IOException if an I/O error occurs.
+     *
+     * @see com.novell.ldap.LDAPDeleteRequest
+     */
+    private void writeDeleteRequestEntry( LDAPDeleteRequest request,
+                            	   LDAPControl[] controls,
+                            	   String requestID)
+            throws IOException, LDAPLocalException
+    {
+        checkState(false);
+        newLine(1);
+        out.write("</delRequest>");
+        return;
+    }    
+
+    /*
+     * Writes  LDAP Extended Request as a XML document 
+     *
+     * @param request LDAPExtendedRequest object
+	 * @param controls Controls that were returned with this entry
+     * @param requestID the String representing a Request ID
+     *
+     * @throws IOException if an I/O error occurs.
+     *
+     * @see com.novell.ldap.LDAPExtendedRequest
+     */
+    private void writeExtendedRequestEntry( LDAPExtendedRequest request,
+                            	   LDAPControl[] controls,
+                            	   String requestID)
+            throws IOException, LDAPLocalException
+    {
+        checkState(false);
+        
+        newLine(2);
+        out.write("<requestName>");
+        out.write(request.getExtendedOperation().getID());
+        out.write("</requestName>");
+
+        byte[] vals=request.getExtendedOperation().getValue();
+        if( vals != null)
+        {
+            newLine(2);
+            out.write("<requestValue xsi:type=\"xsd:base64Binary\">");
+            out.write(Base64.encode(vals));
+            out.write("</requestValue>");
+        }
+
+        newLine(1);
+        out.write("</extendedRequest>");
+        return;
+    }    
+    
+    /*
+     * Writes  LDAP Add Request as a XML document 
+     *
+     * @param request LDAPAddRequest object
+	 * @param controls Controls that were returned with this entry
+     * @param requestID the String representing a Request ID
+     *
+     * @throws IOException if an I/O error occurs.
+     *
+     * @see com.novell.ldap.LDAPAddRequest
+     */
+    private void writeAddRequestEntry( LDAPAddRequest request,
+                            	   LDAPControl[] controls,
+                            	   String requestID)
+            throws IOException, LDAPLocalException
+    {
+        checkState(false);
+        LDAPEntry entry=request.getEntry();
+        
+        LDAPAttributeSet set = entry.getAttributeSet();
+        Iterator i = set.iterator();
+        while (i.hasNext()){
+            writeAttribute( (LDAPAttribute) i.next());
+        }
+     
+        if( (controls !=null) && (controls.length != 0)) {
+            writeControls(controls, 3);
+        }
+        newLine(1);
+        out.write("</addRequest>");
+        return;        
+    }
+    
+    /*
+     * Writes  LDAP Search Request as a XML document 
+     *
+     * @param request LDAPSearchRequest object
+	 * @param controls Controls that were returned with this entry
+     * @param requestID the String representing a Request ID
+     *
+     * @throws IOException if an I/O error occurs.
+     *
+     * @see com.novell.ldap.LDAPSearchRequest
+     */
+    private void writeSearchRequestEntry( LDAPSearchRequest request,
+                            	   LDAPControl[] controls,
+                            	   String requestID)
+            throws IOException, LDAPLocalException
+    {
+        checkState(false);
+        
+        newLine(2);
+ 		out.write("<attributes>");
+        String[] attrs = request.getAttributes();
+        for(int i=0; i< attrs.length; i++){
+		newLine(3);        
+        out.write("<attribute name=\"");
+        out.write(attrs[i]);
+        out.write("\"/>");
+        }
+		newLine(2);                
+        out.write("</attributes>");
+
+		newLine(2);                
+        out.write("<filter>");
+        Iterator itr=request.getSearchFilter();
+        writeFilter(itr);
+        newLine(2);
+		out.write("</filter>");                
+		
+        if( (controls !=null) && (controls.length != 0)) {
+            writeControls(controls, 3);
+        }
+        newLine(1);
+        out.write("</searchRequest>");
+
+        return;
+    }
+
+    /**
      * Writes an XML tag with it's requestID and possibly a matchedDN.
      * @param tag XML tag name to be written
      * @param message LDAPMessage containing a requestID and possibly matchedDN
@@ -415,6 +899,84 @@ public class DSMLWriter implements LDAPWriter {
             if (matchedDN != null && !matchedDN.equals("")){
                 out.write(" matchedDN=\"" + matchedDN + "\"");
             }
+        }
+
+        if( message instanceof LDAPExtendedRequest) {
+    
+        }
+        
+        if( message instanceof LDAPDeleteRequest) {
+            String dn = ((LDAPDeleteRequest) message).getDN();
+			out.write(" dn=\"" + dn + "\"");                        
+        }
+        
+        if( message instanceof LDAPAddRequest) {
+            String dn = ((LDAPAddRequest) message).getEntry().getDN();
+			out.write(" dn=\"" + dn + "\"");                        
+        }
+        
+        if( message instanceof LDAPModifyRequest) {
+            String dn = ((LDAPModifyRequest) message).getDN();
+			out.write(" dn=\"" + dn + "\"");                        
+        }
+
+        if( message instanceof LDAPModifyDNRequest) {
+            String dn = ((LDAPModifyDNRequest) message).getDN();
+			out.write(" dn=\"" + dn + "\"");
+			out.write(" newrdn=\"");
+			out.write(((LDAPModifyDNRequest) message).getNewRDN() + "\" deleteoldrdn=\"");
+			out.write(((LDAPModifyDNRequest) message).getDeleteOldRDN() + "\" newSuperior=\"");
+			out.write(((LDAPModifyDNRequest) message).getParentDN() + "\"");
+        }
+        
+        if( message instanceof LDAPSearchRequest) {
+            String searchScope="";
+            String searchDeRef="";
+                    
+            String dn = ((LDAPSearchRequest) message).getDN();
+            int scope = ((LDAPSearchRequest) message).getScope();
+            int deref = ((LDAPSearchRequest) message).getDereference();
+            
+            int slimit =  ((LDAPSearchRequest) message).getMaxResults();
+            int tlimit =  ((LDAPSearchRequest) message).getServerTimeLimit();
+            boolean isTypesonly =  ((LDAPSearchRequest) message).isTypesOnly();
+            
+			out.write(" dn=\"" + dn + "\"");            
+            switch(scope)   {
+                case LDAPConnection.SCOPE_BASE:
+                    searchScope = "baseObject";
+                    break;
+                    
+                case LDAPConnection.SCOPE_ONE:
+                    searchScope = "singleLevel";
+                    break;
+                
+                default:
+                    searchScope = "wholeSubtree";
+                    break;
+            }
+			out.write(" scope=\"" + searchScope + "\"");
+			
+            switch(deref)   {
+                case LDAPSearchConstraints.DEREF_SEARCHING:
+                    searchDeRef = "derefInSearching";
+                    break;
+                    
+                case LDAPSearchConstraints.DEREF_FINDING:
+                    searchDeRef = "derefFindingBaseObj";
+                    break;
+
+                case LDAPSearchConstraints.DEREF_ALWAYS:
+                    searchDeRef = "derefAlways";
+                    break;
+                
+                default:
+                    searchDeRef = "neverDerefAliases";
+                    break;
+            }
+			out.write(" sizeLimit=\"" + slimit + "\"");
+			out.write(" timeLimit=\"" + tlimit + "\"");
+			out.write(" typesOnly=\"" + isTypesonly + "\"");
         }
         out.write(">");
         return;
@@ -545,6 +1107,91 @@ public class DSMLWriter implements LDAPWriter {
         writeEntry( result.getEntry(),
                     result.getControls(),
                     DOMWriter.findRequestID(result));
+        return;
+    }
+
+    /**
+     * Writes the Search request requested within a LDAP search 
+     * request
+     * @param request a search request entry
+     */
+    private void writeSearchRequest(LDAPSearchRequest request)
+            throws IOException, LDAPLocalException
+    {
+        writeSearchRequestEntry( request,
+                           request.getControls(),
+                           DOMWriter.findRequestID(request));
+        return;
+    }
+
+    /**
+     * Writes the Add request requested within a LDAP Add 
+     * request
+     * @param request a search request entry
+     */
+    private void writeAddRequest(LDAPAddRequest request)
+            throws IOException, LDAPLocalException
+    {
+        writeAddRequestEntry( request,
+                           request.getControls(),
+                           DOMWriter.findRequestID(request));
+        return;
+    }
+
+    /**
+     * Writes the Modify request requested within a LDAP Modify 
+     * request
+     * @param request a search request entry
+     */
+    private void writeModifyRequest(LDAPModifyRequest request)
+            throws IOException, LDAPLocalException
+    {
+        writeModifyRequestEntry( request,
+                           request.getControls(),
+                           DOMWriter.findRequestID(request));
+        return;
+    }
+
+
+    /**
+     * Writes the Modify request requested within a LDAP Modify 
+     * request
+     * @param request a search request entry
+     */
+    private void writeModifyDNRequest(LDAPModifyDNRequest request)
+            throws IOException, LDAPLocalException
+    {
+        writeModifyDNRequestEntry( request,
+                           request.getControls(),
+                           DOMWriter.findRequestID(request));
+        return;
+    }
+
+    /**
+     * Writes the Delete request requested within a LDAP Delete 
+     * request
+     * @param request a search request entry
+     */
+    private void writeDeleteRequest(LDAPDeleteRequest request)
+            throws IOException, LDAPLocalException
+    {
+        writeDeleteRequestEntry( request,
+                           request.getControls(),
+                           DOMWriter.findRequestID(request));
+        return;
+    }
+
+    /**
+     * Writes the Extended request requested within a LDAP Extended 
+     * request
+     * @param request a Extended request entry
+     */
+    private void writeExtendedRequest(LDAPExtendedRequest request)
+            throws IOException, LDAPLocalException
+    {
+        writeExtendedRequestEntry( request,
+                                   request.getControls(),
+                                   DOMWriter.findRequestID(request));
         return;
     }
 
