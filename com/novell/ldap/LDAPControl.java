@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPControl.java,v 1.10 2000/09/28 20:18:01 smerrill Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPControl.java,v 1.11 2000/10/09 19:11:24 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -85,6 +85,18 @@ public class LDAPControl implements Cloneable {
     {
         return control.getControlValue().getContent();
     }
+
+
+    /**
+     * Returns the control-specific data of the object.
+     *
+     * @return The control-specific data of the object as a byte array.
+     */
+    public void setValue(byte [] controlValue)
+    {
+        control.setControlValue(new ASN1OctetString(controlValue));
+    }
+
 
     /**
      * Returns whether the control is critical for the operation.
