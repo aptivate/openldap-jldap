@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPConstraints.java,v 1.4 2000/08/03 22:06:14 smerrill Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPConstraints.java,v 1.5 2000/08/28 22:18:55 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -58,12 +58,13 @@ public class LDAPConstraints implements Cloneable {
     *  doReferrals     Specify true to follow referrals automatically,
     *                  or false to throw an LDAPReferralException error
     *                  if the server sends back a referral (false by
-    *                  default).
+    *                  default).  It is ignored for asynchronous operations.
     *
-    *  binder         Custom authentication processor, called when the
+    *  binder          Custom authentication processor, called when the
     *                  LDAPConnection needs to authenticate, typically
     *                  on following a referral. null may be specified to
-    *                  indicate default authentication processing.
+    *                  indicate default authentication processing. It
+    *                  is ignored for asynchronous operations.
     *
     *  hop_limit       Maximum number of referrals to follow in a
     *                  sequence when attempting to resolve a request,
@@ -98,7 +99,7 @@ public class LDAPConstraints implements Cloneable {
     *  doReferrals     Specify true to follow referrals automatically,
     *                  or false to throw an LDAPReferralException error
     *                  if the server sends back a referral (false by
-    *                  default).
+    *                  default).  It is ignored for asynchronous operations.
     *
     *  reauth          Specifies an object of the class that implements
     *                  the LDAPRebind interface. The object will be used
@@ -109,11 +110,13 @@ public class LDAPConstraints implements Cloneable {
     *                  referral. Specifying null indicates the default
     *                  LDAPRebind will be used if one has been assigned
     *                  with LDAPConnection.setOption(), or anonymous
-    *                  authentication otherwise.
+    *                  authentication otherwise.  It is ignored for
+	*                  asynchronous operations.
     *
     *  hop_limit       Maximum number of referrals to follow in a
     *                  sequence when attempting to resolve a request,
-    *                  when doing automatic referral following.
+    *                  when doing automatic referral following.  It is
+	*                  ignored for asynchronous operations.
     */
    public LDAPConstraints(int msLimit,
                           boolean doReferrals,
@@ -198,7 +201,7 @@ public class LDAPConstraints implements Cloneable {
 
    /**
     * Sets the maximum number of hops to follow in sequence during
-    * automatic referral following. The default is 5.
+    * automatic referral following. The default is 10.
     *
     * Parameters are:
     *
