@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: ExtendedResponseFactory.java,v 1.7 2000/08/15 21:40:42 javed Exp $
+ * $Id: ExtendedResponseFactory.java,v 1.8 2000/08/16 15:58:49 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -14,7 +14,7 @@
  ***************************************************************************/
 package com.novell.ldap.ext; 
 
-import org.ietf.ldap.*;
+import com.novell.ldap.*;
 import java.io.IOException; 
 /**
  *

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/org/ietf/ldap/LDAPListener.java,v 1.6 2000/08/10 17:53:02 smerrill Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPListener.java,v 1.7 2000/08/21 18:35:42 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -13,7 +13,7 @@
  * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY. 
  ***************************************************************************/
  
-package org.ietf.ldap;
+package com.novell.ldap;
 
 import java.io.*;
 import java.util.Vector;

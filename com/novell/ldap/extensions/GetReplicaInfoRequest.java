@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: GetReplicaInfoRequest.java,v 1.1 2000/08/15 21:40:43 javed Exp $
+ * $Id: GetReplicaInfoRequest.java,v 1.2 2000/08/21 18:35:46 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -14,7 +14,7 @@
  ***************************************************************************/
 package com.novell.ldap.ext; 
 
-import org.ietf.ldap.*;
+import com.novell.ldap.*;
 import com.novell.asn1.*;
 import java.io.*;
  

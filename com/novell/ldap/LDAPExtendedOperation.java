@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: LDAPExtendedOperation.java,v 1.4 2000/07/26 21:33:17 javed Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPExtendedOperation.java,v 1.5 2000/08/03 22:06:15 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -13,7 +13,7 @@
  * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY. 
  ***************************************************************************/
  
-package org.ietf.ldap;
+package com.novell.ldap;
  
 /**
  * 4.11 public class LDAPExtendedOperation

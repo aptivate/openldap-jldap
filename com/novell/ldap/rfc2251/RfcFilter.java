@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/com/novell/asn1/ldap/Filter.java,v 1.7 2000/08/24 00:16:05 smerrill Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/com/novell/asn1/ldap/Filter.java,v 1.8 2000/08/25 00:19:01 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  ***************************************************************************/
@@ -10,7 +10,7 @@ import java.util.*;
 import java.io.*;
 
 import com.novell.asn1.*;
-import org.ietf.ldap.LDAPException;
+import com.novell.ldap.LDAPException;
 
 /**
  *       Filter ::= CHOICE {

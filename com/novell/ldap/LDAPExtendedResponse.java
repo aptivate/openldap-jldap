@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/org/ietf/ldap/LDAPExtendedResponse.java,v 1.10 2000/08/11 19:41:43 smerrill Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPExtendedResponse.java,v 1.11 2000/08/21 18:35:41 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -13,11 +13,11 @@
  * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY. 
  ***************************************************************************/
  
-package org.ietf.ldap;
+package com.novell.ldap;
 
 import java.io.IOException;
 
-import org.ietf.ldap.LDAPResponse;
+import com.novell.ldap.LDAPResponse;
 import com.novell.asn1.ldap.*;
 //import com.novell.ldap.client.protocol.lber.*;
 

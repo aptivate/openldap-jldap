@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: LDAPDN.java,v 1.2 2000/03/14 18:17:26 smerrill Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPDN.java,v 1.3 2000/08/03 22:06:15 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -13,7 +13,7 @@
  * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY. 
  ***************************************************************************/
  
-package org.ietf.ldap;
+package com.novell.ldap;
  
 /**
  * 4.9 public class LDAPDN

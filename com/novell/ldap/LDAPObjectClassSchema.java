@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: LDAPObjectClassSchema.java,v 1.3 2000/05/17 19:03:42 bgudmundson Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/LDAPObjectClassSchema.java,v 1.4 2000/08/03 22:06:16 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -13,7 +13,7 @@
  * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
  ***************************************************************************/
 
-package org.ietf.ldap;
+package com.novell.ldap;
 
 /**
  * 4.17 public class LDAPObjectClassSchema

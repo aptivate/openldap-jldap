@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/client/Connection.java,v 1.10 2000/08/21 18:35:40 vtag Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/com/novell/ldap/client/Connection.java,v 1.11 2000/08/22 01:47:26 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -19,7 +19,7 @@ import java.io.*;
 import java.net.Socket;
 import java.util.Vector;
 
-import org.ietf.ldap.*;
+import com.novell.ldap.*;
 import com.novell.asn1.*;
 import com.novell.asn1.ldap.UnbindRequest;
 
@@ -143,7 +143,7 @@ public final class Connection implements Runnable {
 	/**
 	 * Writes an LDAPMessage to the LDAP server over a socket.
 	 */
-   public void writeMessage(org.ietf.ldap.LDAPMessage msg)
+   public void writeMessage(com.novell.ldap.LDAPMessage msg)
 		throws IOException
 	{
 		byte[] ber = msg.getASN1Object().getEncoding(encoder);
