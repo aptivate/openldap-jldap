@@ -1,17 +1,17 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPUrl.java,v 1.22 2000/12/04 17:31:08 cmorris Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPUrl.java,v 1.23 2001/02/27 22:53:15 vtag Exp $
 *
-* Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
-*
-* THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
-* TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
-* TO VERSION 2.0.1 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
-* AVAILABLE AT HTTP://WWW.OPENLDAP.ORG/LICENSE.HTML OR IN THE FILE "LICENSE"
-* IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
-* OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.1 OF THE OPENLDAP
-* PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
-* THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
-***************************************************************************/
+ * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
+ *
+ * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
+ * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
+ * TO VERSION 2.0.7 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
+ * AVAILABLE AT HTTP://WWW.OPENLDAP.ORG/LICENSE.HTML OR IN THE FILE "LICENSE"
+ * IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
+ * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.7 OF THE OPENLDAP
+ * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
+ * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
+ ******************************************************************************/
 
 package com.novell.ldap;
 
@@ -151,9 +151,9 @@ public class LDAPUrl {
 		this.dn = dn;
 		this.attrs = attrNames;
 		this.scope = scope;
-		this.filter = filter;		
+		this.filter = filter;
 		this.secure = secure;
-		return;        
+		return;
     }
     /**
     * Decodes a URL-encoded string.
@@ -292,11 +292,11 @@ public class LDAPUrl {
     public String getDN() {
 		return dn;
     }
-    
-    /**   Returns any LDAP URL extensions specified, or null if none are 
-    * specified. Each extension is a type=value expression. The =value part 
-    * may be omitted. The expression may be prefixed with '!' if it is 
-    * mandatory for evaluation of the URL. 
+
+    /**   Returns any LDAP URL extensions specified, or null if none are
+    * specified. Each extension is a type=value expression. The =value part
+    * may be omitted. The expression may be prefixed with '!' if it is
+    * mandatory for evaluation of the URL.
     *
     * @return string array of extensions.
     */
@@ -345,8 +345,8 @@ public class LDAPUrl {
     {
 		return scope;
     }
-    
-    /** 
+
+    /**
     * Returns true if the URL is of the type ldaps (LDAP over SSL, a predecessor
     * to startTls)
     *
@@ -434,12 +434,12 @@ public class LDAPUrl {
 		}
 		return url.toString();
     }
-    
+
     public String toString()
     {
         return "com.novell.ldap.LDAPUrl:" + getUrl();
     }
-    
+
     private String[] parseList( String listStr,    // input String
                                 char delimiter,    // list item delimiter
                                 int listStart,     // start of list

@@ -1,17 +1,17 @@
 /* **************************************************************************
- * $Novell:
+ * $Novell$
  *
- * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
+ * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
- * TO VERSION 2.0.1 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
+ * TO VERSION 2.0.7 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
  * AVAILABLE AT HTTP://WWW.OPENLDAP.ORG/LICENSE.HTML OR IN THE FILE "LICENSE"
  * IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
- * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.1 OF THE OPENLDAP
+ * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.7 OF THE OPENLDAP
  * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
  * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
- ***************************************************************************/
+ ******************************************************************************/
 package com.novell.ldap;
 
 import com.novell.ldap.client.SchemaParser;
@@ -22,10 +22,10 @@ import java.io.IOException;
 /**
  * Represents the definition of a specific DIT (Directory Information Tree)
  * structure rule in the directory schema.
- *  
- * <p>The LDAPDITStructureRuleSchema class is used to discover or modify which 
+ *
+ * <p>The LDAPDITStructureRuleSchema class is used to discover or modify which
  * object classes a particular object class may be subordinate to in the DIT.</p>
- * 
+ *
  */
 
 public class LDAPDITStructureRuleSchema
@@ -82,7 +82,7 @@ public class LDAPDITStructureRuleSchema
 		super.aliases = aliases;
     }
 
-    /** 
+    /**
      * Constructs a DIT structure rule from the raw string value returned from
      * a schema query for dITStructureRules.
      *
@@ -119,12 +119,12 @@ public class LDAPDITStructureRuleSchema
     }
 
     /**
-     * Returns the rule ID for this structure rule. 
+     * Returns the rule ID for this structure rule.
      *
      * <p>The getRuleID method returns an integer rather than a dotted
      * decimal OID. Objects of this class do not have an OID,
      * thus getID can return null. </p>
-     * 
+     *
      *
      * @return The rule ID for this structure rule.
      */
@@ -135,7 +135,7 @@ public class LDAPDITStructureRuleSchema
     }
 
     /**
-     * Returns the NameForm that this structure rule controls. 
+     * Returns the NameForm that this structure rule controls.
      *
      * <p>You can get the actual object class that this structure rule controls
      *  by calling the getNameForm.getObjectClass method.</p>
@@ -149,7 +149,7 @@ public class LDAPDITStructureRuleSchema
 
     /**
      * Returns a list of all structure rules that are superior to this
-     * structure rule. 
+     * structure rule.
      *
      * <p>To resolve to an object class, you need to first
      * resolve the superior ID to another structure rule, then call

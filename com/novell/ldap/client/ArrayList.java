@@ -1,14 +1,23 @@
 /* **************************************************************************
- * $Novell$
+ * $Novell: /ldap/src/jldap/com/novell/ldap/client/ArrayList.java,v 1.1 2001/01/30 21:21:16 vtag Exp $
  *
- * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
- ***************************************************************************/
+ * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
+ *
+ * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
+ * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
+ * TO VERSION 2.0.7 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
+ * AVAILABLE AT HTTP://WWW.OPENLDAP.ORG/LICENSE.HTML OR IN THE FILE "LICENSE"
+ * IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
+ * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.7 OF THE OPENLDAP
+ * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
+ * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
+ ******************************************************************************/
 
 package com.novell.ldap.client;
 
 /**
  * Resizable array implementation.  This is a subset of java.util.ArrayList
- * providing only those functions needed for the LDAP implementation.  
+ * providing only those functions needed for the LDAP implementation.
  * When NetWare moves to a 1.2 JDK, we can eliminate this class.
  * <br><br>
  * <strong>Note that this implementation is not synchronized.</strong>
@@ -53,7 +62,7 @@ public class ArrayList
 	    if (index >= size || index < 0)
 	        throw new IndexOutOfBoundsException(
 		    "Index: "+index+", Size: "+size);
-        return;        
+        return;
     }
 
     /**
@@ -78,7 +87,7 @@ public class ArrayList
     /**
      * Increases the size of this <tt>ArrayList</tt>, if necessary,
      * to be sure it can hold the number of items specified by
-     * the capacity argument. 
+     * the capacity argument.
      *
      * @param   capacity   the desired capacity.
      */

@@ -1,17 +1,17 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSchema.java,v 1.19 2000/12/13 23:49:09 bgudmundson Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSchema.java,v 1.20 2000/12/20 20:59:28 bgudmundson Exp $
  *
- * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
+ * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
- * TO VERSION 2.0.1 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
+ * TO VERSION 2.0.7 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
  * AVAILABLE AT HTTP://WWW.OPENLDAP.ORG/LICENSE.HTML OR IN THE FILE "LICENSE"
  * IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
- * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.1 OF THE OPENLDAP
+ * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.7 OF THE OPENLDAP
  * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
  * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
- ***************************************************************************/
+ ******************************************************************************/
 
 package com.novell.ldap;
 
@@ -415,7 +415,7 @@ public class LDAPSchema {
       	return null;
       return (LDAPSyntaxSchema) syntaxHashtable.get(oid);
 
-   }	
+   }
 
    /**
     * Returns an enumeration of attribute definitions.
@@ -470,7 +470,7 @@ public class LDAPSchema {
    public Enumeration getDITContentRules() {
       return dITContentRuleHashtable.elements();
    }
-   
+
    /**
     * Returns an enumeration of name form definitions.
     *
@@ -479,7 +479,7 @@ public class LDAPSchema {
    public Enumeration getNameForms() {
       return nameFormHashtable.elements();
    }
-   
+
    /**
     * Returns an enumeration of syntax definitions.
     *
@@ -487,7 +487,7 @@ public class LDAPSchema {
     */
    public Enumeration getSyntaxes() {
       return syntaxHashtable.elements();
-   }	
+   }
 
    /**
     * Returns an enumeration of attribute names.
@@ -542,7 +542,7 @@ public class LDAPSchema {
    public Enumeration getDITContentRuleNames() {
       return dITContentRuleHashtable.keys();
    }
-   
+
   /**
   	* Returns an enumeration of name form names.
     *
@@ -550,5 +550,5 @@ public class LDAPSchema {
     */
    public Enumeration getNameFormNames() {
       return nameFormHashtable.keys();
-   } 	
+   }
 }

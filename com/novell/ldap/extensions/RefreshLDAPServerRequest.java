@@ -1,23 +1,23 @@
 /* **************************************************************************
- * $Id: RefreshLDAPServerRequest.java,v 1.9 2000/10/05 17:51:43 judy Exp $
+ * $Id: RefreshLDAPServerRequest.java,v 1.10 2000/10/10 19:17:31 judy Exp $
  *
- * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
- * 
+ * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
+ *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
- * TO VERSION 2.0.1 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
+ * TO VERSION 2.0.7 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
  * AVAILABLE AT HTTP://WWW.OPENLDAP.ORG/LICENSE.HTML OR IN THE FILE "LICENSE"
  * IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
- * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.1 OF THE OPENLDAP
+ * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.7 OF THE OPENLDAP
  * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
- * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY. 
- ***************************************************************************/
-package com.novell.ldap.extensions; 
+ * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
+ ******************************************************************************/
+package com.novell.ldap.extensions;
 
 import com.novell.ldap.*;
 import com.novell.ldap.asn1.*;
 import java.io.*;
- 
+
 /**
  *
  *  Reloads the LDAP server.
@@ -28,21 +28,21 @@ import java.io.*;
  *  <p>The requestValue is set to null.</p>
  */
 public class RefreshLDAPServerRequest extends LDAPExtendedOperation {
-   
+
 /**
  *
  *  Constructs an extended operation object for reloading the LDAP server.
  *
  *  <p>The constructor sets the OID.</p>
  *
- *  @exception LDAPException A general exception which includes an error 
+ *  @exception LDAPException A general exception which includes an error
  *                           message and an LDAP error code.
- */   
- public RefreshLDAPServerRequest() 
+ */
+ public RefreshLDAPServerRequest()
                 throws LDAPException {
-        
+
         super(NamingContextConstants.REFRESH_SERVER_REQ, null);
-        
+
    }
 
 }

@@ -1,20 +1,20 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPEntry.java,v 1.11 2000/12/07 16:31:01 javed Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPEntry.java,v 1.12 2001/02/26 19:58:23 vtag Exp $
  *
- * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
- * 
+ * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
+ *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
- * TO VERSION 2.0.1 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
+ * TO VERSION 2.0.7 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
  * AVAILABLE AT HTTP://WWW.OPENLDAP.ORG/LICENSE.HTML OR IN THE FILE "LICENSE"
  * IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
- * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.1 OF THE OPENLDAP
+ * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.7 OF THE OPENLDAP
  * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
- * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY. 
- ***************************************************************************/
- 
+ * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
+ ******************************************************************************/
+
 package com.novell.ldap;
- 
+
 /**
  *
  *  Represents a single entry in a directory, consisting of
@@ -66,9 +66,9 @@ public class LDAPEntry {
 
    /**
     * Returns the attributes matching the specified attrName.
-    * 
+    *
     * @param attrName The name of the attribute or attributes to return.
-    * <br><br>               
+    * <br><br>
     * @return An array of LDAPAttribute objects.
     */
    public LDAPAttribute getAttribute(String attrName) {
@@ -77,7 +77,7 @@ public class LDAPEntry {
    }
 
    /**
-    * Returns the attribute set of the entry. 
+    * Returns the attribute set of the entry.
     *
     * <p>All base and subtype variants of all attributes are
     * returned. The LDAPAttributeSet returned may be
@@ -92,11 +92,11 @@ public class LDAPEntry {
 
    /**
     * Returns an attribute set from the entry, consisting of only those
-    * attributes matching the specified subtypes. 
+    * attributes matching the specified subtypes.
     *
-    * <p>The getAttributeSet method can be used to extract only 
+    * <p>The getAttributeSet method can be used to extract only
     * a particular language variant subtype of each attribute,
-    * if it exists. The "subtype" may be, for example, "lang-ja", "binary", 
+    * if it exists. The "subtype" may be, for example, "lang-ja", "binary",
     * or "lang-ja;phonetic". If more than one subtype is specified, separated
     * with a semicolon, only those attributes with all of the named
     * subtypes will be returned. The LDAPAttributeSet returned may be

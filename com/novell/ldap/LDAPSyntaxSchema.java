@@ -1,3 +1,18 @@
+/* **************************************************************************
+ * $Novell$
+ *
+ * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
+ *
+ * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
+ * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
+ * TO VERSION 2.0.7 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
+ * AVAILABLE AT HTTP://WWW.OPENLDAP.ORG/LICENSE.HTML OR IN THE FILE "LICENSE"
+ * IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
+ * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.7 OF THE OPENLDAP
+ * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
+ * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
+ ******************************************************************************/
+
 package com.novell.ldap;
 import com.novell.ldap.client.SchemaParser;
 import com.novell.ldap.client.AttributeQualifier;
@@ -11,12 +26,12 @@ import java.io.IOException;
 /**
  * Represents a specific syntax definition in the directory schema.
  *
- * <p>The LDAPSyntaxSchema class is used to discover the known set of syntaxes 
+ * <p>The LDAPSyntaxSchema class is used to discover the known set of syntaxes
  * in effect for the subschema. </p>
  *
- * <p>Although this extends LDAPSchemaElement, it does not use the name or 
+ * <p>Although this extends LDAPSchemaElement, it does not use the name or
  * obsolete members. Therefore, calls to the getName method always return
- * null and to the isObsolete method always returns false. There is also no 
+ * null and to the isObsolete method always returns false. There is also no
  * matching getSyntaxNames method in LDAPSchema. </p>
  */
 
@@ -25,7 +40,7 @@ public class LDAPSyntaxSchema
 {
 
     /**
-     * Constructs a syntax for adding to or deleting from the schema. 
+     * Constructs a syntax for adding to or deleting from the schema.
      *
      * <p>Adding and removing syntaxes is not typically a supported
      * feature of LDAP servers. NDS does not allow syntaxes to be added
@@ -89,7 +104,7 @@ public class LDAPSyntaxSchema
         valueBuffer.append(" DESC ");
         valueBuffer.append("'" + token + "'");
       }
-      
+
       Enumeration en;
       if( (en = getQualifierNames()) != null){
       	String qualName;

@@ -1,17 +1,17 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConstraints.java,v 1.16 2001/02/26 19:58:23 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConstraints.java,v 1.17 2001/02/27 22:53:14 vtag Exp $
  *
- * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
+  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
- * TO VERSION 2.0.1 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
+ * TO VERSION 2.0.7 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
  * AVAILABLE AT HTTP://WWW.OPENLDAP.ORG/LICENSE.HTML OR IN THE FILE "LICENSE"
  * IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
- * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.1 OF THE OPENLDAP
+ * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.7 OF THE OPENLDAP
  * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
  * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
- ***************************************************************************/
+ ******************************************************************************/
 
 package com.novell.ldap;
 
@@ -19,9 +19,9 @@ import com.novell.ldap.client.Debug;
 
 /**
  *
- *  Represents a set of options to control an LDAP operation. 
+ *  Represents a set of options to control an LDAP operation.
  *
- * <p>An LDAPConstraints object is always associated with an LDAPConnection 
+ * <p>An LDAPConstraints object is always associated with an LDAPConnection
  * object; its values can be changed with LDAPConnection.setOption, or
  * overridden by passing an LDAPConstraints object to an operation.</p>
  */
@@ -63,10 +63,10 @@ public class LDAPConstraints implements Cloneable {
      *                  The default is 0, which means that there is no
      *                  maximum time limit. This an API imposed limit.
      *<br><br>
-     * @param doReferrals    The constraint for following referrals. True 
+     * @param doReferrals    The constraint for following referrals. True
      *                       indicates to follow referrals automatically and
-     *                       false to throw an LDAPReferralException error if 
-     *                       the server sends back a referral. False is the 
+     *                       false to throw an LDAPReferralException error if
+     *                       the server sends back a referral. False is the
      *                       default value. It is ignored for asynchronous
      *                       operations.
      *<br><br>
@@ -107,7 +107,7 @@ public class LDAPConstraints implements Cloneable {
      * referral following.
      *
      * @return The maximum number of hops to follow during automatic
-     * referral following. 
+     * referral following.
      */
     public int getHopLimit() {
         return hopLimit;
@@ -128,7 +128,7 @@ public class LDAPConstraints implements Cloneable {
     /**
      * Returns true if referrals are to be followed automatically.
      *
-     * @return  True if referrals are to be followed automatically, or 
+     * @return  True if referrals are to be followed automatically, or
      * false if referrals are to throw an LDAPReferralException.</p>
      */
     public boolean getReferralFollowing() {
@@ -137,10 +137,10 @@ public class LDAPConstraints implements Cloneable {
 
     /**
      * Returns the maximum number of milliseconds to wait for any operation
-     * under these constraints. 
+     * under these constraints.
      *
      * <p>If 0, there is no maximum time limit on waiting for the operation
-     *  results. The actual granularity of the timeout depends on the 
+     *  results. The actual granularity of the timeout depends on the
      * implementation.</p>
      *
      * @return The maximum number of milliseconds to wait for the operation.
@@ -151,7 +151,7 @@ public class LDAPConstraints implements Cloneable {
 
     /**
      * Sets the maximum number of hops to follow in sequence during
-     * automatic referral following. 
+     * automatic referral following.
      *
      * <p>The default is 10.</p>
      *
@@ -164,7 +164,7 @@ public class LDAPConstraints implements Cloneable {
     }
 
     /**
-     * Specifies the object that will process authentication requests. 
+     * Specifies the object that will process authentication requests.
      *
      * <p>The default is null.</p>
      *
@@ -177,10 +177,10 @@ public class LDAPConstraints implements Cloneable {
 
     /**
      * Specifies whether referrals are followed automatically or whether
-     * referrals throw an LDAPReferralException.  
+     * referrals throw an LDAPReferralException.
      *
      * <p>Referrals of any type other than to an LDAP server (for example, a
-     *  referral URL other than ldap://something) are ignored on automatic 
+     *  referral URL other than ldap://something) are ignored on automatic
      *  referral following. </p>
      *
      * <p> The default is false.</p>
@@ -200,10 +200,10 @@ public class LDAPConstraints implements Cloneable {
 
     /**
      * Sets the maximum number of milliseconds the client waits for
-     * any operation under these search constraints to complete. 
+     * any operation under these search constraints to complete.
      *
      * <p>If 0, there is no maximum time limit on waiting for the operation
-     * results. The actual granularity of the timeout depends on the 
+     * results. The actual granularity of the timeout depends on the
      * implementation.</p>
      *
      *  @param msLimit      The maximum milliseconds to wait.

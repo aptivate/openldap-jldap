@@ -1,18 +1,18 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPResponse.java,v 1.24 2001/01/04 20:14:47 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPResponse.java,v 1.25 2001/02/26 19:58:24 vtag Exp $
  *
- * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
- * 
+ * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
+ *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
- * TO VERSION 2.0.1 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
+ * TO VERSION 2.0.7 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
  * AVAILABLE AT HTTP://WWW.OPENLDAP.ORG/LICENSE.HTML OR IN THE FILE "LICENSE"
  * IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
- * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.1 OF THE OPENLDAP
+ * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.7 OF THE OPENLDAP
  * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
- * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY. 
- ***************************************************************************/
- 
+ * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
+ ******************************************************************************/
+
 package com.novell.ldap;
 
 import java.io.IOException;
@@ -90,11 +90,11 @@ public class LDAPResponse extends LDAPMessage
     }
 
     /**
-     * Returns the partially matched DN field from the server response, 
+     * Returns the partially matched DN field from the server response,
      * if the response contains one.
      *
      * @return The partially matched DN field, if the response contains one.
-     *         
+     *
      */
     public String getMatchedDN()
     {
@@ -115,10 +115,10 @@ public class LDAPResponse extends LDAPMessage
             // No referral exceptions returned from this source
             return null;
         }
-        
+
         String[] referrals = null;
         RfcReferral ref = ((RfcResponse)message.getProtocolOp()).getReferral();
-        
+
         if(ref != null) {
             // convert RFC 2251 Referral to String[]
             int size = ref.size();
@@ -156,7 +156,7 @@ public class LDAPResponse extends LDAPMessage
         } else {
             if( Debug.LDAP_DEBUG) {
                 Debug.trace( Debug.messages, "LDAPResponse: message(" +
-                    getMessageID() + ") result code " + getResultCode());                
+                    getMessageID() + ") result code " + getResultCode());
             }
             LDAPException ex = getResultException();
             if( ex != null) {
@@ -164,10 +164,10 @@ public class LDAPResponse extends LDAPMessage
             }
             return;
         }
-    } 
+    }
 
     /**
-     * Checks the resultCode and generates the appropriate exception or 
+     * Checks the resultCode and generates the appropriate exception or
      * null if success.
      */
     /* package */
@@ -254,7 +254,7 @@ public class LDAPResponse extends LDAPMessage
         }
         return ex;
     }
-    
+
     /* Methods from LDAPMessage */
 
     /**
@@ -279,9 +279,9 @@ public class LDAPResponse extends LDAPMessage
        }
         return super.getMessageID();
     }
-    
+
     /**
-     * Returns the LDAP operation type of the message. 
+     * Returns the LDAP operation type of the message.
      *
      * @return The operation type of the message.
      *

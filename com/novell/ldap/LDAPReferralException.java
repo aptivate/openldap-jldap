@@ -1,20 +1,20 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPReferralException.java,v 1.10 2001/01/24 17:39:24 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPReferralException.java,v 1.11 2001/02/26 19:58:24 vtag Exp $
  *
- * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
- * 
+ * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
+ *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
- * TO VERSION 2.0.1 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
+ * TO VERSION 2.0.7 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
  * AVAILABLE AT HTTP://WWW.OPENLDAP.ORG/LICENSE.HTML OR IN THE FILE "LICENSE"
  * IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
- * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.1 OF THE OPENLDAP
+ * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.7 OF THE OPENLDAP
  * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
- * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY. 
- ***************************************************************************/
- 
+ * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
+ ******************************************************************************/
+
 package com.novell.ldap;
- 
+
 /**
  *  Thrown when a server returns a referral and when a referral has not
  *  been followed.  It contains a list of URL strings corresponding
@@ -27,7 +27,7 @@ public class LDAPReferralException extends LDAPException
     private String failedReferral = null;
 	private String serverMessage = null;
 	private String[] referrals = null;
-    
+
    /**
     * Constructs a default exception with no specific error information.
     */
@@ -37,7 +37,7 @@ public class LDAPReferralException extends LDAPException
 
    /**
     * Constructs a default exception with a specified string as additional
-    * information. 
+    * information.
     *
     * <p>This form is used for lower-level errors.</p>
     *
@@ -73,7 +73,7 @@ public class LDAPReferralException extends LDAPException
 
    /**
     *
-    * Constructs an exception with a specified error string, result code, and 
+    * Constructs an exception with a specified error string, result code, and
     * an error message from the server.
     *
     *  @param message        The additional error information.
@@ -102,7 +102,7 @@ public class LDAPReferralException extends LDAPException
 
    /**
     *
-    * Constructs an exception with a specified error string, result code, 
+    * Constructs an exception with a specified error string, result code,
     * an error message from the server, and an exception that indicates
     * a failure to follow a referral.
     *
@@ -138,10 +138,10 @@ public class LDAPReferralException extends LDAPException
     {
         return failedReferral;
     }
-    
+
    /**
     * Gets the list of referrals (LDAP URLs to other servers) returned by
-    * the LDAP server. 
+    * the LDAP server.
     *
     * The referrals may include URLs of a type other than ones for an LDAP
     * server (for example, a referral URL other than ldap://something).</p>
@@ -149,7 +149,7 @@ public class LDAPReferralException extends LDAPException
    public String[] getReferrals() {
 	  return referrals;
    }
-   
+
    /**
     * Sets a referral that could not be processed
     *
@@ -160,7 +160,7 @@ public class LDAPReferralException extends LDAPException
        failedReferral = url;
        return;
    }
-   
+
    /**
     * Sets the list of referrals
     *

@@ -1,23 +1,23 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPExtendedOperation.java,v 1.9 2000/10/30 19:10:59 javed Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPExtendedOperation.java,v 1.10 2000/10/31 23:52:21 vtag Exp $
  *
- * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
- * 
+ * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
+ *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
- * TO VERSION 2.0.1 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
+ * TO VERSION 2.0.7 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
  * AVAILABLE AT HTTP://WWW.OPENLDAP.ORG/LICENSE.HTML OR IN THE FILE "LICENSE"
  * IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
- * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.1 OF THE OPENLDAP
+ * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.7 OF THE OPENLDAP
  * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
- * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY. 
- ***************************************************************************/
- 
+ * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
+ ******************************************************************************/
+
 package com.novell.ldap;
- 
+
 /**
- *  Encapsulates an ID which uniquely identifies a particular extended 
- *  operation, known to a particular server, and the data associated 
+ *  Encapsulates an ID which uniquely identifies a particular extended
+ *  operation, known to a particular server, and the data associated
  *  with that extended operation.
  */
 public class LDAPExtendedOperation {
@@ -54,7 +54,7 @@ public class LDAPExtendedOperation {
    public byte[] getValue() {
       return vals;
    }
-   
+
    /**
     *  Sets the value for the operation-specific data.
     *

@@ -1,17 +1,17 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.37 2001/02/26 19:58:26 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/client/Connection.java,v 1.38 2001/02/28 21:16:08 vtag Exp $
  *
- * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
+ * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
- * TO VERSION 2.0.1 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
+ * TO VERSION 2.0.7 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
  * AVAILABLE AT HTTP://WWW.OPENLDAP.ORG/LICENSE.HTML OR IN THE FILE "LICENSE"
  * IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
- * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.1 OF THE OPENLDAP
+ * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.7 OF THE OPENLDAP
  * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
  * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
- ***************************************************************************/
+ ******************************************************************************/
 
 package com.novell.ldap.client;
 
@@ -378,7 +378,7 @@ public final class Connection implements Runnable
      *  Connection object is returned.  If not a clone,
      *  the current connnection is destroyed and the
      *  existing object is returned.
-     * 
+     *
      *  Only one clone/destroyClone is allowed to run at any one time
      *
      * @return a Connection object.
@@ -506,7 +506,7 @@ public final class Connection implements Runnable
                 Debug.trace( Debug.messages, name +
                     "I/O Excepiton on " + host + ":" + port +
                     " " + ioe.toString());
-            }        
+            }
             // I/O Exception on host:port
             throw new LDAPException(LDAPExceptionMessageResource.IO_EXCEPTION,
                 new Object[] {host, new Integer(port)},
@@ -788,39 +788,39 @@ public final class Connection implements Runnable
                 } catch ( NoSuchFieldException ex) {
 
 					// We get the NoSuchFieldException when we could not find a matching
-					// message id.  First check to see if this is an unsolicited 
-					// notification (msgID == 0). If it is not we throw it away.  
+					// message id.  First check to see if this is an unsolicited
+					// notification (msgID == 0). If it is not we throw it away.
 					// If it is we call any unsolicited
-					// listeners that might have been registered to listen for these 
+					// listeners that might have been registered to listen for these
 					// message.
-		
-		
+
+
 					// Note the location of this code.  We could have required that
 					// message ID 0 be just like other message ID's but since
 					// message ID has to be treated specially we have a seperate
-					// check for message ID 0.  Also note that this test is after the 
+					// check for message ID 0.  Also note that this test is after the
 					// regular message list has been checked for.  We could have always
-					// checked the list of messages after checking if this is an 
+					// checked the list of messages after checking if this is an
 					// unsolicited notification but that would have inefficient as
-					// message ID 0 is a rare event (as of this time). 			
+					// message ID 0 is a rare event (as of this time).
 					if (msgId == 0) {
-						
+
 						if( Debug.LDAP_DEBUG ) {
 							Debug.trace( Debug.messages, name + "Received message id 0");
 						}
 
 						// Notify any listeners that might have been registered
 						notifyAllUnsolicitedListeners(msg);
-					
+
 					}
 					else {
-					
+
 						if( Debug.LDAP_DEBUG ) {
 							Debug.trace( Debug.messages, name +
 								"reader: message(" + msgId +
 								") not found, discarding reply");
 						}
-					
+
 					}
                 }
             }
@@ -830,7 +830,7 @@ public final class Connection implements Runnable
                     "Connection lost waiting for results from " +
                     host + ":" + port + ", shutdown=" + shutdown +
                     "\n\t" + ioe.toString());
-            }        
+            }
             if( ! shutdown) {
                 // Connection lost waiting for results from host:port
                 notify = new LocalException(
@@ -843,7 +843,7 @@ public final class Connection implements Runnable
             if( Debug.LDAP_DEBUG ) {
                 Debug.trace( Debug.messages, name +
                 "reader: connection shutdown");
-            }        
+            }
             // Notify application of exception, if any
             shutdown(reason, 0, notify);
         }
@@ -851,7 +851,7 @@ public final class Connection implements Runnable
         if( Debug.LDAP_DEBUG ) {
             Debug.trace( Debug.messages, name +
             "reader: thread terminated");
-        }        
+        }
         return;
     }
     /**
@@ -874,7 +874,7 @@ public final class Connection implements Runnable
     }
 
     /**
-     * Sets the current referral active on this connection if created to 
+     * Sets the current referral active on this connection if created to
      * follow referrals.
      */
     public void setActiveReferral( String referral)
@@ -884,7 +884,7 @@ public final class Connection implements Runnable
     }
 
     /**
-     * Gets the current referral active on this connection if created to 
+     * Gets the current referral active on this connection if created to
      * follow referrals.
      *
      * @return the active referral url
@@ -910,7 +910,7 @@ public final class Connection implements Runnable
 	}
 
     /** Inner class defined so that we can spawn off each unsolicited
-     *  listener as a seperate thread.  We did not want to call the 
+     *  listener as a seperate thread.  We did not want to call the
      *  unsolicited listener method directly as this would have tied up our
      *  deamon listener thread in the applications unsolicited listener method.
      *  Since we do not know what the application unsolicited listener
@@ -918,25 +918,25 @@ public final class Connection implements Runnable
      *  notification.  We use this class to spawn off the unsolicited
      *  notification as a seperate thread
      */
-    private class UnsolicitedListenerThread extends Thread 
+    private class UnsolicitedListenerThread extends Thread
     {
         private LDAPUnsolicitedNotificationListener listenerObj;
         private LDAPMessage unsolicitedMsg;
-        
+
         public UnsolicitedListenerThread( LDAPUnsolicitedNotificationListener l,
                                           LDAPMessage m)
         {
             this.listenerObj = l;
             this.unsolicitedMsg = m;
         }
-        
+
         public void run()
         {
             listenerObj.messageReceived(unsolicitedMsg);
         }
-        
+
     }
-    
+
 	private void notifyAllUnsolicitedListeners(RfcLDAPMessage message)
 	{
 		if( Debug.LDAP_DEBUG ) {
@@ -951,21 +951,21 @@ public final class Connection implements Runnable
 
 			// Get next listener
 			LDAPUnsolicitedNotificationListener listener = (LDAPUnsolicitedNotificationListener) unsolicitedListeners.get(i);
-			
+
 
 			// Create a new ExtendedResponse each time as we do not want each listener
 			// to have its own copy of the message
 			LDAPMessage tempLDAPMessage = new LDAPExtendedResponse(message);
-			
-			
+
+
 			// MISSING:  If this is a shutdown notification from the server
 			// set a flag in the Connection class so that we can throw an
 			// appropriate LDAPException to the application
-			
+
 			// N  E  E  D   C O D E         H E R E - See javed
-			
+
 			// Spawn a new thread for each listener to go process the message
-			// The reason we create a new thread rather than just call the 
+			// The reason we create a new thread rather than just call the
 			// the messageReceived method directly is beacuse we do not know
 			// what kind of processing the notification listener class will
 			// do.  We do not want our deamon thread to block waiting for
@@ -974,8 +974,8 @@ public final class Connection implements Runnable
             u.start();
 
 		}
-		
-		            
+
+
         if( Debug.LDAP_DEBUG ) {
             Debug.trace( Debug.messages, name + "Done calling all Unsolicited Message Listeners");
         }

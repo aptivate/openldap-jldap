@@ -1,23 +1,23 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPBind.java,v 1.8 2001/01/25 16:34:06 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPBind.java,v 1.9 2001/02/26 19:58:21 vtag Exp $
  *
- * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
- * 
+ * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
+ *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
- * TO VERSION 2.0.1 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
+ * TO VERSION 2.0.7 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
  * AVAILABLE AT HTTP://WWW.OPENLDAP.ORG/LICENSE.HTML OR IN THE FILE "LICENSE"
  * IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
- * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.1 OF THE OPENLDAP
+ * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.7 OF THE OPENLDAP
  * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
- * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY. 
- ***************************************************************************/
- 
+ * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
+ ******************************************************************************/
+
 package com.novell.ldap;
 
 /**
  *
- *  Used to do explicit bind processing on a referral. 
+ *  Used to do explicit bind processing on a referral.
  *
  *  <p>This interface allows a programmer to override the default
  *  authentication and reauthentication behavior when automatically
@@ -25,10 +25,10 @@ package com.novell.ldap;
  *  authentication mechanism used on automatic referral following.</p>
  *
  *  <p>A client can specify an instance of this class to be used
- *  on a single operation (through the LDAPConstraints object) 
+ *  on a single operation (through the LDAPConstraints object)
  *  or for all operations (through the LDAPContraints object
  *  associated with the connection).
- *  
+ *
  *  @see LDAPRebind
  *  @see LDAPConstraints#setReferralFollowing(boolean)
  */

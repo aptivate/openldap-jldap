@@ -1,17 +1,17 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPPersistSearchControl.java,v 1.4 2000/11/10 16:50:05 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPPersistSearchControl.java,v 1.1 2001/02/14 23:31:14 bgbrown Exp $
  *
- * Copyright (C) 2001 Novell, Inc. All Rights Reserved.
- * 
+ * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
+ *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
- * TO VERSION 2.0.1 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
+ * TO VERSION 2.0.7 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
  * AVAILABLE AT HTTP://WWW.OPENLDAP.ORG/LICENSE.HTML OR IN THE FILE "LICENSE"
  * IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
- * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.1 OF THE OPENLDAP
+ * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.7 OF THE OPENLDAP
  * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
- * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY. 
- ***************************************************************************/
+ * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
+ ******************************************************************************/
 
 package com.novell.ldap.controls;
 
@@ -27,7 +27,7 @@ import com.novell.ldap.client.Debug;
  *
  *  LDAPPersistSearchControl is a Server Control that allows a client
  *  to receive notifications from the server of changes to entries within
- *  the searches result set. The client can be notified when an entry is 
+ *  the searches result set. The client can be notified when an entry is
  *  added to the result set, when an entry is deleted from the result set,
  *  when a DN has been changed or when and attribute value has been changed.
  */
@@ -36,33 +36,33 @@ public class LDAPPersistSearchControl extends LDAPControl
 
     /**
      *  Change type specifying that you want to track additions of new entries
-     *  to the directory. 
+     *  to the directory.
      */
-    public static final int ADD = 1; 
+    public static final int ADD = 1;
 
     /**
      *  Change type specifying that you want to track removals of entries from
-     *  the directory. 
+     *  the directory.
      */
     public static final int DELETE = 2;
-   
+
     /**
-     *  Change type specifying that you want to track modifications of entries 
+     *  Change type specifying that you want to track modifications of entries
      *  in the directory.
      */
-    public static final int MODIFY = 4; 
-          
+    public static final int MODIFY = 4;
+
     /**
-     *  Change type specifying that you want to track modifications of the DNs 
+     *  Change type specifying that you want to track modifications of the DNs
      *  of entries in the directory.
      */
     public static final int MODDN = 8;
-    
+
     /**
      *  Change type specifying that you want to track any of the above
      *  modifications.
      */
-    public static final int ANY = ADD | DELETE | MODIFY | MODDN; 
+    public static final int ANY = ADD | DELETE | MODIFY | MODDN;
 
     /**
      * The OID of the persistent search control
@@ -77,24 +77,24 @@ public class LDAPPersistSearchControl extends LDAPControl
         try
         {
             // Register LDAPEntryChangeControl
-            LDAPControl.register(LDAPEntryChangeControl.OID, 
+            LDAPControl.register(LDAPEntryChangeControl.OID,
              Class.forName("com.novell.ldap.controls.LDAPEntryChangeControl"));
             if( Debug.LDAP_DEBUG)
             {
-                Debug.trace( Debug.controls, 
+                Debug.trace( Debug.controls,
                              "Registered class for Entry Change control.");
             }
-        } 
+        }
         catch (ClassNotFoundException e)
         {
             if( Debug.LDAP_DEBUG)
             {
-                Debug.trace( Debug.controls, 
+                Debug.trace( Debug.controls,
                  "Could not register class for Entry Change control" +
                  " - class not found");
             }
         }
-        
+
     } // end static code
 
 
@@ -102,8 +102,8 @@ public class LDAPPersistSearchControl extends LDAPControl
     /* public constructors */
 
     /**
-     *  The default constructor. A control with changes equal to ANY, 
-     *  isCritical equal to true, changesOnly equal to true, and 
+     *  The default constructor. A control with changes equal to ANY,
+     *  isCritical equal to true, changesOnly equal to true, and
      *  returnControls equal to true
      */
     public LDAPPersistSearchControl()
@@ -123,12 +123,12 @@ public class LDAPPersistSearchControl extends LDAPControl
      *      To track all changes the value can be set to:
      *                               LDAPPersistSearchControl.ANY
      *  @param changesOnly  true if you do not want the server to return
-     *      all existing entries in the directory that match the search 
-     *      criteria. (Use this if you just want the changed entries to be 
+     *      all existing entries in the directory that match the search
+     *      criteria. (Use this if you just want the changed entries to be
      *      returned.)
      *  @param returnControls  true if you want the server to return entry
      *      change controls with each entry in the search results. You need to
-     *      return entry change controls to discover what type of change 
+     *      return entry change controls to discover what type of change
      *      and other additional information about the change.
      *  @param isCritical  true if this control is critical to the search
      *      operation. If true and the server does not support this control,
@@ -142,7 +142,7 @@ public class LDAPPersistSearchControl extends LDAPControl
     {
         super(OID, isCritical, null);
 
-        m_changeTypes = changeTypes;        
+        m_changeTypes = changeTypes;
         m_changesOnly = changesOnly;
         m_returnControls = returnControls;
 
@@ -154,7 +154,7 @@ public class LDAPPersistSearchControl extends LDAPControl
 
         setValue();
     }
-            
+
     /**
      *  3.4.2 getChangeTypes
      *  Returns the change types to be monitored as a logical OR of any or
@@ -189,8 +189,8 @@ public class LDAPPersistSearchControl extends LDAPControl
      *  3.4.3 getReturnControls()
      *  Returns true if entry change controls are to be returned with the
      *  search results.
-     * 
-     *  @return  true if entry change controls are to be returned with the 
+     *
+     *  @return  true if entry change controls are to be returned with the
      *      search results. Otherwise, false is returned
      */
     public boolean getReturnControls()
@@ -217,7 +217,7 @@ public class LDAPPersistSearchControl extends LDAPControl
      *  getChangesOnly
      *  Returns true if only changes are to be returned. Results from
      *  the initial search are not returned.
-     *  
+     *
      *  @return  true of only changes are to be returned
      */
     public boolean getChangesOnly()

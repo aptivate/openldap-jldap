@@ -1,17 +1,17 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPSortResponse.java,v 1.2 2001/01/25 23:05:53 javed Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPSortResponse.java,v 1.3 2001/01/29 18:56:29 javed Exp $
  *
- * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
- * 
+ * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
+ *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
- * TO VERSION 2.0.1 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
+ * TO VERSION 2.0.7 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
  * AVAILABLE AT HTTP://WWW.OPENLDAP.ORG/LICENSE.HTML OR IN THE FILE "LICENSE"
  * IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
- * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.1 OF THE OPENLDAP
+ * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.7 OF THE OPENLDAP
  * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
- * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY. 
- ***************************************************************************/
+ * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
+ ******************************************************************************/
 
 package com.novell.ldap.controls;
 
@@ -29,22 +29,22 @@ import com.novell.ldap.rfc2251.*;
  *  Controls draft-- add descritption from draft here.
  */
 public class LDAPSortResponse extends LDAPControl {
-    
+
     private String failedAttribute;
     private int resultCode;
     public static final String OID = "1.2.840.113556.1.4.474";
-    
-    /** 
+
+    /**
      * @deprecated For internal use only.  Should not be used by applications.
-     * 
+     *
      * This constructor is usually called by the SDK to instantiate an
      * a LDAPControl corresponding to the Server response to a LDAP
      * Sort Control request.  Application programmers should not have
-     * any reason to call the constructor.  This constructor besides 
+     * any reason to call the constructor.  This constructor besides
      * constructing a LDAPControl object parses the contents of the response
      * control.
      * RFC 2891 defines this response control as follows:
-     * 
+     *
      * The controlValue is an OCTET STRING, whose
      * value is the BER encoding of a value of the following SEQUENCE:
 
@@ -76,7 +76,7 @@ public class LDAPSortResponse extends LDAPControl {
                     throws IOException
     {
         super(rfcCtl);
-        
+
         // Get the control value
         byte [] tempCtlData = this.getValue();
 
@@ -87,19 +87,19 @@ public class LDAPSortResponse extends LDAPControl {
             throw new IOException("Decoding error");
 
 		// We should get back an enumerated type
-        ASN1Object asnObj = decoder.decode(tempCtlData);        
+        ASN1Object asnObj = decoder.decode(tempCtlData);
 
         if ( (asnObj == null) || (!(asnObj instanceof ASN1Sequence)) )
             throw new IOException("Decoding error");
-        
+
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.controls, "LDAPSortResponse controlvalue =" + asnObj.toString());
         }
-    
+
         ASN1Object asn1Enum = ((ASN1Sequence)asnObj).get(0);
         if ( (asn1Enum != null) && (asn1Enum instanceof ASN1Enumerated) )
              resultCode =((ASN1Enumerated)asn1Enum).getInt();
-            
+
         // Second element is the attributeType
         if ( ((ASN1Sequence)asnObj).size() > 1) {
             ASN1Object asn1String = ((ASN1Sequence)asnObj).get(1);
@@ -108,7 +108,7 @@ public class LDAPSortResponse extends LDAPControl {
         }
     }
 
-    
+
     // 3.3.2 getFailedAttribute
 
     /**

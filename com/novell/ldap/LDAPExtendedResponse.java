@@ -1,17 +1,17 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPExtendedResponse.java,v 1.22 2000/11/13 23:57:01 javed Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPExtendedResponse.java,v 1.23 2001/02/16 18:58:49 javed Exp $
  *
- * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
- * 
+ * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
+ *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
- * TO VERSION 2.0.1 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
+ * TO VERSION 2.0.7 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
  * AVAILABLE AT HTTP://WWW.OPENLDAP.ORG/LICENSE.HTML OR IN THE FILE "LICENSE"
  * IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
- * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.1 OF THE OPENLDAP
+ * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.7 OF THE OPENLDAP
  * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
- * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY. 
- ***************************************************************************/
+ * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
+ ******************************************************************************/
 
 package com.novell.ldap;
 
@@ -24,7 +24,7 @@ import com.novell.ldap.asn1.*;
  *
  *  Encapsulates the response returned by an LDAP server on an
  *  asynchronous extended operation request.  It extends LDAPResponse.
- *  
+ *
  *  The response can contain the OID of the extension, an octet string
  *  with the operation's data, both, or neither.
  *
@@ -35,7 +35,7 @@ public class LDAPExtendedResponse extends LDAPResponse {
      * Creates an LDAPExtendedResponse object which encapsulates
      * a server response to an asynchronous extended operation request.
      *
-     * @param message  The RfcLDAPMessage to convert to an 
+     * @param message  The RfcLDAPMessage to convert to an
      *                 LDAPExtendedResponse object.
      */
     public LDAPExtendedResponse(RfcLDAPMessage message)

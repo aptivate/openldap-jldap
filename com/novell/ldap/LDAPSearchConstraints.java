@@ -1,30 +1,30 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchConstraints.java,v 1.13 2001/01/04 16:59:49 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchConstraints.java,v 1.14 2001/02/26 19:58:25 vtag Exp $
  *
- * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
- * 
+ * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
+ *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
- * TO VERSION 2.0.1 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
+ * TO VERSION 2.0.7 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
  * AVAILABLE AT HTTP://WWW.OPENLDAP.ORG/LICENSE.HTML OR IN THE FILE "LICENSE"
  * IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
- * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.1 OF THE OPENLDAP
+ * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.7 OF THE OPENLDAP
  * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
- * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY. 
- ***************************************************************************/
+ * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
+ ******************************************************************************/
 
 package com.novell.ldap;
 
 import com.novell.ldap.client.Debug;
 
-/** 
+/**
  *
- *  Defines the options controlling search operations. 
+ *  Defines the options controlling search operations.
  *
  *  <p>An LDAPSearchConstraints object is always associated with an LDAPConnection
  *  object; its values can be changed with the LDAPConnection.setOption method,
  *  or overridden by passing an LDAPConstraints object to the search operation. </p>
- *  
+ *
  *  @see LDAPConnection#setSearchConstraints(LDAPSearchConstraints)
  *  @see LDAPConstraints
  *  @see LDAPConnection#setConstraints(LDAPConstraints)
@@ -48,10 +48,10 @@ public class LDAPSearchConstraints extends LDAPConstraints {
      * @see #setDereference(int)
      */
     public static final int DEREF_NEVER  = 0;
-   
+
     /**
      * Used to indicate that aliases are are derefrenced when
-     * searching the entries beneath the starting point but not when 
+     * searching the entries beneath the starting point but not when
      * searching for the starting entry.
      *
      * <p> DEREF_SEARCHING = 1 </p>
@@ -60,7 +60,7 @@ public class LDAPSearchConstraints extends LDAPConstraints {
      * @see #setDereference(int)
      */
     public static final int DEREF_SEARCHING = 1;
-   
+
     /**
      * Used to indicate that aliases are dereferenced when
      * searching for the starting entry but are not dereferenced when
@@ -72,7 +72,7 @@ public class LDAPSearchConstraints extends LDAPConstraints {
      * @see #setDereference(int)
      */
     public static final int DEREF_FINDING = 2;
-   
+
     /**
      * Used to indicate that aliases are dereferenced when
      * searching for the starting entry and when
@@ -104,7 +104,7 @@ public class LDAPSearchConstraints extends LDAPConstraints {
 
     /**
      * Constructs a new LDAPSearchConstraints object and allows specifying
-     * the operational constraints in that object, including the LDAPBind 
+     * the operational constraints in that object, including the LDAPBind
      * object.
      *
      *  @param msLimit  The maximum time in milliseconds to wait for results.
@@ -120,15 +120,15 @@ public class LDAPSearchConstraints extends LDAPConstraints {
      *                         DEREF_FINDING, DEREF_SEARCHING, or
      *                         DEREF_ALWAYS from this class.
      *                         Default: LDAPConnection.DEREF_NEVER
-     *<br><br> 
+     *<br><br>
      *  @param maxResults      The maximum number of search results to return.
      *                         Default: 1000
      *<br><br>
      *  @param doReferrals     Specifies whether referrals are followed
      *                         automatically. Set to true to follow referrals
-     *                         automatically, or false to throw an 
+     *                         automatically, or false to throw an
      *                         LDAPReferralException error it the server sends
-     *                         back a referral. Default: false 
+     *                         back a referral. Default: false
      *<br><br>
      *  @param batchSize       The number of results to return in a batch.
      *                         Specifying 0 means to block until all results are in.
@@ -188,14 +188,14 @@ public class LDAPSearchConstraints extends LDAPConstraints {
     }
 
     /**
-     * Specifies when aliases should be dereferenced. 
+     * Specifies when aliases should be dereferenced.
      *
      * <p>Returns one of the following:
      * <ul>
      *   <li>DEREF_NEVER</li>
      *   <li>DEREF_FINDING</li>
      *   <li>DEREF_SEARCHING</li>
-     *   <li>DEREF_ALWAYS</li> 
+     *   <li>DEREF_ALWAYS</li>
      * </ul>
      *
      * @return When aliases are dereferenced.
@@ -247,16 +247,16 @@ public class LDAPSearchConstraints extends LDAPConstraints {
      * dereferenced, and if so, when.
      *
      *
-     *  @param dereference  Specifies how aliases are dereference and can be set 
+     *  @param dereference  Specifies how aliases are dereference and can be set
      *                      to one of the following:
      * <ul>
      *                  <li>DEREF_NEVER - do not dereference aliases</li>
      *                  <li>DEREF_FINDING - dereference aliases when finding
      *                            the base object to start the search</li>
-     *                  <li>DEREF_SEARCHING - dereference aliases when 
-     *                                 searching but not when finding the base 
+     *                  <li>DEREF_SEARCHING - dereference aliases when
+     *                                 searching but not when finding the base
      *                                 object to start the search</li>
-     *                  <li>DEREF_ALWAYS - dereference aliases when finding 
+     *                  <li>DEREF_ALWAYS - dereference aliases when finding
      *                         the base object and when searching</li>
      * </ul>
      */
@@ -278,7 +278,7 @@ public class LDAPSearchConstraints extends LDAPConstraints {
 
     /**
      * Sets the maximum number of seconds that the server is to wait when
-     * returning search results. 
+     * returning search results.
      *
      * <p>The parameter is only recognized on search operations. </p>
      *

@@ -1,17 +1,17 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSchemaElement.java,v 1.10 2000/10/23 18:49:06 judy Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSchemaElement.java,v 1.11 2000/10/31 23:52:24 vtag Exp $
  *
- * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
+ * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
- * TO VERSION 2.0.1 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
+ * TO VERSION 2.0.7 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
  * AVAILABLE AT HTTP://WWW.OPENLDAP.ORG/LICENSE.HTML OR IN THE FILE "LICENSE"
  * IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
- * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.1 OF THE OPENLDAP
+ * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.7 OF THE OPENLDAP
  * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
  * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
- ***************************************************************************/
+ ******************************************************************************/
 
 package com.novell.ldap;
 
@@ -22,7 +22,7 @@ import com.novell.ldap.client.AttributeQualifier;
 
 /**
  *  The base class for representing LDAP schema elements.
- *  
+ *
  */
 public abstract class LDAPSchemaElement {
 
@@ -30,7 +30,7 @@ public abstract class LDAPSchemaElement {
     * The name for the schema element.
     */
     protected String name;
-    
+
    /**
     * The OID for the schema element.
     */
@@ -50,34 +50,34 @@ public abstract class LDAPSchemaElement {
     * If present, indicates that the element is obsolete.
     */
     protected boolean obsolete;
-    
+
    /**
-    * A string array of optional, or vendor-specific, qualifiers for the 
+    * A string array of optional, or vendor-specific, qualifiers for the
     * schema element.
     *
     * <p> These optional qualifiers begin with "X-"; the NDS-specific qualifiers
     * begin with "X-NDS". </p>
     */
 	protected String[] qualifier;
-    
+
    /**
-    * A string value for the schema element in a format that can be used to add 
+    * A string value for the schema element in a format that can be used to add
     * the element to the directory.
     */
 	protected String value;
-    
+
    /**
-   * A hash table that contains the vendor-specific qualifiers (for example, 
+   * A hash table that contains the vendor-specific qualifiers (for example,
    * the X-NDS flags).
    */
     protected Hashtable hashQualifier = new Hashtable();
 
    /**
     * Returns an array of alternative names for the element, or null if
-    * none is found. 
+    * none is found.
     *
-    * <p>The getAliases method accesses the NAME qualifier (from the BNF  
-    * descriptions of LDAP schema definitions). The array consists of all 
+    * <p>The getAliases method accesses the NAME qualifier (from the BNF
+    * descriptions of LDAP schema definitions). The array consists of all
     * values but the first value of the NAME qualifier. </p>
     *
     *  @return An array of alternative names for the element, or null if none
@@ -94,26 +94,26 @@ public abstract class LDAPSchemaElement {
    }
 
    /**
-    * Returns the description of the element. 
+    * Returns the description of the element.
     *
-    * <p>The getDescription method returns the value of the DESC qualifier  
+    * <p>The getDescription method returns the value of the DESC qualifier
     * (from the BNF descriptions of LDAP schema definitions). </p>
     *
     * @return The description of the element.
-    * 
+    *
     */
    public String getDescription() {
       return description;
    }
 
    /**
-    * Returns the name of the element. 
+    * Returns the name of the element.
     *
-    * <p>The getName method accesses the NAME qualifier (from the BNF  
-    * descriptions of LDAP schema definitions). This method returns the first 
+    * <p>The getName method accesses the NAME qualifier (from the BNF
+    * descriptions of LDAP schema definitions). This method returns the first
     * value of the NAME field.</p>
     *
-    *  @return The name of the element. 
+    *  @return The name of the element.
     */
    public String getName() {
       return name;
@@ -130,7 +130,7 @@ public abstract class LDAPSchemaElement {
 
    /**
     * Returns an array of all values of a specified optional or non-
-    * standard qualifier of the element. 
+    * standard qualifier of the element.
     *
     * <p>The getQualifier method may be used to access the values of
     * vendor-specific qualifiers (which begin with "X-").</p>
@@ -148,7 +148,7 @@ public abstract class LDAPSchemaElement {
    }
 
    /**
-    * Returns an enumeration of all qualifiers of the element which are 
+    * Returns an enumeration of all qualifiers of the element which are
     * vendor specific (begin with "X-").
     *
     *@return An enumeration of all qualifiers of the element.
@@ -169,7 +169,7 @@ public abstract class LDAPSchemaElement {
     * Returns whether the element has the OBSOLETE qualifier
     * in its LDAP definition.
     *
-    * @return True if the LDAP definition contains the OBSOLETE qualifier; 
+    * @return True if the LDAP definition contains the OBSOLETE qualifier;
     *         false if OBSOLETE qualifier is not present.
     */
    public boolean isObsolete() {
@@ -188,7 +188,7 @@ public abstract class LDAPSchemaElement {
 
    /**
     * Sets the values of a specified optional or non-standard qualifier of
-    * the element. 
+    * the element.
     *
     * <p>The setQualifier method is used to set the values of vendor-
     * specific qualifiers (which begin with "X-").
@@ -215,7 +215,7 @@ public abstract class LDAPSchemaElement {
     *                  Typically the connection must have been
     *                  authenticated to add a schema definition.
     *
-    *  @exception LDAPException A general exception which includes an error 
+    *  @exception LDAPException A general exception which includes an error
     *                           message and an LDAP error code.
     */
    public void add(LDAPConnection ld) throws LDAPException {
@@ -223,7 +223,7 @@ public abstract class LDAPSchemaElement {
    }
 
    /**
-    * Adds the definition to a directory, at a specified location. An exception 
+    * Adds the definition to a directory, at a specified location. An exception
     * is thrown if the definition cannot be added.
     *
     *  @param ld       An open connection to a directory server.
@@ -233,7 +233,7 @@ public abstract class LDAPSchemaElement {
     *  @param dn       The entry at which to determine the SubschemaSubentry
     *                  to which the schema element is to be added.
     *
-    *  @exception LDAPException A general exception which includes an error 
+    *  @exception LDAPException A general exception which includes an error
     *                           message and an LDAP error code.
     */
    public void add(LDAPConnection ld, String dn) throws LDAPException {
@@ -256,7 +256,7 @@ public abstract class LDAPSchemaElement {
    }
 
    /**
-    * Removes the definition from a directory, at a specified location.  
+    * Removes the definition from a directory, at a specified location.
     * An exception is thrown if the definition cannot be removed.
     *
     *  @param ld       An open connection to a directory server.
@@ -266,7 +266,7 @@ public abstract class LDAPSchemaElement {
     *  @param dn       The entry at which to determine the SubschemaSubentry
     *                  to remove the schema element from.
     *
-    *  @exception LDAPException A general exception which includes an error 
+    *  @exception LDAPException A general exception which includes an error
     *                           message and an LDAP error code.
     */
    public void remove(LDAPConnection ld, String dn) throws LDAPException {
@@ -283,7 +283,7 @@ public abstract class LDAPSchemaElement {
     *<br><br>
     *  @param newValue  The new schema element value.
     *
-    *  @exception LDAPException A general exception which includes an error 
+    *  @exception LDAPException A general exception which includes an error
     *                           message and an LDAP error code.
     */
    public void modify(LDAPConnection ld,
@@ -293,7 +293,7 @@ public abstract class LDAPSchemaElement {
 
    /**
     * Replaces a single value of the schema element definition in the
-    * schema, at a specified location in the directory. An exception is thrown 
+    * schema, at a specified location in the directory. An exception is thrown
     * if the definition cannot be modified.
     *
     *  @param ld       An open connection to a directory server.

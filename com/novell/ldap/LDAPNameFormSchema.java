@@ -1,17 +1,17 @@
 /* **************************************************************************
  * $Novell:
  *
- * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
+ * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
- * TO VERSION 2.0.1 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
+ * TO VERSION 2.0.7 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
  * AVAILABLE AT HTTP://WWW.OPENLDAP.ORG/LICENSE.HTML OR IN THE FILE "LICENSE"
  * IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
- * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.1 OF THE OPENLDAP
+ * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.7 OF THE OPENLDAP
  * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
  * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
- ***************************************************************************/
+ ******************************************************************************/
 package com.novell.ldap;
 
 import com.novell.ldap.client.SchemaParser;
@@ -22,7 +22,7 @@ import java.io.IOException;
 /**
  *  Represents a specific a name form in the directory schema.
  *
- *  <p>The LDAPNameFormSchema class is used to discover or modify the allowed 
+ *  <p>The LDAPNameFormSchema class is used to discover or modify the allowed
  *  naming attributes for a particular object class.</p>
  */
 
@@ -56,7 +56,7 @@ public class LDAPNameFormSchema
      *
      * @param optional    A list of the attributes that may be present
      *                    in the RDN of an entry that this name form
-     *                    controls. These attributes may be specified by 
+     *                    controls. These attributes may be specified by
      *                    either name or numeric oid.</br></br>
      *
      * @param aliases     An optional list of additional names by which the

@@ -1,17 +1,17 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPResponseListener.java,v 1.24 2000/12/06 19:30:05 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPResponseListener.java,v 1.25 2001/01/04 20:14:47 vtag Exp $
  *
- * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
- * 
+ * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
+ *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
- * TO VERSION 2.0.1 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
+ * TO VERSION 2.0.7 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
  * AVAILABLE AT HTTP://WWW.OPENLDAP.ORG/LICENSE.HTML OR IN THE FILE "LICENSE"
  * IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
- * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.1 OF THE OPENLDAP
+ * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.7 OF THE OPENLDAP
  * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
- * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY. 
- ***************************************************************************/
+ * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
+ ******************************************************************************/
 
 package com.novell.ldap;
 
@@ -21,7 +21,7 @@ import com.novell.ldap.client.*;
 import com.novell.ldap.rfc2251.*;
 
 /**
- *  Encapsulates a low-level mechanism for processing asynchronous messages 
+ *  Encapsulates a low-level mechanism for processing asynchronous messages
  *  received from a server.  It
  *  represents the message queue associated with a particular asynchronous LDAP
  *  operation or operations.
@@ -36,7 +36,7 @@ public class LDAPResponseListener implements LDAPListener
     * The message agent object associated with this listener
     */
     private MessageAgent agent;
-    
+
     /**
      * Constructs a response listener on the specific connection.
      *
@@ -53,7 +53,7 @@ public class LDAPResponseListener implements LDAPListener
             Debug.trace( Debug.messages, name + "Created");
         }
         this.agent = agent;
-        return;    
+        return;
     }
 
     /**
@@ -79,9 +79,9 @@ public class LDAPResponseListener implements LDAPListener
     }
 
    /**
-    * Returns the message IDs for all outstanding requests. 
+    * Returns the message IDs for all outstanding requests.
     *
-    * <p>The last ID in the array is the messageID of the 
+    * <p>The last ID in the array is the messageID of the
     * last submitted request.</p>
     *
     * @return The message IDs for all outstanding requests.
@@ -90,12 +90,12 @@ public class LDAPResponseListener implements LDAPListener
     {
         return agent.getMessageIDs();
     }
-    
+
    /**
     * Reports whether a response has been received from the server.
     *
     * @return True if a response has been received from the server; false if
-    *         a response has not been received. 
+    *         a response has not been received.
     */
     public boolean isResponseReceived()
     {
@@ -107,7 +107,7 @@ public class LDAPResponseListener implements LDAPListener
     * particular message id.
     *
     * @return True if a response has been received from the server; false if
-    *         a response has not been received. 
+    *         a response has not been received.
     */
     public boolean isResponseReceived(int msgid)
     {
@@ -134,8 +134,8 @@ public class LDAPResponseListener implements LDAPListener
    /**
     * Returns the response.
     *
-    * <p>The getResponse method locks until a response is available, or until all 
-    * operations associated with the object have completed or been canceled, and 
+    * <p>The getResponse method locks until a response is available, or until all
+    * operations associated with the object have completed or been canceled, and
     * then returns the response. The client is responsible for processing
     * the responses returned from a listener.</p>
     *
@@ -153,8 +153,8 @@ public class LDAPResponseListener implements LDAPListener
    /**
     * Returns the response for a particular message id.
     *
-    * <p>The getResponse method locks until a response is available, or until all 
-    * operations associated with the object have completed or been canceled, and 
+    * <p>The getResponse method locks until a response is available, or until all
+    * operations associated with the object have completed or been canceled, and
     * then returns the response. The client is responsible for processing
     * the responses returned from a listener.</p>
     *

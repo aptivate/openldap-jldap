@@ -1,18 +1,18 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchListener.java,v 1.24 2000/12/06 19:30:05 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchListener.java,v 1.25 2001/01/04 20:14:48 vtag Exp $
  *
- * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
- * 
+ * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
+ *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
- * TO VERSION 2.0.1 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
+ * TO VERSION 2.0.7 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
  * AVAILABLE AT HTTP://WWW.OPENLDAP.ORG/LICENSE.HTML OR IN THE FILE "LICENSE"
  * IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
- * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.1 OF THE OPENLDAP
+ * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.7 OF THE OPENLDAP
  * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
- * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY. 
- ***************************************************************************/
- 
+ * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
+ ******************************************************************************/
+
 package com.novell.ldap;
 
 import com.novell.ldap.client.*;
@@ -26,7 +26,7 @@ import com.novell.ldap.rfc2251.*;
  */
 public class LDAPSearchListener implements LDAPListener
 {
- 
+
     // Connection number & name used only for debug
     private static Object nameLock = new Object(); // protect connNum
     private static int sListenNum = 0;
@@ -36,7 +36,7 @@ public class LDAPSearchListener implements LDAPListener
     * The client listener object
     */
     private MessageAgent agent;
-    
+
     /**
      * Constructs a response listener using a specific client listener
      *
@@ -52,7 +52,7 @@ public class LDAPSearchListener implements LDAPListener
             Debug.trace( Debug.messages, name + "Created");
         }
         this.agent = agent;
-        return;    
+        return;
     }
 
     /**
@@ -79,9 +79,9 @@ public class LDAPSearchListener implements LDAPListener
     }
 
    /**
-    * Returns the message IDs for all outstanding requests. 
+    * Returns the message IDs for all outstanding requests.
     *
-    * <p>The last ID in the array is the messageID of the 
+    * <p>The last ID in the array is the messageID of the
     * last submitted request.</p>
     *
     * @return The message IDs for all outstanding requests.
@@ -95,7 +95,7 @@ public class LDAPSearchListener implements LDAPListener
     * Reports whether a response has been received from the server.
     *
     * @return True if a response has been received from the server; false if
-    *         a response has not been received. 
+    *         a response has not been received.
     */
     public boolean isResponseReceived()
     {
@@ -106,7 +106,7 @@ public class LDAPSearchListener implements LDAPListener
     * Reports whether a response has been received from the server.
     *
     * @return True if a response has been received from the server; false if
-    *         a response has not been received. 
+    *         a response has not been received.
     */
     public boolean isResponseReceived(int msgid)
     {
@@ -140,11 +140,11 @@ public class LDAPSearchListener implements LDAPListener
      {
         return agent.isComplete( msgid);
      }
-    
+
    /**
     * Blocks until a response is available, or until all operations
     * associated with the object have completed or been canceled, and
-    * returns the response. 
+    * returns the response.
     *
     * <p>The response may be a search result, a search
     * reference, a search response, or null (if there are no more
@@ -156,7 +156,7 @@ public class LDAPSearchListener implements LDAPListener
     * @return The response (a search result, search reference, or search response)or
     *         null if there are no more outstanding requests.
     *
-    * @exception LDAPException A general exception which includes an error 
+    * @exception LDAPException A general exception which includes an error
     *                          message and an LDAP error code.
     */
    public LDAPMessage getResponse()
@@ -169,7 +169,7 @@ public class LDAPSearchListener implements LDAPListener
     * Blocks until a response is available for a particular message id,
     * or until all operations
     * associated with the object have completed or been canceled, and
-    * returns the response. 
+    * returns the response.
     *
     * <p>The response may be a search result, a search
     * reference, a search response, or null (if there are no more
@@ -181,7 +181,7 @@ public class LDAPSearchListener implements LDAPListener
     * @return The response (a search result, search reference, or search response)or
     *         null if there are no more outstanding requests.
     *
-    * @exception LDAPException A general exception which includes an error 
+    * @exception LDAPException A general exception which includes an error
     *                          message and an LDAP error code.
     */
    public LDAPMessage getResponse(int msgid)

@@ -1,17 +1,18 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/client/MessageAgent.java,v 1.7 2001/01/04 20:14:49 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/client/MessageAgent.java,v 1.8 2001/02/26 19:58:28 vtag Exp $
 *
-* Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
-* 
-* THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
-* TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
-* TO VERSION 2.0.1 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
-* AVAILABLE AT HTTP://WWW.OPENLDAP.ORG/LICENSE.HTML OR IN THE FILE "LICENSE"
-* IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
-* PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
-* THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY. 
-***************************************************************************/
- 
+ * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
+ *
+ * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
+ * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
+ * TO VERSION 2.0.7 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
+ * AVAILABLE AT HTTP://WWW.OPENLDAP.ORG/LICENSE.HTML OR IN THE FILE "LICENSE"
+ * IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
+ * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.7 OF THE OPENLDAP
+ * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
+ * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
+ ******************************************************************************/
+
 package com.novell.ldap.client;
 
 import com.novell.ldap.client.*;
@@ -49,7 +50,7 @@ public class MessageAgent
     {
         return messages.getObjectArray();
     }
-    
+
     /**
      * merges two message agents
      *
@@ -80,7 +81,7 @@ public class MessageAgent
             if( msgs.length == 1) {
                 messages.notify();    // only wake one thread
             }
-        }    
+        }
         return;
     }
 
@@ -121,7 +122,7 @@ public class MessageAgent
         }
         return false;
     }
-    
+
     /**
      * Returns true if any responses are queued for the specified msgId
      *
@@ -136,7 +137,7 @@ public class MessageAgent
             return false;
         }
     }
-    
+
     /**
      * Abandon the request associated with MsgId
      *
@@ -196,7 +197,7 @@ public class MessageAgent
                 "Messages in queue");
             debugDisplayMessages();
         }
-        return;        
+        return;
     }
 
     /**
@@ -216,7 +217,7 @@ public class MessageAgent
         }
         return ids;
 	}
-    
+
     /**
      * Indicates whether a specific operation is complete
      *
@@ -281,7 +282,7 @@ public class MessageAgent
         message.sendMessage(); // Now send message to server
         return;
     }
-                            
+
     /**
      * Returns a response queued, or waits if none queued
      *
@@ -381,7 +382,7 @@ public class MessageAgent
             }
         }
     }
-    
+
     /**
      * Get the maessage agent number for debugging
      *
@@ -402,7 +403,7 @@ public class MessageAgent
             Object[] dbgmsgs = messages.toArray();
             if( dbgmsgs.length == 0) {
                 Debug.trace( Debug.messages, "\t" + "No messages queued");
-            }                
+            }
             for(int i = 0; i < dbgmsgs.length; i++) {
                 Message m = (Message)dbgmsgs[i];
                 Debug.trace( Debug.messages, "\t" + i +

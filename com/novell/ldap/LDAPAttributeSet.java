@@ -1,17 +1,17 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttributeSet.java,v 1.17 2000/12/07 16:31:01 javed Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttributeSet.java,v 1.18 2000/12/07 17:06:01 javed Exp $
  *
- * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
+ * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
- * TO VERSION 2.0.1 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
+ * TO VERSION 2.0.7 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
  * AVAILABLE AT HTTP://WWW.OPENLDAP.ORG/LICENSE.HTML OR IN THE FILE "LICENSE"
  * IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
- * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.1 OF THE OPENLDAP
+ * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.7 OF THE OPENLDAP
  * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
  * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
- ***************************************************************************/
+ ******************************************************************************/
 
 package com.novell.ldap;
 
@@ -163,16 +163,16 @@ public class LDAPAttributeSet implements Cloneable {
     *
     */
    public LDAPAttribute getAttribute(String attrName, String lang) {
-      
+
 	  LDAPAttribute attrib, partialMatch;
 	  int partialMatchLen;
 
 	  partialMatch = null;
 	  partialMatchLen = 0;
       Enumeration enumAttr = attrs.elements();
-      
+
 	  while( enumAttr.hasMoreElements()){
-      
+
 	    attrib = (LDAPAttribute) enumAttr.nextElement();
 
 		// Find a matching attrubute
@@ -187,7 +187,7 @@ public class LDAPAttributeSet implements Cloneable {
 
 			// Save this attribute off if we have a partial match
 			if (lang.startsWith(attribSubType)) {
-				
+
 				// Get the length of the partial string that matched the subtype
 				int matchedLen = attribSubType.length();
 
@@ -200,7 +200,7 @@ public class LDAPAttributeSet implements Cloneable {
 			}
 
 			// else goto next attribute
-				
+
 		}
       }
 
@@ -257,15 +257,15 @@ public class LDAPAttributeSet implements Cloneable {
     *         subtype.
     */
    public LDAPAttributeSet getSubset(String subtype) {
-	  
+
 	  // Create a new tempAttributeSet
       LDAPAttributeSet tempAttributeSet = new LDAPAttributeSet();
 
       // Cycle throught this.attributeSet
 	  for(int i = 0; i < attrs.size(); i++) {
-		
+
 		 LDAPAttribute tempAttr = new LDAPAttribute( (LDAPAttribute)attrs.elementAt(i));
-		
+
 		 // Does this attribute have the subtype we are looking for. If
 		 // yes then add it to our AttributeSet, else next attribute
 		 if (tempAttr.hasSubtype(subtype))

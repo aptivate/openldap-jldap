@@ -1,18 +1,18 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/client/LocalException.java,v 1.2 2001/01/04 20:55:55 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/client/LocalException.java,v 1.3 2001/02/26 19:58:27 vtag Exp $
  *
- * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
- * 
+ * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
+ *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
- * TO VERSION 2.0.1 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
+ * TO VERSION 2.0.7 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
  * AVAILABLE AT HTTP://WWW.OPENLDAP.ORG/LICENSE.HTML OR IN THE FILE "LICENSE"
  * IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
- * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.1 OF THE OPENLDAP
+ * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.7 OF THE OPENLDAP
  * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
- * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY. 
- ***************************************************************************/
- 
+ * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
+ ******************************************************************************/
+
 package com.novell.ldap.client;
 
 import com.novell.ldap.*;
@@ -21,7 +21,7 @@ import com.novell.ldap.client.Debug;
 public class LocalException extends LDAPException
 {
     private Message request;
-    
+
     /**
      * Constructs a LocalException with its associated message.
      *
@@ -38,7 +38,7 @@ public class LocalException extends LDAPException
                             Message request)
     {
         super( message, arguments, resultCode, rootException);
-        this.request = request;            
+        this.request = request;
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.messages, "LocalException created with msg \"" +
                 message + "\" and  code " + resultCode);
@@ -51,7 +51,7 @@ public class LocalException extends LDAPException
         }
         return;
     }
-    
+
     /**
      * Returns the message ID of this message request.
      *
@@ -65,7 +65,7 @@ public class LocalException extends LDAPException
         }
         return request.getMessageID();
     }
-    
+
     /**
      * Returns the message type expected as a reply to
      * the message associated with this message's request type.
@@ -82,28 +82,28 @@ public class LocalException extends LDAPException
         int responseType = -1;
         switch( reqType) {
             case LDAPMessage.BIND_REQUEST:
-                responseType = LDAPMessage.BIND_RESPONSE; 
+                responseType = LDAPMessage.BIND_RESPONSE;
                 break;
             case LDAPMessage.UNBIND_REQUEST:
-                responseType = -1; 
+                responseType = -1;
                 break;
             case LDAPMessage.SEARCH_REQUEST:
-                responseType = LDAPMessage.SEARCH_RESULT; 
+                responseType = LDAPMessage.SEARCH_RESULT;
                 break;
             case LDAPMessage.MODIFY_REQUEST:
-                responseType = LDAPMessage.MODIFY_RESPONSE; 
+                responseType = LDAPMessage.MODIFY_RESPONSE;
                 break;
             case LDAPMessage.ADD_REQUEST:
-                responseType = LDAPMessage.ADD_RESPONSE; 
+                responseType = LDAPMessage.ADD_RESPONSE;
                 break;
             case LDAPMessage.DEL_REQUEST:
-                responseType = LDAPMessage.DEL_RESPONSE; 
+                responseType = LDAPMessage.DEL_RESPONSE;
                 break;
             case LDAPMessage.MODIFY_RDN_REQUEST:
-                responseType = LDAPMessage.MODIFY_RDN_RESPONSE; 
+                responseType = LDAPMessage.MODIFY_RDN_RESPONSE;
                 break;
             case LDAPMessage.COMPARE_REQUEST:
-                responseType = LDAPMessage.COMPARE_RESPONSE; 
+                responseType = LDAPMessage.COMPARE_RESPONSE;
                 break;
             case LDAPMessage.ABANDON_REQUEST:
                 responseType = -1;

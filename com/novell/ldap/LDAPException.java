@@ -1,17 +1,17 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPException.java,v 1.20 2001/02/13 00:17:13 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPException.java,v 1.21 2001/02/26 19:58:23 vtag Exp $
  *
- * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
+ * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
- * TO VERSION 2.0.1 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
+ * TO VERSION 2.0.7 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
  * AVAILABLE AT HTTP://WWW.OPENLDAP.ORG/LICENSE.HTML OR IN THE FILE "LICENSE"
  * IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
- * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.1 OF THE OPENLDAP
+ * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.7 OF THE OPENLDAP
  * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
  * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
- ***************************************************************************/
+ ******************************************************************************/
 
 package com.novell.ldap;
 
@@ -651,7 +651,7 @@ public class LDAPException extends Exception
    * to retrieve data. For example, suppose the following conditions:</p>
    * <ul>
    * <li>Suppose the hop limit is two.</li>
-   * <li> If the referral is to server D which can be contacted only through 
+   * <li> If the referral is to server D which can be contacted only through
           server B (1 hop) which contacts server C (2 hops) which contacts
           server D (3 hops).</li>
    * </ul>
@@ -661,7 +661,7 @@ public class LDAPException extends Exception
    * <p>REFERRAL_LIMIT_EXCEEDED = 97</p>
    */
    public final static int REFERRAL_LIMIT_EXCEEDED = 97;
-   
+
    /**
     * Indicates that TLS is not supported on the server.
     */
@@ -770,7 +770,7 @@ public class LDAPException extends Exception
       "TLS not supported"                       // 112
    };
    */
-   
+
    /*
     * Constructs a default exception with no specific error information.
     */
@@ -797,7 +797,7 @@ public class LDAPException extends Exception
    public LDAPException(String messageOrKey, int resultCode)
    {
       this( messageOrKey, null, resultCode, null, null);
-      return;   
+      return;
    }
 
    /**
@@ -826,7 +826,7 @@ public class LDAPException extends Exception
                          int resultCode)
    {
       this( messageOrKey, arguments, resultCode, null, null);
-      return;   
+      return;
    }
 
    /**
@@ -853,13 +853,13 @@ public class LDAPException extends Exception
                          Throwable rootException)
    {
       this( messageOrKey, null, resultCode, null, rootException);
-      return;   
+      return;
    }
 
    /**
     * Constructs an exception with with a detail message obtained from the
     * specified <code>MessageOrKey</code> String and modifying arguments.
-    * Additional parameters specify the result code, 
+    * Additional parameters specify the result code,
     * and a rootException which is the underlying cause of an error
     * on the client.
     * <br>
@@ -888,7 +888,7 @@ public class LDAPException extends Exception
                          Throwable rootException)
    {
       this( messageOrKey, arguments, resultCode, null, rootException);
-      return;   
+      return;
    }
 
    /**
@@ -915,7 +915,7 @@ public class LDAPException extends Exception
                          String matchedDN)
    {
       this( messageOrKey, null, resultCode, matchedDN, null);
-      return;   
+      return;
    }
 
    /**
@@ -949,7 +949,7 @@ public class LDAPException extends Exception
                          String matchedDN)
    {
       this( messageOrKey, arguments, resultCode, matchedDN, null);
-      return;   
+      return;
    }
 
    /**
@@ -1024,7 +1024,7 @@ public class LDAPException extends Exception
       if( arguments == null) {
           return pattern;
       }
-      
+
       MessageFormat mf = new MessageFormat(pattern);
       mf.setLocale(Locale.getDefault());
       //this needs to be reset with the new local - i18n defect in java
@@ -1119,7 +1119,7 @@ public class LDAPException extends Exception
     {
         return rootException;
     }
-    
+
    /**
     *    Returns the message stored in LDAPExceptionMessageResource + locale
     *    using messageOrKey and arguments passed into the constructor.  If no
@@ -1167,7 +1167,7 @@ public class LDAPException extends Exception
 
 
    /**
-    * Returns the result code from the exception. 
+    * Returns the result code from the exception.
     *
     * <p>The codes are defined as <code>public final static int</code> members
     * of the LDAP Exception class. If the exception is a
@@ -1202,9 +1202,9 @@ public class LDAPException extends Exception
    {
       return matchedDN;
    }
-   
+
     /**
-     * When debugging an object class, converts the integer value 
+     * When debugging an object class, converts the integer value
      * to a string, in the default locale.
      */
     public String toString()
@@ -1217,7 +1217,7 @@ public class LDAPException extends Exception
         if( msg.equalsIgnoreCase( "TOSTRING")) {
             msg = super.toString() + " : (" + resultCode + ") " +
                     errorCodeToString();
-        }                
+        }
         return msg;
     }
 }

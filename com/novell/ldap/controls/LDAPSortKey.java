@@ -1,18 +1,18 @@
 /* **************************************************************************
- * $Novell$
+ * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPSortKey.java,v 1.1 2000/09/19 17:37:09 smerrill Exp $
  *
- * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
- * 
+ * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
+ *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
- * TO VERSION 2.0.1 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
+ * TO VERSION 2.0.7 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
  * AVAILABLE AT HTTP://WWW.OPENLDAP.ORG/LICENSE.HTML OR IN THE FILE "LICENSE"
  * IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
- * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.1 OF THE OPENLDAP
+ * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.7 OF THE OPENLDAP
  * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
- * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY. 
- ***************************************************************************/
- 
+ * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
+ ******************************************************************************/
+
 package com.novell.ldap.controls;
 
 /**
@@ -36,14 +36,14 @@ public class LDAPSortKey {
     /**
      * Constructs a new LDAPSortKey object using an attribute as the sort key.
      *
-     * @param keyDescription The single attribute to use for sorting. If the 
-     *                       name is preceded by a minus sign (-), the sorting 
-     *                       is done in reverse order. The Novell LDAP server 
+     * @param keyDescription The single attribute to use for sorting. If the
+     *                       name is preceded by a minus sign (-), the sorting
+     *                       is done in reverse order. The Novell LDAP server
      *                       does not support reverse order sorting. Examples:
      *<ul>
      *  <li> "cn" (sorts by the cn attribute)</li>
      *  <li> "-cn" (sorts, in reverse order, by the cn attribute) </li>
-     *</ul> 
+     *</ul>
      */
     public LDAPSortKey(String keyDescription)
     {
@@ -51,7 +51,7 @@ public class LDAPSortKey {
     }
 
     /**
-     * Constructs a new LDAPSortKey object with the specified attribute name 
+     * Constructs a new LDAPSortKey object with the specified attribute name
      * and sort order.
      *
      * @param key     The single attribute to use for sorting.
@@ -66,7 +66,7 @@ public class LDAPSortKey {
     }
 
     /**
-     * Constructs a new LDAPSortKey object with the specified attribute name, 
+     * Constructs a new LDAPSortKey object with the specified attribute name,
      * sort order, and a matching rule.
      *
      *  @param key     The attribute name (for example, "cn") to use for sorting.
@@ -101,7 +101,7 @@ public class LDAPSortKey {
     /**
      * Returns the sorting order, ascending or descending.
      *
-     * @return True if the sorting is done is descending order; false, if the 
+     * @return True if the sorting is done is descending order; false, if the
      *         sorting is done is ascending order.
      */
     public boolean getReverse()

@@ -1,33 +1,33 @@
 /* **************************************************************************
- * $Id: NamingContextConstants.java,v 1.19 2000/10/23 18:49:07 judy Exp $
+ * $Id: NamingContextConstants.java,v 1.20 2000/10/30 19:10:59 javed Exp $
  *
- * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
- * 
+ * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
+ *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
- * TO VERSION 2.0.1 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
+ * TO VERSION 2.0.7 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
  * AVAILABLE AT HTTP://WWW.OPENLDAP.ORG/LICENSE.HTML OR IN THE FILE "LICENSE"
  * IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
- * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.1 OF THE OPENLDAP
+ * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.7 OF THE OPENLDAP
  * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
- * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY. 
- ***************************************************************************/
-package com.novell.ldap.extensions; 
+ * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
+ ******************************************************************************/
+package com.novell.ldap.extensions;
 
 import com.novell.ldap.*;
 import com.novell.ldap.asn1.*;
 import java.io.IOException;
- 
+
 /*
  * public class NamingContextConstants
  */
- 
+
 /**
  * Contains a collection of constants used by the Novell LDAP
  * extensions.
  */
 public class NamingContextConstants {
-   
+
     /**
      * A constant for the createNamingContextRequest OID.
      */
@@ -257,7 +257,7 @@ public class NamingContextConstants {
      * A constant for the triggerLimberResponse OID.
      */
     public static final String TRIGGER_LIMBER_RES     = "2.16.840.1.113719.1.27.100.50";
-		
+
     /**
      * A constant for the triggerSkulkerRequest OID.
      */
@@ -290,20 +290,20 @@ public class NamingContextConstants {
 
 
     /**
-     * A constant that specifies that all servers in a replica ring must be 
+     * A constant that specifies that all servers in a replica ring must be
      * running for a naming context operation to proceed.
      */
     public static final int LDAP_ENSURE_SERVERS_UP = 1;
-    
-    
+
+
     /**
      * Identifies this replica as the master replica of the naming context.
      *
-     * <p>On this type of replica, entries can be modified, and naming context  
+     * <p>On this type of replica, entries can be modified, and naming context
      * operations can be performed.</p>
      */
     public static final int LDAP_RT_MASTER          = 0;
-    
+
     /**
      * Identifies this replica as a secondary replica of the naming context.
      *
@@ -311,207 +311,207 @@ public class NamingContextConstants {
      *  and entries can be modified.</p>
      */
     public static final int LDAP_RT_SECONDARY       = 1;
-    
+
     /**
      * Identifies this replica as a read-only replica of the naming context.
      *
-     * <p>Only NDS synchronization processes can modified entries on this 
+     * <p>Only NDS synchronization processes can modified entries on this
      * replica.</p>
      */
     public static final int LDAP_RT_READONLY        = 2;
-    
+
     /**
-     * Identifies this replica as a subordinate reference replica of the 
+     * Identifies this replica as a subordinate reference replica of the
      * naming context.
      *
-     * <p>NDS automatically adds these replicas to a server when the server 
-     * does not contain replicas of all child naming contexts. Only NDS can 
+     * <p>NDS automatically adds these replicas to a server when the server
+     * does not contain replicas of all child naming contexts. Only NDS can
      * modify information on these types of replicas. </p>
      */
     public static final int LDAP_RT_SUBREF          = 3;
-    
+
     /**
-     * Identifies this replica as a read/write replica of the naming context, 
+     * Identifies this replica as a read/write replica of the naming context,
      * but the replica contains sparse data.
      *
      * <p>The replica has been configured to contain only specified object types
-     * and attributes. On this type of replica, only the attributes and objects 
+     * and attributes. On this type of replica, only the attributes and objects
      * contained in the sparse data can be modified.</p>
      */
     public static final int LDAP_RT_SPARSE_WRITE    = 4;
-    
+
     /**
-     * Identifies this replica as a read-only replica of the naming context, 
+     * Identifies this replica as a read-only replica of the naming context,
      * but the replica contains sparse data.
      *
      * <p>The replica has been configured to contain only specified object types
      * and attributes. On this type of replica, only NDS synchronization processes
      * can modify the sparse data.</p>
      */
-    public static final int LDAP_RT_SPARSE_READ     = 5; 
-    
+    public static final int LDAP_RT_SPARSE_READ     = 5;
+
     //Replica States
-    
+
     /**
-     * Indicates that the replica is fully functioning and capable of responding 
+     * Indicates that the replica is fully functioning and capable of responding
      * to requests.
      */
     public static final int LDAP_RS_ON              = 0;
-    
+
     /**
-     * Indicates that a new replica has been added but has not received a full 
-     * download of information from the replica ring. 
+     * Indicates that a new replica has been added but has not received a full
+     * download of information from the replica ring.
      */
     public static final int LDAP_RS_NEW_REPLICA     = 1;
-    
+
     /**
-     * Indicates that the replica is being deleted and that the request has 
-     * been received. 
+     * Indicates that the replica is being deleted and that the request has
+     * been received.
      */
     public static final int LDAP_RS_DYING_REPLICA   = 2;
-    
+
     /**
-     * Indicates that the replica is locked. The move operation uses this state 
+     * Indicates that the replica is locked. The move operation uses this state
      * to lock the parent naming context of the child naming context that is moving.
      */
     public static final int LDAP_RS_LOCKED          = 3;
-    
+
     /**
-     * Indicates that a new replica has finished receiving its download from the 
+     * Indicates that a new replica has finished receiving its download from the
      * master replica and is now receiving synchronization updates from other
-     * replicas. 
+     * replicas.
      */
     public static final int LDAP_RS_TRANSITION_ON   = 6;
-    
-    
+
+
     /**
      * Indicates that the dying replica needs to synchronize with another replica
-     * before being converted either to an external reference, if a root replica, 
+     * before being converted either to an external reference, if a root replica,
      * or to a subordinate reference, if a non-root replica.
      */
      public static final int LDAP_RS_DEAD_REPLICA    = 7;
-    
+
     /**
-     * Indicates that the subordinate references of the new replica are being 
-     * added. 
+     * Indicates that the subordinate references of the new replica are being
+     * added.
      */
     public static final int LDAP_RS_BEGIN_ADD       = 8;
-    
+
     /**
      * Indicates that a naming context is receiving a new master replica.
      *
-     * <p>The replica that will be the new master replica is set to this state.</p> 
+     * <p>The replica that will be the new master replica is set to this state.</p>
      */
     public static final int LDAP_RS_MASTER_START    = 11;
-    
+
     /**
-     * Indicates that a naming context has a new master replica. 
+     * Indicates that a naming context has a new master replica.
      *
-     * <p>When the new master is set to this state, NDS knows that the replica is 
+     * <p>When the new master is set to this state, NDS knows that the replica is
      * now the master and changes its replica type to master and the old master to
      * read/write.</p>
      */
     public static final int LDAP_RS_MASTER_DONE     = 12;
-    
+
     /**
      * Indicates that the naming context is going to split into two naming contexts.
      *
-     * <p>In this state, other replicas of the naming context are informed of the 
-     * pending split.</p> 
+     * <p>In this state, other replicas of the naming context are informed of the
+     * pending split.</p>
      */
     public static final int LDAP_RS_SS_0            = 48;   // Replica splitting 0
-    
+
     /**
-     * Indicates that that the split naming context operation has started. 
+     * Indicates that that the split naming context operation has started.
      *
-     * <p>When the split is finished, the state will change to RS_ON.</p> 
+     * <p>When the split is finished, the state will change to RS_ON.</p>
      */
     public static final int LDAP_RS_SS_1            = 49;   // Replica splitting 1
-    
+
     /**
-     * Indicates that that two naming contexts are in the process of joining 
-     * into one naming context. 
+     * Indicates that that two naming contexts are in the process of joining
+     * into one naming context.
      *
-     * <p>In this state, the replicas that are affected are informed of the join 
-     * operation. The master replica of the parent and child naming contexts are 
-     * first set to this state and then all the replicas of the parent and child. 
+     * <p>In this state, the replicas that are affected are informed of the join
+     * operation. The master replica of the parent and child naming contexts are
+     * first set to this state and then all the replicas of the parent and child.
      * New replicas are added where needed.</p>
      */
     public static final int LDAP_RS_JS_0            = 64;   // Replica joining 0
-    
+
     /**
-     * Indicates that that two naming contexts are in the process of joining 
-     * into one naming context. 
+     * Indicates that that two naming contexts are in the process of joining
+     * into one naming context.
      *
      * <p>This state indicates that the join operation is waiting for the new
      * replicas to synchronize and move to the RS_ON state.</p>
      */
     public static final int LDAP_RS_JS_1            = 65;   // Replica joining 1
-    
+
     /**
-     * Indicates that that two naming contexts are in the process of joining 
-     * into one naming context. 
+     * Indicates that that two naming contexts are in the process of joining
+     * into one naming context.
      *
-     * <p>This state indicates that all the new replicas are in the RS_ON state 
+     * <p>This state indicates that all the new replicas are in the RS_ON state
      * and that the rest of the work can be completed.</p>
-     */ 
+     */
     public static final int LDAP_RS_JS_2            = 66;   // Replica joining 2
-    
+
     // Priviliges are identified by a combination of the following flags
-     
+
     /**
      * Allows a trustee to compare a value with an attribute's value.
      *
-     * <p>This allows the trustee to see if the attribute contains the value 
-     * without having rights to see the value.</p>    
+     * <p>This allows the trustee to see if the attribute contains the value
+     * without having rights to see the value.</p>
      */
     public static final int LDAP_DS_ATTR_COMPARE    = 0x0001;
-    
+
     /**
-     * A privilege flag that indicates a trustee to read an attribute value.  
+     * A privilege flag that indicates a trustee to read an attribute value.
      * This right confers the Compare right.
      */
     public static final int LDAP_DS_ATTR_READ       = 0x0002;
-    
+
     /**
-     * A privilege flag that indicates a trustee can add, delete, or modify 
+     * A privilege flag that indicates a trustee can add, delete, or modify
      * an attribute value.
      */
     public static final int LDAP_DS_ATTR_WRITE      = 0x0004;
-    
+
     /**
-     * A privilege flag that indicates a trustee can add or delete its name as 
-     * an attribute value on those attributes that take object names 
+     * A privilege flag that indicates a trustee can add or delete its name as
+     * an attribute value on those attributes that take object names
      * as their values.
      */
     public static final int LDAP_DS_ATTR_SELF       = 0x0008;
-    
+
     /**
-     * A privilege flag that indicates a trustee has all rights to the 
+     * A privilege flag that indicates a trustee has all rights to the
      * object's attributes.
      */
     public static final int LDAP_DS_ATTR_SUPERVISOR = 0x0020;
-    
+
     /**
-     * A privilege flag that indicatesa trustee inherits the rights granted 
+     * A privilege flag that indicatesa trustee inherits the rights granted
      * in the ACL and can exercise these attribute rights on subordinate objects.
      */
     public static final int LDAP_DS_ATTR_INHERIT_CTL= 0x0040;
 
-    // Values for flags used in the replica info class structure 
-    
+    // Values for flags used in the replica info class structure
+
     /**
-     * Indicates that the replica is involved with a partition operation, 
+     * Indicates that the replica is involved with a partition operation,
      * for example, merging a tree or moving a subtree.
      */
     public static final int LDAP_DS_FLAG_BUSY       = 0x0001;
-    
+
     /**
-     * Indicates that this naming context is on the DNS federation boundary. 
+     * Indicates that this naming context is on the DNS federation boundary.
      * This flag is only set on DNS trees.
      */
     public static final int LDAP_DS_FLAG_BOUNDARY   = 0x0002;
 
-    
-    public NamingContextConstants()  {}   
+
+    public NamingContextConstants()  {}
 }

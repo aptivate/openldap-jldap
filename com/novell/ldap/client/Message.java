@@ -1,17 +1,18 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/client/Message.java,v 1.11 2001/01/26 23:34:33 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/client/Message.java,v 1.12 2001/02/26 19:58:27 vtag Exp $
 *
-* Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
-* 
-* THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
-* TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
-* TO VERSION 2.0.1 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
-* AVAILABLE AT HTTP://WWW.OPENLDAP.ORG/LICENSE.HTML OR IN THE FILE "LICENSE"
-* IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
-* PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
-* THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY. 
-***************************************************************************/
- 
+ * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
+ *
+ * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
+ * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
+ * TO VERSION 2.0.7 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
+ * AVAILABLE AT HTTP://WWW.OPENLDAP.ORG/LICENSE.HTML OR IN THE FILE "LICENSE"
+ * IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
+ * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.7 OF THE OPENLDAP
+ * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
+ * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
+ ******************************************************************************/
+
 package com.novell.ldap.client;
 
 import com.novell.ldap.client.*;
@@ -29,7 +30,7 @@ public class Message extends Thread
     private LDAPMessage msg;             // msg request sent to server
     private Connection conn;             // Connection object where msg sent
     private MessageAgent agent;          // MessageAgent handling this request
-    private LDAPListener listen;         // Application listener 
+    private LDAPListener listen;         // Application listener
     private int mslimit;                 // client time limit in milliseconds
     // Note: MessageVector is synchronized
     private MessageVector replies = new MessageVector(5,5); // place to store replies
@@ -43,7 +44,7 @@ public class Message extends Thread
     /**
      * Constructs a Message class encapsulating information about this message.
      *
-     * @param msg       the message to send to the server          
+     * @param msg       the message to send to the server
      *<br><br>
      * @param mslimit   number of milliseconds to wait before the message times out.
      *<br><br>
@@ -53,7 +54,7 @@ public class Message extends Thread
      *<br><br>
      * @param listen    the application LDAPListener for this message
      */
-    public Message( 
+    public Message(
                         LDAPMessage    msg,
                         int            mslimit,
                         Connection     conn,
@@ -76,7 +77,7 @@ public class Message extends Thread
         }
         return;
     }
-    
+
     /**
      * This method write the message on the wire.  It MUST never be called
      * more than once.  Previously we were sending the message in the
@@ -108,11 +109,11 @@ public class Message extends Thread
                     mslimit = 0;
                     break;
                 default:
-                    this.start();   
+                    this.start();
             }
         }
         return;
-    }    
+    }
     /**
      * Returns true if replies are queued
      *
@@ -277,14 +278,14 @@ public class Message extends Thread
             }
             return;
         }
-        replies.addElement( message); 
+        replies.addElement( message);
         message.setRequestingMessage( msg); // Save request message info
         if( message.getProtocolOp() instanceof RfcResponse) {
             int res;
             if( Debug.LDAP_DEBUG) {
                 res = ((RfcResponse)message.getProtocolOp()).getResultCode().getInt();
                 Debug.trace( Debug.messages, name +
-                    "Queued LDAPResult (" + replies.size() + 
+                    "Queued LDAPResult (" + replies.size() +
                     " in queue), message complete stopping timer, status " + res);
             }
             stopTimer();
@@ -303,7 +304,7 @@ public class Message extends Thread
                     if( Debug.LDAP_DEBUG) {
                         Debug.trace( Debug.messages, name + "Bind status success");
                     }
-                } else { 
+                } else {
                     if( Debug.LDAP_DEBUG) {
                         Debug.trace( Debug.messages, name + "Bind status " + res);
                     }
@@ -321,7 +322,7 @@ public class Message extends Thread
         sleepersAwake();
         return;
     }
-    
+
     /**
      * Gets the next reply from the reply queue or waits until one is there
      *
@@ -331,7 +332,7 @@ public class Message extends Thread
     Object waitForReply()
     {
         // sync on message so don't confuse with timer thread
-        synchronized( replies ) {  
+        synchronized( replies ) {
             while( waitForReply ) {
                 try {
                     Object msg;
@@ -365,7 +366,7 @@ public class Message extends Thread
                         } catch(InterruptedException ir) {
                             break;
                         }
-                    } 
+                    }
                 }
             }
             return null;
@@ -410,7 +411,7 @@ public class Message extends Thread
             }
             return msg;
     }
-    
+
 
     /**
      * abandon a request.
@@ -434,8 +435,8 @@ public class Message extends Thread
         if( ! waitForReply) {
             return;
         }
-        acceptReplies = false;  // don't listen to anyone 
-        waitForReply = false;   // don't let sleeping threads lie 
+        acceptReplies = false;  // don't listen to anyone
+        waitForReply = false;   // don't let sleeping threads lie
         if( ! complete) {
             try {
                 // If a bind, release bind semaphore & wake up waiting threads
@@ -446,9 +447,9 @@ public class Message extends Thread
                 if( Debug.LDAP_DEBUG) {
                     Debug.trace( Debug.messages, name + "Sending abandon request");
                 }
-                // Create the abandon message, but don't track it. 
+                // Create the abandon message, but don't track it.
                 LDAPMessage msg = new LDAPMessage( new RfcAbandonRequest( msgId));
-                // Send abandon message to server       
+                // Send abandon message to server
                 conn.writeMessage( msg);
             } catch (LDAPException ex) {
                 ; // do nothing
@@ -469,7 +470,7 @@ public class Message extends Thread
                 Debug.trace( Debug.messages, name +
                         "Queued exception as LDAPResponse (" + replies.size() +
                         " in queue):" +
-                        " following referral=" + (conn.getReferralList() != null) + 
+                        " following referral=" + (conn.getReferralList() != null) +
                         "\n\texception: " + informUserEx.getLDAPErrorMessage());
             }
             // wake up waiting threads
@@ -482,10 +483,10 @@ public class Message extends Thread
         }
         return;
     }
-    
+
     /**
      * The timeout thread.  If it wakes from the sleep, future input
-     * is stopped and the request is timed out.  
+     * is stopped and the request is timed out.
     */
     public void run()
     {
@@ -545,7 +546,7 @@ public class Message extends Thread
         }
         return;
     }
-     
+
     /**
      * finalize
      */

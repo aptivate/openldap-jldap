@@ -1,18 +1,18 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPListener.java,v 1.15 2000/11/03 22:23:01 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPListener.java,v 1.16 2000/11/09 18:27:16 vtag Exp $
  *
- * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
- * 
+ * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
+ *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
- * TO VERSION 2.0.1 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
+ * TO VERSION 2.0.7 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
  * AVAILABLE AT HTTP://WWW.OPENLDAP.ORG/LICENSE.HTML OR IN THE FILE "LICENSE"
  * IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
- * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.1 OF THE OPENLDAP
+ * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.7 OF THE OPENLDAP
  * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
- * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY. 
- ***************************************************************************/
- 
+ * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
+ ******************************************************************************/
+
 package com.novell.ldap;
 
 import com.novell.ldap.client.*;
@@ -25,20 +25,20 @@ import com.novell.ldap.client.*;
 public interface LDAPListener
 {
    /**
-    * Returns the message IDs for all outstanding requests. 
+    * Returns the message IDs for all outstanding requests.
     *
-    * <p>The last ID in the array is the messageID of the 
+    * <p>The last ID in the array is the messageID of the
     * last submitted request.</p>
     *
     * @return The message IDs for all outstanding requests.
     */
    public int[] getMessageIDs();
-   
+
    /**
     * Returns the response from an LDAP request.
     *
-    * <p>The getResponse method blocks until a response is available, or until all 
-    * operations associated with the object have completed or been canceled, and 
+    * <p>The getResponse method blocks until a response is available, or until all
+    * operations associated with the object have completed or been canceled, and
     * then returns the response. The client is responsible for processing
     * the responses returned from a listener.</p>
     *
@@ -54,8 +54,8 @@ public interface LDAPListener
     * Returns the response from an LDAP request for a particular msg id.
     *
     * <p>The getResponse method blocks until a response is available
-    * for a particular message id, or until all 
-    * operations associated with the object have completed or been canceled, and 
+    * for a particular message id, or until all
+    * operations associated with the object have completed or been canceled, and
     * then returns the response. The client is responsible for processing
     * the responses returned from a listener.</p>
     *
@@ -71,19 +71,19 @@ public interface LDAPListener
     * Reports whether a response has been received from the server.
     *
     * @return True if a response has been received from the server; false if
-    *         a response has not been received. 
+    *         a response has not been received.
     */
    public boolean isResponseReceived();
-   
+
    /**
     * Reports whether a response has been received from the server for
     * a particular msg id.
     *
     * @return True if a response has been received from the server; false if
-    *         a response has not been received. 
+    *         a response has not been received.
     */
    public boolean isResponseReceived(int msgid);
-   
+
    /**
     * Merges two response listeners by moving the current and
     * future contents from another listener to this one.

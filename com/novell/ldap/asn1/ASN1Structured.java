@@ -1,8 +1,17 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Structured.java,v 1.9 2001/02/12 15:49:35 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Structured.java,v 1.10 2001/02/26 19:58:26 vtag Exp $
  *
- * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
- ***************************************************************************/
+ * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
+ *
+ * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
+ * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
+ * TO VERSION 2.0.7 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
+ * AVAILABLE AT HTTP://WWW.OPENLDAP.ORG/LICENSE.HTML OR IN THE FILE "LICENSE"
+ * IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
+ * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.7 OF THE OPENLDAP
+ * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
+ * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
+ ******************************************************************************/
 
 package com.novell.ldap.asn1;
 
@@ -20,15 +29,15 @@ public abstract class ASN1Structured extends ASN1Object
    class EnumerationImpl implements Enumeration
    {
        private int enumerationIndex = 0;
- 
+
        public boolean hasMoreElements()
        {
           if( (enumerationIndex >= content.size()) || (enumerationIndex < 0)) {
              return false;
-          }   
+          }
           return true;
        }
-       
+
        public Object nextElement()
            throws NoSuchElementException
        {
@@ -42,7 +51,7 @@ public abstract class ASN1Structured extends ASN1Object
            return obj;
        }
    }
-   
+
    protected ArrayList content;
 
    /**
@@ -104,7 +113,7 @@ public abstract class ASN1Structured extends ASN1Object
    {
       return new EnumerationImpl();
    }
-   
+
    /**
     *
     */

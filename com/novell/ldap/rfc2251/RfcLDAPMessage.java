@@ -1,8 +1,17 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/rfc2251/RfcLDAPMessage.java,v 1.19 2001/02/27 22:53:15 vtag Exp $
-*
-* Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
-***************************************************************************/
+ * $Novell: /ldap/src/jldap/com/novell/ldap/rfc2251/RfcLDAPMessage.java,v 1.20 2001/02/28 01:46:34 vtag Exp $
+ *
+ * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
+ *
+ * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
+ * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
+ * TO VERSION 2.0.7 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
+ * AVAILABLE AT HTTP://WWW.OPENLDAP.ORG/LICENSE.HTML OR IN THE FILE "LICENSE"
+ * IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
+ * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.7 OF THE OPENLDAP
+ * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
+ * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
+ ******************************************************************************/
 
 package com.novell.ldap.rfc2251;
 
@@ -69,13 +78,13 @@ import com.novell.ldap.client.ArrayList;
  *       constructor should be package protected. (So the MessageID value
  *       isn't arbitrarily run up.)
  */
-public class RfcLDAPMessage extends ASN1Sequence 
+public class RfcLDAPMessage extends ASN1Sequence
 {
 
     private RfcRequest op;
     private RfcControls controls;
     private LDAPMessage requestMessage = null;
-    
+
     /**
      * Create an RfcLDAPMessage by copying the content array
      *
@@ -92,12 +101,12 @@ public class RfcLDAPMessage extends ASN1Sequence
         super( origContent.size());
 
         content.add(new RfcMessageID()); // MessageID has static counter
-        
+
         RfcRequest req = (RfcRequest)origContent.get(1);
         RfcRequest newreq = req.dupRequest(dn, filter, scope);
         op = newreq;
         content.add( newreq);
-        
+
         for( int i = 2; i < origContent.size(); i++) {
             content.add(origContent.get(i));
         }
@@ -127,7 +136,7 @@ public class RfcLDAPMessage extends ASN1Sequence
 
         this.op = op;
         this.controls = controls;
-        
+
         add(new RfcMessageID()); // MessageID has static counter
         add((ASN1Object)op);
         if(controls != null)
@@ -234,7 +243,7 @@ public class RfcLDAPMessage extends ASN1Sequence
             return (RfcControls)get(2);
         return null;
     }
-    
+
     /**
      * Duplicate this message, replacing base dn, filter, and scope if supplied
      *
@@ -261,7 +270,7 @@ public class RfcLDAPMessage extends ASN1Sequence
                                                     (RfcRequest)content.get(1),
                                                     dn,
                                                     filter,
-                                                    scope);                                               
+                                                    scope);
         return newMsg;
     }
 
