@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.94 2001/04/23 21:06:37 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.95 2001/04/23 21:09:29 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -629,7 +629,7 @@ public class LDAPConnection implements Cloneable
      * <p>No property names which can be set have been defined at this time. </p>
      *
      *
-     * @param name    Name of the property to set.<br><br>
+     * @param name    Name of the property to set.
      *<br><br>
      * @param value   Value to assign to the property.
      *
@@ -844,7 +844,7 @@ public class LDAPConnection implements Cloneable
      *
      *  @param id The ID of the asynchronous operation to abandon.
      *            The ID can be obtained from the search
-     *            listener for the operation.<br><br>
+     *            listener for the operation.
      *<br><br>
      *  @param cons The contraints specific to the operation.
      *
@@ -954,7 +954,7 @@ public class LDAPConnection implements Cloneable
      * constraints.
      *
      *  @param entry   LDAPEntry object specifying the distinguished
-     *                 name and attributes of the new entry.<br><br>
+     *                 name and attributes of the new entry.
      *<br><br>
      *  @param cons    Constraints specific to the operation.
      *
@@ -989,7 +989,7 @@ public class LDAPConnection implements Cloneable
      * Asynchronously adds an entry to the directory.
      *
      *  @param entry   LDAPEntry object specifying the distinguished
-     *                 name and attributes of the new entry.<br><br>
+     *                 name and attributes of the new entry.
      *<br><br>
      *  @param listener  Handler for messages returned from a server in
      *                 response to this request. If it is null, a
@@ -1010,11 +1010,11 @@ public class LDAPConnection implements Cloneable
      * constraints.
      *
      *  @param entry   LDAPEntry object specifying the distinguished
-     *                 name and attributes of the new entry.<br><br>
+     *                 name and attributes of the new entry.
      *<br><br>
      *  @param listener  Handler for messages returned from a server in
      *                 response to this request. If it is null, a
-     *                 listener object is created internally.<br><br>
+     *                 listener object is created internally.
      *<br><br>
      *  @param cons   Constraints specific to the operation.
      *
@@ -1615,15 +1615,16 @@ public class LDAPConnection implements Cloneable
      * with a specified value.
      *
      *  @param dn      The distinguished name of the entry to use in the
-     *                 comparison.<br><br>
+     *                 comparison.
      *<br><br>
      *  @param attr    The attribute to compare against the entry. The
      *                 method checks to see if the entry has an
      *                 attribute with the same name and value as this
      *                 attribute.
      *
-     *  @return True if the entry has the value, and false if the
-     *  entry does not have the value or the attribute.
+     *  @return True if the entry has the value,
+     *          and false if the entry does not
+     *          have the value or the attribute.
      *
      *  @exception LDAPException A general exception which includes an error
      *  message and an LDAP error code.
@@ -1641,17 +1642,18 @@ public class LDAPConnection implements Cloneable
      * value, using the specified constraints.
      *
      *  @param dn      The distinguished name of the entry to use in the
-     *                 comparison.<br><br>
+     *                 comparison.
      *<br><br>
      *  @param attr    The attribute to compare against the entry. The
      *                 method checks to see if the entry has an
      *                 attribute with the same name and value as this
-     *                 attribute.<br><br>
+     *                 attribute.
      *<br><br>
      *  @param cons    Constraints specific to the operation.
      *
-     *  @return  Returns true if the entry has the value, and false if the
-     *  entry does not have the value or the attribute.
+     *  @return True if the entry has the value,
+     *          and false if the entry does not
+     *          have the value or the attribute.
      *
      *  @exception LDAPException A general exception which includes an error
      *                           message and an LDAP error code.
@@ -1690,14 +1692,18 @@ public class LDAPConnection implements Cloneable
     }
 
     /**
-     *
      * Asynchronously compares an attribute value with one in the directory,
      * using the specified listener.
-     *
-     *  @param dn      The distinguished name of the entry containing an
-     *                 attribute to compare.<br><br>
+     * <p>
+     * Please note that a successful completion of this command results in
+     * one of two status codes: LDAPException.COMPARE_TRUE if the entry
+     * has the value, and LDAPException.COMPARE_FALSE if the entry
+     * does not have the value or the attribute.
      *<br><br>
-     *  @param attr    An attribute to compare.<br><br>
+     *  @param dn      The distinguished name of the entry containing an
+     *                 attribute to compare.
+     *<br><br>
+     *  @param attr    An attribute to compare.
      *<br><br>
      *  @param listener   The handler for messages returned from a server in
      *                    response to this request. If it is null, a
@@ -1705,6 +1711,9 @@ public class LDAPConnection implements Cloneable
      *
      *  @exception LDAPException A general exception which includes an error
      *  message and an LDAP error code.
+     *
+     * @see LDAPException#COMPARE_TRUE
+     * @see LDAPException#COMPARE_FALSE
      */
     public LDAPResponseListener compare(String dn,
                                         LDAPAttribute attr,
@@ -1717,20 +1726,28 @@ public class LDAPConnection implements Cloneable
     /**
      * Asynchronously compares an attribute value with one in the directory,
      * using the specified listener and contraints.
-     *
-     *  @param dn      The distinguished name of the entry containing an
-     *                 attribute to compare.<br><br>
+     * <p>
+     * Please note that a successful completion of this command results in
+     * one of two status codes: LDAPException.COMPARE_TRUE if the entry
+     * has the value, and LDAPException.COMPARE_FALSE if the entry
+     * does not have the value or the attribute.
      *<br><br>
-     *  @param attr    An attribute to compare.<br><br>
+     *  @param dn      The distinguished name of the entry containing an
+     *                 attribute to compare.
+     *<br><br>
+     *  @param attr    An attribute to compare.
      *<br><br>
      *  @param listener  Handler for messages returned from a server in
      *                   response to this request. If it is null, a
-     *                   listener object is created internally.<br><br>
+     *                   listener object is created internally.
      *<br><br>
      *  @param cons      Constraints specific to the operation.
      *
      *  @exception LDAPException A general exception which includes an error
      *  message and an LDAP error code.
+     *
+     * @see LDAPException#COMPARE_TRUE
+     * @see LDAPException#COMPARE_FALSE
      */
     public LDAPResponseListener compare(String dn,
                                         LDAPAttribute attr,
@@ -1785,7 +1802,7 @@ public class LDAPConnection implements Cloneable
      *  @param host A host name or a dotted string representing the IP address
      *              of a host running an LDAP server. It may also
      *              contain a list of host names, space-delimited. Each host
-     *              name can include a trailing colon and port number.<br><br>
+     *              name can include a trailing colon and port number.
      *<br><br>
      *  @param port The TCP or UDP port number to connect to or contact.
      *              The default LDAP port is 389. The port parameter is
@@ -1866,7 +1883,7 @@ public class LDAPConnection implements Cloneable
      * Synchronously deletes the entry with the specified distinguished name
      * from the directory, using the specified constraints.
      *
-     *  @param dn      The distinguished name of the entry to delete.<br><br>
+     *  @param dn      The distinguished name of the entry to delete.
      *<br><br>
      *  @param cons    Constraints specific to the operation.
      *
@@ -1898,7 +1915,7 @@ public class LDAPConnection implements Cloneable
      * Asynchronously deletes the entry with the specified distinguished name
      * from the directory and returns the results to the specified listener.
      *
-     *  @param dn      The distinguished name of the entry to modify.<br><br>
+     *  @param dn      The distinguished name of the entry to modify.
      *<br><br>
      *  @param listener  The handler for messages returned from a server in
      *                   response to this request. If it is null, a
@@ -1919,11 +1936,11 @@ public class LDAPConnection implements Cloneable
      * Asynchronously deletes the entry with the specified distinguished name
      * from the directory, using the specified contraints and listener.
      *
-     *  @param dn      The distinguished name of the entry to delete.<br><br>
+     *  @param dn      The distinguished name of the entry to delete.
      *<br><br>
      *  @param listener   The handler for messages returned from a server in
      *                    response to this request. If it is null, a
-     *                    listener object is created internally.<br><br>
+     *                    listener object is created internally.
      *<br><br>
      *  @param cons    The constraints specific to the operation.
      *
@@ -2042,7 +2059,7 @@ public class LDAPConnection implements Cloneable
      * @param op  The object which contains (1) an identifier of an extended
      *            operation which should be recognized by the particular LDAP
      *            server this client is connected to and (2) an operation-specific
-     *            sequence of octet strings or BER-encoded values.<br><br>
+     *            sequence of octet strings or BER-encoded values.
      *<br><br>
      * @param cons The constraints specific to the operation.
      *
@@ -2082,7 +2099,7 @@ public class LDAPConnection implements Cloneable
      * @param op  The object which contains (1) an identifier of an extended
      *            operation which should be recognized by the particular LDAP
      *            server this client is connected to and (2) an operation-specific
-     *            sequence of octet strings or BER-encoded values.<br><br>
+     *            sequence of octet strings or BER-encoded values.
      *<br><br>
      * @param listener  The handler for messages returned from a server in
      *                  response to this request. If it is null, a listener
@@ -2114,11 +2131,11 @@ public class LDAPConnection implements Cloneable
      * @param op  The object which contains (1) an identifier of an extended
      *            operation which should be recognized by the particular LDAP
      *            server this client is connected to and (2) an operation-
-     *         specific sequence of octet strings or BER-encoded values.<br><br>
+     *         specific sequence of octet strings or BER-encoded values.
      *<br><br>
      * @param listener  The handler for messages returned from a server in
      *                  response to this request. If it is null, a listener
-     *                  object is created internally.<br><br>
+     *                  object is created internally.
      *<br><br>
      * @param cons      The constraints specific to this operation.
      *
@@ -2218,7 +2235,7 @@ public class LDAPConnection implements Cloneable
      * <p>The LDAPModification object specifies both the change to be made and
      * the LDAPAttribute value to be changed.</p>
      *
-     *  @param dn     The distinguished name of the entry to modify.<br><br>
+     *  @param dn     The distinguished name of the entry to modify.
      *<br><br>
      *  @param mod    A single change to be made to the entry.
      *
@@ -2243,9 +2260,9 @@ public class LDAPConnection implements Cloneable
      * <p>The LDAPModification object specifies both the change to be
      * made and the LDAPAttribute value to be changed.</p>
      *
-     *  @param dn       The distinguished name of the entry to modify.<br><br>
+     *  @param dn       The distinguished name of the entry to modify.
      *<br><br>
-     *  @param mod      A single change to be made to the entry.<br><br>
+     *  @param mod      A single change to be made to the entry.
      *<br><br>
      *  @param cons     The constraints specific to the operation.
      *
@@ -2271,7 +2288,7 @@ public class LDAPConnection implements Cloneable
      * <p>For example, this modify method changes attribute values, adds
      * new attribute values, or removes existing attribute values.</p>
      *
-     *  @param dn     Distinguished name of the entry to modify.<br><br>
+     *  @param dn     Distinguished name of the entry to modify.
      *<br><br>
      *  @param mods   A set of changes to be made to the entry.
      *
@@ -2292,9 +2309,9 @@ public class LDAPConnection implements Cloneable
      * <p>For example, this modify method changes attribute values, adds new
      * attribute values, or removes existing attribute values.</p>
      *
-     *  @param dn      The distinguished name of the entry to modify.<br><br>
+     *  @param dn      The distinguished name of the entry to modify.
      *<br><br>
-     *  @param mods    A set of changes to be made to the entry.<br><br>
+     *  @param mods    A set of changes to be made to the entry.
      *<br><br>
      *  @param cons    The constraints specific to the operation.
      *
@@ -2335,9 +2352,9 @@ public class LDAPConnection implements Cloneable
      * <p>The LDAPModification object specifies both the change to be made and
      * the LDAPAttribute value to be changed.</p>
      *
-     *  @param dn         Distinguished name of the entry to modify.<br><br>
+     *  @param dn         Distinguished name of the entry to modify.
      *<br><br>
-     *  @param mod        A single change to be made to the entry.<br><br>
+     *  @param mod        A single change to be made to the entry.
      *<br><br>
      *  @param listener   Handler for messages returned from a server in
      *                    response to this request. If it is null, a
@@ -2364,13 +2381,13 @@ public class LDAPConnection implements Cloneable
      * <p>The LDAPModification object specifies both the change to be made
      * and the LDAPAttribute value to be changed.</p>
      *
-     *  @param dn          Distinguished name of the entry to modify.<br><br>
+     *  @param dn          Distinguished name of the entry to modify.
      *<br><br>
-     *  @param mod         A single change to be made to the entry.<br><br>
+     *  @param mod         A single change to be made to the entry.
      *<br><br>
      *  @param listener    Handler for messages returned from a server in
      *                     response to this request. If it is null, a
-     *                     listener object is created internally.<br><br>
+     *                     listener object is created internally.
      *<br><br>
      *  @param cons        Constraints specific to the operation.
      *
@@ -2395,9 +2412,9 @@ public class LDAPConnection implements Cloneable
      * <p>For example, this modify method can change attribute values, add new
      * attribute values, or remove existing attribute values.</p>
      *
-     *  @param dn         The distinguished name of the entry to modify.<br><br>
+     *  @param dn         The distinguished name of the entry to modify.
      *<br><br>
-     *  @param mods       A set of changes to be made to the entry.<br><br>
+     *  @param mods       A set of changes to be made to the entry.
      *<br><br>
      *  @param listener   The handler for messages returned from a server in
      *                    response to this request. If it is null, a
@@ -2421,13 +2438,13 @@ public class LDAPConnection implements Cloneable
      * <p>For example, this modify method can change attribute values, add new
      * attribute values, or remove existing attribute values.</p>
      *
-     *  @param dn         The distinguished name of the entry to modify.<br><br>
+     *  @param dn         The distinguished name of the entry to modify.
      *<br><br>
-     *  @param mods       A set of changes to be made to the entry.<br><br>
+     *  @param mods       A set of changes to be made to the entry.
      *<br><br>
      *  @param listener   The handler for messages returned from a server in
      *                    response to this request. If it is null, a
-     *                    listener object is created internally.<br><br>
+     *                    listener object is created internally.
      *<br><br>
      *  @param cons       Constraints specific to the operation.
      *
@@ -2512,7 +2529,7 @@ public class LDAPConnection implements Cloneable
      * using the specified constraints, and retrieves all attributes for the
      * entry.
      *
-     *  @param dn         The distinguished name of the entry to retrieve.<br><br>
+     *  @param dn         The distinguished name of the entry to retrieve.
      *<br><br>
      *  @param cons       The constraints specific to the operation.
      *
@@ -2531,7 +2548,7 @@ public class LDAPConnection implements Cloneable
      * Synchronously reads the entry for the specified distinguished name (DN)
      * and retrieves only the specified attributes from the entry.
      *
-     *  @param dn         The distinguished name of the entry to retrieve.<br><br>
+     *  @param dn         The distinguished name of the entry to retrieve.
      *<br><br>
      *  @param attrs      The names of the attributes to retrieve.
      *
@@ -2551,9 +2568,9 @@ public class LDAPConnection implements Cloneable
      * using the specified constraints, and retrieves only the specified
      * attributes from the entry.
      *
-     *  @param dn       The distinguished name of the entry to retrieve.<br><br>
+     *  @param dn       The distinguished name of the entry to retrieve.
      *<br><br>
-     *  @param attrs    The names of the attributes to retrieve.<br><br>
+     *  @param attrs    The names of the attributes to retrieve.
      *<br><br>
      *  @param cons     The constraints specific to the operation.
      *
@@ -2628,7 +2645,7 @@ public class LDAPConnection implements Cloneable
      *
      * @return The entry specified by the base DN.
      *
-     * @param toGet       LDAP URL specifying the entry to read.<br><br>
+     * @param toGet       LDAP URL specifying the entry to read.
      *<br><br>
      * @param cons       Constraints specific to the operation.
      *
@@ -2660,9 +2677,9 @@ public class LDAPConnection implements Cloneable
      *
      * Synchronously renames an existing entry in the directory.
      *
-     *  @param dn       The current distinguished name of the entry.<br><br>
+     *  @param dn       The current distinguished name of the entry.
      *<br><br>
-     *  @param newRdn   The new relative distinguished name for the entry.<br><br>
+     *  @param newRdn   The new relative distinguished name for the entry.
      *<br><br>
      *  @param deleteOldRdn   If true, the old name is not retained as an
      *                        attribute value. If false, the old name is
