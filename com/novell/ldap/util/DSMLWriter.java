@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: DSMLWriter.java,v 1.14 2002/10/30 23:23:47 $
+ * $Novell: DSMLWriter.java,v 1.15 2002/11/04 19:01:46 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -227,7 +227,14 @@ public class DSMLWriter implements LDAPWriter {
     private void writeTagWithID(String tag, LDAPMessage message)
             throws IOException
     {
-        out.write("<" + tag + " requestID=\""+ message.getMessageID() +"\">");
+        out.write("<" + tag + " requestID=\""+ message.getMessageID() +"\"");
+        if (message instanceof LDAPResponse){
+            String matchedDN = ((LDAPResponse) message).getMatchedDN();
+            if (matchedDN != null && !matchedDN.equals("")){
+                out.write(" matchedDN=\"" + matchedDN + "\"");
+            }
+        }
+        out.write(">");
     }
 
     /**
@@ -273,16 +280,7 @@ public class DSMLWriter implements LDAPWriter {
             out.write(temp);
             out.write("</errorMessage>");
         }
-
-        /* MatchedDN*/
-        temp = result.getMatchedDN();
-        if (temp != null && temp.length() > 0){
-            newLine(indent);
-            out.write("<matchedDN>");
-            out.write(temp);
-            out.write("</matchedDN>");
-        }
-        return;
+       return;
     }
 
     private void writeSearchResultReference(LDAPSearchResultReference ref)

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: DOMWriter.java,v 1.4 2002/10/31 00:04:23 $
+ * $Novell: DOMWriter.java,v 1.5 2002/11/04 19:01:46 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -244,10 +244,7 @@ public class DOMWriter implements LDAPWriter
         /* MatchedDN */
         temp = r.getMatchedDN();
         if (temp != null && temp.length() > 0){
-            Element matched = doc.createElement("matchedDN");
-            Text text = doc.createTextNode(temp);
-            matched.appendChild(text);
-            e.appendChild(matched);
+            e.setAttribute("matchedDN", temp);
         }
     }
 
