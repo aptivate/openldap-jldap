@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPException.java,v 1.15 2000/11/03 22:22:30 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPException.java,v 1.16 2000/11/06 22:29:48 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -900,14 +900,14 @@ public class LDAPException extends Exception
       "Local Error",                            // 82
       "Encoding Error",                         // 83
       "Decoding Error",                         // 84
-      "Ldap Timeout",                           // 85
+      "LDAP Timeout",                           // 85
       "Authentication Unknown",                 // 86
       "Filter Error",                           // 87
       "User Cancelled",                         // 88
       "Parameter Error",                        // 89
       "No Memory",                              // 90
 		"Connect Error",                          // 91
-		"Ldap Not Supported",                     // 92
+		"LDAP Not Supported",                     // 92
 		"Control Not Found",                      // 93
 		"No Results Returned",                    // 94
 		"More Results To Return",                 // 95
