@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPUrl.java,v 1.10 2000/09/25 16:14:53 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPUrl.java,v 1.11 2000/09/26 18:17:33 vtag Exp $
 *
 * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
 * 
@@ -34,7 +34,8 @@ public class LDAPUrl {
 
     // Broken out parts of the URL
     static private boolean    enclosed = false;             // URL is enclosed by < & >
-    static private String     scheme = null;                // URL scheme
+    static private boolean    secure = false;               // URL scheme ldap/ldaps
+    static private boolean    ipV6 = false;                 // TCP/IP V6
     static private String     host = null;                  // Host
     static private int        port;                         // Port
     static private String     dn = "";                      // Base DN
@@ -234,7 +235,7 @@ public class LDAPUrl {
     * @return An enumeration of attribute names.
     */
     public Enumeration getAttributes() {
-        throw new RuntimeException("LDAPUrl: getAtributes() not implemented");
+        return new AttributeEnumeration( attrs );
     }
 
     /*
@@ -286,7 +287,8 @@ public class LDAPUrl {
     *
     * @return The port number in the URL.
     */
-    public int getPort() {
+    public int getPort()
+    {
 		return port;
     }
 
@@ -299,7 +301,22 @@ public class LDAPUrl {
     *
     * @return The string representation of the LDAP URL.
     */
-    public String getUrl() {
+    public String getUrl()
+    {
+		StringBuffer url = new StringBuffer( 256 );
+		if( enclosed ) {
+			url.append( "<" );
+		}
+		if( secure ) {
+			url.append( "ldaps://" );
+		} else {
+			url.append( "ldap://" );
+		}
+		if( ipV6 ) {
+			url.append( "[" );
+		}
+		url.append( host + ":" + port + "/");
+
         throw new RuntimeException("LDAPUrl: getUrl() not implemented");
     }
 
@@ -377,19 +394,18 @@ public class LDAPUrl {
             scanStart += 4;        
         }
         if( url.substring(scanStart, scanStart + 7).equalsIgnoreCase( "ldap://")) {
-            scheme = url.substring(scanStart, scanStart + 4);
             scanStart += 7;
             port = LDAPConnection.DEFAULT_PORT;
         } else
         if( url.substring(scanStart, scanStart + 8).equalsIgnoreCase( "ldaps://")) {
-            scheme = url.substring(scanStart, scanStart + 5);
+            secure = true;
             scanStart += 8;
             port = LDAPConnection.DEFAULT_SSL_PORT;
         } else {
             throw new MalformedURLException("LDAPUrl: URL scheme is not ldap");
         }
         if( Debug.LDAP_DEBUG)
-            Debug.trace(  Debug.urlParse, "parseURL: scheme is " + scheme);
+            Debug.trace(  Debug.urlParse, "parseURL: scheme is " + (secure?"ldaps":"ldap"));
 
         // Find where host:port ends and dn begins
         int dnStart = url.indexOf("/", scanStart);
