@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPUrl.java,v 1.9 2000/09/25 14:15:38 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPUrl.java,v 1.10 2000/09/25 16:14:53 vtag Exp $
 *
 * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
 * 
@@ -33,15 +33,15 @@ import com.novell.ldap.client.Debug;
 public class LDAPUrl {
 
     // Broken out parts of the URL
-    static private boolean    enclosed = false;            // URL is enclosed by < & >
-    static private String    scheme = null;                // URL scheme
-    static private String    host = null;                // Host
-    static private int        port;                        // Port
-    static private String    dn = "";                    // Base DN
-    static private String[] attrs = null;                // Attributes
-    static private String    filter = "(objectClass=*)";    // Filter
-    static private int        scope  = LDAPv2.SCOPE_BASE;    // Scope
-    static private String[]    extensions = null;            // Extensions
+    static private boolean    enclosed = false;             // URL is enclosed by < & >
+    static private String     scheme = null;                // URL scheme
+    static private String     host = null;                  // Host
+    static private int        port;                         // Port
+    static private String     dn = "";                      // Base DN
+    static private String[]   attrs = null;                 // Attributes
+    static private String     filter = "(objectClass=*)";   // Filter
+    static private int        scope  = LDAPv2.SCOPE_BASE;   // Scope
+    static private String[]   extensions = null;            // Extensions
 
     /*
     * 4.38.1 Constructors
@@ -77,8 +77,13 @@ public class LDAPUrl {
     *  @param dn      The distinguished name of the object to fetch.
     *
     */
-    public LDAPUrl(String host, int port, String dn) {
-        throw new RuntimeException("LDAPUrl: LDAPUrl() not implemented");
+    public LDAPUrl(String host,
+                   int port,
+                   String dn) {
+		this.host = host;
+		this.port = port;
+		this.dn = dn;
+		return;
     }
 
     /**
@@ -102,12 +107,18 @@ public class LDAPUrl {
     *  @param filter   The search filter specifying the search criteria.
     */
     public LDAPUrl(String host,
-                  int port,
-                  String dn,
-                  String attrNames[],
-                  int scope,
-                  String filter) {
-        throw new RuntimeException("LDAPUrl: LDAPUrl() not implemented");
+                   int port,
+                   String dn,
+                   String attrNames[],
+                   int scope,
+                   String filter) {
+		this.host = host;
+		this.port = port;
+		this.dn = dn;
+		this.attrs = attrNames;
+		this.scope = scope;
+		this.filter = filter;
+		return;
     }
 
     /*
@@ -128,7 +139,57 @@ public class LDAPUrl {
     */
     public static String decode(String URLEncoded) throws
     MalformedURLException {
-        throw new RuntimeException("LDAPUrl: decode() not implemented");
+
+        if( Debug.LDAP_DEBUG)
+            Debug.trace( Debug.urlParse, "decode(" + URLEncoded + ")");
+
+		int searchStart = 0;
+		int fieldStart;
+
+        fieldStart = URLEncoded.indexOf("%", searchStart);                
+		// Return now if no encoded data
+		if( fieldStart < 0 ) {
+			return URLEncoded;
+		}
+
+		// Decode the %HH value and copy to new string buffer
+		int fieldEnd = 0;	// end of previous field
+		int value;
+		int dataLen = URLEncoded.length();
+
+		StringBuffer decoded = new StringBuffer( dataLen );
+
+		while( true ) {
+			if( fieldStart > (dataLen-3) ) {
+	            throw new MalformedURLException(
+	            "LDAPUrl.decode: must be two hex characters following escape character '%'");
+			}
+			if( fieldStart < 0 )
+				fieldStart = dataLen;
+			// Copy to string buffer from end of last field to start of next
+			decoded.append( URLEncoded.substring(fieldEnd, fieldStart) );
+			fieldStart += 1;
+			if( fieldStart >= dataLen)
+				break;
+			fieldEnd = fieldStart + 2;
+			try {
+				decoded.append(
+					(char)Integer.parseInt(
+						URLEncoded.substring( fieldStart, fieldEnd ), 16) );
+			} catch ( NumberFormatException ex ) {
+	            throw new MalformedURLException(
+		            "LDAPUrl.decode: error converting hex characters to integer \""
+	            	+ ex.getMessage() + "\"");
+			}
+			searchStart = fieldEnd;
+			if( searchStart == dataLen )
+				break;
+	        fieldStart = URLEncoded.indexOf("%", searchStart);                
+		}
+
+        if( Debug.LDAP_DEBUG)
+            Debug.trace( Debug.urlParse, "decode returns(" + decoded + ")");
+		return( decoded.toString() );
     }
 
     /*
@@ -160,7 +221,7 @@ public class LDAPUrl {
     * @return An array of attribute names in the URL.
     */
     public String[] getAttributeArray() {
-        throw new RuntimeException("LDAPUrl: getAtributeArray() not implemented");
+		return attrs;
     }
 
     /*
@@ -186,7 +247,7 @@ public class LDAPUrl {
     * @return The base distinguished name specified in the URL.
     */
     public String getDN() {
-        throw new RuntimeException("LDAPUrl: getDN() not implemented");
+		return dn;
     }
 
     /*
@@ -200,7 +261,7 @@ public class LDAPUrl {
     * @return The search filter.
     */
     public String getFilter() {
-        throw new RuntimeException("LDAPUrl: getFilter() not implemented");
+		return filter;
     }
 
     /*
@@ -213,7 +274,7 @@ public class LDAPUrl {
     * @return The host name specified in the URL.
     */
     public String getHost() {
-        throw new RuntimeException("LDAPUrl: getHost() not implemented");
+		return host;
     }
 
     /*
@@ -226,7 +287,7 @@ public class LDAPUrl {
     * @return The port number in the URL.
     */
     public int getPort() {
-        throw new RuntimeException("LDAPUrl: getPort() not implemented");
+		return port;
     }
 
     /*
@@ -248,18 +309,18 @@ public class LDAPUrl {
                                 int listEnd)       // end of list + 1
     {
         String[] list;
-		if( Debug.LDAP_DEBUG)
-			Debug.trace( Debug.urlParse, "parseList(" + listStr.substring(listStart,listEnd) + ")");
+        if( Debug.LDAP_DEBUG)
+            Debug.trace( Debug.urlParse, "parseList(" + listStr.substring(listStart,listEnd) + ")");
         // Check for and empty string
         if( (listEnd - listStart) <= 2) {
             return null;
-		}
+        }
         // First count how many items are specified
         int itemStart = listStart;
         int itemEnd;
         int itemCount = 0;
         while( itemStart > 0 ) {
-			// itemStart == 0 if no delimiter found
+            // itemStart == 0 if no delimiter found
             itemCount += 1;
             itemEnd = listStr.indexOf(delimiter, itemStart);                
             if( (itemEnd > 0) && (itemEnd < listEnd) ) {
@@ -267,7 +328,7 @@ public class LDAPUrl {
             } else {
                 break;
             }
-		}
+        }
         // Now fill in the array with the attributes
         itemStart = listStart;
         list = new String[itemCount];
@@ -275,13 +336,13 @@ public class LDAPUrl {
         while( itemStart > 0 ) {
             itemEnd = listStr.indexOf(delimiter, itemStart);                
             if( itemStart <= listEnd ) {
-				if (itemEnd < 0 )
-					itemEnd = listEnd;
-				if( itemEnd > listEnd )
-					itemEnd = listEnd;
+                if (itemEnd < 0 )
+                    itemEnd = listEnd;
+                if( itemEnd > listEnd )
+                    itemEnd = listEnd;
                 list[itemCount] = listStr.substring( itemStart, itemEnd);
                 itemStart = itemEnd + 1;
-	            itemCount += 1;
+                itemCount += 1;
             } else {
                 break;
             }
@@ -298,17 +359,17 @@ public class LDAPUrl {
         if( Debug.LDAP_DEBUG)
             Debug.trace(  Debug.urlParse, "parseURL(" + url + ")");
         if( url == null)
-            throw new MalformedURLException("LDAPURL: URL cannot be null");
+            throw new MalformedURLException("LDAPUrl: URL cannot be null");
 
         // Check if URL is enclosed by < & >
         if( url.charAt(scanStart) == '<') {
             if( url.charAt(scanEnd - 1) != '>')
-                throw new MalformedURLException("LDAPURL: URL bad enclosure");
+                throw new MalformedURLException("LDAPUrl: URL bad enclosure");
             enclosed = true;
             scanStart += 1;
             scanEnd -= 1;
             if( Debug.LDAP_DEBUG)
-                Debug.trace(  Debug.urlParse, "LDAPURL: parseURL: Url is enclosed");
+                Debug.trace(  Debug.urlParse, "LDAPUrl: parseURL: Url is enclosed");
         }
 
         // Determine the URL scheme and set appropriate default port
@@ -325,7 +386,7 @@ public class LDAPUrl {
             scanStart += 8;
             port = LDAPConnection.DEFAULT_SSL_PORT;
         } else {
-            throw new MalformedURLException("LDAPURL: URL scheme is not ldap");
+            throw new MalformedURLException("LDAPUrl: URL scheme is not ldap");
         }
         if( Debug.LDAP_DEBUG)
             Debug.trace(  Debug.urlParse, "parseURL: scheme is " + scheme);
@@ -333,6 +394,7 @@ public class LDAPUrl {
         // Find where host:port ends and dn begins
         int dnStart = url.indexOf("/", scanStart);
         int hostPortEnd = scanEnd;
+		boolean novell = false;
         if( dnStart < 0) {
             /*
              * Kludge. check for ldap://111.222.333.444:389??cn=abc,o=company
@@ -347,6 +409,7 @@ public class LDAPUrl {
                 if( url.charAt( dnStart+1) == '?') {
                     hostPortEnd = dnStart;
                     dnStart += 1;
+					novell = true;
                     if( Debug.LDAP_DEBUG)
                         Debug.trace(  Debug.urlParse, "parseURL: wierd novell syntax found");
                 } else {
@@ -362,7 +425,7 @@ public class LDAPUrl {
         if( url.charAt(scanStart) == '[') {
             hostEnd = url.indexOf(']', scanStart + 1);
             if( (hostEnd >= hostPortEnd) || (hostEnd == -1)) {
-                throw new MalformedURLException("LDAPURL: \"]\" is missing on IPV6 host name");
+                throw new MalformedURLException("LDAPUrl: \"]\" is missing on IPV6 host name");
             }
             // Get host w/o the [ & ]
             host = url.substring( scanStart +1, hostEnd);
@@ -410,7 +473,8 @@ public class LDAPUrl {
         if( Debug.LDAP_DEBUG)
             Debug.trace(  Debug.urlParse, "parseURL: dn " + dn);
         scanStart = attrsStart + 1;                    
-        if( (scanStart >= scanEnd) || (attrsStart < 0) )
+		// Wierd novell syntax can have nothing beyond the dn
+        if( (scanStart >= scanEnd) || (attrsStart < 0) || novell )
             return;
 
         // Parse out the attributes
@@ -455,7 +519,7 @@ public class LDAPUrl {
         if( scopeStr.equalsIgnoreCase("sub")) {
             scope = LDAPv2.SCOPE_SUB;
         } else {
-            throw new MalformedURLException("LDAPURL: URL invalid scope");
+            throw new MalformedURLException("LDAPUrl: URL invalid scope");
         }
 
         if( Debug.LDAP_DEBUG)
@@ -489,7 +553,7 @@ public class LDAPUrl {
         // Parse out the extensions
         int end = url.indexOf('?', scanStart);
         if( end > 0)
-            throw new MalformedURLException("LDAPURL: URL has too many ? fields");
+            throw new MalformedURLException("LDAPUrl: URL has too many ? fields");
         extensions = parseList( url, ',', scanStart, scanEnd);
         if( Debug.LDAP_DEBUG) {
             if( extensions != null) {
