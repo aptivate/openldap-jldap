@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: NamingContextConstants.java,v 1.20 2000/10/30 19:10:59 javed Exp $
+ * $Id: NamingContextConstants.java,v 1.21 2001/03/01 00:30:11 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -497,6 +497,14 @@ public class NamingContextConstants {
      * in the ACL and can exercise these attribute rights on subordinate objects.
      */
     public static final int LDAP_DS_ATTR_INHERIT_CTL= 0x0040;
+
+    /**
+     * This bit will be set if the trustee in the ACL is a dynamic group 
+     * and its dynamic members should be considered for ACL rights 
+     * calculation purposes. If this bit is reset, the trustee's static 
+     * members alone will be considered for rights calculation purposes.
+     */
+    public static final int LDAP_DS_DYNAMIC_ACL     = 0x40000000;
 
     // Values for flags used in the replica info class structure
 
