@@ -212,7 +212,7 @@
                         packagenames="com.novell.ldap,com.novell.ldap.extensions,com.novell.ldap.asn1"
                         Windowtitle="LDAP Classes"
                         Splitindex="true"
-                        Doctitle="Novell, Inc. LDAP IETF Classes and Novell, Inc. Extensions"
+                        Doctitle="LDAP Classes, Extensions, and ASN.1"
                         Header="&lt;b>LDAP Classes&lt;/b>&lt;br>&lt;font size=-1>Implements Java LDAP&lt;/font>"
                         Bottom="&lt;font size=-1>Novell, Inc.&lt;br>       1800 South Novell Place&lt;br>        Provo, Ut 84606&lt;br>       Phone: (801) 861-5000&lt;/font>"
         />
