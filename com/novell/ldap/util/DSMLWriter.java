@@ -99,7 +99,7 @@ public class DSMLWriter implements LDAPWriter {
 
                 newLine(1);
                 out.write("</searchResponse>");
-                state = REQUEST_BATCH;
+                state = RESPONSE_BATCH;
                 break;
 
             case LDAPMessage.MODIFY_RESPONSE:
