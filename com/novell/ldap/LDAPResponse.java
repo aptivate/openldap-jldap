@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPResponse.java,v 1.14 2000/09/29 22:17:40 judy Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPResponse.java,v 1.15 2000/10/02 16:24:06 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -102,6 +102,21 @@ public class LDAPResponse extends LDAPMessage
     /* package */
     void chkResultCode() throws LDAPException
     {
+        LDAPException ex = getResultException();
+        if( ex == null)
+            return;
+        else
+            throw ex;
+    } 
+
+    /**
+     * Checks the resultCode and generates the appropriate exception or 
+     * null if success.
+     */
+    /* package */
+    LDAPException getResultException()
+    {
+        LDAPException ex = null;
         switch(getResultCode()) {
         case LDAPException.SUCCESS:
             break;
@@ -159,22 +174,26 @@ public class LDAPResponse extends LDAPMessage
         case LDAPException.MORE_RESULTS_TO_RETURN:
         case LDAPException.CLIENT_LOOP:
         case LDAPException.REFERRAL_LIMIT_EXCEEDED:
-            throw new LDAPException(getErrorMessage(), getMatchedDN(),
+            ex = new LDAPException(getErrorMessage(), getMatchedDN(),
                 getResultCode());
-            case LDAPException.REFERRAL:
-                // only throw this if automatic referral handling has not been
-                // enabled.
-                String[] refs = getReferrals();
-                if( Debug.LDAP_DEBUG ) {
-                    Debug.trace( Debug.messages, "LDAPResponse: Generating Referral Exception");
-                    for( int i = 0; i < refs.length; i++) {
-                        Debug.trace( Debug.messages, "LDAPResponse: \t" + refs[i]);
-                    }
+            break;
+        case LDAPException.REFERRAL:
+            // only throw this if automatic referral handling has not been
+            // enabled.
+            String[] refs = getReferrals();
+            if( Debug.LDAP_DEBUG ) {
+                Debug.trace( Debug.messages, "LDAPResponse: Generating Referral Exception");
+                for( int i = 0; i < refs.length; i++) {
+                    Debug.trace( Debug.messages, "LDAPResponse: \t" + refs[i]);
                 }
-                throw new LDAPReferralException(null, LDAPException.REFERRAL, refs);
-            default: // unknown
-                throw new LDAPException(getErrorMessage(), getMatchedDN(),
-                    getResultCode());
+            }
+            ex = new LDAPReferralException(null, LDAPException.REFERRAL, refs);
+            break;
+        default: // unknown
+            ex = new LDAPException(getErrorMessage(), getMatchedDN(),
+                getResultCode());
+            break;
         }
+        return ex;
     }
 }
