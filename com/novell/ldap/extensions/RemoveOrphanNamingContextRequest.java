@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: RemoveOrphanNamingContextRequest.java,v 1.8 2000/09/02 21:29:34 smerrill Exp $
+ * $Id: RemoveOrphanNamingContextRequest.java,v 1.9 2000/09/11 21:05:58 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -27,7 +27,7 @@ import java.io.*;
  *  The OID used for this extended operation is:
  *      "2.16.840.1.113719.1.27.100.41"<br><br>
  *
- *  The RequestValue has the folling ASN:<br><br>
+ *  The RequestValue has the following ASN:<br><br>
  *
  *  requestValue ::=
  * &nbsp;&nbsp;&nbsp;&nbsp;        serverDN    LDAPDN

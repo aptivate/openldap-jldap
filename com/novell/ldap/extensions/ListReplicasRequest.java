@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: ListReplicasRequest.java,v 1.4 2000/09/02 21:29:34 smerrill Exp $
+ * $Id: ListReplicasRequest.java,v 1.5 2000/09/11 21:05:57 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -28,7 +28,7 @@ import java.io.*;
  *  The OID used for this extended operation is:
  *      "2.16.840.1.113719.1.27.100.19"<br><br>
  *
- *  The RequestValue has the folling ASN:<br>
+ *  The RequestValue has the following ASN:<br>
  *
  *  requestValue ::=<br>
  *  &nbsp;&nbsp;&nbsp;&nbsp;    serverName  LDAPDN<br>
