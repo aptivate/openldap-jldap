@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.81 2001/03/01 18:11:23 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.82 2001/03/01 20:52:43 javed Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -42,7 +42,11 @@ public class LDAPConnection implements Cloneable
 {
     private LDAPSearchConstraints defSearchCons = new LDAPSearchConstraints();
     private LDAPControl[] responseCtls = null;
-    private Connection conn = null;
+
+	// Synchronization Object used to synchronize access to responseCtls
+	private Object responseCtlSemaphore = new Object();
+    
+	private Connection conn = null;
 
     private static Object nameLock = new Object(); // protect agentNum
     private static int lConnNum = 0;  // Debug, LDAPConnection number
@@ -949,7 +953,18 @@ public class LDAPConnection implements Cloneable
     {
         LDAPResponseListener listener =
             add(entry, (LDAPResponseListener)null, cons);
-        ((LDAPResponse)(listener.getResponse())).chkResultCode();
+
+		// Get a handle to the add response
+		LDAPResponse addResponse = (LDAPResponse)(listener.getResponse());
+
+		// Set local copy of responseControls synchronously if there were any
+		synchronized (responseCtlSemaphore) {
+			responseCtls = addResponse.getControls();
+		}
+
+		// Through any LDAPException as necessary
+        addResponse.chkResultCode();
+
         //checkForReferral( listener, 0, 0); // Search for referrals
         return;
     }
@@ -1627,6 +1642,11 @@ public class LDAPConnection implements Cloneable
             compare(dn, attr, (LDAPResponseListener)null, cons);
         LDAPResponse res = (LDAPResponse)listener.getResponse();
 
+		// Set local copy of responseControls synchronously - if there were any
+		synchronized (responseCtlSemaphore) {
+			responseCtls = res.getControls();
+		}
+
         if(res.getResultCode() == LDAPException.COMPARE_TRUE) {
             ret = true;
         }
@@ -1798,7 +1818,18 @@ public class LDAPConnection implements Cloneable
     {
         LDAPResponseListener listener =
             delete(dn, (LDAPResponseListener)null, cons);
-        ((LDAPResponse)(listener.getResponse())).chkResultCode();
+
+		// Get a handle to the delete response
+		LDAPResponse deleteResponse = (LDAPResponse)(listener.getResponse());
+
+		// Set local copy of responseControls synchronously - if there were any
+		synchronized (responseCtlSemaphore) {
+			responseCtls = deleteResponse.getControls();
+		}
+
+		// Through any LDAPException as necessary
+        deleteResponse.chkResultCode();
+
         return;
     }
 
@@ -1970,6 +2001,12 @@ public class LDAPConnection implements Cloneable
         // Call asynchronous API and get back handler to reponse listener
         LDAPResponseListener listener = extendedOperation(op, cons, (LDAPResponseListener)null);
         LDAPExtendedResponse response = (LDAPExtendedResponse) listener.getResponse();
+		
+		// Set local copy of responseControls synchronously - if there were any
+		synchronized (responseCtlSemaphore) {
+			responseCtls = response.getControls();
+		}
+
         return response;
     }
 
@@ -2095,7 +2132,7 @@ public class LDAPConnection implements Cloneable
 		// control object just in case another message containing controls
 		// comes in from the server while we are busy duplicating
 		// this one.
-		synchronized (responseCtls) {
+		synchronized (responseCtlSemaphore) {
 			for(int i = 0; i < responseCtls.length; i++) {
        			clonedControl[i] = (LDAPControl) (responseCtls[i]).clone();
 			}
@@ -2211,8 +2248,20 @@ public class LDAPConnection implements Cloneable
     {
         LDAPResponseListener listener =
             modify(dn, mods, (LDAPResponseListener)null, cons);
-        ((LDAPResponse)(listener.getResponse())).chkResultCode();
+
+		// Get a handle to the modify response
+		LDAPResponse modifyResponse = (LDAPResponse)(listener.getResponse());
+
+		// Set local copy of responseControls synchronously - if there were any
+		synchronized (responseCtlSemaphore) {
+			responseCtls = modifyResponse.getControls();
+		}
+
+		// Through any LDAPException as necessary
+        modifyResponse.chkResultCode();
+
         return;
+
     }
 
     /**
@@ -2660,8 +2709,20 @@ public class LDAPConnection implements Cloneable
         LDAPResponseListener listener =
             rename(dn, newRdn, newParentdn, deleteOldRdn,
                 (LDAPResponseListener)null, cons);
-        ((LDAPResponse)(listener.getResponse())).chkResultCode();
+
+		// Get a handle to the rename response
+		LDAPResponse renameResponse = (LDAPResponse)(listener.getResponse());
+
+		// Set local copy of responseControls synchronously - if there were any
+		synchronized (responseCtlSemaphore) {
+			responseCtls = renameResponse.getControls();
+		}
+
+		// Through any LDAPException as necessary
+        renameResponse.chkResultCode();
+
         return;
+
     }
 
     /*
