@@ -44,9 +44,10 @@
         		filtering="YES"
         />
         <javac
-        		srcdir="."
+                srcdir="."
                 includes="com/novell/**/*.java"
                 destdir="${build.debug}"
+                target="1.1"
                 deprecation="off"
                 debug="on"
                 optimize="off">
@@ -77,9 +78,11 @@
         	filtering="YES"
 			overwrite="YES"
         />
-        <javac srcdir="."
+        <javac 
+                srcdir="."
                 includes="com/novell/**/*.java"
                 destdir="${build}"
+                target="1.1"
                 deprecation="off"
                 debug="off"
                 optimize="on">
