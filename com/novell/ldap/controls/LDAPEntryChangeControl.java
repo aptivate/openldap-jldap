@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPEntryChangeControl.java,v 1.5 2001/07/26 22:13:52 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPEntryChangeControl.java,v 1.6 2001/07/27 18:47:03 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -34,9 +34,7 @@ public class LDAPEntryChangeControl extends LDAPControl
     private int     m_changeNumber;
 
     /**
-     *  @deprecated For internal use only.  Should not be used by applications.
-     *
-     *  <p>This constructor is called by the SDK to create an
+     *  This constructor is called by the SDK to create an
      *  LDAPEntryChangeControl. This constructor should NOT be called by
      *  application developers. It must be public since it resides in a
      *  different package than the classes that call it.</P>
