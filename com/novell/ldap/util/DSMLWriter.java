@@ -1020,6 +1020,7 @@ public class DSMLWriter implements LDAPWriter {
                     searchDeRef = "neverDerefAliases";
                     break;
             }
+            out.write(" derefAliases=\"" + searchDeRef + "\"");
 			out.write(" sizeLimit=\"" + slimit + "\"");
 			out.write(" timeLimit=\"" + tlimit + "\"");
 			out.write(" typesOnly=\"" + isTypesonly + "\"");
