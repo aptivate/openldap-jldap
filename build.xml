@@ -1,4 +1,4 @@
-<!-- $Novell: /ldap/src/jldap/build.xml,v 1.28 2001/01/05 15:23:38 vtag Exp $ -->
+<!-- $Novell: /ldap/src/jldap/build.xml,v 1.29 2001/01/26 23:12:03 vtag Exp $ -->
 <!-- ======================================================================= -->
 <!-- TOP level build file                                                -->
 <!-- ======================================================================= -->
@@ -160,7 +160,7 @@
 		<mkdir dir="${pkg.doc}/${ldap}"/>
 		<mkdir dir="${pkg.samples}"/>
 		<mkdir dir="${pkg.samples}/extensions"/>
-		<!-- mkdir dir="${pkg.samples}/controls"/ -->
+		<mkdir dir="${pkg.samples}/controls"/>
 
 		<copydir src="${src}/${lib}"         dest="${pkg.lib}"/>
 
@@ -168,8 +168,7 @@
 
 		<copydir src="${src}/samples"  dest="${pkg.samples}"/>
 		<copydir src="${src}/samples/extensions"  dest="${pkg.samples}/extensions"/>
-		<!-- copydir src="${src}/samples/controls"  dest="${pkg.samples}/controls"/ -->
-        <deltree dir="${pkg.samples}/controls"/>
+		<copyfile src="${src}/samples/controls/SortControl.java"  dest="${pkg.samples}/controls/SortControl.java"/>
         <copyfile src="README.txt" dest="${pkg}/README.txt" />
 	</target>
 
@@ -236,13 +235,13 @@
         <javadoc sourcepath="${docsrc}"
                         destdir="${pkg.doc}"
                         classpath="${lib.debug}/${ldap}.jar;external/ssl/domestic/nssl1.2_dom.jar"
-                        packagenames="com.novell.ldap,com.novell.ldap.extensions,com.novell.ldap.asn1"
+                        packagenames="com.novell.ldap,com.novell.ldap.extensions,com.novell.ldap.controls,com.novell.ldap.asn1"
                         overview="overview.html"
                         nodeprecated="true"
                         nodeprecatedlist="true"
                         Windowtitle="LDAP Classes"
                         Splitindex="true"
-                        Doctitle="LDAP Classes, Extensions, and ASN.1"
+                        Doctitle="LDAP Classes, Controls, Extensions, and ASN.1"
                         Header="&lt;b>LDAP Classes&lt;/b>&lt;br>&lt;font size=-1>Implements Java LDAP&lt;/font>"
                         Bottom="&lt;font size=-1>Copyright © 2000 Novell, Inc. All Rights Reserved. &lt;br>Novell, Inc.&lt;br>1800 South Novell Place&lt;br>Provo, Ut 84606&lt;br>Phone: (801) 861-5000&lt;/font>"
         />
@@ -280,7 +279,7 @@
         <javadoc sourcepath="${docsrc}"
                         destdir="${doc.novell}"
                         classpath="external/ssl/domestic/nssl1.2_dom.jar"
-                        packagenames="com.novell.ldap,com.novell.ldap.asn1,com.novell.ldap.client,com.novell.ldap.rfc2251,com.novell.ldap.extensions"
+                        packagenames="com.novell.ldap,com.novell.ldap.asn1,com.novell.ldap.client,com.novell.ldap.rfc2251,com.novell.ldap.extensions,com.novell.ldap.controls"
                         Windowtitle="LDAP Classes"
                         Splitindex="true"
                         Private="true"
