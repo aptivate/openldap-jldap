@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: LDIFReader.java,v 1.26 2002/10/15 18:16:18 $
+ * $Novell: LDIFReader.java,v 1.29 2002/10/18 22:26:23 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -781,8 +781,8 @@ public class LDIFReader extends LDIF implements LDAPReader {
             lastChar--;
         }
 
-        // create newChars, allow room for criticality
-        newChars = new char[lastChar + 1 + 7];
+        // create newChars
+        newChars = new char[lastChar+1];
 
         if( (c > 6) && (line.substring(0,c).equals("control"))) {
             // this is a control field
@@ -794,7 +794,8 @@ public class LDIFReader extends LDIF implements LDAPReader {
             }
         }
         else {
-            // this is 'dn', 'changetype', or 'attrName' field
+            // not a control field. it's 'dn',
+            //'changetype', or 'attrName' field
             this.control = false;
 
             // copy field name and ':', eg. 'dn:', 'changetype:', or 'attrName:'
@@ -805,8 +806,8 @@ public class LDIFReader extends LDIF implements LDAPReader {
             c++;
         }
 
-        if(!this.control) {  // not a control dield
-            // Check if '::' or ':<'
+        if(!this.control) {
+            // // not a control field. check if '::' or ':<'
             if( c <= lastChar) {
                 t = line.charAt(c);
                 if( t == ':') {
@@ -819,13 +820,13 @@ public class LDIFReader extends LDIF implements LDAPReader {
                 }
             }
 
-            // eliminate any space(s) after ':' or '<', or already to the end
+            // eliminate any space(s) after ':' or '<'
             while( (c <= lastChar) && (line.charAt(c) == ' ')) {
                 c++;
             }
 
             if( c <= lastChar) {  // thers is a value specified
-                // copy common field value
+                // copy field value
                 line.getChars(c, lastChar+1, newChars, charIndex);
 
                 charIndex += lastChar - c + 1;
@@ -833,7 +834,7 @@ public class LDIFReader extends LDIF implements LDAPReader {
                 StringBuffer newBuf = new StringBuffer(lastChar);
                 // copy the filed represented by newChars
                 newBuf.append( newChars, 0, charIndex);
-                // return the field
+                // return the trimed field
                 return newBuf;
             }
             else {  // there is no value specified
@@ -852,10 +853,10 @@ public class LDIFReader extends LDIF implements LDAPReader {
             // extra spaces are possible between oid, criticality, and value.
             // oid is a must, while criticalitty and value can be absent.
 
-            // determine length of the oid
+            // get control oid
             int b = c;
             while(c <= lastChar) {
-                // an oid consists of '.'s and digits
+                // an oid consists of dots and digits
                 t = line.charAt(c);
                 if( (t == '.') || (Character.isDigit(t))) {
                     c++;
@@ -876,15 +877,16 @@ public class LDIFReader extends LDIF implements LDAPReader {
                 oid = new String(chars);
             }
 
-            if ( c > lastChar) {  // to the end of the control field
-                // this control only has an oid.
-                // create LDAPControl object
+            if ( c > lastChar) {
+                // control only has an oid. create LDAPControl object
+                // with oid, 'false' and empty byte array
                 LDAPControl ctrl = new LDAPControl(oid, false, new byte[0]);
                 // add it to cList
                 this.cList.add(ctrl);
-                return null;
+                return null;  // return value has no use
             }
-            // check char after oid,  is it end, space, or ':'
+
+            // get control criticality
             t = line.charAt(c);
             if( t == ' ') {
                 // see a space, skip over any spaces
@@ -903,7 +905,8 @@ public class LDIFReader extends LDIF implements LDAPReader {
                 c += 5;
                 criticality = false;
             }
-            else {
+            /*else {
+                /*
                 if( line.charAt(c) == ':') {
                     // found colon, but no criticality,
                     // use default value of 'false'
@@ -917,69 +920,87 @@ public class LDIFReader extends LDIF implements LDAPReader {
                         + this.dnlNumber + " of the file.",
                         LDAPException.LOCAL_ERROR);
                 }
-            }
+                */
+            //}
 
             if (c > lastChar) {  // to the end of the control field
-                // create LDAPControl object
+                // create LDAPControl object with oid,
+                // criticality, and empty byte array
                 LDAPControl ctrl=new LDAPControl(oid, criticality, new byte[0]);
                 // add it to cList
                 this.cList.add(ctrl);
                 return null;
             }
 
-            if(line.charAt(c) == ':') {
-                c++;  // found colon, skip over it
+            if ((t=line.charAt(c)) != ':') {
+                throw new LDAPLocalException("com.novell.ldap.ldif_dsml."
+                        + "LDIFReader: Unexcepted char '" + t + "'. Expecting "
+                        + "to see ':' in the record starting on line "
+                        + this.dnlNumber + " of the file.",
+                        LDAPException.LOCAL_ERROR);
+            }
+
+            // get control value
+            c++;  // go to enst char after ':'
+            if (c > lastChar) {
+                throw new LDAPLocalException("com.novell.ldap.ldif_dsml."
+                    + "LDIFReader: No control value after ':' "
+                    + "in the record starting on line "
+                    + this.dnlNumber + " of the file.",
+                    LDAPException.LOCAL_ERROR);
+            }
+
+            // positioned at the first char right after ':'
+            // check if '::' or ':<'
+            t = line.charAt(c);
+            if( t == ':') {
+                isEncoded = true;            // indicate encoded value
+                c++;                         // point to value
                 if (c > lastChar) {
                     throw new LDAPLocalException("com.novell.ldap.ldif_dsml."
-                        + "LDIFReader: No control value after colon "
+                        + "LDIFReader: No control value after '::' "
                         + "in the record starting on line "
                         + this.dnlNumber + " of the file.",
                         LDAPException.LOCAL_ERROR);
                 }
-
-                // positioned at the first char right after ':'
-                // check if :: or :<
-                t = line.charAt(c);
-                if( t == ':') {
-                    newChars[charIndex++] = ':'; // save the ':' to
-                    isEncoded = true;            // indicate encoded value
-                    c++;                         // point to value
-                }
-                else if( t == '<') {
-                    newChars[charIndex++] = '<'; // save the '<' to
-                    isURL = true;                // indicate file URL value
-                    c++;                         // point to value
-                }
-
-                // eliminate any space(s) after ':' or '<'
-                while((c <= lastChar) && (line.charAt(c) == ' ')) {
-                    c++;
-                }
-
-                if(c <= lastChar) {  // thers is a value spec specified
-                    char[] chars = new char[lastChar+1-c];
-                    line.getChars(c, lastChar+1, chars, 0);
-
-                    if (isEncoded) {
-                        this.bytes = Base64.decode(chars);
-                    }
-                    else if (isURL) {
-                        // if isURL, what to do?
-                        this.bytes = (new String(chars)).getBytes();
-                    }
-                    else {
-                        this.bytes = (new String(chars)).getBytes();
-                    }
+            }
+            else if( t == '<') {
+                isURL = true;                // indicate file URL value
+                c++;                         // point to value
+                if (c > lastChar) {
+                    throw new LDAPLocalException("com.novell.ldap.ldif_dsml."
+                        + "LDIFReader: No control value after ':<' "
+                        + "in the record starting on line "
+                        + this.dnlNumber + " of the file.",
+                        LDAPException.LOCAL_ERROR);
                 }
             }
+
+            // eliminate any space(s) after ':', '::' or ':<'
+            while((c <= lastChar) && (line.charAt(c) == ' ')) {
+                c++;
+            }
+
+            if(c <= lastChar) {  // thers is a value spec specified
+                char[] chars = new char[lastChar+1-c];
+                line.getChars(c, lastChar+1, chars, 0);
+
+                if (isEncoded) {
+                    this.bytes = Base64.decode(chars);
+                }
+                else if (isURL) {
+                    // if isURL, what to do?
+                    this.bytes = (new String(chars)).getBytes();
+                }
+                else {
+                    this.bytes = (new String(chars)).getBytes();
+                }
+            }
+            // create LDAPControl object
+            LDAPControl ctrl = new LDAPControl(oid, criticality, this.bytes);
+            // add it to cList
+            this.cList.add(ctrl);
         }
-
-        // create LDAPControl object
-        LDAPControl ctrl = new LDAPControl(oid, criticality, this.bytes);
-        // add it to cList
-        this.cList.add(ctrl);
-
-        // this return value has no use
         return null;
     }
 }
