@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id$
+ * $Id: LDAPMessageQueue.java,v 1.2 2000/03/14 18:17:31 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -16,7 +16,7 @@
 package com.novell.ldap.client;
 
 import java.util.Vector;
-import com.novell.ldap.*;
+import org.ietf.asn1.ldap.*;
 
 public class LDAPMessageQueue {
 
@@ -24,7 +24,7 @@ public class LDAPMessageQueue {
 	private Vector messageIDs = new Vector(1);  // preserve fifo order
 
    /*
-    * 4.5.1 getMessageIDs
+    * getMessageIDs
     */
 
    /**
@@ -71,7 +71,7 @@ public class LDAPMessageQueue {
 	public void removeResponses(int msgId) {
 		for(int i=responses.size()-1; i>=0; i--) {
 			LDAPMessage message = (LDAPMessage)responses.elementAt(i);
-			if(message.getMessageID() == msgId) {
+			if(message.getMessageID().getInt() == msgId) {
 				responses.removeElementAt(i);
 			}
 		}

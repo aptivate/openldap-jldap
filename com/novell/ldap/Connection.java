@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id$
+ * $Novell: Connection.java,v 1.5 2000/03/13 23:26:33 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -15,17 +15,16 @@
  
 package com.novell.ldap.client;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.InputStream;
+import java.io.*;
 import java.net.Socket;
 import java.util.Vector;
 
-import com.novell.ldap.*;
-import com.novell.ldap.client.protocol.UnbindRequest;
-import com.novell.ldap.client.protocol.lber.*;
+//import com.novell.ldap.*;
+//import com.novell.ldap.client.protocol.UnbindRequest;
+//import com.novell.ldap.client.protocol.lber.*;
+
+import org.ietf.ldap.*;
+import org.ietf.asn1.*;
 
 /**
   * A thread that creates a connection to an LDAP server.
@@ -58,24 +57,27 @@ public final class Connection implements Runnable {
    private Thread producer; // New thread that reads data from the server.
    private boolean v3 = true;
 
+	private BEREncoder encoder = new BEREncoder();
+	private BERDecoder decoder = new BERDecoder();
+
    private String host;
    private int port;
 
    private boolean bound = false;
 
-   private InputStream inStream;
-   private OutputStream outStream;
+   private InputStream in;
+   private OutputStream out;
    private Socket socket;
 
-   private int msgId = 0;
+//   private MessageID msgId = 0;
 
 	private Vector ldapListeners;
-	private LDAPMessageFactory messageFactory = new LDAPMessageFactory();
+//	private LDAPMessageFactory messageFactory = new LDAPMessageFactory();
 
    // true means v3; false means v2
    void setV3(boolean v) {
       v3 = v;
-		messageFactory.setV3(v);
+//		messageFactory.setV3(v);
    }
 
    // A BIND request has been successfully made on this connection
@@ -89,19 +91,19 @@ public final class Connection implements Runnable {
    }
 
    public void setInputStream(InputStream is) {
-      inStream = is;
+      in = is;
    }
 
    public void setOutputStream(OutputStream os) {
-      outStream = os;
+      out = os;
    }
 
    public InputStream getInputStream() {
-      return inStream;
+      return in;
    }
 
    public OutputStream getOutputStream() {
-      return outStream;
+      return out;
    }
 
 	public String getHost() {
@@ -131,8 +133,8 @@ public final class Connection implements Runnable {
             socket = new Socket(host, port);
          }
 
-         inStream = new BufferedInputStream(socket.getInputStream());
-         outStream = new BufferedOutputStream(socket.getOutputStream());
+         in = new BufferedInputStream(socket.getInputStream());
+         out = new BufferedOutputStream(socket.getOutputStream());
       }
       catch(IOException ioe) {
          throw new LDAPException("Unable to connect to server: " + host,
@@ -153,19 +155,21 @@ public final class Connection implements Runnable {
 	/**
 	 *	Returns a unique message id for this connection.
 	 */
-   public synchronized int getMessageID() {
-      return ++msgId;
-   }
+//   public synchronized MessageID getMessageID() {
+//      return new MessageID(++msgId); // msgId should be static variable of MessageID
+//		                               // then this method doesn't have to be here.
+//   }
 
 	/**
-	 * Writes an lber encoded message to the LDAP server over a socket.
+	 * Writes an ber encoded message to the LDAP server over a socket.
 	 */
-   public void writeMessage(LberEncoder lber)
+   public void writeMessage(org.ietf.ldap.LDAPMessage msg)
 		throws IOException
 	{
+		byte[] ber = msg.getASN1Object().getEncoding(encoder);
       synchronized(this) {
-         outStream.write(lber.getBuf(), 0, lber.getDataLen());
-         outStream.flush();
+         out.write(ber, 0, ber.length);
+         out.flush();
       }
    }
 
@@ -201,23 +205,23 @@ public final class Connection implements Runnable {
    // Methods to unbind from the server and clean up resources when this
 	// object is destroyed.
 
-   private synchronized void ldapUnbind(LDAPControl[] reqCtls) {
-      try {
-			LDAPRequest req = new UnbindRequest(getMessageID(), reqCtls, v3);
+//   private synchronized void ldapUnbind(LDAPControl[] reqCtls) {
+//      try {
+//			LDAPRequest req = new UnbindRequest(getMessageID(), reqCtls, v3);
 
-         outStream.write(req.getLber().getBuf(), 0,
-				             req.getLber().getDataLen());
-         outStream.flush();
-      }
-		catch(LDAPException e) {
+//         out.write(req.getLber().getBuf(), 0,
+//				             req.getLber().getDataLen());
+//         out.flush();
+//      }
+//		catch(LDAPException e) {
 			// encoding errors
-		}
-      catch(IOException ex) {
+//		}
+//      catch(IOException ex) {
 			// communication errors
-      }
+//      }
 
       // An UnbindRequest will not return anything...
-   }
+//   }
 
 	/**
 	 *
@@ -235,12 +239,12 @@ public final class Connection implements Runnable {
          try {
             // abandonOutstandingReqs(reqCtls);
             if(bound) {
-               ldapUnbind(reqCtls);
+//               ldapUnbind(reqCtls);
             }
          }
          finally {
             try {
-               outStream.flush();
+               out.flush();
                socket.close();
             }
             catch(java.io.IOException ie) {
@@ -257,115 +261,48 @@ public final class Connection implements Runnable {
 
 
 	//------------------------------------------------------------------------
-   // The LDAPMessage producer thread. It does the demultiplexing of multiple
-	// requests on the same TCP/IP connection.
+   // The thread that collects LDAPMessage's from the server. It does the
+	// demultiplexing of multiple requests on the same TCP/IP connection.
 
    public void run() {
-      byte inbuf[];
-      int curMsgId = 0;
-
       try {
-         while(true) {
-            inbuf = new byte[2048];
+			for(;;) {
+				// decode an LDAPMessage
+				ASN1Identifier asn1ID = new ASN1Identifier(in);
+				if(asn1ID.getTag() != ASN1Structured.SEQUENCE)
+					continue; // look for an LDAPMessage identifier
 
-            int bytesread;
-            int offset = 0;
-            int seqlen = 0;
-            int seqlenlen = 0;
+				ASN1Length asn1Len = new ASN1Length(in);
 
-            // check that it is the beginning of a sequence
-            bytesread = inStream.read(inbuf, offset, 1);
-            if(bytesread < 0)
-               break;
-            if(inbuf[offset++] != (Lber.ASN_SEQUENCE | Lber.ASN_CONSTRUCTOR))
-               continue; // loop until we get the start byte
+				org.ietf.asn1.ldap.LDAPMessage msg =
+					 new org.ietf.asn1.ldap.LDAPMessage(
+						 decoder, in, asn1Len.getLength());
 
-            // get length of sequence
-            bytesread = inStream.read(inbuf, offset, 1);
-            if(bytesread < 0)
-               break;
-            seqlen = inbuf[offset++];
+				int msgId = msg.getMessageID().getInt();
 
-            // if high bit is on, length is encoded in the 
-            // subsequent length bytes and the number of length bytes 
-            // is equal to & 0x80 (i.e. length byte with high bit off).
-            if((seqlen & 0x80) == 0x80) {
-               seqlenlen = seqlen & 0x7f;  // number of length bytes
-
-               bytesread = 0;
-
-               boolean eos = false;
-               int br;
-
-               // Read all length bytes
-               while(bytesread < seqlenlen) {
-                  br = inStream.read(inbuf, offset+bytesread,      
-                                     seqlenlen-bytesread);
-                  if(br < 0) {
-                     eos = true;
-                     break;
-                  }
-                  bytesread += br;
-               }
-
-               // end-of-stream reached before length bytes are read
-               if(eos)
-                  break;
-
-               // Add contents of length bytes to determine length
-               seqlen = 0;
-               for(int i = 0; i < seqlenlen; i++) {
-                  seqlen = (seqlen << 8) + (inbuf[offset+i] & 0xff);
-               }
-               offset += bytesread;
-            }
-
-            // read in seqlen bytes
-            int bytesleft = seqlen;
-            if((offset + bytesleft) > inbuf.length) {
-               byte nbuf[] = new byte[offset + bytesleft];
-               System.arraycopy(inbuf, 0, nbuf, 0, offset);
-               inbuf = nbuf;
-            }
-            while(bytesleft > 0) {
-               bytesread = inStream.read(inbuf, offset, bytesleft);
-               if(bytesread < 0)
-                  break;
-               offset += bytesread;
-               bytesleft -= bytesread;
-            }
-
-            try {
-               LberDecoder lber = new LberDecoder(inbuf, 0, offset);
-					LDAPMessage message = messageFactory.createLDAPMessage(lber);
-
-               if(message.getMessageID() == 0) {
-                  // Process Unsolicited Notification
-               }
-               else {
-						// Find the message queue which requested this response.
-						// It is possible to receive a response for a request which
-						// has been abandoned. If abandoned, do nothing.
-						int cnt = ldapListeners.size();
-						findMsgId:
-							for(int i=0; i<cnt; i++) {
-								LDAPListener ldapListener =
-									 (LDAPListener)ldapListeners.elementAt(i);
-								int[] msgIDs = ldapListener.getMessageIDs();
-								for(int j=0; j<msgIDs.length; j++)
-									if(msgIDs[j] == message.getMessageID()) {
-										ldapListener.addLDAPMessage(message); //notifies
-										break findMsgId; // we're done, so bail out
-									}
-							}
-               }
-            }
-            catch(Lber.DecodeException e) {
-               //System.err.println("Cannot parse Ber");
-            }
-         } // while(true)
+				if(msgId == 0) {
+					// Process Unsolicited Notification
+				}
+				else {
+					// Find the message queue which requested this response.
+					// It is possible to receive a response for a request which
+					// has been abandoned. If abandoned, do nothing.
+					int cnt = ldapListeners.size();
+					findMsgId:
+						for(int i=0; i<cnt; i++) {
+							LDAPListener ldapListener =
+								 (LDAPListener)ldapListeners.elementAt(i);
+							int[] msgIDs = ldapListener.getMessageIDs();
+							for(int j=0; j<msgIDs.length; j++)
+								if(msgIDs[j] == msgId) {
+									ldapListener.addLDAPMessage(msg); //notifies
+									break findMsgId; // we're done, so bail out
+								}
+						}
+				}
+         }
       }
-      catch(java.io.IOException ex) {
+      catch(IOException ioe) {
       }
       finally {
          cleanup(null);

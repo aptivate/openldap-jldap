@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: LDAPControl.java,v 1.2 2000/03/14 18:17:26 smerrill Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/org/ietf/ldap/LDAPControl.java,v 1.3 2000/08/03 22:06:14 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -15,10 +15,10 @@
  
 package org.ietf.ldap;
  
+import org.ietf.asn1.*;
+import org.ietf.asn1.ldap.*;
+
 /**
- * 4.8 public class LDAPControl
- *                implements Cloneable
- *
  *  An LDAPControl encapsulates optional additional parameters or
  *  constraints to be applied to LDAP operations. If set as a Server
  *  Control, it is sent to the server along with operation requests. If
@@ -28,13 +28,7 @@ package org.ietf.ldap;
  */
 public class LDAPControl implements Cloneable {
 
-   private String id;
-   private boolean critical;
-   private byte vals[];
-
-   /*
-    * 4.8.1 Constructors
-    */
+	private Control control; // An RFC 2251 Control
 
    /**
     * Parameters are:
@@ -42,19 +36,22 @@ public class LDAPControl implements Cloneable {
     *  id             The type of the Control, as a string.
     *
     *  critical       True if the LDAP operation should be discarded if
-    *                  the server does not support this Control.
+    *                 the server does not support this Control.
     *
     *  vals           Control-specific data.
     */
    public LDAPControl(String id, boolean critical, byte vals[]) {
-      this.id = id;
-      this.critical = critical;
-      this.vals = vals;
+		control = new Control(new LDAPOID(id), new ASN1Boolean(critical),
+		                      new ASN1OctetString(vals));
    }
 
-   /*
-    * 4.8.2 clone
-    */
+	/**
+	 * Create an LDAPControl from a Control. (not in draft)
+	 */
+	public LDAPControl(Control control)
+	{
+		this.control = control;
+	}
 
    /**
     * Returns a deep copy of the object.
@@ -63,43 +60,27 @@ public class LDAPControl implements Cloneable {
       return null;
    }
 
-   /*
-    * 4.8.3 getID
-    */
-
    /**
     * Returns the identifier of the control.
     */
    public String getID() {
-      return id;
+		return new String(control.getControlType().getContent());
    }
-
-   /*
-    * 4.8.4 getValue
-    */
 
    /**
     * Returns the control-specific data of the object.
     */
    public byte[] getValue() {
-      return vals;
+		return control.getControlValue().getContent();
    }
-
-   /*
-    * 4.8.5 isCritical
-    */
 
    /**
     * Returns true if the control must be supported for an associated
     * operation to be executed.
     */
    public boolean isCritical() {
-      return critical;
+		return control.getCriticality().getContent();
    }
-
-   /*
-    * 4.8.6 newInstance
-    */
 
    /**
     * Instantiates a control, given the raw data representing it in an LDAP
@@ -108,10 +89,6 @@ public class LDAPControl implements Cloneable {
    public static LDAPControl newInstance(byte[] data) {
       return null;
    }
-
-   /*
-    * 4.8.7 register
-    */
 
    /**
     * Registers a class to be instantiated on receipt of a control with the
@@ -127,5 +104,12 @@ public class LDAPControl implements Cloneable {
    public static void register(String oid, Class controlClass) {
    }
 
+	/**
+	 *
+	 */
+	public Control getASN1Object()
+	{
+		return control;
+	}
 }
 

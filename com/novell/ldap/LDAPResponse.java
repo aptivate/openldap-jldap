@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: LDAPResponse.java,v 1.3 2000/03/14 18:17:28 smerrill Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/org/ietf/ldap/LDAPResponse.java,v 1.4 2000/08/03 22:06:17 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -17,34 +17,47 @@ package org.ietf.ldap;
 
 import java.io.IOException;
 import java.util.Vector;
-import com.novell.ldap.client.protocol.lber.*;
+
+import org.ietf.asn1.*;
+import org.ietf.asn1.ldap.*;
+//import com.novell.ldap.client.protocol.lber.*;
 
 /**
- * 4.4 public class LDAPResponse extends LDAPMessage
- *
  *  Represents the response to a particular LDAP operation.
  */
 public class LDAPResponse extends LDAPMessage {
 
-	private String errorMessage;     // RFC 2251
-	private String matchedDN;        // RFC 2251
-	private Vector referrals = null; // RFC 2251
-	private int resultCode;          // RFC 2251
+//	private String errorMessage;     // RFC 2251
+//	private String matchedDN;        // RFC 2251
+//	private Vector referrals = null; // RFC 2251
+//	private int resultCode;          // RFC 2251
 
-	private LberDecoder lber;
+//	private LberDecoder lber;
+
+	/**
+	 * Creates an LDAPMessage when receiving an RFC 2251 LDAPMessage from a
+	 * server.
+	 */
+	public LDAPResponse(org.ietf.asn1.ldap.LDAPMessage message)
+	{
+		super(message);
+	}
 
 	/**
 	 * Constructor called when an object with only a resultCode is needed.
 	 */
+/*
 	public LDAPResponse(int resultCode)
 	{
 		this.resultCode = resultCode;
 	}
+*/	
 
 	/**
 	 * Constructor called when parsing responses to messages as they are
 	 * retrieved from the socket.
 	 */
+/*
 	public LDAPResponse(int messageID, int type, LberDecoder lber,
 		                 boolean isLdapv3)
 		throws IOException
@@ -88,7 +101,9 @@ public class LDAPResponse extends LDAPMessage {
 		}
 
 	}
+*/	
 
+/*
    private void parseControls()
 		throws IOException
 	{
@@ -125,61 +140,58 @@ public class LDAPResponse extends LDAPMessage {
          }
       }
    }
-
-   /*
-    * 4.4.1 getErrorMessage
-    */
+*/	
 
    /**
     * Returns any error message in the response.
     */
-   public String getErrorMessage() {
-      return errorMessage;
+   public String getErrorMessage()
+	{
+		return
+			((Response)message.getProtocolOp()).getErrorMessage().getString();
    }
-
-   /*
-    * 4.4.2 getMatchedDN
-    */
 
    /**
     * Returns the partially matched DN field, if any, in a server response.
     */
-   public String getMatchedDN() {
-      return matchedDN;
+   public String getMatchedDN()
+	{
+		return
+			((Response)message.getProtocolOp()).getMatchedDN().getString();
    }
-
-   /*
-    * 4.4.3 getReferrals
-    */
 
    /**
     * Returns all referrals, if any, in a server response.
     */
    public String[] getReferrals() {
-		int size = referrals.size();
-		String[] ref = new String[size];
-		for(int i=0; i<size; i++) {
-			ref[i] = (String)referrals.elementAt(i);
+		String[] referrals = null;
+		Referral ref = ((Response)message.getProtocolOp()).getReferral();
+		
+		if(ref != null) {
+			// convert RFC 2251 Referral to String[]
+			int size = ref.size();
+			referrals = new String[size];
+			for(int i=0; i<size; i++) {
+				referrals[i] = new String(((ASN1OctetString)ref.get(i)).getContent());
+			}
 		}
-      return ref;
-   }
 
-   /*
-    * 4.4.4 getResultCode
-    */
+      return referrals;
+   }
 
    /**
     * Returns the result code in a server response, as defined in [LDAPv3].
     */
-   public int getResultCode() {
-      return resultCode;
+   public int getResultCode()
+	{
+		return ((Response)message.getProtocolOp()).getResultCode().getInt();
    }
 
    /**
     * Check the resultCode and throw the appropriate exception
     */
    public void chkResultCode() throws LDAPException {
-      switch(resultCode) {
+      switch(getResultCode()) {
          case LDAPException.SUCCESS:
             break;
          case LDAPException.OPERATIONS_ERROR:
@@ -235,17 +247,19 @@ public class LDAPResponse extends LDAPMessage {
 			case LDAPException.NO_RESULTS_RETURNED:
 			case LDAPException.MORE_RESULTS_TO_RETURN:
 			case LDAPException.CLIENT_LOOP:
-            throw new LDAPException(errorMessage, matchedDN, resultCode);
+            throw new LDAPException(getErrorMessage(), getMatchedDN(),
+					                     getResultCode());
 			case LDAPException.REFERRAL_LIMIT_EXCEEDED:
          case LDAPException.REFERRAL:
             // only throw this if automatic referral handling has not been
             // enabled.
             throw new LDAPReferralException();
-         default:
-            throw new LDAPException(errorMessage, matchedDN, -1); // unknown
+         default: // unknown
+            throw new LDAPException(getErrorMessage(), getMatchedDN(), -1);
       }
    }
 
+/*
    public static final int LBER_BOOLEAN = 0x01;
    public static final int LBER_INTEGER = 0x02;
    public static final int LBER_BITSTRING = 0x03;
@@ -268,5 +282,7 @@ public class LDAPResponse extends LDAPMessage {
    public static final int LDAP_REP_REFERRAL = 0xa3;  // ctx + constructed    (LDAPv3)
    public static final int LDAP_REP_EXT_OID = 0x8a;   // ctx + primitive      (LDAPv3)
    public static final int LDAP_REP_EXT_VAL = 0x8b;   // ctx + primitive      (LDAPv3)
+*/	
 
 }
+

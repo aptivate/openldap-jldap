@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: LDAPMessage.java,v 1.3 2000/03/14 18:17:28 smerrill Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/org/ietf/ldap/LDAPMessage.java,v 1.4 2000/08/03 22:06:16 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -15,18 +15,15 @@
  
 package org.ietf.ldap;
 
-import java.util.Vector;
+//import org.ietf.asn1.ASN1Object;
+import org.ietf.asn1.ldap.*;
 
 /**
- * 4.3 public class LDAPMessage
- *
  *  Base class for LDAP request and response messages.
  */
 public class LDAPMessage {
 
-	protected int messageID;
-	protected Vector controls;
-	protected int type;
+	protected org.ietf.asn1.ldap.LDAPMessage message;
 
    public final static int BIND_REQUEST            = 0;
    public final static int BIND_RESPONSE           = 1;
@@ -49,15 +46,45 @@ public class LDAPMessage {
    public final static int EXTENDED_REQUEST        = 23;
    public final static int EXTENDED_RESPONSE       = 24;
 
-	protected LDAPMessage()
+	/**
+	 * Creates an LDAPMessage when sending a Protocol Operation.
+	 */
+	public LDAPMessage(Request op)
 	{
+		this(op, null);
 	}
 
-	protected LDAPMessage(int messageID, int type)
+	/**
+	 * Creates an LDAPMessage when sending a Protocol Operation along with
+	 * some optional controls.
+	 */
+	public LDAPMessage(Request op, LDAPControl[] controls)
 	{
-		this(messageID, null, type);
+		Controls asn1Ctrls = null;
+
+		if(controls != null) {
+			// Move LDAPControls into an RFC 2251 Controls object.
+			asn1Ctrls = new Controls();
+			for(int i=0; i<controls.length; i++) {
+				asn1Ctrls.add(controls[i].getASN1Object());
+			}
+		}
+
+		// create RFC 2251 LDAPMessage
+		message = new org.ietf.asn1.ldap.LDAPMessage(
+			new MessageID(), op, asn1Ctrls);
 	}
 
+	/**
+	 * Creates an LDAPMessage when receiving an RFC 2251 LDAPMessage from a
+	 * server.
+	 */
+	public LDAPMessage(org.ietf.asn1.ldap.LDAPMessage message)
+	{
+		this.message = message;
+	}
+
+/*
 	protected LDAPMessage(int messageID, LDAPControl[] controls, int type)
 	{
 		this.messageID = messageID;
@@ -69,49 +96,32 @@ public class LDAPMessage {
 		}
 		this.type = type;
 	}
-
-   /*
-    * 4.3.1 getControls
-    */
+*/	
 
    /**
     * Returns any controls in the message.
     */
    public LDAPControl[] getControls() {
-		LDAPControl[] ctrls = null;
-		if(controls != null) {
-			ctrls = new LDAPControl[controls.size()];
-			for(int i=0; i<controls.size(); i++) {
-				ctrls[i] = (LDAPControl)controls.elementAt(i);
+		LDAPControl[] controls = null;
+		Controls asn1Ctrls = message.getControls();
+
+		// convert from RFC 2251 Controls to LDAPControl[].
+		if(asn1Ctrls != null) {
+			controls = new LDAPControl[asn1Ctrls.size()];
+			for(int i=0; i<asn1Ctrls.size(); i++) {
+				controls[i] = new LDAPControl((Control)asn1Ctrls.get(i));
 			}
 		}
-		else {
-			ctrls = null;
-		}
-      return ctrls;
-   }
 
-   /*
-    * 4.3.2 getMessageID
-    */
+		return controls;
+   }
 
    /**
     * Returns the message ID.
     */
    public int getMessageID() {
-      return messageID;
+      return message.getMessageID().getInt();
    }
-
-   /**
-    * Sets the message ID.
-    */
-	public void setMessageID(int messageID) {
-		this.messageID = messageID;
-	}
-
-   /*
-    * 4.3.3 getType
-    */
 
    /**
     * Returns the LDAP operation type of the message. The type is one of
@@ -138,21 +148,17 @@ public class LDAPMessage {
     *   EXTENDED_REQUEST        = 23;
     *   EXTENDED_RESPONSE       = 24;
     */
-   public int getType() {
-      return type;
+   public int getType()
+	{
+		return message.getProtocolOp().getIdentifier().getTag();
    }
 
 	/**
-	 * Sets the type.
+	 *
 	 */
-	public void setType(int type) {
-		this.type = type;
+	public org.ietf.asn1.ldap.LDAPMessage getASN1Object()
+	{
+		return message;
 	}
-
-   /**
-	 * LDAPv3 Controls
-	 */
-
-   public static final int LDAP_CONTROLS = 0xa0;      // ctx + constructed    (LDAPv3)
 
 }

@@ -29,9 +29,7 @@ public class ASN1OctetString extends ASN1Simple {
 	 */
 	public ASN1OctetString(String content)
 	{
-		id = new ASN1Identifier(ASN1Identifier.UNIVERSAL, false,
-			                     OCTET_STRING);
-		this.content = content.getBytes();
+		this(content.getBytes());
 	}
 
 	/**
@@ -43,7 +41,9 @@ public class ASN1OctetString extends ASN1Simple {
 	{
 		id = new ASN1Identifier(ASN1Identifier.UNIVERSAL, false,
 			                     OCTET_STRING);
-		content = (byte[])dec.decodeOctetString(in, len);
+
+		content = (len==0) ?	 new byte[0] 
+			                : (byte[])dec.decodeOctetString(in, len);
 	}
 
 	//*************************************************************************

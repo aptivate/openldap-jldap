@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: LDAPSearchResultReference.java,v 1.3 2000/03/14 18:17:30 smerrill Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/org/ietf/ldap/LDAPSearchResultReference.java,v 1.4 2000/08/03 22:06:18 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -18,7 +18,7 @@ package org.ietf.ldap;
 import java.io.IOException;
 import java.util.Vector;
 
-import com.novell.ldap.client.protocol.lber.*;
+//import com.novell.ldap.client.protocol.lber.*;
 
 /**
  * 4.8 public class LDAPSearchResultReference extends LDAPMessage
@@ -28,9 +28,17 @@ import com.novell.ldap.client.protocol.lber.*;
  */
 public class LDAPSearchResultReference extends LDAPMessage {
 
-	private LberDecoder lber;
+//	private LberDecoder lber;
 	private Vector URLs; // referrals
 
+	/**
+	 */
+	public LDAPSearchResultReference(org.ietf.asn1.ldap.LDAPMessage message)
+	{
+		super(message);
+	}
+
+/*
 	public LDAPSearchResultReference(int messageID, LberDecoder lber,
 		                              boolean isLdapv3)
 		throws IOException
@@ -93,6 +101,7 @@ public class LDAPSearchResultReference extends LDAPMessage {
          }
       }
    }
+*/	
 
    /*
     * 4.8.1 getUrls
@@ -101,6 +110,7 @@ public class LDAPSearchResultReference extends LDAPMessage {
    /**
     * Returns any URLs in the object.
     */
+/*
    public String[] getUrls() {
 		int urlCnt = URLs.size();
 		String[] urls = new String[urlCnt];
@@ -109,5 +119,6 @@ public class LDAPSearchResultReference extends LDAPMessage {
 		}
 		return urls;
    }
+*/	
 
 }

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: LDAPExtendedResponse.java,v 1.7 2000/07/27 22:04:09 javed Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/org/ietf/ldap/LDAPExtendedResponse.java,v 1.8 2000/08/03 22:06:15 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -17,8 +17,8 @@ package org.ietf.ldap;
 
 import java.io.IOException;
 
-import com.novell.ldap.LDAPResponse;
-import com.novell.ldap.client.protocol.lber.*;
+import org.ietf.ldap.LDAPResponse;
+//import com.novell.ldap.client.protocol.lber.*;
 
 
 /**
@@ -37,6 +37,16 @@ public class LDAPExtendedResponse extends LDAPResponse {
     private String oid;
     private byte[] vals;
 
+	 /**
+	  * Creates an LDAPMessage when receiving an RFC 2251 LDAPMessage from a
+	  * server.
+	  */
+	 public LDAPExtendedResponse(org.ietf.asn1.ldap.LDAPMessage message)
+	 {
+		 super(message);
+	 }
+
+/*
 	public LDAPExtendedResponse(int messageID, LberDecoder lber,
 		                         boolean isLdapv3)
 		throws IOException
@@ -49,6 +59,7 @@ public class LDAPExtendedResponse extends LDAPResponse {
 		if((lber.bytesLeft() > 0) && (lber.peekByte() == Lber.ASN_EXOP_RESP_VALUE) )
 		    this.vals = lber.parseOctetString(Lber.ASN_EXOP_RESP_VALUE, null);
 	}
+*/			 
 
    /*
     * 4.2.1 getID

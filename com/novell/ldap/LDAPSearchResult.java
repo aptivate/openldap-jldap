@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: LDAPSearchResult.java,v 1.3 2000/03/14 18:17:29 smerrill Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/org/ietf/ldap/LDAPSearchResult.java,v 1.4 2000/08/03 22:06:18 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -27,11 +27,12 @@ import com.novell.ldap.client.protocol.lber.*;
  */
 public class LDAPSearchResult extends LDAPMessage { // should extend LDAPResponse to pick up parseControls()
 
-	private LberDecoder lber;
+//	private LberDecoder lber;
 	private boolean isLdapv3;
 	private LDAPEntry entry;
 
    // Default list of binary attributes
+/*
    private static Hashtable defaultBinaryAttrs = new Hashtable(23,0.75f);
    static {
       defaultBinaryAttrs.put("userpassword", Boolean.TRUE);      //2.5.4.35
@@ -57,7 +58,16 @@ public class LDAPSearchResult extends LDAPMessage { // should extend LDAPRespons
       //0.9.2342.19200300.100.1.53
       defaultBinaryAttrs.put("x500uniqueidentifier", Boolean.TRUE); //2.5.4.45
    }
+*/	
 
+	/**
+	 */
+	public LDAPSearchResult(org.ietf.asn1.ldap.LDAPMessage message)
+	{
+		super(message);
+	}
+
+/*
 	public LDAPSearchResult(int messageID, LberDecoder lber, boolean isLdapv3)
 		throws IOException
 	{
@@ -145,10 +155,12 @@ public class LDAPSearchResult extends LDAPMessage { // should extend LDAPRespons
       }
       return la;
    }
+*/	
 
 	/**
     * returns number of bytes that were parsed. Adds the values to attr
 	 */
+/*
    private int parseAttributeValue(LDAPAttribute la)
       throws IOException
 	{
@@ -172,6 +184,7 @@ public class LDAPSearchResult extends LDAPMessage { // should extend LDAPRespons
              // defaultBinaryAttrs.containsKey(id) ||
              ((defaultBinaryAttrs != null) && (defaultBinaryAttrs.containsKey(id))));
    }
+*/	
 
    /*
     * 4.7.1 getEntry

@@ -21,6 +21,9 @@ public class Referral extends ASN1SequenceOf {
 		throws IOException
 	{
 		super(dec, in, len);
+
+		//convert from ASN1OctetString to LDAPURL here (then look at
+		// LDAPResponse.getReferrals())
 	}
 
 	//*************************************************************************

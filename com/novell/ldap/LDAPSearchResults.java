@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: LDAPSearchResults.java,v 1.4 2000/03/14 18:17:30 smerrill Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/org/ietf/ldap/LDAPSearchResults.java,v 1.5 2000/08/03 22:06:18 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -200,8 +200,8 @@ public class LDAPSearchResults implements Enumeration {
 			}
 			catch(LDAPException e) { // network error
 				// could be a client timeout result
-				LDAPResponse response = new LDAPResponse(e.getLDAPResultCode());
-				entries.addElement(response);
+//				LDAPResponse response = new LDAPResponse(e.getLDAPResultCode());
+//				entries.addElement(response);
 				return true; // search has been interrupted with an error
 			}
 		}

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: LDAPSearchListener.java,v 1.4 2000/03/14 18:17:29 smerrill Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/org/ietf/ldap/LDAPSearchListener.java,v 1.5 2000/08/03 22:06:18 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -54,10 +54,14 @@ public class LDAPSearchListener extends LDAPListener {
    public LDAPMessage getResponse()
 		throws LDAPException
 	{
-		LDAPMessage message = queue.getLDAPMessage(); // blocks
+		org.ietf.asn1.ldap.LDAPMessage msg = queue.getLDAPMessage(); // blocks
 
-		if(message != null &&
-			message.getType() == LDAPMessage.SEARCH_RESULT) {
+		if(msg == null)
+			return null;
+
+		LDAPMessage message = new LDAPMessage(msg);
+
+		if(message.getType() == LDAPMessage.SEARCH_RESULT) {
 			queue.removeMessageID(message.getMessageID());
 		}
 

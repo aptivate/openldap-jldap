@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: LDAPResponseListener.java,v 1.3 2000/03/14 18:17:29 smerrill Exp $
+ * $Novell: /ldap/src/jldap/ldap/src/org/ietf/ldap/LDAPResponseListener.java,v 1.4 2000/08/03 22:06:17 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -50,9 +50,11 @@ public class LDAPResponseListener extends LDAPListener {
    public LDAPResponse getResponse()
 		throws LDAPException
 	{
-		LDAPMessage message = queue.getLDAPMessage();
-		queue.removeMessageID(message.getMessageID());
-		return (LDAPResponse)message;
+		org.ietf.asn1.ldap.LDAPMessage message = queue.getLDAPMessage();
+		LDAPResponse response = new LDAPResponse(message);
+		queue.removeMessageID(response.getMessageID());
+		return response;
    }
 
 }
+

@@ -9,7 +9,7 @@ import org.ietf.asn1.*;
  *               name                    LDAPDN,
  *               authentication          AuthenticationChoice }
  */
-public class BindRequest extends ASN1Sequence {
+public class BindRequest extends ASN1Sequence implements Request {
 
 	//*************************************************************************
 	// Constructors for BindRequest

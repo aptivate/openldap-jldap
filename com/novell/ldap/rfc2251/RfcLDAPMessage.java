@@ -35,7 +35,7 @@ public class LDAPMessage extends ASN1Sequence {
 	/**
 	 * Create an LDAPMessage from input parameters.
 	 */
-	public LDAPMessage(MessageID mid, ProtocolOp op)
+	public LDAPMessage(MessageID mid, Request op)
 	{
 		this(mid, op, null);
 	}
@@ -43,12 +43,12 @@ public class LDAPMessage extends ASN1Sequence {
 	/**
 	 * Create an LDAPMessage from input parameters.
 	 */
-	public LDAPMessage(MessageID mid, ASN1Object op, Controls controls)
+	public LDAPMessage(MessageID mid, Request op, Controls controls)
 	{
 		super(3);
 
 		add(mid);
-		add(op);
+		add((ASN1Object)op);
 		if(controls != null)
 			add(controls);
 	}
@@ -61,7 +61,7 @@ public class LDAPMessage extends ASN1Sequence {
 	{
 		super(dec, in, len);
 
-		//set(0, new MessageID((ASN1Integer)get(0).getContent()));
+		set(0, new MessageID(((ASN1Integer)get(0)).getInt()));
 
 		// Decode implicitly tagged protocol operation from an ASN1Tagged type
 		// to its appropriate application type.
