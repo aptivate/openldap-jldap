@@ -131,6 +131,15 @@ public abstract class Debug {
      */
     public static final String connections = "Connections";
     /**
+     * The string value used to enable debug tracing of Sasl Bind processing.
+     */
+    public static final String saslBind = "SaslBind";
+    /**
+     * The string value used to enable display of TLS calls and info for
+     * startTLS and stopTLS.
+     */
+    public static final String TLS = "TraceTLS";
+    /**
      * The string value used to enable debug tracing of URL parsing.
      */
     public static final String urlParse = "UrlParse";
@@ -167,11 +176,6 @@ public abstract class Debug {
      * The string value used to enable display VM method calls.
      */
     public static final String traceMethodCalls = "VMTraceMethodCalls";
-    /**
-     * The string value used to enable display of TLS calls and info for
-     * startTLS and stopTLS.
-     */
-    public static final String TLS = "TraceTLS";
     
     /*
      * Write the debug text to this PrintStream
@@ -199,6 +203,7 @@ public abstract class Debug {
     private static boolean traceUrlParse = false;
     private static boolean traceConnections = false;
     private static boolean traceTLS = false;
+    private static boolean traceSaslBind = false;
     private static Properties objprop = new Properties();
     private static Runtime run = Runtime.getRuntime(); // for trace, etc.
 
@@ -280,6 +285,7 @@ public abstract class Debug {
                     traceEncoding = true;
                     traceDecoding = true;
                     traceConnections = true;
+                    traceSaslBind = true;
                     traceTLS = true;
                 } else if( tn.equalsIgnoreCase(rawInput)) {
                     traceRawInput = toggle( traceRawInput);
@@ -307,6 +313,8 @@ public abstract class Debug {
                     traceConnections = toggle( traceConnections);
                 } else if( tn.equalsIgnoreCase(TLS)) {
                     traceTLS = toggle(traceTLS);
+                } else if( tn.equalsIgnoreCase(saslBind)) {
+                    traceSaslBind = toggle(traceSaslBind);
                 }
             }
         }
@@ -332,6 +340,7 @@ public abstract class Debug {
                             traceDecoding  ||
                             traceControls  ||
                             traceConnections ||
+                            traceSaslBind ||
                             traceTLS);
             } else if( type.equalsIgnoreCase(rawInput)) {
                 return(traceRawInput);
@@ -357,6 +366,8 @@ public abstract class Debug {
                 return(traceControls);
             } else if( type.equalsIgnoreCase(connections)) {
                 return(traceConnections);
+            } else if( type.equalsIgnoreCase(saslBind)) {
+                return(traceSaslBind);
             } else if( type.equalsIgnoreCase(TLS)) {
                 return(traceTLS);
             }
@@ -397,6 +408,7 @@ public abstract class Debug {
                 traceDecoding  = val;
                 traceConnections = val;
                 traceControls = val;
+                traceSaslBind = val;
                 traceTLS = val;
             } else if( type.equalsIgnoreCase(rawInput)) {
                 traceRawInput = val;
@@ -422,6 +434,8 @@ public abstract class Debug {
                 traceDecoding = val;
             } else if( type.equalsIgnoreCase(connections)) {
                 traceConnections = val;
+            } else if( type.equalsIgnoreCase(saslBind)) {
+                traceSaslBind = val;
             } else if( type.equalsIgnoreCase(TLS)) {
                 traceTLS = val;
             }
@@ -454,6 +468,7 @@ public abstract class Debug {
                             traceDecoding  ||
                             traceControls  ||
                             traceConnections ||
+                            traceSaslBind ||
                             traceTLS;
                 tracing="all";
             } else if( type.equalsIgnoreCase(rawInput)) {
@@ -492,6 +507,9 @@ public abstract class Debug {
             } else if( type.equalsIgnoreCase(connections)) {
                 printit = traceConnections;
                 tracing="traceConnections";
+            } else if( type.equalsIgnoreCase(saslBind)) {
+                printit = traceSaslBind;
+                tracing="traceSaslBind";
             } else if( type.equalsIgnoreCase(TLS)) {
                 printit = traceTLS;
                 tracing="traceTLS";
