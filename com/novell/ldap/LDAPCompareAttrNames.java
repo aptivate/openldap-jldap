@@ -36,7 +36,7 @@ import com.novell.ldap.resources.*;
  *
  */
 public class LDAPCompareAttrNames
-        implements java.util.Comparator, LDAPEntryComparator
+        implements java.util.Comparator
 {
    private String[] sortByNames;        //names to to sort by.
    private boolean[] sortAscending;     //true if sorting ascending
@@ -120,7 +120,7 @@ public class LDAPCompareAttrNames
                                throws LDAPException {
       if (attrNames.length != ascendingFlags.length){
          throw new LDAPException( ExceptionMessages.UNEQUAL_LENGTHS,
-              LDAPException.INAPPROPRIATE_MATCHING);
+              LDAPException.INAPPROPRIATE_MATCHING,(String)null);
          //"Length of attribute Name array does not equal length of Flags array"
       }
       sortByNames = new String[attrNames.length];
@@ -242,13 +242,5 @@ public class LDAPCompareAttrNames
        return true;
    }
 
-   /**
-    * This method is replaced in the IETF draft 18 of the
-    * Java LDAP API (draft-ietf-ldapext-ldap-java-api-xx.txt), and will
-    * be removed from the LDAP Classes for Java API in the fall of 2003.
-    * @deprecated replaced by {@link #compare }.
-    */
-   public boolean isGreater (LDAPEntry entry1, LDAPEntry entry2) {
-       return (compare(entry1, entry2) > 0) ? true : false;
-   }
+  
 }

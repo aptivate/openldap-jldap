@@ -14,6 +14,7 @@
  ******************************************************************************/
 
 package com.novell.ldap;
+import com.novell.ldap.client.Debug;
 
 /**
  *  A mechanism for queuing asynchronous search results
@@ -24,7 +25,7 @@ package com.novell.ldap;
  *
  *  <p>Sample Code: <a href="http://developer.novell.com/ndk/doc/samplecode/jldap_sample/asynchronous/Searchas.java.html">Searchas.java</p>
  */
-public class LDAPSearchQueue extends LDAPSearchListener
+public class LDAPSearchQueue extends LDAPMessageQueue
 {
     /**
      * Constructs a response queue using a specific client queue
@@ -37,9 +38,6 @@ public class LDAPSearchQueue extends LDAPSearchListener
         super( "LDAPSearchQueue", agent);
         return;
     }
-
-    // Note: When deprecated methods are removed, remove this method.
-    // Replaced by doMerge in LDAPMessageQueue
     /**
      * Merges two message queues.  It appends the current and
      *                   future contents from another queue to this one.
@@ -56,9 +54,16 @@ public class LDAPSearchQueue extends LDAPSearchListener
      *                  LDAP request, after which it will receive responses
      *                  for that request..
      */
-    public void merge(LDAPSearchQueue queue2)
+    public void merge(LDAPMessageQueue queue2)
     {
-        doMerge(queue2);
+        
+        LDAPSearchQueue q = (LDAPSearchQueue)queue2;
+        if( Debug.LDAP_DEBUG) {
+                Debug.trace( Debug.apiRequests, name +
+                    "merge " + q.getDebugName());
+        }
+            agent.merge( q.getMessageAgent() );
+        
         return;
     }
 }

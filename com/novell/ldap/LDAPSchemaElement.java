@@ -258,36 +258,4 @@ public abstract class LDAPSchemaElement extends LDAPAttribute {
                 "removeValue is not supported by LDAPSchemaElement");
     }
 
-    // #######################################################################
-    //   The following are deprecated and will be removed in the fall of 2003
-    // #######################################################################
-
-   /**
-     *  This method has been replaced with getNames in IETF
-     *  draft 17 of the Java LDAP API (draft-ietf-ldapext-ldap-java-api-xx.txt)
-     *  and will be removed from the LDAP Classes for Java API in the fall of 2003.
-     *
-     *  @deprecated replaced by {@link #getNames}.
-     */
-    public String[] getAliases()
-    {
-        if( names != null && (names.length > 1)){
-          String[] retVal = new String[names.length -1];
-          for( int i = 1; i < names.length; i++ )
-            retVal[i-1] = names[i];
-          return retVal;
-        }
-        return null;
-    }
-    /**
-     *  This method has been renamed to toString in IETF
-     *  draft 17 of the Java LDAP API (draft-ietf-ldapext-ldap-java-api-xx.txt)
-     *  and will be removed from the LDAP Classes for Java API in the fall of 2003.
-     *
-     * @deprecated replaced by {@link #toString}.
-     */
-    public String getValue()
-    {
-        return this.toString();
-    }
 }

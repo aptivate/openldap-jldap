@@ -283,7 +283,7 @@ public class LDAPResponse extends LDAPMessage
     public int getResultCode()
     {
         if( exception != null) {
-            return exception.getLDAPResultCode();
+            return exception.getResultCode();
         }
         return ((RfcResponse)message.getResponse()).getResultCode().intValue();
     }
@@ -342,7 +342,7 @@ public class LDAPResponse extends LDAPMessage
             break;
         default: // Everything else
             ex = new LDAPException(
-                LDAPException.errorCodeToString( getResultCode()),
+                LDAPException.resultCodeToString( getResultCode()),
                 getResultCode(), getErrorMessage(), getMatchedDN());
             break;
         }
