@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: NamingContextConstants.java,v 1.6 2000/07/28 20:24:07 javed Exp $
+ * $Id: NamingContextConstants.java,v 1.7 2000/07/31 16:00:37 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -47,6 +47,11 @@ public class NamingContextConstants {
 	public static final String RECEIVE_ALL_UPDATES_RES		= "2.16.840.1.113719.1.27.100.22";
     public static final String SEND_ALL_UPDATES_REQ		    = "2.16.840.1.113719.1.27.100.23";
 	public static final String SEND_ALL_UPDATES_RES		    = "2.16.840.1.113719.1.27.100.24";
+    public static final String NAMING_CONTEXT_SYNC_REQ	    = "2.16.840.1.113719.1.27.100.25";
+	public static final String NAMING_CONTEXT_SYNC_RES	    = "2.16.840.1.113719.1.27.100.26";
+	public static final String SCHEMA_SYNC_REQ		        = "2.16.840.1.113719.1.27.100.27";
+	public static final String SCHEMA_SYNC_RES	    	    = "2.16.840.1.113719.1.27.100.28";
+    
     
 
 
