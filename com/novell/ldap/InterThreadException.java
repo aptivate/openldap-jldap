@@ -38,7 +38,7 @@ class InterThreadException extends LDAPException
                             Throwable rootException,
                             Message request)
     {
-        super( message, arguments, resultCode, rootException);
+        super( message, arguments, resultCode, (String) null,rootException);
         this.request = request;
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.messages, "InterThreadException created with msg \"" +
