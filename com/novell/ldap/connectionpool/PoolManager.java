@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: PoolManager.java,v 1.2 2003/01/14 21:43:24 $
+ * $Novell: PoolManager.java,v 1.3 2003/01/14 21:50:52 $
  *
  * Copyright (C) 2002 - 2003 Novell, Inc. All Rights Reserved.
  *
@@ -18,7 +18,6 @@ import com.novell.ldap.LDAPConnection;
 import com.novell.ldap.LDAPException;
 import com.novell.ldap.LDAPJSSESecureSocketFactory;
 import java.security.Security;
-//import java.util.LinkedList;
 import java.lang.IndexOutOfBoundsException;
 
 /**
