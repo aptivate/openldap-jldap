@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ ******************************************************************************
+ * $OpenLDAP$
+ *
+ * Copyright (C) 1999 - 2003 Novell, Inc. All Rights Reserved.
+ *
+ * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
+ * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
+ * TO VERSION 2.0.1 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
+ * AVAILABLE AT HTTP://WWW.OPENLDAP.ORG/LICENSE.HTML OR IN THE FILE "LICENSE"
+ * IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
+ * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.1 OF THE OPENLDAP
+ * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
+ * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
+ ******************************************************************************
+-->
+
+<definitions name="DsmlService"
+ targetNamespace="http://www.dsml.services.novell.com"
+ xmlns="http://schemas.xmlsoap.org/wsdl/"
+ xmlns:ns0="http://schemas.silverstream.com/jBroker"
+ xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+ xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+ xmlns:tns="http://www.dsml.services.novell.com"
+ xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.oasis-open.org/committees/dsml/docs/DSMLv2.xsd">
+ <types>
+  <schema
+   targetNamespace="http://schemas.silverstream.com/jBroker"
+   xmlns="http://www.w3.org/2001/XMLSchema" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+   <annotation>
+    <documentation xml:lang="en">    XML type for Element
+     type.   </documentation>
+   </annotation>
+   <complexType name="element">
+    <element name="element" type="xsd:anyType"/>
+   </complexType>
+  </schema>
+ </types>
+ <message name="batchRequestRequest">
+  <part element="ns0:element" name="arg0"/>
+ </message>
+ <message name="batchRequestResponse">
+  <part element="ns0:element" name="result"/>
+ </message>
+ <portType name="Dsml">
+  <operation name="batchRequest" parameterOrder="arg0">
+   <input message="tns:batchRequestRequest"/>
+   <output message="tns:batchRequestResponse"/>
+  </operation>
+ </portType>
+ <binding name="DsmlBinding" type="tns:Dsml">
+  <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+  <operation name="batchRequest">
+   <soap:operation soapAction="#batchRequest"/>
+   <input>
+    <soap:body use="literal"/>
+   </input>
+   <output>
+    <soap:body use="literal"/>
+   </output>
+  </operation>
+ </binding>
+ <service name="DsmlService">
+  <port binding="tns:DsmlBinding" name="DsmlPort">
+ 	<!-- Modify this location address to your specific host name -->
+    <soap:address location="http://localhost/novell-dsml/jbroker"/>
+  </port>
+ </service>
+</definitions>

@@ -1,0 +1,86 @@
+<!--
+ * $OpenLDAP$
+ *
+ * Copyright (C) 1999 - 2003 Novell, Inc. All Rights Reserved.
+ *
+ * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
+ * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
+ * TO VERSION 2.0.1 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
+ * AVAILABLE AT HTTP://WWW.OPENLDAP.ORG/LICENSE.HTML OR IN THE FILE "LICENSE"
+ * IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
+ * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.1 OF THE OPENLDAP
+ * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
+ * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
+-->
+
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.2//EN" "http://java.sun.com/j2ee/dtds/web-app_2_2.dtd">
+
+<web-app>
+
+    <display-name>DSML Web Service</display-name>
+    <description>
+    DSML Web Service to access eDirectory and other LDAP
+    directories.  Two implementations are included:
+
+    1.  dsml - Default service.  Built by Novell Extend product, JBrokerWeb,
+    this service features more robust SOAP handling.  This leading edge release
+    does not support HTTP authentication nor SOAP Authentication.
+
+    2.  dsmlstreaming - Alternative sevice.  Built from a standard servlet, this
+    service features HTTP authentication but not SOAP Authentication and less
+    robust SOAP handling.  This implementation is an attempt to overcome
+    scalability issues with the DSMLv2 Specification.
+    </description>
+
+
+    <!-- contains the path to the LDAP server -->
+    <context-param>
+           <param-name>ldapHost</param-name>
+           <param-value>www.nldap.com</param-value>
+    </context-param>
+    <!-- contains the port the LDAP server is listening on -->
+    <context-param>
+           <param-name>ldapPort</param-name>
+           <param-value>389</param-value>
+    </context-param>
+    <!-- contains the maximum number of connections allowed to the ldap server-->
+    <context-param>
+      <param-name>ldapMaxConnections</param-name>
+      <param-value>10</param-value>
+    </context-param>
+    <!-- contains the maximum number of clients that are allowed to share a single connection to the ldap server -->
+    <context-param>
+      <param-name>ldapMaxInstancesToShareConnection</param-name>
+      <param-value>10</param-value>
+    </context-param>
+    <!-- contains the path to the TLS (SSL) Keystore -->
+    <context-param>
+      <param-name>ldapKeystore</param-name>
+      <param-value></param-value>
+    </context-param>
+
+
+    <!-- these commands start the two DSML services as explained in the description -->
+    <servlet>
+        <servlet-name>jbroker</servlet-name>
+        <servlet-class>com.novell.services.dsml.DsmlImpl</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet>
+        <servlet-name>streaming</servlet-name>
+        <servlet-class>com.novell.services.dsml.DSMLService</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>jbroker</servlet-name>
+        <url-pattern>/jbroker</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>streaming</servlet-name>
+        <url-pattern>/stream</url-pattern>
+    </servlet-mapping>
+
+</web-app>

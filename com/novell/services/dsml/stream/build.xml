@@ -1,0 +1,109 @@
+<!--
+ ******************************************************************************
+ * $OpenLDAP$
+ *
+ * Copyright (C) 2003 Novell, Inc. All Rights Reserved.
+ *
+ * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
+ * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
+ * TO VERSION 2.0.1 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
+ * AVAILABLE AT HTTP://WWW.OPENLDAP.ORG/LICENSE.HTML OR IN THE FILE "LICENSE"
+ * IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
+ * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.1 OF THE OPENLDAP
+ * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
+ * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
+ ******************************************************************************
+-->
+
+<!-- ======================================================================= -->
+<!-- Servlet build file                                                      -->
+<!-- ======================================================================= -->
+<project name="DSMLstream" default="all" basedir=".">
+    <!-- Targets                                                             -->
+    <!--     clean   - Cleans all generated class files                      -->
+    <!--     compile - Builds debug classes and jar files                    -->
+    <!--     all     - Synonym for compile                                   -->
+
+    <property name="top" location="../../../../.."/>
+    <property name="lib" value="lib_debug"/>
+    <property name="ldap" value="ldap"/>
+    <property name="build.servlet" value="classes_servlet"/>
+
+    <!-- =================================================================== -->
+    <!-- initialization                                                      -->
+    <!-- =================================================================== -->
+    <target name="init">
+        <tstamp/>
+    </target>
+
+
+    <!-- =================================================================== -->
+    <!-- clean class files                                                   -->
+    <!-- =================================================================== -->
+    <target name="clean" depends="init">
+        <delete dir="${top}/${build.servlet}/debug/com/novell/services/dsml/stream"/>
+        <delete dir="${top}/${build.servlet}/release/com/novell/services/dsml/stream"/>
+    </target>
+
+    <!-- =================================================================== -->
+    <!-- debug compile common files                                          -->
+    <!-- =================================================================== -->
+    <target name="common_debug" depends="init">
+        <ant dir=".." target="debug"/>
+    </target>
+    
+    <!-- =================================================================== -->
+    <!-- release compile common files                                        -->
+    <!-- =================================================================== -->
+    <target name="common_release" depends="init">
+        <ant dir=".." target="release"/>
+    </target>
+    
+    <!-- =================================================================== -->
+    <!-- debug compile java files                                            -->
+    <!-- =================================================================== -->
+    <target name="debug" depends="init, common_debug">
+        <mkdir dir="${top}/${build.servlet}/debug"/>
+        <echo message="DEBUG compile stream servlet" />
+        <javac srcdir="."
+            includes="*.java"
+            destdir="${top}/${build.servlet}/debug"
+            deprecation="on"
+            debug="on"
+            optimize="off">
+            <classpath>
+                <pathelement location="."/>
+                <pathelement location="${top}/classes_servlet/debug"/>
+                <pathelement location="${top}/classes_debug"/>
+                <pathelement location="${top}/external/jbroker/lib/servlet.jar"/>
+                <pathelement location="${top}/external/servlet/servlet.jar"/>
+            </classpath>
+        </javac>
+    </target>
+
+    <!-- =================================================================== -->
+    <!-- release compile java files                                          -->
+    <!-- =================================================================== -->
+    <target name="release" depends="init, common_release">
+                <mkdir dir="${top}/${build.servlet}/release"/>
+        <echo message="RELEASE compile stream servlet" />
+        <javac srcdir="."
+            includes="*.java"
+            destdir="${top}/${build.servlet}/release"
+            deprecation="on"
+            debug="off"
+            optimize="on">
+            <classpath>
+                <pathelement location="."/>
+                <pathelement location="${top}/classes_servlet/release"/>
+                <pathelement location="${top}/classes"/>
+                <pathelement location="${top}/external/jbroker/lib/servlet.jar"/>
+                <pathelement location="${top}/external/servlet/servlet.jar"/>
+            </classpath>
+        </javac>
+
+    </target>
+
+    <target name="all" depends="debug,release"/>
+
+</project>

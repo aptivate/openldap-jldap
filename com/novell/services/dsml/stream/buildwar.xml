@@ -1,0 +1,150 @@
+<!--
+ ******************************************************************************
+ * $novell$
+ *
+ * Copyright (C) 2003 Novell, Inc. All Rights Reserved.
+ *
+ * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
+ * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
+ * TO VERSION 2.0.1 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
+ * AVAILABLE AT HTTP://WWW.OPENLDAP.ORG/LICENSE.HTML OR IN THE FILE "LICENSE"
+ * IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
+ * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.1 OF THE OPENLDAP
+ * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
+ * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
+ ******************************************************************************
+-->
+
+<!-- ======================================================================= -->
+<!-- Servlet build file                                                      -->
+<!-- ======================================================================= -->
+<project name="war" default="all" basedir=".">
+    <!-- Targets                                                             -->
+    <!--     clean   - Cleans all generated class files                      -->
+    <!--     compile - Builds debug classes and jar files                    -->
+    <!--     all     - Synonym for compile                                   -->
+
+    <property name="top" location="../../../../.."/>
+    <property name="srctop" location="../../../../.."/>
+    <property name="ldap" value="ldap"/>
+    <property name="build.servlet" value="classes_servlet"/>
+    <property name="optimize" value="off"/>
+	<property name="pkg.dsml" value="pkg/wars"/>
+
+    <!-- =================================================================== -->
+    <!-- initialization                                                      -->
+    <!-- =================================================================== -->
+    <target name="init">
+        <tstamp/>
+    </target>
+
+
+    <!-- =================================================================== -->
+    <!-- clean class files                                                   -->
+    <!-- =================================================================== -->
+    <target name="clean" depends="init">
+            <delete dir="./classes"/>
+            <delete dir="./src"/>
+            <delete dir="${top}/${pkg.dsml}"/>
+    </target>
+
+    <!-- =================================================================== -->
+    <!-- debug compile java files                                            -->
+    <!-- ===================================================================
+    -->
+
+    <target name="all" depends="war"/>
+
+    <target name="war">
+
+        <mkdir dir="./classes/com/novell/services/dsml"/>
+        <mkdir dir="./classes/debug/com/novell/services/dsml"/>
+        <mkdir dir="./war-root/src/com/novell/services/dsml"/>
+        <!-- <mkdir dir="./war-root/graphics"/> -->
+        <mkdir dir="${top}/${pkg.dsml}"/>
+
+        <!-- copy debug -->
+        <copy todir="./classes/debug/com/novell/services/dsml">
+            <fileset dir="${top}/${build.servlet}/debug/com/novell/services/dsml">
+                <include name="*.class"/>
+            </fileset>
+        </copy>
+        <copy todir="./classes/debug/com/novell/services/dsml/stream">
+            <fileset dir="${top}/${build.servlet}/debug/com/novell/services/dsml/stream">
+                <include name="*.class"/>
+            </fileset>
+        </copy>
+        <!--
+        <copy todir="./classes/debug/sample_consumers">
+            <fileset dir="${top}/${build.servlet}/debug/sample_consumers/"/>
+        </copy>
+        -->
+
+        <!-- copy release -->
+        <copy todir="./classes/com/novell/services/dsml">
+            <fileset dir="${top}/${build.servlet}/release/com/novell/services/dsml">
+                <include name="*.class"/>
+            </fileset>
+        </copy>
+        <copy todir="./classes/com/novell/services/dsml/stream">
+            <fileset dir="${top}/${build.servlet}/release/com/novell/services/dsml/stream">
+                <include name="*.class"/>
+            </fileset>
+        </copy>
+        <!--
+        <copy todir="./classes/sample_consumers/" >
+            <fileset dir="${top}/${build.servlet}/release/sample_consumers/"/>
+        </copy>
+        -->
+
+        <!-- copy source -->
+        <copy todir="./war-root/src/com/novell/services/dsml" >
+            <fileset dir="${top}/com/novell/services/dsml">
+                <include name="*.java"/>
+            </fileset>
+        </copy>
+        <copy todir="./war-root/src/com/novell/services/dsml/stream" >
+            <fileset dir="${top}/com/novell/services/dsml/stream">
+                <include name="*.java"/>
+            </fileset>
+        </copy>
+        <!--
+        <copy todir="./war-root/src/sample_consumers" >
+             <fileset dir="${srctop}/com/novell/services/dsml/sample_consumers">
+                <include name="dsml.xml"/>
+                 <include name="*.java"/>
+             </fileset>
+        </copy>
+        -->
+
+        <!-- copy graphics -->
+        <!--
+        <copy todir="./war-root/graphics" >
+             <fileset dir="${srctop}/com/novell/services/dsml/sample_consumers/graphics">
+                 <include name="*.gif"/>
+             </fileset>
+        </copy>
+        -->
+
+        <!-- copy README -->
+        <copy
+            file="${top}/README.dsml"
+            tofile="./war-root/README"
+        />
+
+        <war destfile="${top}/${pkg.dsml}/dsmlstream.war" webxml="./stream.xml">
+        <!--
+            <fileset dir="${srctop}/com/novell/services/dsml/sample_consumers">
+                <include name="*.jsp"/>
+                <include name="*.htm"/>
+                <include name="*.html"/>
+            </fileset>
+        -->
+            <fileset dir="./war-root"/>
+	        <lib dir="${top}/lib_debug"/>
+	        <classes dir="classes"/>
+	    </war>
+        <delete dir="./classes"/>
+        <delete dir="./war-root"/>
+    </target>
+</project>

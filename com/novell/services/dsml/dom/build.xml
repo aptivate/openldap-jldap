@@ -1,0 +1,197 @@
+<!--
+ ******************************************************************************
+ * $OpenLDAP$
+ *
+ * Copyright (C) 2003 Novell, Inc. All Rights Reserved.
+ *
+ * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
+ * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
+ * TO VERSION 2.0.1 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
+ * AVAILABLE AT HTTP://WWW.OPENLDAP.ORG/LICENSE.HTML OR IN THE FILE "LICENSE"
+ * IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
+ * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.1 OF THE OPENLDAP
+ * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
+ * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
+ ******************************************************************************
+-->
+
+<!-- ======================================================================= -->
+<!-- Servlet build file                                                      -->
+<!-- ======================================================================= -->
+<project name="servlet" default="all" basedir=".">
+    <!-- Targets                                                             -->
+    <!--     clean   - Cleans all generated class files                      -->
+    <!--     compile - Builds debug classes and jar files                    -->
+    <!--     all     - Synonym for compile                                   -->
+
+    <property name="top" location="../../../../.."/>
+    <property name="lib" value="lib_debug"/>
+    <property name="ldap" value="ldap"/>
+    <property name="build.servlet" value="classes_servlet"/>
+    <property name="jbroker.jars" value="${top}/external/jbroker/lib/activation.jar;${top}/external/jbroker/lib/jakarta-regexp-1.2.jar;${top}/external/jbroker/lib/jaxp-api.jar;${top}/external/jbroker/lib/jbroker-ssl.jar;${top}/external/jbroker/lib/jbroker-web.jar;${top}/external/jbroker/lib/servlet.jar;${top}/external/jbroker/lib/xercesImpl.jar;${top}/external/jbroker/lib/xmlParserAPIs.jar"/>
+
+    <!-- =================================================================== -->
+    <!-- initialization                                                      -->
+    <!-- =================================================================== -->
+    <target name="init">
+        <tstamp/>
+    </target>
+
+    <!-- =================================================================== -->
+    <!-- clean class files                                                   -->
+    <!-- =================================================================== -->
+    <target name="clean" depends="init">
+        <delete dir="${top}/${build.servlet}/debug/com/novell/services/dsml/dom"/>
+        <delete dir="${top}/${build.servlet}/release/com/novell/services/dsml/dom"/>
+    </target>
+
+    <!-- =================================================================== -->
+    <!-- debug compile common files                                          -->
+    <!-- =================================================================== -->
+    <target name="common_debug" depends="init">
+        <ant dir=".." target="debug"/>
+    </target>
+    
+    <!-- =================================================================== -->
+    <!-- release compile common files                                        -->
+    <!-- =================================================================== -->
+    <target name="common_release" depends="init">
+        <ant dir=".." target="release"/>
+    </target>
+    
+    <!-- =================================================================== -->
+    <!-- debug compile java files                                            -->
+    <!-- =================================================================== -->
+    <target name="debug" depends="init, common_debug">
+        <mkdir dir="${top}/${build.servlet}/debug"/>
+        <echo message="DEBUG compile servlet" />
+        
+        <echo message="Compiling RMI interface..." />
+        <javac srcdir="."
+            includes="Dsml.java"
+            destdir="${top}/${build.servlet}/debug"
+            deprecation="on"
+            debug="on"
+            optimize="off">
+            <classpath>
+                <pathelement location="."/>
+                <pathelement location="${top}/classes_servlet/debug"/>
+                <pathelement location="${top}/classes_debug"/>
+                <pathelement location="${top}/external/jbroker/lib/servlet.jar"/>
+                <pathelement location="${top}/external/servlet/servlet.jar"/>
+            </classpath>
+        </javac>
+
+        <echo message="Generating SOAP service tie and skeleton..." />
+        <exec   executable="${top}/external/jbroker/bin/win32/rmi2soap.exe">
+            <arg value="-g" />          <!-- debug build flag -->
+            <arg value="-document" />   <!-- document binding instead of RPC -->
+            <arg value="-literal" />    <!-- literal encoding -->
+            <arg value="-nostub" />     <!-- no client side generation -->
+            <arg value="-noserv" />
+            <arg value="-action" />     <!-- SoapAction for the service -->
+            <arg value="#batchRequest" />
+            <arg value="-classpath" />
+            <arg path="${jbroker.jars};${top}/${build.servlet}/debug" />
+            <arg value="-d" />          <!-- target directory -->
+            <arg file="${top}/${build.servlet}/debug" />
+            <arg value="com.novell.services.dsml.dom.Dsml" />
+        </exec>
+
+        <echo message="Compiling DSML service for JBroker and Streamming..." />
+        <javac srcdir="."
+            includes="*.java"
+            destdir="${top}/${build.servlet}/debug"
+            deprecation="on"
+            debug="on"
+            optimize="off">
+            <classpath>
+                 <pathelement location="."/>
+                 <pathelement location="${top}/classes_debug"/>
+                 <pathelement location="${top}/external/servlet/servlet.jar"/>
+                 <pathelement location="${top}/external/jsse/lib/jcert.jar"/>
+                 <pathelement location="${top}/external/jsse/lib/jnet.jar"/>
+                 <pathelement location="${top}/external/jsse/lib/jsse.jar"/>
+                 <pathelement location="${top}/external/jbroker/lib/activation.jar"/>
+                 <pathelement location="${top}/external/jbroker/lib/jakarta-regexp-1.2.jar"/>
+                 <pathelement location="${top}/external/jbroker/lib/jaxp-api.jar"/>
+                 <pathelement location="${top}/external/jbroker/lib/jbroker-ssl.jar"/>
+                 <pathelement location="${top}/external/jbroker/lib/jbroker-web.jar"/>
+                 <pathelement location="${top}/external/jbroker/lib/servlet.jar"/>
+                 <pathelement location="${top}/external/jbroker/lib/xercesImpl.jar"/>
+                 <pathelement location="${top}/external/jbroker/lib/xmlParserAPIs.jar"/>
+            </classpath>
+        </javac>
+        
+    </target>
+
+    <!-- =================================================================== -->
+    <!-- release compile java files                                          -->
+    <!-- =================================================================== -->
+    <target name="release" depends="init, common_release">
+                <mkdir dir="${top}/${build.servlet}/release"/>
+        <echo message="RELEASE compile servlet" />
+        
+        <echo message="Compiling RMI interface..." />
+        <javac srcdir="."
+            includes="Dsml.java"
+            destdir="${top}/${build.servlet}/release"
+            deprecation="on"
+            debug="off"
+            optimize="on">
+            <classpath>
+                <pathelement location="."/>
+                <pathelement location="${top}/classes_servlet/debug"/>
+                <pathelement location="${top}/classes_debug"/>
+                <pathelement location="${top}/external/jbroker/lib/servlet.jar"/>
+                <pathelement location="${top}/external/servlet/servlet.jar"/>
+            </classpath>
+        </javac>
+
+        <echo message="Generating SOAP service tie and skeleton..." />
+        <exec executable="${top}/external/jbroker/bin/win32/rmi2soap.exe">
+            <arg value="-nowarn" />     <!-- Turn off warning for release build-->
+            <arg value="-O" />          <!-- Optimized build flag -->
+            <arg value="-document" />   <!-- document binding instead of RPC -->
+            <arg value="-literal" />    <!-- literal encoding -->
+            <arg value="-nostub" />     <!-- no client side generation -->
+            <arg value="-noserv" />
+            <arg value="-action" />     <!-- SoapAction for the service -->
+            <arg value="#batchRequest" />
+            <arg value="-classpath" />
+            <arg path="${jbroker.jars};${top}/${build.servlet}/release" />
+            <arg value="-d" />          <!-- target directory -->
+            <arg file="${top}/${build.servlet}/release" />
+            <arg value="com.novell.services.dsml.dom.Dsml" />
+        </exec>
+
+        <echo message="Compiling DSML service via JBroker and Streamming..." />
+        <javac srcdir="."
+            includes="*.java"
+            destdir="${top}/${build.servlet}/release"
+            deprecation="on"
+            debug="off"
+            optimize="on">
+            <classpath>
+                 <pathelement location="."/>
+                 <pathelement location="${top}/classes_debug"/>
+                 <pathelement location="${top}/external/servlet/servlet.jar"/>
+                 <pathelement location="${top}/external/jsse/lib/jcert.jar"/>
+                 <pathelement location="${top}/external/jsse/lib/jnet.jar"/>
+                 <pathelement location="${top}/external/jsse/lib/jsse.jar"/>
+                 <pathelement location="${top}/external/jbroker/lib/activation.jar"/>
+                 <pathelement location="${top}/external/jbroker/lib/jakarta-regexp-1.2.jar"/>
+                 <pathelement location="${top}/external/jbroker/lib/jaxp-api.jar"/>
+                 <pathelement location="${top}/external/jbroker/lib/jbroker-ssl.jar"/>
+                 <pathelement location="${top}/external/jbroker/lib/jbroker-web.jar"/>
+                 <pathelement location="${top}/external/jbroker/lib/servlet.jar"/>
+                 <pathelement location="${top}/external/jbroker/lib/xercesImpl.jar"/>
+                 <pathelement location="${top}/external/jbroker/lib/xmlParserAPIs.jar"/>
+            </classpath>
+        </javac>
+
+    </target>
+
+    <target name="all" depends="debug,release"/>
+
+</project>
