@@ -107,9 +107,10 @@ public class LDIFWriter extends LDIF implements LDAPExport {
     /**
      * Write a single comment line into the OutputStream.
      *
-     * <p> an '#' character is added in the front of the line to indicate that
-     * the line is a coment line. If the line contains more than 80 characters,
-     * it will be splited into multiple lines that start with '#' characters.</p>
+     * <p> an '#' charis added to the front of the line to indicate that
+     * the line is a coment line. If the line contains more than 80 
+     * characters, it will be splited into multiple lines that start 
+     * with '#' characters.</p>
      *
      * @param line The comment line to be written to the OutputStream
      */
@@ -349,7 +350,7 @@ public class LDIFWriter extends LDIF implements LDAPExport {
         this.rLines = (String[])this.rFields.toArray(this.rLines);
         
         // to record lines each of which has no more than 80 characters
-        toLines();
+        to80charLines();
 
     }
 
@@ -443,7 +444,7 @@ public class LDIFWriter extends LDIF implements LDAPExport {
         this.rLines = (String[])this.rFields.toArray(this.rLines);
 
         // to record lines each of which has no more than 80 characters
-        toLines();
+        to80charLines();
     }
 
 
@@ -523,7 +524,7 @@ public class LDIFWriter extends LDIF implements LDAPExport {
         this.rLines = (String[])this.rFields.toArray(this.rLines);
 
         // to record lines each of which has no more than 80 characters
-        toLines();
+        to80charLines();
     }
 
     /**
@@ -559,7 +560,7 @@ public class LDIFWriter extends LDIF implements LDAPExport {
         this.rLines = (String[])this.rFields.toArray( this.rLines );
 
         // to record lines each of which has no more than 80 characters
-        toLines();
+        to80charLines();
     }
 
 
@@ -601,7 +602,7 @@ public class LDIFWriter extends LDIF implements LDAPExport {
      *
      * @param ls  The input String array object
      */
-    public void toLines() {
+    public void to80charLines() {
 
         this.tempList.clear();
 
@@ -619,7 +620,8 @@ public class LDIFWriter extends LDIF implements LDAPExport {
                     this.tempList.add( this.rLines[i].substring(0, 80) );
                     // any continuation line has length of
                     // 80 and starts with a white space
-                    this.rLines[i] = new String (" " + this.rLines[i].substring(80) );
+                    this.rLines[i] = new String (" " 
+                                               + this.rLines[i].substring(80) );
                 }
                 // save the last part of the field
                 this.tempList.add(this.rLines[i]);
@@ -746,7 +748,7 @@ public class LDIFWriter extends LDIF implements LDAPExport {
         // is there any NON-SAFE-CHAR
         for ( i = 1; i < len; i++ ) {
             if (   (value.charAt(i) == 0x00)    // NUL
-                || (value.charAt(i) == 0x0A)    // linefeed
+                || (value.charAt(i) == 0x0A)    // linefeeder
                 || (value.charAt(i) == 0x0D)) { // carrage return
 
                 isSafe = false;
