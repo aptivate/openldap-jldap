@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/util/RDN.java,v 1.2 2001/03/14 19:25:59 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/util/RDN.java,v 1.3 2001/03/19 20:00:36 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -44,9 +44,18 @@ public class RDN extends Object
      *
      * @param the DN component
      */
-    public RDN(String RDN){
-        throw new RuntimeException("RDN.equals not Implemented yet");
-        //rawValue = RDN;
+    public RDN(String rdn){
+        rawValue = rdn;
+        DN dn = new DN(rdn);
+        Vector rdns = dn.getRDNs();
+        //there should only be one rdn
+        if (rdns.size() != 1)
+            throw new IllegalArgumentException("Invalid RDN: see API " +
+                "documentation");
+        RDN thisRDN   = (RDN)(rdns.elementAt(0));
+        this.types    = thisRDN.types;
+        this.values   = thisRDN.values;
+        this.rawValue = thisRDN.rawValue;
     }
 
     public RDN(){
@@ -56,13 +65,31 @@ public class RDN extends Object
     }
 
     /**
-     * Compares the RDN to rdn passed in.
+     * Compares the RDN to the rdn passed.  Note: If an there exist any
+     * mulivalues in one RDN they must all be present in the other.
      *
      * @param the RDN to compare to
      */
     public boolean equals(RDN rdn){
-        throw new RuntimeException("RDN.equals not Implemented yet");
+        if (this.values.size() != rdn.values.size()){
+            return false;
+        }
+        int j;
+        for (int i=0; i<this.values.size(); i++){
+            //verify that the current value and type exists in the other list
+            j=0;
+            while ( j<values.size() &&
+                    !((String)this.types.elementAt(i)).equalsIgnoreCase(
+                      (String) rdn.types.elementAt(j)) &&
+                    !((String)this.values.elementAt(i)).equalsIgnoreCase(
+                      (String) rdn.values.elementAt(j)) )
+                j++;
+            if (j >= rdn.values.size()) //couldn't find first value
+                return false;
+        }
+        return true;
     }
+
     /**
      * Returns the actually Raw String before Normalization
      *
@@ -117,4 +144,81 @@ public class RDN extends Object
         }
         return toReturn;
     }
+
+    /**
+     * Returns each multivalued name in the current RDN as an array of Strings.
+     * The attribute type names will be ommitted if the parameter noTypes is
+     * true.
+     * @param Specifies if Attribute types are included.
+     * @return List of multivalued Attributes
+     */
+    public String[] explodeRDN( boolean noTypes ){
+        int length=types.size();
+        if (length < 1)
+            return null;
+        String[] toReturn = new String[types.size()];
+
+        if (!noTypes)
+            toReturn[0] = types.get(0) + "=";
+        toReturn[0] += values.get(0);
+
+        for(int i=1; i<length; i++){
+            if (!noTypes)
+                toReturn[i] += types.get(i) + "=";
+            toReturn[i] += values.get(i);
+        }
+
+        return toReturn;
+    }
+
+    /**
+     * Returns the type of this RDN.  This method assumes that only one value
+     * is used, If multivalues attributes are used only the first Type is
+     * returned.  Use GetTypes.
+     * @return Type of attribute
+     */
+    public String getType(){
+        return (String)types.elementAt(0);
+    }
+
+    /**
+     * Returns all the types for this RDN.
+     * @return list of types
+     */
+     public String[] getTypes(){
+        String[] toReturn = new String[types.size()];
+        for(int i=0; i<types.size(); i++)
+            toReturn[i] = (String)types.elementAt(i);
+        return toReturn;
+     }
+
+    /**
+     * Returns the values of this RDN.  If multivalues attributes are used only
+     * the first Type is returned.  Use GetTypes.
+     *
+     * @return Type of attribute
+     */
+    public String getValue(){
+        return (String)values.elementAt(0);
+    }
+
+    /**
+     * Returns all the types for this RDN.
+     * @return list of types
+     */
+     public String[] getValues(){
+        String[] toReturn = new String[values.size()];
+        for(int i=0; i<values.size(); i++)
+            toReturn[i] = (String)values.elementAt(i);
+        return toReturn;
+     }
+
+     /**
+      * Determines if this RDN is multivalued or not
+      * @return true if this RDN is multivalued
+      */
+     public boolean isMultivalued(){
+        return (values.size() > 1)? true: false;
+     }
+
 } //end class RDN
