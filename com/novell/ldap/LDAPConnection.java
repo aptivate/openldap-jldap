@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: LDAPConnection.java,v 1.12 2000/07/27 16:35:22 javed Exp $
+ * $Novell: LDAPConnection.java,v 1.13 2000/07/27 19:33:20 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -13,7 +13,7 @@
  * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY. 
  ***************************************************************************/
  
-package com.novell.ldap; 
+package org.ietf.ldap;
 
 import java.io.*;
 import java.net.Socket;

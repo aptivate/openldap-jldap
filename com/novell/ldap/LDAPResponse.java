@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id$
+ * $Novell: LDAPResponse.java,v 1.3 2000/03/14 18:17:28 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -13,7 +13,7 @@
  * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY. 
  ***************************************************************************/
  
-package com.novell.ldap;
+package org.ietf.ldap;
 
 import java.io.IOException;
 import java.util.Vector;

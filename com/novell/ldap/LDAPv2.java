@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: LDAPv2.java,v 1.2 2000/03/14 18:17:30 smerrill Exp $
+ * $Novell: LDAPv2.java,v 1.3 2000/04/04 20:21:38 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -13,7 +13,7 @@
  * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY. 
  ***************************************************************************/
  
-package com.novell.ldap; 
+package org.ietf.ldap;
  
 /**
  * public interface LDAPv2

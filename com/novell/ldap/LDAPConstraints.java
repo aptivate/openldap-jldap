@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: LDAPConstraints.java,v 1.2 2000/03/14 18:17:26 smerrill Exp $
+ * $Novell: LDAPConstraints.java,v 1.3 2000/05/22 21:57:31 bgudmundson Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  *
@@ -13,7 +13,7 @@
  * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
  ***************************************************************************/
 
-package com.novell.ldap;
+package org.ietf.ldap;
 
 /**
  * 4.7 public class LDAPConstraints
