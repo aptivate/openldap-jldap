@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPUrl.java,v 1.23 2001/02/27 22:53:15 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPUrl.java,v 1.24 2001/03/01 00:29:58 cmorris Exp $
 *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -44,9 +44,9 @@ public class LDAPUrl {
     /**
     * Constructs a URL object with the specified string as the URL.
     *
-    * @param url       An explicit LDAP URL string, for example
-    *                  "ldap://ldap.acme.com:80/o=Ace%20Industry,c=us?cn
-    *                  ,sn?sub?(objectclass=inetOrgPerson)".
+    * @param url      An LDAP URL string, e.g.
+    *                 "ldap://ldap.example.com:80/dc=example,dc=com?cn,
+    *                 sn?sub?(objectclass=inetOrgPerson)".
     *
     * @exception MalformedURLException The specified URL cannot be parsed.
     */
@@ -62,13 +62,13 @@ public class LDAPUrl {
     * <p>This form is used to create URL references to a particular object
     * in the directory.</p>
     *
-    *  @param host     The host name of LDAP server, or null for "nearest
-    *                  X.500/LDAP".
+    *  @param host     Host identifier of LDAP server, or null for
+    *                  "localhost".
     *<br><br>
     *  @param port     The port number for LDAP server (use
     *                  LDAPConnection.DEFAULT_PORT for default port).
     *<br><br>
-    *  @param dn      The distinguished name of the object to fetch.
+    *  @param dn       Distinguished name of the base object of the search.
     *
     */
     public LDAPUrl(String host,
@@ -81,22 +81,26 @@ public class LDAPUrl {
     }
 
     /**
-    * Constructs a full-blown LDAP URL to specify an LDAP search operation.
+    * Constructs an LDAP URL with all fields explicitly assigned, to
+    * specify an LDAP search operation.
     *
     *
-    *  @param host     The host name of LDAP server, or null for "nearest
-    *                  X.500/LDAP".
+    *  @param host     Host identifier of LDAP server, or null for
+    *                  "localhost".
     *<br><br>
     *  @param port     The port number for LDAP server (use
     *                  LDAPConnection.DEFAULT_PORT for default port).
     *<br><br>
-    *  @param dn       The distinguished name of object to fetch.
+    *  @param dn       Distinguished name of the base object of the search.
+    *
+    * <br><br>
+    *  @param attrNames Names or OIDs of attributes to retrieve. null
+    *                   for all user attributes.
+    *
     *<br><br>
-    *  attrNames       The names of attributes to retrieve (use null for all
-    *                  attributes).
-    *<br><br>
-    *  @param scope    The depth of search. Use one of the following
-    *                  from LDAPConnection: SCOPE_BASE, SCOPE_ONE, SCOPE_SUB.
+    *  @param scope    Depth of search (in DN namespace). Use one of
+    *                  SCOPE_BASE, SCOPE_ONE, SCOPE_SUB from LDAPConnection.
+    *
     *<br><br>
     *  @param filter   The search filter specifying the search criteria.
     */
@@ -119,20 +123,21 @@ public class LDAPUrl {
     * Constructs a full-blown LDAP URL to specify an LDAP search operation.
     *
     *
-    *  @param host     The host name of LDAP server, or null for "nearest
-    *                  X.500/LDAP".
+    *  @param host     Host identifier of LDAP server, or null for
+    *                  "localhost".
     *<br><br>
     *  @param port     The port number for LDAP server (use
     *                  LDAPConnection.DEFAULT_PORT for default port).
     *<br><br>
-    *  @param dn       The distinguished name of object to fetch.
+    *  @param dn       Distinguished name of the base object of the search.
     *<br><br>
-    *  attrNames       The names of attributes to retrieve (use null for all
-    *                  attributes).
+    *  @param attrNames Names or OIDs of attributes to retrieve. null
+    *                  for all user attributes.
+    *
     *<br><br>
-    *  @param scope    The depth of search. Use one of the following
-    *                  from LDAPConnection: SCOPE_BASE, SCOPE_ONE, SCOPE_SUB.
-    *<br><br>
+    *  @param scope    Depth of search (in DN namespace). Use one of
+    *                  SCOPE_BASE, SCOPE_ONE, SCOPE_SUB from LDAPConnection.
+    *  <br><br>
     *  @param filter   The search filter specifying the search criteria.
     *                  from LDAPConnection: SCOPE_BASE, SCOPE_ONE, SCOPE_SUB.
     *<br><br>
@@ -225,9 +230,7 @@ public class LDAPUrl {
     /**
     * Encodes an arbitrary string using the URL encoding rules.
     *
-    * <p> Any illegal characters are encoded as %HH.
-    * However, this method does NOT encode " " into "+".</p>
-    *
+    * <p> Any illegal characters are encoded as %HH. </p>
     *
     * @param toEncode     The string to encode.
     *
@@ -293,9 +296,10 @@ public class LDAPUrl {
 		return dn;
     }
 
-    /**   Returns any LDAP URL extensions specified, or null if none are
+    /**
+    * Returns any LDAP URL extensions specified, or null if none are
     * specified. Each extension is a type=value expression. The =value part
-    * may be omitted. The expression may be prefixed with '!' if it is
+    * MAY be omitted. The expression MAY be prefixed with '!' if it is
     * mandatory for evaluation of the URL.
     *
     * @return string array of extensions.
@@ -383,7 +387,7 @@ public class LDAPUrl {
 
 		// attributes
 		url.append( "?" );
-		if( attrs != null) {
+		if( attrs != null) {  //should we check also for attrs != "*"
 			for( int i = 0; i < attrs.length; i++ ) {
 				url.append( attrs[i]);
 				if( i < (attrs.length - 1)) {

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPCompareAttrNames.java,v 1.19 2001/03/01 00:29:46 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPCompareAttrNames.java,v 1.20 2001/03/02 23:10:26 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -22,9 +22,10 @@ import com.novell.ldap.*;
 
 
 /**
- *
- *  Represents an object that supports sorting search results by one or more
- *  attributes, in ascending or descending order.
+ *  An object of this class supports sorting search results by attribute
+ *  name, in ascending or descending order. Sorting is by locale-
+ *  sensitive Java String comparison, which may not correspond to the
+ *  LDAP ordering rules by which an LDAP server would sort them.
  *
  *  @see LDAPEntryComparator
  */
