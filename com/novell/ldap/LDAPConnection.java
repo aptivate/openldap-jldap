@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.67 2001/01/03 18:46:20 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.68 2001/01/04 20:12:36 vtag Exp $
 *
 * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
 *
@@ -121,6 +121,34 @@ public class LDAPConnection implements Cloneable
      * a an SSL connection to a server.</p>.
      */
     public static final int DEFAULT_SSL_PORT = 636;
+
+    /**
+     * A string that can be passed in to the getProperty method.
+     *
+     * <p>You can use this string to request the version of the SDK</p>.
+     */
+   
+     
+    public static final String LDAP_PROPERTY_SDK = "version.sdk";
+    /**
+     * A string that can be passed in to the getProperty method.
+     *
+     * <p>You can use this string to request the version of the 
+     * LDAP protocol</p>.
+     */
+     
+     
+    public static final String LDAP_PROPERTY_PROTOCOL = "version.protocol";
+    
+    /**
+     * A string that can be passed in to the getProperty method.
+     *
+     * <p>You can use this string to request the type of security
+     * being used</p>.
+     */
+     
+     
+    public static final String LDAP_PROPERTY_SECURITY = "version.security";
 
    /*
     * Constructors
@@ -438,7 +466,14 @@ public class LDAPConnection implements Cloneable
    public Object getProperty(String name)
       throws LDAPException
    {
-      throw new RuntimeException("Method LDAPConnection.getProperty not implemented");
+      if (name.equals(LDAP_PROPERTY_SDK))
+        return conn.sdk;
+      else if (name.equals(LDAP_PROPERTY_PROTOCOL))
+        return conn.protocol;
+      else if (name.equals(LDAP_PROPERTY_SECURITY))
+        return conn.security;
+      else
+        throw new RuntimeException("Property not available.");
    }
 
    /**
