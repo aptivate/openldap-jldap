@@ -67,7 +67,7 @@ public class LDAPEntry {
       if( dn == null) {
           dn = "";
       }
-      if( dn == null) {
+      if( attrs == null) {
           attrs = new LDAPAttributeSet();
       }
       this.dn = dn;
