@@ -1,8 +1,8 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttribute.java,v 1.16 2000/11/03 16:14:30 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttribute.java,v 1.17 2000/11/08 22:41:32 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
- * 
+ *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
  * TO VERSION 2.0.1 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
@@ -10,16 +10,17 @@
  * IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
  * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.1 OF THE OPENLDAP
  * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
- * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY. 
+ * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
  ***************************************************************************/
 
 package com.novell.ldap;
 
 import java.util.*;
-/** 
+import java.io.UnsupportedEncodingException;
+/**
  * Represents the name and values of one attribute of a directory entry.
  *
- * <p>The LDAPAttribute class is used to specify an attribute to be added 
+ * <p>The LDAPAttribute class is used to specify an attribute to be added
  * to, deleted from, or modified in a directory entry. An LDAPAttribute object
  * is also returned on a search of a directory.</p>
  *
@@ -30,7 +31,7 @@ import java.util.*;
  *   <li>Get its type values. </li>
  *   <li>Get its string values. </li>
  *   <li>Add values. </li>
- *   <li>Delete values. </li> 
+ *   <li>Delete values. </li>
  * </ul>
  */
 public class LDAPAttribute {
@@ -63,9 +64,16 @@ public class LDAPAttribute {
      *
      * @param attrName Name of the attribute.<br><br>
      * @param attrBytes Value of the attribute as raw bytes.
+     * <P> Note: If attrBytes is a string if should be UTF8 encoded. </P>
      */
     public LDAPAttribute(String attrName, byte attrBytes[]) {
-        this(attrName, new String[]{new String(attrBytes)});
+        //this(attrName, new String[]{new String(attrBytes)});
+        //NOTE: raw bytes are taken in straight and not converted to a string
+        //This is because we don't know if it should be a UTF8 string or
+        //just raw bytes
+        name = attrName;
+        getSubtypes(attrName);  //set Subtypes
+        values.addElement(attrBytes);
     }
 
     /**
@@ -109,6 +117,7 @@ public class LDAPAttribute {
      * Adds a byte-formatted value to the attribute.
      *
      * @param attrBytes Value of the attribute as raw bytes.
+     * <P> Note: If attrBytes is a string if should be UTF8 encoded. </P>
      */
     public void addValue(byte[] attrBytes) {
         values.addElement(attrBytes);
@@ -119,6 +128,8 @@ public class LDAPAttribute {
      * format.
      *
      * @return The values of the attribute in byte format.
+     * <P> Note: All string values will be UTF8 encoded. To decode use the
+     * toString method. Example:  byteArray.toString("UTF8"); </P>
      */
     public Enumeration getByteValues() {
         Vector bv = new Vector(values.size());
@@ -126,9 +137,11 @@ public class LDAPAttribute {
         while(e.hasMoreElements()) {
             Object o = e.nextElement();
             if(o instanceof String) {
-                bv.addElement(((String)o).getBytes());
+                try{
+                bv.addElement(((String)o).getBytes("UTF8"));
+                }catch (UnsupportedEncodingException uee){}
             }
-            else {
+            else {//if this byte[] is a string it will be UTF8 encoded also
                 bv.addElement(o);
             }
         }
@@ -149,7 +162,9 @@ public class LDAPAttribute {
                 sv.addElement(o);
             }
             else {
-                sv.addElement(new String((byte[])o));
+                try{
+                  sv.addElement(new String((byte[])o, "UTF8"));
+                }catch(UnsupportedEncodingException uee){}
             }
         }
         return sv.elements();
@@ -167,7 +182,7 @@ public class LDAPAttribute {
         while(e.hasMoreElements()) {
             Object o = e.nextElement();
             bva[i++] = (o instanceof String) ? ((String)o).getBytes() : (byte[])o;
-        }
+        }//do you want these bytes in UTF8??? if so ^^^ needs ,"UTF8"
         return bva;
     }
 
@@ -182,18 +197,20 @@ public class LDAPAttribute {
         Enumeration e = values.elements();
         while(e.hasMoreElements()) {
             Object o = e.nextElement();
-            sva[i++] = (o instanceof String) ? (String)o : new String((byte[])o);
+            try{
+            sva[i++] = (o instanceof String) ? (String)o : new String((byte[])o, "UTF8");
+            }catch(UnsupportedEncodingException uee){}
         }
         return sva;
     }
 
     /**
-     * Returns the language subtype of the attribute, if any. 
+     * Returns the language subtype of the attribute, if any.
      *
-     * <p>For example, if the attribute name is cn;lang-ja;phonetic, 
+     * <p>For example, if the attribute name is cn;lang-ja;phonetic,
      * this method returns the string, lang-ja.</p>
      *
-     * @return The language subtype of the attribute or null if the attribute 
+     * @return The language subtype of the attribute or null if the attribute
      *         has none.
      */
     public String getLangSubtype() {
@@ -206,9 +223,9 @@ public class LDAPAttribute {
     }
 
     /**
-     * Returns the base name of the attribute. 
+     * Returns the base name of the attribute.
      *
-     *<p>For example, if the attribute name is cn;lang-ja;phonetic, 
+     *<p>For example, if the attribute name is cn;lang-ja;phonetic,
      * this method returns cn.</p>
      *
      * @return The base name of the attribute.
@@ -218,12 +235,12 @@ public class LDAPAttribute {
     }
 
     /**
-     * Returns the base name of the specified attribute. 
+     * Returns the base name of the specified attribute.
      *
-     * <p>For example, if the attribute name is cn;lang-ja;phonetic, 
+     * <p>For example, if the attribute name is cn;lang-ja;phonetic,
      * this method returns cn.</p>
      *
-     * @param attrName Name of the attribute from which to extract the 
+     * @param attrName Name of the attribute from which to extract the
      * base name.
      *
      * @return The base name of the attribute.
@@ -245,9 +262,9 @@ public class LDAPAttribute {
     }
 
     /**
-     * Extracts the subtypes from the attribute name. 
+     * Extracts the subtypes from the attribute name.
      *
-     *<p>For example, if the attribute name is cn;lang-ja;phonetic, 
+     *<p>For example, if the attribute name is cn;lang-ja;phonetic,
      * this method returns an array containing lang-ja and phonetic.
      *
      * @return An array subtypes or null if the attribute has none.
@@ -257,12 +274,12 @@ public class LDAPAttribute {
     }
 
     /**
-     * Extracts the subtypes from the specified attribute name. 
+     * Extracts the subtypes from the specified attribute name.
      *
-     * <p>For example, if the attribute name is cn;lang-ja;phonetic, 
+     * <p>For example, if the attribute name is cn;lang-ja;phonetic,
      * this method returns an array containing lang-ja and phonetic.</p>
      *
-     * @param attrName   Name of the attribute from which to extract 
+     * @param attrName   Name of the attribute from which to extract
      * the subtypes.
      *
      * @return An array subtypes or null if the attribute has none.
@@ -282,14 +299,14 @@ public class LDAPAttribute {
     }
 
     /**
-     * Reports if the attribute name contains the specified subtype. 
+     * Reports if the attribute name contains the specified subtype.
      *
-     * <p>For example, if you check for the subtype lang-en and the 
+     * <p>For example, if you check for the subtype lang-en and the
      * attribute name is cn;lang-en, this method returns true.</p>
      *
      * @param subtype  The single subtype to check for.
      *
-     * @return True, if the attribute has the specified subtype; 
+     * @return True, if the attribute has the specified subtype;
      *         false, if it doesn't.
      */
     public boolean hasSubtype(String subtype) {
@@ -301,16 +318,16 @@ public class LDAPAttribute {
     }
 
     /**
-     * Reports if the attribute name contains all the specified subtypes. 
+     * Reports if the attribute name contains all the specified subtypes.
      *
-     * <p> For example, if you check for the subtypes lang-en and phonetic 
-     * and if the attribute name is cn;lang-en;phonetic, this method 
-     * returns true. If the attribute name is cn;phonetic or cn;lang-en, 
+     * <p> For example, if you check for the subtypes lang-en and phonetic
+     * and if the attribute name is cn;lang-en;phonetic, this method
+     * returns true. If the attribute name is cn;phonetic or cn;lang-en,
      * this method returns false.</p>
      *
      * @param subtypes   An array of subtypes to check for.
      *
-     * @return True, if the attribute has all the specified subtypes; 
+     * @return True, if the attribute has all the specified subtypes;
      *         false, if it doesn't have all the subtypes.
      */
     public boolean hasSubtypes(String[] subtypes) {
@@ -339,6 +356,8 @@ public class LDAPAttribute {
      * Removes a byte-formatted value from the attribute.
      *
      * @param attrBytes    Value of the attribute as raw bytes.
+     * <P> Note: If attrBytes is a string if should be UTF8 encoded. Example:
+     * aString.getBytes("UTF8"); </P>
      */
     public void removeValue(byte[] attrBytes) {
         values.removeElement(attrBytes);
