@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.82 2001/03/01 20:52:43 javed Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.83 2001/03/01 22:23:51 javed Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -45,7 +45,7 @@ public class LDAPConnection implements Cloneable
 
 	// Synchronization Object used to synchronize access to responseCtls
 	private Object responseCtlSemaphore = new Object();
-    
+
 	private Connection conn = null;
 
     private static Object nameLock = new Object(); // protect agentNum
@@ -748,13 +748,16 @@ public class LDAPConnection implements Cloneable
      *
      * @see #isTLS()
      */
-    public void startTLS()
+    public void startTLS() throws LDAPException
     {
         if( Debug.LDAP_DEBUG) {
             Debug.trace( Debug.apiRequests, name +
             "startTLS()");
         }
-        throw new RuntimeException("Method LDAPConnection.startTLS not implemented");
+        throw new LDAPException(LDAPExceptionMessageResource.NOT_IMPLEMENTED,
+                                new Object[] {"LDAPConnection.startTLS"},
+                                LDAPException.LDAP_NOT_SUPPORTED);
+                        //"Method LDAPConnection.startTLS not implemented"
     }
 
     //*************************************************************************
@@ -1279,7 +1282,9 @@ public class LDAPConnection implements Cloneable
         try {
             conn = listener.getMessageAgent().getMessage( msgId).getConnection();
         } catch( NoSuchFieldException ex) {
-            throw new RuntimeException("Internal error, wrong messageID on bind");
+            throw new LDAPException(LDAPExceptionMessageResource.WRONG_MESSAGE_ID,
+                                    LDAPException.PARAM_ERROR);
+            //"Internal error, wrong messageID on bind");
         }
         LDAPResponse res = (LDAPResponse)listener.getResponse();
         if( res != null) {
@@ -1473,7 +1478,10 @@ public class LDAPConnection implements Cloneable
                      LDAPConstraints cons)
                      throws LDAPException
     {
-        throw new RuntimeException("LDAPConnection.bind(with mechanisms) is not Implemented.");
+        throw new LDAPException(LDAPExceptionMessageResource.NOT_IMPLEMENTED,
+                new Object[] {"LDAPConnection.bind(with mechanisms)"},
+                LDAPException.LDAP_NOT_SUPPORTED);
+        //"LDAPConnection.bind(with mechanisms) is not Implemented."
     }
 
     /**
@@ -1572,7 +1580,10 @@ public class LDAPConnection implements Cloneable
             }
             bind( LDAP_V3, dn, password, defSearchCons);
         } else {
-            throw new RuntimeException("LDAPConnection.bind(with mechanisms) is not Implemented.");
+            throw new LDAPException(LDAPExceptionMessageResource.NOT_IMPLEMENTED,
+                new Object[] {"LDAPConnection.bind(with mechanisms)"},
+                LDAPException.LDAP_NOT_SUPPORTED);
+            //"LDAPConnection.bind(with mechanisms) is not Implemented."
         }
     }
 
@@ -2001,7 +2012,7 @@ public class LDAPConnection implements Cloneable
         // Call asynchronous API and get back handler to reponse listener
         LDAPResponseListener listener = extendedOperation(op, cons, (LDAPResponseListener)null);
         LDAPExtendedResponse response = (LDAPExtendedResponse) listener.getResponse();
-		
+
 		// Set local copy of responseControls synchronously - if there were any
 		synchronized (responseCtlSemaphore) {
 			responseCtls = response.getControls();
@@ -2122,8 +2133,8 @@ public class LDAPConnection implements Cloneable
             Debug.trace( Debug.apiRequests, name +
             "getResponseControls()");
         }
-		
-		// We have to clone the control just in case 
+
+		// We have to clone the control just in case
 		// we have two client threads that end up retreiving the
 		// same control.
 		LDAPControl [] clonedControl = new LDAPControl [responseCtls.length];
@@ -2137,8 +2148,8 @@ public class LDAPConnection implements Cloneable
        			clonedControl[i] = (LDAPControl) (responseCtls[i]).clone();
 			}
 		}
-        
-		// Return the cloned copy.  Note we have still left the 
+
+		// Return the cloned copy.  Note we have still left the
 		// control in the local responseCtls variable just in case
 		// somebody requests it again.
 		return clonedControl;

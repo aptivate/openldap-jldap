@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResults.java,v 1.37 2001/02/28 01:50:51 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResults.java,v 1.38 2001/03/01 00:29:57 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -17,6 +17,8 @@ package com.novell.ldap;
 
 import com.novell.ldap.client.ArrayList;    // Make sure we get the right one
 import com.novell.ldap.LDAPEntry;
+import com.novell.ldap.LDAPException;
+import com.novell.ldap.LDAPExceptionMessageResource;
 import com.novell.ldap.client.*;
 import java.util.*;
 import java.io.*;
@@ -371,12 +373,6 @@ public class LDAPSearchResults implements Enumeration
        if (!completed){
          batchSize = Integer.MAX_VALUE;
          completed = getBatchOfResults();
-         if ( !completed )//get all results and sort from this point on.
-         {
-            //we should run out of memory before this happens
-            throw new RuntimeException(
-                "All results could not be stored in memory, sort failed");
-         }
        }
 
        //ready to sort from index on.

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSchemaElement.java,v 1.11 2000/10/31 23:52:24 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSchemaElement.java,v 1.12 2001/03/01 00:29:55 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -219,7 +219,10 @@ public abstract class LDAPSchemaElement {
     *                           message and an LDAP error code.
     */
    public void add(LDAPConnection ld) throws LDAPException {
-       throw new RuntimeException("Method LDAPSchemaElement.add not implemented");
+        throw new LDAPException(LDAPExceptionMessageResource.NOT_IMPLEMENTED,
+                                new Object[]{"LDAPSchemaElement.add"},
+                                LDAPException.PARAM_ERROR);
+            //"Method LDAPSchemaElement.add not implemented"
    }
 
    /**
@@ -237,7 +240,10 @@ public abstract class LDAPSchemaElement {
     *                           message and an LDAP error code.
     */
    public void add(LDAPConnection ld, String dn) throws LDAPException {
-       throw new RuntimeException("Method LDAPSchemaElement.add not implemented");
+       throw new LDAPException(LDAPExceptionMessageResource.NOT_IMPLEMENTED,
+                                new Object[]{"LDAPSchemaElement.add"},
+                                LDAPException.PARAM_ERROR);
+       //"Method LDAPSchemaElement.add not implemented"
    }
 
    /**
@@ -252,7 +258,10 @@ public abstract class LDAPSchemaElement {
     *                           message and an LDAP error code.
     */
    public void remove(LDAPConnection ld) throws LDAPException {
-       throw new RuntimeException("Method LDAPSchemaElement.remove not implemented");
+       throw new LDAPException(LDAPExceptionMessageResource.NOT_IMPLEMENTED,
+                                new Object[]{"LDAPSchemaElement.remove"},
+                                LDAPException.PARAM_ERROR);
+       //"Method LDAPSchemaElement.remove not implemented"
    }
 
    /**
@@ -270,7 +279,10 @@ public abstract class LDAPSchemaElement {
     *                           message and an LDAP error code.
     */
    public void remove(LDAPConnection ld, String dn) throws LDAPException {
-       throw new RuntimeException("Method LDAPSchemaElement.remove not implemented");
+       throw new LDAPException(LDAPExceptionMessageResource.NOT_IMPLEMENTED,
+                                new Object[]{"LDAPSchemaElement.remove"},
+                                LDAPException.PARAM_ERROR);
+       //"Method LDAPSchemaElement.remove not implemented"
    }
 
    /**
@@ -288,7 +300,10 @@ public abstract class LDAPSchemaElement {
     */
    public void modify(LDAPConnection ld,
                       LDAPSchemaElement newValue) throws LDAPException {
-       throw new RuntimeException("Method LDAPSchemaElement.modify not implemented");
+       throw new LDAPException(LDAPExceptionMessageResource.NOT_IMPLEMENTED,
+                                new Object[]{"LDAPSchemaElement.modify"},
+                                LDAPException.PARAM_ERROR);
+       //"Method LDAPSchemaElement.modify not implemented"
    }
 
    /**
@@ -311,6 +326,9 @@ public abstract class LDAPSchemaElement {
    public void modify(LDAPConnection ld,
                       LDAPSchemaElement newValue,
                       String dn) throws LDAPException {
-       throw new RuntimeException("Method LDAPSchemaElement.modify not implemented");
+       throw new LDAPException(LDAPExceptionMessageResource.NOT_IMPLEMENTED,
+                                new Object[]{"LDAPSchemaElement.modify"},
+                                LDAPException.PARAM_ERROR);
+       //"Method LDAPSchemaElement.modify not implemented"
    }
 }

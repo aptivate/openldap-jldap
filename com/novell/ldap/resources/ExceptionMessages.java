@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell$
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPExceptionMessageResource.java,v 1.8 2001/03/01 00:29:50 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -59,6 +59,10 @@ public class LDAPExceptionMessageResource extends java.util.ListResourceBundle {
   public final static String IMPROPER_REFERRAL    = "IMPROPER_REFERRAL";
   public final static String NOT_A_RULESCHEMA     = "NOT_A_RULESCHEMA";
   public final static String NOT_A_RULEUSESHCEMA  = "NOT_A_RULEUSESHCEMA";
+  public final static String NOT_IMPLEMENTED      = "NOT_IMPLEMENTED";
+  public final static String WRONG_MESSAGE_ID     = "WRONG_MESSAGE_ID";
+  public final static String MISSING_EQUAL        = "MISSING_EQUAL";
+  public final static String NO_MEMORY            = "NO_MEMORY";
   //End constants
 
   static final Object[][] contents = {
@@ -99,7 +103,11 @@ public class LDAPExceptionMessageResource extends java.util.ListResourceBundle {
       {"MAXHOPS_EXCEEDED","Max hops exceeded"},
       {"IMPROPER_REFERRAL","Referral not supported for command {0}"},
       {"NOT_A_RULESCHEMA","Schema element is not an LDAPMatchingRuleSchema object"},
-      {"NOT_A_RULEUSESHCEMA","Schema element is not an LDAPMatchingRuleUseSchema object"}
+      {"NOT_A_RULEUSESHCEMA","Schema element is not an LDAPMatchingRuleUseSchema object"},
+      {"NOT_IMPLEMENTED","Method LDAPConnection.startTLS not implemented"},
+      {"WRONG_MESSAGE_ID","Internal error, wrong messageID on bind"},
+      {"MISSING_EQUAL","Attribute type and name must be separated by an equal symbol, '='"},
+      {"NO_MEMORY","All results could not be stored in memory, sort failed"}
   // END OF MATERIAL TO LOCALIZE
   };
 }//End LDAPExceptionMessageResource

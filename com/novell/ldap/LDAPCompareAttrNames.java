@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPCompareAttrNames.java,v 1.18 2001/02/27 21:38:45 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPCompareAttrNames.java,v 1.19 2001/03/01 00:29:46 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -29,8 +29,8 @@ import com.novell.ldap.*;
  *  @see LDAPEntryComparator
  */
 public class LDAPCompareAttrNames implements LDAPEntryComparator {
-   private String[] sortByNames;  //names to to sort by.
-   private boolean[] sortAscending; //true if sorting ascending
+   private String[] sortByNames;        //names to to sort by.
+   private boolean[] sortAscending;     //true if sorting ascending
    private Locale location = Locale.getDefault();
    private Collator collator = Collator.getInstance();
 
@@ -111,9 +111,9 @@ public class LDAPCompareAttrNames implements LDAPEntryComparator {
                                boolean[] ascendingFlags)
                                throws LDAPException {
       if (attrNames.length != ascendingFlags.length){
-         throw new LDAPException( LDAPExceptionMessageResource.UNEQUAL_LENGTHS, //"Length of attribute Name array does not equal length of Flags array"
+         throw new LDAPException( LDAPExceptionMessageResource.UNEQUAL_LENGTHS,
               LDAPException.INAPPROPRIATE_MATCHING);
-         //RFC 2251 lists error code. #18 == inappropriateMatching
+         //"Length of attribute Name array does not equal length of Flags array"
       }
       sortByNames = new String[attrNames.length];
       sortAscending = new boolean[ascendingFlags.length];
@@ -127,8 +127,8 @@ public class LDAPCompareAttrNames implements LDAPEntryComparator {
     * Returns the locale to be used for sorting, if a locale has been
     * specified.
     *
-    * <p>If locale is null, a basic String.compareTo method is used for collation.
-    * If non-null, a locale-specific collation is used. </p>
+    * <p>If locale is null, a basic String.compareTo method is used for
+    * collation.  If non-null, a locale-specific collation is used. </p>
     *
     * @return The locale if one has been specified
     */
@@ -162,15 +162,13 @@ public class LDAPCompareAttrNames implements LDAPEntryComparator {
     */
    public boolean isGreater (LDAPEntry entry1, LDAPEntry entry2) {
       LDAPAttribute one, two;
-      String[] first;   //these are arrays because of multivalued attributes, which are ignored.
-      String[] second;
+      String[] first;   //multivalued attributes are ignored.
+      String[] second;  //we just use the first element
       int compare,i=0;
       if (collator == null){ //using default locale
          collator = Collator.getInstance();
-         //compare = first[0].compareToIgnoreCase(second[0]);
       }
 
-      //throw new RuntimeException("isGreater is not implemented yet");
       do {//while first and second are equal
          one = entry1.getAttribute(sortByNames[i]);
          two = entry2.getAttribute(sortByNames[i]);
@@ -178,7 +176,7 @@ public class LDAPCompareAttrNames implements LDAPEntryComparator {
            first = one.getStringValueArray();
            second= two.getStringValueArray();
            compare = collator.compare(first[0], second[0]);
-         }//We could also use the other multivalued attributes to break ties and such.
+         }//We could also use the other multivalued attributes to break ties.
          else //one of the entries was null
          {
             if (one != null)
@@ -193,14 +191,13 @@ public class LDAPCompareAttrNames implements LDAPEntryComparator {
       } while ((compare == 0) && (i < sortByNames.length));
 
       if (compare > 0){
-         return sortAscending[i-1]; //if we sort up then entry1 is greater otherwise it is lesser
+         return sortAscending[i-1];
+         //if we sort up then entry1 is greater otherwise it is lesser
       }
       else if (compare < 0){
-         return !sortAscending[i-1];//if we sort up then entry1 is lesser otherwise it is greater
+         return !sortAscending[i-1];
+         //if we sort up then entry1 is lesser otherwise it is greater
       }
       else return false; //trivial ordering
-
    }
-
-
 }
