@@ -30,9 +30,9 @@ public class RfcAttributeValueAssertion extends ASN1Sequence {
     /**
      * Creates an Attribute Value Assertion.
      *
-     * @parameter ad The assertion description
+     * @param ad The assertion description
      * 
-     * @parameter av The assertion value
+     * @param av The assertion value
      */
     public RfcAttributeValueAssertion(RfcAttributeDescription ad, RfcAssertionValue av)
     {
