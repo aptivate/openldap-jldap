@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: ListReplicasResponse.java,v 1.8 2000/11/13 23:57:03 javed Exp $
+ * $Id: ListReplicasResponse.java,v 1.9 2001/03/01 00:30:10 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -17,7 +17,7 @@ package com.novell.ldap.extensions;
 import com.novell.ldap.*;
 import com.novell.ldap.asn1.*;
 import com.novell.ldap.rfc2251.*;
-import java.io.*;
+import java.io.IOException;
 
 /**
  * Retrieves the list of replicas from the specified server.

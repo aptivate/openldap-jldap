@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/client/RespControlVector.java,v 1.4 2001/03/23 19:43:29 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/client/RespControlVector.java,v 1.5 2001/03/30 00:33:43 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -15,7 +15,6 @@
 
 package com.novell.ldap.client;
 
-import java.util.*;
 import com.novell.ldap.client.Debug;
 
 /**

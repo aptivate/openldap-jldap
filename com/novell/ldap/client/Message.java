@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/client/Message.java,v 1.23 2001/05/02 19:33:26 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/client/Message.java,v 1.24 2001/05/03 18:17:50 vtag Exp $
 *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -18,9 +18,6 @@ package com.novell.ldap.client;
 import com.novell.ldap.client.*;
 import com.novell.ldap.rfc2251.*;
 import com.novell.ldap.*;
-
-import java.util.*;
-import java.io.*;
 
 /**
  * Encapsulates an LDAP message, its state, and its replies.

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: ListReplicasRequest.java,v 1.10 2001/03/01 00:30:10 cmorris Exp $
+ * $Id: ListReplicasRequest.java,v 1.11 2001/06/29 21:52:20 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -17,7 +17,8 @@ package com.novell.ldap.extensions;
 import com.novell.ldap.*;
 import com.novell.ldap.asn1.*;
 import com.novell.ldap.resources.*;
-import java.io.*;
+import java.io.IOException;
+import java.io.ByteArrayOutputStream;
 
 /**
  *

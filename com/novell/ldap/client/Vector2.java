@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/client/MessageVector.java,v 1.4 2001/03/14 17:11:00 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/client/Vector2.java,v 1.1 2001/03/23 19:13:34 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -15,7 +15,7 @@
 
 package com.novell.ldap.client;
 
-import java.util.*;
+import java.util.Vector;
 import com.novell.ldap.client.*;
 
 /**

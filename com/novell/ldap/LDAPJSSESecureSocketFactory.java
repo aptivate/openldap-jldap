@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPJSSESecureSocketFactory.java,v 1.4 2001/06/22 15:59:41 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPJSSESecureSocketFactory.java,v 1.5 2001/06/28 16:29:30 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -15,10 +15,10 @@
 
 package com.novell.ldap;
 
-import java.io.*;
-import java.net.*;
-import javax.net.*;
-import javax.net.ssl.*;
+import java.io.IOException;
+import java.net.UnknownHostException;
+import javax.net.SocketFactory;
+import javax.net.ssl.SSLSocketFactory;
 import com.sun.net.ssl.SSLContext;
 
 

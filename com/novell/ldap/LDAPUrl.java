@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPUrl.java,v 1.29 2001/06/13 17:51:06 jhammons Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPUrl.java,v 1.30 2001/06/28 15:10:42 vtag Exp $
 *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -15,8 +15,8 @@
 
 package com.novell.ldap;
 
-import java.util.*;
-import java.net.*;
+import java.util.Enumeration;
+import java.net.MalformedURLException;
 
 import com.novell.ldap.client.Debug;
 import com.novell.ldap.client.ArrayEnumeration;

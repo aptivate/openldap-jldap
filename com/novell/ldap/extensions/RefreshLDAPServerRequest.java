@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: RefreshLDAPServerRequest.java,v 1.10 2000/10/10 19:17:31 judy Exp $
+ * $Id: RefreshLDAPServerRequest.java,v 1.11 2001/03/01 00:30:12 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -16,7 +16,6 @@ package com.novell.ldap.extensions;
 
 import com.novell.ldap.*;
 import com.novell.ldap.asn1.*;
-import java.io.*;
 
 /**
  *

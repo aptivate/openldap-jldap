@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Structured.java,v 1.12 2001/04/13 22:35:47 javed Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Structured.java,v 1.13 2001/04/16 17:47:15 javed Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -15,7 +15,9 @@
 
 package com.novell.ldap.asn1;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import com.novell.ldap.client.ArrayList;
 import java.util.Enumeration;
 import java.util.NoSuchElementException;

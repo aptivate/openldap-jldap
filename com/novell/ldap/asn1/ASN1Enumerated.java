@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Enumerated.java,v 1.9 2001/04/11 21:27:05 javed Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Enumerated.java,v 1.10 2001/06/11 17:58:59 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -15,7 +15,9 @@
 
 package com.novell.ldap.asn1;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
  * This class encapsulates the ASN.1 ENUMERATED type.

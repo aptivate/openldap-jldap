@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/client/MessageAgent.java,v 1.18 2001/05/03 21:28:36 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/client/MessageAgent.java,v 1.19 2001/07/13 21:05:16 vtag Exp $
 *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -18,8 +18,6 @@ package com.novell.ldap.client;
 import com.novell.ldap.client.*;
 import com.novell.ldap.rfc2251.*;
 import com.novell.ldap.*;
-import java.io.*;
-
 
 public class MessageAgent
 {

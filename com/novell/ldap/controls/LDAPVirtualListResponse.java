@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPVirtualListResponse.java,v 1.1 2001/03/30 01:45:32 javed Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPVirtualListResponse.java,v 1.2 2001/04/02 17:30:18 javed Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -15,7 +15,7 @@
 
 package com.novell.ldap.controls;
 
-import java.io.*;
+import java.io.IOException;
 import com.novell.ldap.*;
 import com.novell.ldap.client.*;
 import com.novell.ldap.asn1.*;

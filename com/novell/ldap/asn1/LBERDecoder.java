@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/LBERDecoder.java,v 1.13 2001/06/12 20:34:00 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/LBERDecoder.java,v 1.14 2001/06/27 18:09:29 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -15,7 +15,10 @@
 
 package com.novell.ldap.asn1;
 
-import java.io.*;
+import java.io.EOFException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ByteArrayInputStream;
 
 /**
  * This class provides LBER decoding routines for ASN.1 Types. LBER is a

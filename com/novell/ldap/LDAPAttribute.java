@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttribute.java,v 1.22 2001/06/12 20:34:00 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttribute.java,v 1.23 2001/06/13 17:51:06 jhammons Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -18,7 +18,8 @@ package com.novell.ldap;
 import com.novell.ldap.client.ArrayList;
 import com.novell.ldap.client.ArrayEnumeration;
 
-import java.util.*;
+import java.util.Enumeration;
+import java.util.StringTokenizer;
 import java.io.UnsupportedEncodingException;
 /**
  * The name and values of one attribute of a directory entry.

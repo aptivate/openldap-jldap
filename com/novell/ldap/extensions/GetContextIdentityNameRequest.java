@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: GetContextIdentityNameRequest.java,v 1.11 2000/10/10 16:39:14 judy Exp $
+ * $Id: GetContextIdentityNameRequest.java,v 1.12 2001/03/01 00:30:09 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -16,7 +16,6 @@ package com.novell.ldap.extensions;
 
 import com.novell.ldap.*;
 import com.novell.ldap.asn1.*;
-import java.io.*;
 
 /**
  *

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPEntryChangeControl.java,v 1.1 2001/02/14 23:29:57 bgbrown Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/controls/LDAPEntryChangeControl.java,v 1.2 2001/03/01 00:30:06 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -15,7 +15,7 @@
 
 package com.novell.ldap.controls;
 
-import java.io.*;
+import java.io.IOException;
 import com.novell.ldap.*;
 import com.novell.ldap.client.*;
 import com.novell.ldap.asn1.*;

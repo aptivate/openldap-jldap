@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/client/BindProperties.java,v 1.2 2001/03/01 00:30:04 cmorris Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/client/BindProperties.java,v 1.3 2001/04/18 15:59:26 vtag Exp $
 *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -15,7 +15,7 @@
 
 package com.novell.ldap.client;
 
-import java.util.*;
+import java.util.Hashtable;
 
 /**
  * Encapsulates an LDAP Bind properties

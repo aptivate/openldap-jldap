@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell$
+ * $Novell: /ldap/src/jldap/com/novell/ldap/rfc2251/RfcAttributeTypeAndValues.java,v 1.6 2001/03/01 00:30:15 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -14,7 +14,6 @@
  ******************************************************************************/
 package com.novell.ldap.rfc2251;
 
-import java.io.*;
 import com.novell.ldap.asn1.*;
 
 /**

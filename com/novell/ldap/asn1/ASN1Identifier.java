@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Identifier.java,v 1.7 2001/04/11 22:17:21 javed Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Identifier.java,v 1.8 2001/06/08 20:41:19 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -15,7 +15,9 @@
 
 package com.novell.ldap.asn1;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.EOFException;
 
 /**
  * This class is used to encapsulate an ASN.1 Identifier.

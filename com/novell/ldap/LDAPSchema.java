@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSchema.java,v 1.23 2001/06/13 17:51:06 jhammons Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSchema.java,v 1.24 2001/07/17 17:45:25 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -16,7 +16,7 @@
 package com.novell.ldap;
 
 import java.util.Enumeration;
-import java.util.*;
+import java.util.Hashtable;
 
 /**
  *  The schema of a particular directory server.

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: TriggerBackgroundProcessRequest.java,v 1.4 2001/03/01 00:30:13 cmorris Exp $
+ * $Id: TriggerBackgroundProcessRequest.java,v 1.5 2001/06/29 21:52:22 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -17,7 +17,6 @@ package com.novell.ldap.extensions;
 import com.novell.ldap.*;
 import com.novell.ldap.asn1.*;
 import com.novell.ldap.resources.*;
-import java.io.*;
 
 /**
  *  	This API is used to trigger the specified background process on the

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPControl.java,v 1.26 2001/03/30 01:44:59 javed Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPControl.java,v 1.27 2001/06/13 17:51:06 jhammons Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -15,9 +15,8 @@
 
 package com.novell.ldap;
 
-import java.io.*;
-import java.lang.*;
-import java.lang.reflect.*;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Constructor;
 import com.novell.ldap.controls.*;
 import com.novell.ldap.client.*;
 import com.novell.ldap.asn1.*;

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResultReference.java,v 1.17 2001/02/26 19:58:25 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSearchResultReference.java,v 1.18 2001/03/01 00:29:56 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -19,7 +19,8 @@ import com.novell.ldap.rfc2251.*;
 import com.novell.ldap.asn1.*;
 import com.novell.ldap.client.Debug;
 import java.io.IOException;
-import java.util.*;
+import java.util.Vector;
+import java.util.Enumeration;
 
 /**
  *

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/rfc2251/RfcMessageID.java,v 1.10 2000/12/06 19:30:07 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/rfc2251/RfcMessageID.java,v 1.11 2001/03/01 00:30:18 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -15,7 +15,6 @@
 
 package com.novell.ldap.rfc2251;
 
-import java.io.*;
 import com.novell.ldap.asn1.*;
 
 /**

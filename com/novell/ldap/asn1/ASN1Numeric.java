@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Numeric.java,v 1.5 2001/03/01 00:30:00 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Numeric.java,v 1.6 2001/04/12 17:28:44 javed Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -14,8 +14,6 @@
  ******************************************************************************/
 
 package com.novell.ldap.asn1;
-
-import java.io.*;
 
 /**
  * This is an abstract class that is the base class 

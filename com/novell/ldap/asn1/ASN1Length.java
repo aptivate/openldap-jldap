@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Length.java,v 1.5 2001/04/11 22:17:21 javed Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Length.java,v 1.6 2001/06/08 20:41:19 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -14,7 +14,9 @@
  ******************************************************************************/
 package com.novell.ldap.asn1;
 
-import java.io.*;
+import java.io.EOFException;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * This class provides a means to manipulate ASN.1 Length's. It will

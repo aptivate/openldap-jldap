@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttributeSet.java,v 1.24 2001/04/23 21:09:28 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttributeSet.java,v 1.25 2001/06/13 17:51:06 jhammons Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -17,7 +17,7 @@ package com.novell.ldap;
 
 import com.novell.ldap.client.ArrayList;
 import com.novell.ldap.client.ArrayEnumeration;
-import java.util.*;
+import java.util.Enumeration;
 
 /**
  *  

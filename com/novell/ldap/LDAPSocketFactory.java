@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSocketFactory.java,v 1.9 2001/04/19 16:49:47 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPSocketFactory.java,v 1.10 2001/06/13 17:51:06 jhammons Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -15,7 +15,8 @@
 
 package com.novell.ldap;
 
-import java.net.*;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.io.IOException;
 
 /**

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1SetOf.java,v 1.7 2001/04/16 18:24:09 javed Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1SetOf.java,v 1.8 2001/06/11 17:58:59 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -15,7 +15,6 @@
 
 package com.novell.ldap.asn1;
 
-import java.io.*;
 import com.novell.ldap.client.ArrayList;
 import java.util.Enumeration;
 

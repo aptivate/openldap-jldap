@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/rfc2251/RfcFilter.java,v 1.21 2001/04/23 21:09:32 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/rfc2251/RfcFilter.java,v 1.22 2001/06/29 21:52:24 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -15,8 +15,7 @@
 
 package com.novell.ldap.rfc2251;
 
-import java.util.*;
-import java.io.*;
+import java.util.StringTokenizer;
 
 import com.novell.ldap.asn1.*;
 import com.novell.ldap.LDAPException;

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/rfc2251/RfcLDAPString.java,v 1.7 2000/11/10 16:50:09 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/rfc2251/RfcLDAPString.java,v 1.8 2001/03/01 00:30:18 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -15,7 +15,8 @@
 
 package com.novell.ldap.rfc2251;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
 import com.novell.ldap.asn1.*;
 
 /**

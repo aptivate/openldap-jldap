@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Object.java,v 1.7 2001/03/07 00:51:23 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Object.java,v 1.8 2001/04/12 17:28:45 javed Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -15,7 +15,10 @@
 
 package com.novell.ldap.asn1;
 
-import java.io.*;
+import java.io.Serializable;
+import java.io.OutputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 /**
  * This is the base class for all other ASN1 types.

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Encoder.java,v 1.8 2001/04/06 17:00:19 javed Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/ASN1Encoder.java,v 1.9 2001/04/06 19:28:20 javed Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -15,7 +15,9 @@
 
 package com.novell.ldap.asn1;
 
-import java.io.*;
+import java.io.Serializable;
+import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * This interface defines the methods for encoding each of the ASN.1 types.

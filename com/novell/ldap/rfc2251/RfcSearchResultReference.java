@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell$
+ * $Novell: /ldap/src/jldap/com/novell/ldap/rfc2251/RfcSearchResultReference.java,v 1.8 2001/03/01 00:30:21 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -14,8 +14,10 @@
  ******************************************************************************/
 package com.novell.ldap.rfc2251;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Enumeration;
+import java.util.NoSuchElementException;
 import com.novell.ldap.asn1.*;
 
 /**

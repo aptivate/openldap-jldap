@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.102 2001/06/22 15:58:43 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.103 2001/06/29 21:52:13 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -17,8 +17,11 @@ package com.novell.ldap;
 
 import com.novell.ldap.client.ArrayList;
 import com.novell.ldap.client.ReferralInfo;
-import java.io.*;
-import java.util.*;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.StringTokenizer;
 import java.net.MalformedURLException;
 
 import com.novell.ldap.*;
