@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPResponse.java,v 1.30 2001/06/13 17:51:06 jhammons Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPResponse.java,v 1.31 2001/06/22 16:41:48 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -154,6 +154,9 @@ public class LDAPResponse extends LDAPMessage
 
     /**
      * Checks the resultCode and throws the appropriate exception.
+     *
+     *  @exception LDAPException A general exception which includes an error
+     *  message and an LDAP error code.
      */
     /* package */
     void chkResultCode() throws LDAPException

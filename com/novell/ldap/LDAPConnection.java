@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.103 2001/06/29 21:52:13 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPConnection.java,v 1.104 2001/07/20 19:49:38 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -778,6 +778,8 @@ public class LDAPConnection implements Cloneable
      * This affects the connection characteristics and thus will affect
      * the source object and all clone objects.
      *
+     * @exception LDAPException Thrown if TLS cannot be started.
+     *
      * @see #isTLS()
      */
     public void startTLS() throws LDAPException
@@ -1464,6 +1466,9 @@ public class LDAPConnection implements Cloneable
      *  @param cbh      A class which may be called by the Mechanism
      *                  Driver to obtain additional information required,
      *                  such as additional credentials.
+     *
+     *  @exception LDAPException A general exception which includes an error
+     *  message and an LDAP error code.
      */
     public void bind(String dn,
                      Hashtable props,
@@ -1502,6 +1507,9 @@ public class LDAPConnection implements Cloneable
      *                  such as additional credentials.
      *<br><br>
      *  @param cons      Constraints specific to the operation.
+     *
+     *  @exception LDAPException A general exception which includes an error
+     *  message and an LDAP error code.
      */
     public void bind(String dn,
                      Hashtable props,
@@ -1543,6 +1551,9 @@ public class LDAPConnection implements Cloneable
      *  @param cbh      A class which may be called by the Mechanism
      *                  Driver to obtain additional information required,
      *                  such as additional credentials.
+     *
+     *  @exception LDAPException A general exception which includes an error
+     *  message and an LDAP error code.
      */
     public void bind(String dn,
                      String[] mechanisms,
@@ -1582,6 +1593,9 @@ public class LDAPConnection implements Cloneable
      *  @param cbh      A class which may be called by the Mechanism
      *                  Driver to obtain additional information required,
      *                  such as additional credentials.
+     *
+     *  @exception LDAPException A general exception which includes an error
+     *  message and an LDAP error code.
      */
     public void bind(String dn,
                      String[] mechanisms,
@@ -3314,6 +3328,9 @@ public class LDAPConnection implements Cloneable
      * @param listen the response listener or null
      *
      * @return the LDAPResponseListener for this request
+     *
+     *  @exception LDAPException A general exception which includes an error
+     *  message and an LDAP error code.
      */
     private LDAPResponseListener sendRequest(
                                         LDAPMessage msg,
@@ -3367,6 +3384,9 @@ public class LDAPConnection implements Cloneable
      * @param returnUrl the LDAPUrl that was connected to
      *
      * @return The referralInfo object
+     *
+     *  @exception LDAPReferralException A general exception which includes
+     *  an error message and an LDAP error code.
      */
     private ReferralInfo getReferralConnection( String[] referrals,
                                           boolean search)
@@ -3536,6 +3556,9 @@ public class LDAPConnection implements Cloneable
      * @return The array list used to store the LDAPConnection objects
      *        used in following the referral.  The list will be empty
      *        if there were none.
+     *
+     *  @exception LDAPException A general exception which includes an error
+     *  message and an LDAP error code.
      */
     /* package */
     ArrayList checkForReferral( LDAPListener listen,
@@ -3695,6 +3718,9 @@ public class LDAPConnection implements Cloneable
      * @param url the referral url
      *
      * @return a new LDAPMessage with appropriate information replaced
+     *
+     *  @exception LDAPException A general exception which includes an error
+     *  message and an LDAP error code.
      */
 
     private
