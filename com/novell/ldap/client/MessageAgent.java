@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/client/MessageAgent.java,v 1.17 2001/05/03 18:17:50 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/client/MessageAgent.java,v 1.18 2001/05/03 21:28:36 vtag Exp $
 *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -166,7 +166,7 @@ public class MessageAgent
         } catch( NoSuchFieldException ex ) {
             if( Debug.LDAP_DEBUG) {
                 Debug.trace( Debug.messages, name +
-                "Abandon of Message(" + info.getMessageID() + ") failed");
+                "Abandon of Message(" + msgId + ") failed");
             }
         }
         return;
