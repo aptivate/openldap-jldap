@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPUrl.java,v 1.15 2000/10/31 00:45:08 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPUrl.java,v 1.16 2000/10/31 23:52:26 vtag Exp $
 *
 * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
 * 
@@ -115,6 +115,39 @@ public class LDAPUrl {
 		return;
     }
 
+    /**
+    * Constructs a full-blown LDAP URL to specify an LDAP search operation.
+    *
+    *
+    *  @param host     The host name of LDAP server, or null for "nearest
+    *                  X.500/LDAP".
+    *<br><br>
+    *  @param port     The port number for LDAP server (use
+    *                  LDAPConnection.DEFAULT_PORT for default port).
+    *<br><br>
+    *  @param dn       The distinguished name of object to fetch.
+    *<br><br>
+    *  attrNames       The names of attributes to retrieve (use null for all
+    *                  attributes).
+    *<br><br>
+    *  @param scope    The depth of search. Use one of the following 
+    *                  from LDAPConnection: SCOPE_BASE, SCOPE_ONE, SCOPE_SUB.
+    *<br><br>
+    *  @param filter   The search filter specifying the search criteria.
+    *                  from LDAPConnection: SCOPE_BASE, SCOPE_ONE, SCOPE_SUB.
+    *<br><br>
+    *  @param secure   If true creates an LDAP URL of the ldaps type
+    */
+    public LDAPUrl(String host,
+                   int port,
+                   String dn,
+                   String attrNames[],
+                   int scope,
+                   String filter,
+                   boolean secure)
+     {
+        throw new RuntimeException("LDAPUrl: secure constructor not implemented");
+    }
     /**
     * Decodes a URL-encoded string. 
     *
