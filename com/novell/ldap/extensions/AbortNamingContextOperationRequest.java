@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: AbortNamingContextOperationRequest.java,v 1.1 2000/07/31 19:54:20 javed Exp $
+ * $Id: AbortNamingContextOperationRequest.java,v 1.2 2000/08/01 01:03:31 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -14,8 +14,8 @@
  ***************************************************************************/
 package com.novell.ldap.ext; 
 
-import com.novell.ldap.*;
-import com.novell.ldap.client.protocol.lber.*;
+import org.ietf.ldap.*;
+import org.ietf.asn1.*;
 import java.io.IOException;
  
 /**

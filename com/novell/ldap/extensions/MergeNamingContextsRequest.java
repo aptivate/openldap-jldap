@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: MergeNamingContextsRequest.java,v 1.3 2000/07/27 17:50:57 javed Exp $
+ * $Id: MergeNamingContextsRequest.java,v 1.4 2000/08/01 01:03:32 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -14,8 +14,8 @@
  ***************************************************************************/
 package com.novell.ldap.ext; 
 
-import com.novell.ldap.*;
-import com.novell.ldap.client.protocol.lber.*;
+import org.ietf.ldap.*;
+import org.ietf.asn1.*;
 import java.io.IOException;
  
 /**

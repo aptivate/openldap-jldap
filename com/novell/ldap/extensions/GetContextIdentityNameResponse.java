@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: GetContextIdentityNameResponse.java,v 1.1 2000/07/27 22:04:10 javed Exp $
+ * $Id: GetContextIdentityNameResponse.java,v 1.1 2000/08/01 01:03:32 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -14,8 +14,8 @@
  ***************************************************************************/
 package com.novell.ldap.ext; 
 
-import com.novell.ldap.*;
-import com.novell.ldap.client.protocol.lber.*;
+import org.ietf.ldap.*;
+import org.ietf.asn1.*;
 import java.io.IOException;
  
 /**
