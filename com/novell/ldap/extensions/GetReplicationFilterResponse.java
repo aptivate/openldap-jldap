@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: GetReplicationFilterResponse.java,v 1.11 2000/10/10 16:39:15 judy Exp $
+ * $Id: GetReplicationFilterResponse.java,v 1.1 2000/11/06 21:09:04 javed Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -30,6 +30,10 @@ import java.io.*;
  */
 public class GetReplicationFilterResponse implements ParsedExtendedResponse {
    
+
+   		
+	// Replication filter returned by the server goes here
+	String returnedFilter[][];
    
    /**
     * Constructs an object from the responseValue which contains the replication
@@ -60,8 +64,69 @@ public class GetReplicationFilterResponse implements ParsedExtendedResponse {
         if (decoder == null)
             throw new IOException("Decoding error");
 
+		// We should get back a sequence
+        ASN1Sequence returnedSequence = (ASN1Sequence)decoder.decode(returnedValue);        
+
+        if (returnedSequence == null)
+            throw new IOException("Decoding error");
+        
+        // How many sequences in this list 
+        int numberOfSequences = returnedSequence.size();
+		returnedFilter = new String[numberOfSequences][];
+
+        // Parse each returned sequence object
+		for(int classNumber = 0; classNumber < numberOfSequences; classNumber++) {
+			       
+		  // Get the next ASN1Sequence
+          ASN1Sequence asn1_innerSequence = (ASN1Sequence)returnedSequence.get(classNumber);
+		  if (asn1_innerSequence == null)
+            throw new IOException("Decoding error");
+
+		  // Get the asn1 encoded classname 
+          ASN1OctetString asn1_className = (ASN1OctetString)asn1_innerSequence.get(0);
+          if (asn1_className == null)
+                return;
+
+		 // Get the attribute List
+		 ASN1Sequence asn1_attributeList = (ASN1Sequence)asn1_innerSequence.get(1);
+		 if (asn1_attributeList == null)
+			 throw new IOException("Decoding error");
+
+		 int numberOfAttributes = asn1_attributeList.size();
+		 returnedFilter[classNumber] = new String[numberOfAttributes+1];
+
+         // Get the classname
+         returnedFilter[classNumber][0] = new String(asn1_className.getContent());
+         if (returnedFilter[classNumber][0] == null)
+                throw new IOException("Decoding error");
+
+		 for (int attributeNumber = 0; attributeNumber < numberOfAttributes; attributeNumber++) {
+			
+			// Get the asn1 encoded attribute name 
+			ASN1OctetString asn1_attributeName = (ASN1OctetString)asn1_attributeList.get(attributeNumber);
+			if (asn1_attributeName == null)
+                throw new IOException("Decoding error");
+			
+			// Get attributename string
+			returnedFilter[classNumber][attributeNumber+1] = new String(asn1_attributeName.getContent());
+			if (returnedFilter[classNumber][attributeNumber+1] == null)
+                throw new IOException("Decoding error");
+
+			}
+
+		}
+
        
    }
-   
+
+   /** 
+    * Returns the replicationFilter as an array of classname-attribute name pairs
+    *
+    * @return String array contining a two dimensional array of strings.  The first
+	* element of each array is the class name the others are the attribute names
+    */
+   public String[][] getReplicationFilter() {
+        return returnedFilter;
+   }   
     
 }
