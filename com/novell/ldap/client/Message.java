@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/client/Message.java,v 1.18 2001/04/20 17:40:20 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/client/Message.java,v 1.19 2001/04/23 21:15:16 vtag Exp $
 *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -391,37 +391,31 @@ public class Message
      * Gets the next reply from the reply queue if one exists, otherwise
      * throws ArrayIndexOutOfBoundsException
      *
-     * @return the next reply message on the reply queue
-     *
-     * @throws ArrayIndexOutOfBoundsException when no replies exist
+     * @return the next reply message on the reply queue or null if none
      */
     /* package */
     Object getReply()
-                throws ArrayIndexOutOfBoundsException
     {
             Object msg;
-            // We use remove and catch the exception because
-            // it is an atomic get and remove. isEmpty, getFirstElement,
-            // and removeElementAt are multiple statements.
-            // Another thread could remove the object between statements.
-            try {
+            synchronized( replies) {
+                // Test and remove must be atomic
+                if( replies.isEmpty()) {
+                    if( Debug.LDAP_DEBUG) {
+                        Debug.trace( Debug.messages, name +
+                            "No replies queued for message");
+                    }
+                    return null;    // No data
+                }
                 msg = replies.remove(0); // Atomic get and remove
-                if( Debug.LDAP_DEBUG) {
-                    Debug.trace( Debug.messages, name +
-                            "Got reply from queue(" +
-                            replies.size() + " remaining in queue)");
-                }
-                if( (complete || ! acceptReplies) && replies.isEmpty()) {
-                    // Remove msg from connection queue when last reply read
-                    conn.removeMessage(this);
-                }
-            } catch( ArrayIndexOutOfBoundsException ex ) {
-                if( Debug.LDAP_DEBUG) {
-                    Debug.trace( Debug.messages, name +
-                        "No replies queued for message");
-                }
-                // ArrayIndexOutOfBoundsException signifies no replies queued
-                throw ex;
+            }
+            if( Debug.LDAP_DEBUG) {
+                Debug.trace( Debug.messages, name +
+                        "Got reply from queue(" +
+                        replies.size() + " remaining in queue)");
+            }
+            if( (complete || ! acceptReplies) && replies.isEmpty()) {
+                // Remove msg from connection queue when last reply read
+                conn.removeMessage(this);
             }
             return msg;
     }

@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/client/MessageAgent.java,v 1.12 2001/04/19 17:47:56 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/client/MessageAgent.java,v 1.13 2001/04/19 22:25:20 vtag Exp $
 *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -351,8 +351,9 @@ public class MessageAgent
                        }
                        info = (Message)messages.elementAt(next);
                        indexLastRead = next++;
-                       try {
-                          rfcMsg = info.getReply();
+                       rfcMsg = info.getReply();
+                       if( rfcMsg != null) {
+                          // We got a reply
                           if( ! info.acceptsReplies() & ! info.hasReplies()) {
                              // Message complete & no more replies, remove from id list
                              messages.removeElement( info);
@@ -372,12 +373,13 @@ public class MessageAgent
                              }
                           }
                           return rfcMsg;
-                       } catch( ArrayIndexOutOfBoundsException ex) {
-                             if( Debug.LDAP_DEBUG) {
-                                Debug.trace( Debug.messages, name +
-                                "getLDAPMessage: no messages queued for Message(" +
-                                info.getMessageID() + ")");
-                             }
+                       } else {
+                          // We found no reply here
+                          if( Debug.LDAP_DEBUG) {
+                             Debug.trace( Debug.messages, name +
+                             "getLDAPMessage: no messages queued for Message(" +
+                             info.getMessageID() + ")");
+                          }
                           continue;
                        }
                     }
