@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/LBERDecoder.java,v 1.11 2001/06/08 20:41:19 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/asn1/LBERDecoder.java,v 1.12 2001/06/11 21:04:52 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -99,9 +99,9 @@ public class LBERDecoder implements ASN1Decoder
    public ASN1Object decode(InputStream in, int len[])
       throws IOException
    {
-//*      ASN1Identifier asn1ID = new ASN1Identifier(in);
+//      ASN1Identifier asn1ID = new ASN1Identifier(in);
       asn1ID.reset(in);
-//*      ASN1Length asn1Len = new ASN1Length(in);
+//      ASN1Length asn1Len = new ASN1Length(in);
       asn1Len.reset(in);
       int length = asn1Len.getLength();
       len[0] = asn1ID.getEncodedLength() +

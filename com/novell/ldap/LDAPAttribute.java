@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttribute.java,v 1.20 2001/03/28 22:33:00 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPAttribute.java,v 1.21 2001/04/23 21:09:28 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -39,8 +39,8 @@ import java.io.UnsupportedEncodingException;
  */
 public class LDAPAttribute {
     private String name;              // full attribute name
-    private static String baseName = null;   // cn of cn;lang-ja;phonetic
-    private static String[] subTypes = null; // lang-ja of cn;lang-ja
+    private String baseName = null;   // cn of cn;lang-ja;phonetic
+    private String[] subTypes = null; // lang-ja of cn;lang-ja
     private ArrayList values = new ArrayList(5);
 
     /**
@@ -75,7 +75,8 @@ public class LDAPAttribute {
         //This is because we don't know if it should be a UTF8 string or
         //just raw bytes
         name = attrName;
-        getSubtypes(attrName);  //set Subtypes
+        subTypes = getSubtypes(attrName);
+        baseName = getBaseName(attrName);
         values.add(attrBytes);
     }
 
@@ -289,6 +290,7 @@ public class LDAPAttribute {
      */
     public static String[] getSubtypes(String attrName) {
         StringTokenizer st = new StringTokenizer(attrName, ";");
+        String baseName, subTypes[] = null;
         int cnt = st.countTokens();
         if(cnt > 0) {
             baseName = st.nextToken();
