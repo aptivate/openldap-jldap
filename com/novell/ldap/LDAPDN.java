@@ -26,12 +26,6 @@ import com.novell.ldap.util.RDN;
  */
 public class LDAPDN {
    
-   // Don't allow instances of this class
-   protected LDAPDN()
-   {
-       return;
-   }
-
    /**
     * Compares the two strings per the distinguishedNameMatch equality matching
     * (using case-ignore matching).  IllegalArgumentException is thrown if one
