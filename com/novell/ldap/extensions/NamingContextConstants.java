@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Id: NamingContextConstants.java,v 1.21 2001/03/01 00:30:11 cmorris Exp $
+ * $Id: NamingContextConstants.java,v 1.22 2001/04/25 16:09:56 dsteck Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -493,8 +493,12 @@ public class NamingContextConstants {
     public static final int LDAP_DS_ATTR_SUPERVISOR = 0x0020;
 
     /**
-     * A privilege flag that indicatesa trustee inherits the rights granted
+     * A privilege flag that indicates a trustee inherits the rights granted
      * in the ACL and can exercise these attribute rights on subordinate objects.
+     *
+     * For object rights or [All Attribute Rights], setting this bit to 1 
+     * allows inheritance of the rights granted in the ACL.  For a specific
+     * attribute, setting the bit to 0 allows inheritance.
      */
     public static final int LDAP_DS_ATTR_INHERIT_CTL= 0x0040;
 
