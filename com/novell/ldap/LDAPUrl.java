@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPUrl.java,v 1.19 2000/11/14 21:44:15 cmorris Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/LDAPUrl.java,v 1.20 2000/11/29 21:35:15 cmorris Exp $
 *
 * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
 *
@@ -291,6 +291,17 @@ public class LDAPUrl {
     */
     public String getDN() {
 		return dn;
+    }
+    
+    /**   Returns any LDAP URL extensions specified, or null if none are 
+    * specified. Each extension is a type=value expression. The =value part 
+    * may be omitted. The expression may be prefixed with '!' if it is 
+    * mandatory for evaluation of the URL. 
+    *
+    * @return string array of extensions.
+    */
+    public String[] getExtensions() {
+        return extensions;
     }
 
     /**
