@@ -214,9 +214,9 @@
                         Windowtitle="LDAP Classes"
                         Splitindex="true"
                         Doctitle="Novell, Inc. LDAP IETF Classes and Novell, Inc. Extensions"
+                        Header="&lt;b>LDAP Classes&lt;/b>&lt;br>&lt;font size=-1>Implements Java LDAP&lt;/font>"
+                        Bottom="&lt;font size=-1>Novell, Inc.&lt;br>       1800 South Novell Place&lt;br>        Provo, Ut 84606&lt;br>       Phone: (801) 861-5000&lt;/font>"
         />
-                        <!--Header="&lt;b>ASN.1 Classes&lt;/b>&lt;br>&lt;font size=\"-1\">Implements BER Encoding/Decoding&lt;/font>"-->
-                        <!--Bottom="&lt;font size=\"-1\">Novell, Inc.&lt;br>       1800 South Novell Place&lt;br>        Provo, Ut 84606&lt;br>       Phone: (801) 278-5948&lt;/font>"-->
     </target>
 
     <!-- =================================================================== -->
@@ -229,13 +229,13 @@
         <javadoc sourcepath="${docsrc}"
                         destdir="${pkg.doc.framework}"
                         classpath="${lib.debug}/${ldap}.jar;external/ssl/domestic/nssl1.1_dom.jar"
-                        packagenames="com.novell.ldap.asn1,com.novell.ldap.protocol"
+                        packagenames="com.novell.ldap.asn1,com.novell.ldap"
                         Windowtitle="LDAP Classes"
                         Splitindex="true"
                         Doctitle="Novell, Inc. Java LDAP Framework Classes"
+                        Header="&lt;b>ASN.1 Classes&lt;/b>&lt;br>&lt;font size=-1>Implements ASN.1 Classes&lt;/font>"
+                        Bottom="&lt;font size=-1>Novell, Inc.&lt;br>       1800 South Novell Place&lt;br>        Provo, Ut 84606&lt;br>       Phone: (801) 861-5000&lt;/font>"
         />
-                        <!--Header="&lt;b>ASN.1 Classes&lt;/b>&lt;br>&lt;font size=\"-1\">Implements BER Encoding/Decoding&lt;/font>"-->
-                        <!--Bottom="&lt;font size=\"-1\">Novell, Inc.&lt;br>       1800 South Novell Place&lt;br>        Provo, Ut 84606&lt;br>       Phone: (801) 278-5948&lt;/font>"-->
     </target>
 
     <!-- =================================================================== -->
@@ -256,9 +256,9 @@
                         Splitindex="true"
                         Private="true"
                         Doctitle="Novell, Inc. All Java LDAP Classes for Novell Internal Use"
+                        Header="&lt;b>All LDAP Classes&lt;/b>&lt;br>&lt;font size=-1>Internal LDAP Classes&lt;/font>"
+                        Bottom="&lt;font size=-1>Novell, Inc.&lt;br>       1800 South Novell Place&lt;br>        Provo, Ut 84606&lt;br>       Phone: (801) 861-5000&lt;/font>"
         />
-                        <!--Header="&lt;b>ASN.1 Classes&lt;/b>&lt;br>&lt;font size=\"-1\">Implements BER Encoding/Decoding&lt;/font>"-->
-                        <!--Bottom="&lt;font size=\"-1\">Novell, Inc.&lt;br>       1800 South Novell Place&lt;br>        Provo, Ut 84606&lt;br>       Phone: (801) 278-5948&lt;/font>"-->
     </target>
 
 </project>
