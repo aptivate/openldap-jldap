@@ -137,16 +137,13 @@ public class LDIFWriter extends LDIF implements LDAPExport {
         String   commentLine;
 
         if ( line != null) {
-            commentLine = new String( "# " + line);
 
-            // berak the line if it contains more than 80 characters
-            if ( (commentLine.length()) > 80 ) {
-                // borrow rLines to save comments lines
-                this.rLines = toCommentLines( commentLine );
-                writeRecordLines();
+            if (line.length()<=78) {
+                 bufWriter.write("# " + line, 0, line.length()+2);
             }
             else {
-                bufWriter.write( commentLine, 0, commentLine.length());
+                // berak the line
+                writeLongLine(line);
             }
 
             // write an empty line
@@ -205,7 +202,7 @@ public class LDIFWriter extends LDIF implements LDAPExport {
     public void writeContent(LDAPEntry entry, LDAPControl[] ctrls)
     throws IOException {
 
-        if( !isRequest()) {
+        if( isRequest()) {
             throw new RuntimeException(
                  "com.novell.ldap.ldif_dsml.LDAIWriter: "
                       + "Cannot write change to LDIF content file");
@@ -354,12 +351,12 @@ public class LDIFWriter extends LDIF implements LDAPExport {
         // add dn to record fileds
         addDNToRecordFields();
 
-        // save controls if there any
-        if ( ctrls != null ) {
-            addControlsToRecordFields( ctrls );
-        }
-
         if ( isRequest() ) {
+            // add control lines
+            if ( ctrls != null ) {
+                addControlsToRecordFields( ctrls );
+            }
+            // add change type line
             this.rFields.add("changetype: " + new String("add"));
         }
 
@@ -505,7 +502,7 @@ public class LDIFWriter extends LDIF implements LDAPExport {
     /**
      * Used to generate LDIF change/moddn reocrd lines.
      *
-     * <p>Turn entry DN and moddn information into LDIF change/modify 
+     * <p>Turn entry DN and moddn information into LDIF change/modify
      * record lines</p>
      *
      * @param dn      String object representing entry DN
@@ -602,35 +599,33 @@ public class LDIFWriter extends LDIF implements LDAPExport {
 
 
     /**
-     * Turn the input comment string into multiple comment lines if it contains
-     * more than 80 characters.
+     * Wtite a long line to the bufferedWriter.
+     *
+     * <p>It's called when a line contains more than 78 chars. the
+     * line will be breaken into multiple lines with leading "# "s</p>
      *
      * @param line String object representing a comment line in LDIF file.
      *
      * @return String array object that contain one or more lines
      */
-    public String[] toCommentLines( String line ) {
+    public void writeLongLine( String line ) throws IOException {
 
-        this.tempList.clear();
+        StringBuffer longLine = new StringBuffer();
 
-        if ( line.length() <= 80 ) {
-            // no need to break
-            this.tempList.add( line );
+        longLine.append(line);
+
+        while(longLine.length() > 80) {
+            // write "# " and 78 chars
+            bufWriter.write("# " + longLine, 0, 80);
+            // start a new line
+            bufWriter.newLine();
+            // remove the chars already wrote out
+            longLine.delete(0, 78);
         }
-        else {
-            // break the comment line
-            while ( line.length() > 80 ) {
-                // any continuation line has length of
-                // 80 and starts with a white space
-                this.tempList.add( "# " + line.substring(0, 78) );
-                line = new String ( line.substring(78) );
-            }
-            // save the last part of the comment line
-            this.tempList.add( "# " + line);
-        }
-
-        this.rLines = new String[tempList.size()];
-        return (String[])this.tempList.toArray(this.rLines);
+        // write the remaining part out
+        bufWriter.write("# " + longLine, 0, longLine.length()+2);
+        // start a new line
+        bufWriter.newLine();
     }
 
     /**
@@ -800,5 +795,4 @@ public class LDIFWriter extends LDIF implements LDAPExport {
 
         return isSafe;
     }
-
 }
