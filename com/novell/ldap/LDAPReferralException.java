@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPReferralException.java,v 1.7 2000/10/02 21:49:43 judy Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPReferralException.java,v 1.8 2000/10/31 23:52:23 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  * 
@@ -45,6 +45,22 @@ public class LDAPReferralException extends LDAPException {
    }
 
    /**
+    * Constructs a default exception with a specified string as additional
+    * information, and an exception that indicates a failure to follow a
+    * referral.  This exception applies only to synchronous operations
+    * and is thrown only on receipt of a referral when the referral was
+    * not followed.
+    *
+    *@param message The additional error information.
+    *<br><br>
+    *@param rootException An exception which caused referral following to fail.
+    */
+   public LDAPReferralException(String message, LDAPException rootException) {
+      super( message, LDAPException.REFERRAL);
+      throw new RuntimeException("LDAPReferralException(msg, exception) not implemented");
+   }
+
+   /**
     *
     * Constructs an exception with a specified error string, result code, and 
     * an error message from the server.
@@ -58,10 +74,35 @@ public class LDAPReferralException extends LDAPException {
     */
    public LDAPReferralException(String message,
                                 int resultCode,
-                                String serverMessage) {
+                                String serverMessage)
+   {
       super( message, resultCode);
 	  return;
    }
+
+   /**
+    *
+    * Constructs an exception with a specified error string, result code, 
+    * an error message from the server, and an exception that indicates
+    * a failure to follow a referral.  This exception applies only to
+    * synchronous operations and is thrown only on receipt of a referral
+    * when the referral was not followed.
+    *
+    *  @param message        The additional error information.
+    *<br><br>
+    *  @param resultCode     The result code returned.
+    *<br><br>
+    *  @param serverMessage  Error message specifying additional information
+    *                        from the server.
+    */
+   public LDAPReferralException(String message,
+                                int resultCode,
+                                String serverMessage,
+                                LDAPException rootException)
+    {
+      super( message, resultCode);
+      throw new RuntimeException("LDAPReferralException(msg, exception) not implemented");
+    }
 
    /**
     *
@@ -73,8 +114,10 @@ public class LDAPReferralException extends LDAPException {
     *  @param resultCode     The result code returned.
     *<br><br>
     *  @param serverMessage  Referral strings.
+    *<br><br>
+    *@param rootException An exception which caused referral following to fail.
     */
-   public LDAPReferralException(String message,
+   /*package*/ LDAPReferralException(String message,
                                 int resultCode,
                                 String[] referrals) {
       super( message, resultCode);
@@ -83,16 +126,13 @@ public class LDAPReferralException extends LDAPException {
    }
 
    /**
-    * Gets the list of referrals (LDAP URLs to other servers) returned by
-    * the LDAP server. 
+    * Returns the LDAPException which caused the referral to fail, if any.
     *
-    * <p>This exception is only thrown, and therefore the URL
-    * list is only available, if automatic referral following is not enabled.
-    * The referrals may include URLs of a type other than ones for an LDAP
-    * server (for example, a referral URL other than ldap://something).</p>
+    * @return an LDAPException
     */
-   public LDAPUrl[] getURLs() {
-      throw new RuntimeException( "LDAPReferralException: getURLs() not supported");
+   public LDAPException getReferralFailureException()
+   {
+      throw new RuntimeException("LDAPReferralException.getReferralFailureException not implemented");
    }
 
    /**
