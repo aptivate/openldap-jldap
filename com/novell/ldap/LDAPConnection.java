@@ -1712,28 +1712,10 @@ public class LDAPConnection implements Cloneable
             Debug.trace( Debug.apiRequests, name +
             "saslBind(" + dn + ")");
         }
-        int i;
-        boolean found = false;
-
-        for( i=0; i < mechanisms.length; i++) {
-            if( mechanisms[i].equalsIgnoreCase("simple")) {
-                found = true;
-                break;
-            }
-        }
-
-        if( found ) {
-            String password = null;
-            if( props != null) {
-                password = (String)props.get("password");
-            }
-            bind( LDAP_V3, dn, password, defSearchCons);
-        } else {
-            //"LDAPConnection.bind(with mechanisms) is not Implemented."
-            throw new LDAPException(ExceptionMessages.NOT_IMPLEMENTED,
-                new Object[] {"LDAPConnection.bind(with mechanisms)"},
-                LDAPException.LDAP_NOT_SUPPORTED);
-        }
+        //"LDAPConnection.bind(with mechanisms) is not Implemented."
+        throw new LDAPException(ExceptionMessages.NOT_IMPLEMENTED,
+            new Object[] {"LDAPConnection.bind(with mechanisms)"},
+            LDAPException.LDAP_NOT_SUPPORTED);
     }
 
     //*************************************************************************
