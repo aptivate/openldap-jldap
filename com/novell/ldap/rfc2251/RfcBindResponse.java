@@ -99,7 +99,7 @@ public class RfcBindResponse extends ASN1Sequence implements RfcResponse {
             ASN1Object obj = get(3);
             if(obj instanceof RfcReferral)
                 return (RfcReferral)obj;
-        }        
+        }
         return null;
     }
 

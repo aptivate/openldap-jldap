@@ -64,7 +64,7 @@ import com.novell.ldap.client.Debug;
 public class RfcLDAPMessage extends ASN1Sequence
 {
 
-    private RfcRequest op;
+    private ASN1Object op;
     private RfcControls controls;
     private LDAPMessage requestMessage = null;
 
@@ -87,7 +87,7 @@ public class RfcLDAPMessage extends ASN1Sequence
 
         RfcRequest req = (RfcRequest)origContent[1];
         RfcRequest newreq = req.dupRequest(dn, filter, reference);
-        op = newreq;
+        op = (ASN1Object)newreq;
         set(1, (ASN1Object)newreq);
 
         if( Debug.LDAP_DEBUG ) {
@@ -109,9 +109,36 @@ public class RfcLDAPMessage extends ASN1Sequence
     }
 
     /**
-     * Create an RfcLDAPMessage from input parameters.
+     * Create an RfcLDAPMessage request from input parameters.
       */
     public RfcLDAPMessage(RfcRequest op, RfcControls controls)
+    {
+        super(3);
+
+        this.op = (ASN1Object)op;
+        this.controls = controls;
+
+        add(new RfcMessageID()); // MessageID has static counter
+        add((ASN1Object)op);
+        if(controls != null) {
+            add(controls);
+        }
+        return;
+    }
+
+    /**
+     * Create an RfcLDAPMessage using the specified LDAP Response.
+     */
+    public RfcLDAPMessage(ASN1Sequence op)
+    {
+        this(op, null);
+        return;
+    }
+
+    /**
+     * Create an RfcLDAPMessage response from input parameters.
+      */
+    public RfcLDAPMessage(ASN1Sequence op, RfcControls controls)
     {
         super(3);
 
@@ -119,10 +146,10 @@ public class RfcLDAPMessage extends ASN1Sequence
         this.controls = controls;
 
         add(new RfcMessageID()); // MessageID has static counter
-        add((ASN1Object)op);
+        add(op);
         if(controls != null) {
             add(controls);
-        }        
+        }
         return;
     }
 
@@ -217,7 +244,7 @@ public class RfcLDAPMessage extends ASN1Sequence
     {
         return get(1).getIdentifier().getTag();
     }
-    
+
     /**
      * Returns the response associated with this RfcLDAPMessage.
      * Can be one of RfcLDAPResult, RfcBindResponse, RfcExtendedResponse
@@ -237,7 +264,7 @@ public class RfcLDAPMessage extends ASN1Sequence
     {
         return (RfcRequest)get(1);
     }
-    
+
     public boolean isRequest()
     {
         return get(1) instanceof RfcRequest;
@@ -288,9 +315,9 @@ public class RfcLDAPMessage extends ASN1Sequence
      */
     public final String getRequestDN()
     {
-        return op.getRequestDN();
+        return ((RfcRequest)op).getRequestDN();
     }
-    
+
     /**
      * sets the original request in this message
      *

@@ -41,6 +41,24 @@ public class RfcModifyResponse extends RfcLDAPResult {
     {
         super(dec, in, len);
     }
+    
+    /**
+     * Constructs an RfcModifyResponse from parameters.
+     *
+     * @param resultCode the result code of the operation
+     *
+     * @param matchedDN the matched DN returned from the server
+     *
+     * @param errorMessage the diagnostic message returned from the server
+     *
+     * @param referral the referral(s) returned by the server
+     */
+    public RfcModifyResponse(ASN1Enumerated resultCode, RfcLDAPDN matchedDN,
+                        RfcLDAPString errorMessage, RfcReferral referral)
+    {
+        super(resultCode, matchedDN, errorMessage, referral);
+        return;
+    }
 
     //*************************************************************************
     // Accessors

@@ -26,34 +26,51 @@ import com.novell.ldap.asn1.*;
  *       SearchResultDone ::= [APPLICATION 5] LDAPResult
  *</pre>
  */
-public class RfcSearchResultDone extends RfcLDAPResult {
-
-   //*************************************************************************
-   // Constructors for SearchResultDone
-   //*************************************************************************
-
-   /**
-    * The only time a client will create a SearchResultDone is when it is
-    * decoding it from an InputStream
-    */
-   public RfcSearchResultDone(ASN1Decoder dec, InputStream in, int len)
-      throws IOException
-   {
-      super(dec, in, len);
-   }
-
-   //*************************************************************************
-   // Accessors
-   //*************************************************************************
-
-   /**
-    * Override getIdentifier to return an application-wide id.
-    */
-   public final ASN1Identifier getIdentifier()
-   {
-      return new ASN1Identifier(ASN1Identifier.APPLICATION, true,
-                                LDAPMessage.SEARCH_RESULT);
-   }
-
+public class RfcSearchResultDone extends RfcLDAPResult
+{
+ 
+    //*************************************************************************
+    // Constructors for SearchResultDone
+    //*************************************************************************
+ 
+    /**
+     * Decode a search result done from the input stream.
+     */
+    public RfcSearchResultDone(ASN1Decoder dec, InputStream in, int len)
+            throws IOException
+    {
+        super(dec, in, len);
+        return;
+    }
+ 
+    /**
+     * Constructs an RfcSearchResultDone from parameters.
+     *
+     * @param resultCode the result code of the operation
+     *
+     * @param matchedDN the matched DN returned from the server
+     *
+     * @param errorMessage the diagnostic message returned from the server
+     *
+     * @param referral the referral(s) returned by the server
+     */
+    public RfcSearchResultDone(ASN1Enumerated resultCode, RfcLDAPDN matchedDN,
+                        RfcLDAPString errorMessage, RfcReferral referral)
+    {
+        super(resultCode, matchedDN, errorMessage, referral);
+        return;
+    }
+    
+    //*************************************************************************
+    // Accessors
+    //*************************************************************************
+ 
+    /**
+     * Override getIdentifier to return an application-wide id.
+     */
+    public final ASN1Identifier getIdentifier()
+    {
+        return new ASN1Identifier(ASN1Identifier.APPLICATION, true,
+                                 LDAPMessage.SEARCH_RESULT);
+    }
 }
-

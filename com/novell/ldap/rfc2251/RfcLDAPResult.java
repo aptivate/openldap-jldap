@@ -19,7 +19,7 @@ import java.io.InputStream;
 import java.io.ByteArrayInputStream;
 import com.novell.ldap.asn1.*;
 
-/** 
+/**
  * Represents an LDAPResult.
  *
  *<pre>
@@ -81,128 +81,121 @@ import com.novell.ldap.asn1.*;
  */
 public class RfcLDAPResult extends ASN1Sequence implements RfcResponse {
 
-   /**
-    * Context-specific TAG for optional Referral.
-    */
-   public final static int REFERRAL = 3;
+    /**
+     * Context-specific TAG for optional Referral.
+     */
+    public final static int REFERRAL = 3;
 
-   //*************************************************************************
-   // Constructors for RfcLDAPResult
-   //*************************************************************************
+    //*************************************************************************
+    // Constructors for RfcLDAPResult
+    //*************************************************************************
 
-   /**
-    *
-    */
-//   public RfcLDAPResult(ASN1Enumerated resultCode, RfcLDAPDN matchedDN,
-//                     RfcLDAPString errorMessage)
-//  {
-//     this(resultCode, matchedDN, errorMessage, null);
-//   }
+    /**
+     * Constructs an RfcLDAPResult from parameters
+     *
+     * @param resultCode the result code of the operation
+     *
+     * @param matchedDN the matched DN returned from the server
+     *
+     * @param errorMessage the diagnostic message returned from the server
+     */
+    public RfcLDAPResult(ASN1Enumerated resultCode, RfcLDAPDN matchedDN,
+                        RfcLDAPString errorMessage)
+    {
+        this(resultCode, matchedDN, errorMessage, null);
+        return;
+    }
 
-   /**
-    *
-    */
-//   public RfcLDAPResult(ASN1Enumerated resultCode, RfcLDAPDN matchedDN,
-//                     RfcLDAPString errorMessage, Referral referral)
-//   {
-//      super(4);
-//      setResultCode(resultCode);
-//      setMatchedDN(matchedDN);
-//      setErrorMessage(errorMessage);
-//      if(referral != null)
-//         setReferral(referral);
-//   }
+    /**
+     * Constructs an RfcLDAPResult from parameters
+     *
+     * @param resultCode the result code of the operation
+     *
+     * @param matchedDN the matched DN returned from the server
+     *
+     * @param errorMessage the diagnostic message returned from the server
+     *
+     * @param referral the referral(s) returned by the server
+     */
+    public RfcLDAPResult(ASN1Enumerated resultCode, RfcLDAPDN matchedDN,
+                        RfcLDAPString errorMessage, RfcReferral referral)
+    {
+        super(4);
+        add(resultCode);
+        add(matchedDN);
+        add(errorMessage);
+        if(referral != null)
+            add(referral);
+        return;
+    }
 
-   /**
-    *
-    */
-   public RfcLDAPResult(ASN1Decoder dec, InputStream in, int len)
-      throws IOException
-   {
-      super(dec, in, len);
+    /**
 
-      // Decode optional referral from ASN1OctetString to Referral.
-      if(size() > 3) {
-         ASN1Tagged obj = (ASN1Tagged)get(3);
-         ASN1Identifier id = obj.getIdentifier();
-         if(id.getTag() == RfcLDAPResult.REFERRAL) {
-            byte[] content =
-               ((ASN1OctetString)obj.taggedValue()).byteValue();
-            ByteArrayInputStream bais = new ByteArrayInputStream(content);
-            set(3, new RfcReferral(dec, bais, content.length));
-         }
-      }
-   }
 
-   //*************************************************************************
-   // Mutators
-   //*************************************************************************
 
-   /**
-    *
-    */
-//   public void setResultCode(ASN1Enumerated resultCode)
-//   {
-//      set(0, resultCode);
-//   }
 
-   /**
-    *
-    */
-//   public void setMatchedDN(RfcLDAPDN matchedDN)
-//   {
-//      set(1, matchedDN);
-//   }
+     * Constructs an RfcLDAPResult from the inputstream
+     */
+    public RfcLDAPResult(ASN1Decoder dec, InputStream in, int len)
+                throws IOException
+    {
+        super(dec, in, len);
 
-   /**
-    *
-    */
-//   public void setErrorMessage(RfcLDAPString errorMessage)
-//   {
-//      set(2, errorMessage);
-//   }
+        // Decode optional referral from ASN1OctetString to Referral.
+        if(size() > 3) {
+            ASN1Tagged obj = (ASN1Tagged)get(3);
+            ASN1Identifier id = obj.getIdentifier();
+            if(id.getTag() == RfcLDAPResult.REFERRAL) {
+                byte[] content =
+                        ((ASN1OctetString)obj.taggedValue()).byteValue();
+                ByteArrayInputStream bais = new ByteArrayInputStream(content);
+                set(3, new RfcReferral(dec, bais, content.length));
+            }
+        }
+        return;
+    }
 
-   /**
-    *
-    */
-//   public void setReferral(Referral referral)
-//   {
-//      set(3, referral);
-//   }
+    //*************************************************************************
+    // Accessors
+    //*************************************************************************
 
-   //*************************************************************************
-   // Accessors
-   //*************************************************************************
+    /**
+     * Returns the result code from the server
+     *
+     * @return the result code
+     */
+    public final ASN1Enumerated getResultCode()
+    {
+        return (ASN1Enumerated)get(0);
+    }
 
-   /**
-    *
-    */
-   public final ASN1Enumerated getResultCode()
-   {
-      return (ASN1Enumerated)get(0);
-   }
-
-   /**
-    *
-    */
-   public final RfcLDAPDN getMatchedDN()
-   {
+    /**
+     * Returns the matched DN from the server
+     *
+     * @return the matched DN
+     */
+    public final RfcLDAPDN getMatchedDN()
+    {
         return new RfcLDAPDN(((ASN1OctetString)get(1)).byteValue());
-   }
+    }
 
-   /**
-    *
-    */
-   public final RfcLDAPString getErrorMessage()
-   {
+    /**
+     * Returns the error message from the server
+     *
+     * @return the server error message
+     */
+    public final RfcLDAPString getErrorMessage()
+    {
         return new RfcLDAPString(((ASN1OctetString)get(2)).byteValue());
-   }
+    }
 
-   /**
-    *
-    */
-   public final RfcReferral getReferral()
-   {
+    /**
+     * Returns the referral(s) from the server
+     *
+     * @return the referral(s)
+     */
+    public final RfcReferral getReferral()
+    {
         return (size() > 3) ? (RfcReferral)get(3) : null;
-   }
+    }
 }

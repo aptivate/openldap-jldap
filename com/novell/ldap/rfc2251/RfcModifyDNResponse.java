@@ -33,13 +33,30 @@ public class RfcModifyDNResponse extends RfcLDAPResult {
     //*************************************************************************
 
     /**
-     * The only time a client will create a ModifyDNResponse is when it is
-     * decoding it from an InputStream
+     * Create a ModifyDNResponse by decoding it from an InputStream
      */
     public RfcModifyDNResponse(ASN1Decoder dec, InputStream in, int len)
         throws IOException
     {
         super(dec, in, len);
+    }
+ 
+    /**
+     * Constructs an RfcModifyDNResponse from parameters.
+     *
+     * @param resultCode the result code of the operation
+     *
+     * @param matchedDN the matched DN returned from the server
+     *
+     * @param errorMessage the diagnostic message returned from the server
+     *
+     * @param referral the referral(s) returned by the server
+     */
+    public RfcModifyDNResponse(ASN1Enumerated resultCode, RfcLDAPDN matchedDN,
+                        RfcLDAPString errorMessage, RfcReferral referral)
+    {
+        super(resultCode, matchedDN, errorMessage, referral);
+        return;
     }
 
     //*************************************************************************
