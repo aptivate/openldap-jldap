@@ -1,6 +1,7 @@
 package com.novell.ldap.rfc2251;
 
 import com.novell.ldap.asn1.*;
+import com.novell.ldap.*;
 
 /**
  *       ModifyDNRequest ::= [APPLICATION 12] SEQUENCE {
@@ -54,7 +55,11 @@ public class RfcModifyDNRequest extends ASN1Sequence implements RfcRequest {
 	}
 
     public RfcRequest dupRequest(String base, String filter, Integer scope)
+            throws LDAPException
     {
-        throw new RuntimeException("Cannot create new RfcModifyDNRequest, not allowed");
+        throw new LDAPException(
+                    LDAPExceptionMessageResource.NO_DUP_REQUEST,
+                    new Object[] { "modifyDN" },
+                    LDAPException.LDAP_NOT_SUPPORTED);
     }
 }

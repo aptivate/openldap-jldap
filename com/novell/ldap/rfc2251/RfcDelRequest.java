@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/rfc2251/RfcDelRequest.java,v 1.7 2000/11/10 16:50:07 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/rfc2251/RfcDelRequest.java,v 1.8 2001/02/05 16:33:16 vtag Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
  ***************************************************************************/
@@ -7,6 +7,7 @@
 package com.novell.ldap.rfc2251;
 
 import com.novell.ldap.asn1.*;
+import com.novell.ldap.*;
 
 /**
  *       DelRequest ::= [APPLICATION 10] LDAPDN
@@ -41,7 +42,11 @@ public class RfcDelRequest extends RfcLDAPDN implements RfcRequest {
    }
 
     public RfcRequest dupRequest(String base, String filter, Integer scope)
+            throws LDAPException
     {
-        throw new RuntimeException("Cannot create new RfcDelRequest, not allowed");
+        throw new LDAPException(
+                    LDAPExceptionMessageResource.NO_DUP_REQUEST,
+                    new Object[] { "delete" },
+                    LDAPException.LDAP_NOT_SUPPORTED);
     }
 }

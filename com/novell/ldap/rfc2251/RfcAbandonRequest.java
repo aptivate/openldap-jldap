@@ -2,6 +2,7 @@
 package com.novell.ldap.rfc2251;
 
 import com.novell.ldap.asn1.*;
+import com.novell.ldap.*;
 
 /**
  *       AbandonRequest ::= [APPLICATION 16] MessageID
@@ -40,7 +41,11 @@ public class RfcAbandonRequest extends RfcMessageID implements RfcRequest {
 	}
 
     public RfcRequest dupRequest(String base, String filter, Integer scope)
+            throws LDAPException
     {
-        throw new RuntimeException("Cannot create new RfcAbandonRequest, not allowed");
+        throw new LDAPException(
+                    LDAPExceptionMessageResource.NO_DUP_REQUEST,
+                    new Object[] { "abandon" },
+                    LDAPException.LDAP_NOT_SUPPORTED);
     }
 }

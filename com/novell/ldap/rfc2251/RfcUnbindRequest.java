@@ -2,6 +2,7 @@
 package com.novell.ldap.rfc2251;
 
 import com.novell.ldap.asn1.*;
+import com.novell.ldap.*;
 
 /**
  *       UnbindRequest ::= [APPLICATION 2] NULL
@@ -36,7 +37,11 @@ public class RfcUnbindRequest extends ASN1Null implements RfcRequest {
 	}
 
     public RfcRequest dupRequest(String base, String filter, Integer scope)
+            throws LDAPException
     {
-        throw new RuntimeException("Cannot create new RfcUnbindRequest, not allowed");
+        throw new LDAPException(
+                    LDAPExceptionMessageResource.NO_DUP_REQUEST,
+                    new Object[] { "unbind" },
+                    LDAPException.LDAP_NOT_SUPPORTED);
     }
 }

@@ -2,6 +2,7 @@
 package com.novell.ldap.rfc2251;
 
 import com.novell.ldap.asn1.*;
+import com.novell.ldap.*;
 
 /**
  *       AddRequest ::= [APPLICATION 8] SEQUENCE {
@@ -60,7 +61,11 @@ public class RfcAddRequest extends ASN1Sequence implements RfcRequest {
 	}
 
     public RfcRequest dupRequest(String base, String filter, Integer scope)
+            throws LDAPException
     {
-        throw new RuntimeException("Cannot create new RfcAddRequest, not allowed");
+        throw new LDAPException(
+                    LDAPExceptionMessageResource.NO_DUP_REQUEST,
+                    new Object[] { "add" },
+                    LDAPException.LDAP_NOT_SUPPORTED);
     }
 }

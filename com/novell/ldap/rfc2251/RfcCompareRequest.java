@@ -2,6 +2,7 @@
 package com.novell.ldap.rfc2251;
 
 import com.novell.ldap.asn1.*;
+import com.novell.ldap.*;
 
 /**
  *       CompareRequest ::= [APPLICATION 14] SEQUENCE {
@@ -38,7 +39,11 @@ public class RfcCompareRequest extends ASN1Sequence implements RfcRequest {
 	}
 
     public RfcRequest dupRequest(String base, String filter, Integer scope)
+            throws LDAPException
     {
-        throw new RuntimeException("Cannot create new RfcCompareRequest, not allowed");
+        throw new LDAPException(
+                    LDAPExceptionMessageResource.NO_DUP_REQUEST,
+                    new Object[] { "compare" },
+                    LDAPException.LDAP_NOT_SUPPORTED);
     }
 }
