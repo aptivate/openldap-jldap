@@ -346,7 +346,7 @@ class DSMLHandler implements ContentHandler, ErrorHandler
                     String temp;
                     dn = attrs.getValue("dn");
                     newRDN = attrs.getValue("newrdn");
-                    temp = attrs.getValue("deleteOldRDN");
+                    temp = attrs.getValue("deleteoldrdn");
                     if ( temp!=null && temp.equals("false")){
                         deleteOldRDN = false;
                     } else {

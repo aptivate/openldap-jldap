@@ -16,11 +16,14 @@ public class DSMLWriter implements LDAPWriter {
     private static final int REQUEST_BATCH = 1;
     private static final int RESPONSE_BATCH = 2;
     private static final int SEARCH_TAG = 3;
+    private boolean indent = false;
+    private String tabString = "    ";
 
     private static final String BATCH_REQUEST_START =
-            "<batchRequest xmlns=\"urn:oases:names:tc:DSML:2.0:core\">";
+            "<batchRequest xmlns=\"urn:oasis:names:tc:DSML:2.0:core\">";
     private static final String BATCH_RESPONSE_START =
-            "<batchResponse xmlns=\"urn:oases:names:tc:DSML:2.0:core\">";
+            "<batchResponse xmlns=\"urn:oasis:names:tc:DSML:2.0:core\">";
+
 
     public DSMLWriter(String file) throws FileNotFoundException {
         this( new FileOutputStream(file, true));
@@ -35,11 +38,13 @@ public class DSMLWriter implements LDAPWriter {
     }
 
     public void finish() throws IOException {
+        newLine(0);
         if (state == REQUEST_BATCH){
             out.write("</batchRequest>");
         } else if (state == RESPONSE_BATCH){
             out.write("</batchResponse>");
         }
+        newLine(0);
         out.flush();
         out.close();
     }
@@ -57,48 +62,108 @@ public class DSMLWriter implements LDAPWriter {
 
         //write the message tags
         switch (messageToWrite.getType()) {
+            //requests:
             case LDAPMessage.BIND_REQUEST:
-            case LDAPMessage.BIND_RESPONSE:
             case LDAPMessage.UNBIND_REQUEST:
             case LDAPMessage.SEARCH_REQUEST:
+            case LDAPMessage.BIND_RESPONSE:
+            case LDAPMessage.MODIFY_REQUEST:
+            case LDAPMessage.ADD_REQUEST:
+            case LDAPMessage.DEL_REQUEST:
+            case LDAPMessage.MODIFY_RDN_REQUEST:
+            case LDAPMessage.COMPARE_REQUEST:
+            case LDAPMessage.ABANDON_REQUEST:
+            case LDAPMessage.EXTENDED_REQUEST:
+                throw new java.lang.UnsupportedOperationException(
+                        "Writing of this message is not supported");
+
+            //Responses:
             case LDAPMessage.SEARCH_RESPONSE:
                 if (state != SEARCH_TAG){
+                    newLine(1);
                     out.write("<searchResponse>");
                     state = SEARCH_TAG;
                 }
-                writeSearchResponse(messageToWrite);
+                writeSearchResponse((LDAPSearchResult) messageToWrite);
                 break;
             case LDAPMessage.SEARCH_RESULT:  //final search done message (or standard referral)
                 if (state != SEARCH_TAG){
+                    newLine(1);
                     out.write("<searchResponse>");
                 }
-                writeResult((LDAPResponse)messageToWrite);
+                newLine(2);
+                out.write("<searchResultDone>");
+                    writeResult((LDAPResponse)messageToWrite, 3);
+                newLine(2);
+                out.write("</searchResultDone>");
+
+                newLine(1);
                 out.write("</searchResponse>");
+                state = REQUEST_BATCH;
                 break;
-            case LDAPMessage.MODIFY_REQUEST:
+
             case LDAPMessage.MODIFY_RESPONSE:
-            case LDAPMessage.ADD_REQUEST:
+                newLine(1);
+                out.write("<modifyResponse>");
+                writeResult((LDAPResponse)messageToWrite, 2);
+                newLine(1);
+                out.write("</modifyResponse>");
+                break;
+
             case LDAPMessage.ADD_RESPONSE:
-            case LDAPMessage.DEL_REQUEST:
+                newLine(1);
+                out.write("<addResponse>");
+                writeResult((LDAPResponse)messageToWrite, 2);
+                newLine(1);
+                out.write("</addResponse>");
+                break;
+
             case LDAPMessage.DEL_RESPONSE:
-            case LDAPMessage.MODIFY_RDN_REQUEST:
+                newLine(1);
+                out.write("<delResponse>");
+                writeResult((LDAPResponse)messageToWrite, 2);
+                newLine(1);
+                out.write("</delResponse>");
+                break;
+
             case LDAPMessage.MODIFY_RDN_RESPONSE:
-            case LDAPMessage.COMPARE_REQUEST:
+                newLine(1);
+                out.write("<modDNResponse>");
+                writeResult((LDAPResponse)messageToWrite, 2);
+                newLine(1);
+                out.write("</modDNResponse>");
+                break;
             case LDAPMessage.COMPARE_RESPONSE:
-            case LDAPMessage.ABANDON_REQUEST:
+                newLine(1);
+                out.write("<compareResponse>");
+                writeResult((LDAPResponse)messageToWrite, 2);
+                newLine(1);
+                out.write("</compareResponse>");
+                break;
             case LDAPMessage.SEARCH_RESULT_REFERENCE:
-            case LDAPMessage.EXTENDED_REQUEST:
+                if (state != SEARCH_TAG){
+                    newLine(1);
+                    out.write("<searchResponse>");
+                    state = SEARCH_TAG;
+                }
+                writeSearchResultReference(
+                        (LDAPSearchResultReference) messageToWrite);
+                break;
             case LDAPMessage.EXTENDED_RESPONSE:
+                newLine(1);
+                out.write("<errorResponse type=\"other\"><message>ExtendedRequest not supported</message></errorResponse>");
+                break;
         }
     }
 
-    private void writeResult(LDAPResponse result) throws IOException {
+    private void writeResult(LDAPResponse result, int indent) throws IOException {
         /* controls: */
         //LDAPControl[] controls = result.getControls();
 
         /* referal: */
 
         /* result code: */
+        newLine(indent);
         out.write("<resultCode code=\"");
         out.write(new Integer(result.getResultCode()).toString());
         out.write("\" descr=\"");
@@ -108,6 +173,7 @@ public class DSMLWriter implements LDAPWriter {
         /* Server Message: */
         String temp = result.getErrorMessage();
         if (temp != null && temp.length() > 0){
+            newLine(indent);
             out.write("<errorMessage>");
             out.write(temp);
             out.write("</errorMessage>");
@@ -116,56 +182,63 @@ public class DSMLWriter implements LDAPWriter {
         /* MatchedDN*/
         temp = result.getMatchedDN();
         if (temp != null && temp.length() > 0){
+            newLine(indent);
             out.write("<matchedDN>");
             out.write(temp);
             out.write("</matchedDN>");
         }
+        return;
     }
 
-    private void writeSearchResponse(LDAPMessage messageToWrite)
+    private void writeSearchResultReference(LDAPSearchResultReference ref)
             throws IOException
     {
-        /* LDAPMessage must be either a LDAPSearchResult or a
-        LDAPSearchResultReference */
-        if (messageToWrite instanceof LDAPSearchResultReference){
-            LDAPSearchResultReference ref = (LDAPSearchResultReference)
-                    messageToWrite;
-            String[] refs = ref.getReferrals();
-            out.write("<searchResultReference>");
-            for(int i=0; i< refs.length; i++){
-                out.write("<ref>");
-                out.write(refs[i]);
-                out.write("</ref>");
-            }
-            out.write("</searchResultReference>");
-        } else if (messageToWrite instanceof LDAPSearchResult){
-            LDAPSearchResult result = (LDAPSearchResult) messageToWrite;
-            LDAPEntry entry = result.getEntry();
-            out.write("<searchResultEntry dn=\"");
-            out.write(entry.getDN());
-            out.write("\">");
-            LDAPAttributeSet set = entry.getAttributeSet();
-            Iterator i = set.iterator();
-            while (i.hasNext()){
-                writeAttribute( (LDAPAttribute) i.next());
-            }
-            out.write("</searchResultEntry>");
-            state = RESPONSE_BATCH;
+        String[] refs = ref.getReferrals();
+        newLine(2);
+        out.write("<searchResultReference>");
+        for(int i=0; i< refs.length; i++){
+            newLine(3);
+            out.write("<ref>");
+            out.write(refs[i]);
+            out.write("</ref>");
         }
+        newLine(2);
+        out.write("</searchResultReference>");
+    }
+    private void writeSearchResponse(LDAPSearchResult result)
+            throws IOException
+    {
+        LDAPEntry entry = result.getEntry();
+        newLine(2);
+        out.write("<searchResultEntry dn=\"");
+        out.write(entry.getDN());
+        out.write("\">");
+        LDAPAttributeSet set = entry.getAttributeSet();
+        Iterator i = set.iterator();
+        while (i.hasNext()){
+            writeAttribute( (LDAPAttribute) i.next());
+        }
+        newLine(2);
+        out.write("</searchResultEntry>");
+
         return;
     }
 
     private void writeAttribute(LDAPAttribute attr) throws IOException {
+        newLine(3);
         out.write("<attr name=\"");
         out.write(attr.getName());
         out.write("\">");
         String values[] = attr.getStringValueArray();
         for(int i=0; i<values.length; i++){
+            newLine(4);
             out.write("<value>");
             out.write(values[i]);
             out.write("</value>");
         }
+        newLine(3);
         out.write("</attr>");
+        return;
     }
 
     /**
@@ -182,10 +255,14 @@ public class DSMLWriter implements LDAPWriter {
             throws IOException, LDAPLocalException
     {
         if (state == NEW_BATCH) {
-            if (isResponse)
+            if (isResponse) {
                 out.write(BATCH_RESPONSE_START);
-            else
+                state = RESPONSE_BATCH;
+            }
+            else{
                 out.write(BATCH_REQUEST_START);
+                state = REQUEST_BATCH;
+            }
         }
         else if ((state == REQUEST_BATCH) && (isResponse)) {
             throw new LDAPLocalException(
@@ -196,10 +273,31 @@ public class DSMLWriter implements LDAPWriter {
                 "Attempted insertion of a request message in a response batch",
                 LDAPException.ENCODING_ERROR);
         }
+        return;
     }
 
+    private void newLine(int indentTabs) throws IOException {
+        if (!indent)
+            return;
+        out.write("\n");
+        for (int i=0; i< indentTabs; i++){
+            out.write(tabString);
+        }
+        out.flush();
+        return;
+    }
 
+    public void useIndent( boolean useIndent ){
+        this.indent = useIndent;
+    }
 
+    public void setIndent( int spaces){
+        StringBuffer temp = new StringBuffer();
+        for (int i=0; i< spaces; i++){
+            temp.append(' ');
+        }
+        this.tabString = temp.toString();
+    }
     /*
     private void writeRequest(LDAPMessage request) throws IOException
     {
