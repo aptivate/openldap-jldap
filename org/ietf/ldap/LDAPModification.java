@@ -95,7 +95,11 @@ public class LDAPModification
      */
     public LDAPAttribute getAttribute()
     {
-        return new LDAPAttribute( mod.getAttribute());
+        com.novell.ldap.LDAPAttribute attr;
+        if( (attr = mod.getAttribute()) == null) {
+            return null;
+        }
+        return new LDAPAttribute( attr);
     }
  
     /**
