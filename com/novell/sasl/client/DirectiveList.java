@@ -351,50 +351,9 @@ class DirectiveList extends Object
 
 
     /**
-     * Creates an DigestMD5SaslClient object using the parameters supplied.
-     * Assumes that the QOP, STRENGTH, and SERVER_AUTH properties are
-     * contained in props
+     * Returns the List iterator.
      *
-     * @param authorizationId  The possibly null protocol-dependent
-     *                     identification to be used for authorization. If
-     *                     null or empty, the server derives an authorization
-     *                     ID from the client's authentication credentials.
-     *                     When the SASL authentication completes
-     *                     successfully, the specified entity is granted
-     *                     access.
-     *
-     * @param protocol     The non-null string name of the protocol for which
-     *                     the authentication is being performed (e.g. "ldap")
-     *
-     * @param serverName   The non-null fully qualified host name of the server
-     *                     to authenticate to
-     *
-     * @param props        The possibly null set of properties used to select
-     *                     the SASL mechanism and to configure the
-     *                     authentication exchange of the selected mechanism.
-     *                     See the Sasl class for a list of standard properties.
-     *                     Other, possibly mechanism-specific, properties can
-     *                     be included. Properties not relevant to the selected
-     *                     mechanism are ignored.
-     *
-     * @param cbh          The possibly null callback handler to used by the
-     *                     SASL mechanisms to get further information from the
-     *                     application/library to complete the authentication.
-     *                     For example, a SASL mechanism might require the
-     *                     authentication ID, password and realm from the
-     *                     caller. The authentication ID is requested by using
-     *                     a NameCallback. The password is requested by using
-     *                     a PasswordCallback. The realm is requested by using
-     *                     a RealmChoiceCallback if there is a list of realms
-     *                     to choose from, and by using a RealmCallback if the
-     *                     realm must be entered.
-     *
-     * @return            A possibly null SaslClient created using the
-     *                     parameters supplied. If null, this factory cannot
-     *                     produce a SaslClient using the parameters supplied.
-     *
-     * @exception SaslException  If a SaslClient instance cannot be created
-     *                     because of an error
+     * @return     Returns the Iterator Object for the List.
      */
     Iterator getIterator()
     {

@@ -75,8 +75,7 @@ public class RfcExtendedRequest extends ASN1Sequence implements RfcRequest {
     /**
      * Constructs an extended request from an existing request.
      *
-     * @param requestName The OID for this extended operation.
-     * @param requestValue An optional request value.
+     * @param origRequest ASN1Object of existing request
      */
     /* package */
     public RfcExtendedRequest( ASN1Object[] origRequest)

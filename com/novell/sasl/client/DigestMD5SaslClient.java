@@ -555,7 +555,7 @@ class DigestMD5SaslClient extends Object implements SaslClient
     /**
      * Creates the intial response to be sent to the server.
      *
-     * @param challenege  Challenge in bytes recived form the Server
+     * @param challenge  Challenge in bytes recived form the Server
      *
      * @return Initial response to be sent to the server
      */
