@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPDN.java,v 1.17 2001/03/02 23:30:48 cmorris Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/LDAPDN.java,v 1.18 2001/04/21 00:24:18 cmorris Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -139,6 +139,32 @@ public class LDAPDN {
         RDN rdnToExplode = new RDN(rdn);
         return rdnToExplode.explodeRDN(noTypes);
     }
+
+    /**
+     * Returns true if the string conforms to distinguished name syntax.
+     * @param dn    String to evaluate fo distinguished name syntax.
+     * @return      true if the dn is valid.
+     */
+    public static boolean isValid(String dn){
+        try {
+            new DN(dn);
+        } catch (IllegalArgumentException iae){
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Returns the DN normalized by removal of non-significant space characters
+     * as per RFC 2253, section4.
+     *
+     * @return      a normalized string
+     */
+    public static String normalize(String dn){
+        DN testDN = new DN(dn);
+        return testDN.toString();
+    }
+
 
     /**
      * Returns the RDN after unescaping the characters requiring escaping.
