@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: DSMLHandler.java,v 1.22 2002/11/15 18:36:40 $
+ * $Novell: DSMLHandler.java,v 1.23 2002/12/19 16:46:22 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -21,8 +21,10 @@ import java.util.ArrayList;
 import java.io.UnsupportedEncodingException;
 
 import org.xml.sax.*;
+import org.xml.sax.helpers.DefaultHandler;
 
-public class DSMLHandler implements ContentHandler, ErrorHandler
+public class DSMLHandler extends DefaultHandler implements
+        ContentHandler, ErrorHandler
 {
     /** Holds parsed LDAPMessages ready for use */
     public ArrayList queue = new ArrayList();

@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: DSMLReader.java,v 1.14 2002/11/13 23:54:20 $
+ * $Novell: DSMLReader.java,v 1.15 2002/11/14 19:36:30 $
  *
  * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
  *
@@ -104,15 +104,13 @@ public class DSMLReader implements LDAPReader {
             spf.setNamespaceAware(true);
             //spf.setValidating(true);
 
-            XMLReader parser = null;
             SAXParser saxParser = spf.newSAXParser();
-            parser = saxParser.getXMLReader();
-            // assign the handler to the parser
-            parser.setContentHandler(handler);
-            // parse the document
 
             InputSource is = new InputSource(reader);
-            parser.parse(is);
+
+            // parse the document
+            saxParser.parse(is, handler);
+
         } catch (FactoryConfigurationError e) {
             throw new LDAPLocalException(
                     "The SAX parser factory is configured incorrectly:" + e,
