@@ -1,8 +1,8 @@
 /* **************************************************************************
- * $Id$
+ * $Id: LDAPConstraints.java,v 1.2 2000/03/14 18:17:26 smerrill Exp $
  *
  * Copyright (C) 1999, 2000 Novell, Inc. All Rights Reserved.
- * 
+ *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
  * TO VERSION 2.0.1 OF THE OPENLDAP PUBLIC LICENSE, A COPY OF WHICH IS
@@ -10,11 +10,11 @@
  * IN THE TOP-LEVEL DIRECTORY OF THE DISTRIBUTION. ANY USE OR EXPLOITATION
  * OF THIS WORK OTHER THAN AS AUTHORIZED IN VERSION 2.0.1 OF THE OPENLDAP
  * PUBLIC LICENSE, OR OTHER PRIOR WRITTEN CONSENT FROM NOVELL, COULD SUBJECT
- * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY. 
+ * THE PERPETRATOR TO CRIMINAL AND CIVIL LIABILITY.
  ***************************************************************************/
- 
-package com.novell.ldap; 
- 
+
+package com.novell.ldap;
+
 /**
  * 4.7 public class LDAPConstraints
  *
@@ -354,8 +354,12 @@ public class LDAPConstraints implements Cloneable {
    public Object clone() {
       try {
          LDAPConstraints lc = (LDAPConstraints)super.clone();
-         lc.clientCtls = (LDAPControl[])clientCtls.clone();
-         lc.serverCtls = (LDAPControl[])serverCtls.clone();
+         if(clientCtls != null){
+           lc.clientCtls = (LDAPControl[])clientCtls.clone();
+          }
+          if( serverCtls != null){
+           lc.serverCtls = (LDAPControl[])serverCtls.clone();
+          }
          return lc;
       }
       catch(CloneNotSupportedException e) {
