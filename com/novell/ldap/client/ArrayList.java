@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: /ldap/src/jldap/com/novell/ldap/client/ArrayList.java,v 1.3 2001/03/23 19:13:33 vtag Exp $
+ * $Novell: /ldap/src/jldap/com/novell/ldap/client/ArrayList.java,v 1.4 2001/03/28 22:33:02 vtag Exp $
  *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -61,9 +61,9 @@ public class ArrayList
      * runtime exception.
      */
     private void checkIndex(int index) {
-	    if (index >= size || index < 0)
+	    if (index >= items.length || index < 0)
 	        throw new IndexOutOfBoundsException(
-		    "Index: "+index+", Size: "+size);
+		            "Index: " + index + ", Size: " + items.length);
         return;
     }
 
