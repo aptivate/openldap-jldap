@@ -1,5 +1,5 @@
 /* **************************************************************************
-* $Novell: /ldap/src/jldap/com/novell/ldap/client/MessageAgent.java,v 1.16 2001/05/02 18:51:19 vtag Exp $
+* $Novell: /ldap/src/jldap/com/novell/ldap/client/MessageAgent.java,v 1.17 2001/05/03 18:17:50 vtag Exp $
 *
  * Copyright (C) 1999, 2000, 2001 Novell, Inc. All Rights Reserved.
  *
@@ -358,7 +358,9 @@ public class MessageAgent
                           }
                           messages.removeElement( info); // remove from list
                           info.abandon(null, null); // Get rid of resources
-                          i -= -1; // Start loop at next message in new position
+                          // Start loop at next message that is now moved
+                          // to the current position in the Vector.
+                          i -= 1;
                        }
                        if( rfcMsg != null) {
                           // We got a reply
