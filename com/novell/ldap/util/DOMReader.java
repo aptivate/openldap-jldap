@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: DOMReader.java,v 1.6 2003/01/10 19:09:19 $
+ * $OpenLDAP$
  *
  * Copyright (C) 2002 - 2003 Novell, Inc. All Rights Reserved.
  *

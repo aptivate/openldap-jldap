@@ -1,7 +1,7 @@
 /* **************************************************************************
- * $Novell: LDIFReader.java,v 1.37 2002/11/13 23:37:27 $
+ * $OpenLDAP$
  *
- * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
+ * Copyright (C) 2002 - 2003 Novell, Inc. All Rights Reserved.
  *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
@@ -485,7 +485,6 @@ public class LDIFReader implements LDAPReader {
                 throws LDAPLocalException
     {
         int i, index, fieldIndex;
-        boolean isEncoded;
         String attrName = null;
         StringBuffer currentField;
         LDAPAttributeSet attrSet = new LDAPAttributeSet();
@@ -497,7 +496,7 @@ public class LDIFReader implements LDAPReader {
             fieldIndex = 2;
         }
 
-        for (isEncoded=false, i=fieldIndex; i<this.fNumber; i++) {
+        for (i=fieldIndex; i<this.fNumber; i++) {
             currentField = (StringBuffer)this.rFields.get(i);
             // ':' separates attr name and attr value
             index = IndexOf(currentField, ':');

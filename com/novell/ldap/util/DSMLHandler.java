@@ -1,7 +1,7 @@
 /* **************************************************************************
- * $Novell: DSMLHandler.java,v 1.24 2003/01/15 23:14:52 $
+ * $OpenLDAP$
  *
- * Copyright (C) 2002 Novell, Inc. All Rights Reserved.
+ * Copyright (C) 2002 - 2003 Novell, Inc. All Rights Reserved.
  *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
