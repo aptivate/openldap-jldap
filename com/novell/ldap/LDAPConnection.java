@@ -462,7 +462,7 @@ public class LDAPConnection implements Cloneable
      * @deprecated Not Implemented.
      */
     public InputStream getInputStream() {
-        throw new RuntimeException(
+        throw new UnsupportedOperationException(
              "Method LDAPConnection.getInputStream not implemented");
         
     }
@@ -471,7 +471,7 @@ public class LDAPConnection implements Cloneable
      * @deprecated Not Implemented.
      */
     public OutputStream getOutputStream() {
-        throw new RuntimeException(
+        throw new UnsupportedOperationException(
              "Method LDAPConnection.getOutputStream not implemented");
     }
 
@@ -648,7 +648,7 @@ public class LDAPConnection implements Cloneable
     public void setInputStream(InputStream stream)
                 throws LDAPException
     {
-        throw new RuntimeException(
+        throw new UnsupportedOperationException(
              "Method LDAPConnection.setInputStream not implemented");
     }
 
@@ -658,7 +658,7 @@ public class LDAPConnection implements Cloneable
     public void setOutputStream(OutputStream stream)
                 throws LDAPException
     {
-        throw new RuntimeException(
+        throw new UnsupportedOperationException(
              "Method LDAPConnection.setOutputStream not implemented");
     }
 
@@ -2809,7 +2809,7 @@ public class LDAPConnection implements Cloneable
 
         LDAPEntry ret = null;
         if( sr.hasMoreElements()) {
-            sr.next();
+            ret = sr.next();
             if( sr.hasMoreElements()) {
                 // "Read response is ambiguous, multiple entries returned"
                 throw new LDAPException(ExceptionMessages.READ_MULTIPLE,
