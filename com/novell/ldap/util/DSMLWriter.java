@@ -152,6 +152,14 @@ public class DSMLWriter implements LDAPWriter {
                 out.write("</searchResponse>");
                 newLine(0);
                 out.write("</batchResponse>");
+                break;
+            case NEW_BATCH:
+            	//if no message is send, we assume 
+            	//batch response.
+            	out.write("<batchResponse>");
+            	newLine(0);
+            	out.write("</batchResponse>");
+            	break;                
         }
         newLine(0);
         out.flush();
@@ -1272,7 +1280,13 @@ public class DSMLWriter implements LDAPWriter {
             newLine(4);
             if (Base64.isValidUTF8(bytevalues[i], false)){
                 out.write("<value>");
-                out.write(values[i]);
+                String xmlvalue = values[i];
+				xmlvalue = xmlvalue.replaceAll("&", "&amp;");
+				xmlvalue = xmlvalue.replaceAll("<", "&lt;");
+				xmlvalue = xmlvalue.replaceAll(">", "&gt;");
+				xmlvalue = xmlvalue.replaceAll("'", "&apos");
+				xmlvalue = xmlvalue.replaceAll("\"", "&quot;");
+                out.write(xmlvalue);
                 out.write("</value>");
             } else {
                 out.write("<value xsi:type=\"xsd:base64Binary\">");
