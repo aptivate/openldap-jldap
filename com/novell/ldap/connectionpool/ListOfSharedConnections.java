@@ -1,5 +1,5 @@
 /* **************************************************************************
- * $Novell: ListOfSharedConnections.java,v 1.3 2003/01/14 21:50:51 $
+ * $Novell: ListOfSharedConnections.java,v 1.4 2003/01/23 00:47:54 $
  *
  * Copyright (C) 2003 Novell, Inc. All Rights Reserved.
  *
@@ -18,12 +18,20 @@ import java.util.LinkedList;
 /**
  * List of Shared Connections
  *
- * <p></p> 
+ * <p>This is a helper class to manage SharedConnection. A SharedConnection
+ * is an ArrayList of connections (original and clones) bound to the same
+ * DN and password.</p>  
  *
- * @see ConnectionPool
+ * @see SharedConnection.
  */
 class ListOfSharedConnections extends LinkedList
 {
+    
+    /**
+     * getSharedConns
+     *
+     * <p>Find a SharedConnection that has the proper DN/PW</p>
+     */
     public SharedConnection getSharedConns(String DN, byte[] PW)
     {        
         for (int i = 0; i < super.size(); i++)
@@ -37,6 +45,11 @@ class ListOfSharedConnections extends LinkedList
         return null;
     }
         
+    /**
+     * getSharedConns
+     *
+     * <p>Find a SharedConnection that a connection in it.</p>
+     */
     public SharedConnection getSharedConns(Connection conn)
     {        
         for (int i = 0; i < super.size(); i++)
@@ -49,13 +62,22 @@ class ListOfSharedConnections extends LinkedList
         return null;
     }
         
+    /**
+     * getAvailableConnection
+     *
+     * <p>Search all of the SharedConnection that are bound to a DN/PW
+     * and return a connection that is not inuse.</p>
+     */
     public Connection getAvailableConnection(String DN, byte[] PW)
     {
         for (int i = 0; i < super.size(); i++)
         {
             SharedConnection sharedConns = (SharedConnection)super.get(i);
-            Connection conn = (Connection)sharedConns.getAvailableConnection();
-            if(null != conn) return conn;
+            if(sharedConns.DNPWequals(DN,PW))
+            {
+                Connection conn = (Connection)sharedConns.getAvailableConnection();
+                if(null != conn) return conn;
+            }
         }
         return null;
     }
