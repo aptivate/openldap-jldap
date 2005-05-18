@@ -15,13 +15,30 @@
 
 package com.novell.ldap;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
 import java.util.ArrayList;
-import com.novell.ldap.LDAPEntry;
-import com.novell.ldap.LDAPException;
-import com.novell.ldap.client.*;
-import com.novell.ldap.resources.*;
-import java.util.Vector;
+import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Vector;
+
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+
+import com.novell.ldap.client.Debug;
+import com.novell.ldap.client.ReferralInfo;
+import com.novell.ldap.resources.ExceptionMessages;
+import com.novell.ldap.util.Base64;
+import com.novell.ldap.util.LDAPXMLHandler;
+import com.novell.ldap.util.SAXEventMultiplexer;
+import com.novell.ldap.util.ValueXMLhandler;
 
 /**
  * <p>An LDAPSearchResults object is returned from a synchronous search
@@ -32,7 +49,8 @@ import java.util.NoSuchElementException;
  *
  * @see LDAPConnection#search
  */
-public class LDAPSearchResults
+public class LDAPSearchResults  
+implements Externalizable
 {
 
     private Vector entries;             // Search entries
@@ -51,6 +69,15 @@ public class LDAPSearchResults
     private LDAPConnection conn;        // LDAPConnection which started search
     private LDAPSearchConstraints cons; // LDAPSearchConstraints for search
     private ArrayList referralConn = null;// Referral Connections
+    
+    /**
+	 * This constructor was added to support default Serialization
+	 *
+	 */
+    public LDAPSearchResults() {
+		//Required so that a DSML version of this cladd can be utilized
+    }
+
 
     /**
      * Constructs a queue object for search results.
@@ -62,10 +89,6 @@ public class LDAPSearchResults
      * @param cons The LDAPSearchConstraints associated with this search
      */
     /* package */
-    
-    LDAPSearchResults() {
-    		//Required so that a DSML version of this cladd can be utilized
-    }
     
     LDAPSearchResults(  LDAPConnection conn,
                         LDAPSearchQueue queue,
@@ -460,5 +483,322 @@ public class LDAPSearchResults
         resetVectors();
         completed = true;
     }
+    
+    //*************************************************************************
+    // Externalizable methods implementation
+    //*************************************************************************
+	  private void writeAttribute(LDAPAttribute attr, StringBuffer buff) 
+			  throws java.io.IOException
+	  {
+		  buff.append(ValueXMLhandler.newLine(2));
+		  buff.append("<attr name=\"");
+		  buff.append(attr.getName());
+		  buff.append("\">");
+	
+			String values[] = attr.getStringValueArray();
+			byte bytevalues[][] = attr.getByteValueArray();
+			for(int i=0; i<values.length; i++){
+				buff.append(ValueXMLhandler.newLine(3));
+				
+				if (Base64.isValidUTF8(bytevalues[i], false)){
+					buff.append("<value><![CDATA[");
+					buff.append(values[i]);
+					buff.append("]]></value>");
+				} else {
+					buff.append("<value xsi:type=\"xsd:base64Binary\"><![CDATA[");
+					buff.append(Base64.encode(bytevalues[i]));
+					buff.append("]]></value>");
+				}
+			}
+			buff.append(ValueXMLhandler.newLine(2));
+			buff.append("</attr>");        
+	  }
+	  
+	  private void writeControl(LDAPControl control, StringBuffer buff) 
+	  throws java.io.IOException
+		{
+		  	buff.append("<control type=\"");
+			buff.append(control.getID());
+			buff.append("\" criticality=\""+ control.isCritical()+ "\"");
+	
+			byte value[] = control.getValue();
+			if (value == null){
+				buff.append("/>");
+			} else {
+				buff.append(">");
+				buff.append(ValueXMLhandler.newLine(2));
+				buff.append("<controlValue xsi:type=\"xsd:base64Binary\">");
+				buff.append(Base64.encode(value));
+				buff.append("</controlValue>");
+				buff.append(ValueXMLhandler.newLine(1));
+				buff.append("</control>");
+			}
+			buff.append(ValueXMLhandler.newLine(0));
+		}
+
+	  /**
+		* This method is used to deserialize the DSML encoded representation of
+		* this class.
+		* @param input InputStream for the DSML formatted data. 
+		* @return Deserialized form of this class.
+		* @throws IOException when serialization fails.
+		*/    
+	    public static Object readDSML(InputStream input)throws IOException    
+	    {
+			SAXEventMultiplexer xmlreader = new SAXEventMultiplexer();
+			xmlreader.setLDAPXMLHandler(getTopXMLHandler("LDAPSearchResults",null));		
+			return (Vector) xmlreader.parseXML(input);
+	    }
+	    
+	    private static LDAPXMLHandler getTopXMLHandler(String tagname, LDAPXMLHandler
+		 parenthandler) {
+		  return new LDAPXMLHandler(tagname, parenthandler) {
+
+			Vector ldapEntries = new Vector();
+			protected void initHandler() {
+			  //set the child handlers
+			  setchildelement(LDAPSearchResults.getXMLEntryHandler("LDAPEntry",this));
+			  setchildelement(LDAPSearchResults.getXMLControlHandler("control",this));
+			}
+
+			protected void endElement() {
+				setObject(ldapEntries);
+			}
+			protected void addValue(String tag, Object value) {
+			  if (tag.equals("LDAPEntry")) {
+			  	ldapEntries.add(value);
+			  } 
+			  else if (tag.equals("control")) {
+			  	ldapEntries.add(value);
+			  }
+			}
+		  };
+
+		}
+		
+		/**
+		* This method return the LDAPHandler which handles the XML (DSML) tags
+		* for returned Server controls of this class
+		* @param tagname Name of the Root tag used to represent this class.
+		* @param parenthandler Parent LDAPXMLHandler for this tag.
+		* @return LDAPXMLHandler to handle this element.
+		*/    
+	  static LDAPXMLHandler getXMLControlHandler(
+	    String tagname,
+	    LDAPXMLHandler parenthandler) {
+	    return new LDAPXMLHandler(tagname, parenthandler) {
+	      String oid;
+	      boolean critical;
+	      byte[] controlvalue;
+	      protected void initHandler() {
+	        //set value handler.
+	        setchildelement(new ValueXMLhandler("controlValue", this));
+	      }
+
+	      protected void endElement() {
+	        LDAPControl control = new LDAPControl(oid, critical, controlvalue);
+	        setObject(control);
+	      }
+	      protected void addValue(String tag, Object value) {
+	        if (tag.equals("controlValue")) {
+	          controlvalue = (byte[]) value;
+	        }
+	      }
+
+	      protected void handleAttributes(Attributes attributes)
+	        throws SAXException {
+	        oid = attributes.getValue("type");
+	        if (oid == null) {
+	          //Oid is mandatory.
+	          throw new SAXException("type is mandatory for a Control");
+	        }
+	        critical = "true".equalsIgnoreCase(attributes.getValue("criticality"));
+	      }
+
+	    };
+
+	  }
+
+		/**
+		* This method return the LDAPHandler which handles the XML (DSML) tags
+		* for returned LDAPEntries of this class
+		* @param tagname Name of the Root tag used to represent this class.
+		* @param parenthandler Parent LDAPXMLHandler for this tag.
+		* @return LDAPXMLHandler to handle this element.
+		*/    		 
+		static LDAPXMLHandler getXMLEntryHandler(String tagname,LDAPXMLHandler parenthandler) {
+			return new LDAPXMLHandler(tagname, parenthandler) {
+				String dn;
+				ArrayList valuelist = new ArrayList();
+				protected void initHandler() {
+					//set LDAPAttribute handler.
+					setchildelement(LDAPAttribute.getXMLHandler("attr",this));
+				}
+				protected void endElement() {
+					LDAPAttributeSet attrset = new LDAPAttributeSet();
+					attrset.addAll(valuelist);
+					LDAPEntry entry = new LDAPEntry(dn,attrset);				
+					setObject(entry);
+					
+					valuelist.clear();
+				}
+				protected void addValue(String tag, Object value) {
+					if (tag.equals("attr")) {
+						valuelist.add(value);
+					}
+				}
+				protected void handleAttributes(Attributes attributes)throws SAXException {
+						dn = attributes.getValue("dn");
+						if (dn== null)
+							throw new SAXException("invalid entry Tag, dn is mandatory element: ");
+							}
+	    		
+				};
+			}
+
+   /**
+   * Writes the object state to a stream in XML format  
+   * @param out The ObjectOutput stream where the Object in XML format 
+   * is being written to
+   * @throws IOException - If I/O errors occur
+   */  
+   public void writeExternal(ObjectOutput out) throws IOException
+   {
+		StringBuffer buff = new StringBuffer();
+		buff.append(ValueXMLhandler.newLine(0));
+		buff.append(ValueXMLhandler.newLine(0));
+		
+		String header = "";
+		header += "*************************************************************************\n";
+		header += "** The encrypted data above and below is the Class definition and  ******\n";
+		header += "** other data specific to Java Serialization Protocol. The data  ********\n";
+		header += "** which is of most application specific interest is as follows... ******\n";
+		header += "*************************************************************************\n";
+		header += "****************** Start of application data ****************************\n";
+		header += "*************************************************************************\n";
+		  
+		buff.append(header);
+		buff.append(ValueXMLhandler.newLine(0));
+		
+		buff.append("<LDAPSearchResults>");
+		buff.append(ValueXMLhandler.newLine(1));
+		//write data for LDAP Entries returned from search
+		while (hasMore()){
+        	LDAPEntry entry = null;
+        	try{
+        		entry = (LDAPEntry)next();
+        	}catch(LDAPException le){
+        		//Ignore the Exception. Continue to the next entry
+        		continue;
+        	}
+			 buff.append("<LDAPEntry dn=\"");
+    		 buff.append(entry.getDN());
+    		 buff.append("\">");
+      
+    		 Iterator i = entry.getAttributeSet().iterator();
+    		 while (i.hasNext()){
+    			 writeAttribute( (LDAPAttribute) i.next(),buff);
+    		 }
+    		 buff.append(ValueXMLhandler.newLine(1));
+    		 buff.append("</LDAPEntry>");
+    		 buff.append(ValueXMLhandler.newLine(1));
+		 }
+		 
+		 //write data for server response controls
+		 LDAPControl[] controls = getResponseControls();
+         if ( controls != null ) {
+             for( int i = 0; i < controls.length; i++ ) {
+             	writeControl(controls[i], buff);
+             }
+         }
+		buff.append("</LDAPSearchResults>"); 
+		buff.append(ValueXMLhandler.newLine(0));
+		buff.append(ValueXMLhandler.newLine(0));
+		
+		String tail = "";
+		tail += "*************************************************************************\n";
+		tail += "****************** End of application data ******************************\n";
+		tail += "*************************************************************************\n";
+		  
+		buff.append(tail);
+		buff.append(ValueXMLhandler.newLine(0));       
+		out.write(buff.toString().getBytes());	
+   }
+   /**
+	 * Reads the serialized object from the underlying input stream.
+	 * @param in The ObjectInput stream where the Serialized Object is being read from
+	 * @throws IOException - If I/O errors occur
+	 * @throws ClassNotFoundException - If the class for an object being restored 
+	 * cannot be found.
+	 */ 
+	 public void readExternal(ObjectInput in) 
+			throws IOException, ClassNotFoundException
+	 {
+		ObjectInputStream reader = (ObjectInputStream)in;	
+		StringBuffer rawBuff = new StringBuffer();
+		while(reader.available() != 0)
+			rawBuff.append((char)reader.read());
+
+		String readData = rawBuff.toString();
+		readData = readData.substring(readData.indexOf('<'), 
+			  (readData.lastIndexOf('>') + 1));
+
+		//Insert  parsing logic here for separating whitespaces in non-text nodes
+		StringBuffer parsedBuff = new StringBuffer();
+		ValueXMLhandler.parseInput(readData, parsedBuff);
+	  
+		BufferedInputStream istream = 
+			new BufferedInputStream(
+				new ByteArrayInputStream((parsedBuff.toString()).getBytes()));
+
+		Vector readList = 
+					  (Vector)LDAPSearchResults.readDSML(istream);
+		
+		/*
+		 * Temporary structures
+		 */
+		Vector ldapEntries = new Vector();
+		ArrayList controlList = new ArrayList();
+		
+		Enumeration it = readList.elements();
+		while(it.hasMoreElements()){
+			LDAPEntry entry;
+			LDAPControl control;
+			Object ob = it.nextElement();
+			if (ob instanceof LDAPEntry)
+				ldapEntries.add((LDAPEntry)ob);
+			else if (ob instanceof LDAPControl) 
+				controlList.add((LDAPControl)ob);
+		}
+		
+		this.entries = ldapEntries;
+		
+		controls = new LDAPControl[controlList.size()];
+		for(int i=0; i < controlList.size(); i++)
+			controls[i] = (LDAPControl)controlList.get(i);
+	
+		//Garbage collect the readObject from readDSML()..	
+		readList = null;
+		ldapEntries = null;
+		controlList = null;
+	 }
+	 
+	 /**
+     * Returns LDAP Entries after De-serialization
+     *
+     * @return entries as Vector.
+     */
+	 public Vector getDeSerializedEntries(){
+	 	return entries;
+	 }
+	 
+	 /**
+     * Returns LDAP Server Controls after De-serialization
+     *
+     * @return controls as Array.
+     */
+	 public LDAPControl[] getDeSerializedControls(){
+	 	return controls;
+	 }
 
 }
