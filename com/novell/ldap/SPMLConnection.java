@@ -1,6 +1,6 @@
 /* **************************************************************************
  *
- * Copyright (C) 2004 Octet String, Inc. All Rights Reserved.
+ * Copyright (C) 2005 Marc Boorshtein All Rights Reserved.
  *
  * THIS WORK IS SUBJECT TO U.S. AND INTERNATIONAL COPYRIGHT LAWS AND
  * TREATIES. USE, MODIFICATION, AND REDISTRIBUTION OF THIS WORK IS SUBJECT
@@ -14,10 +14,33 @@
 package com.novell.ldap;
 
 import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import org.apache.commons.httpclient.*;
 import org.apache.commons.httpclient.methods.*;
+import org.openspml.client.LighthouseClient;
+import org.openspml.client.SpmlClient;
+import org.openspml.message.AddRequest;
+import org.openspml.message.AddResponse;
+import org.openspml.message.Attribute;
+import org.openspml.message.Filter;
+import org.openspml.message.FilterTerm;
+import org.openspml.message.Identifier;
+import org.openspml.message.Modification;
+import org.openspml.message.ModifyRequest;
+import org.openspml.message.ModifyResponse;
+import org.openspml.message.SearchRequest;
+import org.openspml.message.SearchResponse;
+import org.openspml.message.SearchResult;
+import org.openspml.message.SpmlResponse;
+import org.openspml.util.SpmlException;
+
 import java.io.*;
+import java.lang.reflect.Field;
+import java.net.MalformedURLException;
 
 import com.novell.ldap.Connection;
 import com.novell.ldap.LDAPAttribute;
@@ -38,6 +61,8 @@ import com.novell.ldap.LDAPSearchQueue;
 import com.novell.ldap.LDAPSearchResults;
 import com.novell.ldap.LDAPSocketFactory;
 import com.novell.ldap.LDAPUnsolicitedNotificationListener;
+import com.novell.ldap.rfc2251.RfcFilter;
+import com.novell.ldap.spml.SPMLImpl;
 import com.novell.ldap.util.*;
 
 /**
@@ -46,10 +71,16 @@ import com.novell.ldap.util.*;
  * This class is meant to be a drop-in replacement for an LDAPConnection 
  * when working sith synchronous LDAP calls
  */
-public class DsmlConnection extends LDAPConnection {
+public class SPMLConnection extends LDAPConnection {
 
+	/** Default spml implementation */
+	public static final String DEF_IMPL = "com.novell.ldap.spml.SunIdm";
+	
 	/** The Connection To The DSMLv2 Server */
-	HttpClient con;
+	SpmlClient con;
+	
+	/** The vendor specific version of the SPML implementation */
+	SPMLImpl vendorImpl;
 	
 	/** The URL of the server */
 	String serverString;
@@ -66,7 +97,7 @@ public class DsmlConnection extends LDAPConnection {
 	/** determine if we are "connected" */
 	boolean isConnected;
 	
-	boolean useSoap;
+	
 
 	/** The host extracted from the url */
 	private String host;
@@ -82,7 +113,7 @@ public class DsmlConnection extends LDAPConnection {
 	 * @throws LDAPException
 	 */
 	private LDAPMessage sendMessage(LDAPMessage message) throws LDAPException {
-		return (LDAPMessage) sendMessage(message,false);
+		return null;//return (LDAPMessage) sendMessage(message,false);
 	}
 	
 	/**
@@ -92,194 +123,32 @@ public class DsmlConnection extends LDAPConnection {
 	 * @throws LDAPException
 	 */
 	private DSMLSearchResults execQuery(LDAPMessage message) throws LDAPException {
-		return (DSMLSearchResults) sendMessage(message,true);
+		return null;//return (DSMLSearchResults) sendMessage(message,true);
 	}
 	
-	/**
-	 * Used to send requests to the server and retrieve responses
-	 * @param message The Message To Send
-	 * @param isSearch true if returning a DSMLSearchResult, false if LDAPMessage
-	 * @return The Server's Response
-	 */
-	private Object sendMessage(LDAPMessage message,boolean isSearch) throws LDAPException {
-		try {
-			PostMethod post = new PostMethod(serverString);
-			//post.setDoAuthentication(true);
-			
-			//First load up the content headers
-			post.setRequestHeader("Content-Type","text/xml; charset=utf8");
-			if (this.useSoap) {
-				post.setRequestHeader("SOAPAction","#batchRequest");
-			}
-			
-			
-			
-			if (this.callback != null) {
-				this.callback.manipulationPost(post,this);
-			}
-			
-			
-			
-			
-			StringWriter out = new StringWriter();
-			
-			DSMLWriter writer = new DSMLWriter(out);
-			
-			
-			PrintWriter pout = new PrintWriter(out);
-			
-			//First print the SOAP Envelope 
-			pout.println("<?xml version=\"1.0\" encoding=\"UTF8\"?>");
-			if (this.useSoap) {
-				pout.println("<soap-env:Envelope xmlns:soap-env=\"http://schemas.xmlsoap.org/soap/envelope/\">");
-				pout.println("<soap-env:Body>");
-			}
-			
-			//write out the message
-			writer.writeMessage(message);
-			writer.finish();
-			
-			if (this.useSoap) {
-				//Complete the SOAP Envelope
-				pout.println("</soap-env:Body>");
-				pout.println("</soap-env:Envelope>");
-			}
-			
-			
-			ByteArrayInputStream in = new ByteArrayInputStream(out.toString().getBytes("UTF-8"));
-			//Set the input stream
-			
-			post.setRequestBody(in);
-			
-			//POST the request
-			con.executeMethod(post);
-			
-			if (post.getStatusCode() != 200) {
-				//we have an error, if it's an authorization error throw an invalid credentials exception.  otherwise throw an unwilling to perform.
-				if (post.getStatusCode() == 401 || post.getStatusCode() == 403) {
-					throw new LDAPException(LDAPException.resultCodeToString(LDAPException.INVALID_CREDENTIALS),LDAPException.INVALID_CREDENTIALS,LDAPException.resultCodeToString(LDAPException.INVALID_CREDENTIALS));
-				} else {
-					throw new LDAPException(LDAPException.resultCodeToString(LDAPException.UNAVAILABLE),LDAPException.UNAVAILABLE,post.getStatusText());
-				}
-			}
-			
-			DSMLReader reader = new DSMLReader(post.getResponseBodyAsStream());
-			
-			post.releaseConnection();
-			
-			//Make sure it was successfull
-			ArrayList errors = reader.getErrors();
-			if (errors.size() > 0) {
-				throw ((LDAPException) errors.get(0));
-			}
-			
-			if (isSearch) {
-				return new DSMLSearchResults(reader);
-			}
-			else {
-				//return the message
-				return reader.readMessage();
-			}
-		} catch (HttpException e) {
-			throw new LDAPLocalException("Http Error",LDAPException.CONNECT_ERROR,e);
-		} catch (IOException e) {
-			throw new LDAPLocalException("Communications Error",LDAPException.CONNECT_ERROR,e);
-		}
-	}
 	
-	/**
-	 *Allows for a pre-build DSMLv2 Document to be sent over
-	 *the wire.  Usefull when doing batch requests
-	 * @param DSML The String version of the DSMLv2
-	 * @return List of results
-	 * @throws LDAPException
-	 */
-	public ArrayList sendDoc(String DSML) throws LDAPException {
-		ArrayList results = new ArrayList();
-		try {
-			PostMethod post = new PostMethod(serverString);
-			//post.setDoAuthentication(true);
-			
-			//First load up the content headers
-			post.setRequestHeader("Content-Type","text/xml; charset=utf8");
-			if (this.useSoap) {
-				post.setRequestHeader("SOAPAction","#batchRequest");
-			}
-			
-			
-			if (this.callback != null) {
-				this.callback.manipulationPost(post,this);
-			}
-			
-			
-			StringWriter out = new StringWriter();
-			
-			
-			
-			
-			PrintWriter pout = new PrintWriter(out);
-			
-			//First print the SOAP Envelope 
-			pout.println("<?xml version=\"1.0\" encoding=\"UTF8\"?>");
-			if (this.useSoap) {
-				pout.println("<soap-env:Envelope xmlns:soap-env=\"http://schemas.xmlsoap.org/soap/envelope/\">");
-				pout.println("<soap-env:Body>");
-			}
-			//write out the message
-			//writer.writeMessage(message);
-			//writer.finish();
-			pout.write(DSML);
-			
-			if (this.useSoap) {
-				//Complete the SOAP Envelope
-				pout.println("</soap-env:Body>");
-				pout.println("</soap-env:Envelope>");
-			}
-			StringBufferInputStream in = new StringBufferInputStream(out.toString());
-			//Set the input stream
-			
-			post.setRequestBody(in);
-			
-			//POST the request
-			con.executeMethod(post);
-			
-			
-			
-			DSMLReader reader = new DSMLReader(post.getResponseBodyAsStream());
-			
-			post.releaseConnection();
-			
-			//Make sure it was successfull
-			/*LDAPException e = reader.
-			if (e != null) throw e;*/
-			
-			ArrayList errors = reader.getErrors();
-			if (errors.size() > 0) {
-				throw ((LDAPException) errors.get(0));
-			}
-			
-			LDAPMessage msg;
-			while ((msg = reader.readMessage()) != null) {
-				results.add(msg);
-			}
-			
-		} catch (HttpException e) {
-			throw new LDAPLocalException("Http Error",LDAPException.CONNECT_ERROR,e);
-		} catch (IOException e) {
-			throw new LDAPLocalException("Communications Error",LDAPException.CONNECT_ERROR,e);
-		}
-		
-		return results;
-	}
+	
+	
 	
 	/**
 	 * Default Contructor, initilizes the http client
 	 *
 	 */
-	public DsmlConnection(){
-		this.con = new HttpClient();
-		this.con.getState().setAuthenticationPreemptive(true);
-		this.useSoap = true;
+	public SPMLConnection(){
+		this.loadImpl(SPMLConnection.DEF_IMPL,null);
+		
+		
+	}
+	
+	public SPMLConnection(String className){
+		this.loadImpl(className,null);
+		
+		
+	}
+	
+	public SPMLConnection(String className,ClassLoader loader){
+		this.loadImpl(className,loader);
+		
 		
 	}
 	
@@ -287,11 +156,34 @@ public class DsmlConnection extends LDAPConnection {
 	 * Creates an instace of DsmlConnection ignoring the socket factory
 	 * @param factory
 	 */
-	public DsmlConnection(LDAPSocketFactory factory) {
+	public SPMLConnection(LDAPSocketFactory factory) {
 		this();
 	}
 	
 
+	private void loadImpl(String className,ClassLoader loader) {
+		SPMLImpl impl = null;
+		
+		if (loader == null) {
+			try {
+				impl = (SPMLImpl) Class.forName(className).newInstance();
+			} catch (Exception e) {
+				return;
+			}
+		} else {
+			try {
+				impl = (SPMLImpl) loader.loadClass(className).newInstance();
+			} catch (Exception e) {
+				return;
+			}
+				
+		}
+		
+		this.vendorImpl = impl;
+		this.con = impl.getSpmlClient();
+		
+	}
+	
 	
 	/**
 	 * Sets the host as the serverUrl, port is ignored
@@ -301,7 +193,11 @@ public class DsmlConnection extends LDAPConnection {
 	public void connect(String serverUrl, int port) throws LDAPException {
 		this.serverString = serverUrl;
 		host = serverUrl.substring(serverUrl.indexOf("//") + 2,serverUrl.indexOf("/",serverUrl.indexOf("//") + 2));
-		
+		try {
+			this.con.setUrl(serverUrl);
+		} catch (MalformedURLException e) {
+			throw new LDAPLocalException(e.toString(), 53, e);
+		}
 		this.isConnected = true;
 		
 	}
@@ -426,22 +322,16 @@ public class DsmlConnection extends LDAPConnection {
 	 */
 	public void bind(String binddn, String password) throws LDAPException {
 		if (isBound) {
-			//first clear old credentials on server
-			GetMethod get = new GetMethod(this.serverString + "?clearbind");
-			try {
-				con.executeMethod(get);
-				
-			} catch (HttpException e) {
-				
-			} catch (IOException e) {
-				
-			}
+			
+				this.vendorImpl.logout();
+			
 		}
 		//set the credentials globaly
 		this.isBound = false;
-		con.getState().setCredentials(null,null,new UsernamePasswordCredentials(binddn,password));
-		//try's to connect in order to bind...
-		this.search("",LDAPConnection.SCOPE_BASE,"(objectClass=*)", new String[] {"1.1"},false);
+		
+		
+		this.vendorImpl.login(binddn,password);
+		
 		this.isBound = true;
 	}
 
@@ -449,9 +339,73 @@ public class DsmlConnection extends LDAPConnection {
 	
 	public void add(LDAPEntry entry, LDAPConstraints cont)
 		throws LDAPException {
-		LDAPControl[] conts = cont != null ? cont.getControls() : null;
-		LDAPAddRequest add = new LDAPAddRequest(entry,conts);
-		this.sendMessage(add);
+		
+		AddRequest add = new AddRequest();
+		
+		DN dn = new DN(entry.getDN());
+		
+		RDN rdn = (RDN) dn.getRDNs().get(0);
+		Identifier id = new Identifier();
+		
+		try {
+			id.setType(this.getIdentifierType(rdn.getType()));
+		} catch (IllegalArgumentException e1) {
+			throw new LDAPException("Could not determine type",53, e1.toString(), e1);
+		} catch (IllegalAccessException e1) {
+			throw new LDAPException("Could not determine type",53, e1.toString(), e1);
+		}
+		
+		id.setId(rdn.getValue());
+		
+		String objectClass = entry.getAttribute("objectClass").getStringValue();
+		add.setObjectClass(objectClass);
+		
+		Iterator it = entry.getAttributeSet().iterator();
+		
+		HashMap map = new HashMap();
+		
+		while (it.hasNext()) {
+			LDAPAttribute attrib = (LDAPAttribute) it.next();
+			if (attrib.getName().toLowerCase().equals("objectclass")) {
+				continue;
+			}
+			
+			String[] vals = attrib.getStringValueArray();
+			ArrayList list = new ArrayList();
+			for (int i=0,m=vals.length;i<m;i++) {
+				list.add(vals[i]);
+			}
+			
+			
+			map.put(attrib.getName(),list);
+		}
+		
+		add.setAttributes(map);
+		add.setIdentifier(id);
+		
+		try {
+			
+			SpmlResponse resp =  con.request(add);
+			if (resp.getResult().equals("urn:oasis:names:tc:SPML:1:0#pending")) {
+				String res = "";
+				List attrs = resp.getOperationalAttributes();
+				it = attrs.iterator();
+				while (it.hasNext()) {
+					Attribute attr = (Attribute) it.next();
+					res += "[" + attr.getName() + "=" + attr.getValue() + "] ";
+				}
+				
+				throw new LDAPLocalException(res,0);
+				
+			} else if (! resp.getResult().equals("urn:oasis:names:tc:SPML:1:0#success")) {
+				System.out.println("Response : " + resp.getResult());
+				throw new LDAPLocalException(resp.getErrorMessage(), 53);
+			}
+		} catch (SpmlException e) {
+			throw new LDAPException(e.toString(),53,e.toString());
+		}
+		
+		
 	}
 
 	public LDAPResponseQueue add(
@@ -524,8 +478,60 @@ public class DsmlConnection extends LDAPConnection {
 		LDAPConstraints consts)
 		throws LDAPException {
 		LDAPControl[] controls = consts != null ? consts.getControls() : null;
-		LDAPModifyRequest msg = new LDAPModifyRequest(dn,mods,controls);
-		this.sendMessage(msg);
+		
+		
+		
+		ModifyRequest modreq = new ModifyRequest();
+		
+		DN dnVal = new DN(dn);
+		
+		RDN rdn = (RDN) dnVal.getRDNs().get(0);
+		Identifier id = new Identifier();
+		
+		try {
+			id.setType(this.getIdentifierType(rdn.getType()));
+		} catch (IllegalArgumentException e1) {
+			throw new LDAPException("Could not determine type",53, e1.toString(), e1);
+		} catch (IllegalAccessException e1) {
+			throw new LDAPException("Could not determine type",53, e1.toString(), e1);
+		}
+		
+		modreq.setIdentifier(id);
+		
+		id.setId(rdn.getValue());
+		
+		Modification mod = null;
+		
+		for (int i=0,m=mods.length;i<m;i++) {
+			mod = new Modification();
+			mod.setName(mods[i].getAttribute().getName());
+			ArrayList list = new ArrayList();
+			Enumeration evals = mods[i].getAttribute().getStringValues();
+			while (evals.hasMoreElements()) {
+				list.add(evals.nextElement());
+			}
+			mod.setValue(list);
+			
+			int op = mods[i].getOp();
+			switch (op) {
+				case LDAPModification.ADD : mod.setOperation("add"); break;
+				case LDAPModification.REPLACE : mod.setOperation("replace"); break;
+				case LDAPModification.DELETE : mod.setOperation("delete"); break;
+			}
+			
+			modreq.addModification(mod);
+			
+		}
+		
+		try {
+			ModifyResponse resp = (ModifyResponse) con.request(modreq);
+			
+			if (! resp.getResult().equals("urn:oasis:names:tc:SPML:1:0#success")) {
+				throw new LDAPLocalException(resp.getErrorMessage(), 53);
+			}
+		} catch (SpmlException e) {
+			throw new LDAPException(e.toString(),53,e.toString());
+		}
 	}
 
 	/* (non-Javadoc)
@@ -708,11 +714,59 @@ public class DsmlConnection extends LDAPConnection {
 		LDAPSearchRequest msg = new LDAPSearchRequest(base,scope,filter,attrs,0,0,0,typesOnly,controls);
 		
 		
-		DSMLSearchResults res = this.execQuery(msg);
+		SearchRequest req = new SearchRequest();
+		if (base != null && base.trim().length() != 0) {
+			//req.setSearchBase(base);
+			
+			DN dn = new DN(base);
+			
+			
+			if (! base.toLowerCase().startsWith("ou") && ! base.toLowerCase().startsWith("dc") && ! base.toLowerCase().startsWith("o")) {
+				if (scope == 0) {
+					Identifier id = new Identifier();
+					try {
+						id.setType(this.getIdentifierType(((RDN)dn.getRDNs().get(0)).getType()));
+					} catch (IllegalArgumentException e1) {
+						throw new LDAPException("Could not determine type",53, e1.toString(), e1);
+					} catch (IllegalAccessException e1) {
+						throw new LDAPException("Could not determine type",53, e1.toString(), e1);
+					}
+					id.setId(dn.explodeDN(true)[0]);
+					
+					req.setSearchBase(id);
+				} else {
+					req.setSearchBase(base);
+				}
+			} else if (scope == 0) {
+				
+				return new SPMLSearchResults(new ArrayList());
+			}
+		}
+		
+		if (filter != null && ! filter.trim().equalsIgnoreCase("objectClass=*") && ! filter.trim().equalsIgnoreCase("(objectClass=*)")) {
+			RfcFilter rfcFilter = new RfcFilter(filter.trim());
+			FilterTerm filterPart = new FilterTerm();
+			System.out.println("part : " + filterPart.getOperation());
+			this.stringFilter(rfcFilter.getFilterIterator(),filterPart);
+			req.addFilterTerm(filterPart);
+		}
+		
+		for (int i=0,m=attrs.length;i<m;i++) {
+			req.addAttribute(attrs[i]);
+		}
+		
+		SearchResponse res;
+		try {
+			res = con.searchRequest(req);
+		} catch (SpmlException e) {
+			throw new LDAPException("Could not search",53, e.toString());
+		}
 		
 		
-		if (res == null) res = new DSMLSearchResults(null);
-		return res;
+		
+		return new SPMLSearchResults(res.getResults() != null ? res.getResults() : new ArrayList());
+		
+		
 	}
 
 	/* (non-Javadoc)
@@ -761,15 +815,16 @@ public class DsmlConnection extends LDAPConnection {
 	 * @see com.novell.ldap.LDAPConnection#isConnectionAlive()
 	 */
 	public boolean isConnectionAlive() {
-		GetMethod get = new GetMethod(this.serverString + "?wsdl");
-		try {
-			con.executeMethod(get);
+		//GetMethod get = new GetMethod(this.serverString + "?wsdl");
+		/*try {
+			//con.executeMethod(get);
 			return true;
 		} catch (HttpException e) {
 			return true;
 		} catch (IOException e) {
 			return false;
-		}
+		}*/
+		return true;
 		
 	}
 
@@ -844,7 +899,7 @@ public class DsmlConnection extends LDAPConnection {
 	 * @return Returns the con.
 	 */
 	public HttpClient getCon() {
-		return con;
+		return null;
 	}
 	/**
 	 * @return Returns the host.
@@ -864,16 +919,244 @@ public class DsmlConnection extends LDAPConnection {
 	public String getServerString() {
 		return serverString;
 	}
-	/**
-	 * @return Returns the useSoap.
-	 */
-	public boolean isUseSoap() {
-		return useSoap;
+	
+	private String getIdentifierType(String rdnAttrib) throws IllegalArgumentException, IllegalAccessException {
+		Field[] fields = Identifier.class.getFields();
+		for (int i=0,m=fields.length;i<m;i++) {
+			if (fields[i].getName().startsWith("TYPE") && fields[i].get(null).toString().endsWith(rdnAttrib)) {
+				return fields[i].get(null).toString();
+			}
+		}
+		
+		return "";
+		
+		
 	}
-	/**
-	 * @param useSoap The useSoap to set.
-	 */
-	public void setUseSoap(boolean useSoap) {
-		this.useSoap = useSoap;
-	}
+	
+	private static String byteString(byte[] value) {
+        String toReturn = null;
+        if (com.novell.ldap.util.Base64.isValidUTF8(value, true)) {
+            try {
+                toReturn = new String(value, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                throw new RuntimeException(
+                        "Default JVM does not support UTF-8 encoding" + e);
+            }
+        } else {
+            StringBuffer binary = new StringBuffer();
+            for (int i=0; i<value.length; i++){
+                //TODO repair binary output
+                //Every octet needs to be escaped
+                if (value[i] >=0) {
+                    //one character hex string
+                    binary.append("\\0");
+                    binary.append(Integer.toHexString(value[i]));
+                } else {
+                    //negative (eight character) hex string
+                    binary.append("\\"+
+                            Integer.toHexString(value[i]).substring(6));
+                }
+            }
+            toReturn = binary.toString();
+        }
+        return toReturn;
+    }
+	
+	private void stringFilter(Iterator itr, FilterTerm filter) {
+        int op=-1;
+        //filter.append('(');
+        String comp = null;
+        byte[] value;
+        boolean doAdd = false;
+        boolean isFirst = true;
+        FilterTerm part;
+        while (itr.hasNext()){
+            Object filterpart = itr.next();
+            if (filterpart instanceof Integer){
+                op = ((Integer)filterpart).intValue();
+                switch (op){
+                    case LDAPSearchRequest.AND:
+                        if (filter.getOperation() != null) {
+	                        FilterTerm andFilter = new FilterTerm();
+	                        andFilter.setOperation(FilterTerm.OP_AND);
+	                        filter.addOperand(andFilter);
+	                        filter = andFilter;
+                        } else {
+                        	filter.setOperation(FilterTerm.OP_AND);
+                        }
+                    	break;
+                    case LDAPSearchRequest.OR:
+                    	if (filter.getOperation() != null) {
+	                    	FilterTerm orFilter = new FilterTerm();
+		                    orFilter.setOperation(FilterTerm.OP_OR);
+		                    filter.addOperand(orFilter);
+		                    filter = orFilter;
+                    	} else {
+                    		if (filter.getOperation() == null) {
+                    			filter.setOperation(FilterTerm.OP_OR);
+                    		}
+                    	}
+                        break;
+                    case LDAPSearchRequest.NOT:
+                    	if (filter.getOperation() != null) {
+	                    	FilterTerm notFilter = new FilterTerm();
+	                    	notFilter.setOperation(FilterTerm.OP_NOT);
+	                    	filter.addOperand(notFilter);
+	                    	filter = notFilter;
+                    	} else {
+                    		filter.setOperation(FilterTerm.OP_NOT);
+                    	}
+                        break;
+                    case LDAPSearchRequest.EQUALITY_MATCH:{
+                    	if (filter.getOperation() == null) {
+                    		part = filter;
+                    	} else {
+                    		part = new FilterTerm();
+                    		doAdd = true;
+                    	}
+                        part.setName((String)itr.next());
+                        part.setOperation(FilterTerm.OP_EQUAL);
+                        value = (byte[])itr.next();
+                        part.setValue(byteString(value));
+                        
+                        if (doAdd) {
+                        	filter.addOperand(part);
+                        }
+                        
+                        break;
+                    }
+                    case LDAPSearchRequest.GREATER_OR_EQUAL:{
+                    	if (filter.getOperation() == null) {
+                    		part = filter;
+                    	} else {
+                    		part = new FilterTerm();
+                    		doAdd = true;
+                    	}
+                        part.setName((String)itr.next());
+                        part.setOperation(FilterTerm.OP_GTE);
+                        value = (byte[])itr.next();
+                        part.setValue(byteString(value));
+                        if (doAdd) {
+                        	filter.addOperand(part);
+                        }
+                        break;
+                    }
+                    case LDAPSearchRequest.LESS_OR_EQUAL:{
+                    	if (filter.getOperation() == null) {
+                    		part = filter;
+                    	} else {
+                    		part = new FilterTerm();
+                    		doAdd = true;
+                    	}
+                        part.setName((String)itr.next());
+                        part.setOperation(FilterTerm.OP_LTE);
+                        value = (byte[])itr.next();
+                        part.setValue(byteString(value));
+                        if (doAdd) {
+                        	filter.addOperand(part);
+                        }
+                        break;
+                    }
+                    case LDAPSearchRequest.PRESENT:
+                    	if (filter.getOperation() == null) {
+                    		part = filter;
+                    	} else {
+                    		part = new FilterTerm();
+                    		doAdd = true;
+                    	}
+	                    part.setName((String)itr.next());
+	                    part.setOperation(FilterTerm.OP_PRESENT);
+	                    if (doAdd) {
+                        	filter.addOperand(part);
+                        }
+                        
+                        break;
+                    case LDAPSearchRequest.APPROX_MATCH:
+                    	if (filter.getOperation() == null) {
+                    		part = filter;
+                    	} else {
+                    		part = new FilterTerm();
+                    		doAdd = true;
+                    	}
+	                    part.setName((String)itr.next());
+	                    part.setOperation(FilterTerm.OP_APPROX);
+	                    value = (byte[])itr.next();
+	                    part.setValue(byteString(value));
+	                    if (doAdd) {
+                        	filter.addOperand(part);
+                        }
+                        break;
+                    case LDAPSearchRequest.EXTENSIBLE_MATCH:
+                        String oid = (String)itr.next();
+
+	                    if (filter.getOperation() == null) {
+	                		part = filter;
+	                	} else {
+	                		part = new FilterTerm();
+	                		doAdd = true;
+	                	}
+	                    part.setName((String)itr.next() + ":" + oid);
+	                    part.setOperation(FilterTerm.OP_EXTENSIBLE_MATCH);
+	                    value = (byte[])itr.next();
+	                    part.setValue(byteString(value));
+	                    if (doAdd) {
+                        	filter.addOperand(part);
+                        }
+                        
+                        
+                        break;
+                    case LDAPSearchRequest.SUBSTRINGS:{
+                    	if (filter.getOperation() == null) {
+                    		part = filter;
+                    	} else {
+                    		part = new FilterTerm();
+                    		doAdd = true;
+                    	}
+	                    part.setName((String)itr.next());
+	                    part.setOperation(FilterTerm.OP_SUBSTRINGS);
+                        boolean noStarLast = false;
+                        while (itr.hasNext()){
+                            op = ((Integer)itr.next()).intValue();
+                            switch(op){
+                                case LDAPSearchRequest.INITIAL:
+                                    filter.addSubstring((String)itr.next());
+                                    
+                                    noStarLast = false;
+                                    break;
+                                case LDAPSearchRequest.ANY:
+                                    
+                                   filter.addSubstring((String)itr.next());
+                                    
+                                    noStarLast = false;
+                                    break;
+                                case LDAPSearchRequest.FINAL:
+                                    
+                                    
+                                	filter.addSubstring((String)itr.next());
+                                    break;
+                            }
+                            
+                            
+                            
+                            
+                        }
+                        
+                        if (doAdd) {
+                        	filter.addOperand(part);
+                        }
+                        
+                        break;
+                    }
+                }
+            } else if (filterpart instanceof Iterator){
+                stringFilter((Iterator)filterpart, filter);
+            }
+            
+            
+        }
+        
+        
+        
+        
+    }
 }

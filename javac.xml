@@ -33,10 +33,10 @@
     </target>
 
     <target name="setupDebug" depends="init">
-        <delete file="com/novell/ldap/client/Debug.java"/>
+        <delete file="${src}/com/novell/ldap/client/Debug.java"/>
         <copy
-        		file="com/novell/ldap/client/Debug.template"
-        		tofile="com/novell/ldap/client/Debug.java"
+        		file="${src}/com/novell/ldap/client/Debug.template"
+        		tofile="${src}/com/novell/ldap/client/Debug.java"
         		overwrite="YES"
         		filtering="YES"
         />
@@ -50,9 +50,9 @@
         <echo message="DEBUG compile in com/novell"/>
         <mkdir dir="${build.debug}"/>
         <javac
-                srcdir="."
+                srcdir="${src}"
                 includes="com/novell/**/*.java,jldap/com/novell/security/sasl/*.java,org/ietf/**/*.java"
-                excludes="com/novell/services/**/*.java"
+                excludes="com/novell/services/**/*.java,${exclude.dsmlconnection},${exclude.spmlconnection}"
                 destdir="${build.debug}"
                 target="1.2"
                 deprecation="off"
@@ -63,9 +63,12 @@
 					<pathelement location="external/jsse/lib/jcert.jar"/>
 					<pathelement location="external/jsse/lib/jnet.jar"/>
 					<pathelement location="external/jsse/lib/jsse.jar"/>
-					<pathelement location="external/commons-httpclient-2.0-rc2.jar"/>
-						
-							
+					
+					<!-- Take care of optional components -->
+					<fileset dir="${ext}">
+						<include name="commons-httpclient-*.jar"/>	
+						<include name="openspml*.jar"/>	
+					</fileset>
                 </classpath>
         </javac>
 

@@ -90,6 +90,8 @@ implements Externalizable
      */
     /* package */
     
+    
+    
     LDAPSearchResults(  LDAPConnection conn,
                         LDAPSearchQueue queue,
                         LDAPSearchConstraints cons)

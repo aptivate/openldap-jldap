@@ -1,18 +1,21 @@
 
 LDAP Classes for Java
-October 2003
+June 2005
 
 Table of Contents
-     1.0  LDAP Classes for Java
-     2.0  Known Issues and Solutions
-     3.0  Dependencies
-     4.0  Installation
-     5.0  LDAPv2 and LDAPv3 Support
-     6.0  Java LDAP Documentation
-     7.0  Building JLDAP
-     8.0  Building DSML Services
-          8.1  dsmlstream.war
-          8.2  dsmldom.war
+     1.0   LDAP Classes for Java
+     2.0   Known Issues and Solutions
+     3.0   Dependencies
+     4.0   Installation
+     5.0   LDAPv2 and LDAPv3 Support
+     6.0   Java LDAP Documentation
+     7.0   Building JLDAP
+     8.0   Building DSML Services
+           8.1  dsmlstream.war
+           8.2  dsmldom.war
+     9.0   Building DSMLv2 & SPML Connection Support
+     10.0  Using DSMLv2 Connection Support
+     11.0  Using SPML Connection Support
 
 1.0  LDAP Classes for Java
 
@@ -322,6 +325,75 @@ and dsmldom.war. See README.dsml for additional information.
 
      ant wars
 
+9.0  Building DSMLv2 & SPML Connection Support
+     
+     The JLDAP libraries provide optional support for using DSMLv2 and SPML in 
+     a similar fashion as you would use an LDAP connection.  In order to build 
+     support for this functionality into JLDAP you need to add the following 
+     libraries to the "ext" directory of your JLDAP source directory:
+     
+     commons-httpclient-*.jar - http://jakarta.apache.org/site/news/news-2005-q2.html#20050410.1
+     openspml.jar & soap.jar - http://www.openspml.org/
+     
+10.  Using DSMLv2 Connection Support
+	 
+	 The JLDAP libraries provide optional support for interacting with DSMLv2 based directories 
+	 like you would an LDAP directory.  In order to use this functionality, you first create your 
+	 DSML connection:
+	 
+	 DsmlConnection dsmlCon = new DsmlConnection();
+	 
+	 //Some DSMLv2 implementations do not support SOAP
+	 dsmlCon.setUseSOAP(true);
+	 //The port is in the URL
+	 dsmlCon.connect("http://my.ldap.domain.com:port/path/to/dsmlv2",0);
+	 
+	 LDAPConnection con = dsmlCon;
+	 con.bin("CN=User","secret");
+	 .
+	 .
+	 .
+	 
+	 Once case to an LDAPConnection, you can perform any synchronouse operation.  Operations that 
+	 involve queue's are not supported.  The bind operation includes the bind dn and password in 
+	 an HTTP BASIC authentication header.
+	 
+	 In addtion you may create an implementation of the com.novell.ldap.util.HttpRequestCallback 
+	 interface to add HTTP Header variables.
+	 
+	 The DSMLv2 connection library has been tested with Novell DSMLv2 web services, Octet String 
+	 VDE 3.0+ and IBM Tivoli Directory Integrator.
+	 
+11.  Using SPML Connection Support
+     
+     The JLDAP libraries provide optional support for the Service Provisioning Markup Language.  
+     SPML is a standard for integrating and interacting with provisioning servers.  SPML support
+     is provided by the OpenSPML project.  In order to use SPML using JLDAP:
+
+     //Create the connection using a "no auth" implementation.
+     SPMLConnection spmlCon = new SPMLConnection("com.novell.ldap.spml.NoAuthImpl");
+	 spmlCon.connect("http://my.spml.domain.com/path/to/spml",0);
+	 LDAPConnection con = spmlCon;
+	 .
+	 .
+	 .
+	 
+	 
+	 Like the DSMLv2 connection libraries, the SPML libraries only support synchronous operations.
+	 As in DSMLv2, there is no BIND operation.  Each SPML implementation has it's own standard.  JLDAP
+	 contains support for Sun Identity Manager and OpenSPML implementations.  New authentication 
+	 schemes can be implemented by implementing the com.novell.ldap.spml.SPMLImpl interface.
+	 
+	 When manipluating users, the DN takes the follwing form:
+	 
+	 IdentityType=name
+	 
+	 For instance, using the GenericString identifier the DN may be
+	 
+	 GenericString=myUserName
+	 
+	 	 
+     
 $OpenLDAP$
  ******************************************************************************
  * Copyright (C) 1999 - 2003 Novell, Inc. All Rights Reserved.

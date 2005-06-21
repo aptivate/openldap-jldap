@@ -41,7 +41,7 @@ public class DSMLWriter implements LDAPWriter {
     private boolean indent = false;
     private String tabString = "    ";
     private String version = "2.0";
-
+    private boolean useSOAP;
     private boolean resumeOnError;
     
     private static final String BATCH_REQUEST_START =
@@ -1477,5 +1477,17 @@ public class DSMLWriter implements LDAPWriter {
     	return ret;
     }
     
+	/**
+	 * @return Returns the useSOAP.
+	 */
+	public boolean isUseSOAP() {
+		return useSOAP;
+	}
+	/**
+	 * @param useSOAP The useSOAP to set.
+	 */
+	public void setUseSOAP(boolean useSOAP) {
+		this.useSOAP = useSOAP;
+	}
 }
 

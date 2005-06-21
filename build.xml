@@ -40,6 +40,7 @@
 
 <property name="docsrc" value="."/>
 <property name="src" value="."/>
+<property name="ext" value="ext"/>
 <property name="ldap" value="ldap"/>
 
 <property name="lib" value="lib"/>
@@ -64,6 +65,32 @@
     <!-- =================================================================== -->
     <target name="init">
         <tstamp/>
+    	<mkdir dir="ext"/>
+    	<condition property="exclude.dsmlconnection" value="com/novell/ldap/Dsml*.java,com/novell/ldap/DSML*.java,com/novell/ldap/util/HttpRequestCallback.java">
+			<not>
+		    	<available   classname="org.apache.commons.httpclient.methods.PostMethod" >
+					<classpath>
+						<fileset dir="${ext}">
+							<include name="commons-httpclient-*.jar"/>	
+						</fileset>
+					</classpath>
+		    	</available>
+			</not>
+   		</condition>
+    	
+    	<condition property="exclude.spmlconnection" value="com/novell/ldap/spml/*.java,com/novell/ldap/SPML*.java">
+	    	<not>
+		    	<available classname="org.openspml.client.SpmlClient">
+					<classpath>
+						<fileset dir="${ext}">
+							<include name="openspml*.jar"/>	
+						</fileset>
+					</classpath>
+		    	</available>
+	    	</not>
+    	</condition>
+    	<echo message="dsmlv2 connnection is available : ${exclude.dsmlconnection}"></echo>
+    	<echo message="spml connnection is available : ${exclude.spmlconnection}"></echo>
     </target>
 
     <!-- =================================================================== -->
