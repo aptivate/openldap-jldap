@@ -156,6 +156,7 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
         this.collective = collective;
         this.userMod = isUserModifiable;
         this.usage = usage;
+        this.superior = superior;
         super.setValue(formatString());
         return;
    }
@@ -183,7 +184,7 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
            if( parser.getSyntax() != null)
                syntaxString = parser.getSyntax();
            if( parser.getSuperior() != null)
-               syntaxString = parser.getSuperior();
+               this.superior = parser.getSuperior();
            single = parser.getSingle();
            super.obsolete = parser.getObsolete();
            Enumeration qualifiers = parser.getQualifiers();
@@ -530,7 +531,7 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
 		   if( parser.getSyntax() != null)
 		   		attr.syntaxString = parser.getSyntax();
 		   if( parser.getSuperior() != null)
-		   		attr.syntaxString = parser.getSuperior();
+		   		attr.superior = parser.getSuperior();
 			attr.single = parser.getSingle();
 			attr.obsolete = parser.getObsolete();
 		   Enumeration qualifiers = parser.getQualifiers();
