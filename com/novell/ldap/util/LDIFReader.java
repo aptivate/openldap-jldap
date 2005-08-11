@@ -612,12 +612,12 @@ public class LDIFReader implements LDAPReader {
         }
 
         fieldIndex++;   // reference newsuperior field
-        currentField = (StringBuffer)this.rFields.get(fieldIndex);
-
+        
         if (fieldIndex == this.fNumber) { // no newsuperior spefified
             this.modInfo[2] = new String("");
         }
         else { // there is a newsuperior
+            currentField = (StringBuffer)this.rFields.get(fieldIndex);
             index = 12;   // length of "newsuperior:"
             if( ! currentField.substring(0, index).equalsIgnoreCase(
                                                              "newsuperior:")) {
