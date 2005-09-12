@@ -121,7 +121,7 @@ public class LDAPVirtualListResponse extends LDAPControl
         else
             throw new IOException("Decoding error");
 
-        /* The 3rd element is an enum containing the errorcode */
+        /* The 3rd element is an enumer containing the errorcode */
         ASN1Object asn1Enum = ((ASN1Sequence)asnObj).get(2);
         if ( (asn1Enum != null) && (asn1Enum instanceof ASN1Enumerated) )
              m_resultCode =((ASN1Enumerated)asn1Enum).intValue();
