@@ -321,9 +321,9 @@ public class LDAPDITContentRuleSchema
 		 this.names = readObject.getNames();
 		 this.description = readObject.getDescription();
 		 this.obsolete = readObject.isObsolete(); 
-		 Enumeration enum = readObject.getQualifierNames();
-		 while(enum.hasMoreElements()){
-			 String xname = (String)enum.nextElement();
+		 Enumeration enumer = readObject.getQualifierNames();
+		 while(enumer.hasMoreElements()){
+			 String xname = (String)enumer.nextElement();
 			 String[] qualifierVals = readObject.getQualifier(xname);
 			 this.setQualifier(xname, qualifierVals);		
 		 }

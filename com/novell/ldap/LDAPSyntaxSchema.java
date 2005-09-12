@@ -162,9 +162,9 @@ public class LDAPSyntaxSchema extends LDAPSchemaElement
 		  this.names = readObject.getNames();
 		  this.obsolete = readObject.obsolete;
 		  this.description = readObject.description;
-		  Enumeration enum = readObject.getQualifierNames();
-		  while(enum.hasMoreElements()){
-			  String xname = (String)enum.nextElement();
+		  Enumeration enumer = readObject.getQualifierNames();
+		  while(enumer.hasMoreElements()){
+			  String xname = (String)enumer.nextElement();
 			  String[] qualifierVals = readObject.getQualifier(xname);
 			  this.setQualifier(xname, qualifierVals);		
 		  }
@@ -181,8 +181,8 @@ public class LDAPSyntaxSchema extends LDAPSchemaElement
 	  //String desc = this.getDescription();
 	  //String names[] = this.getNames();
 	  //boolean obs = this.isObsolete();
-	  Enumeration enum = this.getQualifierNames();
-	  String xname = (String)enum.nextElement(); //only single element in this
+	  Enumeration enumer = this.getQualifierNames();
+	  String xname = (String)enumer.nextElement(); //only single element in this
 	  String[] qualifierVals = this.getQualifier(xname); //only single element in this
 	
 	  String value = 
@@ -197,8 +197,8 @@ public class LDAPSyntaxSchema extends LDAPSchemaElement
 	protected void writeValue(StringBuffer buff){
   	
 	  String oid = this.getID();
-	  Enumeration enum = this.getQualifierNames();
-	  String xname = (String)enum.nextElement();
+	  Enumeration enumer = this.getQualifierNames();
+	  String xname = (String)enumer.nextElement();
 	  String[] qualifierVals = this.getQualifier(xname);
 	
 	  String value = 
