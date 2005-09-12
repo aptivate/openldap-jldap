@@ -143,7 +143,7 @@ public class PoolManager
             if(null == sharedConns) // No we need to rebind an available
             {
                 // If there are no available sharedConns wait for one.
-                if(0 == availableListOfSharedConnections.size())
+                while(0 == availableListOfSharedConnections.size())
                 {
                     // Wait for available Instances
                     availableListOfSharedConnections.wait();
@@ -163,7 +163,7 @@ public class PoolManager
             conn.setInUse();
         }
         // Do we need to rebind? Bind will do a connect if needed
-        if(needToBind)
+        if(needToBind || !conn.isConnectionAlive())
         {
             try
             {
