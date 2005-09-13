@@ -901,6 +901,19 @@ final class Connection
             }
             socket = null;
         }
+        
+        // wait until reader threads stops completely
+        try {
+        	reader.join();
+            reader=null;
+        }
+        catch(InterruptedException iex) {
+        	;
+        }
+        catch(NullPointerException npe) {
+        	;
+        }
+        
         freeWriteSemaphore( semId);
         return;
     }
