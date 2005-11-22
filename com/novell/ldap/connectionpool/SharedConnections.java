@@ -100,7 +100,7 @@ class SharedConnections extends ArrayList
      */
     public boolean DNPWequals(String DN, byte[] PW)
     {
-        return (equals(this.DN, DN) & equals(this.PW, PW));
+        return (equals(this.DN, DN) && equals(this.PW, PW));
     }
     
 
