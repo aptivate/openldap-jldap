@@ -201,20 +201,20 @@ public class LDAPSchema extends LDAPEntry
     {
         class AttrEnumWrapper implements Enumeration
         {
-            private Enumeration enum;
-            AttrEnumWrapper( Enumeration enum)
+            private Enumeration enumer;
+            AttrEnumWrapper( Enumeration enumer)
             {
-                this.enum = enum;
+                this.enumer = enumer;
                 return;
             }
             public boolean hasMoreElements()
             {
-                return enum.hasMoreElements();
+                return enumer.hasMoreElements();
             }
             public Object nextElement() throws NoSuchElementException
             {
                 return new LDAPAttributeSchema(
-                    (com.novell.ldap.LDAPAttributeSchema)enum.nextElement());
+                    (com.novell.ldap.LDAPAttributeSchema)enumer.nextElement());
             }
         }
         return new AttrEnumWrapper( schema.getAttributeSchemas());
@@ -230,20 +230,20 @@ public class LDAPSchema extends LDAPEntry
     {
         class ObjEnumWrapper implements Enumeration
         {
-            private Enumeration enum;
-            ObjEnumWrapper( Enumeration enum)
+            private Enumeration enumer;
+            ObjEnumWrapper( Enumeration enumer)
             {
-                this.enum = enum;
+                this.enumer = enumer;
                 return;
             }
             public boolean hasMoreElements()
             {
-                return enum.hasMoreElements();
+                return enumer.hasMoreElements();
             }
             public Object nextElement() throws NoSuchElementException
             {
                 return new LDAPObjectClassSchema(
-                    (com.novell.ldap.LDAPObjectClassSchema)enum.nextElement());
+                    (com.novell.ldap.LDAPObjectClassSchema)enumer.nextElement());
             }
         }
         return new ObjEnumWrapper( schema.getObjectClassSchemas());
@@ -259,20 +259,20 @@ public class LDAPSchema extends LDAPEntry
     {
         class MatchEnumWrapper implements Enumeration
         {
-            private Enumeration enum;
-            MatchEnumWrapper( Enumeration enum)
+            private Enumeration enumer;
+            MatchEnumWrapper( Enumeration enumer)
             {
-                this.enum = enum;
+                this.enumer = enumer;
                 return;
             }
             public boolean hasMoreElements()
             {
-                return enum.hasMoreElements();
+                return enumer.hasMoreElements();
             }
             public Object nextElement() throws NoSuchElementException
             {
                 return new LDAPMatchingRuleSchema(
-                    (com.novell.ldap.LDAPMatchingRuleSchema)enum.nextElement());
+                    (com.novell.ldap.LDAPMatchingRuleSchema)enumer.nextElement());
             }
         }
         return new MatchEnumWrapper( schema.getMatchingRuleSchemas());
@@ -288,20 +288,20 @@ public class LDAPSchema extends LDAPEntry
     {
         class UseEnumWrapper implements Enumeration
         {
-            private Enumeration enum;
-            UseEnumWrapper( Enumeration enum)
+            private Enumeration enumer;
+            UseEnumWrapper( Enumeration enumer)
             {
-                this.enum = enum;
+                this.enumer = enumer;
                 return;
             }
             public boolean hasMoreElements()
             {
-                return enum.hasMoreElements();
+                return enumer.hasMoreElements();
             }
             public Object nextElement() throws NoSuchElementException
             {
                 return new LDAPMatchingRuleUseSchema(
-                 (com.novell.ldap.LDAPMatchingRuleUseSchema)enum.nextElement());
+                 (com.novell.ldap.LDAPMatchingRuleUseSchema)enumer.nextElement());
             }
         }
         return new UseEnumWrapper( schema.getMatchingRuleUseSchemas());
@@ -317,20 +317,20 @@ public class LDAPSchema extends LDAPEntry
     {
         class StructEnumWrapper implements Enumeration
         {
-            private Enumeration enum;
-            StructEnumWrapper( Enumeration enum)
+            private Enumeration enumer;
+            StructEnumWrapper( Enumeration enumer)
             {
-                this.enum = enum;
+                this.enumer = enumer;
                 return;
             }
             public boolean hasMoreElements()
             {
-                return enum.hasMoreElements();
+                return enumer.hasMoreElements();
             }
             public Object nextElement() throws NoSuchElementException
             {
               return new LDAPDITStructureRuleSchema(
-                (com.novell.ldap.LDAPDITStructureRuleSchema)enum.nextElement());
+                (com.novell.ldap.LDAPDITStructureRuleSchema)enumer.nextElement());
             }
         }
         return new StructEnumWrapper( schema.getDITStructureRuleSchemas());
@@ -346,20 +346,20 @@ public class LDAPSchema extends LDAPEntry
     {
         class ContentEnumWrapper implements Enumeration
         {
-            private Enumeration enum;
-            ContentEnumWrapper( Enumeration enum)
+            private Enumeration enumer;
+            ContentEnumWrapper( Enumeration enumer)
             {
-                this.enum = enum;
+                this.enumer = enumer;
                 return;
             }
             public boolean hasMoreElements()
             {
-                return enum.hasMoreElements();
+                return enumer.hasMoreElements();
             }
             public Object nextElement() throws NoSuchElementException
             {
                 return new LDAPDITContentRuleSchema(
-                  (com.novell.ldap.LDAPDITContentRuleSchema)enum.nextElement());
+                  (com.novell.ldap.LDAPDITContentRuleSchema)enumer.nextElement());
             }
         }
         return new ContentEnumWrapper( schema.getDITContentRuleSchemas());
@@ -375,20 +375,20 @@ public class LDAPSchema extends LDAPEntry
     {
         class NameEnumWrapper implements Enumeration
         {
-            private Enumeration enum;
-            NameEnumWrapper( Enumeration enum)
+            private Enumeration enumer;
+            NameEnumWrapper( Enumeration enumer)
             {
-                this.enum = enum;
+                this.enumer = enumer;
                 return;
             }
             public boolean hasMoreElements()
             {
-                return enum.hasMoreElements();
+                return enumer.hasMoreElements();
             }
             public Object nextElement() throws NoSuchElementException
             {
                 return new LDAPNameFormSchema(
-                        (com.novell.ldap.LDAPNameFormSchema)enum.nextElement());
+                        (com.novell.ldap.LDAPNameFormSchema)enumer.nextElement());
             }
         }
         return new NameEnumWrapper( schema.getNameFormSchemas());
@@ -404,20 +404,20 @@ public class LDAPSchema extends LDAPEntry
     {
         class SyntaxEnumWrapper implements Enumeration
         {
-            private Enumeration enum;
-            SyntaxEnumWrapper( Enumeration enum)
+            private Enumeration enumer;
+            SyntaxEnumWrapper( Enumeration enumer)
             {
-                this.enum = enum;
+                this.enumer = enumer;
                 return;
             }
             public boolean hasMoreElements()
             {
-                return enum.hasMoreElements();
+                return enumer.hasMoreElements();
             }
             public Object nextElement() throws NoSuchElementException
             {
                 return new LDAPSyntaxSchema(
-                        (com.novell.ldap.LDAPSyntaxSchema)enum.nextElement());
+                        (com.novell.ldap.LDAPSyntaxSchema)enumer.nextElement());
             }
         }
         return new SyntaxEnumWrapper( schema.getSyntaxSchemas());
