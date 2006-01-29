@@ -763,7 +763,8 @@ public class DSMLWriter implements LDAPWriter {
                 newLine(3);
                 if (Base64.isValidUTF8(bytevalues[j], false)){
                     out.write("<value>");
-                    out.write(values[j]);
+                	String xmlvalue = makeAttributeSafe(values[j]);
+                	out.write(xmlvalue);
                     out.write("</value>");
                 } else {
                     out.write("<value xsi:type=\"xsd:base64Binary\">");
@@ -1323,13 +1324,7 @@ public class DSMLWriter implements LDAPWriter {
             
             if (Base64.isValidUTF8(bytevalues[i],true) && this.isXMLSafe(bytevalues[i])){
                 out.write("<value>");
-                String xmlvalue = values[i];
-				xmlvalue = xmlvalue.replaceAll("&", "&amp;");
-				xmlvalue = xmlvalue.replaceAll("<", "&lt;");
-				xmlvalue = xmlvalue.replaceAll(">", "&gt;");
-				xmlvalue = xmlvalue.replaceAll("'", "&apos;");
-				xmlvalue = xmlvalue.replaceAll("\"", "&quot;");
-				
+                String xmlvalue = makeAttributeSafe(values[i]);
                 out.write(xmlvalue);
                 out.write("</value>");
             } else {
@@ -1469,11 +1464,10 @@ public class DSMLWriter implements LDAPWriter {
     	
     	String ret = attrib;
     	ret = ret.replaceAll("&", "&amp;");
+		ret = ret.replaceAll("<", "&lt;");
 		ret = ret.replaceAll(">", "&gt;");
 		ret = ret.replaceAll("'", "&apos;");
 		ret = ret.replaceAll("\"", "&quot;");
-    	
-    	
     	return ret;
     }
     
