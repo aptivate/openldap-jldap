@@ -50,7 +50,7 @@ import com.novell.ldap.util.ValueXMLhandler;
  */
 public class LDAPAttributeSet
         extends java.util.AbstractSet
-        implements Cloneable, java.util.Set,Externalizable
+        implements Cloneable, java.util.Set, Externalizable
 {
 
     /**
@@ -67,7 +67,7 @@ public class LDAPAttributeSet
      */
     public LDAPAttributeSet() {
         super();
-        map = new HashMap();
+        this.clear();
     }
 
 // ---  methods not defined in Set ---
@@ -81,6 +81,7 @@ public class LDAPAttributeSet
     {
         try {
             Object newObj = super.clone();
+			((LDAPAttributeSet)newObj).clear();
             Iterator i = this.iterator();
             while (i.hasNext()){
                 ((LDAPAttributeSet)newObj).add( ((LDAPAttribute)i.next()).clone());
@@ -342,7 +343,7 @@ public class LDAPAttributeSet
      * Removes all of the elements from this set.
      */
     public void clear(){
-        this.map.clear();
+        this.map = new HashMap();
     }
 
     /**
