@@ -185,7 +185,8 @@ public class LDAPAttributeSchema extends LDAPSchemaElement {
                syntaxString = parser.getSyntax();
            if( parser.getSuperior() != null)
                this.superior = parser.getSuperior();
-           single = parser.getSingle();
+           this.userMod = parser.getUserMod();
+           this.single = parser.getSingle();
            super.obsolete = parser.getObsolete();
            Enumeration qualifiers = parser.getQualifiers();
            AttributeQualifier attrQualifier;
