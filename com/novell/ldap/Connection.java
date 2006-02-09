@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.net.SocketException;
+import java.net.SocketTimeoutException;
 
 
 import com.novell.ldap.asn1.*;
@@ -110,6 +112,8 @@ final class Connection
     static private LDAPSocketFactory socketFactory = null;
     // The LDAPSocketFactory used for this connection
     private LDAPSocketFactory mySocketFactory;
+    
+    private int myTimeOut = 0;
     private String host = null;
     private int port = 0;
     // Number of clones in addition to original LDAPConnection using this
@@ -160,7 +164,6 @@ final class Connection
         }
         return;
     }
-
     /**
      * Copy this Connection object.
      *
@@ -183,6 +186,48 @@ final class Connection
         return c;
     }
 
+    /**
+     * Create a new Connection object
+     *
+     * @param timeout specifies the socket timeout to be used when the server is stalled.
+     */
+    
+    Connection( int timeout)
+    {
+        myTimeOut = timeout;
+
+        if( Debug.LDAP_DEBUG) {
+            synchronized(nameLock) {
+                name = "Connection(" + ++connNum + "): ";
+            }
+            Debug.trace( Debug.messages, name + "Created");
+        }
+        return;
+    }
+
+    /**
+     * Copy this Connection object.
+     *
+     * <p>This is not a true clone, but creates a new object encapsulating
+     * part of the connection information from the original object.
+     * The new object will have the same default socket factory,
+     * designated socket factory, host, port, and protocol version
+     * as the original object.
+     * The new object is NOT be connected to the host.</p>
+     *
+     * @return a shallow copy of this object
+     */
+    /* package */
+    Object copy_timeout()
+    {
+        Connection c = new Connection(this.myTimeOut);
+        c.host = this.host;
+        c.port = this.port;
+        c.protocol = this.protocol;
+        return c;
+    }
+
+    
     /**
      * Acquire a simple counting semaphore that synchronizes state affecting
      * bind. This method generates an ephemeral message id (negative number).
@@ -408,9 +453,14 @@ final class Connection
                     }
                     socket = mySocketFactory.createSocket(host, port);
                 } else {
-                    socket = new Socket(host, port);
+                	socket = new Socket(host, port);
+                	if(myTimeOut > 0)
+                	{
+                		socket.setSoTimeout(myTimeOut);                    	
+                	}
                 }
-
+                
+                 
                 in = socket.getInputStream();
                 out = socket.getOutputStream();
             } else {
@@ -418,8 +468,8 @@ final class Connection
                     Debug.trace( Debug.messages, name +
                         "connect(input/out Stream specified)");
                 }
-            }
-        } catch(IOException ioe) {
+            }              
+        }catch(IOException ioe) {
             // Unable to connect to server host:port
             freeWriteSemaphore(semId);
             throw new LDAPException(
@@ -617,7 +667,35 @@ final class Connection
         bindSemaphoreId = 0;
         return;
     }
-
+    
+    /**
+     * Gets SocketTimeOut value set.
+     *
+     * If not set, returns 0.
+     *
+     */
+    
+    final int getSocketTimeOut()
+    {
+    	return myTimeOut;
+    }
+    
+    /**
+     * Sets the SocketTimeOut value.
+     *
+     */
+    
+    final void setSocketTimeOut(int timeout)
+    {
+    	try
+		{
+    		socket.setSoTimeout(timeout);
+    		myTimeOut = timeout;
+		} catch(SocketException e) {}
+    	return;
+    }
+	 
+        
     /**
      * checks if the writeSemaphore id used for active bind operation is clear
      */
@@ -904,7 +982,10 @@ final class Connection
         
         // wait until reader threads stops completely
         try {
-        	reader.join();
+        	if (reader!= Thread.currentThread())
+        	     reader.join();
+
+//      	reader.join();
             reader=null;
         }
         catch(InterruptedException iex) {
