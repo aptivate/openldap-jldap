@@ -256,6 +256,8 @@ public class LDAPConnection implements Cloneable
      *  @param timeout     An object capable of producing a Socket 
      *                     with the specified Socket Connect timeout value.
      *
+     * @see #getSocketTimeOut()
+     * @see #setSocketTimeOut(int)
      */
     
     public LDAPConnection(int timeout)
