@@ -16,6 +16,7 @@
 package com.novell.ldap;
 
 import java.io.UnsupportedEncodingException;
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Map;
@@ -246,6 +247,29 @@ public class LDAPConnection implements Cloneable
         return;
     }
 
+    /**
+     * Constructs a new LDAPConnection object, which will use the supplied
+     * timeout value to construct a socket connection during
+     * LDAPConnection.connect method with the specified socket 
+     * connect timeout value.
+     *
+     *  @param timeout     An object capable of producing a Socket 
+     *                     with the specified Socket Connect timeout value.
+     *
+     */
+    
+    public LDAPConnection(int timeout)
+    {
+        // Get a unique connection name for debug
+        if( Debug.LDAP_DEBUG) {
+            synchronized( nameLock) {
+                name = "LDAPConnection(" + ++lConnNum + "): ";
+            }
+            Debug.trace( Debug.apiRequests, name + "Created");
+        }
+        conn = new Connection( timeout );
+        return;
+    }
     /*
      * The following are methods that affect the operation of
      * LDAPConnection, but are not LDAP requests.
@@ -598,6 +622,31 @@ public class LDAPConnection implements Cloneable
        return conn.isTLS();
     }
 
+    /**
+     * Returns the SocketTimeOut value set.
+     *
+     * @return Returns the SocketTimeOut value if set, else 0
+     *
+     *@see #setSocketTimeOut(int)
+     */
+    
+    public int getSocketTimeOut()
+    {
+    	return conn.getSocketTimeOut();
+    }
+
+    /**
+     * Sets the SocketTimeOut value.
+     *
+     *@see #getSocketTimeOut()
+     */
+
+    public void setSocketTimeOut(int timeout)
+    {
+    	conn.setSocketTimeOut(timeout);
+    	return;
+    }
+	 
     /**
      * Sets the constraints that apply to all operations performed through
      * this connection (unless a different set of constraints is specified
