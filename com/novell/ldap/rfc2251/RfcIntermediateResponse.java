@@ -125,7 +125,7 @@ public class RfcIntermediateResponse extends ASN1Sequence implements RfcResponse
      */
     public final RfcLDAPOID getResponseName()
     {
-        return (m_responseNameIndex != 0) ? (RfcLDAPOID)get(m_responseNameIndex)
+        return (m_responseNameIndex >= 0) ? (RfcLDAPOID)get(m_responseNameIndex)
                                         : null;
     }
 
