@@ -45,7 +45,7 @@ public class LDAPBackupResponse extends LDAPExtendedResponse {
 	 * The String representing the number of chunks and each elements in chunk
 	 * array as returned by server.
 	 * Data from server is parsed as follows before sending to any Application::
-	 * no_of_chunks;sizeOf(chunk1);sizeOf(chunk2)…sizeOf(chunkn)
+	 * no_of_chunks;sizeOf(chunk1);sizeOf(chunk2);sizeOf(chunkn)
 	 * where
 	 * no_of_chunks => Represents the number of chunks of data returned from server
 	 * sizeOf(chunkn) => Represents the size of data in chunkn
@@ -229,7 +229,7 @@ public class LDAPBackupResponse extends LDAPExtendedResponse {
 
 	/**
      * Returns the data in String as::<br>
-     * no_of_chunks;sizeOf(chunk1);sizeOf(chunk2)…sizeOf(chunkn)<br>
+     * no_of_chunks;sizeOf(chunk1);sizeOf(chunk2);sizeOf(chunkn)<br>
      * where<br>
      * no_of_chunks => Represents the number of chunks of data returned from server<br>
 	 * sizeOf(chunkn) => Represents the size of data in chunkn<br>
