@@ -27,6 +27,7 @@ import com.novell.ldap.rfc2251.RfcAddResponse;
 import com.novell.ldap.rfc2251.RfcCompareResponse;
 import com.novell.ldap.rfc2251.RfcControls;
 import com.novell.ldap.rfc2251.RfcDelResponse;
+import com.novell.ldap.rfc2251.RfcIntermediateResponse;
 import com.novell.ldap.rfc2251.RfcLDAPDN;
 import com.novell.ldap.rfc2251.RfcLDAPMessage;
 import com.novell.ldap.rfc2251.RfcLDAPString;
@@ -343,6 +344,10 @@ public class LDAPResponse extends LDAPMessage
         if( exception != null) {
             return exception.getResultCode();
         }
+
+		if (((RfcResponse)message.getResponse()) instanceof RfcIntermediateResponse)
+			return 0;
+
         return ((RfcResponse)message.getResponse()).getResultCode().intValue();
     }
 
