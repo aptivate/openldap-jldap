@@ -52,7 +52,9 @@ import java.io.IOException;
 public class ValueEventData implements EventResponseData {
     private final String attribute;
     private final String classid;
+    private final ASN1OctetString octData;
     private final String data;
+    private final byte[] binData;
     private final String entry;
     private final String prepetratorDN;
     private final String syntax;
@@ -91,7 +93,9 @@ public class ValueEventData implements EventResponseData {
         timeStamp =
             new DSETimeStamp((ASN1Sequence) decode.decode(in, length));
 
-        data = ((ASN1OctetString) decode.decode(in, length)).stringValue();
+        octData = ((ASN1OctetString) decode.decode(in, length));
+        data = octData.stringValue();
+        binData = octData.byteValue();
 
         verb = ((ASN1Integer) decode.decode(in, length)).intValue();
     }
@@ -123,6 +127,14 @@ public class ValueEventData implements EventResponseData {
         return data;
     }
 
+    /**
+     * Returns the binaryData.
+     *
+     * @return Data as Byte Array.
+     */
+    public byte[] getBinaryData() {
+        return binData;
+    }
     /**
      * Return the Entry.
      *
