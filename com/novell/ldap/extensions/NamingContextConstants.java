@@ -282,7 +282,16 @@ public class NamingContextConstants {
      * A constant for the triggerPartitionPurgeResponse OID.
      */
     public static final String TRIGGER_PART_PURGE_RES     = "2.16.840.1.113719.1.27.100.56";
-
+    
+    /**
+     * A constant for the DNStoX500DNRequest OID.
+     */
+    public static final String LDAP_DNS_TO_X500_DN_EXTENDED_REQUEST     = "2.16.840.1.113719.1.27.100.101";
+    
+    /**
+     * A constant for the DNStoX500DNResponse OID.
+     */
+    public static final String LDAP_DNS_TO_X500_DN_EXTENDED_REPLY     = "2.16.840.1.113719.1.27.100.102";
 
     /**
      * A constant that specifies that all servers in a replica ring must be
