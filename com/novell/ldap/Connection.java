@@ -111,8 +111,8 @@ final class Connection
     // The LDAPSocketFactory to be used as the default to create new connections
     static private LDAPSocketFactory socketFactory = null;
     // The LDAPSocketFactory used for this connection
-    private LDAPSocketFactory mySocketFactory;
-    
+    private LDAPSocketFactory mySocketFactory = null;
+
     private int myTimeOut = 0;
     private String host = null;
     private int port = 0;
@@ -191,10 +191,11 @@ final class Connection
      *
      * @param timeout specifies the socket timeout to be used when the server is stalled.
      */
-    
+
     Connection( int timeout)
     {
         myTimeOut = timeout;
+		mySocketFactory = socketFactory;
 
         if( Debug.LDAP_DEBUG) {
             synchronized(nameLock) {
@@ -227,7 +228,7 @@ final class Connection
         return c;
     }
 
-    
+
     /**
      * Acquire a simple counting semaphore that synchronizes state affecting
      * bind. This method generates an ephemeral message id (negative number).
@@ -456,11 +457,11 @@ final class Connection
                 	socket = new Socket(host, port);
                 	if(myTimeOut > 0)
                 	{
-                		socket.setSoTimeout(myTimeOut);                    	
+                		socket.setSoTimeout(myTimeOut);
                 	}
                 }
-                
-                 
+
+
                 in = socket.getInputStream();
                 out = socket.getOutputStream();
             } else {
@@ -468,7 +469,7 @@ final class Connection
                     Debug.trace( Debug.messages, name +
                         "connect(input/out Stream specified)");
                 }
-            }              
+            }
         }catch(IOException ioe) {
             // Unable to connect to server host:port
             freeWriteSemaphore(semId);
@@ -667,35 +668,36 @@ final class Connection
         bindSemaphoreId = 0;
         return;
     }
-    
+
     /**
      * Gets SocketTimeOut value set.
      *
      * If not set, returns 0.
      *
      */
-    
+
     final int getSocketTimeOut()
     {
     	return myTimeOut;
     }
-    
+
     /**
      * Sets the SocketTimeOut value.
      *
      */
-    
+
     final void setSocketTimeOut(int timeout)
     {
     	try
 		{
-    		socket.setSoTimeout(timeout);
+    		if(socket!=null)
+    			socket.setSoTimeout(timeout);
     		myTimeOut = timeout;
 		} catch(SocketException e) {}
     	return;
     }
-	 
-        
+
+
     /**
      * checks if the writeSemaphore id used for active bind operation is clear
      */
@@ -717,16 +719,22 @@ final class Connection
     void writeMessage(Message info)
         throws LDAPException
     {
-        messages.addElement( info);
+    	messages.addElement( info);
         // For bind requests, if not connected, attempt to reconnect
         if( info.isBindRequest() && (isConnected() == false) && (host != null)){
             connect( host, port, info.getMessageID());
         }
-        LDAPMessage msg = info.getRequest();
-        writeMessage( msg);
-        return;
+        if(isConnected())
+        {
+        	LDAPMessage msg = info.getRequest();
+        	writeMessage( msg);
+        	return;
+        }
+        else
+        	throw new LDAPException(ExceptionMessages.CONNECTION_CLOSED,
+                    new Object[] { host, new Integer(port) },
+                    LDAPException.CONNECT_ERROR, null,new IOException());
     }
-
 
     /**
      * Writes an LDAPMessage to the LDAP server over a socket.
@@ -979,7 +987,7 @@ final class Connection
             }
             socket = null;
         }
-        
+
         // wait until reader threads stops completely
         try {
         	if (reader!= Thread.currentThread())
@@ -994,7 +1002,7 @@ final class Connection
         catch(NullPointerException npe) {
         	;
         }
-        
+
         freeWriteSemaphore( semId);
         return;
     }
@@ -1361,7 +1369,7 @@ final class Connection
                 if( Debug.LDAP_DEBUG ) {
                     Debug.trace( Debug.messages, name +
                         "Connection lost waiting for results from " +
-                        host + ":" + port + ", clientActive=" + 
+                        host + ":" + port + ", clientActive=" +
                         clientActive + "\n\t" + ioe.toString());
                 }
 
