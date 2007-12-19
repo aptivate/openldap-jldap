@@ -90,7 +90,14 @@ public class PoolManager
             // Create connection. Initialy anonymous
             Connection conn = new Connection(factory);
             // At this point all of the connections anonymous
+            try
+            {
             conn.connect(host, port);
+            }
+            catch(LDAPException e)
+            {
+            	System.out.println("Error :  " + e.getResultCode());
+            }
             if( factory instanceof LDAPTLSSocketFactory) {
                 conn.startTLS();
             }
@@ -208,7 +215,10 @@ public class PoolManager
             ((Connection)conn).clearInUse();
 
             sharedConns = inUseListOfSharedConnections.getSharedConns((Connection)conn);
-
+            if(sharedConns==null)
+            {
+            	sharedConns = availableListOfSharedConnections.getSharedConns((Connection)conn);
+            }		
             // If all connections in this instance are available move to
             // from in use to available.
             if(sharedConns.allConnectionsAvailable())
