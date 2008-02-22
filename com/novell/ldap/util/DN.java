@@ -647,15 +647,15 @@ public class DN extends Object
         int j = this.rdnList.size() -1;              //index to an RDN of the ContainedDN
         //Search from the end of the DN for an RDN that matches the end RDN of
         //containerDN.
-        while ( !((RDN)this.rdnList.get(j--)).equals(
-                (RDN)containerDN.rdnList.get(i))){
+        if(i > j) // the length of the container DN should always be less than the contained one 
+        	return false ;
+        while ( !((RDN)this.rdnList.get(j--)).equals((RDN)containerDN.rdnList.get(i))){
             if (j <= 0)
                 return false;
                 //if the end RDN of containerDN does not have any equal
                 //RDN in rdnList, then containerDN does not contain this DN
         }
         i--;  //avoid a redundant compare
-        j--;
         //step backwards to verify that all RDNs in containerDN exist in this DN
         for (/* i, j */ ; i>=0 && j >=0; i--, j--){
             if (!((RDN)this.rdnList.get(j)).equals(
