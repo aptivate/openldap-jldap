@@ -2128,12 +2128,21 @@ public class LDAPConnection implements Cloneable
         String address = null;
 
         int specifiedPort;
+		  int bracketIndex; //Specific to IPv6 - after ']' is colon followed by port
         int colonIndex; //after the colon is the port
         while (hostList.hasMoreTokens()) {
             try{
                 specifiedPort=port;
                 address = hostList.nextToken();
-                colonIndex = address.indexOf((int)':');
+					 bracketIndex = address.indexOf(']');
+					 if(bracketIndex == -1)
+					 {
+                	colonIndex = address.indexOf((int)':');  //IPv4
+					 }
+					 else
+					 {
+						colonIndex = address.indexOf((int)':', bracketIndex); //IPv6
+					 }
                 if (colonIndex != -1 && colonIndex+1 != address.length()){
                     //parse Port out of address
                     try{
