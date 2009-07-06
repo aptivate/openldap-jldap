@@ -1496,8 +1496,11 @@ public class LDAPConnection implements Cloneable
         if(cons == null)
             cons = defSearchCons;
 
-        if(dn == null) {
+        boolean anonymous = false;
+        if(dn == null || dn.length()==0) {
             dn = "";
+            anonymous = true; // anonymous, passwd length zero with simple bind
+            passwd = null;
         } else {
             dn = dn.trim();
         }
@@ -1505,7 +1508,7 @@ public class LDAPConnection implements Cloneable
         if(passwd == null)
             passwd = new byte[] {};
 
-        boolean anonymous = false;
+        
         if( passwd.length == 0) {
             anonymous = true; // anonymous, passwd length zero with simple bind
             dn = "";          // set to null if anonymous
