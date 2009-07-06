@@ -283,7 +283,16 @@ public class ReplicationConstants {
      * A constant for the triggerPartitionPurgeResponse OID.
      */
     public static final String TRIGGER_PART_PURGE_RES     = "2.16.840.1.113719.1.27.100.56";
+    
+    /**
+     * A constant for the getEffectivePrivilegesListRequest OID.
+     */
+    public static final String GET_EFFECTIVE_LIST_PRIVILEGES_REQ = "2.16.840.1.113719.1.27.100.103";
 
+    /**
+     * A constant for the getEffectivePrivilegesListResponse OID.
+     */
+    public static final String GET_EFFECTIVE_LIST_PRIVILEGES_RES = "2.16.840.1.113719.1.27.100.104";
 
     /**
      * A constant that specifies that all servers in a replica ring must be
