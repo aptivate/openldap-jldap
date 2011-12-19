@@ -24,8 +24,10 @@ import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Vector;
 
@@ -53,7 +55,7 @@ public class LDAPSearchResults
 implements Externalizable
 {
 
-    private Vector entries;             // Search entries
+    private List entries;             // Search entries
     private int entryCount;             // # Search entries in vector
     private int entryIndex;             // Current position in vector
     private Vector references;          // Search Result References
@@ -123,7 +125,7 @@ implements Externalizable
         }
         return;
     }
-
+    
     /**
      * Returns a count of the items in the search result.
      *
@@ -203,7 +205,7 @@ implements Externalizable
         }
         // Checks if we have run out of entries
         if( (entryIndex != 0) && (entryIndex >= entryCount) ) {
-            entries.setSize(0);
+            entries.clear();
             entryCount = 0;
             entryIndex = 0;
        }
@@ -257,7 +259,7 @@ implements Externalizable
         } else
         if( entryIndex < entryCount ) {
             // Check for Search Entries and the Search Result
-            element = entries.elementAt( entryIndex++ );
+            element = entries.get( entryIndex++ );
             if( Debug.LDAP_DEBUG ) {
                 Debug.trace( Debug.messages, name +
                     "next: returns " + element.getClass().getName() + "@" +
@@ -349,8 +351,8 @@ implements Externalizable
                     }
 
                     if(msg instanceof LDAPSearchResult) { // Search Entry
-                        Object entry = ((LDAPSearchResult)msg).getEntry();
-                        entries.addElement( entry );
+                    	LDAPEntry entry = ((LDAPSearchResult)msg).getEntry();
+                        entries.add( entry );
                         i++;
                         entryCount++;
                         if( Debug.LDAP_DEBUG ) {
@@ -413,7 +415,7 @@ implements Externalizable
                         } else
                         if(resultCode != LDAPException.SUCCESS) {
                             // Results in an exception when message read
-                            entries.addElement(resp);
+                            entries.add(resp);
                             entryCount++;
                             if( Debug.LDAP_DEBUG ) {
                                 Debug.trace( Debug.messages, name +
@@ -454,7 +456,7 @@ implements Externalizable
                     // we have no responses, no message IDs and no exceptions
                     LDAPException e = new LDAPException( null,
                                 LDAPException.LDAP_TIMEOUT,(String)null);
-                    entries.addElement(e );
+                    entries.add(e );
                     break;
                 }
             } catch(LDAPException e) {
@@ -463,7 +465,7 @@ implements Externalizable
                        "Caught exception, add to entry queue: " + e.toString());
                 }
                 // Hand exception off to user
-                entries.addElement( e);
+                entries.add( e);
             }
             continue;
         }
@@ -790,7 +792,7 @@ implements Externalizable
      *
      * @return entries as Vector.
      */
-	 public Vector getDeSerializedEntries(){
+	 public List getDeSerializedEntries(){
 	 	return entries;
 	 }
 	 
