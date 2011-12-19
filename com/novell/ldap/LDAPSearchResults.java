@@ -127,6 +127,16 @@ implements Externalizable
     }
     
     /**
+     * Test constructor, that allows testing of code that uses
+     * {@link LDAPSearchResults} by creating mock objects based on it.
+     */
+    public LDAPSearchResults(LDAPEntry [] entries)
+    {
+    	this.entries = new ArrayList(Arrays.asList(entries));
+    	this.entryCount = entries.length; 
+    }
+
+    /**
      * Returns a count of the items in the search result.
      *
      * <p>Returns a count of the entries and exceptions remaining in the object.
